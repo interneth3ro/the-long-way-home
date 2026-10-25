@@ -15,7 +15,8 @@ func _unhandled_key_input(event: InputEvent) -> void:
 	if not event is InputEventKey:
 		return
 	var key := event as InputEventKey
-	if not key.pressed or key.echo or key.has_modifiers():
+	if not key.pressed or key.echo \
+			or key.ctrl_pressed or key.alt_pressed or key.shift_pressed or key.meta_pressed:
 		return
 	match key.physical_keycode:
 		KEY_J:
