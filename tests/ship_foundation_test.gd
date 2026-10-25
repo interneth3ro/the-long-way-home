@@ -17,13 +17,16 @@ func check(condition: bool, description: String) -> void:
 
 
 func step_frames(count: int) -> void:
-	for frame in count:
+	# Keep trial durations stable when the project physics tick rate changes.
+	var ticks := roundi(count * Engine.physics_ticks_per_second / 60.0)
+	for frame in ticks:
 		await physics_frame
 		await process_frame
 
 
 func travel(player: CharacterBody2D, start: Vector2, actions: Array, frames: int) -> Vector2:
 	player.position = start
+	player.reset_physics_interpolation()
 	for action in actions:
 		Input.action_press(action)
 	await step_frames(frames)
@@ -63,6 +66,7 @@ func run() -> void:
 		var end := await travel(player, trial[0], [trial[1]], 30)
 		check(end.x >= 35.0 and end.x <= 1565.0 and end.y >= 33.0 and end.y <= 967.0, "outer hull collision " + str(trial[2]))
 	player.position = spawn
+	player.reset_physics_interpolation()
 	await step_frames(2)
 	check(camera.global_position.is_equal_approx(player.global_position), "camera follows Dave's ground position")
 	camera.call("apply_zoom", -10.0)
@@ -77,6 +81,7 @@ func run() -> void:
 		camera.call("apply_zoom", level)
 		for corner in [Vector2(36, 34), Vector2(1564, 34), Vector2(36, 966), Vector2(1564, 966)]:
 			player.position = corner
+			player.reset_physics_interpolation()
 			await step_frames(2)
 			camera.force_update_scroll()
 			var center := camera.get_screen_center_position()

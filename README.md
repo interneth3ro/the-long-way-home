@@ -47,6 +47,9 @@ visual child. Graphical validation remains a separate check.
 - Move: **WASD** or **arrow keys** (`move_left/right/up/down`).
 - Zoom out/in: hold **Q / E** or **- / =** (`zoom_out/in`).
 - Dave moves at 220 world units per second; diagonal input is normalized.
+- Physics runs at 120 ticks per second with interpolation; the camera updates
+  with physics. Rendering is capped at 120 FPS with V-sync disabled to reduce
+  presentation latency. This can cause tearing on some displays.
 - Zoom normally ranges from 0.85 to 1.4, starting at 1.1. The camera clamps to
   the 1600 by 1000 room. On oversized viewports the minimum zoom increases to
   keep the room filling the view; this can override the normal maximum.

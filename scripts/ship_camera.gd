@@ -9,7 +9,7 @@ func _ready() -> void:
 	apply_zoom(zoom.x)
 
 
-func _process(delta: float) -> void:
+func _physics_process(delta: float) -> void:
 	var direction := Input.get_axis("zoom_out", "zoom_in")
 	apply_zoom(zoom.x + direction * zoom_speed * delta)
 
@@ -21,4 +21,5 @@ func apply_zoom(requested_zoom: float) -> void:
 	var fit_zoom: float = maxf(viewport_size.x / room_size.x, viewport_size.y / room_size.y)
 	var lower_bound := maxf(minimum_zoom, fit_zoom)
 	var value := clampf(requested_zoom, lower_bound, maxf(maximum_zoom, lower_bound))
-	zoom = Vector2.ONE * value
+	if not is_equal_approx(zoom.x, value):
+		zoom = Vector2.ONE * value

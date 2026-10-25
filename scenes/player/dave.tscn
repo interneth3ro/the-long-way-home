@@ -35,5 +35,6 @@ limit_left = 0
 limit_top = 0
 limit_right = 1600
 limit_bottom = 1000
+process_callback = 0
 position_smoothing_enabled = false
 script = ExtResource("2")
