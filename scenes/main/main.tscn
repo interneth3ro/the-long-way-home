@@ -1,12 +1,119 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/player/dave.tscn" id="1_dave"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_horizontal_wall"]
+size = Vector2(4160, 32)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_vertical_wall"]
+size = Vector2(32, 3072)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wide_obstacle"]
+size = Vector2(160, 48)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_narrow_obstacle"]
+size = Vector2(96, 64)
 
 [node name="Main" type="Node2D"]
 
 [node name="Background" type="Polygon2D" parent="."]
-polygon = PackedVector2Array(0, 0, 1280, 0, 1280, 720, 0, 720)
+polygon = PackedVector2Array(-2048, -1536, 2048, -1536, 2048, 1536, -2048, 1536)
 color = Color(0.10, 0.15, 0.20, 1)
 
-[node name="Dave" parent="." instance=ExtResource("1_dave")]
-position = Vector2(640, 360)
+[node name="Perimeter" type="Node2D" parent="."]
+
+[node name="NorthWall" type="StaticBody2D" parent="Perimeter"]
+position = Vector2(0, -1552)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Perimeter/NorthWall"]
+shape = SubResource("RectangleShape2D_horizontal_wall")
+
+[node name="Visual" type="Polygon2D" parent="Perimeter/NorthWall"]
+polygon = PackedVector2Array(-2080, -16, 2080, -16, 2080, 16, -2080, 16)
+color = Color(0.30, 0.38, 0.46, 1)
+
+[node name="SouthWall" type="StaticBody2D" parent="Perimeter"]
+position = Vector2(0, 1552)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Perimeter/SouthWall"]
+shape = SubResource("RectangleShape2D_horizontal_wall")
+
+[node name="Visual" type="Polygon2D" parent="Perimeter/SouthWall"]
+polygon = PackedVector2Array(-2080, -16, 2080, -16, 2080, 16, -2080, 16)
+color = Color(0.30, 0.38, 0.46, 1)
+
+[node name="WestWall" type="StaticBody2D" parent="Perimeter"]
+position = Vector2(-2064, 0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Perimeter/WestWall"]
+shape = SubResource("RectangleShape2D_vertical_wall")
+
+[node name="Visual" type="Polygon2D" parent="Perimeter/WestWall"]
+polygon = PackedVector2Array(-16, -1536, 16, -1536, 16, 1536, -16, 1536)
+color = Color(0.30, 0.38, 0.46, 1)
+
+[node name="EastWall" type="StaticBody2D" parent="Perimeter"]
+position = Vector2(2064, 0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Perimeter/EastWall"]
+shape = SubResource("RectangleShape2D_vertical_wall")
+
+[node name="Visual" type="Polygon2D" parent="Perimeter/EastWall"]
+polygon = PackedVector2Array(-16, -1536, 16, -1536, 16, 1536, -16, 1536)
+color = Color(0.30, 0.38, 0.46, 1)
+
+[node name="GroundObjects" type="Node2D" parent="."]
+y_sort_enabled = true
+
+[node name="WestObstacle" type="StaticBody2D" parent="GroundObjects"]
+position = Vector2(-320, -180)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="GroundObjects/WestObstacle"]
+position = Vector2(0, -24)
+shape = SubResource("RectangleShape2D_wide_obstacle")
+
+[node name="Visual" type="Node2D" parent="GroundObjects/WestObstacle"]
+
+[node name="Front" type="Polygon2D" parent="GroundObjects/WestObstacle/Visual"]
+polygon = PackedVector2Array(-80, -72, 80, -72, 80, 0, -80, 0)
+color = Color(0.52, 0.35, 0.22, 1)
+
+[node name="Top" type="Polygon2D" parent="GroundObjects/WestObstacle/Visual"]
+polygon = PackedVector2Array(-80, -120, 80, -120, 80, -72, -80, -72)
+color = Color(0.72, 0.52, 0.32, 1)
+
+[node name="EastObstacle" type="StaticBody2D" parent="GroundObjects"]
+position = Vector2(360, 40)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="GroundObjects/EastObstacle"]
+position = Vector2(0, -32)
+shape = SubResource("RectangleShape2D_narrow_obstacle")
+
+[node name="Visual" type="Node2D" parent="GroundObjects/EastObstacle"]
+
+[node name="Front" type="Polygon2D" parent="GroundObjects/EastObstacle/Visual"]
+polygon = PackedVector2Array(-48, -96, 48, -96, 48, 0, -48, 0)
+color = Color(0.30, 0.46, 0.38, 1)
+
+[node name="Top" type="Polygon2D" parent="GroundObjects/EastObstacle/Visual"]
+polygon = PackedVector2Array(-48, -160, 48, -160, 48, -96, -48, -96)
+color = Color(0.44, 0.64, 0.52, 1)
+
+[node name="SouthObstacle" type="StaticBody2D" parent="GroundObjects"]
+position = Vector2(0, 420)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="GroundObjects/SouthObstacle"]
+position = Vector2(0, -24)
+shape = SubResource("RectangleShape2D_wide_obstacle")
+
+[node name="Visual" type="Node2D" parent="GroundObjects/SouthObstacle"]
+
+[node name="Front" type="Polygon2D" parent="GroundObjects/SouthObstacle/Visual"]
+polygon = PackedVector2Array(-80, -72, 80, -72, 80, 0, -80, 0)
+color = Color(0.43, 0.35, 0.52, 1)
+
+[node name="Top" type="Polygon2D" parent="GroundObjects/SouthObstacle/Visual"]
+polygon = PackedVector2Array(-80, -120, 80, -120, 80, -72, -80, -72)
+color = Color(0.62, 0.52, 0.72, 1)
+
+[node name="Dave" parent="GroundObjects" instance=ExtResource("1_dave")]
