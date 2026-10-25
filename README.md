@@ -6,6 +6,11 @@ implemented. It is independent of the previous FactoryGame project.
 
 ## Requirements and setup
 
+Codex must follow the [Godot execution safety policy](AGENTS.md#godot-execution-safety)
+before using the setup or launch instructions below. Graphical execution requires
+explicit owner authorization; all headless execution is suspended following the
+PR #5 incident until the owner explicitly lifts that restriction.
+
 - Godot **4.7.2 stable**, standard build. GDScript is the initial scripting language;
   no .NET SDK or third-party plugins are required.
 - Git for cloning the repository.
@@ -31,7 +36,9 @@ godot --headless --path . --quit-after 60
 ```
 
 The last two commands validate editor import and a bounded main-scene launch.
-Headless checks do not verify graphical appearance.
+Headless checks do not verify graphical appearance. While execution is restricted,
+use only nonexecuting checks under the policy above and report them as static
+validation; runtime and engine verification remain unperformed.
 
 ## Layout and development
 

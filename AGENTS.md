@@ -5,8 +5,9 @@
 - Avoid speculative abstractions and unnecessary managers.
 - Maintain stable, clearly defined interfaces.
 - Keep narrative content independently editable.
-- Validate Godot scenes and scripts before reporting completion. Run headless
-  editor import and the main scene; distinguish headless from graphical checks.
+- Validate affected Godot scenes and scripts before reporting completion, subject
+  to the execution safety policy below; distinguish static, headless and graphical
+  checks.
 - Do not commit Godot-generated caches or temporary test artifacts.
 - Do not introduce third-party plugins without approval.
 - Do not begin unrelated development or access or modify the previous FactoryGame
@@ -16,6 +17,29 @@
 - Preserve user-authored artwork, saves, settings, and other project data.
 - Never perform destructive cleanup without verifying ownership and preservation
   requirements.
+
+## Godot execution safety
+
+- Obtain explicit owner authorization before launching the Godot editor or game
+  graphically, running playable scenes, performing graphical verification, or
+  running automated graphical interaction tests.
+- Obtain explicit owner authorization before running performance probes,
+  benchmarks, prolonged runtime tests, or attempts to reproduce system-level
+  freezes or severe performance failures. Never reproduce a reported system
+  lockup without explicit owner authorization.
+- **Temporary headless restriction following the PR #5 incident:** all Godot
+  headless execution is suspended, including editor imports, headless scene
+  launches, and GDScript tests executed through Godot. This restriction remains
+  active until the owner explicitly lifts it.
+- While execution is restricted, use static code inspection, scene and resource
+  text inspection, Git diff validation, Markdown and documentation checks, and
+  other nonexecuting checks that invoke neither Godot nor project code.
+- Clearly distinguish static validation from actual runtime verification. Do not
+  claim gameplay, graphical, or engine validation when those checks were not
+  performed.
+- Preserve all existing repository safety, worktree, artifact and branch
+  preservation requirements. Do not alter the abandoned PR #5 worktree,
+  branches, archives, or conversation.
 
 ## Workflow skills
 
