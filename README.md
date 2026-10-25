@@ -131,13 +131,18 @@ bounds. Check that all fixture details occlude together as Dave walks behind and
 in front, and that their visible bases agree with collision contact. No engine,
 runtime or graphical verification was performed for this pass.
 
-The pending interaction uses an 80-pixel-radius `Area2D` at Dave's collision
-center to find overlapping interactable bodies. It selects the nearest available
-target point whose physics ray first hits that target's solid body, excluding
-Dave. The console's target point is the center of its existing footprint, allowing
-approach from all sides without changing collision geometry. A solid obstacle
-between Dave and the target blocks the prompt and interaction. The same checks
-run in the physics callback before fulfilling an interaction request.
+The pending interaction requires Dave's collision center to be **at most 120
+world units from the interaction point**, measured as straight-line distance.
+The detector's circle radius in `dave.tscn` supplies this single distance limit.
+A direct physics shape query at Dave's current position finds candidate bodies;
+the explicit point-distance check then rejects candidates beyond the limit.
+Cached `Area2D` overlap monitoring is disabled. It selects the nearest available
+point whose physics ray first hits that target's solid body, excluding Dave.
+The console's point is the center of its existing 160 × 48 footprint: its sides
+and corners are reachable within the limit without changing collision geometry.
+A solid obstacle between Dave and the target blocks the prompt and interaction.
+All proximity, distance and obstruction checks run in the physics callback,
+including before fulfilling an interaction request.
 
 When available, a screen-space **E — Inspect Computer** prompt appears above the
 bottom edge. Physical **E** uses the `interact` Input Map action. A fresh press
@@ -158,6 +163,10 @@ both in and outside range, and test E, Esc and button dismissal. Confirm the
 prompt and response are readable at both zoom bounds, movement and zoom continue
 while inspecting, and the other fixtures remain noninteractive. Engine loading,
 gameplay, input handling and graphical appearance remain unverified.
+For the distance refinement, also check just inside and outside the 120-unit
+point-distance boundary from each accessible direction, including entering and
+leaving while pressing E. Mathematical inspection of the boundary and footprint
+does not establish engine query timing or runtime approach reliability.
 
 Add feature directories and GDScript files when they have a concrete purpose.
 Keep Godot's `.godot/` cache untracked. Use feature branches and pull requests;

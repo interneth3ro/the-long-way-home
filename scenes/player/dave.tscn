@@ -9,7 +9,7 @@
 radius = 10.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_interaction"]
-radius = 80.0
+radius = 120.0
 
 [node name="Dave" type="CharacterBody2D"]
 script = ExtResource("1_controller")
@@ -35,6 +35,7 @@ color = Color(0.95, 0.75, 0.55, 1)
 position = Vector2(0, -10)
 collision_layer = 0
 collision_mask = 1
+monitoring = false
 monitorable = false
 script = ExtResource("3_interaction")
 interaction_ui = NodePath("../InteractionUI")
