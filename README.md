@@ -3,8 +3,9 @@
 A story-driven science-fiction automation adventure. This fresh Godot project
 has a player movement prototype with camera follow and mouse-wheel zoom, plus a
 minimal ship-interior environment and collision foundation, plus data-driven
-Computer dialogue and inspection. The minimal objective foundation on
-`codex/objective-foundation` is pending merge and owner runtime verification.
+Computer dialogue and inspection. The objective foundation is present; first
+narrative integration on
+`codex/first-narrative-integration` is pending merge and owner runtime verification.
 It is independent of the previous FactoryGame project.
 
 ## Requirements and setup
@@ -66,10 +67,11 @@ validation; runtime and engine verification remain unperformed.
 - `scenes/ui/dialogue_ui.tscn` and `dialogue_ui.gd`: reusable screen-space
   dialogue presentation and active entry position, instantiated under Dave.
 - `objectives/`: editable objective definitions, scene-local state controller,
-  and an isolated development-only input adapter with temporary demo content.
+  and provisional opening content in `restore_computer.tres`.
 - `scenes/ui/objective_tracker.tscn` and `objective_tracker.gd`: screen-space
-  objective data presentation and pin/hide preferences.
-- `scenes/main/main.gd`: local objective state-signal wiring to the tracker.
+  objective data presentation with expand, pin, hide and restore controls.
+- `scenes/main/main.gd`: scene-local dialogue completion, objective activation
+  and tracker wiring.
 - `docs/GAME_VISION.md`: approved direction and unresolved design questions.
 - `AGENTS.md`: development conventions.
 
@@ -178,8 +180,9 @@ in `dialogue/computer_opening.tres`, assigned through the console's exported
 a conversation. Empty IDs, speakers/text, null entries and duplicate entry IDs
 make a conversation invalid. The three opening lines are temporary content, not
 finalized narrative canon. The console's existing inspection response is retained.
-Dialogue does not change objective state. No choices, narrative flags, log or save
-system are implemented.
+Main listens for completion of `computer_opening` to activate `restore_computer`;
+DialogueUI remains independent of objectives. No choices, narrative flags, log or
+save system are implemented.
 
 Dialogue validation is static only: resource paths and UID sidecars, typed exports,
 nonempty content and unique IDs, scene/UI wiring, input flow, completion versus
@@ -195,7 +198,7 @@ separately assign invalid content) to verify inspection fallback, then restore i
 Also verify range boundaries, approach from all sides/corners, obstruction,
 inspection dismissal and the other fixtures remaining noninteractive.
 
-## Objective foundation (feature branch, pending merge)
+## Objectives and first narrative integration (feature branch, pending merge)
 
 `ObjectiveDefinition` exports a stable `objective_id`, short `title` and multiline
 `description`, editable through `.tres` resources. Treat definitions as read-only
@@ -213,41 +216,48 @@ The main scene wires the controller signal to `ObjectiveTracker.show_objective()
 The first active definition in exported list order is shown; completing it reveals
 the next active definition, if any. There is no separate current-objective state.
 The tracker only reads supplied content and owns presentation preferences; it
-never activates or completes objectives. No autoload, dialogue dependency, Dave
-controller changes, persistence or quest graph are introduced.
+never activates or completes objectives.
+
+Main connects Dave's existing `DialogueUI.conversation_completed` signal to a
+scene-local handler. Only `computer_opening` activates `restore_computer`;
+dismissal has no activation connection, and unrelated conversation IDs are ignored.
+Repeated completion is harmless: the controller rejects activation unless the
+objective is inactive, without emitting another state change. DialogueUI, Dave's
+movement controller and the interaction detector have no objective dependency.
+
+The registered objective starts inactive. Its independently editable definition
+in `objectives/restore_computer.tres` has title **Restore Computer** and description
+**Investigate the damage to Computer and determine what is needed to restore its
+systems.** This is provisional opening narrative content. No repair mechanics or
+narrative completion path are implemented. The temporary J/K demo adapter, node,
+script/UID and resource have been removed; no replacement debug controls exist.
 
 The tracker occupies the top right of its own `CanvasLayer`, using the existing
-ship UI palette. It is independent of camera zoom, above the bottom dialogue and
-inspection region at the configured 1280 × 720 viewport. **Pin** selects pinned
-mode; **Unpin** returns to contextual mode. In this foundation both modes stay
-visible while an objective is active; there is no timed fade or extra contextual
-suppression rule. **Hide** conceals the panel and leaves **Show objective** in its
-place; restoring returns to contextual mode. Preferences survive supplied-data
-changes within the scene, so hidden stays hidden until restored. With no active
-objective neither the panel nor restore button is shown, even when pinned.
+ship UI palette. It is independent of camera zoom and is laid out above the bottom
+dialogue and inspection region at the configured 1280 × 720 viewport. When the
+objective activates, only **Show Objective** appears. Clicking it expands the
+contextual panel. **Pin** keeps the full panel visible; **Unpin** returns to
+collapsed contextual mode. **Hide** conceals the full panel and leaves
+**Show Objective** available; clicking it expands in contextual mode again.
+With no active objective, neither panel nor button appears, even when pinned.
+Presentation preferences remain scene-local; there are no timers or animations.
 
-For owner manual testing in a debug build, physical **J** activates the temporary
-`demo_investigate_computer` objective; physical **K** completes it. Key repeats
-and modified key presses are ignored. These keys do not overlap the current
-movement, interaction, zoom or UI controls and add no project Input Map entries.
-The objective starts inactive. Its temporary title is **Investigate Computer**;
-its description is **Examine the damaged ship's Computer console.** This is demo
-content only, independent of Computer's dialogue and inspection. The isolated
-`ObjectiveDemo` node is disabled outside debug builds. Remove that node, its
-`objective_demo.gd` script/UID, and the demo resource/list assignment when replacing
-the demonstration with narrative integration. No debug menu or console is added.
+Validation for this integration is static only: resource references, script UID
+sidecars, inactive-state initialization, completion ID guard, dismissal separation,
+idempotent activation, scene/signal wiring, tracker transitions, UI anchors,
+documentation links, preserved gameplay/settings and Git diff checks. Godot was
+not executed; engine loading, runtime behavior, text wrapping and graphical
+nonoverlap remain unverified.
 
-Validation is static only: resource references, script UID sidecars, transition
-guards, signal wiring, pin/hide/restore paths, UI anchors, documentation links,
-preserved gameplay/settings and Git diff checks. Godot was not executed; engine
-loading, runtime input, text wrapping and graphical behavior remain unverified.
-Before merging, the owner must activate with J, try repeated/held J, test Pin,
-Unpin, Hide and Show objective, then complete with K and repeat it. Try K before
-activation and J after completion (both must have no effect); reload the scene
-to repeat the demo. Check the tracker at zoom 0.75 and 1.5, with dialogue and
-inspection open, and confirm existing movement, interactions, dismissal and
-wheel zoom still work. Unknown IDs, duplicate definitions and signal counts
-require owner-authorized runtime API verification; they were inspected statically.
+Before merging, the owner must manually verify that no tracker appears initially;
+Esc/Dismiss before finishing Computer's dialogue leaves it inactive; and E/Finish
+on its last entry reveals Show Objective. Expand, Pin, Unpin, Hide and restore the
+panel, then repeat the conversation and confirm it neither duplicates the objective
+nor resets the chosen tracker presentation. Check the tracker with dialogue and
+inspection open, readability and nonoverlap at both zoom bounds, and continued
+movement, camera follow, wheel zoom and interaction behavior. Reloading the scene
+must reset the objective to inactive. Unrelated conversation IDs and signal counts
+require owner runtime verification; their paths were inspected statically.
 
 Add feature directories and GDScript files when they have a concrete purpose.
 Keep Godot's `.godot/` cache untracked. Use feature branches and pull requests;

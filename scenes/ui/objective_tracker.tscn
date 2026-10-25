@@ -84,7 +84,7 @@ offset_right = -24.0
 offset_bottom = 60.0
 grow_horizontal = 0
 focus_mode = 0
-text = "Show objective"
+text = "Show Objective"
 
 [connection signal="pressed" from="HUD/Panel/Content/Actions/Pin" to="." method="_toggle_pin"]
 [connection signal="pressed" from="HUD/Panel/Content/Actions/Hide" to="." method="_hide_tracker"]
