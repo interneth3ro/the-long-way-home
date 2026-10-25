@@ -43,3 +43,11 @@ Headless checks do not verify graphical appearance.
 Add feature directories and GDScript files when they have a concrete purpose.
 Keep Godot's `.godot/` cache untracked. Use feature branches and pull requests;
 validate affected scenes and scripts before requesting review.
+
+Keep authoritative documentation in `docs/` and generated evidence out of Git;
+the artifact retention and ZIP policies are in [AGENTS.md](AGENTS.md).
+Use [documentation-sync](.agents/skills/documentation-sync/SKILL.md) before PR
+review. After an approved merge, separately request
+[post-merge-cleanup](.agents/skills/post-merge-cleanup/SKILL.md) for that PR number
+from a chat attached to a surviving checkout. Cleanup stops when preservation,
+attachment or Windows lock safety cannot be verified.
