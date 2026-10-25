@@ -12,6 +12,20 @@ create commits/reports, archive chats or touch the former project.
 Use ordinary Git and available read-only tools; do not run old cleanup scripts or
 introduce helpers to bypass an unavailable safety check.
 
+Choose and record one cleanup case before mutation:
+
+- **Case A: Feature worktree exists.** Apply all worktree identity, preservation,
+  session-attachment, Windows handle-inspection and safe retirement gates below.
+- **Case B: No feature worktree exists.** Require reliable development/session
+  history establishing that no separate feature worktree was created, corroborated
+  by current worktree registrations and checks that no associated residual
+  directory exists. An empty registration list for the feature, a missing path or
+  unknown history alone is insufficient. Uncertainty blocks cleanup; never create
+  a worktree to satisfy these checks. Worktree retirement and directory-specific
+  handle inspection are not applicable. Retain every PR, incorporation, fresh
+  local/remote branch-tip, clean-state, preservation, fast-forward-only, guarded
+  branch-deletion and conversation archival reporting requirement below.
+
 ## Establish identity before mutation
 
 1. Retrieve live GitHub PR URL/number, merged status/time, base/head repositories,
@@ -21,8 +35,9 @@ introduce helpers to bypass an unavailable safety check.
    Reject `main` or any protected/default branch as a feature retirement target.
 2. Resolve canonical absolute Git roots/common directories and
    `git worktree list --porcelain`. Identify the surviving primary checkout on
-   `main` and the exact feature branch/worktree by registered branch **and** HEAD,
-   not its directory name. Verify both roots share the expected common directory.
+   `main` and the exact feature branch. In Case A identify the feature worktree by
+   registered branch **and** HEAD, not its directory name; verify both roots share
+   the expected common directory. In Case B verify that no worktree uses the branch.
    Resolve path casing and aliases on Windows; uncertain links or root overlap stop.
    Verify origin fetch and push URLs identify this repository; check fetch refspecs
    and configuration for unexpected ref updates/pruning. Do not touch unrelated
@@ -30,13 +45,14 @@ introduce helpers to bypass an unavailable safety check.
 3. Establish the requesting chat's current attached checkout using supported
    current-chat metadata; historical artifact lists, shell cwd and command
    `workdir` are insufficient. If metadata is unavailable, stop for the owner's
-   explicit confirmation of this chat's exact attached checkout. Require it outside
+   explicit confirmation of this chat's exact attached checkout. Require this chat
+   at the verified surviving primary checkout in Case B. In Case A require it outside
    the retiring root (and its descendants). If self-attached, retain everything
    and request cleanup from a chat based at the verified surviving primary checkout.
    Changing shell cwd does not relocate the chat or persistent MCP/REPL servers.
 4. Record local/live `main` and feature tips plus relevant preservation refs.
    Every surviving feature tip must equal the historical PR head. A changed/reused
-   branch, ambiguous detached checkout, locked/missing registration or inaccessible
+   branch, ambiguous detached checkout, locked/missing expected registration or inaccessible
    path blocks retirement. If targets are already absent, verify historical identity
    and actual absence; do not recreate them. An unregistered residual directory is
    a blocker, not an absent-success case. Do not guess its ownership or prune it.
@@ -52,8 +68,9 @@ introduce helpers to bypass an unavailable safety check.
    diffs**. Merge-commit ancestry alone does not prove squash/rebase equivalence.
    Explain conflict resolutions and later changes; stop retirement for unavailable
    history, unexplained differences or reverted/absent work. Never undo later edits.
-6. Require clean tracked state in both affected checkouts, no in-progress Git
-   operations, and local `main` equal to or an ancestor of fetched `origin/main`.
+6. Require clean tracked state in every affected checkout (the primary only in
+   Case B), no in-progress Git operations, and local `main` equal to or an ancestor
+   of fetched `origin/main`.
    Inspect the incoming diff and exact destination paths/ancestors for untracked
    or ignored collisions and protected local assets, settings, saves and evidence.
    Git can overwrite ignored files: a clean tracked status is insufficient.
@@ -65,13 +82,18 @@ introduce helpers to bypass an unavailable safety check.
 
 ## Preserve material and establish retirement safety
 
-7. Inspect the feature's untracked and ignored material with compact queries such as
+7. In Case A inspect the feature worktree's untracked and ignored material with
+   compact queries such as
    `git ls-files --others --exclude-standard --directory -z` and the same query
    with `--ignored`. Parse NUL-delimited paths safely. Inspect filesystem entries
    along indexed directories for Git-invisible/empty material, nested repositories,
    submodules, links/junctions and access failures. Git output alone is insufficient.
    Expand only flagged paths needed for a preservation decision; avoid repeated
    whole-tree inventories/hashes. Any unknown material blocks removal.
+   In Case B there is no feature directory to inventory or remove. Preserve all
+   material in the surviving checkout; retain step 6's collision checks and step 8's
+   preservation policy. Do not classify primary material as disposable or create a
+   ZIP merely because a feature branch is being retired.
 8. Preserve saves, source artwork, settings, tools and unverified evidence. Ignore
    status, extensions or cache names (including `.godot/`) prove no disposal right.
    Archive only verified meaningful PR evidence under AGENTS.md's ZIP policy,
@@ -83,19 +105,25 @@ introduce helpers to bypass an unavailable safety check.
    checkout or unknown directory. Stop for clarification on uncertain preservation;
    report retained paths without disclosing private file contents.
 9. Immediately before retirement, require quiescence and fresh chat-attachment,
-   branch/HEAD, registration, tracked-state and material checks. On Windows use an
-   already available read-only handle inspection tool with reliable coverage of
+   branch/HEAD, registration, tracked-state and material checks in both cases.
+   In Case B revalidate the no-worktree evidence and absence of associated residuals;
+   directory-specific handle inspection is not required because no directory is
+   retired. Concurrent writers or uncertain quiescence still block branch retirement.
+   In Case A on Windows use an already available read-only handle inspection tool
+   with reliable coverage of
    the exact root and descendants, including directory cwd owners and relevant
    file handles. Record tool/method, scope, owners and coverage limits in the
    response. Process names or a lack of Git locks do not establish lock safety.
    Known locks, incomplete access/coverage, concurrent writers or unavailable
-   inspection tools stop retirement of the worktree **and branches**. Do not kill
-   processes, close handles remotely or bypass an app removal guard. A non-forced
+   inspection tools stop Case A retirement of the worktree **and branches**.
+   Do not kill processes, close handles remotely or bypass an app removal guard. A non-forced
    Git removal is the final gate, not a substitute for these checks.
 
 ## Retire only verified targets and verify the result
 
-10. From a surviving directory, run `git worktree remove <exact-feature-path>`
+10. In Case B report worktree retirement as not applicable and proceed to step 11
+    only after all applicable gates pass. In Case A, from a surviving directory,
+    run `git worktree remove <exact-feature-path>`
     without force, only after all gates pass. Never remove the primary checkout,
     requesting chat's checkout or a containing directory. On refusal or partial
     removal stop and retain branches; inspect/report registration and residual

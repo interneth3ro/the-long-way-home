@@ -27,6 +27,11 @@
   request cleanup. Never retire the requesting chat's attached checkout.
 - The repository is `interneth3ro/the-long-way-home`; its default branch is `main`.
   Do not merge automatically. Keep changes on focused feature branches.
+- Prefer isolated feature worktrees for implementation tasks and keep the surviving
+  primary checkout on `main` whenever practical. Use the dedicated maintenance
+  conversation for post-merge cleanup. Branch-only workflows remain supported;
+  avoid unnecessary worktrees for trivial or read-only tasks, and never create one
+  solely to satisfy cleanup expectations.
 
 ## Generated files and retention
 
