@@ -126,3 +126,26 @@ Report PR/merge/head identity, primary/local/live `main` state, exact worktree a
 branch outcomes, preserved material/archive verification, checks and limitations,
 and any blocker with the action needed to resolve it. Do not generate a separate
 report file. Distinguish completed phases, intentional no-ops and pending work.
+
+## Conversation archival eligibility
+
+Every final cleanup report, including blocked or partial results, must include a
+**Conversation archival eligibility** section. Identify the original feature
+conversation and the separate cleanup conversation; assess each independently
+and explicitly report exactly one of these outcomes for each:
+
+- **Safe to archive:** The original feature PR is merged, its changes are verified
+  as incorporated, the associated feature worktree and local/remote branches are
+  safely retired or verified absent, and no unresolved preservation or session
+  dependencies remain for the conversation being assessed.
+- **Not safe to archive:** Cleanup is incomplete or blocked, or known dependencies
+  remain for the conversation being assessed.
+- **Requires owner review:** Cleanup status or the conversation's identity,
+  attachment or preservation state cannot be established confidently. This
+  includes uncertainty about the original feature conversation even when the
+  separate cleanup conversation's state is known.
+
+Give the evidence and reasoning supporting each result, remaining blockers and
+what would resolve them. Git cleanup success alone does not establish that either
+or both conversations are safe to archive. Never automatically archive
+conversations; the owner makes that decision.
