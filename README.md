@@ -2,9 +2,10 @@
 
 A story-driven science-fiction automation adventure. This fresh Godot project
 has a player movement prototype with camera follow and mouse-wheel zoom, plus a
-minimal environment and collision foundation. A small ship-interior visual pass
-is implemented on `codex/ship-environment-visual-pass`, pending merge. It is
-independent of the previous FactoryGame project.
+minimal ship-interior environment and collision foundation. The first Computer
+inspection interaction is implemented on `codex/first-world-interaction`, pending
+merge and owner runtime verification. It is independent of the previous
+FactoryGame project.
 
 ## Requirements and setup
 
@@ -54,6 +55,12 @@ validation; runtime and engine verification remain unperformed.
   `move_and_slide()`.
 - `scenes/player/follow_camera.gd`: wheel input and bounded zoom transitions using
   a built-in Tween; following uses the child camera's built-in behavior.
+- `scenes/player/interaction_detector.gd`: Dave's proximity selection, solid-body
+  visibility check and interaction requests; attached to an `Area2D` child.
+- `scenes/interaction/world_interactable.gd`: small `StaticBody2D` interface owning
+  availability, prompt and inspection text, exported on the existing console.
+- `scenes/ui/interaction_ui.tscn` and `interaction_ui.gd`: screen-space prompt and
+  dismissible response, instantiated under Dave as a `CanvasLayer`.
 - `docs/GAME_VISION.md`: approved direction and unresolved design questions.
 - `AGENTS.md`: development conventions.
 
@@ -78,7 +85,7 @@ Dave spawns at (0, 0), clear of all collision footprints. Four 32-pixel-thick
 the corners. Three obstacles sit at (-320, -180), (360, 40), and (0, 420), with
 160 × 48, 96 × 64, and 160 × 48 collision footprints respectively. All bodies use
 the default collision layer/mask, matching Dave. Shapes and colored polygon
-visuals are separate children; no additional scripts or assets are needed.
+visuals are separate children; the console also has a small interaction script.
 
 `GroundObjects` enables built-in Y-sorting for Dave and the obstacle roots at the
 same default Z index. Each obstacle root is anchored at the bottom center of its
@@ -90,7 +97,7 @@ There are no camera limits; floor edges can still become visible near the walls.
 Existing movement, camera/zoom, display, rendering, and physics settings are
 preserved.
 
-The pending ship visual pass uses only built-in `Polygon2D` and `Line2D` details.
+The ship visual pass uses only built-in `Polygon2D` and `Line2D` details.
 `ShipDeck` covers x = -656 to 656 and y = -448 to 592, leaving the rest of the test
 floor open. Sixteen inset panels, muted amber route guides and service markings
 frame a clear central walking area. This is a deck section, not a new enclosed
@@ -102,8 +109,9 @@ The existing `WestObstacle` now depicts a damaged computer console with a fractu
 screen, warning indicator, ribbed front and exposed service cable. `EastObstacle`
 depicts a life-support filter unit with a faceted cap, filter window and service
 pipe. `SouthObstacle` depicts a storage workbench with cabinet doors, a work mat,
-loose cover and tool tray. These are noninteractive placeholders; their names
-describe visual intent only and establish no new narrative state or objectives.
+loose cover and tool tray. The console supports temporary inspection on the
+interaction branch; the other fixtures remain noninteractive placeholders.
+These visual identities establish no new narrative state or objectives.
 All fixture details remain under each existing `Visual` child, within its original
 visual bounds, with no individual Z overrides or nested Y-sorting. The three body
 positions, bottom-center anchors and collision shapes are unchanged. Flat deck
@@ -122,6 +130,43 @@ marking readability and clear walking routes at the starting view and both zoom
 bounds. Check that all fixture details occlude together as Dave walks behind and
 in front, and that their visible bases agree with collision contact. No engine,
 runtime or graphical verification was performed for this pass.
+
+The pending interaction requires Dave's collision center to be **at most 120
+world units from the interaction point**, measured as straight-line distance.
+The detector's circle radius in `dave.tscn` supplies this single distance limit.
+A direct physics shape query at Dave's current position finds candidate bodies;
+the explicit point-distance check then rejects candidates beyond the limit.
+Cached `Area2D` overlap monitoring is disabled. It selects the nearest available
+point whose physics ray first hits that target's solid body, excluding Dave.
+The console's point is the center of its existing 160 × 48 footprint: its sides
+and corners are reachable within the limit without changing collision geometry.
+A solid obstacle between Dave and the target blocks the prompt and interaction.
+All proximity, distance and obstruction checks run in the physics callback,
+including before fulfilling an interaction request.
+
+When available, a screen-space **E — Inspect Computer** prompt appears above the
+bottom edge. Physical **E** uses the `interact` Input Map action. A fresh press
+opens the exported temporary inspection text; another E press, **Esc**, or the
+**Close (E / Esc)** button dismisses it. Key echoes are ignored. The prompt is
+hidden during the response and returns on the next physics update if still in
+range. Leaving range hides the prompt; an open response remains until dismissed.
+The UI uses restrained ship colors and stays independent of camera zoom. It does
+not pause movement or zoom and changes no narrative, quest or persistent state.
+Prompt and response text remain editable on the console in `main.tscn`.
+
+Interaction validation is static only: input mapping, resource paths and UID
+sidecars, scene wiring, proximity and ray-query logic, key-echo handling, dismissal
+paths, and unchanged movement/camera scripts and collision geometry. Godot has
+not been executed. Before merging, the owner must approach and leave the console
+from all sides and corners, verify range limits and obstacle occlusion, hold E
+both in and outside range, and test E, Esc and button dismissal. Confirm the
+prompt and response are readable at both zoom bounds, movement and zoom continue
+while inspecting, and the other fixtures remain noninteractive. Engine loading,
+gameplay, input handling and graphical appearance remain unverified.
+For the distance refinement, also check just inside and outside the 120-unit
+point-distance boundary from each accessible direction, including entering and
+leaving while pressing E. Mathematical inspection of the boundary and footprint
+does not establish engine query timing or runtime approach reliability.
 
 Add feature directories and GDScript files when they have a concrete purpose.
 Keep Godot's `.godot/` cache untracked. Use feature branches and pull requests;
