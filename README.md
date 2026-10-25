@@ -1,10 +1,10 @@
 # The Long Way Home
 
 A story-driven science-fiction automation adventure. This fresh Godot project
-has a player movement prototype with camera follow and mouse-wheel zoom. A minimal
-environment and collision foundation is implemented on
-`codex/environment-foundation`, pending merge. It is independent of the
-previous FactoryGame project.
+has a player movement prototype with camera follow and mouse-wheel zoom, plus a
+minimal environment and collision foundation. A small ship-interior visual pass
+is implemented on `codex/ship-environment-visual-pass`, pending merge. It is
+independent of the previous FactoryGame project.
 
 ## Requirements and setup
 
@@ -45,8 +45,9 @@ validation; runtime and engine verification remain unperformed.
 ## Layout and development
 
 - `project.godot`: engine settings and main-scene entry point.
-- `scenes/main/main.tscn`: primitive test floor, four static perimeter walls, and a
-  Y-sorted group containing three static obstacles and an instance of Dave.
+- `scenes/main/main.tscn`: primitive test floor, a central ship-deck composition,
+  four static perimeter walls, and a Y-sorted group containing three static
+  obstacles with ship-fixture visuals and an instance of Dave.
 - `scenes/player/dave.tscn`: reusable `CharacterBody2D`, a collision shape, a
   `Camera2D` child, and a separate `Visual` child containing placeholder polygons.
 - `scenes/player/dave.gd`: movement through `_physics_process()` and
@@ -89,6 +90,25 @@ There are no camera limits; floor edges can still become visible near the walls.
 Existing movement, camera/zoom, display, rendering, and physics settings are
 preserved.
 
+The pending ship visual pass uses only built-in `Polygon2D` and `Line2D` details.
+`ShipDeck` covers x = -656 to 656 and y = -448 to 592, leaving the rest of the test
+floor open. Sixteen inset panels, muted amber route guides and service markings
+frame a clear central walking area. This is a deck section, not a new enclosed
+room; the original distant perimeter remains the only boundary collision.
+Blue-teal housings, pale metal edges and restrained amber/coral accents form a
+temporary palette, not production artwork or a lighting system.
+
+The existing `WestObstacle` now depicts a damaged computer console with a fractured
+screen, warning indicator, ribbed front and exposed service cable. `EastObstacle`
+depicts a life-support filter unit with a faceted cap, filter window and service
+pipe. `SouthObstacle` depicts a storage workbench with cabinet doors, a work mat,
+loose cover and tool tray. These are noninteractive placeholders; their names
+describe visual intent only and establish no new narrative state or objectives.
+All fixture details remain under each existing `Visual` child, within its original
+visual bounds, with no individual Z overrides or nested Y-sorting. The three body
+positions, bottom-center anchors and collision shapes are unchanged. Flat deck
+details are outside `GroundObjects`, drawn before it at the default Z index.
+
 Validation for this feature is static only: scene/resource references, rectangle
 placement, spawn clearance, Y-sorting hierarchy, unchanged scripts/settings,
 documentation links, and Git diff checks. Godot has not been executed; engine
@@ -97,6 +117,11 @@ merging, the owner should manually check all four walls and corners, walk around
 each obstacle from every direction, slide along its edges, and confirm Dave
 appears behind its upper visual and in front below its anchor. Also verify camera
 follow and mouse-wheel zoom throughout the area, including both zoom bounds.
+For the ship visual pass, also assess the palette, fixture recognition, floor
+marking readability and clear walking routes at the starting view and both zoom
+bounds. Check that all fixture details occlude together as Dave walks behind and
+in front, and that their visible bases agree with collision contact. No engine,
+runtime or graphical verification was performed for this pass.
 
 Add feature directories and GDScript files when they have a concrete purpose.
 Keep Godot's `.godot/` cache untracked. Use feature branches and pull requests;
