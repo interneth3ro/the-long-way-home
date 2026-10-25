@@ -1,8 +1,14 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=14 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/player/dave.tscn" id="1_dave"]
 [ext_resource type="Script" uid="uid://dltwhinteract1" path="res://scenes/interaction/world_interactable.gd" id="2_interactable"]
 [ext_resource type="Resource" path="res://dialogue/computer_opening.tres" id="3_conversation"]
+[ext_resource type="Script" uid="uid://cltwhmain001" path="res://scenes/main/main.gd" id="4_main"]
+[ext_resource type="Script" uid="uid://cltwhobjctrl1" path="res://objectives/objective_controller.gd" id="5_objectives"]
+[ext_resource type="Resource" path="res://objectives/investigate_computer_demo.tres" id="6_demo"]
+[ext_resource type="PackedScene" path="res://scenes/ui/objective_tracker.tscn" id="7_tracker"]
+[ext_resource type="Script" uid="uid://cltwhobjdemo1" path="res://objectives/objective_demo.gd" id="8_demo_input"]
+[ext_resource type="Script" uid="uid://cltwhobjdef01" path="res://objectives/objective_definition.gd" id="9_definition"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_horizontal_wall"]
 size = Vector2(4160, 32)
@@ -17,6 +23,7 @@ size = Vector2(160, 48)
 size = Vector2(96, 64)
 
 [node name="Main" type="Node2D"]
+script = ExtResource("4_main")
 
 [node name="Background" type="Polygon2D" parent="."]
 polygon = PackedVector2Array(-2048, -1536, 2048, -1536, 2048, 1536, -2048, 1536)
@@ -346,3 +353,13 @@ width = 4.0
 default_color = Color(0.77, 0.54, 0.28, 1)
 
 [node name="Dave" parent="GroundObjects" instance=ExtResource("1_dave")]
+
+[node name="ObjectiveController" type="Node" parent="."]
+script = ExtResource("5_objectives")
+definitions = Array[ExtResource("9_definition")]([ExtResource("6_demo")])
+
+[node name="ObjectiveTracker" parent="." instance=ExtResource("7_tracker")]
+
+[node name="ObjectiveDemo" type="Node" parent="." node_paths=PackedStringArray("controller")]
+script = ExtResource("8_demo_input")
+controller = NodePath("../ObjectiveController")

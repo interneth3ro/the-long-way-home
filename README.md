@@ -2,10 +2,10 @@
 
 A story-driven science-fiction automation adventure. This fresh Godot project
 has a player movement prototype with camera follow and mouse-wheel zoom, plus a
-minimal ship-interior environment and collision foundation. The first data-driven
-Computer dialogue is implemented on `codex/first-data-driven-dialogue`, pending
-merge and owner runtime verification, building on the existing inspection
-interaction. It is independent of the previous FactoryGame project.
+minimal ship-interior environment and collision foundation, plus data-driven
+Computer dialogue and inspection. The minimal objective foundation on
+`codex/objective-foundation` is pending merge and owner runtime verification.
+It is independent of the previous FactoryGame project.
 
 ## Requirements and setup
 
@@ -65,6 +65,11 @@ validation; runtime and engine verification remain unperformed.
   Resources, with temporary opening content in `computer_opening.tres`.
 - `scenes/ui/dialogue_ui.tscn` and `dialogue_ui.gd`: reusable screen-space
   dialogue presentation and active entry position, instantiated under Dave.
+- `objectives/`: editable objective definitions, scene-local state controller,
+  and an isolated development-only input adapter with temporary demo content.
+- `scenes/ui/objective_tracker.tscn` and `objective_tracker.gd`: screen-space
+  objective data presentation and pin/hide preferences.
+- `scenes/main/main.gd`: local objective state-signal wiring to the tracker.
 - `docs/GAME_VISION.md`: approved direction and unresolved design questions.
 - `AGENTS.md`: development conventions.
 
@@ -113,8 +118,8 @@ The existing `WestObstacle` now depicts a damaged computer console with a fractu
 screen, warning indicator, ribbed front and exposed service cable. `EastObstacle`
 depicts a life-support filter unit with a faceted cap, filter window and service
 pipe. `SouthObstacle` depicts a storage workbench with cabinet doors, a work mat,
-loose cover and tool tray. The console supports temporary dialogue on the
-dialogue branch with inspection fallback; the other fixtures remain noninteractive
+loose cover and tool tray. The console supports temporary dialogue with
+inspection fallback; the other fixtures remain noninteractive
 placeholders.
 These visual identities establish no new narrative state or objectives.
 All fixture details remain under each existing `Visual` child, within its original
@@ -173,7 +178,8 @@ in `dialogue/computer_opening.tres`, assigned through the console's exported
 a conversation. Empty IDs, speakers/text, null entries and duplicate entry IDs
 make a conversation invalid. The three opening lines are temporary content, not
 finalized narrative canon. The console's existing inspection response is retained.
-No objectives, choices, narrative flags, log or save system are implemented.
+Dialogue does not change objective state. No choices, narrative flags, log or save
+system are implemented.
 
 Dialogue validation is static only: resource paths and UID sidecars, typed exports,
 nonempty content and unique IDs, scene/UI wiring, input flow, completion versus
@@ -188,6 +194,60 @@ at both zoom bounds. Temporarily clear the console's conversation reference (and
 separately assign invalid content) to verify inspection fallback, then restore it.
 Also verify range boundaries, approach from all sides/corners, obstruction,
 inspection dismissal and the other fixtures remaining noninteractive.
+
+## Objective foundation (feature branch, pending merge)
+
+`ObjectiveDefinition` exports a stable `objective_id`, short `title` and multiline
+`description`, editable through `.tres` resources. Treat definitions as read-only
+content during play; activation and completion are never stored in Resources.
+`ObjectiveController` owns one dictionary of runtime states: `INACTIVE`, `ACTIVE`
+and `COMPLETED`. `activate_objective(id)` accepts only inactive objectives;
+`complete_objective(id)` accepts only active objectives. Both return `true` only
+for a transition and emit `objective_state_changed(id, state)` once. Unknown IDs,
+repeated calls and invalid transitions return `false` without an emission.
+`get_objective_state(id)` returns the state, or `-1` for an unknown/rejected ID.
+Null/invalid definitions are ignored; duplicate valid IDs are rejected entirely.
+Completed objectives cannot reactivate. State resets on scene reload.
+
+The main scene wires the controller signal to `ObjectiveTracker.show_objective()`.
+The first active definition in exported list order is shown; completing it reveals
+the next active definition, if any. There is no separate current-objective state.
+The tracker only reads supplied content and owns presentation preferences; it
+never activates or completes objectives. No autoload, dialogue dependency, Dave
+controller changes, persistence or quest graph are introduced.
+
+The tracker occupies the top right of its own `CanvasLayer`, using the existing
+ship UI palette. It is independent of camera zoom, above the bottom dialogue and
+inspection region at the configured 1280 × 720 viewport. **Pin** selects pinned
+mode; **Unpin** returns to contextual mode. In this foundation both modes stay
+visible while an objective is active; there is no timed fade or extra contextual
+suppression rule. **Hide** conceals the panel and leaves **Show objective** in its
+place; restoring returns to contextual mode. Preferences survive supplied-data
+changes within the scene, so hidden stays hidden until restored. With no active
+objective neither the panel nor restore button is shown, even when pinned.
+
+For owner manual testing in a debug build, physical **J** activates the temporary
+`demo_investigate_computer` objective; physical **K** completes it. Key repeats
+and modified key presses are ignored. These keys do not overlap the current
+movement, interaction, zoom or UI controls and add no project Input Map entries.
+The objective starts inactive. Its temporary title is **Investigate Computer**;
+its description is **Examine the damaged ship's Computer console.** This is demo
+content only, independent of Computer's dialogue and inspection. The isolated
+`ObjectiveDemo` node is disabled outside debug builds. Remove that node, its
+`objective_demo.gd` script/UID, and the demo resource/list assignment when replacing
+the demonstration with narrative integration. No debug menu or console is added.
+
+Validation is static only: resource references, script UID sidecars, transition
+guards, signal wiring, pin/hide/restore paths, UI anchors, documentation links,
+preserved gameplay/settings and Git diff checks. Godot was not executed; engine
+loading, runtime input, text wrapping and graphical behavior remain unverified.
+Before merging, the owner must activate with J, try repeated/held J, test Pin,
+Unpin, Hide and Show objective, then complete with K and repeat it. Try K before
+activation and J after completion (both must have no effect); reload the scene
+to repeat the demo. Check the tracker at zoom 0.75 and 1.5, with dialogue and
+inspection open, and confirm existing movement, interactions, dismissal and
+wheel zoom still work. Unknown IDs, duplicate definitions and signal counts
+require owner-authorized runtime API verification; they were inspected statically.
 
 Add feature directories and GDScript files when they have a concrete purpose.
 Keep Godot's `.godot/` cache untracked. Use feature branches and pull requests;
