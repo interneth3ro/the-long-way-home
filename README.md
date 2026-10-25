@@ -2,10 +2,10 @@
 
 A story-driven science-fiction automation adventure. This fresh Godot project
 has a player movement prototype with camera follow and mouse-wheel zoom, plus a
-minimal ship-interior environment and collision foundation. The first Computer
-inspection interaction is implemented on `codex/first-world-interaction`, pending
-merge and owner runtime verification. It is independent of the previous
-FactoryGame project.
+minimal ship-interior environment and collision foundation. The first data-driven
+Computer dialogue is implemented on `codex/first-data-driven-dialogue`, pending
+merge and owner runtime verification, building on the existing inspection
+interaction. It is independent of the previous FactoryGame project.
 
 ## Requirements and setup
 
@@ -58,9 +58,13 @@ validation; runtime and engine verification remain unperformed.
 - `scenes/player/interaction_detector.gd`: Dave's proximity selection, solid-body
   visibility check and interaction requests; attached to an `Area2D` child.
 - `scenes/interaction/world_interactable.gd`: small `StaticBody2D` interface owning
-  availability, prompt and inspection text, exported on the existing console.
+  availability, prompt, optional conversation and fallback inspection text.
 - `scenes/ui/interaction_ui.tscn` and `interaction_ui.gd`: screen-space prompt and
   dismissible response, instantiated under Dave as a `CanvasLayer`.
+- `dialogue/`: Inspector-editable `DialogueConversation` and `DialogueEntry`
+  Resources, with temporary opening content in `computer_opening.tres`.
+- `scenes/ui/dialogue_ui.tscn` and `dialogue_ui.gd`: reusable screen-space
+  dialogue presentation and active entry position, instantiated under Dave.
 - `docs/GAME_VISION.md`: approved direction and unresolved design questions.
 - `AGENTS.md`: development conventions.
 
@@ -109,8 +113,9 @@ The existing `WestObstacle` now depicts a damaged computer console with a fractu
 screen, warning indicator, ribbed front and exposed service cable. `EastObstacle`
 depicts a life-support filter unit with a faceted cap, filter window and service
 pipe. `SouthObstacle` depicts a storage workbench with cabinet doors, a work mat,
-loose cover and tool tray. The console supports temporary inspection on the
-interaction branch; the other fixtures remain noninteractive placeholders.
+loose cover and tool tray. The console supports temporary dialogue on the
+dialogue branch with inspection fallback; the other fixtures remain noninteractive
+placeholders.
 These visual identities establish no new narrative state or objectives.
 All fixture details remain under each existing `Visual` child, within its original
 visual bounds, with no individual Z overrides or nested Y-sorting. The three body
@@ -131,7 +136,7 @@ bounds. Check that all fixture details occlude together as Dave walks behind and
 in front, and that their visible bases agree with collision contact. No engine,
 runtime or graphical verification was performed for this pass.
 
-The pending interaction requires Dave's collision center to be **at most 120
+The interaction requires Dave's collision center to be **at most 120
 world units from the interaction point**, measured as straight-line distance.
 The detector's circle radius in `dave.tscn` supplies this single distance limit.
 A direct physics shape query at Dave's current position finds candidate bodies;
@@ -144,29 +149,45 @@ A solid obstacle between Dave and the target blocks the prompt and interaction.
 All proximity, distance and obstruction checks run in the physics callback,
 including before fulfilling an interaction request.
 
-When available, a screen-space **E — Inspect Computer** prompt appears above the
-bottom edge. Physical **E** uses the `interact` Input Map action. A fresh press
-opens the exported temporary inspection text; another E press, **Esc**, or the
-**Close (E / Esc)** button dismisses it. Key echoes are ignored. The prompt is
-hidden during the response and returns on the next physics update if still in
-range. Leaving range hides the prompt; an open response remains until dismissed.
-The UI uses restrained ship colors and stays independent of camera zoom. It does
-not pause movement or zoom and changes no narrative, quest or persistent state.
-Prompt and response text remain editable on the console in `main.tscn`.
+When available, a screen-space **E — Talk to Computer** prompt appears. Physical
+**E** uses the existing `interact` action. The detector routes a valid conversation
+to DialogueUI; an absent or invalid conversation falls back to inspection text.
+An interactable is available when enabled and either content source is valid.
+Inspection still closes with E, Esc or its Close button. Only one panel opens at
+a time; new interactions and contextual prompts are suppressed during dialogue.
 
-Interaction validation is static only: input mapping, resource paths and UID
-sidecars, scene wiring, proximity and ray-query logic, key-echo handling, dismissal
-paths, and unchanged movement/camera scripts and collision geometry. Godot has
-not been executed. Before merging, the owner must approach and leave the console
-from all sides and corners, verify range limits and obstacle occlusion, hold E
-both in and outside range, and test E, Esc and button dismissal. Confirm the
-prompt and response are readable at both zoom bounds, movement and zoom continue
-while inspecting, and the other fixtures remain noninteractive. Engine loading,
-gameplay, input handling and graphical appearance remain unverified.
-For the distance refinement, also check just inside and outside the 120-unit
-point-distance boundary from each accessible direction, including entering and
-leaving while pressing E. Mathematical inspection of the boundary and footprint
-does not establish engine query timing or runtime approach reliability.
+A fresh E press or **Next** advances entries in order. On the last entry,
+**Finish** or E completes the conversation; **Dismiss** or Esc closes it without
+completion. DialogueUI emits distinct completion and dismissal signals, clears
+its active position on close and starts at the first entry on reinteraction.
+No persistent state is recorded. Key echoes are ignored, and opening is deferred
+to the physics callback so the opening key event cannot advance the first entry.
+Leaving range does not close either panel. Movement and wheel zoom continue;
+the screen-space UI does not pause the game or follow camera zoom.
+
+Content ownership stays separate from presentation: `DialogueConversation` exports
+a stable `conversation_id` and ordered `Array[DialogueEntry]`; each entry exports
+`entry_id`, `speaker_id`, `speaker_display_name` and multiline `text`. Edit these
+in `dialogue/computer_opening.tres`, assigned through the console's exported
+`conversation` property in `main.tscn`. Keep IDs stable and entry IDs unique within
+a conversation. Empty IDs, speakers/text, null entries and duplicate entry IDs
+make a conversation invalid. The three opening lines are temporary content, not
+finalized narrative canon. The console's existing inspection response is retained.
+No objectives, choices, narrative flags, log or save system are implemented.
+
+Dialogue validation is static only: resource paths and UID sidecars, typed exports,
+nonempty content and unique IDs, scene/UI wiring, input flow, completion versus
+dismissal, inspection fallback and preserved range/obstruction logic. Movement,
+camera, collision, rendering and project settings are unchanged. Godot was not
+executed; engine loading, runtime input and graphical behavior remain unverified.
+Before merging, the owner must manually check all three speakers/lines in order,
+E and Next/Finish, Esc and Dismiss, held E without skipped entries or automatic
+reopening, reinteraction starting at the first entry, and leaving range while
+open. Check prompt suppression, movement and zoom during dialogue and readability
+at both zoom bounds. Temporarily clear the console's conversation reference (and
+separately assign invalid content) to verify inspection fallback, then restore it.
+Also verify range boundaries, approach from all sides/corners, obstruction,
+inspection dismissal and the other fixtures remaining noninteractive.
 
 Add feature directories and GDScript files when they have a concrete purpose.
 Keep Godot's `.godot/` cache untracked. Use feature branches and pull requests;

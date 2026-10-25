@@ -1,7 +1,8 @@
-[gd_scene load_steps=7 format=3]
+[gd_scene load_steps=8 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/player/dave.tscn" id="1_dave"]
 [ext_resource type="Script" uid="uid://dltwhinteract1" path="res://scenes/interaction/world_interactable.gd" id="2_interactable"]
+[ext_resource type="Resource" path="res://dialogue/computer_opening.tres" id="3_conversation"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_horizontal_wall"]
 size = Vector2(4160, 32)
@@ -171,8 +172,9 @@ y_sort_enabled = true
 [node name="WestObstacle" type="StaticBody2D" parent="GroundObjects"]
 position = Vector2(-320, -180)
 script = ExtResource("2_interactable")
-interaction_prompt = "E — Inspect Computer"
+interaction_prompt = "E — Talk to Computer"
 inspection_response = "Computer's primary systems are offline. The console has sustained significant damage."
+conversation = ExtResource("3_conversation")
 interaction_point = Vector2(0, -24)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="GroundObjects/WestObstacle"]
