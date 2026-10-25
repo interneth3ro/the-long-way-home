@@ -1,6 +1,7 @@
 extends Area2D
 
 @export var interaction_ui: InteractionUI
+@export var dialogue_ui: DialogueUI
 
 @onready var _player: CharacterBody2D = get_parent()
 @onready var _range_shape: CircleShape2D = $CollisionShape2D.shape
@@ -10,15 +11,32 @@ var _interaction_requested: bool = false
 
 
 func _physics_process(_delta: float) -> void:
+	if dialogue_ui.is_conversation_open():
+		_interaction_requested = false
+		interaction_ui.set_prompt("")
+		return
 	_refresh_target()
 	if _interaction_requested:
 		_interaction_requested = false
-		if is_instance_valid(_target):
-			interaction_ui.show_response(_target.interact())
+		if is_instance_valid(_target) and not interaction_ui.is_response_open():
+			if _target.has_valid_conversation():
+				dialogue_ui.show_conversation(_target.conversation)
+				interaction_ui.set_prompt("")
+			else:
+				interaction_ui.show_response(_target.interact())
 
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_echo():
+		return
+	if dialogue_ui.is_conversation_open():
+		if event.is_action_pressed("ui_cancel"):
+			dialogue_ui.dismiss()
+		elif event.is_action_pressed("interact"):
+			dialogue_ui.advance()
+		else:
+			return
+		get_viewport().set_input_as_handled()
 		return
 	if interaction_ui.is_response_open() and event.is_action_pressed("ui_cancel"):
 		interaction_ui.dismiss_response()
