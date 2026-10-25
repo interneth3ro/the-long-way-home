@@ -1,6 +1,6 @@
 ---
 name: post-merge-cleanup
-description: Safely synchronize main and retire the exact feature worktree and branches for an explicitly requested merged PR number in interneth3ro/the-long-way-home. Stop on uncertain preservation, incorporation, chat attachment or Windows locks.
+description: Safely synchronize main and retire verified feature branches for an explicitly requested merged PR number in interneth3ro/the-long-way-home. Branch-only development is the default; retain all safety gates for historical or explicitly authorized worktrees. Stop on uncertain preservation, incorporation, chat attachment or applicable Windows locks.
 ---
 
 # Post-merge cleanup
@@ -12,11 +12,11 @@ create commits/reports, archive chats or touch the former project.
 Use ordinary Git and available read-only tools; do not run old cleanup scripts or
 introduce helpers to bypass an unavailable safety check.
 
-Choose and record one cleanup case before mutation:
+Choose and record one cleanup case before mutation. Case B is the default expected
+workflow; Case A covers historical worktrees and future worktrees explicitly
+requested by the owner. Never infer the case from the default alone.
 
-- **Case A: Feature worktree exists.** Apply all worktree identity, preservation,
-  session-attachment, Windows handle-inspection and safe retirement gates below.
-- **Case B: No feature worktree exists.** Require reliable development/session
+- **Case B: Branch-only development (default).** Require reliable development/session
   history establishing that no separate feature worktree was created, corroborated
   by current worktree registrations and checks that no associated residual
   directory exists. An empty registration list for the feature, a missing path or
@@ -25,6 +25,8 @@ Choose and record one cleanup case before mutation:
   handle inspection are not applicable. Retain every PR, incorporation, fresh
   local/remote branch-tip, clean-state, preservation, fast-forward-only, guarded
   branch-deletion and conversation archival reporting requirement below.
+- **Case A: Feature worktree exists.** Apply all worktree identity, preservation,
+  session-attachment, Windows handle-inspection and safe retirement gates below.
 
 ## Establish identity before mutation
 
@@ -35,8 +37,10 @@ Choose and record one cleanup case before mutation:
    Reject `main` or any protected/default branch as a feature retirement target.
 2. Resolve canonical absolute Git roots/common directories and
    `git worktree list --porcelain`. Identify the surviving primary checkout on
-   `main` and the exact feature branch. In Case A identify the feature worktree by
-   registered branch **and** HEAD, not its directory name; verify both roots share
+   `main` or, in Case B, still on the exact historical feature branch pending the
+   guarded switch in step 6. Identify that feature branch. In Case A identify the
+   feature worktree by registered branch **and** HEAD, not its directory name;
+   verify both roots share
    the expected common directory. In Case B verify that no worktree uses the branch.
    Resolve path casing and aliases on Windows; uncertain links or root overlap stop.
    Verify origin fetch and push URLs identify this repository; check fetch refspecs
@@ -76,9 +80,18 @@ Choose and record one cleanup case before mutation:
    Git can overwrite ignored files: a clean tracked status is insufficient.
    Do not recursively scan unrelated primary material. Stop on collisions,
    inaccessible paths, links/reparse points or uncertain preservation.
-   From the verified primary checkout already on `main`, run
-   `git merge --ff-only origin/main` (equal tips are a no-op). Never switch the
-   owner's branch, stash, reset or force-update `main` to make this succeed.
+   In Case B, if the primary checkout remains on the verified historical feature
+   branch, the explicit cleanup request authorizes `git switch main` only after
+   all preceding identity, incorporation, attachment and preservation gates pass.
+   Before switching, inspect the feature-to-local-main diff and its exact
+   destination paths/ancestors for the same untracked/ignored collisions and
+   protected material described above. Stop on any preservation uncertainty or
+   switch refusal; never switch an unrelated owner's branch to make cleanup
+   succeed. Recheck clean tracked state and preservation after switching.
+   From the verified primary checkout on `main`, run
+   `git merge --ff-only origin/main` (equal tips are a no-op). Never stash, reset
+   or force-update `main` to make this succeed. Case A still requires the primary
+   checkout already on `main`.
 
 ## Preserve material and establish retirement safety
 
@@ -163,8 +176,9 @@ conversation and the separate cleanup conversation; assess each independently
 and explicitly report exactly one of these outcomes for each:
 
 - **Safe to archive:** The original feature PR is merged, its changes are verified
-  as incorporated, the associated feature worktree and local/remote branches are
-  safely retired or verified absent, and no unresolved preservation or session
+  as incorporated, the local/remote feature branches are safely retired or
+  verified absent, any associated feature worktree is safely retired or verified
+  absent (not applicable in Case B), and no unresolved preservation or session
   dependencies remain for the conversation being assessed.
 - **Not safe to archive:** Cleanup is incomplete or blocked, or known dependencies
   remain for the conversation being assessed.
@@ -174,6 +188,10 @@ and explicitly report exactly one of these outcomes for each:
   separate cleanup conversation's state is known.
 
 Give the evidence and reasoning supporting each result, remaining blockers and
-what would resolve them. Git cleanup success alone does not establish that either
-or both conversations are safe to archive. Never automatically archive
+what would resolve them. In Case B, the feature conversation remaining attached to
+the surviving primary checkout does not itself prevent safe archival once all
+relevant preservation, Git and session dependencies are resolved. Do not require
+directory-specific Windows handle inspection when no directory is retired.
+Git cleanup success alone does not establish that either or both conversations
+are safe to archive. Never automatically archive
 conversations; the owner makes that decision.
