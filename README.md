@@ -1,8 +1,9 @@
 # The Long Way Home
 
 A story-driven science-fiction automation adventure. This fresh Godot project
-has a minimal player movement prototype on `codex/minimal-player-movement`, pending
-merge. It is independent of the previous FactoryGame project.
+has a minimal player movement prototype. Camera follow and mouse-wheel zoom are
+implemented on `codex/camera-follow-zoom`, pending merge. It is independent of the
+previous FactoryGame project.
 
 ## Requirements and setup
 
@@ -44,10 +45,12 @@ validation; runtime and engine verification remain unperformed.
 
 - `project.godot`: engine settings and main-scene entry point.
 - `scenes/main/main.tscn`: static primitive background and an instance of Dave.
-- `scenes/player/dave.tscn`: reusable `CharacterBody2D`, a collision shape, and a
-  separate `Visual` child containing placeholder polygons.
+- `scenes/player/dave.tscn`: reusable `CharacterBody2D`, a collision shape, a
+  `Camera2D` child, and a separate `Visual` child containing placeholder polygons.
 - `scenes/player/dave.gd`: movement through `_physics_process()` and
   `move_and_slide()`.
+- `scenes/player/follow_camera.gd`: wheel input and bounded zoom transitions using
+  a built-in Tween; following uses the child camera's built-in behavior.
 - `docs/GAME_VISION.md`: approved direction and unresolved design questions.
 - `AGENTS.md`: development conventions.
 
@@ -56,10 +59,19 @@ Use **WASD** or the **arrow keys** to move. The Input Map actions are `move_left
 `Input.get_vector()` limits direction length to one, keeping diagonal keyboard
 movement at the same 240 pixels per second as cardinal movement. Dave's local
 origin is his ground-contact position; replace the contents of `Visual` with
-future artwork aligned to that origin without changing the controller.
+future artwork aligned to that origin without changing the controller or camera.
 
-The prototype has no camera, zoom, obstacles, or screen-edge constraints; Dave can
-leave the visible background. Existing display and renderer settings are preserved.
+The camera follows Dave's ground-contact origin independently of `Visual`.
+**Mouse wheel up** zooms in; **mouse wheel down** zooms out, centered on Dave.
+Zoom starts at 1.0, changes its target by 0.1 per wheel press, and is clamped to
+0.75–1.5. These are provisional tuning values in `follow_camera.gd`. Each changed
+target starts a 0.15-second eased Tween from the current zoom; rapid scrolling
+retargets the transition, and repeated input at a bound leaves it running to
+completion. No per-frame zoom callback runs when a transition is idle.
+
+The prototype has no obstacles or configured camera/room limits; Dave can leave
+the background and expose its edges. Existing movement, display, rendering, and
+physics settings are preserved.
 Validation for this feature is static only: source, scene/resource references,
 input consistency, documentation, and Git diff checks. Godot has not been executed;
 runtime movement, engine loading, graphical appearance, and performance remain
