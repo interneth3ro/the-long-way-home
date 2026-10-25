@@ -1,0 +1,91 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" uid="uid://cltwhobjui001" path="res://scenes/ui/objective_tracker.gd" id="1_tracker"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tracker"]
+bg_color = Color(0.045, 0.075, 0.10, 0.97)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.47, 0.61, 0.60, 1)
+content_margin_left = 16.0
+content_margin_top = 12.0
+content_margin_right = 16.0
+content_margin_bottom = 12.0
+
+[node name="ObjectiveTracker" type="CanvasLayer"]
+script = ExtResource("1_tracker")
+
+[node name="HUD" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Panel" type="PanelContainer" parent="HUD"]
+visible = false
+layout_mode = 0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -376.0
+offset_top = 24.0
+offset_right = -24.0
+grow_horizontal = 0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_tracker")
+
+[node name="Content" type="VBoxContainer" parent="HUD/Panel"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 10
+
+[node name="Title" type="Label" parent="HUD/Panel/Content"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.85, 0.66, 1)
+theme_override_font_sizes/font_size = 20
+autowrap_mode = 3
+
+[node name="Description" type="Label" parent="HUD/Panel/Content"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.88, 0.94, 0.93, 1)
+theme_override_font_sizes/font_size = 18
+autowrap_mode = 3
+
+[node name="Actions" type="HBoxContainer" parent="HUD/Panel/Content"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 12
+
+[node name="Pin" type="Button" parent="HUD/Panel/Content/Actions"]
+layout_mode = 2
+size_flags_horizontal = 3
+focus_mode = 0
+tooltip_text = "Keep the active objective pinned; click Unpin to return to contextual mode."
+text = "Pin"
+
+[node name="Hide" type="Button" parent="HUD/Panel/Content/Actions"]
+layout_mode = 2
+size_flags_horizontal = 3
+focus_mode = 0
+text = "Hide"
+
+[node name="Restore" type="Button" parent="HUD"]
+visible = false
+layout_mode = 0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -192.0
+offset_top = 24.0
+offset_right = -24.0
+offset_bottom = 60.0
+grow_horizontal = 0
+focus_mode = 0
+text = "Show objective"
+
+[connection signal="pressed" from="HUD/Panel/Content/Actions/Pin" to="." method="_toggle_pin"]
+[connection signal="pressed" from="HUD/Panel/Content/Actions/Hide" to="." method="_hide_tracker"]
+[connection signal="pressed" from="HUD/Restore" to="." method="_restore_tracker"]
