@@ -1,21 +1,298 @@
-[gd_scene format=3]
+[gd_scene load_steps=15 format=3]
 
-[node name="Main" type="Control"]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+[ext_resource type="PackedScene" path="res://scenes/player/dave.tscn" id="1"]
 
-[node name="Title" type="Label" parent="."]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_font_sizes/font_size = 36
-text = "The Long Way Home"
-horizontal_alignment = 1
-vertical_alignment = 1
+[sub_resource type="RectangleShape2D" id="Shape0"]
+size = Vector2(1600, 24)
+
+[sub_resource type="RectangleShape2D" id="Shape1"]
+size = Vector2(1600, 24)
+
+[sub_resource type="RectangleShape2D" id="Shape2"]
+size = Vector2(24, 952)
+
+[sub_resource type="RectangleShape2D" id="Shape3"]
+size = Vector2(24, 952)
+
+[sub_resource type="RectangleShape2D" id="Shape4"]
+size = Vector2(32, 350)
+
+[sub_resource type="RectangleShape2D" id="Shape5"]
+size = Vector2(32, 422)
+
+[sub_resource type="RectangleShape2D" id="Shape6"]
+size = Vector2(32, 350)
+
+[sub_resource type="RectangleShape2D" id="Shape7"]
+size = Vector2(32, 422)
+
+[sub_resource type="RectangleShape2D" id="Shape8"]
+size = Vector2(240, 72)
+
+[sub_resource type="RectangleShape2D" id="Shape9"]
+size = Vector2(160, 100)
+
+[sub_resource type="RectangleShape2D" id="Shape10"]
+size = Vector2(180, 90)
+
+[sub_resource type="RectangleShape2D" id="Shape11"]
+size = Vector2(220, 72)
+
+[sub_resource type="RectangleShape2D" id="Shape12"]
+size = Vector2(120, 100)
+
+[node name="Main" type="Node2D"]
+
+[node name="Floor" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(0, 0, 1600, 0, 1600, 1000, 0, 1000)
+color = Color(0.22, 0.26, 0.29, 1)
+
+[node name="Walkway" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(24, 394, 1576, 394, 1576, 534, 24, 534)
+color = Color(0.32, 0.36, 0.37, 1)
+
+[node name="PortThreshold" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(492, 394, 540, 394, 540, 534, 492, 534)
+color = Color(0.56, 0.53, 0.35, 1)
+
+[node name="StarboardThreshold" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(1060, 394, 1108, 394, 1108, 534, 1060, 534)
+color = Color(0.56, 0.53, 0.35, 1)
+
+[node name="PortBayLabel" type="Label" parent="."]
+offset_left = 120.0
+offset_top = 320.0
+theme_override_colors/font_color = Color(0.65, 0.69, 0.7, 1)
+theme_override_font_sizes/font_size = 24
+text = "PORT BAY"
+
+[node name="MidshipLabel" type="Label" parent="."]
+offset_left = 728.0
+offset_top = 320.0
+theme_override_colors/font_color = Color(0.65, 0.69, 0.7, 1)
+theme_override_font_sizes/font_size = 24
+text = "MIDSHIP"
+
+[node name="FlightDeckLabel" type="Label" parent="."]
+offset_left = 1230.0
+offset_top = 320.0
+theme_override_colors/font_color = Color(0.65, 0.69, 0.7, 1)
+theme_override_font_sizes/font_size = 24
+text = "FLIGHT DECK"
+
+[node name="ForwardViewport" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(1160, 40, 1500, 40, 1480, 70, 1180, 70)
+color = Color(0.27, 0.44, 0.5, 1)
+
+[node name="Actors" type="Node2D" parent="."]
+y_sort_enabled = true
+
+[node name="HullNorth" type="StaticBody2D" parent="Actors"]
+position = Vector2(0, 24)
+
+[node name="Collision" type="CollisionShape2D" parent="Actors/HullNorth"]
+position = Vector2(800.0, -12.0)
+shape = SubResource("Shape0")
+
+[node name="Face" type="Polygon2D" parent="Actors/HullNorth"]
+polygon = PackedVector2Array(0, -24, 1600, -24, 1600, 0, 0, 0)
+color = Color(0.16, 0.2, 0.23, 1)
+
+[node name="Top" type="Polygon2D" parent="Actors/HullNorth"]
+polygon = PackedVector2Array(0, -52, 1600, -52, 1600, -28, 0, -28)
+color = Color(0.38, 0.43, 0.47, 1)
+
+[node name="HullSouth" type="StaticBody2D" parent="Actors"]
+position = Vector2(0, 1000)
+
+[node name="Collision" type="CollisionShape2D" parent="Actors/HullSouth"]
+position = Vector2(800.0, -12.0)
+shape = SubResource("Shape1")
+
+[node name="Face" type="Polygon2D" parent="Actors/HullSouth"]
+polygon = PackedVector2Array(0, -24, 1600, -24, 1600, 0, 0, 0)
+color = Color(0.16, 0.2, 0.23, 1)
+
+[node name="Top" type="Polygon2D" parent="Actors/HullSouth"]
+polygon = PackedVector2Array(0, -52, 1600, -52, 1600, -28, 0, -28)
+color = Color(0.38, 0.43, 0.47, 1)
+
+[node name="HullWest" type="StaticBody2D" parent="Actors"]
+position = Vector2(0, 976)
+
+[node name="Collision" type="CollisionShape2D" parent="Actors/HullWest"]
+position = Vector2(12.0, -476.0)
+shape = SubResource("Shape2")
+
+[node name="Face" type="Polygon2D" parent="Actors/HullWest"]
+polygon = PackedVector2Array(0, -952, 24, -952, 24, 0, 0, 0)
+color = Color(0.16, 0.2, 0.23, 1)
+
+[node name="Top" type="Polygon2D" parent="Actors/HullWest"]
+polygon = PackedVector2Array(0, -980, 24, -980, 24, -28, 0, -28)
+color = Color(0.38, 0.43, 0.47, 1)
+
+[node name="HullEast" type="StaticBody2D" parent="Actors"]
+position = Vector2(1576, 976)
+
+[node name="Collision" type="CollisionShape2D" parent="Actors/HullEast"]
+position = Vector2(12.0, -476.0)
+shape = SubResource("Shape3")
+
+[node name="Face" type="Polygon2D" parent="Actors/HullEast"]
+polygon = PackedVector2Array(0, -952, 24, -952, 24, 0, 0, 0)
+color = Color(0.16, 0.2, 0.23, 1)
+
+[node name="Top" type="Polygon2D" parent="Actors/HullEast"]
+polygon = PackedVector2Array(0, -980, 24, -980, 24, -28, 0, -28)
+color = Color(0.38, 0.43, 0.47, 1)
+
+[node name="WestBulkheadNorth" type="StaticBody2D" parent="Actors"]
+position = Vector2(500, 374)
+
+[node name="Collision" type="CollisionShape2D" parent="Actors/WestBulkheadNorth"]
+position = Vector2(16.0, -175.0)
+shape = SubResource("Shape4")
+
+[node name="Face" type="Polygon2D" parent="Actors/WestBulkheadNorth"]
+polygon = PackedVector2Array(0, -350, 32, -350, 32, 0, 0, 0)
+color = Color(0.16, 0.2, 0.23, 1)
+
+[node name="Top" type="Polygon2D" parent="Actors/WestBulkheadNorth"]
+polygon = PackedVector2Array(0, -378, 32, -378, 32, -28, 0, -28)
+color = Color(0.38, 0.43, 0.47, 1)
+
+[node name="WestBulkheadSouth" type="StaticBody2D" parent="Actors"]
+position = Vector2(500, 976)
+
+[node name="Collision" type="CollisionShape2D" parent="Actors/WestBulkheadSouth"]
+position = Vector2(16.0, -211.0)
+shape = SubResource("Shape5")
+
+[node name="Face" type="Polygon2D" parent="Actors/WestBulkheadSouth"]
+polygon = PackedVector2Array(0, -422, 32, -422, 32, 0, 0, 0)
+color = Color(0.16, 0.2, 0.23, 1)
+
+[node name="Top" type="Polygon2D" parent="Actors/WestBulkheadSouth"]
+polygon = PackedVector2Array(0, -450, 32, -450, 32, -28, 0, -28)
+color = Color(0.38, 0.43, 0.47, 1)
+
+[node name="EastBulkheadNorth" type="StaticBody2D" parent="Actors"]
+position = Vector2(1068, 374)
+
+[node name="Collision" type="CollisionShape2D" parent="Actors/EastBulkheadNorth"]
+position = Vector2(16.0, -175.0)
+shape = SubResource("Shape6")
+
+[node name="Face" type="Polygon2D" parent="Actors/EastBulkheadNorth"]
+polygon = PackedVector2Array(0, -350, 32, -350, 32, 0, 0, 0)
+color = Color(0.16, 0.2, 0.23, 1)
+
+[node name="Top" type="Polygon2D" parent="Actors/EastBulkheadNorth"]
+polygon = PackedVector2Array(0, -378, 32, -378, 32, -28, 0, -28)
+color = Color(0.38, 0.43, 0.47, 1)
+
+[node name="EastBulkheadSouth" type="StaticBody2D" parent="Actors"]
+position = Vector2(1068, 976)
+
+[node name="Collision" type="CollisionShape2D" parent="Actors/EastBulkheadSouth"]
+position = Vector2(16.0, -211.0)
+shape = SubResource("Shape7")
+
+[node name="Face" type="Polygon2D" parent="Actors/EastBulkheadSouth"]
+polygon = PackedVector2Array(0, -422, 32, -422, 32, 0, 0, 0)
+color = Color(0.16, 0.2, 0.23, 1)
+
+[node name="Top" type="Polygon2D" parent="Actors/EastBulkheadSouth"]
+polygon = PackedVector2Array(0, -450, 32, -450, 32, -28, 0, -28)
+color = Color(0.38, 0.43, 0.47, 1)
+
+[node name="PortBench" type="StaticBody2D" parent="Actors"]
+position = Vector2(80, 252)
+
+[node name="Collision" type="CollisionShape2D" parent="Actors/PortBench"]
+position = Vector2(120.0, -36.0)
+shape = SubResource("Shape8")
+
+[node name="Face" type="Polygon2D" parent="Actors/PortBench"]
+polygon = PackedVector2Array(0, -72, 240, -72, 240, 0, 0, 0)
+color = Color(0.16, 0.2, 0.23, 1)
+
+[node name="Top" type="Polygon2D" parent="Actors/PortBench"]
+polygon = PackedVector2Array(0, -100, 240, -100, 240, -28, 0, -28)
+color = Color(0.43, 0.49, 0.5, 1)
+
+[node name="PortLocker" type="StaticBody2D" parent="Actors"]
+position = Vector2(80, 820)
+
+[node name="Collision" type="CollisionShape2D" parent="Actors/PortLocker"]
+position = Vector2(80.0, -50.0)
+shape = SubResource("Shape9")
+
+[node name="Face" type="Polygon2D" parent="Actors/PortLocker"]
+polygon = PackedVector2Array(0, -100, 160, -100, 160, 0, 0, 0)
+color = Color(0.16, 0.2, 0.23, 1)
+
+[node name="Top" type="Polygon2D" parent="Actors/PortLocker"]
+polygon = PackedVector2Array(0, -128, 160, -128, 160, -28, 0, -28)
+color = Color(0.43, 0.49, 0.5, 1)
+
+[node name="CentralTable" type="StaticBody2D" parent="Actors"]
+position = Vector2(710, 740)
+
+[node name="Collision" type="CollisionShape2D" parent="Actors/CentralTable"]
+position = Vector2(90.0, -45.0)
+shape = SubResource("Shape10")
+
+[node name="Face" type="Polygon2D" parent="Actors/CentralTable"]
+polygon = PackedVector2Array(0, -90, 180, -90, 180, 0, 0, 0)
+color = Color(0.16, 0.2, 0.23, 1)
+
+[node name="Top" type="Polygon2D" parent="Actors/CentralTable"]
+polygon = PackedVector2Array(0, -118, 180, -118, 180, -28, 0, -28)
+color = Color(0.43, 0.49, 0.5, 1)
+
+[node name="StarboardConsole" type="StaticBody2D" parent="Actors"]
+position = Vector2(1260, 252)
+
+[node name="Collision" type="CollisionShape2D" parent="Actors/StarboardConsole"]
+position = Vector2(110.0, -36.0)
+shape = SubResource("Shape11")
+
+[node name="Face" type="Polygon2D" parent="Actors/StarboardConsole"]
+polygon = PackedVector2Array(0, -72, 220, -72, 220, 0, 0, 0)
+color = Color(0.16, 0.2, 0.23, 1)
+
+[node name="Top" type="Polygon2D" parent="Actors/StarboardConsole"]
+polygon = PackedVector2Array(0, -100, 220, -100, 220, -28, 0, -28)
+color = Color(0.43, 0.49, 0.5, 1)
+
+[node name="StarboardLocker" type="StaticBody2D" parent="Actors"]
+position = Vector2(1360, 820)
+
+[node name="Collision" type="CollisionShape2D" parent="Actors/StarboardLocker"]
+position = Vector2(60.0, -50.0)
+shape = SubResource("Shape12")
+
+[node name="Face" type="Polygon2D" parent="Actors/StarboardLocker"]
+polygon = PackedVector2Array(0, -100, 120, -100, 120, 0, 0, 0)
+color = Color(0.16, 0.2, 0.23, 1)
+
+[node name="Top" type="Polygon2D" parent="Actors/StarboardLocker"]
+polygon = PackedVector2Array(0, -128, 120, -128, 120, -28, 0, -28)
+color = Color(0.43, 0.49, 0.5, 1)
+
+[node name="Dave" parent="Actors" instance=ExtResource("1")]
+position = Vector2(800, 464)
+
+[node name="HUD" type="CanvasLayer" parent="."]
+
+[node name="Controls" type="Label" parent="HUD"]
+offset_left = 24.0
+offset_top = 16.0
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 20
+text = "THE LONG WAY HOME  /  SHIP GREYBOX
+Dave: WASD or arrow keys    Zoom: Q / E or - / ="
