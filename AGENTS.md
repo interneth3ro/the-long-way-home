@@ -51,11 +51,28 @@
   request cleanup. Never retire the requesting chat's attached checkout.
 - The repository is `interneth3ro/the-long-way-home`; its default branch is `main`.
   Do not merge automatically. Keep changes on focused feature branches.
-- Prefer isolated feature worktrees for implementation tasks and keep the surviving
-  primary checkout on `main` whenever practical. Use the dedicated maintenance
-  conversation for post-merge cleanup. Branch-only workflows remain supported;
-  avoid unnecessary worktrees for trivial or read-only tasks, and never create one
-  solely to satisfy cleanup expectations.
+- Use the dedicated maintenance conversation for explicitly requested post-merge
+  cleanup.
+
+## Git development workflow
+
+- Use traditional Git feature branches in the primary local checkout by default.
+- Do not create Git worktrees or use Codex Worktree mode unless the owner
+  explicitly requests them.
+- Begin each implementation from a clean, synchronized `main`.
+- Create one focused feature branch per implementation.
+- Do not develop multiple feature branches concurrently in the same checkout.
+- Commit and push reviewed changes to the feature branch.
+- Open a pull request against `main`. Never merge automatically.
+- After the owner merges the PR, synchronize local `main` and retire the verified
+  feature branch using the post-merge-cleanup skill, only when cleanup is
+  explicitly requested for that PR.
+- Preserve uncommitted changes, ignored files, user-authored assets, settings,
+  saves and historical evidence.
+- Do not use destructive Git shortcuts to make a checkout appear clean.
+
+The primary checkout may temporarily be on a feature branch during implementation.
+This is expected and is not a workflow violation.
 
 ## Generated files and retention
 
