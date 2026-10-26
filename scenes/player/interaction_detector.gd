@@ -10,6 +10,13 @@ var _target: WorldInteractable
 var _interaction_requested: bool = false
 
 
+func clear_for_transition() -> void:
+	_interaction_requested = false
+	_target = null
+	interaction_ui.set_prompt("")
+	interaction_ui.dismiss_response()
+
+
 func _physics_process(_delta: float) -> void:
 	if dialogue_ui.is_conversation_open():
 		_interaction_requested = false

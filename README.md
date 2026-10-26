@@ -3,9 +3,9 @@
 A story-driven science-fiction automation adventure. This fresh Godot project
 has a player movement prototype with camera follow and mouse-wheel zoom, plus a
 minimal ship-interior environment and collision foundation, plus data-driven
-Computer dialogue and inspection. The objective foundation is present; first
-narrative integration on
-`codex/first-narrative-integration` is pending merge and owner runtime verification.
+Computer dialogue, inspection and objective activation. The First Step on
+`codex/the-first-step` adds an authored exterior and reusable hatch transitions,
+pending merge and owner runtime verification.
 Its gameplay implementation is independent of FactoryGame; the approved Dave
 migration below reuses only two legacy artwork sheets.
 
@@ -48,15 +48,19 @@ validation; runtime and engine verification remain unperformed.
 ## Layout and development
 
 - `project.godot`: engine settings and main-scene entry point.
-- `scenes/main/main.tscn`: primitive test floor, a central ship-deck composition,
-  four static perimeter walls, and a Y-sorted group containing three static
-  obstacles with ship-fixture visuals and an instance of Dave.
+- `scenes/main/main.tscn`: persistent playthrough root owning Dave, objectives,
+  tracker, progression and transitions; starts with the ship interior.
+- `scenes/world/ship_interior.tscn`: preserved deck, perimeter and fixtures,
+  plus the departure hatch and named return spawn. The eventual equipment room
+  belongs to this same scene.
+- `scenes/world/planet_exterior.tscn`: authored crash-site terrain, solid
+  ship/hatch, rocks, boundaries, Y-sorted objects and named exterior spawn.
 - `scenes/player/dave.tscn`: reusable `CharacterBody2D`, a collision shape, a
   `Camera2D` child, and a separate `Visual` child containing one legacy pixel-art
-  `Sprite2D` and the retained `AnimationPlayer` (migration pending merge).
+  `Sprite2D` and the retained `AnimationPlayer` (PR #25, merged).
 - `scenes/player/dave.gd`: movement through `_physics_process()` and
   `move_and_slide()`, with four-direction walk/idle presentation selection and
-  presentation-only last-facing retention (migration pending merge).
+  presentation-only last-facing retention (PR #25, merged).
 - `scenes/player/follow_camera.gd`: wheel input and bounded zoom transitions using
   a built-in Tween; following uses the child camera's built-in behavior.
 - `scenes/player/interaction_detector.gd`: Dave's proximity selection, solid-body
@@ -69,11 +73,11 @@ validation; runtime and engine verification remain unperformed.
   Resources, with temporary opening content in `computer_opening.tres`.
 - `scenes/ui/dialogue_ui.tscn` and `dialogue_ui.gd`: reusable screen-space
   dialogue presentation and active entry position, instantiated under Dave.
-- `objectives/`: editable objective definitions, scene-local state controller,
+- `objectives/`: editable objective definitions, playthrough-local state controller,
   and provisional opening content in `restore_computer.tres`.
 - `scenes/ui/objective_tracker.tscn` and `objective_tracker.gd`: screen-space
   objective data presentation with expand, pin, hide and restore controls.
-- `scenes/main/main.gd`: scene-local dialogue completion, objective activation
+- `scenes/main/main.gd`: playthrough-local dialogue completion, objective activation
   and tracker wiring.
 - `docs/GAME_VISION.md`: approved direction and unresolved design questions.
 - `AGENTS.md`: development conventions.
@@ -87,7 +91,7 @@ that origin without changing the controller or camera.
 
 The following four Dave sections preserve historical artwork and calibration
 records. The legacy migration section supersedes their active presentation and
-playtest instructions on `codex/legacy-dave-animation-migration` (pending merge).
+playtest instructions (PR #25, merged).
 All newer artwork remains preserved as inactive assets.
 
 ### Dave static sprite baseline (PR #21, merged)
@@ -350,7 +354,7 @@ clipping, transparency tearing and halos at normal zoom and 0.75/1.5 zoom. Check
 collision, Y-sorting, camera follow/zoom, Computer interaction, dialogue and
 objectives. Confirm Shift does not change speed and no new movement mechanics exist.
 
-### Dave legacy directional animation migration (feature branch, pending merge)
+### Dave legacy directional animation migration (PR #25, merged)
 
 The owner approved consistent helmeted pixel-art Dave, a scoped exception to the
 illustrated visual direction. Only two PNGs are reused; no legacy controller or
@@ -602,7 +606,8 @@ for a transition and emit `objective_state_changed(id, state)` once. Unknown IDs
 repeated calls and invalid transitions return `false` without an emission.
 `get_objective_state(id)` returns the state, or `-1` for an unknown/rejected ID.
 Null/invalid definitions are ignored; duplicate valid IDs are rejected entirely.
-Completed objectives cannot reactivate. State resets on scene reload.
+Completed objectives cannot reactivate. State resets when Main is reloaded;
+hatch travel preserves this controller.
 
 The main scene wires the controller signal to `ObjectiveTracker.show_objective()`.
 The first active definition in exported list order is shown; completing it reveals
@@ -632,7 +637,8 @@ contextual panel. **Pin** keeps the full panel visible; **Unpin** returns to
 collapsed contextual mode. **Hide** conceals the full panel and leaves
 **Show Objective** available; clicking it expands in contextual mode again.
 With no active objective, neither panel nor button appears, even when pinned.
-Presentation preferences remain scene-local; there are no timers or animations.
+Presentation preferences remain local to Main and survive hatch travel; there
+are no tracker timers or animations.
 
 Validation for this integration is static only: resource references, script UID
 sidecars, inactive-state initialization, completion ID guard, dismissal separation,
@@ -668,3 +674,91 @@ review. After an approved merge, separately request
 [post-merge-cleanup](.agents/skills/post-merge-cleanup/SKILL.md) for that PR number
 from a chat attached to a surviving checkout. Cleanup stops when preservation,
 attachment or Windows lock safety cannot be verified.
+
+## The First Step (feature branch, pending merge)
+
+This milestone adds exterior exploration only. No mining, production, electricity,
+construction or procedural generation is implemented. All validation is static;
+Godot has not been launched by the agent.
+
+Main remains alive for the playthrough. Its transition controller accepts explicit
+source/destination scene paths, a named spawn and a presentation enum. Environments
+provide a Y-sorted GroundObjects node and named Marker2D children under Spawns. Dave is
+reparented between those groups, retaining the same controller, facing, sprites,
+camera/zoom and UI. The objective controller/tracker remain under Main. Cached
+inactive environments are detached from the tree, preserving their state without
+participating in physics; they are freed with the playthrough. Reload Main to
+start fresh. Run Main/F5 for playtesting; environment scenes alone have no player.
+
+The interior hatch is at (512, 512), southeast on the deck. E uses the existing
+range/visibility detector to request travel. A busy guard accepts only one request,
+and tree changes are deferred out of physics. The first departure locks Dave's
+movement and interaction, fades out over 0.65 seconds, loads the exterior under
+black, places Dave at FromShip (-384, -64), and fades in over 0.65 seconds.
+Only after that reveal finishes does first_exterior_reveal_completed become true.
+Controls then resume. Later exits and all returns have no deliberate fade or
+timer, with one physics frame allowed for destination bodies to register.
+The interior return marker is FromPlanet (512, 416). Spawns clear all solids;
+travel requires a fresh interaction, never an arrival trigger. Invalid scenes or
+spawn contracts leave the source intact, restore controls and do not complete
+progression.
+
+The first-exit flag belongs to the small PlaythroughState node, separate from
+presentation. It survives hatch travel, but resets with a fresh Main/application.
+There is no disk save/load system, serializer, save slot or new-game menu. Restart
+persistence is NOT implemented. Future save/load must restore the flag alongside
+player location, objectives and world state; it must default false in unrelated
+new games. No owner save files or settings are read or written.
+
+No musing UI or provisional dialogue was added. The controller's
+first_exterior_reveal_completed signal fires after controls resume and is the
+integration point for a future small, portrait-free, timed, nonpausing presenter.
+It must not route internal thoughts through the regular dialogue panel.
+
+### Exterior and coordinate conventions
+
+The bounded authored clearing spans [-1024, 1024] on each axis. AuthoredCrashSite
+owns terrain and outer boundaries; GroundObjects contains the provisional ship,
+hatch and two rocks, plus Dave during a visit. Spawns is placement metadata.
+Ship and rock geometry is deliberately simple, with nearest filtering inherited
+by the exterior. Existing Dave filtering and Computer artwork are preserved.
+The open area east/south of the ship reserves room for later Ferrite discovery,
+reactor, machines and cable routes, without implementing any of them.
+
+World units equal unzoomed pixels: +X east/right, +Y south/down; Dave's origin
+remains ground contact. Terrain cell = floor(world_position / 64) per component.
+Future chunk = floor(terrain_cell / 32), local terrain cell = terrain_cell -
+chunk * 32. Construction cell = floor(world_position / 32), independently of
+terrain. Use mathematical floor, including negatives: world x=-1 gives terrain
+cell -1, chunk -1/local cell 31, and construction cell -1; x=-64 gives terrain
+cell -1, x=-65 gives -2. Chunks span 2048 units, and cells use half-open bounds.
+The authored site straddles four future chunks about the origin; future generation
+must reserve its footprint rather than overwrite it. No chunk manager or grid
+helper was added without a current gameplay consumer.
+
+### Owner playtest (ordered, one item at a time)
+
+1. Run Main/F5: Dave starts inside at the existing origin.
+2. Check 240-unit movement, WASD/arrows, diagonals, all four walk/idle directions,
+   last facing, camera following, wheel zoom, collision and Y-sorting.
+3. Approach the southeast hatch: contextual E prompt respects range/obstruction.
+4. Press E: first exit fades smoothly out/in; input is locked during the reveal.
+5. Confirm safe exterior spawn below the visible hatch and no automatic return.
+6. Explore the clearing, ship and rocks; check boundaries, readability, camera,
+   both zoom bounds, animation and Y-sorting.
+7. Approach the exterior hatch and press E: immediate return to a clear interior
+   spawn, with the chosen zoom/facing retained.
+8. Exit again: immediate travel with no repeated first reveal.
+9. Repeat round trips and press/hold E rapidly: no duplicate travel, stuck input,
+   stale prompt or inspection panel. Each crossing requires a fresh press.
+10. Confirm the first-exit flag survives round trips. No save/load workflow exists
+    to test; restart Main/application and confirm a fresh first reveal. Durable
+    restart persistence remains deferred.
+11. Verify Computer dialogue completion/dismissal and objective activation still
+    work. Activate the objective before travel; confirm state and tracker
+    preferences survive return and repeated conversation does not duplicate it.
+
+Engine loading, rendered appearance, fades, runtime physics/input and these
+playtest items remain unverified. Static inspection covers references, named
+spawns, collision clearances, flag lifecycle, lock/failure paths, preserved player
+files, documentation links and Git patch integrity.

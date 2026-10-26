@@ -18,8 +18,7 @@ accomplishes his goals.
 - Owner-approved Dave exception: use the legacy helmeted pixel-art walking and
   idle sheets consistently across four directions. This does not change the
   broader environment direction or import legacy gameplay. Implementation is
-  pending merge on `codex/legacy-dave-animation-migration`; runtime acceptance
-  remains with the owner.
+  merged in PR #25; runtime acceptance remains with the owner.
 
 ## Approved construction and logistics direction
 
@@ -54,6 +53,8 @@ remains under development.
   foundational.
 - Ambient conversations should generally allow gameplay to continue.
 - Cinematic conversations are rare, reserved for major emotional moments.
+- Dave's internal musings use a separate small, portrait-free, nonpausing
+  presentation with automatic dismissal, rather than the conversation panel.
 - Dave has an established personality; player choices influence his development.
 - Contextual, pinnable objective tracking.
 - A Ship's Log records conversations, discoveries, objectives, and evidence.
@@ -69,9 +70,25 @@ remains under development.
 - Exploration and automation reinforce the same narrative.
 - No combat or dungeon system is currently planned.
 
+## Approved world and transition foundations
+
+- Authored ship interior (including the eventual equipment room in the same
+  scene) and a separate planetary exterior with an authored crash site.
+- Terrain tiles are 64 x 64 pixels; future chunks are 32 x 32 terrain tiles,
+  or 2,048 x 2,048 world units. The construction grid is independently 32 x 32
+  world units; machine footprints are not constrained to one terrain tile.
+- Future expansion uses seeded deterministic generation with persistent
+  buildings, resources and terrain modifications. These systems are deferred.
+- The first ship exit uses an understated fade reveal; later exits and returns
+  are immediate. Completion is per playthrough and must eventually participate
+  in durable saves. The First Step feature branch currently provides session
+  state only; there is no implemented save/load workflow.
+
+Implementation and coordinate conventions are recorded in the
+[README](../README.md#the-first-step-feature-branch-pending-merge).
+
 ## Unresolved design details
 
-- The logical construction grid size is not finalized.
 - The precise conspiracy behind Dave's arrival remains under development.
 - Detailed machine footprints, port rules, rail behavior, research content,
   chapter structure, dialogue formats, and ending conditions still require

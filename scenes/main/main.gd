@@ -2,10 +2,11 @@ extends Node2D
 
 @onready var _objectives: ObjectiveController = $ObjectiveController
 @onready var _tracker: ObjectiveTracker = $ObjectiveTracker
-@onready var _dialogue: DialogueUI = $GroundObjects/Dave/DialogueUI
+@onready var _dialogue: DialogueUI = $Dave/DialogueUI
 
 
 func _ready() -> void:
+	$SceneTransitions.initialize()
 	_objectives.objective_state_changed.connect(_on_objective_state_changed)
 	_dialogue.conversation_completed.connect(_on_conversation_completed)
 	_refresh_objective_tracker()
