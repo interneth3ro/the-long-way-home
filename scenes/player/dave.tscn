@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3]
+[gd_scene load_steps=15 format=3]
 
 [ext_resource type="Script" path="res://scenes/player/dave.gd" id="1_controller"]
 [ext_resource type="Script" uid="uid://bq6n2v4r8k3tx" path="res://scenes/player/follow_camera.gd" id="2_camera"]
@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/dialogue_ui.tscn" id="5_dialogue"]
 [ext_resource type="Texture2D" path="res://assets/characters/dave/dave_static_approved_v2.png" id="6_dave_art"]
 [ext_resource type="Texture2D" path="res://assets/characters/dave/dave_walk_south_atlas.png" id="7_walk_art"]
+[ext_resource type="Texture2D" path="res://assets/characters/dave/dave_walk_north_atlas.png" id="8_walk_north_art"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_feet"]
 radius = 10.0
@@ -41,9 +42,25 @@ tracks/0/keys = {
 "values": [0, 1, 2, 3]
 }
 
+[sub_resource type="Animation" id="Animation_walk_north"]
+resource_name = "walk_north"
+length = 0.5
+loop_mode = 1
+step = 0.125
+tracks/0/type = "value"
+tracks/0/path = NodePath("WalkNorthSprite:frame")
+tracks/0/interp = 1
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.125, 0.25, 0.375),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3]
+}
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_dave"]
 _data = {
 "RESET": SubResource("Animation_reset"),
+"walk_north": SubResource("Animation_walk_north"),
 "walk_south": SubResource("Animation_walk_south")
 }
 
@@ -73,6 +90,15 @@ scale = Vector2(0.1224, 0.1224)
 texture = ExtResource("7_walk_art")
 centered = false
 offset = Vector2(-240, -770)
+hframes = 4
+
+[node name="WalkNorthSprite" type="Sprite2D" parent="Visual"]
+visible = false
+texture_filter = 2
+scale = Vector2(0.1224, 0.1224)
+texture = ExtResource("8_walk_north_art")
+centered = false
+offset = Vector2(-272, -784)
 hframes = 4
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="Visual"]
