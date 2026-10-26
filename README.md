@@ -280,12 +280,38 @@ preserved byte-for-byte, including faint alpha fringes and margin pixels.
 
 Both sprites use linear filtering and `centered = false`. Exclusive alpha >= 32
 bounds are `(285, 106, 986, 1195)` south and `(188, 95, 952, 1301)` north.
-South uses uniform scale `0.084` and source-pixel offset `(-635.5, -1195)`;
-north uses uniform scale `0.0758` and offset `(-570, -1301)`. These center the
-substantial silhouette and align its lower boot edge to Dave's unchanged local
-ground origin. Substantial extents are about 58.88 x 91.48 world units south and
-57.91 x 91.41 north, matching walking height (about 91.1-91.4) while preserving
-approved proportions. Faint alpha extends beyond these bounds and remains intact.
+Owner testing found the initial height-matched idle poses visibly larger than
+walking. This revision uses uniform scale `0.075` south (previously `0.084`) and
+`0.065` north (previously `0.0758`). The recalculated source-pixel offsets remain
+`(-635.5, -1195)` south and `(-570, -1301)` north: the negative horizontal bound
+midpoint and negative lower boot edge. With `centered = false`, multiplying
+`(source point + offset)` by either uniform scale still maps those anchors to
+local `(0, 0)`. Root, collision and Visual origins remain unchanged.
+
+| Direction | Previous visible width x height | Revised width x height | Walking width / height ranges |
+| --- | --- | --- | --- |
+| South | 58.88 x 91.48 | 52.58 x 81.68 | 52.14-52.51 / 89.47-91.43 |
+| North | 57.91 x 91.41 | 49.66 x 78.39 | 48.47-48.72 / 89.11-91.07 |
+
+All extents use alpha >= 32 exclusive bounds and world units. The south reduction
+is 10.71%; north is 14.25%. Static source inspection and upper-body band widths
+favor these scales over matching total height. As reproducible proportion proxies,
+measure maximum alpha-bound width within the top 0-15% (upper head), 25-40%
+(shoulder region), and 40-60% (torso/arms region) of each substantial silhouette's
+height. South idle measures 23.03 / 51.30 / 52.58 units; north measures
+19.96 / 43.75 / 49.66. These bands are approximate anatomical proxies, not exact
+landmark segmentation; stance and arm placement differ between poses. Walking
+proxies across all four frames are 22.64-22.77 / 51.41-52.26 / 52.14-52.51 south
+and 18.73-18.85 / 46.14-46.51 / 48.47-48.72 north.
+
+Uniform scaling cannot match both height and width for these differently
+proportioned poses. South now nearly matches walking width; north retains about
+2-2.5% extra total width to balance head/shoulder proportions. Idle height is
+about 8.7-10.7% shorter south and 12.0-13.9% shorter north than walking. Exact
+north full-width matching would require about `0.0636`, further shrinking its
+shoulders. This is a proposed static calibration pending owner comparison, not a
+verified resolution of the apparent size change. All approved source pixels and
+faint alpha margins remain intact.
 The two import sidecars follow existing lossless, no-mipmap, unlimited-size
 settings with distinct UIDs; they were prepared as text without engine import.
 
@@ -305,9 +331,10 @@ camera, interactions, dialogue, objectives and project settings are unchanged.
 Validation is static only: PNG decode/integrity and SHA-256 preservation,
 alpha/anchor calculations, scene and import references, animation and protected
 scene-block comparison, presentation branch review, movement-statement identity,
-Markdown links and Git diff checks. Neither Godot nor project code was executed.
+Markdown links and Git diff checks. For this calibration, neither Godot nor
+project code was executed.
 Engine import, rendering, transition appearance and gameplay remain unverified;
-faint fringes, wider idle silhouettes and ground alignment need owner assessment.
+faint fringes, revised proportions and ground alignment need owner assessment.
 
 Owner manual playtest: confirm initial south idle, north/south walk-to-idle and
 idle-to-walk transitions, repeated release and direct north/south switching.
