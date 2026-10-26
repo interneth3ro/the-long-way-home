@@ -88,10 +88,11 @@ that origin without changing the controller or camera.
 The owner-approved source is
 `assets/characters/dave/dave_idle_angled_overhead_pilot.png`: a 649 × 1456,
 8-bit RGBA PNG. Preserve its bytes; do not crop, resample or recompress it.
-Reference the PNG directly as a `Texture2D` in `dave.tscn`; the owner's next editor
-import will use Godot's default 2D texture import (lossless, no size limit).
-No import was run for this integration and no generated import/cache files are
-included. Only `Visual/Sprite2D` explicitly uses linear texture filtering;
+Reference the PNG directly as a `Texture2D` in `dave.tscn`. Its existing
+`.png.import` sidecar records lossless compression, disabled mipmaps and no size
+limit; tracking that sidecar on `codex/godot-import-metadata` is pending merge.
+It is preserved unchanged without running an import. Only `Visual/Sprite2D`
+explicitly uses linear texture filtering;
 project-wide rendering and filtering settings are unchanged.
 
 Provisional tuning lives on `Visual/Sprite2D`: uniform `scale = (0.065, 0.065)`,
@@ -300,7 +301,13 @@ must reset the objective to inactive. Unrelated conversation IDs and signal coun
 require owner runtime verification; their paths were inspected statically.
 
 Add feature directories and GDScript files when they have a concrete purpose.
-Keep Godot's `.godot/` cache untracked. Use feature branches and pull requests;
+Track approved source artwork, source-adjacent asset `.import` sidecars (import
+settings and stable resource UIDs), and `.gd.uid` files. The `.import/` ignore rule
+applies to cache directories, not these sidecar files. Keep generated `.godot/`
+data, including its import cache, editor caches, generated thumbnails and temporary
+logs out of source control. Preserve existing local data under the retention rules
+in [AGENTS.md](AGENTS.md); being untracked does not authorize deletion.
+Use feature branches and pull requests;
 validate affected scenes and scripts before requesting review.
 
 Keep authoritative documentation in `docs/` and generated evidence out of Git;
