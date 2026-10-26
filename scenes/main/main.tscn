@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3]
+[gd_scene load_steps=14 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/player/dave.tscn" id="1_dave"]
 [ext_resource type="Script" uid="uid://dltwhinteract1" path="res://scenes/interaction/world_interactable.gd" id="2_interactable"]
@@ -9,7 +9,6 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/objective_tracker.tscn" id="7_tracker"]
 [ext_resource type="Script" uid="uid://cltwhobjdef01" path="res://objectives/objective_definition.gd" id="9_definition"]
 [ext_resource type="Texture2D" path="res://assets/environment/computer/computer_damaged_pilot.png" id="10_computer_art"]
-[ext_resource type="Script" uid="uid://b7k3c6m2p9v4a" path="res://scenes/main/computer_art_preview.gd" id="11_computer_preview"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_horizontal_wall"]
 size = Vector2(4160, 32)
@@ -197,7 +196,6 @@ scale = Vector2(0.24, 0.24)
 texture = ExtResource("10_computer_art")
 centered = false
 offset = Vector2(-543, -718)
-script = ExtResource("11_computer_preview")
 
 [node name="EastObstacle" type="StaticBody2D" parent="GroundObjects"]
 position = Vector2(360, 40)

@@ -247,11 +247,11 @@ inspection dismissal and the other fixtures remaining noninteractive.
 `GroundObjects/WestObstacle/Visual` in `scenes/main/main.tscn`. One `Sprite2D`
 displays the approved damaged texture by default. Both source PNGs in
 `assets/environment/computer/` are preserved byte-for-byte: 1086 × 724, RGBA,
-with transparent backgrounds. No `.png.import` sidecars were supplied for the
-initial integration. The owner's subsequent import produced local sidecars;
-the controls update preserves these and the owner's modified Dave sidecar
-untouched and outside its commit. The agent ran no imports. Generated `.godot/`
-caches stay ignored.
+with transparent backgrounds. Both existing owner-generated `.png.import` sidecars
+are retained unchanged in the PR, preserving their texture UIDs, lossless import
+settings, disabled mipmaps and no size limit. The owner's local Dave sidecar
+change remains untouched outside this commit. The agent ran no imports.
+Generated `.godot/` caches stay ignored.
 
 The provisional local sprite scale is `(0.24, 0.24)`, position `(0, 0)`,
 `centered = false`, and offset `(-543, -718)` in source pixels. Source point
@@ -264,41 +264,34 @@ The common anchor sits just below both substantial bases; the six-pixel base
 difference remains about 1.44 world units. No per-state alignment correction is
 applied. Visible extents are approximately 234 × 169 world units versus Dave's
 roughly 93-unit height. The owner has manually confirmed that damaged Computer is
-appropriately proportioned relative to Dave. Repaired-state alignment still needs
-owner verification.
+appropriately proportioned relative to Dave. The very minor perceived shift
+between artwork states was explicitly accepted for this pilot; no correction is
+applied.
 
-For temporary manual comparison during gameplay, focus the running game and press
-**F6** for damaged or **F7** for repaired; each press immediately assigns only the
-sprite's texture without reloading. Repeated presses select the same texture.
-Key releases, key-repeat events and modified combinations are ignored.
-`scenes/main/computer_art_preview.gd` enables its `_input()` callback only when
-`OS.is_debug_build()` is true (editor-run games and debug exports); release exports
-have no preview input handling. Every game start selects damaged. The script no
-longer uses `@tool` or an exported Inspector state property and does not execute
-in the editor. It adds no Input Map actions, UI, gameplay/narrative connections or
-persistence, and leaves input events available to other systems. These are runtime
-game controls; F6 in the editor retains its normal run-current-scene meaning.
-To remove the temporary controls later, detach this script from the sprite;
-the scene's assigned damaged texture remains. This is art verification only,
-with no Computer repair gameplay or objective completion.
+The sprite directly references `computer_damaged_pilot.png` and has no attached
+script. Temporary keyboard controls, their script and UID, and the scene's script
+resource reference have been removed. No Inspector state tooling, input handler
+or visual-state controller remains for this pilot. The repaired PNG and its import
+metadata remain available for a future narrative-driven repair implementation;
+there is no repair gameplay or objective completion path in this PR.
 
 Static checks cover PNG decoding, chunk integrity, alpha bounds, source hashes,
-resource paths, the shared transform and texture-only switch, and comparison of
+resource paths, the shared transform, and comparison of
 all non-Computer-visual scene data against `main`. Collision (160 × 48 at local
 `(0, -24)`), interaction point `(0, -24)`, dialogue, Y-sorting, Dave, other
-fixtures, existing gameplay scripts and project settings are unchanged. The controls
-update statically checks debug-build gating, F6/F7 mapping, repeat/modifier guards,
-removal of editor tooling, preserved asset/sidecar hashes and unchanged scene data.
-No Godot execution was performed by the agent; engine loading and runtime and
-graphical behavior of the new controls remain unverified. Before merge, the owner
-must check F6/F7 in a running debug game, including repeated presses, held keys,
-modified combinations and switching while dialogue is open. Confirm damaged on
-restart and inactive controls in a release build. Inspect both states at normal
-zoom and both bounds, compare base alignment, and walk
-behind/in front of Computer to assess occlusion and the larger visual versus its
-unchanged footprint. Recheck approach from sides/corners, obstruction, prompt,
-dialogue/objective activation, movement, camera follow and wheel zoom. Agent
-execution still requires authorization under
+fixtures, existing gameplay scripts and project settings are unchanged. Final
+static checks cover complete removal of temporary switching functionality,
+damaged texture assignment, preserved asset/sidecar hashes, resource counts and
+references, unchanged scene configuration, documentation links and Git diff checks.
+
+The owner reports all eight visual-state playtest checks passed: damaged
+proportions relative to Dave, both artwork appearances, switching and visual
+continuity, collision and interaction in both states, movement/dialogue/objective/
+camera/zoom regressions, and system stability. The minor perceived shift is
+accepted. These are owner-reported runtime results from before removal of the
+temporary controls. Finalization was validated statically only; the agent did not
+run Godot or perform post-removal runtime or graphical verification. Agent
+execution remains subject to
 [AGENTS.md](AGENTS.md#godot-execution-safety).
 
 ## Objectives and first narrative integration (feature branch, pending merge)
