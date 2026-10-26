@@ -94,9 +94,9 @@ No import was run for this integration and no generated import/cache files are
 included. Only `Visual/Sprite2D` explicitly uses linear texture filtering;
 project-wide rendering and filtering settings are unchanged.
 
-Provisional tuning lives on `Visual/Sprite2D`: uniform `scale = (0.045, 0.045)`,
+Provisional tuning lives on `Visual/Sprite2D`: uniform `scale = (0.065, 0.065)`,
 default position `(0, 0)`, `centered = false`, and texture-pixel
-`offset = (-324.5, -1431)`. The full texture spans 29.205 × 65.52 world units.
+`offset = (-324.5, -1431)`. The full texture spans 42.185 × 94.64 world units.
 The offset centers the image horizontally and places the visible lower boot edge
 (source row 1430 at alpha >= 32) just above local y = 0. Faint alpha fringe extends
 below that edge; the image canvas bottom is not used as the ground anchor.
@@ -109,15 +109,16 @@ still has radius 10 at `(0, -10)`, with its bottom at y = 0. `GroundObjects`, Da
 sort origin, and all Y-sort/Z settings are unchanged. Camera, interaction,
 movement, dialogue, objectives, fixtures and project settings are untouched.
 
-Validation is static only: PNG decoding/RGBA/transparency, source hash preservation,
+Agent validation is static only: PNG decoding/RGBA/transparency, source hash preservation,
 texture and scene references, resource counts, unchanged nonvisual scene blocks,
 scripts/settings and Y-sorting hierarchy, Markdown links and Git diff checks.
-Godot was not executed graphically or headlessly; import, engine loading and
-gameplay appearance remain unverified. Before merge, the owner must manually
-check recognition at normal zoom and both bounds (0.75 and 1.5), boot contact
-without floating/sinking, collision contact and occlusion around all fixtures,
-camera follow/wheel zoom, and unchanged movement, interaction, dialogue and
-objective progression. Scale and alignment remain provisional until that check.
+The owner reports nine of ten manual checks passed at scale 0.045, including
+import, ground contact, collision, Y-sorting, movement, interactions, camera and
+system stability; visual recognition failed because Dave appeared too small.
+Scale 0.065 is the provisional refinement. The agent did not execute Godot
+graphically or headlessly for either change. Before merge, the owner must recheck
+recognition at normal zoom and both bounds (0.75 and 1.5), boot contact and fixture
+occlusion at the larger size. The revised scale remains unverified in gameplay.
 
 ### Existing environment and gameplay
 

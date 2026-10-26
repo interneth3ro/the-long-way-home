@@ -27,7 +27,7 @@ shape = SubResource("CircleShape2D_feet")
 
 [node name="Sprite2D" type="Sprite2D" parent="Visual"]
 texture_filter = 2
-scale = Vector2(0.045, 0.045)
+scale = Vector2(0.065, 0.065)
 texture = ExtResource("6_dave_art")
 centered = false
 offset = Vector2(-324.5, -1431)
