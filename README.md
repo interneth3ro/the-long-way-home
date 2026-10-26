@@ -52,10 +52,10 @@ validation; runtime and engine verification remain unperformed.
   obstacles with ship-fixture visuals and an instance of Dave.
 - `scenes/player/dave.tscn`: reusable `CharacterBody2D`, a collision shape, a
   `Camera2D` child, and a separate `Visual` child containing Dave's illustrated
-  `Sprite2D` (static replacement on `codex/dave-static-sprite-replacement`,
-  pending merge).
+  static `Sprite2D`, plus the south-walk sprite and `AnimationPlayer` prototype
+  described below (pending merge).
 - `scenes/player/dave.gd`: movement through `_physics_process()` and
-  `move_and_slide()`.
+  `move_and_slide()`, with input-based south-walk presentation selection.
 - `scenes/player/follow_camera.gd`: wheel input and bounded zoom transitions using
   a built-in Tween; following uses the child camera's built-in behavior.
 - `scenes/player/interaction_detector.gd`: Dave's proximity selection, solid-body
@@ -84,9 +84,9 @@ movement at the same 240 pixels per second as cardinal movement. Dave's local
 origin is his ground-contact position; artwork stays under `Visual`, aligned to
 that origin without changing the controller or camera.
 
-### Dave static sprite replacement (feature branch, pending merge)
+### Dave static sprite baseline (PR #21, merged)
 
-`codex/dave-static-sprite-replacement` uses the approved
+The merged static replacement uses the approved
 `assets/characters/dave/dave_static_approved_v2.png`: a 1184 × 1328, 8-bit RGBA
 PNG copied byte-for-byte from the owner's local `dave v2.png`. The original
 `dave_idle_angled_overhead_pilot.png` and its import metadata remain available
@@ -130,6 +130,75 @@ and Y-sorting. Repeat visual checks at 0.75× and 1.5× zoom, check camera follow
 and movement, then interactions, dialogue and objective progression. Inspect
 transparency fringes, the source's faint halo, clipping and scaling artifacts.
 Scale and alignment remain provisional until this playtest.
+
+### Dave south-facing walk prototype (feature branch, pending merge)
+
+`codex/dave-south-walk-prototype` adds only south-facing walking presentation.
+The original approved `assets/characters/dave/dave_walking.png` is preserved
+byte-for-byte: 1983 x 793 RGBA, SHA-256
+`02c9d474a90e7a6bd1f88bb2a954e88afb3df50c408f88dc1476596dcbf1a7a7`.
+After inspection, the owner authorized removing only stray margin pixels in
+derived frames. The derived `dave_walk_south_atlas.png` is 1920 x 784 RGBA,
+containing four 480 x 784 cells in the original left-to-right order: left-foot
+contact, opposite knee passing, right-foot contact, other knee passing.
+
+Preparation uses integer translations only, with no resampling, repainting or
+pose changes. Starting with source cells at x `[0,500)`, `[500,989)`,
+`[989,1478)`, `[1478,1983)`, retain all pixels inside each alpha >= 32 bounding
+box and all nonzero-alpha pixels 8-connected to the main silhouette. Remove
+only detached pixels outside that box: 160, 46, 68 and 40 pixels respectively
+(314 total, all alpha 1/255). Connected faint outlines remain. Crop transparent
+margins and translate each retained image onto a transparent cell using these
+source anchors; all bounds and baselines below are exclusive pixel edges.
+
+| Frame | Retained source bounds (x0, y0, x1, y1) | Source anchor (x, y) | Cell anchor |
+| --- | --- | --- | --- |
+| 1 | (33, 20, 471, 779) | (254, 770) | (240, 770) |
+| 2 | (528, 17, 967, 763) | (745, 755) | (240, 770) |
+| 3 | (1013, 15, 1453, 779) | (1233, 770) | (240, 770) |
+| 4 | (1500, 15, 1941, 764) | (1724, 755) | (240, 770) |
+
+Horizontal anchors use rounded substantial silhouette centers; vertical anchors
+use the substantial lower boot edge. This aligns ground contact, preserving the
+poses' small torso bob (about 1.8 world units). `Visual/WalkSouthSprite` uses
+`hframes = 4`, `centered = false`, offset `(-240, -770)` and uniform scale
+`(0.1224, 0.1224)`. Contact poses are approximately 91.2-91.4 world units tall,
+matching the static baseline's 91.44; the walking silhouette is wider, about
+52.5 units versus 44.57. Both sprites retain linear filtering. Original artwork,
+static sprite properties, body/Visual origins, collision and Y-sorting remain
+unchanged. Both new PNG import sidecars use distinct UIDs and existing lossless,
+no-mipmap, unlimited-size settings; they were written as text without engine import.
+
+`Visual/AnimationPlayer` owns an editor-editable embedded AnimationLibrary in
+`scenes/player/dave.tscn`. Its looping `walk_south` animation lasts 0.5 seconds:
+discrete `WalkSouthSprite:frame` keys 0, 1, 2, 3 at 0, 0.125, 0.25, 0.375 seconds
+give 8 FPS at the default playback speed of 1.0. `RESET` restores frame 0 for
+editor preview. No animation track modifies transforms, collision or world position.
+
+The controller checks the existing input vector after the unchanged movement
+code: positive y and approximately zero x means straight south. Diagonals use
+the static sprite. Entry starts the animation and applies its first frame
+immediately; sustained south input does not restart it. Idle or another direction
+stops playback, hides the walk sprite and shows the original static sprite with
+its approved scale/offset. The trigger follows input, so pushing south against a
+wall still animates. There are no other directional animations, speed modifiers,
+sprinting, input-map changes or changes to camera, interactions, dialogue or objectives.
+
+Validation is static only: decoded PNG dimensions/transparency and pixel identity
+under the documented translations, original SHA-256, scene/resource references,
+animation frame sequence/timing/loop configuration, explicit fallback, unchanged
+existing scene nodes and movement statements, protected gameplay/settings files,
+Markdown links and Git diff checks. Godot was not run graphically or headlessly;
+engine import, playback, appearance and gameplay remain unverified.
+
+Owner manual playtest: run the main scene and move straight south using S and
+Down. Confirm all four poses in order at 8 FPS, including repeated stop/start;
+assess gait, torso bob, foot sliding, halos and transitions at normal zoom and
+0.75/1.5 zoom. Release movement and switch to every other direction, including
+south diagonals: each must immediately restore the static sprite. Check collision,
+Y-sorting, ground contact, camera follow/zoom, Computer interaction, dialogue and
+objectives. Confirm Shift never changes speed. Foot sliding and the wider walking
+silhouette require owner visual evaluation; no runtime result is claimed.
 
 ### Existing environment and gameplay
 

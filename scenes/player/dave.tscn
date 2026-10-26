@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene load_steps=13 format=3]
 
 [ext_resource type="Script" path="res://scenes/player/dave.gd" id="1_controller"]
 [ext_resource type="Script" uid="uid://bq6n2v4r8k3tx" path="res://scenes/player/follow_camera.gd" id="2_camera"]
@@ -6,12 +6,46 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/interaction_ui.tscn" id="4_ui"]
 [ext_resource type="PackedScene" path="res://scenes/ui/dialogue_ui.tscn" id="5_dialogue"]
 [ext_resource type="Texture2D" path="res://assets/characters/dave/dave_static_approved_v2.png" id="6_dave_art"]
+[ext_resource type="Texture2D" path="res://assets/characters/dave/dave_walk_south_atlas.png" id="7_walk_art"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_feet"]
 radius = 10.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_interaction"]
 radius = 120.0
+
+[sub_resource type="Animation" id="Animation_reset"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/path = NodePath("WalkSouthSprite:frame")
+tracks/0/interp = 1
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="Animation" id="Animation_walk_south"]
+resource_name = "walk_south"
+length = 0.5
+loop_mode = 1
+step = 0.125
+tracks/0/type = "value"
+tracks/0/path = NodePath("WalkSouthSprite:frame")
+tracks/0/interp = 1
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.125, 0.25, 0.375),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_dave"]
+_data = {
+"RESET": SubResource("Animation_reset"),
+"walk_south": SubResource("Animation_walk_south")
+}
 
 [node name="Dave" type="CharacterBody2D"]
 script = ExtResource("1_controller")
@@ -31,6 +65,20 @@ scale = Vector2(0.0744, 0.0744)
 texture = ExtResource("6_dave_art")
 centered = false
 offset = Vector2(-588.5, -1287)
+
+[node name="WalkSouthSprite" type="Sprite2D" parent="Visual"]
+visible = false
+texture_filter = 2
+scale = Vector2(0.1224, 0.1224)
+texture = ExtResource("7_walk_art")
+centered = false
+offset = Vector2(-240, -770)
+hframes = 4
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Visual"]
+libraries = {
+&"": SubResource("AnimationLibrary_dave")
+}
 
 [node name="InteractionDetector" type="Area2D" parent="." node_paths=PackedStringArray("interaction_ui", "dialogue_ui")]
 position = Vector2(0, -10)
