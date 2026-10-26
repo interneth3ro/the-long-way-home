@@ -74,18 +74,24 @@ remains under development.
 
 - Authored ship interior (including the eventual equipment room in the same
   scene) and a separate planetary exterior with an authored crash site.
-- Terrain tiles are 64 x 64 pixels; future chunks are 32 x 32 terrain tiles,
+- Terrain tiles are 64 x 64 pixels; chunks are 32 x 32 terrain tiles,
   or 2,048 x 2,048 world units. The construction grid is independently 32 x 32
   world units; machine footprints are not constrained to one terrain tile.
-- Future expansion uses seeded deterministic generation with persistent
-  buildings, resources and terrain modifications. These systems are deferred.
+- World Generation Foundation uses seeded deterministic rocky-scrubland terrain,
+  a protected authored crash-site overlay, a configurable 5 x 5 chunk neighborhood
+  and a modest retention margin. Implementation is pending merge and owner
+  runtime review; state is in memory only. Buildings, resource depletion and
+  durable saves remain deferred.
+- Generated, explored and surveyed are distinct concepts. Loading terrain does
+  not establish exploration or surveying. Future factories must simulate
+  independently of whether their terrain presentation is loaded.
 - The first ship exit uses an understated fade reveal; later exits and returns
   are immediate. Completion is per playthrough and must eventually participate
-  in durable saves. The First Step feature branch currently provides session
+  in durable saves. Merged PR #26 provides session
   state only; there is no implemented save/load workflow.
 
 Implementation and coordinate conventions are recorded in the
-[README](../README.md#the-first-step-feature-branch-pending-merge).
+[README](../README.md#world-generation-foundation-feature-branch-pending-merge).
 
 ## Unresolved design details
 

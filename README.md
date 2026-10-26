@@ -3,9 +3,10 @@
 A story-driven science-fiction automation adventure. This fresh Godot project
 has a player movement prototype with camera follow and mouse-wheel zoom, plus a
 minimal ship-interior environment and collision foundation, plus data-driven
-Computer dialogue, inspection and objective activation. The First Step on
-`codex/the-first-step` adds an authored exterior and reusable hatch transitions,
-pending merge and owner runtime verification.
+Computer dialogue, inspection and objective activation. Merged PR #26 adds an
+authored exterior and reusable hatch transitions. World Generation Foundation on
+`codex/world-generation-foundation` extends it with seeded chunk terrain, pending
+merge and owner runtime verification.
 Its gameplay implementation is independent of FactoryGame; the approved Dave
 migration below reuses only two legacy artwork sheets.
 
@@ -53,8 +54,9 @@ validation; runtime and engine verification remain unperformed.
 - `scenes/world/ship_interior.tscn`: preserved deck, perimeter and fixtures,
   plus the departure hatch and named return spawn. The eventual equipment room
   belongs to this same scene.
-- `scenes/world/planet_exterior.tscn`: authored crash-site terrain, solid
-  ship/hatch, rocks, boundaries, Y-sorted objects and named exterior spawn.
+- `scenes/world/planet_exterior.tscn`: editable crash-site overlay polygons, solid
+  ship/hatch, rocks, Y-sorted objects and named exterior spawn. Its script manages
+  disposable procedural terrain chunks; the temporary perimeter is removed.
 - `scenes/player/dave.tscn`: reusable `CharacterBody2D`, a collision shape, a
   `Camera2D` child, and a separate `Visual` child containing one legacy pixel-art
   `Sprite2D` and the retained `AnimationPlayer` (PR #25, merged).
@@ -675,11 +677,12 @@ review. After an approved merge, separately request
 from a chat attached to a surviving checkout. Cleanup stops when preservation,
 attachment or Windows lock safety cannot be verified.
 
-## The First Step (feature branch, pending merge)
+## The First Step (PR #26, merged)
 
-This milestone adds exterior exploration only. No mining, production, electricity,
-construction or procedural generation is implemented. All validation is static;
-Godot has not been launched by the agent.
+This milestone added exterior exploration and hatch transitions. The world
+generation feature below extends its authored exterior. Mining, production,
+electricity and construction remain deferred. Agent validation was static only;
+Godot was not launched by the agent.
 
 Main remains alive for the playthrough. Its transition controller accepts explicit
 source/destination scene paths, a named spawn and a presentation enum. Environments
@@ -717,8 +720,9 @@ It must not route internal thoughts through the regular dialogue panel.
 
 ### Exterior and coordinate conventions
 
-The bounded authored clearing spans [-1024, 1024] on each axis. AuthoredCrashSite
-owns terrain and outer boundaries; GroundObjects contains the provisional ship,
+PR #26 originally bounded the clearing at [-1024, 1024] on each axis. The pending
+world generation feature removes that perimeter and samples AuthoredCrashSite
+polygons into procedural terrain. GroundObjects contains the provisional ship,
 hatch and two rocks, plus Dave during a visit. Spawns is placement metadata.
 Ship and rock geometry is deliberately simple, with nearest filtering inherited
 by the exterior. Existing Dave filtering and Computer artwork are preserved.
@@ -727,14 +731,13 @@ reactor, machines and cable routes, without implementing any of them.
 
 World units equal unzoomed pixels: +X east/right, +Y south/down; Dave's origin
 remains ground contact. Terrain cell = floor(world_position / 64) per component.
-Future chunk = floor(terrain_cell / 32), local terrain cell = terrain_cell -
+Chunk = floor(terrain_cell / 32), local terrain cell = terrain_cell -
 chunk * 32. Construction cell = floor(world_position / 32), independently of
 terrain. Use mathematical floor, including negatives: world x=-1 gives terrain
 cell -1, chunk -1/local cell 31, and construction cell -1; x=-64 gives terrain
 cell -1, x=-65 gives -2. Chunks span 2048 units, and cells use half-open bounds.
-The authored site straddles four future chunks about the origin; future generation
-must reserve its footprint rather than overwrite it. No chunk manager or grid
-helper was added without a current gameplay consumer.
+The authored site straddles four chunks about the origin. The world generation
+feature below supplies coordinate helpers, chunk management and protection.
 
 ### Owner playtest (ordered, one item at a time)
 
@@ -744,7 +747,7 @@ helper was added without a current gameplay consumer.
 3. Approach the southeast hatch: contextual E prompt respects range/obstruction.
 4. Press E: first exit fades smoothly out/in; input is locked during the reveal.
 5. Confirm safe exterior spawn below the visible hatch and no automatic return.
-6. Explore the clearing, ship and rocks; check boundaries, readability, camera,
+6. Explore the clearing, ship and rocks; check readability, camera,
    both zoom bounds, animation and Y-sorting.
 7. Approach the exterior hatch and press E: immediate return to a clear interior
    spawn, with the chosen zoom/facing retained.
@@ -762,3 +765,83 @@ Engine loading, rendered appearance, fades, runtime physics/input and these
 playtest items remain unverified. Static inspection covers references, named
 spawns, collision clearances, flag lifecycle, lock/failure paths, preserved player
 files, documentation links and Git patch integrity.
+
+## World Generation Foundation (feature branch, pending merge)
+
+This feature extends PR #26 without changing Dave, camera, interior, narrative,
+objectives or input settings. Agent validation is static only: Godot parsing,
+imports, rendering, runtime behavior and performance remain unverified.
+
+`PlaythroughState.world_seed` configures a new playthrough (default **26026**).
+Its `_ready()` creates `PlanetWorldState`, owning the seed and in-memory terrain
+color overrides/removed-detail identities. Set the seed before starting Main;
+changing the Inspector setting during an existing session does not reseed it.
+Each natural detail is identified by its world terrain tile, with at most one
+per tile. Revisions refresh presentations incrementally, retaining old visuals
+until replacements are ready. These internal hooks have no player-facing editing
+or harvesting mechanic. Restarting Main/application resets all state.
+**There is no disk save/load or durable persistence.**
+
+`WorldCoordinates` implements mathematical floor for 64-unit terrain tiles,
+32-tile/2048-unit chunks, and an independent 32-unit construction grid. Negative
+coordinates and half-open bounds follow the examples above. This uses Godot's
+normal Vector2/Vector2i precision and range; it is a prototype for exploration
+near the origin, with no claim of unlimited coordinate accuracy or infinite world.
+
+`PlanetGenerator` samples smooth value noise in global terrain space and uses
+bounded integer coordinate hashing for seeded detail choices and offsets. No
+mutable random sequence or visitation history affects generation. Rock, soil,
+weathered ground and sparse scrub colors vary between tile samples; 64-unit tile
+edges remain provisional. Small rocks, shrubs and alien stalks are nonblocking
+ground details drawn below Dave and authored Y-sorted objects. There are no
+procedural physics bodies, finalized assets or ecological systems.
+
+The original clearing, impact scar, north ridge and south shelf polygons/colors
+remain editable in `planet_exterior.tscn`. Their parent is hidden because these
+polygons are generation data rather than a second rectangular terrain layer.
+The generator applies them in scene order, with full weight inside and a smooth
+256-unit exterior feather. Their irregular outlines define the impact/recovery
+transition; beyond the feather, normal rocky scrubland resumes. Authored interiors
+remain seed-independent and override both baseline and stored colors. The old
+rectangular background and temporary perimeter walls are removed. Ship, hatch,
+spawn and both rock objects/collisions are preserved.
+
+`PlanetExterior.protected_gameplay` separately reserves ship entrance, spawn,
+main approach, factory clearing and future Ferrite space. No Ferrite is placed.
+A 48-unit clearance suppresses details around this polygon and the authored
+geology polygons. Existing solid-object anchors also exclude details within
+160 units, covering the two rocks; the larger ship is inside the clearing.
+Details return sparsely through the recovery feather, with rejection probability
+proportional to overlay weight. The largest detail extent is under 15 units. The protection
+polygon can be edited independently of scar colors/outlines.
+
+`planet_exterior.gd` owns only presentation lifecycle. Configure `loading_radius`
+(default **2**), `retention_margin` (**1**) and `chunks_per_frame` (**2**) before
+arrival. Required chunks form a Chebyshev square: `(2 * radius + 1)^2`, initially
+**25** chunks. Crossing a chunk boundary replaces stale requests, prioritizes
+nearby missing chunks, retains existing neighbors and removes nodes outside
+radius + margin. At defaults at most **49** chunk nodes can remain, including
+recently adjacent chunks; no indefinite cache accumulates. Stepping back across
+a boundary reuses retained nodes. Nodes and requests stay cached while the exterior
+is detached for ship visits and are freed with its playthrough.
+
+First arrival fills the whole neighborhood in batches behind the existing black
+curtain with input still locked. Later hatch arrivals reuse it without a new fade;
+normal travel still allows the original physics registration frame. During walking,
+missing outer chunks fill over subsequent frames, two per frame by default.
+The two-chunk lookahead is intended to cover the viewport at existing zoom and
+240-unit movement; stalls, visible coverage and tuning require owner testing.
+This is a work-count budget, not a measured millisecond limit. No threads,
+benchmarks or runtime performance claims are included.
+
+Generation/presentation does **not** mark terrain explored or surveyed. No fog,
+map or survey system exists yet. Future production simulation must live outside
+disposable `TerrainChunk` nodes and continue when terrain visuals unload. No
+factory simulation, building serialization, mining or logistics is implemented.
+
+Owner review should follow the PR's ordered playtest checklist, one item at a
+time: interior baseline, first reveal, crash-site preservation, travel beyond
+old boundaries, continuous coverage, revisit determinism, unloading/retention,
+seed variation, protected clearing, presentation/collision, transitions/objectives,
+and finally extended exploration without debugger errors. Only the owner runs
+these checks; agent static results do not establish gameplay acceptance.
