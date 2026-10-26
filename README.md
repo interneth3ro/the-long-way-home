@@ -52,10 +52,11 @@ validation; runtime and engine verification remain unperformed.
   obstacles with ship-fixture visuals and an instance of Dave.
 - `scenes/player/dave.tscn`: reusable `CharacterBody2D`, a collision shape, a
   `Camera2D` child, and a separate `Visual` child containing Dave's illustrated
-  static `Sprite2D`, south/north walk sprites and the shared `AnimationPlayer`
-  described below (north extension pending merge).
+  static fallback `Sprite2D`, south/north walk and idle sprites, and the shared
+  `AnimationPlayer` described below (directional idle pending merge).
 - `scenes/player/dave.gd`: movement through `_physics_process()` and
-  `move_and_slide()`, with input-based north/south walk presentation selection.
+  `move_and_slide()`, with input-based north/south walk presentation selection
+  and presentation-only last-facing retention (pending merge).
 - `scenes/player/follow_camera.gd`: wheel input and bounded zoom transitions using
   a built-in Tween; following uses the child camera's built-in behavior.
 - `scenes/player/interaction_detector.gd`: Dave's proximity selection, solid-body
@@ -202,9 +203,12 @@ Y-sorting, ground contact, camera follow/zoom, Computer interaction, dialogue an
 objectives. Confirm Shift never changes speed. Foot sliding and the wider walking
 silhouette require owner visual evaluation; no runtime result is claimed.
 
-### Dave north-facing walk extension (feature branch, pending merge)
+### Dave north-facing walk baseline (PR #23, merged)
 
-`codex/dave-north-walk` extends the baseline above with straight-north input.
+PR #23 extended the baseline above with straight-north input. The owner reports
+it was manually validated and merged; the checks below record agent static
+validation of that baseline. Its historical idle behavior is superseded by the
+directional idle feature below when merged.
 The owner-approved `assets/characters/dave/dave_walk_north.png` is preserved
 byte-for-byte: 1983 x 793, 8-bit RGBA, SHA-256
 `17d8b3d999450e820ce368a905fbcdd548de62d7894197077430a75bf0aee39c`.
@@ -261,6 +265,58 @@ clipping, halos, ground contact and foot sliding at normal zoom and both zoom
 bounds. Verify collision, Y-sorting, camera follow/zoom, Computer interactions,
 dialogue and objectives. Confirm Shift never changes speed. The south animation
 must retain its previously approved appearance.
+
+### Dave directional idle (feature branch, pending merge)
+
+`codex/dave-directional-idle` adds static `Visual/IdleSouthSprite` and
+`Visual/IdleNorthSprite` nodes using the exact owner-approved PNGs. No derived
+images, pixel edits, resampling or new animations are needed. Original PNGs are
+preserved byte-for-byte, including faint alpha fringes and margin pixels.
+
+| Source PNG under `assets/characters/dave/` | Dimensions (RGBA) | SHA-256 |
+| --- | --- | --- |
+| `dave_idle_south.png` | 1279 x 1230 | `07f8353a3c225c4b547df055cd7e1d1620cdce9f5529eb4b24f399c3a733b99d` |
+| `dave_idle_north.png` | 1145 x 1374 | `df2c97edcd7fcc38929b025ffb3a7c753647b086978df8c3db7b23112fc69e53` |
+
+Both sprites use linear filtering and `centered = false`. Exclusive alpha >= 32
+bounds are `(285, 106, 986, 1195)` south and `(188, 95, 952, 1301)` north.
+South uses uniform scale `0.084` and source-pixel offset `(-635.5, -1195)`;
+north uses uniform scale `0.0758` and offset `(-570, -1301)`. These center the
+substantial silhouette and align its lower boot edge to Dave's unchanged local
+ground origin. Substantial extents are about 58.88 x 91.48 world units south and
+57.91 x 91.41 north, matching walking height (about 91.1-91.4) while preserving
+approved proportions. Faint alpha extends beyond these bounds and remains intact.
+The two import sidecars follow existing lossless, no-mipmap, unlimited-size
+settings with distinct UIDs; they were prepared as text without engine import.
+
+`last_facing` is presentation-only, initially `SOUTH`; the scene itself also
+shows only south idle on spawn. Straight north/south input updates that value and
+selects the existing walk animation. Sustained walking does not restart playback;
+direction changes apply the first frame immediately. Zero input stops playback
+and displays the remembered static idle. East/west and diagonal movement stop
+playback and display the existing static fallback, leaving `last_facing`
+unchanged. Stopping unsupported movement therefore returns to the last supported
+north/south idle, or south if neither has occurred. Exactly one of the five
+sprites is selected per state. `AnimationPlayer` remains the sole animation
+controller; both walk animations, their 8 FPS timing and frame order are unchanged.
+The input vector, 240 movement speed, `move_and_slide()`, collision, Y-sorting,
+camera, interactions, dialogue, objectives and project settings are unchanged.
+
+Validation is static only: PNG decode/integrity and SHA-256 preservation,
+alpha/anchor calculations, scene and import references, animation and protected
+scene-block comparison, presentation branch review, movement-statement identity,
+Markdown links and Git diff checks. Neither Godot nor project code was executed.
+Engine import, rendering, transition appearance and gameplay remain unverified;
+faint fringes, wider idle silhouettes and ground alignment need owner assessment.
+
+Owner manual playtest: confirm initial south idle, north/south walk-to-idle and
+idle-to-walk transitions, repeated release and direct north/south switching.
+Check all east/west and diagonal movement uses the original fallback and stopping
+it retains the last north/south facing (including before any supported walk).
+Confirm unchanged walk frame order and 8 FPS playback. Inspect size, boot contact,
+clipping, transparency tearing and halos at normal zoom and 0.75/1.5 zoom. Check
+collision, Y-sorting, camera follow/zoom, Computer interaction, dialogue and
+objectives. Confirm Shift does not change speed and no new movement mechanics exist.
 
 ### Existing environment and gameplay
 

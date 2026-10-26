@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3]
+[gd_scene load_steps=17 format=3]
 
 [ext_resource type="Script" path="res://scenes/player/dave.gd" id="1_controller"]
 [ext_resource type="Script" uid="uid://bq6n2v4r8k3tx" path="res://scenes/player/follow_camera.gd" id="2_camera"]
@@ -8,6 +8,8 @@
 [ext_resource type="Texture2D" path="res://assets/characters/dave/dave_static_approved_v2.png" id="6_dave_art"]
 [ext_resource type="Texture2D" path="res://assets/characters/dave/dave_walk_south_atlas.png" id="7_walk_art"]
 [ext_resource type="Texture2D" path="res://assets/characters/dave/dave_walk_north_atlas.png" id="8_walk_north_art"]
+[ext_resource type="Texture2D" path="res://assets/characters/dave/dave_idle_south.png" id="9_idle_south_art"]
+[ext_resource type="Texture2D" path="res://assets/characters/dave/dave_idle_north.png" id="10_idle_north_art"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_feet"]
 radius = 10.0
@@ -77,6 +79,7 @@ shape = SubResource("CircleShape2D_feet")
 [node name="Visual" type="Node2D" parent="."]
 
 [node name="Sprite2D" type="Sprite2D" parent="Visual"]
+visible = false
 texture_filter = 2
 scale = Vector2(0.0744, 0.0744)
 texture = ExtResource("6_dave_art")
@@ -100,6 +103,21 @@ texture = ExtResource("8_walk_north_art")
 centered = false
 offset = Vector2(-272, -784)
 hframes = 4
+
+[node name="IdleSouthSprite" type="Sprite2D" parent="Visual"]
+texture_filter = 2
+scale = Vector2(0.084, 0.084)
+texture = ExtResource("9_idle_south_art")
+centered = false
+offset = Vector2(-635.5, -1195)
+
+[node name="IdleNorthSprite" type="Sprite2D" parent="Visual"]
+visible = false
+texture_filter = 2
+scale = Vector2(0.0758, 0.0758)
+texture = ExtResource("10_idle_north_art")
+centered = false
+offset = Vector2(-570, -1301)
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="Visual"]
 libraries = {
