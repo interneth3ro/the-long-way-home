@@ -1,10 +1,11 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=9 format=3]
 
 [ext_resource type="Script" path="res://scenes/player/dave.gd" id="1_controller"]
 [ext_resource type="Script" uid="uid://bq6n2v4r8k3tx" path="res://scenes/player/follow_camera.gd" id="2_camera"]
 [ext_resource type="Script" uid="uid://dltwhdetect01" path="res://scenes/player/interaction_detector.gd" id="3_interaction"]
 [ext_resource type="PackedScene" path="res://scenes/ui/interaction_ui.tscn" id="4_ui"]
 [ext_resource type="PackedScene" path="res://scenes/ui/dialogue_ui.tscn" id="5_dialogue"]
+[ext_resource type="Texture2D" path="res://assets/characters/dave/dave_idle_angled_overhead_pilot.png" id="6_dave_art"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_feet"]
 radius = 10.0
@@ -24,13 +25,12 @@ shape = SubResource("CircleShape2D_feet")
 
 [node name="Visual" type="Node2D" parent="."]
 
-[node name="Body" type="Polygon2D" parent="Visual"]
-polygon = PackedVector2Array(-12, -28, 12, -28, 12, 0, -12, 0)
-color = Color(0.25, 0.75, 0.85, 1)
-
-[node name="Head" type="Polygon2D" parent="Visual"]
-polygon = PackedVector2Array(-8, -44, 8, -44, 10, -36, 8, -28, -8, -28, -10, -36)
-color = Color(0.95, 0.75, 0.55, 1)
+[node name="Sprite2D" type="Sprite2D" parent="Visual"]
+texture_filter = 2
+scale = Vector2(0.045, 0.045)
+texture = ExtResource("6_dave_art")
+centered = false
+offset = Vector2(-324.5, -1431)
 
 [node name="InteractionDetector" type="Area2D" parent="." node_paths=PackedStringArray("interaction_ui", "dialogue_ui")]
 position = Vector2(0, -10)

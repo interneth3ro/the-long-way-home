@@ -51,7 +51,8 @@ validation; runtime and engine verification remain unperformed.
   four static perimeter walls, and a Y-sorted group containing three static
   obstacles with ship-fixture visuals and an instance of Dave.
 - `scenes/player/dave.tscn`: reusable `CharacterBody2D`, a collision shape, a
-  `Camera2D` child, and a separate `Visual` child containing placeholder polygons.
+  `Camera2D` child, and a separate `Visual` child containing Dave's illustrated
+  `Sprite2D` (HD sprite pilot on `codex/dave-hd-sprite-pilot`, pending merge).
 - `scenes/player/dave.gd`: movement through `_physics_process()` and
   `move_and_slide()`.
 - `scenes/player/follow_camera.gd`: wheel input and bounded zoom transitions using
@@ -79,8 +80,46 @@ Use **WASD** or the **arrow keys** to move. The Input Map actions are `move_left
 `move_right`, `move_up`, and `move_down`; WASD uses physical key positions.
 `Input.get_vector()` limits direction length to one, keeping diagonal keyboard
 movement at the same 240 pixels per second as cardinal movement. Dave's local
-origin is his ground-contact position; replace the contents of `Visual` with
-future artwork aligned to that origin without changing the controller or camera.
+origin is his ground-contact position; artwork stays under `Visual`, aligned to
+that origin without changing the controller or camera.
+
+### Dave HD sprite pilot (feature branch, pending merge)
+
+The owner-approved source is
+`assets/characters/dave/dave_idle_angled_overhead_pilot.png`: a 649 × 1456,
+8-bit RGBA PNG. Preserve its bytes; do not crop, resample or recompress it.
+Reference the PNG directly as a `Texture2D` in `dave.tscn`; the owner's next editor
+import will use Godot's default 2D texture import (lossless, no size limit).
+No import was run for this integration and no generated import/cache files are
+included. Only `Visual/Sprite2D` explicitly uses linear texture filtering;
+project-wide rendering and filtering settings are unchanged.
+
+Provisional tuning lives on `Visual/Sprite2D`: uniform `scale = (0.045, 0.045)`,
+default position `(0, 0)`, `centered = false`, and texture-pixel
+`offset = (-324.5, -1431)`. The full texture spans 29.205 × 65.52 world units.
+The offset centers the image horizontally and places the visible lower boot edge
+(source row 1430 at alpha >= 32) just above local y = 0. Faint alpha fringe extends
+below that edge; the image canvas bottom is not used as the ground anchor.
+Adjust scale here for readability; keep the source-pixel offset while scaling to
+retain this anchor. This is a local art experiment, not a construction-grid or
+global sprite-size convention.
+
+Dave's root and `Visual` remain at their existing origins. The collision circle
+still has radius 10 at `(0, -10)`, with its bottom at y = 0. `GroundObjects`, Dave's
+sort origin, and all Y-sort/Z settings are unchanged. Camera, interaction,
+movement, dialogue, objectives, fixtures and project settings are untouched.
+
+Validation is static only: PNG decoding/RGBA/transparency, source hash preservation,
+texture and scene references, resource counts, unchanged nonvisual scene blocks,
+scripts/settings and Y-sorting hierarchy, Markdown links and Git diff checks.
+Godot was not executed graphically or headlessly; import, engine loading and
+gameplay appearance remain unverified. Before merge, the owner must manually
+check recognition at normal zoom and both bounds (0.75 and 1.5), boot contact
+without floating/sinking, collision contact and occlusion around all fixtures,
+camera follow/wheel zoom, and unchanged movement, interaction, dialogue and
+objective progression. Scale and alignment remain provisional until that check.
+
+### Existing environment and gameplay
 
 The camera follows Dave's ground-contact origin independently of `Visual`.
 **Mouse wheel up** zooms in; **mouse wheel down** zooms out, centered on Dave.
