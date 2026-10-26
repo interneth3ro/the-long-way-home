@@ -1,15 +1,12 @@
-[gd_scene load_steps=17 format=3]
+[gd_scene load_steps=20 format=3]
 
 [ext_resource type="Script" path="res://scenes/player/dave.gd" id="1_controller"]
 [ext_resource type="Script" uid="uid://bq6n2v4r8k3tx" path="res://scenes/player/follow_camera.gd" id="2_camera"]
 [ext_resource type="Script" uid="uid://dltwhdetect01" path="res://scenes/player/interaction_detector.gd" id="3_interaction"]
 [ext_resource type="PackedScene" path="res://scenes/ui/interaction_ui.tscn" id="4_ui"]
 [ext_resource type="PackedScene" path="res://scenes/ui/dialogue_ui.tscn" id="5_dialogue"]
-[ext_resource type="Texture2D" path="res://assets/characters/dave/dave_static_approved_v2.png" id="6_dave_art"]
-[ext_resource type="Texture2D" path="res://assets/characters/dave/dave_walk_south_atlas.png" id="7_walk_art"]
-[ext_resource type="Texture2D" path="res://assets/characters/dave/dave_walk_north_atlas.png" id="8_walk_north_art"]
-[ext_resource type="Texture2D" path="res://assets/characters/dave/dave_idle_south.png" id="9_idle_south_art"]
-[ext_resource type="Texture2D" path="res://assets/characters/dave/dave_idle_north.png" id="10_idle_north_art"]
+[ext_resource type="Texture2D" path="res://assets/characters/dave/character_walk.png" id="6_walk"]
+[ext_resource type="Texture2D" path="res://assets/characters/dave/character_idle.png" id="7_idle"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_feet"]
 radius = 10.0
@@ -17,53 +14,312 @@ radius = 10.0
 [sub_resource type="CircleShape2D" id="CircleShape2D_interaction"]
 radius = 120.0
 
-[sub_resource type="Animation" id="Animation_reset"]
+[sub_resource type="Animation" id="Animation_RESET"]
+resource_name = "RESET"
 length = 0.001
 tracks/0/type = "value"
-tracks/0/path = NodePath("WalkSouthSprite:frame")
+tracks/0/path = NodePath("Sprite2D:texture")
 tracks/0/interp = 1
 tracks/0/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
+"values": [ExtResource("7_idle")]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Sprite2D:frame")
+tracks/1/interp = 1
+tracks/1/keys = {
+"times": PackedFloat32Array(0.0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
 "values": [0]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("Sprite2D:offset")
+tracks/2/interp = 1
+tracks/2/keys = {
+"times": PackedFloat32Array(0.0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [Vector2(-24, -42)]
 }
 
 [sub_resource type="Animation" id="Animation_walk_south"]
 resource_name = "walk_south"
 length = 0.5
 loop_mode = 1
-step = 0.125
+step = 0.0625
 tracks/0/type = "value"
-tracks/0/path = NodePath("WalkSouthSprite:frame")
+tracks/0/path = NodePath("Sprite2D:texture")
 tracks/0/interp = 1
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.125, 0.25, 0.375),
-"transitions": PackedFloat32Array(1, 1, 1, 1),
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [0, 1, 2, 3]
+"values": [ExtResource("6_walk")]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Sprite2D:frame")
+tracks/1/interp = 1
+tracks/1/keys = {
+"times": PackedFloat32Array(0.0, 0.0625, 0.125, 0.1875, 0.25, 0.3125, 0.375, 0.4375),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5, 6, 7]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("Sprite2D:offset")
+tracks/2/interp = 1
+tracks/2/keys = {
+"times": PackedFloat32Array(0.0, 0.0625, 0.125, 0.1875, 0.25, 0.3125, 0.375, 0.4375),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [Vector2(-24, -44), Vector2(-24, -43), Vector2(-24, -42), Vector2(-24, -43), Vector2(-24, -44), Vector2(-24, -43), Vector2(-24, -42), Vector2(-24, -43)]
 }
 
 [sub_resource type="Animation" id="Animation_walk_north"]
 resource_name = "walk_north"
 length = 0.5
 loop_mode = 1
-step = 0.125
+step = 0.0625
 tracks/0/type = "value"
-tracks/0/path = NodePath("WalkNorthSprite:frame")
+tracks/0/path = NodePath("Sprite2D:texture")
 tracks/0/interp = 1
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.125, 0.25, 0.375),
-"transitions": PackedFloat32Array(1, 1, 1, 1),
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [0, 1, 2, 3]
+"values": [ExtResource("6_walk")]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Sprite2D:frame")
+tracks/1/interp = 1
+tracks/1/keys = {
+"times": PackedFloat32Array(0.0, 0.0625, 0.125, 0.1875, 0.25, 0.3125, 0.375, 0.4375),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [8, 9, 10, 11, 12, 13, 14, 15]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("Sprite2D:offset")
+tracks/2/interp = 1
+tracks/2/keys = {
+"times": PackedFloat32Array(0.0, 0.0625, 0.125, 0.1875, 0.25, 0.3125, 0.375, 0.4375),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [Vector2(-23.5, -44), Vector2(-23.5, -43), Vector2(-23.5, -42), Vector2(-23.5, -43), Vector2(-23.5, -44), Vector2(-23.5, -43), Vector2(-23.5, -42), Vector2(-23.5, -43)]
+}
+
+[sub_resource type="Animation" id="Animation_walk_west"]
+resource_name = "walk_west"
+length = 0.5
+loop_mode = 1
+step = 0.0625
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite2D:texture")
+tracks/0/interp = 1
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [ExtResource("6_walk")]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Sprite2D:frame")
+tracks/1/interp = 1
+tracks/1/keys = {
+"times": PackedFloat32Array(0.0, 0.0625, 0.125, 0.1875, 0.25, 0.3125, 0.375, 0.4375),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [16, 17, 18, 19, 20, 21, 22, 23]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("Sprite2D:offset")
+tracks/2/interp = 1
+tracks/2/keys = {
+"times": PackedFloat32Array(0.0, 0.0625, 0.125, 0.1875, 0.25, 0.3125, 0.375, 0.4375),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [Vector2(-23.5, -43), Vector2(-23.5, -43), Vector2(-23.5, -43), Vector2(-23.5, -43), Vector2(-23.5, -43), Vector2(-23.5, -43), Vector2(-23.5, -43), Vector2(-23.5, -43)]
+}
+
+[sub_resource type="Animation" id="Animation_walk_east"]
+resource_name = "walk_east"
+length = 0.5
+loop_mode = 1
+step = 0.0625
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite2D:texture")
+tracks/0/interp = 1
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [ExtResource("6_walk")]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Sprite2D:frame")
+tracks/1/interp = 1
+tracks/1/keys = {
+"times": PackedFloat32Array(0.0, 0.0625, 0.125, 0.1875, 0.25, 0.3125, 0.375, 0.4375),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [24, 25, 26, 27, 28, 29, 30, 31]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("Sprite2D:offset")
+tracks/2/interp = 1
+tracks/2/keys = {
+"times": PackedFloat32Array(0.0, 0.0625, 0.125, 0.1875, 0.25, 0.3125, 0.375, 0.4375),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [Vector2(-24.5, -43), Vector2(-24.5, -43), Vector2(-24.5, -43), Vector2(-24.5, -43), Vector2(-24.5, -43), Vector2(-24.5, -43), Vector2(-24.5, -43), Vector2(-24.5, -43)]
+}
+
+[sub_resource type="Animation" id="Animation_idle_south"]
+resource_name = "idle_south"
+length = 1.44
+loop_mode = 1
+step = 0.18
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite2D:texture")
+tracks/0/interp = 1
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [ExtResource("7_idle")]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Sprite2D:frame")
+tracks/1/interp = 1
+tracks/1/keys = {
+"times": PackedFloat32Array(0.0, 0.18, 0.36, 0.54, 0.72, 0.9, 1.08, 1.26),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5, 6, 7]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("Sprite2D:offset")
+tracks/2/interp = 1
+tracks/2/keys = {
+"times": PackedFloat32Array(0.0, 0.18, 0.36, 0.54, 0.72, 0.9, 1.08, 1.26),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [Vector2(-24, -42), Vector2(-24, -42), Vector2(-24, -42), Vector2(-24, -42), Vector2(-24, -42), Vector2(-24, -42), Vector2(-24, -42), Vector2(-24, -42)]
+}
+
+[sub_resource type="Animation" id="Animation_idle_north"]
+resource_name = "idle_north"
+length = 1.44
+loop_mode = 1
+step = 0.18
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite2D:texture")
+tracks/0/interp = 1
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [ExtResource("7_idle")]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Sprite2D:frame")
+tracks/1/interp = 1
+tracks/1/keys = {
+"times": PackedFloat32Array(0.0, 0.18, 0.36, 0.54, 0.72, 0.9, 1.08, 1.26),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [8, 9, 10, 11, 12, 13, 14, 15]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("Sprite2D:offset")
+tracks/2/interp = 1
+tracks/2/keys = {
+"times": PackedFloat32Array(0.0, 0.18, 0.36, 0.54, 0.72, 0.9, 1.08, 1.26),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [Vector2(-23.5, -42), Vector2(-23.5, -42), Vector2(-23.5, -42), Vector2(-23.5, -42), Vector2(-23.5, -42), Vector2(-23.5, -42), Vector2(-23.5, -42), Vector2(-23.5, -42)]
+}
+
+[sub_resource type="Animation" id="Animation_idle_west"]
+resource_name = "idle_west"
+length = 1.44
+loop_mode = 1
+step = 0.18
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite2D:texture")
+tracks/0/interp = 1
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [ExtResource("7_idle")]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Sprite2D:frame")
+tracks/1/interp = 1
+tracks/1/keys = {
+"times": PackedFloat32Array(0.0, 0.18, 0.36, 0.54, 0.72, 0.9, 1.08, 1.26),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [16, 17, 18, 19, 20, 21, 22, 23]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("Sprite2D:offset")
+tracks/2/interp = 1
+tracks/2/keys = {
+"times": PackedFloat32Array(0.0, 0.18, 0.36, 0.54, 0.72, 0.9, 1.08, 1.26),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [Vector2(-23.5, -42), Vector2(-23.5, -42), Vector2(-23.5, -42), Vector2(-23.5, -42), Vector2(-23.5, -42), Vector2(-23.5, -42), Vector2(-23.5, -42), Vector2(-23.5, -42)]
+}
+
+[sub_resource type="Animation" id="Animation_idle_east"]
+resource_name = "idle_east"
+length = 1.44
+loop_mode = 1
+step = 0.18
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite2D:texture")
+tracks/0/interp = 1
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [ExtResource("7_idle")]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Sprite2D:frame")
+tracks/1/interp = 1
+tracks/1/keys = {
+"times": PackedFloat32Array(0.0, 0.18, 0.36, 0.54, 0.72, 0.9, 1.08, 1.26),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [24, 25, 26, 27, 28, 29, 30, 31]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("Sprite2D:offset")
+tracks/2/interp = 1
+tracks/2/keys = {
+"times": PackedFloat32Array(0.0, 0.18, 0.36, 0.54, 0.72, 0.9, 1.08, 1.26),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [Vector2(-24.5, -42), Vector2(-24.5, -42), Vector2(-24.5, -42), Vector2(-24.5, -42), Vector2(-24.5, -42), Vector2(-24.5, -42), Vector2(-24.5, -42), Vector2(-24.5, -42)]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_dave"]
 _data = {
-"RESET": SubResource("Animation_reset"),
+"RESET": SubResource("Animation_RESET"),
+"walk_south": SubResource("Animation_walk_south"),
 "walk_north": SubResource("Animation_walk_north"),
-"walk_south": SubResource("Animation_walk_south")
+"walk_west": SubResource("Animation_walk_west"),
+"walk_east": SubResource("Animation_walk_east"),
+"idle_south": SubResource("Animation_idle_south"),
+"idle_north": SubResource("Animation_idle_north"),
+"idle_west": SubResource("Animation_idle_west"),
+"idle_east": SubResource("Animation_idle_east")
 }
 
 [node name="Dave" type="CharacterBody2D"]
@@ -79,45 +335,13 @@ shape = SubResource("CircleShape2D_feet")
 [node name="Visual" type="Node2D" parent="."]
 
 [node name="Sprite2D" type="Sprite2D" parent="Visual"]
-visible = false
-texture_filter = 2
-scale = Vector2(0.0744, 0.0744)
-texture = ExtResource("6_dave_art")
+texture_filter = 1
+scale = Vector2(2.676470588, 2.676470588)
+texture = ExtResource("7_idle")
 centered = false
-offset = Vector2(-588.5, -1287)
-
-[node name="WalkSouthSprite" type="Sprite2D" parent="Visual"]
-visible = false
-texture_filter = 2
-scale = Vector2(0.1224, 0.1224)
-texture = ExtResource("7_walk_art")
-centered = false
-offset = Vector2(-240, -770)
-hframes = 4
-
-[node name="WalkNorthSprite" type="Sprite2D" parent="Visual"]
-visible = false
-texture_filter = 2
-scale = Vector2(0.1224, 0.1224)
-texture = ExtResource("8_walk_north_art")
-centered = false
-offset = Vector2(-272, -784)
-hframes = 4
-
-[node name="IdleSouthSprite" type="Sprite2D" parent="Visual"]
-texture_filter = 2
-scale = Vector2(0.075, 0.0835)
-texture = ExtResource("9_idle_south_art")
-centered = false
-offset = Vector2(-635.5, -1195)
-
-[node name="IdleNorthSprite" type="Sprite2D" parent="Visual"]
-visible = false
-texture_filter = 2
-scale = Vector2(0.065, 0.0754)
-texture = ExtResource("10_idle_north_art")
-centered = false
-offset = Vector2(-570, -1301)
+offset = Vector2(-24, -42)
+hframes = 8
+vframes = 4
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="Visual"]
 libraries = {
