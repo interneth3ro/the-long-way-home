@@ -52,10 +52,10 @@ validation; runtime and engine verification remain unperformed.
   obstacles with ship-fixture visuals and an instance of Dave.
 - `scenes/player/dave.tscn`: reusable `CharacterBody2D`, a collision shape, a
   `Camera2D` child, and a separate `Visual` child containing Dave's illustrated
-  static `Sprite2D`, plus the south-walk sprite and `AnimationPlayer` prototype
-  described below (pending merge).
+  static `Sprite2D`, south/north walk sprites and the shared `AnimationPlayer`
+  described below (north extension pending merge).
 - `scenes/player/dave.gd`: movement through `_physics_process()` and
-  `move_and_slide()`, with input-based south-walk presentation selection.
+  `move_and_slide()`, with input-based north/south walk presentation selection.
 - `scenes/player/follow_camera.gd`: wheel input and bounded zoom transitions using
   a built-in Tween; following uses the child camera's built-in behavior.
 - `scenes/player/interaction_detector.gd`: Dave's proximity selection, solid-body
@@ -131,9 +131,11 @@ and movement, then interactions, dialogue and objective progression. Inspect
 transparency fringes, the source's faint halo, clipping and scaling artifacts.
 Scale and alignment remain provisional until this playtest.
 
-### Dave south-facing walk prototype (feature branch, pending merge)
+### Dave south-facing walk baseline (PR #22, merged)
 
-`codex/dave-south-walk-prototype` adds only south-facing walking presentation.
+PR #22 added south-facing walking presentation. The owner reports it was
+validated and merged; the static-only results below record the original agent
+validation. The north extension preserves its artwork, transforms and animation.
 The original approved `assets/characters/dave/dave_walking.png` is preserved
 byte-for-byte: 1983 x 793 RGBA, SHA-256
 `02c9d474a90e7a6bd1f88bb2a954e88afb3df50c408f88dc1476596dcbf1a7a7`.
@@ -199,6 +201,66 @@ south diagonals: each must immediately restore the static sprite. Check collisio
 Y-sorting, ground contact, camera follow/zoom, Computer interaction, dialogue and
 objectives. Confirm Shift never changes speed. Foot sliding and the wider walking
 silhouette require owner visual evaluation; no runtime result is claimed.
+
+### Dave north-facing walk extension (feature branch, pending merge)
+
+`codex/dave-north-walk` extends the baseline above with straight-north input.
+The owner-approved `assets/characters/dave/dave_walk_north.png` is preserved
+byte-for-byte: 1983 x 793, 8-bit RGBA, SHA-256
+`17d8b3d999450e820ce368a905fbcdd548de62d7894197077430a75bf0aee39c`.
+The derived `dave_walk_north_atlas.png` is 2176 x 832 RGBA: four uniform
+544 x 832 cells in the original left-to-right order. No pixels are removed,
+repainted or resampled; each complete source cell is translated by integer
+pixels onto a transparent cell. Source and atlas import sidecars match the
+baseline's lossless, no-mipmap, unlimited-size settings with distinct UIDs;
+they are prepared as text without running an engine import.
+
+| Frame | Source cell x range | Source anchor (x, y) | Atlas cell anchor |
+| --- | --- | --- | --- |
+| 1 | [0, 496) | (240, 769) | (272, 784) |
+| 2 | [496, 992) | (744, 753) | (272, 784) |
+| 3 | [992, 1488) | (1236, 769) | (272, 784) |
+| 4 | [1488, 1983) | (1734, 753) | (272, 784) |
+
+Anchors use rounded alpha >= 32 horizontal silhouette centers and exclusive
+lower boot edges. `Visual/WalkNorthSprite` uses `centered = false`, `hframes = 4`,
+offset `(-272, -784)` and the south sprite's uniform scale `(0.1224, 0.1224)`
+and linear filtering. Substantial boot edges map to local y = 0 in every frame;
+contact poses are about 91.07 world units tall, close to the existing baseline.
+Larger cells preserve all faint margins without clipping or crossing cells.
+Inspection found 846 detached nonzero-alpha pixels in total, all alpha <= 7/255;
+these and the connected alpha fringe remain unchanged. Halos still need owner
+visual assessment. There is no substantial cleanup or reconstruction.
+
+The existing `Visual/AnimationPlayer` gains only `walk_north`: a 0.5-second loop
+with discrete `WalkNorthSprite:frame` keys 0, 1, 2, 3 at 0, 0.125, 0.25 and
+0.375 seconds (8 FPS at default playback speed 1.0). `walk_south` and `RESET`
+remain unchanged. No animation modifies transforms or gameplay.
+
+The presentation helper now selects north for negative y and south for positive
+y, each with approximately zero x in the existing input vector. It starts on
+entry or direction change and applies frame 0 immediately; sustained input does
+not restart playback. Exactly one sprite is shown. Idle, east, west and all
+diagonals stop playback and restore the approved static sprite. Directional idle
+poses and other directional animations remain deferred. As before, input against
+a wall still animates. Movement remains 240 pixels per second without sprinting;
+input, collision, Y-sorting, camera, interaction, dialogue and objectives are unchanged.
+
+Validation is static only: source SHA-256, complete source-cell pixel identity
+under the documented translations, atlas dimensions and alignment, scene/resource
+references and unique import UIDs, animation configuration, direction selection
+and fallback review, unchanged south animation and existing scene nodes,
+protected gameplay/settings files, Markdown links and Git diff checks. Godot
+was not executed graphically or headlessly; import, playback, rendering and
+gameplay verification remain for the owner.
+
+Owner manual playtest: use W/Up for north and S/Down for south; check four frames
+in order and continuous 8 FPS loops, repeated stop/start and north/south switching.
+Confirm idle, east, west and diagonals restore static art. Inspect transparency,
+clipping, halos, ground contact and foot sliding at normal zoom and both zoom
+bounds. Verify collision, Y-sorting, camera follow/zoom, Computer interactions,
+dialogue and objectives. Confirm Shift never changes speed. The south animation
+must retain its previously approved appearance.
 
 ### Existing environment and gameplay
 
