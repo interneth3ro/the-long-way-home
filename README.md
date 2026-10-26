@@ -6,7 +6,8 @@ minimal ship-interior environment and collision foundation, plus data-driven
 Computer dialogue and inspection. The objective foundation is present; first
 narrative integration on
 `codex/first-narrative-integration` is pending merge and owner runtime verification.
-It is independent of the previous FactoryGame project.
+Its gameplay implementation is independent of FactoryGame; the approved Dave
+migration below reuses only two legacy artwork sheets.
 
 ## Requirements and setup
 
@@ -51,12 +52,11 @@ validation; runtime and engine verification remain unperformed.
   four static perimeter walls, and a Y-sorted group containing three static
   obstacles with ship-fixture visuals and an instance of Dave.
 - `scenes/player/dave.tscn`: reusable `CharacterBody2D`, a collision shape, a
-  `Camera2D` child, and a separate `Visual` child containing Dave's illustrated
-  static fallback `Sprite2D`, south/north walk and idle sprites, and the shared
-  `AnimationPlayer` described below (directional idle pending merge).
+  `Camera2D` child, and a separate `Visual` child containing one legacy pixel-art
+  `Sprite2D` and the retained `AnimationPlayer` (migration pending merge).
 - `scenes/player/dave.gd`: movement through `_physics_process()` and
-  `move_and_slide()`, with input-based north/south walk presentation selection
-  and presentation-only last-facing retention (pending merge).
+  `move_and_slide()`, with four-direction walk/idle presentation selection and
+  presentation-only last-facing retention (migration pending merge).
 - `scenes/player/follow_camera.gd`: wheel input and bounded zoom transitions using
   a built-in Tween; following uses the child camera's built-in behavior.
 - `scenes/player/interaction_detector.gd`: Dave's proximity selection, solid-body
@@ -84,6 +84,11 @@ Use **WASD** or the **arrow keys** to move. The Input Map actions are `move_left
 movement at the same 240 pixels per second as cardinal movement. Dave's local
 origin is his ground-contact position; artwork stays under `Visual`, aligned to
 that origin without changing the controller or camera.
+
+The following four Dave sections preserve historical artwork and calibration
+records. The legacy migration section supersedes their active presentation and
+playtest instructions on `codex/legacy-dave-animation-migration` (pending merge).
+All newer artwork remains preserved as inactive assets.
 
 ### Dave static sprite baseline (PR #21, merged)
 
@@ -344,6 +349,73 @@ Confirm unchanged walk frame order and 8 FPS playback. Inspect size, boot contac
 clipping, transparency tearing and halos at normal zoom and 0.75/1.5 zoom. Check
 collision, Y-sorting, camera follow/zoom, Computer interaction, dialogue and
 objectives. Confirm Shift does not change speed and no new movement mechanics exist.
+
+### Dave legacy directional animation migration (feature branch, pending merge)
+
+The owner approved consistent helmeted pixel-art Dave, a scoped exception to the
+illustrated visual direction. Only two PNGs are reused; no legacy controller or
+gameplay systems are imported. The east/west artwork-generation effort is
+abandoned. Existing newer Dave PNGs and import sidecars remain unchanged and
+inactive. Source: `D:/GameDev/Godot/Projects/FactoryGame/Assets/Character/`.
+Destination: `assets/characters/dave/`. Source and copy SHA-256 values match:
+
+| Asset | SHA-256 |
+| --- | --- |
+| `character_walk.png` | `425b952b6168fd6e3d6291d71d5b3f16e3c54911074e18f1963de65a4b8b5ccf` |
+| `character_idle.png` | `8cd4187072d894391d03165b798c3d6d90368624eb0256a0d11e1e0af369f21e` |
+
+Both sheets are 384 x 192: eight columns and four rows of 48 x 48 cells.
+Rows are south, north, west, east. One `Visual/Sprite2D` uses `hframes = 8`,
+`vframes = 4` and nearest filtering. The existing `Visual/AnimationPlayer`
+contains eight looping clips: `walk_{south,north,west,east}` uses eight frames
+at 16 FPS (0.0625-second keys, 0.5-second cycle); corresponding `idle_*` clips
+use eight frames at 1 / 0.18 = 5.555556 FPS (1.44-second cycle). Discrete tracks
+select texture, frame and visual offset; `RESET` restores south idle frame 0.
+Source frame order and pixels are unchanged. Import sidecars were authored as
+text with lossless compression, no mipmaps and no size limit; Godot has not
+imported them. Mining artwork, legacy SpriteFrames and scripts are excluded.
+
+Every frame's nonzero-alpha bounds were measured. Exclusive horizontal bounds
+are `[13,35)` south, `[12,35)` north, `[14,33)` west and `[15,34)` east;
+visible heights range from 32 to 34 pixels. One uniform scale of
+`91 / 34 = 2.676470588` makes the tallest poses 91 world units and the shortest
+85.647 units. This measured result replaces the initial 2.8-3.0 estimate.
+
+The sprite is uncentered. Source-pixel offsets use negative alpha midpoint X
+and negative exclusive lower boot edge Y. X offsets for south/north/west/east
+are `-24`, `-23.5`, `-23.5`, `-24.5`. Idle Y is always `-42`.
+North/south walking Y follows `[-44,-43,-42,-43,-44,-43,-42,-43]`;
+west/east walking Y is always `-43`. Discrete offset keys accompany each frame,
+so `scale * (boot_edge + offset.y) = 0` and each silhouette stays horizontally
+centered. This compensates small source baseline differences without editing
+pixels. All occupied pixels fit inside their original cells. Root and Visual
+origins, collision radius 10 at `(0,-10)` and interaction radius 120 at
+`(0,-10)` are unchanged. No direction uses a different or nonuniform scale.
+
+Facing follows the existing input's dominant axis, choosing horizontal on exact
+ties. Moving selects walking and updates facing; stopping retains facing and
+selects animated idle. The scene and `_ready()` initialize south idle. Animation
+changes apply their first keys immediately; sustained input does not restart a
+clip. Input against a wall still animates. Movement remains immediate at 240
+units/second with unchanged `Input.get_vector()` and `move_and_slide()` code.
+Camera/zoom, Y-sorting, UI paths, Computer interaction, dialogue and objective
+wiring are unchanged. There are no new inputs, sprinting, acceleration or stamina.
+
+Validation is static only: byte identity, dimensions, alpha bounds, frame/texture/
+offset tracks, loop durations, resource paths, preserved movement and nonvisual
+scene blocks, protected files, Markdown links and Git diff checks. Neither Godot
+nor project code was executed. Engine import, playback and gameplay remain
+unverified.
+
+Owner manual playtest: verify initial south idle; eight frames in all four walk
+clips at 16 FPS; four slower idle loops; last-facing retention; dominant-axis
+diagonals and horizontal ties; repeated stop/start and direction changes without
+flickering or missing frames. Inspect size, proportions, boot contact, sliding,
+clipping and nearest-filter appearance at normal zoom and both zoom bounds.
+Verify collision, Y-sorting, camera follow/zoom, Computer interaction, dialogue
+completion and objective activation/tracker behavior. Check WASD and arrows,
+and confirm Shift does not change speed. Pixel-art integration, pose-height
+variation and per-frame anchor compensation require owner visual assessment.
 
 ### Existing environment and gameplay
 

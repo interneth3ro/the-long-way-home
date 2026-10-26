@@ -15,6 +15,11 @@ accomplishes his goals.
   all assets.
 - Atmospheric lighting with strong gameplay readability.
 - A contextual construction grid.
+- Owner-approved Dave exception: use the legacy helmeted pixel-art walking and
+  idle sheets consistently across four directions. This does not change the
+  broader environment direction or import legacy gameplay. Implementation is
+  pending merge on `codex/legacy-dave-animation-migration`; runtime acceptance
+  remains with the owner.
 
 ## Approved construction and logistics direction
 
