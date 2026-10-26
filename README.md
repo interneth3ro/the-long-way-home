@@ -281,37 +281,37 @@ preserved byte-for-byte, including faint alpha fringes and margin pixels.
 Both sprites use linear filtering and `centered = false`. Exclusive alpha >= 32
 bounds are `(285, 106, 986, 1195)` south and `(188, 95, 952, 1301)` north.
 Owner testing found the initial height-matched idle poses visibly larger than
-walking. This revision uses uniform scale `0.075` south (previously `0.084`) and
-`0.065` north (previously `0.0758`). The recalculated source-pixel offsets remain
-`(-635.5, -1195)` south and `(-570, -1301)` north: the negative horizontal bound
-midpoint and negative lower boot edge. With `centered = false`, multiplying
-`(source point + offset)` by either uniform scale still maps those anchors to
-local `(0, 0)`. Root, collision and Visual origins remain unchanged.
+walking. The first uniform reduction (south `0.075`, north `0.065`) resolved the
+width mismatch according to the owner, but made idle noticeably shorter. This
+second calibration preserves those approved X scales and independently restores
+height using the owner's proposed Y scales. It remains pending owner playtesting.
 
-| Direction | Previous visible width x height | Revised width x height | Walking width / height ranges |
-| --- | --- | --- | --- |
-| South | 58.88 x 91.48 | 52.58 x 81.68 | 52.14-52.51 / 89.47-91.43 |
-| North | 57.91 x 91.41 | 49.66 x 78.39 | 48.47-48.72 / 89.11-91.07 |
+| Direction | Previous X/Y scale | Revised X/Y scale | Width x height before / after (world units) | Walking contact-frame height |
+| --- | --- | --- | --- | --- |
+| South | (0.075, 0.075) | (0.075, 0.0835) | 52.58 x 81.68 / 52.58 x 90.93 | 91.19 / 91.43 |
+| North | (0.065, 0.065) | (0.065, 0.0754) | 49.66 x 78.39 / 49.66 x 90.93 | 91.07 / 91.07 |
 
-All extents use alpha >= 32 exclusive bounds and world units. The south reduction
-is 10.71%; north is 14.25%. Static source inspection and upper-body band widths
-favor these scales over matching total height. As reproducible proportion proxies,
-measure maximum alpha-bound width within the top 0-15% (upper head), 25-40%
-(shoulder region), and 40-60% (torso/arms region) of each substantial silhouette's
-height. South idle measures 23.03 / 51.30 / 52.58 units; north measures
-19.96 / 43.75 / 49.66. These bands are approximate anatomical proxies, not exact
-landmark segmentation; stance and arm placement differ between poses. Walking
-proxies across all four frames are 22.64-22.77 / 51.41-52.26 / 52.14-52.51 south
-and 18.73-18.85 / 46.14-46.51 / 48.47-48.72 north.
+All extents use alpha >= 32 exclusive bounds. Walking contact frames are indices
+0 and 2; their existing uniform scale is `0.1224`. South idle is 0.26-0.50 world
+units shorter than those contacts; north is 0.13 shorter. Walking widths remain
+52.14-52.51 south and 48.47-48.72 north across the four frames. Idle widths are
+unchanged from the owner-approved width correction.
 
-Uniform scaling cannot match both height and width for these differently
-proportioned poses. South now nearly matches walking width; north retains about
-2-2.5% extra total width to balance head/shoulder proportions. Idle height is
-about 8.7-10.7% shorter south and 12.0-13.9% shorter north than walking. Exact
-north full-width matching would require about `0.0636`, further shrinking its
-shoulders. This is a proposed static calibration pending owner comparison, not a
-verified resolution of the apparent size change. All approved source pixels and
-faint alpha margins remain intact.
+Verified source-pixel offsets remain `(-635.5, -1195)` south and `(-570, -1301)`
+north: negative substantial horizontal midpoint and negative lower boot edge.
+Componentwise scale times `(source point + offset)` maps both anchors to local
+zero, including with separate X/Y scales. Root, collision and Visual origins
+remain unchanged. All approved PNG pixels and faint alpha margins remain intact.
+
+Nonuniform scaling increases vertical dimensions relative to the accepted uniform
+revision by 11.33% south and 16.00% north, with horizontal dimensions unchanged.
+Source inspection and transform calculations identify a real proportion tradeoff:
+heads, torsos, limbs and boots become taller relative to their width; round armor
+details can appear vertically oval. These transforms do not selectively correct
+anatomy. No artwork edits or transformed preview images were made. Static checks
+cannot establish whether the distortion is objectionable; owner comparison of
+head, shoulders, torso, limbs and boot shapes during walk-to-idle transitions is
+required. No graphical result or runtime acceptance is claimed.
 The two import sidecars follow existing lossless, no-mipmap, unlimited-size
 settings with distinct UIDs; they were prepared as text without engine import.
 
