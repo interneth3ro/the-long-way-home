@@ -138,6 +138,7 @@ the corners. Three obstacles sit at (-320, -180), (360, 40), and (0, 420), with
 160 × 48, 96 × 64, and 160 × 48 collision footprints respectively. All bodies use
 the default collision layer/mask, matching Dave. Shapes and colored polygon
 visuals are separate children; the console also has a small interaction script.
+The Computer HD art pilot below replaces only the console's polygon visuals.
 
 `GroundObjects` enables built-in Y-sorting for Dave and the obstacle roots at the
 same default Z index. Each obstacle root is anchored at the bottom center of its
@@ -149,7 +150,7 @@ There are no camera limits; floor edges can still become visible near the walls.
 Existing movement, camera/zoom, display, rendering, and physics settings are
 preserved.
 
-The ship visual pass uses only built-in `Polygon2D` and `Line2D` details.
+The original ship visual pass used built-in `Polygon2D` and `Line2D` details.
 `ShipDeck` covers x = -656 to 656 and y = -448 to 592, leaving the rest of the test
 floor open. Sixteen inset panels, muted amber route guides and service markings
 frame a clear central walking area. This is a deck section, not a new enclosed
@@ -157,16 +158,17 @@ room; the original distant perimeter remains the only boundary collision.
 Blue-teal housings, pale metal edges and restrained amber/coral accents form a
 temporary palette, not production artwork or a lighting system.
 
-The existing `WestObstacle` now depicts a damaged computer console with a fractured
-screen, warning indicator, ribbed front and exposed service cable. `EastObstacle`
+The existing `WestObstacle` depicts Computer, now using the HD pilot described
+below instead of its temporary polygon console. `EastObstacle`
 depicts a life-support filter unit with a faceted cap, filter window and service
 pipe. `SouthObstacle` depicts a storage workbench with cabinet doors, a work mat,
 loose cover and tool tray. The console supports temporary dialogue with
 inspection fallback; the other fixtures remain noninteractive
 placeholders.
 These visual identities establish no new narrative state or objectives.
-All fixture details remain under each existing `Visual` child, within its original
-visual bounds, with no individual Z overrides or nested Y-sorting. The three body
+All fixture details remain under each existing `Visual` child, with no individual
+Z overrides or nested Y-sorting. Computer's HD visual exceeds its original visual
+bounds; the other fixtures retain theirs. The three body
 positions, bottom-center anchors and collision shapes are unchanged. Flat deck
 details are outside `GroundObjects`, drawn before it at the default Z index.
 
@@ -238,6 +240,59 @@ at both zoom bounds. Temporarily clear the console's conversation reference (and
 separately assign invalid content) to verify inspection fallback, then restore it.
 Also verify range boundaries, approach from all sides/corners, obstruction,
 inspection dismissal and the other fixtures remaining noninteractive.
+
+## Computer HD art pilot (feature branch, pending merge)
+
+`codex/computer-hd-art-pilot` replaces only the artwork beneath
+`GroundObjects/WestObstacle/Visual` in `scenes/main/main.tscn`. One `Sprite2D`
+displays the approved damaged texture by default. Both source PNGs in
+`assets/environment/computer/` are preserved byte-for-byte: 1086 × 724, RGBA,
+with transparent backgrounds. Both existing owner-generated `.png.import` sidecars
+are retained unchanged in the PR, preserving their texture UIDs, lossless import
+settings, disabled mipmaps and no size limit. The owner's local Dave sidecar
+change remains untouched outside this commit. The agent ran no imports.
+Generated `.godot/` caches stay ignored.
+
+The provisional local sprite scale is `(0.24, 0.24)`, position `(0, 0)`,
+`centered = false`, and offset `(-543, -718)` in source pixels. Source point
+`(543, 718)` maps to the unchanged body ground/sort origin `(-320, -180)` in
+world space. Both states share that transform and linear texture filtering.
+At alpha greater than 16, inclusive image bounds are `(51, 15)`–`(1023, 711)`
+for damaged and `(47, 14)`–`(1021, 717)` for repaired. Very faint pixels extend
+to `(0, 13)`–`(1085, 713)` and `(1, 12)`–`(1053, 723)` respectively.
+The common anchor sits just below both substantial bases; the six-pixel base
+difference remains about 1.44 world units. No per-state alignment correction is
+applied. Visible extents are approximately 234 × 169 world units versus Dave's
+roughly 93-unit height. The owner has manually confirmed that damaged Computer is
+appropriately proportioned relative to Dave. The very minor perceived shift
+between artwork states was explicitly accepted for this pilot; no correction is
+applied.
+
+The sprite directly references `computer_damaged_pilot.png` and has no attached
+script. Temporary keyboard controls, their script and UID, and the scene's script
+resource reference have been removed. No Inspector state tooling, input handler
+or visual-state controller remains for this pilot. The repaired PNG and its import
+metadata remain available for a future narrative-driven repair implementation;
+there is no repair gameplay or objective completion path in this PR.
+
+Static checks cover PNG decoding, chunk integrity, alpha bounds, source hashes,
+resource paths, the shared transform, and comparison of
+all non-Computer-visual scene data against `main`. Collision (160 × 48 at local
+`(0, -24)`), interaction point `(0, -24)`, dialogue, Y-sorting, Dave, other
+fixtures, existing gameplay scripts and project settings are unchanged. Final
+static checks cover complete removal of temporary switching functionality,
+damaged texture assignment, preserved asset/sidecar hashes, resource counts and
+references, unchanged scene configuration, documentation links and Git diff checks.
+
+The owner reports all eight visual-state playtest checks passed: damaged
+proportions relative to Dave, both artwork appearances, switching and visual
+continuity, collision and interaction in both states, movement/dialogue/objective/
+camera/zoom regressions, and system stability. The minor perceived shift is
+accepted. These are owner-reported runtime results from before removal of the
+temporary controls. Finalization was validated statically only; the agent did not
+run Godot or perform post-removal runtime or graphical verification. Agent
+execution remains subject to
+[AGENTS.md](AGENTS.md#godot-execution-safety).
 
 ## Objectives and first narrative integration (feature branch, pending merge)
 
