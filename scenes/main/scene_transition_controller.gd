@@ -90,6 +90,8 @@ func _perform_transition(source_scene: String, destination_scene: String,
 	_current_world = destination
 	player.reparent(ground_objects)
 	player.global_position = spawn.global_position
+	if destination.has_method("prepare_for_arrival"):
+		await destination.call("prepare_for_arrival", player, progression.planet)
 	var camera := player.get_node("Camera2D") as Camera2D
 	camera.reset_smoothing()
 	# Camera processing is locked with Dave, so update before the reveal begins.
