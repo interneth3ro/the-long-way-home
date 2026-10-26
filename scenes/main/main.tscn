@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3]
+[gd_scene load_steps=15 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/player/dave.tscn" id="1_dave"]
 [ext_resource type="Script" uid="uid://dltwhinteract1" path="res://scenes/interaction/world_interactable.gd" id="2_interactable"]
@@ -8,6 +8,8 @@
 [ext_resource type="Resource" path="res://objectives/restore_computer.tres" id="6_restore"]
 [ext_resource type="PackedScene" path="res://scenes/ui/objective_tracker.tscn" id="7_tracker"]
 [ext_resource type="Script" uid="uid://cltwhobjdef01" path="res://objectives/objective_definition.gd" id="9_definition"]
+[ext_resource type="Texture2D" path="res://assets/environment/computer/computer_damaged_pilot.png" id="10_computer_art"]
+[ext_resource type="Script" uid="uid://b7k3c6m2p9v4a" path="res://scenes/main/computer_art_preview.gd" id="11_computer_preview"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_horizontal_wall"]
 size = Vector2(4160, 32)
@@ -189,60 +191,13 @@ shape = SubResource("RectangleShape2D_wide_obstacle")
 
 [node name="Visual" type="Node2D" parent="GroundObjects/WestObstacle"]
 
-[node name="Front" type="Polygon2D" parent="GroundObjects/WestObstacle/Visual"]
-polygon = PackedVector2Array(-80, -72, 80, -72, 80, 0, -80, 0)
-color = Color(0.14, 0.23, 0.28, 1)
-
-[node name="Top" type="Polygon2D" parent="GroundObjects/WestObstacle/Visual"]
-polygon = PackedVector2Array(-80, -120, 80, -120, 80, -72, -80, -72)
-color = Color(0.35, 0.46, 0.49, 1)
-
-[node name="FrontInset" type="Polygon2D" parent="GroundObjects/WestObstacle/Visual"]
-polygon = PackedVector2Array(-66, -60, 66, -60, 66, -14, -66, -14)
-color = Color(0.085, 0.14, 0.18, 1)
-
-[node name="LeftRib" type="Polygon2D" parent="GroundObjects/WestObstacle/Visual"]
-polygon = PackedVector2Array(-80, -72, -70, -72, -70, -4, -80, -4)
-color = Color(0.28, 0.38, 0.42, 1)
-
-[node name="RightRib" type="Polygon2D" parent="GroundObjects/WestObstacle/Visual"]
-polygon = PackedVector2Array(70, -72, 80, -72, 80, -4, 70, -4)
-color = Color(0.28, 0.38, 0.42, 1)
-
-[node name="ScreenBezel" type="Polygon2D" parent="GroundObjects/WestObstacle/Visual"]
-polygon = PackedVector2Array(-68, -114, 32, -114, 32, -80, -68, -80)
-color = Color(0.065, 0.105, 0.14, 1)
-
-[node name="BrokenScreen" type="Polygon2D" parent="GroundObjects/WestObstacle/Visual"]
-polygon = PackedVector2Array(-62, -108, 26, -108, 26, -86, -62, -86)
-color = Color(0.18, 0.43, 0.46, 1)
-
-[node name="ScreenFracture" type="Line2D" parent="GroundObjects/WestObstacle/Visual"]
-points = PackedVector2Array(-16, -108, -27, -99, -9, -96, -18, -86)
-width = 3.0
-default_color = Color(0.065, 0.105, 0.14, 1)
-
-[node name="DeadScreenHalf" type="Polygon2D" parent="GroundObjects/WestObstacle/Visual"]
-polygon = PackedVector2Array(-62, -108, -16, -108, -27, -99, -9, -96, -18, -86, -62, -86)
-color = Color(0.10, 0.21, 0.25, 1)
-
-[node name="WarningIndicator" type="Polygon2D" parent="GroundObjects/WestObstacle/Visual"]
-polygon = PackedVector2Array(46, -107, 62, -107, 62, -99, 46, -99)
-color = Color(0.86, 0.40, 0.30, 1)
-
-[node name="Keys" type="Line2D" parent="GroundObjects/WestObstacle/Visual"]
-points = PackedVector2Array(44, -86, 64, -86)
-width = 4.0
-default_color = Color(0.18, 0.26, 0.30, 1)
-
-[node name="OpenServicePanel" type="Polygon2D" parent="GroundObjects/WestObstacle/Visual"]
-polygon = PackedVector2Array(12, -54, 58, -54, 58, -20, 12, -20)
-color = Color(0.045, 0.075, 0.10, 1)
-
-[node name="ExposedCable" type="Line2D" parent="GroundObjects/WestObstacle/Visual"]
-points = PackedVector2Array(22, -48, 28, -30, 42, -40, 50, -24)
-width = 3.0
-default_color = Color(0.86, 0.40, 0.30, 1)
+[node name="Sprite2D" type="Sprite2D" parent="GroundObjects/WestObstacle/Visual"]
+texture_filter = 2
+scale = Vector2(0.24, 0.24)
+texture = ExtResource("10_computer_art")
+centered = false
+offset = Vector2(-543, -718)
+script = ExtResource("11_computer_preview")
 
 [node name="EastObstacle" type="StaticBody2D" parent="GroundObjects"]
 position = Vector2(360, 40)
