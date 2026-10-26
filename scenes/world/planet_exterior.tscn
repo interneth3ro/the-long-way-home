@@ -1,0 +1,140 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://scenes/interaction/scene_hatch.gd" id="1_hatch"]
+
+[sub_resource type="RectangleShape2D" id="ShipFootprint"]
+size = Vector2(512, 224)
+
+[sub_resource type="RectangleShape2D" id="HatchFootprint"]
+size = Vector2(64, 24)
+
+[sub_resource type="RectangleShape2D" id="HorizontalBoundary"]
+size = Vector2(2112, 32)
+
+[sub_resource type="RectangleShape2D" id="VerticalBoundary"]
+size = Vector2(32, 2048)
+
+[sub_resource type="CircleShape2D" id="RockFootprint"]
+radius = 48.0
+
+[node name="PlanetExterior" type="Node2D"]
+texture_filter = 1
+
+[node name="AuthoredCrashSite" type="Node2D" parent="."]
+
+[node name="Terrain" type="Polygon2D" parent="AuthoredCrashSite"]
+polygon = PackedVector2Array(-1024, -1024, 1024, -1024, 1024, 1024, -1024, 1024)
+color = Color(0.17, 0.25, 0.27, 1)
+
+[node name="Clearing" type="Polygon2D" parent="AuthoredCrashSite"]
+polygon = PackedVector2Array(-832, -576, -320, -704, 192, -512, 768, -128, 832, 448, 384, 768, -320, 704, -832, 320)
+color = Color(0.32, 0.34, 0.29, 1)
+
+[node name="ImpactScar" type="Polygon2D" parent="AuthoredCrashSite"]
+polygon = PackedVector2Array(-1024, -768, -864, -864, -224, -384, -192, -128, -512, -192)
+color = Color(0.21, 0.22, 0.22, 1)
+
+[node name="NorthRidge" type="Polygon2D" parent="AuthoredCrashSite"]
+polygon = PackedVector2Array(-1024, -1024, 1024, -1024, 1024, -832, 384, -896, -64, -768, -704, -896, -1024, -832)
+color = Color(0.22, 0.31, 0.34, 1)
+
+[node name="SouthShelf" type="Polygon2D" parent="AuthoredCrashSite"]
+polygon = PackedVector2Array(-1024, 832, -512, 896, 0, 832, 512, 960, 1024, 768, 1024, 1024, -1024, 1024)
+color = Color(0.22, 0.31, 0.34, 1)
+
+[node name="GroundObjects" type="Node2D" parent="."]
+y_sort_enabled = true
+
+[node name="CrashedShip" type="StaticBody2D" parent="GroundObjects"]
+position = Vector2(-384, -192)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="GroundObjects/CrashedShip"]
+position = Vector2(0, -112)
+shape = SubResource("ShipFootprint")
+
+[node name="Hull" type="Polygon2D" parent="GroundObjects/CrashedShip"]
+polygon = PackedVector2Array(-256, -224, 160, -224, 256, -160, 256, -64, 160, 0, -256, 0)
+color = Color(0.38, 0.46, 0.48, 1)
+
+[node name="PortWing" type="Polygon2D" parent="GroundObjects/CrashedShip"]
+polygon = PackedVector2Array(-224, -224, -128, -256, 32, -224)
+color = Color(0.28, 0.35, 0.38, 1)
+
+[node name="Cockpit" type="Polygon2D" parent="GroundObjects/CrashedShip"]
+polygon = PackedVector2Array(112, -192, 160, -192, 224, -152, 224, -112, 112, -112)
+color = Color(0.10, 0.19, 0.23, 1)
+
+[node name="Damage" type="Line2D" parent="GroundObjects/CrashedShip"]
+points = PackedVector2Array(-208, -208, -144, -136, -176, -96, -96, -32)
+width = 12.0
+default_color = Color(0.16, 0.19, 0.20, 1)
+
+[node name="HullStripe" type="Line2D" parent="GroundObjects/CrashedShip"]
+points = PackedVector2Array(-240, -48, -80, -48, 80, -48, 144, -48)
+width = 8.0
+default_color = Color(0.72, 0.53, 0.31, 1)
+
+[node name="Hatch" type="StaticBody2D" parent="GroundObjects"]
+position = Vector2(-384, -176)
+script = ExtResource("1_hatch")
+interaction_prompt = "E — Enter ship"
+source_scene = "res://scenes/world/planet_exterior.tscn"
+destination_scene = "res://scenes/world/ship_interior.tscn"
+destination_spawn = &"FromPlanet"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="GroundObjects/Hatch"]
+shape = SubResource("HatchFootprint")
+
+[node name="Door" type="Polygon2D" parent="GroundObjects/Hatch"]
+polygon = PackedVector2Array(-40, -40, 40, -40, 40, 12, -40, 12)
+color = Color(0.10, 0.19, 0.23, 1)
+
+[node name="Threshold" type="Line2D" parent="GroundObjects/Hatch"]
+points = PackedVector2Array(-32, -28, -32, 6, 32, 6, 32, -28)
+width = 4.0
+default_color = Color(0.95, 0.72, 0.35, 1)
+
+[node name="WestRock" type="StaticBody2D" parent="GroundObjects"]
+position = Vector2(-768, 384)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="GroundObjects/WestRock"]
+position = Vector2(0, -48)
+shape = SubResource("RockFootprint")
+
+[node name="Visual" type="Polygon2D" parent="GroundObjects/WestRock"]
+polygon = PackedVector2Array(-48, -64, -24, -96, 24, -96, 48, -64, 48, -24, 24, 0, -24, 0, -48, -24)
+color = Color(0.36, 0.42, 0.44, 1)
+
+[node name="EastRock" type="StaticBody2D" parent="GroundObjects"]
+position = Vector2(704, -384)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="GroundObjects/EastRock"]
+position = Vector2(0, -48)
+shape = SubResource("RockFootprint")
+
+[node name="Visual" type="Polygon2D" parent="GroundObjects/EastRock"]
+polygon = PackedVector2Array(-48, -64, -24, -96, 24, -96, 48, -64, 48, -24, 24, 0, -24, 0, -48, -24)
+color = Color(0.36, 0.42, 0.44, 1)
+
+[node name="Boundaries" type="StaticBody2D" parent="AuthoredCrashSite"]
+
+[node name="North" type="CollisionShape2D" parent="AuthoredCrashSite/Boundaries"]
+position = Vector2(0, -1040)
+shape = SubResource("HorizontalBoundary")
+
+[node name="South" type="CollisionShape2D" parent="AuthoredCrashSite/Boundaries"]
+position = Vector2(0, 1040)
+shape = SubResource("HorizontalBoundary")
+
+[node name="West" type="CollisionShape2D" parent="AuthoredCrashSite/Boundaries"]
+position = Vector2(-1040, 0)
+shape = SubResource("VerticalBoundary")
+
+[node name="East" type="CollisionShape2D" parent="AuthoredCrashSite/Boundaries"]
+position = Vector2(1040, 0)
+shape = SubResource("VerticalBoundary")
+
+[node name="Spawns" type="Node2D" parent="."]
+
+[node name="FromShip" type="Marker2D" parent="Spawns"]
+position = Vector2(-384, -64)

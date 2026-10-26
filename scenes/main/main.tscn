@@ -1,313 +1,48 @@
-[gd_scene load_steps=14 format=3]
+[gd_scene load_steps=10 format=3]
 
-[ext_resource type="PackedScene" path="res://scenes/player/dave.tscn" id="1_dave"]
-[ext_resource type="Script" uid="uid://dltwhinteract1" path="res://scenes/interaction/world_interactable.gd" id="2_interactable"]
-[ext_resource type="Resource" path="res://dialogue/computer_opening.tres" id="3_conversation"]
-[ext_resource type="Script" uid="uid://cltwhmain001" path="res://scenes/main/main.gd" id="4_main"]
-[ext_resource type="Script" uid="uid://cltwhobjctrl1" path="res://objectives/objective_controller.gd" id="5_objectives"]
-[ext_resource type="Resource" path="res://objectives/restore_computer.tres" id="6_restore"]
-[ext_resource type="PackedScene" path="res://scenes/ui/objective_tracker.tscn" id="7_tracker"]
-[ext_resource type="Script" uid="uid://cltwhobjdef01" path="res://objectives/objective_definition.gd" id="9_definition"]
-[ext_resource type="Texture2D" path="res://assets/environment/computer/computer_damaged_pilot.png" id="10_computer_art"]
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_horizontal_wall"]
-size = Vector2(4160, 32)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_vertical_wall"]
-size = Vector2(32, 3072)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_wide_obstacle"]
-size = Vector2(160, 48)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_narrow_obstacle"]
-size = Vector2(96, 64)
+[ext_resource type="Script" path="res://scenes/main/main.gd" id="1_main"]
+[ext_resource type="PackedScene" path="res://scenes/world/ship_interior.tscn" id="2_interior"]
+[ext_resource type="PackedScene" path="res://scenes/player/dave.tscn" id="3_dave"]
+[ext_resource type="Script" path="res://objectives/objective_controller.gd" id="4_objectives"]
+[ext_resource type="Resource" path="res://objectives/restore_computer.tres" id="5_restore"]
+[ext_resource type="PackedScene" path="res://scenes/ui/objective_tracker.tscn" id="6_tracker"]
+[ext_resource type="Script" path="res://objectives/objective_definition.gd" id="7_definition"]
+[ext_resource type="Script" path="res://scenes/main/playthrough_state.gd" id="8_progression"]
+[ext_resource type="Script" path="res://scenes/main/scene_transition_controller.gd" id="9_transitions"]
 
 [node name="Main" type="Node2D"]
-script = ExtResource("4_main")
+script = ExtResource("1_main")
 
-[node name="Background" type="Polygon2D" parent="."]
-polygon = PackedVector2Array(-2048, -1536, 2048, -1536, 2048, 1536, -2048, 1536)
-color = Color(0.10, 0.15, 0.20, 1)
+[node name="Worlds" type="Node2D" parent="."]
 
-[node name="ShipDeck" type="Node2D" parent="."]
+[node name="ShipInterior" parent="Worlds" instance=ExtResource("2_interior")]
 
-[node name="Underplate" type="Polygon2D" parent="ShipDeck"]
-polygon = PackedVector2Array(-656, -448, 656, -448, 656, 592, -656, 592)
-color = Color(0.075, 0.115, 0.15, 1)
-
-[node name="Panels" type="Node2D" parent="ShipDeck"]
-
-[node name="NorthWest" type="Polygon2D" parent="ShipDeck/Panels"]
-polygon = PackedVector2Array(-636, -428, -324, -428, -324, -184, -636, -184)
-color = Color(0.18, 0.26, 0.30, 1)
-
-[node name="NorthMidWest" type="Polygon2D" parent="ShipDeck/Panels"]
-polygon = PackedVector2Array(-316, -428, -4, -428, -4, -184, -316, -184)
-color = Color(0.20, 0.28, 0.32, 1)
-
-[node name="NorthMidEast" type="Polygon2D" parent="ShipDeck/Panels"]
-polygon = PackedVector2Array(4, -428, 316, -428, 316, -184, 4, -184)
-color = Color(0.18, 0.26, 0.30, 1)
-
-[node name="NorthEast" type="Polygon2D" parent="ShipDeck/Panels"]
-polygon = PackedVector2Array(324, -428, 636, -428, 636, -184, 324, -184)
-color = Color(0.20, 0.28, 0.32, 1)
-
-[node name="CenterWest" type="Polygon2D" parent="ShipDeck/Panels"]
-polygon = PackedVector2Array(-636, -176, -324, -176, -324, 68, -636, 68)
-color = Color(0.20, 0.28, 0.32, 1)
-
-[node name="CenterMidWest" type="Polygon2D" parent="ShipDeck/Panels"]
-polygon = PackedVector2Array(-316, -176, -4, -176, -4, 68, -316, 68)
-color = Color(0.18, 0.26, 0.30, 1)
-
-[node name="CenterMidEast" type="Polygon2D" parent="ShipDeck/Panels"]
-polygon = PackedVector2Array(4, -176, 316, -176, 316, 68, 4, 68)
-color = Color(0.20, 0.28, 0.32, 1)
-
-[node name="CenterEast" type="Polygon2D" parent="ShipDeck/Panels"]
-polygon = PackedVector2Array(324, -176, 636, -176, 636, 68, 324, 68)
-color = Color(0.18, 0.26, 0.30, 1)
-
-[node name="LowerWest" type="Polygon2D" parent="ShipDeck/Panels"]
-polygon = PackedVector2Array(-636, 76, -324, 76, -324, 320, -636, 320)
-color = Color(0.18, 0.26, 0.30, 1)
-
-[node name="LowerMidWest" type="Polygon2D" parent="ShipDeck/Panels"]
-polygon = PackedVector2Array(-316, 76, -4, 76, -4, 320, -316, 320)
-color = Color(0.20, 0.28, 0.32, 1)
-
-[node name="LowerMidEast" type="Polygon2D" parent="ShipDeck/Panels"]
-polygon = PackedVector2Array(4, 76, 316, 76, 316, 320, 4, 320)
-color = Color(0.18, 0.26, 0.30, 1)
-
-[node name="LowerEast" type="Polygon2D" parent="ShipDeck/Panels"]
-polygon = PackedVector2Array(324, 76, 636, 76, 636, 320, 324, 320)
-color = Color(0.20, 0.28, 0.32, 1)
-
-[node name="SouthWest" type="Polygon2D" parent="ShipDeck/Panels"]
-polygon = PackedVector2Array(-636, 328, -324, 328, -324, 572, -636, 572)
-color = Color(0.20, 0.28, 0.32, 1)
-
-[node name="SouthMidWest" type="Polygon2D" parent="ShipDeck/Panels"]
-polygon = PackedVector2Array(-316, 328, -4, 328, -4, 572, -316, 572)
-color = Color(0.18, 0.26, 0.30, 1)
-
-[node name="SouthMidEast" type="Polygon2D" parent="ShipDeck/Panels"]
-polygon = PackedVector2Array(4, 328, 316, 328, 316, 572, 4, 572)
-color = Color(0.20, 0.28, 0.32, 1)
-
-[node name="SouthEast" type="Polygon2D" parent="ShipDeck/Panels"]
-polygon = PackedVector2Array(324, 328, 636, 328, 636, 572, 324, 572)
-color = Color(0.18, 0.26, 0.30, 1)
-
-[node name="PortGuide" type="Line2D" parent="ShipDeck"]
-points = PackedVector2Array(-568, -376, -568, 500, -176, 500)
-width = 4.0
-default_color = Color(0.55, 0.58, 0.45, 1)
-
-[node name="StarboardGuide" type="Line2D" parent="ShipDeck"]
-points = PackedVector2Array(568, -376, 568, 500, 176, 500)
-width = 4.0
-default_color = Color(0.55, 0.58, 0.45, 1)
-
-[node name="ConsoleServiceMark" type="Line2D" parent="ShipDeck"]
-points = PackedVector2Array(-416, -168, -416, -152, -224, -152, -224, -168)
-width = 3.0
-default_color = Color(0.77, 0.54, 0.28, 1)
-
-[node name="SystemServiceMark" type="Line2D" parent="ShipDeck"]
-points = PackedVector2Array(296, 52, 296, 68, 424, 68, 424, 52)
-width = 3.0
-default_color = Color(0.77, 0.54, 0.28, 1)
-
-[node name="BenchServiceMark" type="Line2D" parent="ShipDeck"]
-points = PackedVector2Array(-96, 432, -96, 448, 96, 448, 96, 432)
-width = 3.0
-default_color = Color(0.77, 0.54, 0.28, 1)
-
-[node name="DeckScuff" type="Line2D" parent="ShipDeck"]
-points = PackedVector2Array(-394, -142, -368, -126, -352, -130, -328, -108)
-width = 6.0
-default_color = Color(0.11, 0.17, 0.21, 1)
-
-[node name="Perimeter" type="Node2D" parent="."]
-
-[node name="NorthWall" type="StaticBody2D" parent="Perimeter"]
-position = Vector2(0, -1552)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Perimeter/NorthWall"]
-shape = SubResource("RectangleShape2D_horizontal_wall")
-
-[node name="Visual" type="Polygon2D" parent="Perimeter/NorthWall"]
-polygon = PackedVector2Array(-2080, -16, 2080, -16, 2080, 16, -2080, 16)
-color = Color(0.30, 0.38, 0.46, 1)
-
-[node name="SouthWall" type="StaticBody2D" parent="Perimeter"]
-position = Vector2(0, 1552)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Perimeter/SouthWall"]
-shape = SubResource("RectangleShape2D_horizontal_wall")
-
-[node name="Visual" type="Polygon2D" parent="Perimeter/SouthWall"]
-polygon = PackedVector2Array(-2080, -16, 2080, -16, 2080, 16, -2080, 16)
-color = Color(0.30, 0.38, 0.46, 1)
-
-[node name="WestWall" type="StaticBody2D" parent="Perimeter"]
-position = Vector2(-2064, 0)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Perimeter/WestWall"]
-shape = SubResource("RectangleShape2D_vertical_wall")
-
-[node name="Visual" type="Polygon2D" parent="Perimeter/WestWall"]
-polygon = PackedVector2Array(-16, -1536, 16, -1536, 16, 1536, -16, 1536)
-color = Color(0.30, 0.38, 0.46, 1)
-
-[node name="EastWall" type="StaticBody2D" parent="Perimeter"]
-position = Vector2(2064, 0)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Perimeter/EastWall"]
-shape = SubResource("RectangleShape2D_vertical_wall")
-
-[node name="Visual" type="Polygon2D" parent="Perimeter/EastWall"]
-polygon = PackedVector2Array(-16, -1536, 16, -1536, 16, 1536, -16, 1536)
-color = Color(0.30, 0.38, 0.46, 1)
-
-[node name="GroundObjects" type="Node2D" parent="."]
-y_sort_enabled = true
-
-[node name="WestObstacle" type="StaticBody2D" parent="GroundObjects"]
-position = Vector2(-320, -180)
-script = ExtResource("2_interactable")
-interaction_prompt = "E — Talk to Computer"
-inspection_response = "Computer's primary systems are offline. The console has sustained significant damage."
-conversation = ExtResource("3_conversation")
-interaction_point = Vector2(0, -24)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="GroundObjects/WestObstacle"]
-position = Vector2(0, -24)
-shape = SubResource("RectangleShape2D_wide_obstacle")
-
-[node name="Visual" type="Node2D" parent="GroundObjects/WestObstacle"]
-
-[node name="Sprite2D" type="Sprite2D" parent="GroundObjects/WestObstacle/Visual"]
-texture_filter = 2
-scale = Vector2(0.24, 0.24)
-texture = ExtResource("10_computer_art")
-centered = false
-offset = Vector2(-543, -718)
-
-[node name="EastObstacle" type="StaticBody2D" parent="GroundObjects"]
-position = Vector2(360, 40)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="GroundObjects/EastObstacle"]
-position = Vector2(0, -32)
-shape = SubResource("RectangleShape2D_narrow_obstacle")
-
-[node name="Visual" type="Node2D" parent="GroundObjects/EastObstacle"]
-
-[node name="Front" type="Polygon2D" parent="GroundObjects/EastObstacle/Visual"]
-polygon = PackedVector2Array(-48, -96, 48, -96, 48, -12, 32, 0, -32, 0, -48, -12)
-color = Color(0.17, 0.29, 0.32, 1)
-
-[node name="Top" type="Polygon2D" parent="GroundObjects/EastObstacle/Visual"]
-polygon = PackedVector2Array(-32, -160, 32, -160, 48, -148, 48, -108, 32, -96, -32, -96, -48, -108, -48, -148)
-color = Color(0.36, 0.49, 0.51, 1)
-
-[node name="CanisterCap" type="Polygon2D" parent="GroundObjects/EastObstacle/Visual"]
-polygon = PackedVector2Array(-24, -150, 24, -150, 36, -140, 36, -116, 24, -106, -24, -106, -36, -116, -36, -140)
-color = Color(0.13, 0.24, 0.28, 1)
-
-[node name="CapCrossbar" type="Polygon2D" parent="GroundObjects/EastObstacle/Visual"]
-polygon = PackedVector2Array(-28, -132, 28, -132, 28, -124, -28, -124)
-color = Color(0.47, 0.61, 0.60, 1)
-
-[node name="FilterWindow" type="Polygon2D" parent="GroundObjects/EastObstacle/Visual"]
-polygon = PackedVector2Array(-26, -84, 12, -84, 12, -24, -26, -24)
-color = Color(0.075, 0.14, 0.18, 1)
-
-[node name="FilterOne" type="Polygon2D" parent="GroundObjects/EastObstacle/Visual"]
-polygon = PackedVector2Array(-20, -76, 6, -76, 6, -66, -20, -66)
-color = Color(0.40, 0.61, 0.58, 1)
-
-[node name="FilterTwo" type="Polygon2D" parent="GroundObjects/EastObstacle/Visual"]
-polygon = PackedVector2Array(-20, -58, 6, -58, 6, -48, -20, -48)
-color = Color(0.40, 0.61, 0.58, 1)
-
-[node name="OfflineFilter" type="Polygon2D" parent="GroundObjects/EastObstacle/Visual"]
-polygon = PackedVector2Array(-20, -40, 6, -40, 6, -30, -20, -30)
-color = Color(0.77, 0.54, 0.28, 1)
-
-[node name="ServicePipe" type="Line2D" parent="GroundObjects/EastObstacle/Visual"]
-points = PackedVector2Array(26, -86, 34, -78, 34, -24, 26, -16)
-width = 7.0
-default_color = Color(0.47, 0.61, 0.60, 1)
-
-[node name="BaseBand" type="Polygon2D" parent="GroundObjects/EastObstacle/Visual"]
-polygon = PackedVector2Array(-40, -18, 40, -18, 32, -8, -32, -8)
-color = Color(0.10, 0.18, 0.22, 1)
-
-[node name="SouthObstacle" type="StaticBody2D" parent="GroundObjects"]
-position = Vector2(0, 420)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="GroundObjects/SouthObstacle"]
-position = Vector2(0, -24)
-shape = SubResource("RectangleShape2D_wide_obstacle")
-
-[node name="Visual" type="Node2D" parent="GroundObjects/SouthObstacle"]
-
-[node name="Front" type="Polygon2D" parent="GroundObjects/SouthObstacle/Visual"]
-polygon = PackedVector2Array(-80, -72, 80, -72, 80, 0, -80, 0)
-color = Color(0.14, 0.23, 0.28, 1)
-
-[node name="Top" type="Polygon2D" parent="GroundObjects/SouthObstacle/Visual"]
-polygon = PackedVector2Array(-80, -120, 80, -120, 80, -72, -80, -72)
-color = Color(0.35, 0.46, 0.49, 1)
-
-[node name="WorkMat" type="Polygon2D" parent="GroundObjects/SouthObstacle/Visual"]
-polygon = PackedVector2Array(-68, -112, 16, -112, 16, -80, -68, -80)
-color = Color(0.16, 0.29, 0.32, 1)
-
-[node name="LooseCover" type="Polygon2D" parent="GroundObjects/SouthObstacle/Visual"]
-polygon = PackedVector2Array(-54, -108, -14, -104, -18, -86, -58, -90)
-color = Color(0.47, 0.61, 0.60, 1)
-
-[node name="ToolTray" type="Polygon2D" parent="GroundObjects/SouthObstacle/Visual"]
-polygon = PackedVector2Array(30, -108, 66, -108, 66, -84, 30, -84)
-color = Color(0.085, 0.14, 0.18, 1)
-
-[node name="Tool" type="Line2D" parent="GroundObjects/SouthObstacle/Visual"]
-points = PackedVector2Array(38, -92, 56, -100)
-width = 4.0
-default_color = Color(0.77, 0.54, 0.28, 1)
-
-[node name="StorageLeft" type="Polygon2D" parent="GroundObjects/SouthObstacle/Visual"]
-polygon = PackedVector2Array(-68, -60, -6, -60, -6, -12, -68, -12)
-color = Color(0.21, 0.32, 0.36, 1)
-
-[node name="StorageRight" type="Polygon2D" parent="GroundObjects/SouthObstacle/Visual"]
-polygon = PackedVector2Array(6, -60, 68, -60, 68, -12, 6, -12)
-color = Color(0.21, 0.32, 0.36, 1)
-
-[node name="LeftHandle" type="Line2D" parent="GroundObjects/SouthObstacle/Visual"]
-points = PackedVector2Array(-50, -48, -24, -48)
-width = 4.0
-default_color = Color(0.47, 0.61, 0.60, 1)
-
-[node name="RightHandle" type="Line2D" parent="GroundObjects/SouthObstacle/Visual"]
-points = PackedVector2Array(24, -48, 50, -48)
-width = 4.0
-default_color = Color(0.47, 0.61, 0.60, 1)
-
-[node name="SafetyLip" type="Line2D" parent="GroundObjects/SouthObstacle/Visual"]
-points = PackedVector2Array(-78, -72, 78, -72)
-width = 4.0
-default_color = Color(0.77, 0.54, 0.28, 1)
-
-[node name="Dave" parent="GroundObjects" instance=ExtResource("1_dave")]
+[node name="Dave" parent="." instance=ExtResource("3_dave")]
 
 [node name="ObjectiveController" type="Node" parent="."]
-script = ExtResource("5_objectives")
-definitions = Array[ExtResource("9_definition")]([ExtResource("6_restore")])
+script = ExtResource("4_objectives")
+definitions = Array[ExtResource("7_definition")]([ExtResource("5_restore")])
 
-[node name="ObjectiveTracker" parent="." instance=ExtResource("7_tracker")]
+[node name="ObjectiveTracker" parent="." instance=ExtResource("6_tracker")]
+
+[node name="PlaythroughState" type="Node" parent="."]
+script = ExtResource("8_progression")
+
+[node name="SceneTransitions" type="Node" parent="." node_paths=PackedStringArray("player", "world_host", "progression")]
+script = ExtResource("9_transitions")
+player = NodePath("../Dave")
+world_host = NodePath("../Worlds")
+progression = NodePath("../PlaythroughState")
+
+[node name="Fade" type="CanvasLayer" parent="SceneTransitions"]
+layer = 100
+
+[node name="Curtain" type="ColorRect" parent="SceneTransitions/Fade"]
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+color = Color(0, 0, 0, 0)
