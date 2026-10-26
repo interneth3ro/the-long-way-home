@@ -52,7 +52,8 @@ validation; runtime and engine verification remain unperformed.
   obstacles with ship-fixture visuals and an instance of Dave.
 - `scenes/player/dave.tscn`: reusable `CharacterBody2D`, a collision shape, a
   `Camera2D` child, and a separate `Visual` child containing Dave's illustrated
-  `Sprite2D` (HD sprite pilot on `codex/dave-hd-sprite-pilot`, pending merge).
+  `Sprite2D` (static replacement on `codex/dave-static-sprite-replacement`,
+  pending merge).
 - `scenes/player/dave.gd`: movement through `_physics_process()` and
   `move_and_slide()`.
 - `scenes/player/follow_camera.gd`: wheel input and bounded zoom transitions using
@@ -83,43 +84,52 @@ movement at the same 240 pixels per second as cardinal movement. Dave's local
 origin is his ground-contact position; artwork stays under `Visual`, aligned to
 that origin without changing the controller or camera.
 
-### Dave HD sprite pilot (feature branch, pending merge)
+### Dave static sprite replacement (feature branch, pending merge)
 
-The owner-approved source is
-`assets/characters/dave/dave_idle_angled_overhead_pilot.png`: a 649 Ã— 1456,
-8-bit RGBA PNG. Preserve its bytes; do not crop, resample or recompress it.
-Reference the PNG directly as a `Texture2D` in `dave.tscn`. Its existing
-`.png.import` sidecar records lossless compression, disabled mipmaps and no size
-limit; tracking that sidecar on `codex/godot-import-metadata` is pending merge.
-It is preserved unchanged without running an import. Only `Visual/Sprite2D`
-explicitly uses linear texture filtering;
-project-wide rendering and filtering settings are unchanged.
+`codex/dave-static-sprite-replacement` uses the approved
+`assets/characters/dave/dave_static_approved_v2.png`: a 1184 × 1328, 8-bit RGBA
+PNG copied byte-for-byte from the owner's local `dave v2.png`. The original
+`dave_idle_angled_overhead_pilot.png` and its import metadata remain available
+for comparison and rollback. Its prior transform was scale `(0.065, 0.065)`
+and offset `(-324.5, -1431)`, with `centered = false`. Historical owner testing
+at the earlier 0.045 scale passed nine of ten checks but found Dave too small;
+the subsequent 0.065 refinement had no recorded gameplay verification. Those
+results do not validate this replacement. The source PNGs are not edited or recompressed.
+The new `.png.import` sidecar follows the existing lossless texture settings,
+with a distinct UID, disabled mipmaps and no size limit. It was prepared as text;
+Godot has not imported it. Generated `.godot/` data stays ignored.
 
-Provisional tuning lives on `Visual/Sprite2D`: uniform `scale = (0.065, 0.065)`,
-default position `(0, 0)`, `centered = false`, and texture-pixel
-`offset = (-324.5, -1431)`. The full texture spans 42.185 Ã— 94.64 world units.
-The offset centers the image horizontally and places the visible lower boot edge
-(source row 1430 at alpha >= 32) just above local y = 0. Faint alpha fringe extends
-below that edge; the image canvas bottom is not used as the ground anchor.
-Adjust scale here for readability; keep the source-pixel offset while scaling to
-retain this anchor. This is a local art experiment, not a construction-grid or
-global sprite-size convention.
+Provisional tuning is local to `Visual/Sprite2D`: uniform
+`scale = (0.0744, 0.0744)`, default position `(0, 0)`, `centered = false`, and
+texture-pixel `offset = (-588.5, -1287)`. Linear texture filtering is retained.
+At alpha >= 32, exclusive bounds are `(289, 58)`–`(888, 1287)` for the new art
+and `(24, 24)`–`(624, 1431)` for the previous art. Matching visible height gives
+`(1431 - 24) * 0.065 / (1287 - 58) = 0.074414…`, rounded to 0.0744.
+The new visible extent is approximately 44.57 × 91.44 world units, versus
+39.00 × 91.46 previously: essentially the same height, with a roughly 14% wider
+silhouette. The offset centers the substantial horizontal bounds and maps the
+lower boot edge to y = 0. Faint alpha extends beyond those bounds, including
+below the boot; the canvas bottom is not the ground anchor. The full new canvas
+spans about 88.09 × 98.80 world units. Preserve the source-pixel offset when
+adjusting uniform scale to retain this anchor.
 
-Dave's root and `Visual` remain at their existing origins. The collision circle
-still has radius 10 at `(0, -10)`, with its bottom at y = 0. `GroundObjects`, Dave's
-sort origin, and all Y-sort/Z settings are unchanged. Camera, interaction,
-movement, dialogue, objectives, fixtures and project settings are untouched.
+Dave's root and `Visual` origins, radius-10 collision circle at `(0, -10)`,
+Y-sorting and Z settings are unchanged. Camera, movement, input, interaction,
+dialogue, objectives, Computer artwork and project settings are unchanged.
+There is no animation, shader or new gameplay behavior in this replacement.
 
-Agent validation is static only: PNG decoding/RGBA/transparency, source hash preservation,
-texture and scene references, resource counts, unchanged nonvisual scene blocks,
-scripts/settings and Y-sorting hierarchy, Markdown links and Git diff checks.
-The owner reports nine of ten manual checks passed at scale 0.045, including
-import, ground contact, collision, Y-sorting, movement, interactions, camera and
-system stability; visual recognition failed because Dave appeared too small.
-Scale 0.065 is the provisional refinement. The agent did not execute Godot
-graphically or headlessly for either change. Before merge, the owner must recheck
-recognition at normal zoom and both bounds (0.75 and 1.5), boot contact and fixture
-occlusion at the larger size. The revised scale remains unverified in gameplay.
+Validation is static only: PNG decoding and transparency, source/copy SHA-256
+identity, resource paths and import metadata, transform calculations, unchanged
+nonvisual scene data and gameplay files, Markdown links and Git diff checks.
+Neither graphical nor headless Godot execution was performed. Engine import,
+rendering and gameplay behavior remain unverified for this replacement.
+
+The owner must manually assess normal-zoom readability, proportions beside damaged
+Computer and other objects, dark-background readability, boot contact, collision
+and Y-sorting. Repeat visual checks at 0.75× and 1.5× zoom, check camera follow
+and movement, then interactions, dialogue and objective progression. Inspect
+transparency fringes, the source's faint halo, clipping and scaling artifacts.
+Scale and alignment remain provisional until this playtest.
 
 ### Existing environment and gameplay
 
