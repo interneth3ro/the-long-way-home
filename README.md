@@ -121,6 +121,41 @@ graphically or headlessly for either change. Before merge, the owner must rechec
 recognition at normal zoom and both bounds (0.75 and 1.5), boot contact and fixture
 occlusion at the larger size. The revised scale remains unverified in gameplay.
 
+### Dave silhouette readability experiment (feature branch, pending merge)
+
+`codex/dave-silhouette-readability` attaches a local `ShaderMaterial` only to
+Dave's `Visual/Sprite2D` in `scenes/player/dave.tscn`. The shader
+`scenes/player/dave_silhouette.gdshader` blends a muted warm-neutral color into a
+narrow inner alpha edge, leaving interior texture detail and output alpha intact.
+Eight neighboring alpha samples find the edge; faint source fringe is suppressed.
+UV derivatives express the sampling radius in viewport pixels through camera
+zoom. No geometry expansion, exterior glow, extra sprite or global effect is used.
+Dave's source PNG, both Computer PNGs, import metadata, sprite transform/boot
+anchor, collision, Y-sorting, scripts and project settings remain unchanged.
+
+For owner comparison in the editor, open `dave.tscn`, select `Visual/Sprite2D`,
+expand **Material**, then **Shader Parameters**. Toggle **Edge Enabled** (default
+`true`) for the original appearance versus the experiment. **Edge Color** defaults
+to RGB `(0.72, 0.67, 0.57)`, **Edge Strength** to `0.35` (range `0–0.6`), and
+**Edge Width Pixels** to `0.9` (range `0–1.5` viewport pixels, before window
+stretching). Strength or width `0` also disables the treatment. For a running
+comparison, the owner can edit the material through the Remote Inspector;
+otherwise save the toggle and relaunch. No gameplay hotkeys or debug UI are added.
+Clearing the Sprite2D's material assignment removes the effect independently.
+
+Validation is static only: shader language/API review, resource paths/counts,
+source PNG byte preservation, unchanged scene properties and nonvisual files,
+Markdown links and Git diff checks. Godot was not executed; shader compilation,
+visual separation, movement stability and runtime behavior remain unverified.
+The inner edge can also pick up alpha gaps between limbs/hair; its effectiveness
+and any shimmer at subpixel positions require owner review. Texture minification
+and disabled mipmaps are unchanged. Before merge, compare enabled/disabled while
+standing in front of damaged Computer, moving across it, standing behind it where
+Y-sorting permits, and walking through darker areas. Repeat at normal zoom and
+`0.75×`/`1.5×`; reject distracting edges, halos or rectangular clipping. Recheck
+movement, collision, Y-sorting, interactions, dialogue and objectives. The owner
+makes the final visual decision; this experiment is not approved art direction.
+
 ### Existing environment and gameplay
 
 The camera follows Dave's ground-contact origin independently of `Visual`.
