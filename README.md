@@ -1190,8 +1190,13 @@ clears the buffer only after successful transfer, leaves the panel open and
 preserves cycle progress. Empty collection is a no-op; the empty-buffer button
 is disabled. Movement remains available. **Esc** or **Close** dismisses the panel;
 walking out of range, opening inventory, entering construction/recovery, or
-starting a scene transition closes it automatically. GUI clicks cannot also
-confirm construction/recovery; dialogue, responses and tools keep input ownership.
+starting a scene transition closes it automatically. While the panel is open,
+**B** cannot activate recovery and leaves the panel open; close it first. **R**
+does not rotate a preview and **E** cannot trigger another world interaction.
+Recovery activation checks `MachineUI.is_open()` before changing tool mode or
+emitting `mode_started`, using the detector's existing panel reference. **I**
+opens inventory and closes the panel. GUI clicks cannot also confirm
+construction/recovery; dialogue, responses and tools keep input ownership.
 
 The existing **B**, then **left-click** recovery now returns all completed solid
 output and one packaged machine together, removes its persistent record and

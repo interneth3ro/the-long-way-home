@@ -197,6 +197,8 @@ and static-validation limits are recorded in the
   Producing is green, Output Full amber and Inactive gray on a subtle steady light.
   Movement remains available; range exit, inventory, tools and transitions close
   the panel, as do Esc and its close button.
+  While the panel is open, B cannot activate recovery; close it first. R does not
+  rotate a preview and E does not trigger another world interaction.
 - Collect All transfers available ore into Materials. B recovery automatically
   returns stored solid ore and packaged machinery together, discarding incomplete
   work. Failed transfers leave both inventories and the machine unchanged.

@@ -137,6 +137,9 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("machine_recovery") and _mode == Mode.NONE:
 		if not world is PlanetExterior:
 			return
+		# Reject before mode_started can close the interface that owns input.
+		if _detector.machine_panel != null and _detector.machine_panel.is_open():
+			return
 		cancel()
 		_world = world
 		_mode = Mode.RECOVERY

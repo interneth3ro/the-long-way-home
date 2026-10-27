@@ -27,6 +27,10 @@ func _ready() -> void:
 	transitions.transition_started.connect(close)
 
 
+func is_open() -> bool:
+	return _panel.visible
+
+
 func interaction_blocked() -> bool:
 	return _panel.visible or inventory_ui.is_open() or transitions.is_transitioning()
 
