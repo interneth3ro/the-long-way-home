@@ -5,9 +5,9 @@ has a player movement prototype with camera follow and mouse-wheel zoom, plus a
 minimal ship-interior environment and collision foundation, plus data-driven
 Computer dialogue, inspection and objective activation. Merged PR #26 adds an
 authored exterior and reusable hatch transitions. Merged PR #27 adds seeded
-chunk terrain. First Ferrite discovery on this feature branch adds an authored
-mineral deposit, internal musing and Extractor guidance, pending merge and owner
-runtime verification.
+chunk terrain. Merged PR #28 adds First Ferrite discovery, an internal musing
+and Extractor guidance. Recover the Extractor on this feature branch adds a
+maintenance bay and provisional inventory, pending merge and owner playtesting.
 Its gameplay implementation is independent of FactoryGame; the approved Dave
 migration below reuses only two legacy artwork sheets.
 
@@ -51,10 +51,15 @@ validation; runtime and engine verification remain unperformed.
 
 - `project.godot`: engine settings and main-scene entry point.
 - `scenes/main/main.tscn`: persistent playthrough root owning Dave, objectives,
-  tracker, progression and transitions; starts with the ship interior.
+  tracker, inventory UI, progression (including inventory state) and transitions;
+  starts with the ship interior.
 - `scenes/world/ship_interior.tscn`: preserved deck, perimeter and fixtures,
-  plus the departure hatch and named return spawn. The eventual equipment room
-  belongs to this same scene.
+  plus departure and maintenance doorways with named return spawns.
+- `scenes/world/maintenance_bay.tscn`: separate compact equipment room with
+  three starter racks and a return doorway; provisional geometry only.
+- `inventory/`: shared item definitions and quantities; Materials/Equipment
+  are presentation metadata within one storage model.
+- `scenes/ui/inventory_ui.tscn`: persistent, nonmodal Materials/Equipment panel.
 - `scenes/world/planet_exterior.tscn`: editable crash-site overlay polygons, solid
   ship/hatch, rocks, Y-sorted objects and named exterior spawn. Its script manages
   disposable procedural terrain chunks; the temporary perimeter is removed.
@@ -858,7 +863,7 @@ seed variation, protected clearing, presentation/collision, transitions/objectiv
 and finally extended exploration without debugger errors. Only the owner runs
 these checks; agent static results do not establish gameplay acceptance.
 
-## First Ferrite - Discovery (feature branch, pending merge)
+## First Ferrite - Discovery (PR #28, merged)
 
 One authored Ferrite deposit lies east/southeast of the hatch, centered near
 (288, 256), approximately three seconds' direct walking distance from FromShip.
@@ -916,9 +921,9 @@ guidance remains recoverable. Later Computer dialogue cannot revert the stage.
 Discovery and world identity survive ship travel, terrain unloading/regeneration
 and revisits. A fresh Main/application resets discovery and objective state.
 **Persistence is session-only; there is no disk save/load.** Introductory machine
-recovery will proceed strictly Extractor, then Smelter, then Fabricator. None of
-those recovery steps, mining, construction, recipes, inventory or power is
-implemented here. Future research allows broader freedom.
+recovery will proceed strictly Extractor, then Smelter, then Fabricator. The later
+recovery steps, mining, construction, recipes and power remain unimplemented. The pending Extractor milestone below adds the first recovery
+step and inventory. Future research allows broader freedom.
 
 The owner reports all 15 original PR #28 manual playtests passed before the
 final timing and temporary coordinate HUD adjustments. Those adjustments remain
@@ -955,3 +960,73 @@ screen offsets. Godot was not run for these adjustments. The owner should verify
 the approximately 5.6-second Ferrite musing and live signed coordinates while
 walking in both worlds, hatch coordinate changes, layout alongside the tracker,
 and the exported disable setting.
+
+## Recover the Extractor (feature branch, pending merge)
+
+The maintenance bay is a separate 640 x 448 world-unit room, revising the previous
+same-scene equipment-room plan. In the cabin, approach the marked MAINTENANCE
+doorway at (-520, -360) and press **E**. The bay's CABIN doorway returns
+immediately. Both reuse `SceneTransitionController` and `scene_hatch.gd` with
+named spawns (`FromCabin` and `FromMaintenance`); no controller changes, fade or
+loading screen were added. Dave remains the same instance with his camera zoom
+and facing. Arrival spawns clear the solids. Each transition requires a fresh E
+press; holding E does not immediately send Dave back. The first exterior reveal
+remains unchanged.
+
+Placeholder damage, debris and industrial markings leave a clear walking aisle.
+Three labeled storage racks hold intact deployable modules. Smelter and Fabricator
+are secured static bodies without interaction scripts, prompts or dialogue.
+Extractor is visible but unavailable before Ferrite discovery. After discovery,
+approach its rack and press **E - Recover Extractor** (in-game em dash).
+
+**I** (physical key) or **Inventory (I)** toggles one nonmodal panel showing
+**Materials** and **Equipment** together, both initially **Empty**. **I**,
+**Esc**, or the button closes it. Movement and E interactions continue while it
+is open; Esc closes inventory first when it is visible. It is available in all
+three environments. Recovery displays Extractor with quantity 1 under Equipment.
+There is no drag/drop, deployment, capacity, weight or item splitting.
+
+`ItemDefinition` resources provide stable identity, display name and section
+metadata. `InventoryState` keeps shared integer quantities by ID, with definitions
+separately referenced for presentation. `add_item` supports quantities greater
+than one; it rejects invalid definitions, nonpositive additions, conflicting
+definitions for an existing ID and integer overflow, and reports success. Section
+metadata does not affect insertion. Merging the UI sections later would not change
+recovery or storage. There is no elaborate item database. UI reads authoritative
+quantities rather than keeping a separate copy.
+
+`Main/PlaythroughState` owns inventory and recovery state. `recover_extractor()`
+checks Ferrite discovery and one-time/reentrant guards, then inserts the packaged
+item. Only successful insertion records recovery and emits its completion signal.
+Failure leaves the rack available and progression unchanged. The rack reads
+that state on initialization and recovery, hiding its module and showing EMPTY.
+Cached environments retain that presentation on revisits. A new Main instance
+resets inventory, recovery, Ferrite discovery and objectives; there is **no disk
+save/load**.
+
+Main routes recovery to existing `MusingUI`, with independently editable content
+in `dialogue/extractor_recovery.tres`. Dave's exact internal thoughts are:
+
+> There you are. Still in one piece.
+>
+> Let's see if you survived the landing better than the rest of us.
+
+Presentation fades in for 0.25 seconds, reads for 5 seconds and fades out for
+0.35 seconds. Gameplay continues; transition start dismisses it. Ferrite's text,
+timing and global musing presentation are unchanged.
+
+Restore Computer keeps its single registered ID and remains active. Its staged
+display definition reads **Deploy the Extractor on the Ferrite deposit.** after
+recovery, taking precedence over the post-discovery stage. Later Computer dialogue
+cannot revert it. Tracker pin/unpin, expand/collapse and hide/restore behavior is
+unchanged. Starter recovery remains strictly Extractor, then Smelter, then
+Fabricator; only Extractor recovery is implemented. Deployment, mining,
+production, power and later recovery remain deferred.
+
+Agent validation is static only: resource paths and node wiring, doorway spawn
+clearance, item/quantity and recovery guards, musing content and timing, objective
+staging, preservation of existing systems, Markdown links and Git whitespace.
+No Godot, project code, import, headless, graphical, runtime or performance checks
+were run. Engine parsing, input routing, text layout, interaction physics, travel
+and gameplay remain for owner verification. The PR includes an ordered manual
+checklist to conduct one item at a time.

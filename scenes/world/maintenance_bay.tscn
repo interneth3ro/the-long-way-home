@@ -1,0 +1,229 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://scenes/interaction/scene_hatch.gd" id="1_door"]
+[ext_resource type="Script" path="res://scenes/interaction/extractor_rack.gd" id="2_rack"]
+
+[sub_resource type="RectangleShape2D" id="HorizontalWall"]
+size = Vector2(672, 24)
+
+[sub_resource type="RectangleShape2D" id="VerticalWall"]
+size = Vector2(24, 448)
+
+[sub_resource type="RectangleShape2D" id="RackFootprint"]
+size = Vector2(112, 56)
+
+[sub_resource type="RectangleShape2D" id="DoorFootprint"]
+size = Vector2(80, 24)
+
+[node name="MaintenanceBay" type="Node2D"]
+
+[node name="Floor" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(-320, -224, 320, -224, 320, 224, -320, 224)
+color = Color(0.16, 0.23, 0.27, 1)
+
+[node name="Perimeter" type="Node2D" parent="."]
+
+[node name="North" type="StaticBody2D" parent="Perimeter"]
+position = Vector2(0, -236)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Perimeter/North"]
+shape = SubResource("HorizontalWall")
+
+[node name="Visual" type="Polygon2D" parent="Perimeter/North"]
+polygon = PackedVector2Array(-336, -12, 336, -12, 336, 12, -336, 12)
+color = Color(0.30, 0.38, 0.42, 1)
+
+[node name="South" type="StaticBody2D" parent="Perimeter"]
+position = Vector2(0, 236)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Perimeter/South"]
+shape = SubResource("HorizontalWall")
+
+[node name="Visual" type="Polygon2D" parent="Perimeter/South"]
+polygon = PackedVector2Array(-336, -12, 336, -12, 336, 12, -336, 12)
+color = Color(0.30, 0.38, 0.42, 1)
+
+[node name="West" type="StaticBody2D" parent="Perimeter"]
+position = Vector2(-332, 0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Perimeter/West"]
+shape = SubResource("VerticalWall")
+
+[node name="Visual" type="Polygon2D" parent="Perimeter/West"]
+polygon = PackedVector2Array(-12, -224, 12, -224, 12, 224, -12, 224)
+color = Color(0.30, 0.38, 0.42, 1)
+
+[node name="East" type="StaticBody2D" parent="Perimeter"]
+position = Vector2(332, 0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Perimeter/East"]
+shape = SubResource("VerticalWall")
+
+[node name="Visual" type="Polygon2D" parent="Perimeter/East"]
+polygon = PackedVector2Array(-12, -224, 12, -224, 12, 224, -12, 224)
+color = Color(0.30, 0.38, 0.42, 1)
+
+[node name="Damage" type="Node2D" parent="."]
+
+[node name="CrackedPanel" type="Polygon2D" parent="Damage"]
+polygon = PackedVector2Array(-290, -30, -206, -36, -190, 20, -262, 32)
+color = Color(0.10, 0.15, 0.18, 1)
+
+[node name="Crack" type="Line2D" parent="Damage"]
+points = PackedVector2Array(-280, -22, -250, -8, -258, 10, -216, 18)
+width = 3.0
+default_color = Color(0.39, 0.43, 0.43, 1)
+
+[node name="Debris" type="Polygon2D" parent="Damage"]
+polygon = PackedVector2Array(248, 116, 272, 110, 286, 125, 259, 132)
+color = Color(0.39, 0.43, 0.43, 1)
+
+[node name="LoosePanel" type="Polygon2D" parent="Damage"]
+polygon = PackedVector2Array(236, 150, 270, 146, 276, 168, 240, 172)
+color = Color(0.25, 0.32, 0.34, 1)
+
+[node name="StorageBoundary" type="Line2D" parent="."]
+points = PackedVector2Array(-284, -58, 284, -58)
+width = 4.0
+default_color = Color(0.77, 0.54, 0.28, 1)
+
+[node name="EntranceGuide" type="Line2D" parent="."]
+points = PackedVector2Array(-64, 204, -64, 128, 64, 128, 64, 204)
+width = 3.0
+default_color = Color(0.55, 0.58, 0.45, 1)
+
+[node name="GroundObjects" type="Node2D" parent="."]
+y_sort_enabled = true
+
+[node name="ExtractorRack" type="StaticBody2D" parent="GroundObjects"]
+position = Vector2(-192, -112)
+script = ExtResource("2_rack")
+interaction_prompt = "E — Recover Extractor"
+interaction_point = Vector2(0, -28)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="GroundObjects/ExtractorRack"]
+position = Vector2(0, -28)
+shape = SubResource("RackFootprint")
+
+[node name="Rack" type="Polygon2D" parent="GroundObjects/ExtractorRack"]
+polygon = PackedVector2Array(-56, -104, 56, -104, 56, 0, -56, 0)
+color = Color(0.08, 0.13, 0.17, 1)
+
+[node name="Frame" type="Line2D" parent="GroundObjects/ExtractorRack"]
+points = PackedVector2Array(-52, -4, -52, -100, 52, -100, 52, -4, -52, -4)
+width = 5.0
+default_color = Color(0.47, 0.56, 0.57, 1)
+
+[node name="Module" type="Polygon2D" parent="GroundObjects/ExtractorRack"]
+polygon = PackedVector2Array(-38, -84, 38, -84, 44, -70, 44, -20, -44, -20, -44, -70)
+color = Color(0.45, 0.64, 0.61, 1)
+
+[node name="Sign" type="Label" parent="GroundObjects/ExtractorRack"]
+offset_left = -68.0
+offset_top = -132.0
+offset_right = 68.0
+text = "EXTRACTOR"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 16
+
+[node name="Empty" type="Label" parent="GroundObjects/ExtractorRack"]
+visible = false
+offset_left = -48.0
+offset_top = -66.0
+offset_right = 48.0
+text = "EMPTY"
+horizontal_alignment = 1
+
+[node name="SmelterRack" type="StaticBody2D" parent="GroundObjects"]
+position = Vector2(0, -112)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="GroundObjects/SmelterRack"]
+position = Vector2(0, -28)
+shape = SubResource("RackFootprint")
+
+[node name="Rack" type="Polygon2D" parent="GroundObjects/SmelterRack"]
+polygon = PackedVector2Array(-56, -104, 56, -104, 56, 0, -56, 0)
+color = Color(0.08, 0.13, 0.17, 1)
+
+[node name="Frame" type="Line2D" parent="GroundObjects/SmelterRack"]
+points = PackedVector2Array(-52, -4, -52, -100, 52, -100, 52, -4, -52, -4)
+width = 5.0
+default_color = Color(0.47, 0.56, 0.57, 1)
+
+[node name="Module" type="Polygon2D" parent="GroundObjects/SmelterRack"]
+polygon = PackedVector2Array(-38, -84, 38, -84, 44, -70, 44, -20, -44, -20, -44, -70)
+color = Color(0.61, 0.44, 0.31, 1)
+
+[node name="Sign" type="Label" parent="GroundObjects/SmelterRack"]
+offset_left = -68.0
+offset_top = -132.0
+offset_right = 68.0
+text = "SMELTER"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 16
+
+[node name="Secured" type="Line2D" parent="GroundObjects/SmelterRack"]
+points = PackedVector2Array(-46, -70, 46, -26, 46, -70, -46, -26)
+width = 4.0
+default_color = Color(0.77, 0.54, 0.28, 1)
+
+[node name="FabricatorRack" type="StaticBody2D" parent="GroundObjects"]
+position = Vector2(192, -112)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="GroundObjects/FabricatorRack"]
+position = Vector2(0, -28)
+shape = SubResource("RackFootprint")
+
+[node name="Rack" type="Polygon2D" parent="GroundObjects/FabricatorRack"]
+polygon = PackedVector2Array(-56, -104, 56, -104, 56, 0, -56, 0)
+color = Color(0.08, 0.13, 0.17, 1)
+
+[node name="Frame" type="Line2D" parent="GroundObjects/FabricatorRack"]
+points = PackedVector2Array(-52, -4, -52, -100, 52, -100, 52, -4, -52, -4)
+width = 5.0
+default_color = Color(0.47, 0.56, 0.57, 1)
+
+[node name="Module" type="Polygon2D" parent="GroundObjects/FabricatorRack"]
+polygon = PackedVector2Array(-38, -84, 38, -84, 44, -70, 44, -20, -44, -20, -44, -70)
+color = Color(0.39, 0.48, 0.64, 1)
+
+[node name="Sign" type="Label" parent="GroundObjects/FabricatorRack"]
+offset_left = -68.0
+offset_top = -132.0
+offset_right = 68.0
+text = "FABRICATOR"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 16
+
+[node name="Secured" type="Line2D" parent="GroundObjects/FabricatorRack"]
+points = PackedVector2Array(-46, -70, 46, -26, 46, -70, -46, -26)
+width = 4.0
+default_color = Color(0.77, 0.54, 0.28, 1)
+
+[node name="ReturnDoor" type="StaticBody2D" parent="GroundObjects"]
+position = Vector2(0, 204)
+script = ExtResource("1_door")
+interaction_prompt = "E — Return to cabin"
+source_scene = "res://scenes/world/maintenance_bay.tscn"
+destination_scene = "res://scenes/world/ship_interior.tscn"
+destination_spawn = &"FromMaintenance"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="GroundObjects/ReturnDoor"]
+shape = SubResource("DoorFootprint")
+
+[node name="Visual" type="Polygon2D" parent="GroundObjects/ReturnDoor"]
+polygon = PackedVector2Array(-48, -16, 48, -16, 48, 16, -48, 16)
+color = Color(0.42, 0.62, 0.58, 1)
+
+[node name="Sign" type="Label" parent="GroundObjects/ReturnDoor"]
+offset_left = -60.0
+offset_top = -44.0
+offset_right = 60.0
+text = "CABIN"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 16
+
+[node name="Spawns" type="Node2D" parent="."]
+
+[node name="FromCabin" type="Marker2D" parent="Spawns"]
+position = Vector2(0, 96)

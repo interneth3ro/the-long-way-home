@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3]
+[gd_scene load_steps=13 format=3]
 
 [ext_resource type="Script" path="res://scenes/main/main.gd" id="1_main"]
 [ext_resource type="PackedScene" path="res://scenes/world/ship_interior.tscn" id="2_interior"]
@@ -11,6 +11,8 @@
 [ext_resource type="Script" path="res://scenes/main/scene_transition_controller.gd" id="9_transitions"]
 [ext_resource type="PackedScene" path="res://scenes/ui/musing_ui.tscn" id="10_musing"]
 [ext_resource type="PackedScene" path="res://scenes/ui/developer_coordinates.tscn" id="11_coordinates"]
+
+[ext_resource type="PackedScene" path="res://scenes/ui/inventory_ui.tscn" id="12_inventory"]
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_main")
@@ -53,3 +55,6 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 0
 color = Color(0, 0, 0, 0)
+
+[node name="InventoryUI" parent="." node_paths=PackedStringArray("progression") instance=ExtResource("12_inventory")]
+progression = NodePath("../PlaythroughState")
