@@ -24,6 +24,8 @@ func _draw() -> void:
 			color = Color(0.35, 0.78, 0.46)
 		elif status == PlanetWorldState.OperatingStatus.OUTPUT_FULL:
 			color = Color(0.94, 0.69, 0.28)
+		elif status == PlanetWorldState.OperatingStatus.INPUT_EMPTY:
+			color = Color(0.35, 0.60, 0.90)
 		draw_circle(Vector2(size.x - 13, size.y - 13), 3.5, color)
 
 

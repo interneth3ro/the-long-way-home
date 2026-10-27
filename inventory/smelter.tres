@@ -1,6 +1,8 @@
-[gd_resource type="Resource" script_class="MachineDefinition" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="MachineDefinition" load_steps=4 format=3]
 
 [ext_resource type="Script" path="res://construction/machine_definition.gd" id="1_item"]
+[ext_resource type="Resource" path="res://inventory/ferrite_ore.tres" id="2_input"]
+[ext_resource type="Resource" path="res://inventory/ferrite_ingot.tres" id="3_output"]
 
 [resource]
 script = ExtResource("1_item")
@@ -9,6 +11,10 @@ display_name = "Smelter"
 section = 1
 footprint_cells = Vector2i(2, 2)
 compatible_resources = Array[StringName]([])
-output_per_cycle = 0
-cycle_seconds = 0.0
-output_capacity = 0
+input_item = ExtResource("2_input")
+input_per_cycle = 1
+input_capacity = 20
+output_item = ExtResource("3_output")
+output_per_cycle = 1
+cycle_seconds = 2.0
+output_capacity = 20

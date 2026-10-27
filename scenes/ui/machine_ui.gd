@@ -15,8 +15,12 @@ extends CanvasLayer
 @onready var _status: Label = $HUD/Panel/Content/Status
 @onready var _explanation: Label = $HUD/Panel/Content/Explanation
 @onready var _progress: ProgressBar = $HUD/Panel/Content/Progress
-@onready var _output: Label = $HUD/Panel/Content/Output
-@onready var _collect_button: Button = $HUD/Panel/Content/Collect
+@onready var _input_section: VBoxContainer = $HUD/Panel/Content/InputSection
+@onready var _input_storage: Label = $HUD/Panel/Content/InputSection/Storage
+@onready var _transfer_button: Button = $HUD/Panel/Content/InputSection/Transfer
+@onready var _output_section: VBoxContainer = $HUD/Panel/Content/OutputSection
+@onready var _output: Label = $HUD/Panel/Content/OutputSection/Storage
+@onready var _collect_button: Button = $HUD/Panel/Content/OutputSection/Collect
 
 var _machine_id: int = 0
 
@@ -87,18 +91,28 @@ func _refresh(machine: Dictionary) -> void:
 			_status.text = "Producing"
 		PlanetWorldState.OperatingStatus.OUTPUT_FULL:
 			_status.text = "Output Full"
+		PlanetWorldState.OperatingStatus.INPUT_EMPTY:
+			_status.text = "Input Empty"
 		_:
 			_status.text = "Inactive"
 	var has_production := definition.has_production()
 	_explanation.visible = not has_production
 	_progress.visible = has_production
-	_output.visible = has_production
-	_collect_button.visible = has_production
+	_output_section.visible = has_production
+	_input_section.visible = has_production and definition.has_input()
 	if not has_production:
 		return
 	_progress.value = 100.0 * machine.cycle_progress / definition.cycle_seconds
+	if definition.has_input():
+		_input_storage.text = "Input — %s\n%d / %d" % [definition.input_item.display_name,
+			machine.input, definition.input_capacity]
+		_transfer_button.disabled = machine.input >= definition.input_capacity \
+			or progression.inventory.get_quantity(definition.input_item.item_id) == 0
 	var name_text := definition.output_item.display_name if definition.output_item != null else "Output"
-	_output.text = "%s: %d / %d" % [name_text, machine.output, definition.output_capacity]
+	if definition.has_input():
+		_output.text = "Output — %s\n%d / %d" % [name_text, machine.output, definition.output_capacity]
+	else:
+		_output.text = "%s: %d / %d" % [name_text, machine.output, definition.output_capacity]
 	_collect_button.disabled = machine.output == 0
 
 
@@ -109,6 +123,21 @@ func _collect() -> void:
 		return
 	var world := transitions.get_current_world()
 	progression.planet.collect_output(_machine_id, progression.inventory,
+		world.to_local(_detector.global_position), _detector.machine_interaction_range)
+	var updated := progression.planet.get_machine(_machine_id)
+	if updated.is_empty():
+		close()
+	else:
+		_refresh(updated)
+
+
+func _transfer() -> void:
+	var machine := progression.planet.get_machine(_machine_id)
+	if not _panel.visible or not _in_range(machine) or inventory_ui.is_open() \
+			or _dialogue.is_conversation_open() or _interaction.is_response_open():
+		return
+	var world := transitions.get_current_world()
+	progression.planet.transfer_input(_machine_id, progression.inventory,
 		world.to_local(_detector.global_position), _detector.machine_interaction_range)
 	var updated := progression.planet.get_machine(_machine_id)
 	if updated.is_empty():
