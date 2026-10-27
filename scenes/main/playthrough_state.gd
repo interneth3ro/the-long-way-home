@@ -8,12 +8,14 @@ signal ferrite_acquisition_completed
 signal smelter_recovery_completed
 signal smelter_deployment_completed
 signal ferrite_ingot_acquisition_completed
+signal ferrite_plate_acquisition_completed
 signal fabricator_recovery_completed
 
 const EXTRACTOR: ItemDefinition = preload("res://inventory/extractor.tres")
 const FERRITE_ORE: ItemDefinition = preload("res://inventory/ferrite_ore.tres")
 const SMELTER: ItemDefinition = preload("res://inventory/smelter.tres")
 const FERRITE_INGOT: ItemDefinition = preload("res://inventory/ferrite_ingot.tres")
+const FERRITE_PLATE: ItemDefinition = preload("res://inventory/ferrite_plate.tres")
 const FABRICATOR: ItemDefinition = preload("res://inventory/fabricator.tres")
 
 # Session state only. A fresh Main instance is a new playthrough.
@@ -32,6 +34,7 @@ var extractor_deployed: bool:
 var _extractor_deployed: bool = false
 var ferrite_acquired: bool = false
 var ferrite_ingot_acquired: bool = false
+var ferrite_plate_acquired: bool = false
 var smelter_recovered: bool:
 	get:
 		return _smelter_recovered
@@ -70,6 +73,9 @@ func _on_inventory_changed() -> void:
 	if not ferrite_ingot_acquired and inventory.get_quantity(FERRITE_INGOT.item_id) > 0:
 		ferrite_ingot_acquired = true
 		ferrite_ingot_acquisition_completed.emit()
+	if not ferrite_plate_acquired and inventory.get_quantity(FERRITE_PLATE.item_id) > 0:
+		ferrite_plate_acquired = true
+		ferrite_plate_acquisition_completed.emit()
 
 
 func _on_machine_deployed(definition: MachineDefinition) -> void:

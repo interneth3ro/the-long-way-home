@@ -376,11 +376,43 @@ output-label retest are recorded in the
   20-unit per-ingredient capacity. Do not add recipes, manufacturing, logistics,
   power or narrative advancement. Craft a Ferrite Plate stays current.
 
-Implementation is on the recipe-switching feature branch, pending owner acceptance
-and merge. Static validation does not establish runtime behavior. Synthetic tests
-for multi-material returns, progress and output preservation remain unexecuted and
+Implementation is merged in PR #44. Owner acceptance remains separate from agent
+static validation, which does not establish runtime behavior. Synthetic tests for
+multi-material returns, progress and output preservation remain unexecuted and
 are separate from current player-facing acceptance. See the
-[implementation and ordered manual checklist](../README.md#switch-deployed-fabricator-recipes-feature-branch-pending-merge).
+[implementation and ordered manual checklist](../README.md#switch-deployed-fabricator-recipes-pr-44-merged).
+
+## Approved Fabricator production and first Plate acquisition
+
+- Automatic manufacture when configured, supplied and unblocked. Both starter
+  recipes take 3 seconds per cycle, defined in recipe data: 1 Ingot -> 1 Plate or
+  1 Ingot -> 2 Rods. No manual Start/Stop/Craft or additional recipes.
+- Keep 20 units per accepted input and one shared output buffer holding 20
+  individual products. Complete whole batches only. Consume all ingredients at
+  completion, atomically with product creation; no reservation at cycle start.
+- Preserve partial progress on shortages, insufficient batch space, incompatible
+  completed products and the existing per-instance recipe chooser pause. Blocked
+  time never becomes a backlog. Only a successful different recipe resets work.
+- Completed output carries its own product identity, preserved across switching,
+  snapshots and presenter recreation. Collect All returns that stored product
+  atomically; recovery returns equipment, all inputs and completed output together.
+  Invalid storage or rejected insertion must preserve items and machine state.
+- Reuse Producing / Input Empty / Output Full / Inactive, progress and existing
+  panel controls. Incompatible output counts as Output Full. Empty output uses
+  the generic heading; nonempty output names the stored product. Preserve stable
+  interactive visibility and all recipe chooser lease/release behavior.
+- First successful Plate acquisition into Dave's Materials completes an idempotent
+  session milestone. Manufacture alone does not qualify. Collection and recovery
+  follow the existing inventory-acquisition convention. Spending never resets it.
+  Clear Craft a Ferrite Plate guidance while `restore_computer` remains active and
+  incomplete. No next objective, dialogue, musing, cinematic or repair transition.
+
+Implementation is on the production feature branch, pending owner acceptance and
+merge. Agent checks are static only; regression scripts are added/updated but
+unexecuted. No Godot type checking, runtime or graphical verification is claimed.
+See [implementation and ordered owner checklist](../README.md#fabricator-production-feature-branch-pending-merge).
+Earlier Fabricator sections retain their milestone-specific historical scope;
+this approved production direction extends their formerly deferred behavior.
 
 ## Unresolved design details
 

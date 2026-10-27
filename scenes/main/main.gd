@@ -28,6 +28,7 @@ func _ready() -> void:
 	$PlaythroughState.smelter_deployment_completed.connect(_refresh_objective_tracker)
 	$PlaythroughState.ferrite_ingot_acquisition_completed.connect(_on_ferrite_ingot_acquired)
 	$PlaythroughState.fabricator_recovery_completed.connect(_refresh_objective_tracker)
+	$PlaythroughState.ferrite_plate_acquisition_completed.connect(_refresh_objective_tracker)
 	$SceneTransitions.transition_started.connect($MusingUI.dismiss)
 	$SceneTransitions.initialize()
 	_objectives.objective_state_changed.connect(_on_objective_state_changed)
@@ -47,7 +48,10 @@ func _on_objective_state_changed(_objective_id: StringName, _state: ObjectiveCon
 func _refresh_objective_tracker() -> void:
 	var definition := _objectives.get_active_objective()
 	if definition != null and definition.objective_id == &"restore_computer":
-		if $PlaythroughState.fabricator_recovered:
+		if $PlaythroughState.ferrite_plate_acquired:
+			# The acquisition stage is done; the overarching objective stays active.
+			definition = null
+		elif $PlaythroughState.fabricator_recovered:
 			definition = PLATE_GUIDANCE
 		elif $PlaythroughState.ferrite_ingot_acquired:
 			definition = FABRICATOR_GUIDANCE

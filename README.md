@@ -12,8 +12,9 @@ adds Ferrite Ore production and collection. Merged PR #38 adds Smelter recovery
 and the Ferrite acquisition musing. Merged PR #39 adds Smelter deployment.
 Merged PR #40 adds Ferrite Ingot production; merged PR #42 adds Fabricator rack
 recovery. Merged PR #43 adds Fabricator deployment, initial recipe selection
-and material loading. This feature branch adds in-place Fabricator recipe
-switching, pending merge and owner acceptance.
+and material loading; merged PR #44 adds in-place recipe switching. This feature
+branch adds automatic Fabricator production and first Plate acquisition, pending
+merge and owner acceptance.
 Its gameplay implementation is independent of FactoryGame; the approved Dave
 migration below reuses only two legacy artwork sheets.
 
@@ -1524,13 +1525,13 @@ lifecycle retest, passed before this label amendment. This amendment still needs
 the owner's focused UI retest; agent validation remains static only.
 
 
-## Switch deployed Fabricator recipes (feature branch, pending merge)
+## Switch deployed Fabricator recipes (PR #44, merged)
 
 Implements the owner-approved recipe-switching decisions for
 [issue #37](https://github.com/interneth3ro/the-long-way-home/issues/37).
 The issue's original design-needed status predates this specification; keep it
-open until owner acceptance and merge. Manufacturing remains deferred and
-**Craft a Ferrite Plate.** stays current.
+open until owner acceptance and merge. At PR #44, manufacturing remained deferred
+and **Craft a Ferrite Plate.** stayed current; the production feature below extends it.
 
 Configured Fabricators offer **Change Recipe** in the shared machine panel.
 It reuses the Plate/Rod icon cards, marks the active recipe **Current**, and shows
@@ -1619,3 +1620,97 @@ Defer player-facing tests for incompatible returns, two-material recipes, live
 pause/resume, nonzero live production progress and completed Fabricator output.
 Both available recipes use only Ferrite Ingots and manufacturing does not exist.
 Synthetic regression fixtures do not satisfy these future gameplay checks.
+
+
+## Fabricator production (feature branch, pending merge)
+
+Configured, supplied Fabricators automatically turn 1 Ferrite Ingot into 1 Ferrite
+Plate or 2 Ferrite Rods every **3 seconds**, configured in `RecipeDefinition` and
+both recipe resources. There is no Start/Stop/Craft control. Each accepted input
+still holds 20 units; the machine definition sets one shared 20-item output buffer.
+No power, logistics, new recipes, disk saving or further Computer repair is added.
+This extends [recipe switching](#switch-deployed-fabricator-recipes-pr-44-merged)
+and its completed-output safeguard from [issue #37](https://github.com/interneth3ro/the-long-way-home/issues/37).
+Dedicated testing infrastructure in [issue #41](https://github.com/interneth3ro/the-long-way-home/issues/41)
+remains separate.
+
+`PlanetWorldState.advance_production()` owns a focused recipe-machine path. It
+bounds affordable cycles by every ingredient and whole output batches, consumes
+all inputs at completion and creates the corresponding output before notifying.
+Its transaction guard rejects synchronous machine reentry. Fractional work survives
+missing inputs, insufficient output space, incompatible completed output and the
+existing instance-specific chooser pause. Blocked elapsed time earns no backlog.
+Large deltas perform bounded arithmetic per ingredient, without a per-cycle loop;
+cycle boundaries follow the existing fixed-machine clamp convention.
+
+Fabricator records add only `output_item_id`; fixed Extractor/Smelter scalar
+buffers and timing stay in place. Nonempty output resolves through the machine's
+recipe product definitions, independently of its selected recipe. Empty output
+has zero quantity and empty identity. Different recipe selection resets only
+incomplete progress. Plates left after selecting Rod block manufacture until
+collected. Invalid output records stop production and reject collection/recovery
+without deleting the record or relabeling items. Snapshots deep-copy buffer data.
+
+The shared panel shows Producing, Input Empty, Output Full or Inactive and the
+existing progress bar. Output names the actual stored product; after Collect All
+it immediately returns to `Output` and `0 / 20`. Interactive sections retain stable
+visibility across repeated refreshes. Collection enforces normal interaction range
+and input priority, returns all stored products atomically, then clears quantity
+and identity without changing inputs, recipe or partial work. Recovery stages one
+packaged machine, every stored ingredient and the stored product in one inventory
+transaction. Any failed insertion leaves all state unchanged. Redeployment starts
+unconfigured with empty storage and zero work. Existing chooser controls, leases,
+Current/Back/Esc and interruption cleanup remain in place.
+
+`PlaythroughState.ferrite_plate_acquired` is an idempotent session milestone,
+observed through the established successful inventory-change acquisition path.
+Manufacturing alone cannot set it; successful Collect All, or recovery returning
+completed Plates into Materials, can. Spending Plates never clears it. Main clears
+the completed Craft a Ferrite Plate guidance without completing the overarching
+`restore_computer` objective, which remains active/incomplete. There is no next
+objective, dialogue, musing or transition.
+
+Added `tests/fabricator_production_test.gd` covers recipe durations, boundaries,
+partial/large deltas, whole batches, shortage/blockage backlog, pause, typed output,
+snapshot isolation, both switching directions, collection/recovery rollback,
+invalid identities, exact-once acquisition, notifications/reentry, isolated
+multi-ingredient/nonbinary-duration fixtures and fixed-machine regressions.
+Extended deployment and switching regressions cover active presentation, stable
+output controls, live chooser pause, stored-product labels/collection and updated
+recovery invariants. **All regression scripts remain unexecuted.** Static grammar,
+resource/scene text and Git checks do not establish Godot type checking, runtime
+behavior, layout or mouse interaction. No Godot, imports, project code, headless,
+graphical or performance execution was performed. Owner acceptance is outstanding.
+
+### Owner production acceptance
+
+The owner performs **one test at a time**, reporting PASS/FAIL and observations
+before the next. Stop and investigate any failure before proposing an amendment.
+Agent graphical execution still requires separate explicit owner authorization.
+
+1. **Configuration regression:** Deploy/configure Plate Fabricator and load Ingots;
+   controls work.
+2. **Plate manufacturing:** A 3-second automatic cycle creates one Plate and consumes
+   one Ingot at completion.
+3. **Collect All:** Collect Plates; stored quantity and generic empty label update.
+4. **Milestone timing:** Manufacture alone leaves Craft a Ferrite Plate incomplete;
+   collecting completes it. Restore Computer stays incomplete; no new guidance/dialogue.
+5. **Rod manufacturing:** Switch to Rod; each 3-second cycle consumes one Ingot and
+   produces two Rods; collect Rods.
+6. **Output capacity:** Verify the 20-item limit, no partial two-Rod batch or overflow,
+   and resumption after collection.
+7. **Stored output across switching:** Produce Plates, switch to Rod, verify Plates
+   remain collectible and block Rod production; collect Plates and observe Rod resumption.
+8. **Pause and progress:** Open Change Recipe during a partial cycle; progress holds.
+   Back/Current/Esc resume without reset; selecting a different recipe resets progress.
+9. **Input/output blockage:** Where naturally reproducible, verify progress retention
+   and no backlog while blocked.
+10. **Recovery/redeployment:** Recover stored inputs and completed products; verify
+    conservation and a fresh unconfigured redeployment.
+11. **Extractor/Smelter regression:** Production, transfer, collection, recovery,
+    statuses and generic empty labels remain correct.
+
+Synthetic code fixtures are not owner playtesting. Do not add gameplay recipes for
+multi-ingredient tests. Cases unavailable in ordinary gameplay (including a
+19-Rod buffer with the current two-Rod batches) remain deferred/not manually verified,
+even with regression code. No merge or post-merge cleanup is authorized here.

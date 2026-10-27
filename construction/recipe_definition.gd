@@ -6,12 +6,14 @@ extends Resource
 @export var ingredients: Array[RecipeIngredient] = []
 @export var output_item: ItemDefinition
 @export var output_quantity: int = 1
+@export var cycle_seconds: float = 3.0
 @export var icon: Texture2D
 
 
 func is_valid() -> bool:
 	if recipe_id == &"" or display_name.strip_edges().is_empty() or ingredients.is_empty() \
-			or output_item == null or not output_item.is_valid() or output_quantity <= 0:
+			or output_item == null or not output_item.is_valid() or output_quantity <= 0 \
+			or not is_finite(cycle_seconds) or cycle_seconds <= 0.0:
 		return false
 	var seen: Dictionary = {}
 	for ingredient in ingredients:

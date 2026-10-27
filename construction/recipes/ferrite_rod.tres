@@ -18,4 +18,5 @@ display_name = "Ferrite Rod"
 ingredients = Array[ExtResource("2_ingredient")]([SubResource("Ingot")])
 output_item = ExtResource("4_output")
 output_quantity = 2
+cycle_seconds = 3.0
 icon = ExtResource("5_icon")

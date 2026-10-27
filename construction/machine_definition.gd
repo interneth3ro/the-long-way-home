@@ -12,7 +12,7 @@ extends ItemDefinition
 @export var input_item: ItemDefinition
 @export var input_per_cycle: int = 1
 @export var input_capacity: int = 0
-# Recipe configuration and switching; recipe data does not enable production.
+# Recipe machines use ingredient-keyed input and independently typed output.
 @export var recipes: Array[RecipeDefinition] = []
 
 

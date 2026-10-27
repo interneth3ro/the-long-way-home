@@ -60,11 +60,11 @@ func _check_material_transactions() -> void:
 	located.inputs.clear()
 	_check(state.get_machine(1).inputs[&"ferrite_ingot"] == 20, "Snapshots cannot mutate nested storage")
 	state.advance_production(4.0)
-	_check(state.machine_status(state.get_machine(1)) == PlanetWorldState.OperatingStatus.INACTIVE,
-		"Configured Fabricator stays inactive")
-	_check(state.get_machine(1).cycle_progress == 0.0 and state.get_machine(1).output == 0,
-		"No progress or output")
-	_check(state.get_machine(1).inputs[&"ferrite_ingot"] == 20, "No production consumption")
+	_check(state.machine_status(state.get_machine(1)) == PlanetWorldState.OperatingStatus.PRODUCING,
+		"Loaded Fabricator produces automatically")
+	_check(state.get_machine(1).cycle_progress == 1.0 and state.get_machine(1).output == 1,
+		"One completed cycle and one second of work")
+	_check(state.get_machine(1).inputs[&"ferrite_ingot"] == 19, "One input consumed at completion")
 	_check(inventory.get_quantity(&"ferrite_plate") == 0, "No fabricated product awarded")
 
 	# A real definition conflict rejects the whole equipment/material payload.
@@ -74,7 +74,7 @@ func _check_material_transactions() -> void:
 	inventory.add_item(conflict)
 	_check(not state.recover_machine(1, inventory, point, 160), "Recovery insertion conflict rejected")
 	_check(state.get_machine(1).recipe_id == &"ferrite_plate", "Failed recovery preserves recipe")
-	_check(state.get_machine(1).inputs[&"ferrite_ingot"] == 20, "Failed recovery preserves inputs")
+	_check(state.get_machine(1).inputs[&"ferrite_ingot"] == 19, "Failed recovery preserves inputs")
 	_check(inventory.get_quantity(&"ferrite_ingot") == 15, "Failed recovery preserves inventory")
 	inventory.remove_item(conflict)
 	nested.clear()
@@ -84,7 +84,8 @@ func _check_material_transactions() -> void:
 	_check(nested == [false, false], "Recovery callbacks cannot duplicate awards")
 	_check(state.get_machine(1).is_empty(), "Recovered record removed")
 	_check(inventory.get_quantity(&"fabricator") == 1, "One equipment returned")
-	_check(inventory.get_quantity(&"ferrite_ingot") == 35, "All inputs returned")
+	_check(inventory.get_quantity(&"ferrite_ingot") == 34, "Remaining inputs returned")
+	_check(inventory.get_quantity(&"ferrite_plate") == 1, "Completed output returned on recovery")
 	_check(not state.select_initial_recipe(1, &"ferrite_rod"), "Recovered ID cannot be configured")
 	_check(not state.recover_machine(1, inventory, point, 160), "Recovered ID cannot award twice")
 	_check(PlanetWorldState.new().get_machines().is_empty(), "Fresh session resets machinery")
@@ -153,15 +154,19 @@ func _confirm(construction: ConstructionController, world: Node2D, cell: Vector2
 func _check_panel_refresh(panel: MachineUI, configured: bool, transfer_enabled: bool) -> void:
 	var changes: Array[int] = [0]
 	var changed := func() -> void: changes[0] += 1
+	panel._output_section.visibility_changed.connect(changed)
+	panel._collect_button.visibility_changed.connect(changed)
 	panel._input_section.visibility_changed.connect(changed)
 	panel._transfer_button.visibility_changed.connect(changed)
 	for _iteration in range(3):
 		panel._process(0.0)
 		_check(panel._input_section.is_visible_in_tree() == configured, "Input visibility matches configuration")
-		_check(not panel._progress.visible and not panel._output_section.visible, "Fabricator production controls hidden")
+		_check(panel._progress.visible == configured and panel._output_section.visible == configured,
+			"Fabricator production controls follow configuration")
 		if configured:
 			_check(panel._change_button.visible and not panel._pause_label.visible, "Configured Change Recipe available")
-			_check(panel._recipe_summary.visible and panel._status.text == "Inactive", "Configured inspection preserved")
+			_check(panel._recipe_summary.visible and panel._status.text in ["Producing", "Input Empty", "Output Full"],
+				"Configured inspection shows production status")
 			_check(panel._transfer_button.is_visible_in_tree(), "Transfer control accessible")
 			_check(panel._transfer_button.disabled == (not transfer_enabled), "Transfer eligibility preserved")
 		else:
@@ -170,6 +175,8 @@ func _check_panel_refresh(panel: MachineUI, configured: bool, transfer_enabled: 
 			_check(panel._recipe_cards.visible and not panel._transfer_button.is_visible_in_tree(),
 				"Chooser exposes no transfer control")
 	_check(changes[0] == 0, "Steady refresh must not emit input/button visibility changes")
+	panel._output_section.visibility_changed.disconnect(changed)
+	panel._collect_button.visibility_changed.disconnect(changed)
 	panel._input_section.visibility_changed.disconnect(changed)
 	panel._transfer_button.visibility_changed.disconnect(changed)
 
@@ -200,6 +207,8 @@ func _check_recipe_switching_ui(panel: MachineUI, state: PlaythroughState, cell:
 		"Change Recipe opens explicit change mode")
 	_check(panel._pause_label.visible and state.planet.is_recipe_change_paused(id), "Target pause and subtle indicator")
 	_check(not panel._placement_session and not panel._input_section.visible, "Switch uses normal range; no loading")
+	state.planet.advance_production(100.0)
+	_check(state.planet.get_machine(id) == before, "Live chooser pause preserves work without backlog")
 	_check(panel._recipe_cards.get_child_count() == 2, "Reuses both recipe cards")
 	var current: Button = panel._recipe_cards.get_child(0)
 	_check(current.text.contains("Current") and current.text.contains("Ferrite Plate")
@@ -321,10 +330,52 @@ func _check_output_labels(panel: MachineUI, state: PlaythroughState, cell: Vecto
 	_check(panel._output.text == "Output\n0 / 20", "Empty Extractor output uses shared convention")
 
 
+func _check_fabricator_output(panel: MachineUI, state: PlaythroughState, cell: Vector2i) -> void:
+	state.planet._machines[5] = {"id": 5, "definition": FABRICATOR, "cell": cell,
+		"turns": 0, "recipe_id": &"ferrite_plate", "inputs": {INGOT.item_id: 5},
+		"cycle_progress": 0.0, "output": 0, "output_item_id": &""}
+	panel.open_machine(5)
+	_check(panel._output.text == "Output\n0 / 20" and panel._collect_button.disabled,
+		"Empty Fabricator output is generic and disabled")
+	state.planet.advance_production(1.8)
+	panel._process(0.0)
+	_check(is_equal_approx(panel._progress.value, 60.0) and panel._status.text == "Producing",
+		"Progress derives from authoritative recipe duration")
+	state.planet.advance_production(1.2)
+	panel._process(0.0)
+	_check(panel._output.text == "Output — Ferrite Plate\n1 / 20", "Manufactured Plate label")
+	var stored := state.planet.get_machine(5)
+	for _iteration in range(2):
+		var presenter := DeployedMachine.new()
+		presenter.configure(state.planet.get_machine(5), state.planet)
+		presenter.free()
+	panel.close()
+	panel.open_machine(5)
+	_check(state.planet.get_machine(5) == stored and panel._output.text.contains("Ferrite Plate"),
+		"Presenter and panel recreation preserve typed completed output")
+	panel._change_recipe()
+	panel._select_recipe(5, &"ferrite_rod")
+	_check(panel._status.text == "Output Full" and panel._output.text.contains("Ferrite Plate"),
+		"Switch displays stored Plate and incompatible output blockage")
+	_check_panel_refresh(panel, true, true)
+	panel._collect_button.pressed.emit()
+	_check(panel._output.text == "Output\n0 / 20" and panel._collect_button.disabled,
+		"Fabricator Collect All restores empty label immediately")
+	state.planet.advance_production(3.0)
+	panel._process(0.0)
+	_check(panel._output.text == "Output — Ferrite Rod\n2 / 20", "New recipe resumes after collection")
+	var before := state.planet.get_machine(5)
+	panel.player.global_position += Vector2(500, 0)
+	panel._collect()
+	_check(state.planet.get_machine(5) == before, "Panel collection respects range")
+	panel._process(0.0)
+	_check(not panel.is_open(), "Range exit closes production panel")
+
+
 func _run() -> void:
 	_check(FABRICATOR.is_valid() and FABRICATOR.footprint_cells == Vector2i(2, 2),
 		"Deployable 64x64 Fabricator")
-	_check(FABRICATOR.recipes.size() == 2 and not FABRICATOR.has_production(), "Two recipes, no production")
+	_check(FABRICATOR.recipes.size() == 2 and not FABRICATOR.has_production(), "Two recipes use recipe-specific production")
 	for recipe in FABRICATOR.recipes:
 		_check(recipe.is_valid() and recipe.ingredients.size() == 1, "Valid starter recipe")
 		_check(recipe.ingredients[0].item == INGOT and recipe.ingredients[0].quantity == 1, "One ingot input")
@@ -450,6 +501,7 @@ func _run() -> void:
 	_check(not panel._change_button.visible and not panel._back_button.visible
 		and not panel._pause_label.visible, "Extractor hides switching controls")
 	_check_output_labels(panel, state, cell)
+	_check_fabricator_output(panel, state, cell)
 	main.free()
 	print("Fabricator deployment regression failures: %d" % _failures)
 	quit(0 if _failures == 0 else 1)
