@@ -196,7 +196,9 @@ func _select_recipe(machine_id: int, recipe_id: StringName) -> void:
 func _refresh_fabricator(machine: Dictionary, definition: MachineDefinition) -> void:
 	_progress.hide()
 	_output_section.hide()
-	_input_section.hide()
+	var recipe := definition.get_recipe(machine.get("recipe_id", &""))
+	# Assign the desired state once: hiding a visible ancestor cancels button presses.
+	_input_section.visible = not _recipe_cards.visible and recipe != null
 	_explanation.visible = not _recipe_cards.visible
 	_explanation.text = "Production not yet available"
 	_status.text = "Inactive"
@@ -204,13 +206,11 @@ func _refresh_fabricator(machine: Dictionary, definition: MachineDefinition) -> 
 	if _recipe_cards.visible:
 		_title.text = "%s — Select Recipe" % definition.display_name
 		return
-	var recipe := definition.get_recipe(machine.get("recipe_id", &""))
 	if recipe == null:
 		return
 	_recipe_summary.show()
 	_recipe_summary.text = "Selected Recipe: %s\nRecipe: %s → %s" % [
 		recipe.display_name, recipe.input_summary(), recipe.output_summary()]
-	_input_section.show()
 	var rows := PackedStringArray()
 	var can_transfer := false
 	var inputs: Dictionary = machine.inputs

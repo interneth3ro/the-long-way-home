@@ -1496,3 +1496,15 @@ resource references, SVG XML, protected-source/UID comparisons, Markdown links
 and Git diff checks. No Godot, project code, imports, headless, graphical or
 performance execution was performed. Engine type checking, gameplay and visual
 layout remain unverified.
+
+
+The UI lifecycle amendment keeps configured Fabricator input controls continuously
+visible across ordinary refreshes, rather than hiding/showing their parent each
+frame. Regression assertions count visibility notifications across repeated
+refreshes, check transfer eligibility after selection/reopening, hide controls
+for unconfigured machines and check Extractor/Smelter section transitions.
+These assertions remain unexecuted. Direct transaction calls do not establish
+physical button behavior: owner playtesting must verify mouse-down, a hold across
+multiple frames and mouse-up, then a 25-ingot transfer (20 stored, 5 retained).
+The reported failure's runtime cause remains unconfirmed; no inventory, recipe,
+range, production or recovery logic was changed by this amendment.

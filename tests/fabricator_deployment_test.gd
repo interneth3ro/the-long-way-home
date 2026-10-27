@@ -148,6 +148,29 @@ func _confirm(construction: ConstructionController, world: Node2D, cell: Vector2
 	construction._physics_process(0.0)
 
 
+# Visibility notifications catch hide/show churn even when final visibility is
+# correct. This is lifecycle coverage, not a physical mouse press/release test.
+func _check_panel_refresh(panel: MachineUI, configured: bool, transfer_enabled: bool) -> void:
+	var changes: Array[int] = [0]
+	var changed := func() -> void: changes[0] += 1
+	panel._input_section.visibility_changed.connect(changed)
+	panel._transfer_button.visibility_changed.connect(changed)
+	for _iteration in range(3):
+		panel._process(0.0)
+		_check(panel._input_section.is_visible_in_tree() == configured, "Input visibility matches configuration")
+		_check(not panel._progress.visible and not panel._output_section.visible, "Fabricator production controls hidden")
+		if configured:
+			_check(panel._recipe_summary.visible and panel._status.text == "Inactive", "Configured inspection preserved")
+			_check(panel._transfer_button.is_visible_in_tree(), "Transfer control accessible")
+			_check(panel._transfer_button.disabled == (not transfer_enabled), "Transfer eligibility preserved")
+		else:
+			_check(panel._recipe_cards.visible and not panel._transfer_button.is_visible_in_tree(),
+				"Chooser exposes no transfer control")
+	_check(changes[0] == 0, "Steady refresh must not emit input/button visibility changes")
+	panel._input_section.visibility_changed.disconnect(changed)
+	panel._transfer_button.visibility_changed.disconnect(changed)
+
+
 func _run() -> void:
 	_check(FABRICATOR.is_valid() and FABRICATOR.footprint_cells == Vector2i(2, 2),
 		"Deployable 64x64 Fabricator")
@@ -194,10 +217,12 @@ func _run() -> void:
 	_check(panel.is_open() and panel._machine_id == 1 and panel._recipe_cards.visible,
 		"Chooser targets placed instance beyond ordinary range")
 	_check(state.planet.get_machine(1).recipe_id == &"", "Placement cannot also choose a card")
+	_check_panel_refresh(panel, false, false)
 	_check(not construction.begin_deployment(FABRICATOR), "Panel blocks construction")
 	panel._select_recipe(1, &"ferrite_rod")
 	_check(panel.is_open() and not panel._recipe_cards.visible, "Selection keeps inspection open")
 	_check(state.planet.get_machine(1).recipe_id == &"ferrite_rod", "Exact ID configured")
+	_check_panel_refresh(panel, true, false)
 	panel._transfer()
 	_check(state.inventory.get_quantity(&"ferrite_ingot") == 35, "Placement exception cannot transfer")
 	panel.close()
@@ -206,8 +231,10 @@ func _run() -> void:
 	construction.player.global_position = center - Vector2(70, 0)
 	panel.open_machine(1)
 	_check(panel.is_open() and panel._recipe_summary.visible, "Reopening preserves selected recipe")
+	_check_panel_refresh(panel, true, true)
 	panel._transfer()
 	_check(state.planet.get_machine(1).inputs[&"ferrite_ingot"] == 20, "In-range panel loads materials")
+	_check_panel_refresh(panel, true, false)
 	panel.close()
 	_check(construction.begin_deployment(FABRICATOR), "Second deployment starts")
 	_confirm(construction, world, cell)
@@ -223,7 +250,9 @@ func _run() -> void:
 	panel.close()
 	panel.open_machine(2)
 	_check(panel._recipe_cards.visible, "Dismissed unconfigured machine reopens chooser")
+	_check_panel_refresh(panel, false, false)
 	panel._select_recipe(2, &"ferrite_plate")
+	_check_panel_refresh(panel, true, true)
 	panel._transfer()
 	var retained := state.planet.get_machine(2)
 	var presenter := DeployedMachine.new()
@@ -248,6 +277,18 @@ func _run() -> void:
 	main._refresh_objective_tracker()
 	_check(main.get_node("ObjectiveTracker/HUD/Panel/Content/Description").text == "Craft a Ferrite Plate.",
 		"Configuration/loading never advance crafting objective")
+	# Exercise shared-panel transitions after Fabricator inspection without
+	# modifying simulation. Existing fixed-recipe presentation must remain intact.
+	panel._refresh({"definition": state.SMELTER, "cell": cell, "turns": 0,
+		"input": 0, "output": 0, "cycle_progress": 0.0})
+	_check(panel._input_section.visible and panel._progress.visible and panel._output_section.visible,
+		"Smelter retains input, progress and output sections")
+	_check(not panel._recipe_cards.visible and not panel._recipe_summary.visible, "Smelter hides recipe UI")
+	panel._refresh({"definition": state.EXTRACTOR, "cell": cell, "turns": 0,
+		"output": 0, "cycle_progress": 0.0})
+	_check(not panel._input_section.visible and panel._progress.visible and panel._output_section.visible,
+		"Extractor retains output-only production view")
+	_check(not panel._recipe_cards.visible and not panel._recipe_summary.visible, "Extractor hides recipe UI")
 	main.free()
 	print("Fabricator deployment regression failures: %d" % _failures)
 	quit(0 if _failures == 0 else 1)
