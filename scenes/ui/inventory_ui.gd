@@ -67,6 +67,7 @@ func _refresh() -> void:
 			if item is MachineDefinition:
 				var select := Button.new()
 				select.text = row
+				select.mouse_filter = Control.MOUSE_FILTER_STOP
 				select.focus_mode = Control.FOCUS_NONE
 				select.pressed.connect(_select_machine.bind(item))
 				_actions.add_child(select)
@@ -80,6 +81,7 @@ func _refresh() -> void:
 	if _selected != null and progression.inventory.get_quantity(_selected.item_id) > 0:
 		var deploy := Button.new()
 		deploy.text = "Deploy " + _selected.display_name
+		deploy.mouse_filter = Control.MOUSE_FILTER_STOP
 		deploy.focus_mode = Control.FOCUS_NONE
 		deploy.pressed.connect(_deploy_selected)
 		_actions.add_child(deploy)

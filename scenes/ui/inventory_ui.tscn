@@ -28,6 +28,7 @@ grow_vertical = 2
 mouse_filter = 2
 
 [node name="Toggle" type="Button" parent="HUD"]
+mouse_filter = 0
 offset_left = 24.0
 offset_top = 56.0
 offset_right = 192.0
@@ -40,7 +41,7 @@ visible = false
 offset_left = 24.0
 offset_top = 100.0
 offset_right = 360.0
-mouse_filter = 2
+mouse_filter = 0
 theme_override_styles/panel = SubResource("InventoryStyle")
 
 [node name="Content" type="VBoxContainer" parent="HUD/Panel"]

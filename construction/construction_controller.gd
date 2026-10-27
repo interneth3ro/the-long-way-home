@@ -24,7 +24,9 @@ var _reason: String = ""
 var _target: Dictionary = {}
 var _ghost: MachineVisual
 var _aim_visible: bool = false
-var _confirm_requested: bool = false
+# NONE also means no pending confirmation; no separate pending flag is needed.
+var _requested_mode: Mode = Mode.NONE
+var _requested_world: Node2D
 var _requested_cell := Vector2i.ZERO
 var _requested_turns: int = 0
 var _requested_id: int = 0
@@ -66,12 +68,17 @@ func cancel() -> void:
 	_mode = Mode.NONE
 	_definition = null
 	_target = {}
-	_confirm_requested = false
+	_clear_confirmation()
 	_aim_visible = false
 	_ghost.hide()
 	_hint.hide()
 	_detector.set_tool_active(false)
 	queue_redraw()
+
+
+func _clear_confirmation() -> void:
+	_requested_mode = Mode.NONE
+	_requested_world = null
 
 
 func _context_blocked(include_inventory: bool = true) -> bool:
@@ -102,6 +109,11 @@ func _process(_delta: float) -> void:
 func _input(event: InputEvent) -> void:
 	if _mode == Mode.NONE or event.is_echo():
 		return
+	# A UI may open before the next frame cancels this tool. Yield the event to
+	# its existing handler, including inventory's single-interface Esc priority.
+	if _context_blocked():
+		cancel()
+		return
 	if event.is_action_pressed("ui_cancel") or (event is InputEventMouseButton \
 			and event.pressed and event.button_index == MOUSE_BUTTON_RIGHT):
 		cancel()
@@ -123,18 +135,25 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("machine_recovery") and _mode == Mode.NONE:
 		if not world is PlanetExterior:
 			return
+		cancel()
 		_world = world
 		_mode = Mode.RECOVERY
 		_detector.set_tool_active(true)
 	elif _mode != Mode.NONE and event is InputEventMouseButton \
 			and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		# GUI gets first refusal; a button click cannot also place/recover a machine.
-		_confirm_requested = true
-		var point := world.get_local_mouse_position()
-		_requested_cell = WorldCoordinates.world_to_construction(point)
-		_requested_turns = _turns
-		var target := progression.planet.machine_at(point)
-		_requested_id = target.get("id", 0)
+		# Keep the first click until physics consumes it. Later clicks are handled
+		# below, but cannot replace its mode, world or payload.
+		if _requested_mode == Mode.NONE:
+			_requested_mode = _mode
+			_requested_world = world
+			var point := world.get_local_mouse_position()
+			if _mode == Mode.CONSTRUCTION:
+				_requested_cell = WorldCoordinates.world_to_construction(point)
+				_requested_turns = _turns
+			else:
+				var target := progression.planet.machine_at(point)
+				_requested_id = target.get("id", 0)
 	else:
 		return
 	get_viewport().set_input_as_handled()
@@ -142,11 +161,12 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func _physics_process(_delta: float) -> void:
 	if _context_blocked():
-		_confirm_requested = false
+		_clear_confirmation()
 		_target = {}
 		return
 	_world = transitions.get_current_world()
 	if _world == null:
+		_clear_confirmation()
 		return
 	_aim_visible = get_viewport().gui_get_hovered_control() == null
 	var point := _world.get_local_mouse_position()
@@ -165,16 +185,20 @@ func _physics_process(_delta: float) -> void:
 		_ghost.turns = _turns
 		_ghost.visible = _aim_visible
 		_ghost.queue_redraw()
-	if _confirm_requested:
-		_confirm_requested = false
-		if _mode == Mode.CONSTRUCTION:
-			if progression.planet.deploy_machine(_definition, _requested_cell, _requested_turns,
-					progression.inventory, player, _world, construction_range):
-				cancel()
-		elif _mode == Mode.RECOVERY:
-			if progression.planet.recover_machine(_requested_id, progression.inventory,
-					_world.to_local(player.global_position), recovery_range):
-				cancel()
+	if _requested_mode != Mode.NONE:
+		var request_matches := _requested_mode == _mode \
+			and is_instance_valid(_requested_world) and _requested_world == _world
+		# Consume or reject once, before any world/inventory operation or callbacks.
+		_clear_confirmation()
+		if request_matches:
+			if _mode == Mode.CONSTRUCTION:
+				if progression.planet.deploy_machine(_definition, _requested_cell, _requested_turns,
+						progression.inventory, player, _world, construction_range):
+					cancel()
+			elif _mode == Mode.RECOVERY:
+				if progression.planet.recover_machine(_requested_id, progression.inventory,
+						_world.to_local(player.global_position), recovery_range):
+					cancel()
 	queue_redraw()
 
 

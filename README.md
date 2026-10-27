@@ -1080,10 +1080,21 @@ footprint. There are no range upgrades, batch selection or remote recovery.
 
 `ConstructionController.begin_deployment(definition)` is callable independently
 of Equipment presentation. Confirm clicks are handled after GUI input and
-queued for physics-time validation; rotation/cancel events are consumed. Active
-tools suspend contextual E requests and clear any already queued interaction.
-Opening inventory or starting a transition cancels the tool; dialogue or an
-inspection response blocks tool activation. Movement and camera zoom remain
+queued for physics-time validation. One pending confirmation retains its original
+tool mode, world instance and placement cell/rotation or recovery target; later
+clicks cannot overwrite it. Execution rejects a changed mode/world and rechecks
+the authoritative placement/recovery rules. Canceling, switching tools, opening
+inventory or beginning a transition clears the pending request.
+
+Inventory buttons and the panel consume mouse events through native Godot GUI
+routing; informational HUD elements remain noninteractive. Open inventory,
+dialogue and inspection responses explicitly block tool confirmation and B
+activation. An active tool yields immediately when such a context opens, letting
+the existing interface handle its keys. Otherwise rotation/cancel events belong
+to the tool, E requests are suppressed, and ordinary E interaction resumes on
+exit. Esc closes only the interface owning that event; opening inventory cancels
+the tool without consuming equipment. B may enter recovery without a hovered
+machine; R rotates only during construction. Movement and camera zoom remain
 available. Tools neither add dialogue nor change approved internal musings.
 
 `PlanetWorldState` owns machine IDs, definitions, cells and normalized quarter
