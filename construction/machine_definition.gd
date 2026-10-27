@@ -12,7 +12,7 @@ extends ItemDefinition
 @export var input_item: ItemDefinition
 @export var input_per_cycle: int = 1
 @export var input_capacity: int = 0
-# Initial configuration only; recipe data does not enable production.
+# Recipe configuration and switching; recipe data does not enable production.
 @export var recipes: Array[RecipeDefinition] = []
 
 

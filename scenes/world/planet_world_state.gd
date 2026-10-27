@@ -5,6 +5,8 @@ signal machines_changed
 signal machine_deployed(definition: MachineDefinition)
 
 enum OperatingStatus { INACTIVE, PRODUCING, OUTPUT_FULL, INPUT_EMPTY }
+enum RecipeChangeResult { OK, BUSY, MISSING_MACHINE, INVALID_CURRENT, INVALID_RECIPE,
+	INVALID_INPUTS, INVENTORY_REJECTED }
 
 # Authoritative session data, independent of disposable terrain presenters.
 # Loading does not mark exploration or surveying. Neither system exists yet.
@@ -16,6 +18,8 @@ var _deposits: Array[ResourceDeposit] = [preload("res://scenes/world/introductor
 var _machines: Dictionary[int, Dictionary] = {}
 var _next_machine_id: int = 1
 var _machine_transaction: bool = false
+# Transient leases, never part of machine snapshots or persistent configuration.
+var _recipe_change_pauses: Dictionary[int, RefCounted] = {}
 
 
 func get_deposits() -> Array[ResourceDeposit]:
@@ -112,6 +116,7 @@ func recover_machine(machine_id: int, inventory: InventoryState,
 		_machine_transaction = false
 		return false
 	_machines.erase(machine_id)
+	_recipe_change_pauses.erase(machine_id)
 	inventory.changed.emit()
 	machines_changed.emit()
 	_machine_transaction = false
@@ -149,6 +154,9 @@ func advance_production(delta: float) -> void:
 	if _machine_transaction or not is_finite(delta) or delta <= 0.0:
 		return
 	for machine in _machines.values():
+		# Future recipe production must retain this instance-specific pause gate.
+		if is_recipe_change_paused(machine.id):
+			continue
 		if machine_status(machine) != OperatingStatus.PRODUCING:
 			continue
 		var definition: MachineDefinition = machine.definition
@@ -174,7 +182,7 @@ func advance_production(delta: float) -> void:
 
 
 # Recipe configuration belongs to the persistent machine, never to its panel.
-# Configured machines cannot switch recipes in this milestone.
+# Initial configuration remains separate from changing a configured recipe.
 func select_initial_recipe(machine_id: int, recipe_id: StringName) -> bool:
 	if _machine_transaction or not _machines.has(machine_id):
 		return false
@@ -192,7 +200,89 @@ func select_initial_recipe(machine_id: int, recipe_id: StringName) -> bool:
 	return true
 
 
+func begin_recipe_change(machine_id: int) -> RefCounted:
+	if _machine_transaction or _recipe_change_pauses.has(machine_id):
+		return null
+	var machine := get_machine(machine_id)
+	if machine.is_empty():
+		return null
+	var definition: MachineDefinition = machine.definition
+	if definition.get_recipe(machine.get("recipe_id", &"")) == null:
+		return null
+	var lease := RefCounted.new()
+	_recipe_change_pauses[machine_id] = lease
+	return lease
+
+
+# A stale panel cannot release another panel's lease. Release is permitted during
+# notification callbacks so a closing panel can never strand its pause.
+func end_recipe_change(machine_id: int, lease: RefCounted) -> void:
+	if lease != null and _recipe_change_pauses.get(machine_id) == lease:
+		_recipe_change_pauses.erase(machine_id)
+
+
+func is_recipe_change_paused(machine_id: int) -> bool:
+	return _recipe_change_pauses.has(machine_id)
+
+
+# Empty success payloads do not notify inventory. All mutations commit before
+# notifications, under the same guard used by recovery and material transfers.
+func change_recipe(machine_id: int, recipe_id: StringName,
+		inventory: InventoryState) -> RecipeChangeResult:
+	if _machine_transaction:
+		return RecipeChangeResult.BUSY
+	if not _machines.has(machine_id):
+		return RecipeChangeResult.MISSING_MACHINE
+	var machine: Dictionary = _machines[machine_id]
+	var definition: MachineDefinition = machine.definition
+	var old_recipe := definition.get_recipe(machine.get("recipe_id", &""))
+	if old_recipe == null or definition.input_capacity <= 0:
+		return RecipeChangeResult.INVALID_CURRENT
+	var new_recipe := definition.get_recipe(recipe_id)
+	if new_recipe == null:
+		return RecipeChangeResult.INVALID_RECIPE
+	var old_items: Dictionary = {}
+	var accepted: Dictionary = {}
+	for ingredient in old_recipe.ingredients:
+		old_items[ingredient.item.item_id] = ingredient.item
+	for ingredient in new_recipe.ingredients:
+		accepted[ingredient.item.item_id] = true
+	if not machine.get("inputs") is Dictionary:
+		return RecipeChangeResult.INVALID_INPUTS
+	var retained: Dictionary = {}
+	var returns: Array[Dictionary] = []
+	for item_id in machine.inputs:
+		var quantity: Variant = machine.inputs[item_id]
+		if not old_items.has(item_id) or not quantity is int \
+				or quantity < 0 or quantity > definition.input_capacity:
+			return RecipeChangeResult.INVALID_INPUTS
+		if accepted.has(item_id):
+			retained[item_id] = quantity
+		elif quantity > 0:
+			returns.append({"definition": old_items[item_id], "quantity": quantity})
+	if old_recipe.recipe_id == new_recipe.recipe_id:
+		return RecipeChangeResult.OK
+	if inventory == null:
+		return RecipeChangeResult.INVENTORY_REJECTED
+	_machine_transaction = true
+	if not returns.is_empty() and not inventory.add_items(returns, false):
+		_machine_transaction = false
+		return RecipeChangeResult.INVENTORY_REJECTED
+	machine.recipe_id = new_recipe.recipe_id
+	machine.inputs = retained
+	machine.cycle_progress = 0.0
+	# Completed output is deliberately untouched. Future recipe production must
+	# store output identity independently and block incompatible output until taken.
+	if not returns.is_empty():
+		inventory.changed.emit()
+	machines_changed.emit()
+	_machine_transaction = false
+	return RecipeChangeResult.OK
+
+
 func _transfer_recipe_inputs(machine: Dictionary, inventory: InventoryState) -> bool:
+	if is_recipe_change_paused(machine.id):
+		return false
 	var definition: MachineDefinition = machine.definition
 	var recipe := definition.get_recipe(machine.get("recipe_id", &""))
 	if recipe == null:

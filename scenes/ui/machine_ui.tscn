@@ -62,6 +62,35 @@ layout_mode = 2
 mouse_filter = 2
 autowrap_mode = 2
 
+[node name="ChangeRecipe" type="Button" parent="HUD/Panel/Content"]
+visible = false
+layout_mode = 2
+mouse_filter = 0
+focus_mode = 0
+text = "Change Recipe"
+
+[node name="RecipePause" type="Label" parent="HUD/Panel/Content"]
+visible = false
+layout_mode = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.55, 0.58, 0.59, 1)
+theme_override_font_sizes/font_size = 14
+text = "Production Paused"
+
+[node name="RecipeError" type="Label" parent="HUD/Panel/Content"]
+visible = false
+layout_mode = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.95, 0.65, 0.45, 1)
+autowrap_mode = 2
+
+[node name="RecipeBack" type="Button" parent="HUD/Panel/Content"]
+visible = false
+layout_mode = 2
+mouse_filter = 0
+focus_mode = 0
+text = "Back"
+
 [node name="Status" type="Label" parent="HUD/Panel/Content"]
 layout_mode = 2
 mouse_filter = 2
@@ -121,3 +150,5 @@ text = "Close (Esc)"
 [connection signal="pressed" from="HUD/Panel/Content/OutputSection/Collect" to="." method="_collect"]
 [connection signal="pressed" from="HUD/Panel/Content/InputSection/Transfer" to="." method="_transfer"]
 [connection signal="pressed" from="HUD/Panel/Content/Close" to="." method="close"]
+[connection signal="pressed" from="HUD/Panel/Content/ChangeRecipe" to="." method="_change_recipe"]
+[connection signal="pressed" from="HUD/Panel/Content/RecipeBack" to="." method="_back_to_inspection"]

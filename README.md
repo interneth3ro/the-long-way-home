@@ -11,8 +11,9 @@ inventory. Merged PR #32 adds Extractor deployment and recovery; merged PR #36
 adds Ferrite Ore production and collection. Merged PR #38 adds Smelter recovery
 and the Ferrite acquisition musing. Merged PR #39 adds Smelter deployment.
 Merged PR #40 adds Ferrite Ingot production; merged PR #42 adds Fabricator rack
-recovery. This feature branch adds Fabricator deployment, initial recipe selection
-and material loading, pending merge and owner playtesting.
+recovery. Merged PR #43 adds Fabricator deployment, initial recipe selection
+and material loading. This feature branch adds in-place Fabricator recipe
+switching, pending merge and owner acceptance.
 Its gameplay implementation is independent of FactoryGame; the approved Dave
 migration below reuses only two legacy artwork sheets.
 
@@ -1434,7 +1435,7 @@ graphical or performance execution was performed. Godot type checking, regressio
 test execution, E input/physics, visual feedback and actual hatch travel require
 owner verification. The feature PR provides an ordered manual checklist.
 
-## Configure and load the Fabricator (feature branch, pending merge)
+## Configure and load the Fabricator (PR #43, merged)
 
 Deploy the recovered Fabricator by clicking it in Equipment. Existing preview,
 R rotation, left-click placement, right-click/Esc cancellation, range, planetary
@@ -1453,7 +1454,8 @@ and Ferrite Rod (1 Ferrite Ingot -> 2 Ferrite Rods). Selection stays in the pane
 showing recipe requirements, expected product, stored inputs/capacity and Transfer
 All. Nothing loads automatically. Dismissing an unconfigured machine leaves it
 unconfigured; later in-range E opens the chooser directly. Configured machines
-reopen inspection. No Change Recipe control or recipe switching is included.
+reopen inspection. PR #43 did not include recipe switching; the feature below
+extends configured inspection.
 
 Only the initial post-placement panel session bypasses inspection distance; it
 remains open after selection. Transfer All still checks normal range, including
@@ -1520,3 +1522,100 @@ headings; these assertions are unexecuted under the Godot restriction.
 The owner reports all ten prior functional playtests, including the Transfer All
 lifecycle retest, passed before this label amendment. This amendment still needs
 the owner's focused UI retest; agent validation remains static only.
+
+
+## Switch deployed Fabricator recipes (feature branch, pending merge)
+
+Implements the owner-approved recipe-switching decisions for
+[issue #37](https://github.com/interneth3ro/the-long-way-home/issues/37).
+The issue's original design-needed status predates this specification; keep it
+open until owner acceptance and merge. Manufacturing remains deferred and
+**Craft a Ferrite Plate.** stays current.
+
+Configured Fabricators offer **Change Recipe** in the shared machine panel.
+It reuses the Plate/Rod icon cards, marks the active recipe **Current**, and shows
+**Back**, a subtle **Production Paused** label and cause-aware inline failures.
+Selecting Current or Back returns to inspection unchanged; Esc closes the whole
+panel. Different recipes apply immediately in the same open panel. Failure
+retains the chooser and pause. Errors clear on success or exit. Initial placement
+selection has no Back or pause and retains its one-time range exception; switching
+always uses ordinary inspection range. No materials load automatically.
+
+`PlanetWorldState.change_recipe()` validates the machine, both recipes and stored
+input integrity, and returns a small `RecipeChangeResult` enum for UI feedback.
+It retains compatible material IDs, stages all incompatible returns using the old
+recipe's item definitions and `InventoryState.add_items(..., false)`, then commits
+the recipe, retained inputs and zero incomplete progress before signals. Reentrant
+machine mutations are rejected throughout notifications. Same-recipe selection is
+a no-op. Failures preserve inventory, recipe, inputs, progress and completed output.
+Plate <-> Rod keeps exactly the stored Ingots; no return is necessary today.
+
+The panel acquires an instance-specific transient pause lease through
+`begin_recipe_change()`, releases it through `end_recipe_change()`, and clears it
+on Current, success, Back, Close/Esc, range exit, transitions, inventory/tools,
+other responses, target replacement and panel teardown. Recovery clears the
+removed machine's lease immediately; stale target callbacks close safely. Only
+the matching lease can release its pause. Transfer is blocked during change mode.
+`advance_production()` explicitly skips paused instances; future recipe production
+must retain that gate. Opening/cancelling does not reset progress. Pauses never
+enter machine snapshots and a fresh playthrough starts without them.
+
+Recipe switching leaves completed-output fields untouched. Future manufacturing
+must store product identity independently from recipe identity, preserve completed
+products, and block new production while incompatible old output awaits collection.
+This PR adds no Fabricator production, collection, timers, progress display or fake
+products. Existing Extractor/Smelter production and scalar storage are retained.
+
+Recipe cards rebuild only on entering a panel or change mode, never each frame.
+Input, recipe summary and chooser controls receive their desired visibility once
+per refresh, preserving the Transfer All lifecycle correction from PR #43.
+
+Added `tests/fabricator_recipe_switching_test.gd` covers starter switches, exact
+retention, same-recipe no-op, progress reset, storage rejection, snapshot isolation,
+synthetic two-input retention/returns, later-item rollback, committed-state signal
+observation, reentry guards, pause ownership and removal. Extended
+`tests/fabricator_deployment_test.gd` covers switching controls/cards, Back/Esc,
+inline errors, stable visibility, transfer after switching, range/interruption,
+target replacement, teardown and recovery, plus existing objective and shared-panel
+regressions. **Both scripts remain added/updated but unexecuted.** Synthetic fixtures
+seed progress and output solely to test data preservation; they are not gameplay
+or player-facing acceptance.
+
+Static validation: standalone gdtoolkit 4.5 grammar parsing of the five affected
+scripts, scene/resource paths and node/signal wiring, local Markdown links,
+protected-file hashes and Git whitespace/scope checks. No Godot, project scripts,
+imports, headless, graphical or performance tests were executed. Engine type
+checking, real button interaction and layout remain unverified.
+
+### Owner recipe-switching acceptance
+
+Execute only after explicit owner authorization for graphical execution, **one
+test at a time**, recording PASS/FAIL and optional observations before continuing.
+Use a fresh playthrough with the existing Fabricator recovery progression.
+
+1. Initial placement still opens both recipe cards. Select one; initial selection
+   has no Back or Production Paused. Closing unconfigured and reopening still works.
+2. Configured Fabricator inspection shows Change Recipe; open it with an ordinary
+   mouse press, hold across several frames and release.
+3. Both cards show correct icons, names, inputs and outputs. Current is marked.
+   Hold/release a card normally; buttons remain usable across refreshes.
+4. Select Current with loaded Ingots: return to the same inspection unchanged.
+5. Back returns unchanged; open again and Esc closes the entire panel. Neither
+   cancellation changes the recipe or stored materials.
+6. With 15 Ingots loaded, switch Plate -> Rod -> Plate without recovery. Each
+   change keeps exactly 15 Ingots in the same deployed Fabricator.
+7. Production Paused appears subtly only while changing recipes. It does not
+   prove live manufacturing pause, because manufacturing is not implemented.
+8. Walk out of inspection range or travel through the hatch while the chooser is
+   open. It closes safely; return and confirm configuration/materials persist.
+9. After switching, hold/release Transfer All with 25 Ingots and an empty input:
+   20 load and 5 remain. Existing partial buffers fill only to the 20-unit limit.
+10. Recover and redeploy: inputs and equipment return once; new deployment starts
+    unconfigured as before. Guidance remains Craft a Ferrite Plate.
+11. Check Extractor/Smelter production, transfers, collection and recovery. Empty
+    input/output headings remain generic; switching controls never appear there.
+
+Defer player-facing tests for incompatible returns, two-material recipes, live
+pause/resume, nonzero live production progress and completed Fabricator output.
+Both available recipes use only Ferrite Ingots and manufacturing does not exist.
+Synthetic regression fixtures do not satisfy these future gameplay checks.
