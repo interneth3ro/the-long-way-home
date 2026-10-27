@@ -28,11 +28,15 @@ func configure(machine: Dictionary, state: PlanetWorldState) -> void:
 	visual.definition = definition
 	visual.turns = machine.turns
 	visual.position = Vector2(-footprint.size.x / 2.0, -footprint.size.y)
+	visual.show_status = true
+	visual.status = _state.machine_status(machine)
 	add_child(visual)
 	_visual = visual
-	_visual.show_status = true
 
 
 func _process(_delta: float) -> void:
-	_visual.status = _state.machine_status(_state.get_machine(machine_id))
+	var status := _state.machine_status(_state.get_machine(machine_id))
+	if status == _visual.status:
+		return
+	_visual.status = status
 	_visual.queue_redraw()

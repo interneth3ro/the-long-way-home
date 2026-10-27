@@ -123,9 +123,12 @@ func advance_production(delta: float) -> void:
 		var available_cycles: int = (definition.output_capacity - machine.output) / definition.output_per_cycle
 		# Bound elapsed working time before converting to integer cycles. Time spent
 		# blocked earns no backlog; existing fractional work survives the pause.
-		var total := minf(machine.cycle_progress + delta,
-			available_cycles * definition.cycle_seconds)
-		var cycles := mini(int(floor(total / definition.cycle_seconds)), available_cycles)
+		var capacity_time := available_cycles * definition.cycle_seconds
+		var total := minf(machine.cycle_progress + delta, capacity_time)
+		# At the clamp every affordable cycle completed. Division can round down
+		# for nonbinary durations (for example, three 0.7-second cycles).
+		var cycles := available_cycles if total == capacity_time \
+			else mini(int(floor(total / definition.cycle_seconds)), available_cycles)
 		machine.output += cycles * definition.output_per_cycle
 		machine.cycle_progress = 0.0 if cycles == available_cycles \
 			else total - cycles * definition.cycle_seconds

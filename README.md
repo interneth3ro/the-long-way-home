@@ -1164,9 +1164,11 @@ Electrical requirements are temporarily bypassed; there is no power simulation.
 cell, rotation, elapsed cycle progress and whole-item output. Persistent
 `PlaythroughState._process` advances all machines while Main is active, including
 cabin/bay visits, transitions, open interfaces and chunk unloading.
-Delayed updates complete multiple cycles up to available capacity. A machine
-pauses if another whole cycle cannot fit and resumes automatically after
-withdrawal. Blocked updates preserve existing fractional progress and earn no
+Delayed updates complete multiple cycles up to available capacity. Reaching the
+available-cycle time limit completes all affordable cycles directly, avoiding
+division-rounding undercounts for configurable durations such as 0.7 seconds.
+A machine pauses if another whole cycle cannot fit and resumes automatically
+after withdrawal. Blocked updates preserve existing fractional progress and earn no
 backlog; reaching capacity completes the final cycle. No visuals, animation,
 panel or terrain node drives production. Fresh Main resets machines, inventory
 and progression; there is no offline production, disk persistence or session
@@ -1179,7 +1181,9 @@ the interaction origin to the machine center, independent of the 160-unit
 construction/recovery ranges. The compact nonpausing panel shows machine name,
 Producing / Output Full / Inactive, live cycle percentage and output/capacity.
 A small steady machine light reflects those authoritative states in green,
-amber or neutral gray. The placement ghost has no operating light.
+amber or neutral gray. Presenters initialize the light from authoritative state
+before attachment, then poll status and request a redraw only when it changes.
+The placement ghost has no operating light.
 
 **Collect All** transfers completed output through the existing inventory API,
 clears the buffer only after successful transfer, leaves the panel open and
