@@ -1,11 +1,21 @@
 class_name DeployedMachine
 extends StaticBody2D
 
+var machine_id: int
+var display_name: String
+var interaction_point: Vector2
+var _state: PlanetWorldState
+var _visual: MachineVisual
+
 # Presentation/physical collision only; identity and ownership stay in planet state.
-func configure(machine: Dictionary) -> void:
+func configure(machine: Dictionary, state: PlanetWorldState) -> void:
+	machine_id = machine.id
+	_state = state
 	var definition: MachineDefinition = machine.definition
+	display_name = definition.display_name
 	var footprint := definition.footprint(machine.cell, machine.turns)
 	position = Vector2(footprint.get_center().x, footprint.end.y)
+	interaction_point = Vector2(0, -footprint.size.y / 2.0)
 	collision_layer = 1
 	collision_mask = 1
 	var shape := RectangleShape2D.new()
@@ -19,3 +29,10 @@ func configure(machine: Dictionary) -> void:
 	visual.turns = machine.turns
 	visual.position = Vector2(-footprint.size.x / 2.0, -footprint.size.y)
 	add_child(visual)
+	_visual = visual
+	_visual.show_status = true
+
+
+func _process(_delta: float) -> void:
+	_visual.status = _state.machine_status(_state.get_machine(machine_id))
+	_visual.queue_redraw()

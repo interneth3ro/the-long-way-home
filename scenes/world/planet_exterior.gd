@@ -120,7 +120,7 @@ func _sync_machines() -> void:
 		retained.append(machine_id)
 		if not _machine_presenters.has(machine_id):
 			var presenter := DeployedMachine.new()
-			presenter.configure(machine)
+			presenter.configure(machine, _state)
 			$GroundObjects.add_child(presenter)
 			_machine_presenters[machine_id] = presenter
 	for machine_id in _machine_presenters.keys():

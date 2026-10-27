@@ -4,6 +4,8 @@ extends RefCounted
 signal machines_changed
 signal machine_deployed(definition: MachineDefinition)
 
+enum OperatingStatus { INACTIVE, PRODUCING, OUTPUT_FULL }
+
 # Authoritative session data, independent of disposable terrain presenters.
 # Loading does not mark exploration or surveying. Neither system exists yet.
 var seed_value: int
@@ -50,7 +52,7 @@ func deploy_machine(definition: MachineDefinition, cell: Vector2i, turns: int,
 		_machine_transaction = false
 		return false
 	var machine := {"id": _next_machine_id, "definition": definition,
-		"cell": cell, "turns": posmod(turns, 4)}
+		"cell": cell, "turns": posmod(turns, 4), "cycle_progress": 0.0, "output": 0}
 	_machines[_next_machine_id] = machine
 	_next_machine_id += 1
 	inventory.changed.emit()
@@ -73,9 +75,78 @@ func recover_machine(machine_id: int, inventory: InventoryState,
 	if not inventory.add_item(definition, 1, false):
 		_machine_transaction = false
 		return false
+	if machine.output > 0 and not inventory.add_item(definition.output_item, machine.output, false):
+		# No notifications have fired: undo the packaged item on transfer failure.
+		inventory.remove_item(definition, 1, false)
+		_machine_transaction = false
+		return false
 	_machines.erase(machine_id)
 	inventory.changed.emit()
 	machines_changed.emit()
+	_machine_transaction = false
+	return true
+
+
+func get_machine(machine_id: int) -> Dictionary:
+	return _machines[machine_id].duplicate() if _machines.has(machine_id) else {}
+
+
+func machine_status(machine: Dictionary) -> OperatingStatus:
+	if machine.is_empty():
+		return OperatingStatus.INACTIVE
+	var definition: MachineDefinition = machine.definition
+	if not definition.has_production():
+		return OperatingStatus.INACTIVE
+	var point := Vector2(machine.cell) * WorldCoordinates.CONSTRUCTION_SIZE \
+		+ definition.rotated_point(definition.extraction_point, machine.turns)
+	var compatible := definition.compatible_resources.is_empty()
+	for resource_type in definition.compatible_resources:
+		if deposit_at(point, resource_type) != null:
+			compatible = true
+	if not compatible:
+		return OperatingStatus.INACTIVE
+	if machine.output > definition.output_capacity - definition.output_per_cycle:
+		return OperatingStatus.OUTPUT_FULL
+	# Electrical requirements are provisionally bypassed for this milestone.
+	return OperatingStatus.PRODUCING
+
+
+# Called only by persistent PlaythroughState, never by terrain or UI nodes.
+func advance_production(delta: float) -> void:
+	if _machine_transaction or not is_finite(delta) or delta <= 0.0:
+		return
+	for machine in _machines.values():
+		if machine_status(machine) != OperatingStatus.PRODUCING:
+			continue
+		var definition: MachineDefinition = machine.definition
+		@warning_ignore("integer_division")
+		var available_cycles: int = (definition.output_capacity - machine.output) / definition.output_per_cycle
+		# Bound elapsed working time before converting to integer cycles. Time spent
+		# blocked earns no backlog; existing fractional work survives the pause.
+		var total := minf(machine.cycle_progress + delta,
+			available_cycles * definition.cycle_seconds)
+		var cycles := mini(int(floor(total / definition.cycle_seconds)), available_cycles)
+		machine.output += cycles * definition.output_per_cycle
+		machine.cycle_progress = 0.0 if cycles == available_cycles \
+			else total - cycles * definition.cycle_seconds
+
+
+func collect_output(machine_id: int, inventory: InventoryState,
+		player_point: Vector2, interaction_range: float) -> bool:
+	if _machine_transaction or inventory == null or not _machines.has(machine_id):
+		return false
+	var machine: Dictionary = _machines[machine_id]
+	var definition: MachineDefinition = machine.definition
+	if player_point.distance_to(definition.footprint(machine.cell, machine.turns).get_center()) > interaction_range:
+		return false
+	if machine.output == 0:
+		return true
+	_machine_transaction = true
+	if not inventory.add_item(definition.output_item, machine.output, false):
+		_machine_transaction = false
+		return false
+	machine.output = 0
+	inventory.changed.emit()
 	_machine_transaction = false
 	return true
 
