@@ -171,6 +171,38 @@ func _check_panel_refresh(panel: MachineUI, configured: bool, transfer_enabled: 
 	panel._transfer_button.visibility_changed.disconnect(changed)
 
 
+func _check_output_labels(panel: MachineUI, state: PlaythroughState, cell: Vector2i) -> void:
+	# Seed only the buffers; use the existing panel collection path to verify
+	# that collecting the final output immediately restores the generic label.
+	state.planet._machines[3] = {"id": 3, "definition": state.SMELTER, "cell": cell,
+		"turns": 0, "input": 0, "output": 0, "cycle_progress": 0.0}
+	panel.open_machine(3)
+	_check(panel._output.text == "Output\n0 / 20", "Empty Smelter output is generic")
+	_check(panel._input_storage.text == "Input\n0 / 20", "Empty input stays generic")
+	_check(panel._collect_button.disabled, "Empty output cannot be collected")
+	state.planet._machines[3].output = 7
+	state.planet._machines[3].input = 3
+	panel._process(0.0)
+	_check(panel._output.text == "Output — Ferrite Ingot\n7 / 20", "Stored output names configured item")
+	_check(panel._input_storage.text == "Input — Ferrite Ore\n3 / 20", "Stored input naming preserved")
+	_check(not panel._collect_button.disabled, "Stored output remains collectible")
+	var before := state.inventory.get_quantity(INGOT.item_id)
+	panel._collect()
+	_check(state.inventory.get_quantity(INGOT.item_id) == before + 7, "Collect All retains existing transaction")
+	_check(panel._output.text == "Output\n0 / 20", "Final collection restores generic output")
+	state.planet._machines[3].input = 0
+	panel._process(0.0)
+	_check(panel._input_storage.text == "Input\n0 / 20", "Emptied input returns to generic")
+	panel.close()
+	var extractor := {"definition": state.EXTRACTOR, "cell": cell, "turns": 0,
+		"output": 2, "cycle_progress": 0.0}
+	panel._refresh(extractor)
+	_check(panel._output.text == "Output — Ferrite Ore\n2 / 20", "Extractor names stored output with correct capacity")
+	extractor.output = 0
+	panel._refresh(extractor)
+	_check(panel._output.text == "Output\n0 / 20", "Empty Extractor output uses shared convention")
+
+
 func _run() -> void:
 	_check(FABRICATOR.is_valid() and FABRICATOR.footprint_cells == Vector2i(2, 2),
 		"Deployable 64x64 Fabricator")
@@ -289,6 +321,7 @@ func _run() -> void:
 	_check(not panel._input_section.visible and panel._progress.visible and panel._output_section.visible,
 		"Extractor retains output-only production view")
 	_check(not panel._recipe_cards.visible and not panel._recipe_summary.visible, "Extractor hides recipe UI")
+	_check_output_labels(panel, state, cell)
 	main.free()
 	print("Fabricator deployment regression failures: %d" % _failures)
 	quit(0 if _failures == 0 else 1)

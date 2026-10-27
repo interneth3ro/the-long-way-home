@@ -1508,3 +1508,15 @@ physical button behavior: owner playtesting must verify mouse-down, a hold acros
 multiple frames and mouse-up, then a 25-ingot transfer (20 stored, 5 retained).
 The reported failure's runtime cause remains unconfirmed; no inventory, recipe,
 range, production or recovery logic was changed by this amendment.
+
+
+The output-label presentation amendment uses **Output** for empty production
+buffers and **Output - material name** when nonempty (rendered with an em dash),
+with quantity/capacity on the next line. Both Smelter and Extractor use the
+configured output item name. Collection refreshes the heading when the buffer
+empties. Fabricator output controls remain hidden. Added regression assertions
+cover empty/nonempty/collected output, Extractor quantities and unchanged input
+headings; these assertions are unexecuted under the Godot restriction.
+The owner reports all ten prior functional playtests, including the Transfer All
+lifecycle retest, passed before this label amendment. This amendment still needs
+the owner's focused UI retest; agent validation remains static only.
