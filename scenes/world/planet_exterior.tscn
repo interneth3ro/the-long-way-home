@@ -69,20 +69,12 @@ y_sort_enabled = true
 collision_layer = 1
 collision_mask = 0
 monitoring = false
-position = Vector2(288, 336)
+position = Vector2(304, 280)
 script = ExtResource("3_ferrite")
 interaction_prompt = "E — Examine mineral deposit"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="GroundObjects/FerriteInspection"]
 shape = SubResource("FerriteInspectionFootprint")
-
-[node name="Formation" type="Polygon2D" parent="GroundObjects/FerriteInspection"]
-polygon = PackedVector2Array(-24, -8, -18, -28, -4, -42, 16, -32, 26, -12, 18, 12, -12, 16)
-color = Color(0.30, 0.36, 0.42, 1)
-
-[node name="SilverFace" type="Polygon2D" parent="GroundObjects/FerriteInspection"]
-polygon = PackedVector2Array(-4, -42, 4, -20, 18, 12, 26, -12, 16, -32)
-color = Color(0.68, 0.75, 0.79, 1)
 
 [node name="CrashedShip" type="StaticBody2D" parent="GroundObjects"]
 collision_layer = 5

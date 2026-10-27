@@ -7,8 +7,8 @@ extends WorldInteractable
 
 func _ready() -> void:
 	if _progression != null:
-		_progression.ferrite_discovery_completed.connect(_refresh_marker)
-	_refresh_marker()
+		_progression.ferrite_discovery_completed.connect(_refresh_inspection)
+	_refresh_inspection()
 
 
 func can_interact() -> bool:
@@ -22,11 +22,10 @@ func interact() -> String:
 	return ""
 
 
-func _refresh_marker() -> void:
-	# Only this introductory marker disappears. Geology and future formations do not.
+func _refresh_inspection() -> void:
+	# The region has no artwork; discovery only changes interaction availability.
 	var discovered := _progression != null and _progression.ferrite_discovered
-	visible = not discovered
 	interaction_enabled = not discovered
-	# Discovery can be emitted during physics interaction. Availability/visuals
-	# change immediately; defer the physics shape mutation without removing nodes.
+	# Discovery can be emitted during physics interaction. Availability changes
+	# immediately; defer the physics shape mutation without removing nodes.
 	$CollisionShape2D.set_deferred("disabled", discovered)

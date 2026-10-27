@@ -869,12 +869,13 @@ these checks; agent static results do not establish gameplay acceptance.
 
 One authored Ferrite deposit lies east/southeast of the hatch, centered near
 (288, 256), approximately three seconds' direct walking distance from FromShip.
-Provisional dark slate-gray ground, silver veins and a raised discovery marker
-distinguish it from terrain. The deployment polish makes this marker nonblocking
-and hides it after discovery; the mineral ground and veins remain. The patch is
-broadly oval with modest edge variation. Existing ship, hatch, spawn and rocks
-are unchanged. Existing protected gameplay geometry
-suppresses procedural details over the patch and its approach for every seed.
+Provisional dark slate-gray ground and silver veins distinguish it from terrain.
+The patch is broadly oval with modest edge variation. The introductory inspection
+region has no artwork; the same mineral ground and veins remain visible before
+and after discovery. The separate raised discovery formation is removed by this
+refinement. Existing ship, hatch, spawn and rocks are unchanged. Protected gameplay
+geometry suppresses procedural details over the patch and its approach for every
+seed.
 
 `PlanetWorldState` owns a read-only authored `ResourceDeposit` definition from
 `scenes/world/introductory_ferrite.tres`: stable ID `crash_site_ferrite`, resource
@@ -887,30 +888,33 @@ Definitions are shared immutable content; discovery belongs to PlaythroughState.
 
 The mineral area is separate from the decorative outline. Two future adjacent
 64 x 64 footprints at (192, 192) and (256, 192) fit inside it. The introductory
-inspection marker at (288, 336), radius 24, occupies no solid construction space.
-The independent construction cell is 32 x 32; Extractors occupy 2 x 2 cells. Only a designated extraction point
+invisible inspection region at (304, 280), radius 24, sits at the silver-vein
+junction within mineral-bearing ground and occupies no construction cells.
+The independent construction cell is 32 x 32; Extractors occupy 2 x 2 cells.
+Only a designated extraction point
 must overlap compatible mineral ground; the remaining footprint may extend off
 the deposit. Edge-to-edge machines are allowed, overlapping footprints are not.
 Every valid extraction point has equal richness. Construction validation,
 compatible-deposit highlights and placement previews are added by the deployment
 feature below.
 
-Approach the raised formation to see **E - Examine mineral deposit** (an em dash
-is displayed in-game). It uses the shared WorldInteractable interface on an
-Area2D, retaining the detector's 120-unit target-point range, nearest-target
-selection and obstruction ray. The detector includes areas as well as bodies,
-including when Dave stands inside the marker; the marker never blocks movement
-or construction. Only a deliberate E inspection calls `discover_ferrite`; proximity does not discover
-it. The state validates the deposit identity, sets `ferrite_discovered` before
-emitting one discovery signal, and rejects subsequent discovery attempts.
-Afterward the marker hides, targeting is disabled immediately, and its detection
-shape is disabled deferred to avoid physics-callback mutation. The prompt clears
-without a repeat inspection response. Initial visibility and later updates read
-the existing playthrough discovery flag; no additional persistent flag is added.
-Cached scene revisits and terrain-chunk reloads cannot restore it; a fresh
-playthrough restores the undiscovered marker. Only this introductory marker has
-that lifecycle; permanent formations and blocking obstacles remain independent
-of mineral-bearing ground.
+Approach the silver-veined part of the deposit to see **E - Examine mineral
+deposit** (an em dash is displayed in-game). The invisible Area2D reuses
+WorldInteractable and the detector's normal 120-unit target-point range,
+nearest-target selection and obstruction ray. No mouse targeting or exact
+standing point is required. The detector includes areas as well as bodies and
+supports standing directly inside the region. The area blocks neither movement
+nor construction. Only a deliberate E inspection calls `discover_ferrite`;
+proximity does not discover it. The state validates deposit identity, sets
+`ferrite_discovered` before emitting one signal, and rejects repeated discovery.
+Afterward targeting is disabled immediately and the detection shape is disabled
+deferred to avoid physics-callback mutation. The prompt clears without a repeat
+inspection response. Nothing visual changes during discovery. Initial
+availability and subsequent updates read the existing playthrough discovery
+flag; no additional persistent flag is added. Scene revisits and terrain-chunk
+reloads preserve disabled interaction; a fresh playthrough restores it. Resource
+deposits, interaction regions and genuine construction obstacles remain separate;
+future permanent formations, trees or rocks may explicitly block construction.
 
 Main routes discovery to reusable `MusingUI` and separately editable
 `MusingDefinition` content in `dialogue/ferrite_discovery.tres`. Both approved
@@ -1078,7 +1082,7 @@ Both preview and commit use `PlacementRules.rejection`, including inventory
 availability, planetary ground, range, extraction-point compatibility, persistent
 machine overlap and physical blockers. Machines may touch footprint edges.
 Layer 3, **Construction blockers**, explicitly marks authored ship/hatch solids
-and large rocks. The introductory inspection marker is a nonblocking area and
+and large rocks. The introductory inspection region is an invisible nonblocking area and
 does not carry that property. Mineral-bearing ground and current decorative
 details do not carry it either. Future trees or other plants can opt into blocking; vegetation is not universally exempt. Dave cannot
 be enclosed in a new footprint. Deployed machines also have ordinary movement

@@ -167,10 +167,11 @@ for approved dialogue, ownership and validation limits.
 - Placement transfers one packaged item into one deployed machine, and recovery
   reverses it. Persistent planet state owns identity, position and orientation
   independently of disposable terrain presentation. Persistence remains in memory.
-- The introductory Ferrite formation is a temporary nonblocking discovery marker.
-  It retains contextual E inspection and the approved discovery musing, then
-  disappears and stops targeting for that playthrough. Mineral-bearing ground
-  remains; permanent formations and genuine blocking obstacles are separate.
+- Dave inspects the introductory Ferrite deposit through a small invisible,
+  nonblocking region over recognizable mineral-bearing ground. Contextual E
+  triggers the approved discovery musing and disables that interaction for the
+  playthrough. Mineral ground and veins look the same before and after discovery;
+  resource data, future formations and genuine blocking obstacles remain separate.
 - The first successful deployment changes Restore Computer guidance to
   **Produce Ferrite Ore with the Extractor.** Recovery never resets progression.
   The Extractor stays unpowered and nonproducing; no new dialogue is added.
