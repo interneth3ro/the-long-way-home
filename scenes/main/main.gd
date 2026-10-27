@@ -12,6 +12,7 @@ const SMELTER_DEPLOYMENT_GUIDANCE: ObjectiveDefinition = preload("res://objectiv
 const SMELTING_GUIDANCE: ObjectiveDefinition = preload("res://objectives/restore_computer_smelting.tres")
 const FABRICATOR_GUIDANCE: ObjectiveDefinition = preload("res://objectives/restore_computer_fabricator.tres")
 const INGOT_MUSING: MusingDefinition = preload("res://dialogue/ferrite_ingot_acquisition.tres")
+const PLATE_GUIDANCE: ObjectiveDefinition = preload("res://objectives/restore_computer_plate.tres")
 
 @onready var _objectives: ObjectiveController = $ObjectiveController
 @onready var _tracker: ObjectiveTracker = $ObjectiveTracker
@@ -26,6 +27,7 @@ func _ready() -> void:
 	$PlaythroughState.smelter_recovery_completed.connect(_refresh_objective_tracker)
 	$PlaythroughState.smelter_deployment_completed.connect(_refresh_objective_tracker)
 	$PlaythroughState.ferrite_ingot_acquisition_completed.connect(_on_ferrite_ingot_acquired)
+	$PlaythroughState.fabricator_recovery_completed.connect(_refresh_objective_tracker)
 	$SceneTransitions.transition_started.connect($MusingUI.dismiss)
 	$SceneTransitions.initialize()
 	_objectives.objective_state_changed.connect(_on_objective_state_changed)
@@ -45,7 +47,9 @@ func _on_objective_state_changed(_objective_id: StringName, _state: ObjectiveCon
 func _refresh_objective_tracker() -> void:
 	var definition := _objectives.get_active_objective()
 	if definition != null and definition.objective_id == &"restore_computer":
-		if $PlaythroughState.ferrite_ingot_acquired:
+		if $PlaythroughState.fabricator_recovered:
+			definition = PLATE_GUIDANCE
+		elif $PlaythroughState.ferrite_ingot_acquired:
 			definition = FABRICATOR_GUIDANCE
 		elif $PlaythroughState.smelter_deployed:
 			definition = SMELTING_GUIDANCE

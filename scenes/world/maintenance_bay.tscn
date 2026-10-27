@@ -1,8 +1,9 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=9 format=3]
 
 [ext_resource type="Script" path="res://scenes/interaction/scene_hatch.gd" id="1_door"]
 [ext_resource type="Script" path="res://scenes/interaction/extractor_rack.gd" id="2_rack"]
 [ext_resource type="Script" path="res://scenes/interaction/smelter_rack.gd" id="3_smelter"]
+[ext_resource type="Script" path="res://scenes/interaction/fabricator_rack.gd" id="4_fabricator"]
 
 [sub_resource type="RectangleShape2D" id="HorizontalWall"]
 size = Vector2(672, 24)
@@ -181,6 +182,9 @@ horizontal_alignment = 1
 
 [node name="FabricatorRack" type="StaticBody2D" parent="GroundObjects"]
 position = Vector2(192, -112)
+script = ExtResource("4_fabricator")
+interaction_prompt = "E — Recover Fabricator"
+interaction_point = Vector2(0, -28)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="GroundObjects/FabricatorRack"]
 position = Vector2(0, -28)
@@ -211,6 +215,14 @@ theme_override_font_sizes/font_size = 16
 points = PackedVector2Array(-46, -70, 46, -26, 46, -70, -46, -26)
 width = 4.0
 default_color = Color(0.77, 0.54, 0.28, 1)
+
+[node name="Empty" type="Label" parent="GroundObjects/FabricatorRack"]
+visible = false
+offset_left = -48.0
+offset_top = -66.0
+offset_right = 48.0
+text = "EMPTY"
+horizontal_alignment = 1
 
 [node name="ReturnDoor" type="StaticBody2D" parent="GroundObjects"]
 position = Vector2(0, 204)
