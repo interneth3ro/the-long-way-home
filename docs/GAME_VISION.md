@@ -146,7 +146,8 @@ Recover the Extractor implementation is merged in PR #30; agent validation was
 static only. It adds the bay, inventory and first recovery step. Deployment and
 deployed-machine recovery are merged in PR #32; production is added by the
 feature below. Power remains unimplemented; Fabricator rack recovery is merged
-in PR #42, with deployment/configuration pending on the feature branch below.
+in PR #42 and deployment/configuration is merged in PR #43. Recipe switching
+is pending on the feature branch described below.
 Inventory and recovery are session-only and reset with a fresh Main instance. See the
 [implementation notes](../README.md#recover-the-extractor-pr-30-merged)
 for approved dialogue, ownership and validation limits.
@@ -348,12 +349,38 @@ the [implementation notes](../README.md#recover-the-fabricator-pr-42-merged).
 - Loaded machines stay gray **Inactive** with **Production not yet available**.
   No consumption, progress, output collection, manufacturing or objective advance.
   **Craft a Ferrite Plate.** stays current, without new dialogue or objectives.
-  Recipe switching remains future work in issue #37.
+  Recipe switching extends this in the approved direction below (issue #37).
 
-Implementation is on the Fabricator configuration feature branch, pending merge
-and owner playtesting. Agent validation is static only; regression scripts are
-added but unexecuted. See the
-[implementation notes](../README.md#configure-and-load-the-fabricator-feature-branch-pending-merge).
+Implementation is merged in PR #43. Agent validation was static only; regression
+scripts remain unexecuted. Owner-reported playtest results and the remaining
+output-label retest are recorded in the
+[implementation notes](../README.md#configure-and-load-the-fabricator-pr-43-merged).
+
+## Approved deployed Fabricator recipe switching
+
+- Configured inspection offers Change Recipe using the existing Plate/Rod cards,
+  with Current marked. Current and Back return unchanged; Esc closes the entire
+  panel. Different recipes apply immediately in the same panel. Cause-aware inline
+  errors retain the chooser. No confirmation or automatic ingredient loading.
+- Retain compatible inputs by item ID; atomically return incompatible inputs using
+  the old recipe definitions. Failure preserves all state. Opening or cancelling
+  preserves incomplete progress; only a successful different recipe resets it.
+- Pause only the targeted instance while changing, with a subtle Production Paused
+  indicator. Release on all exits, range loss, transitions, other UI interruptions,
+  removal and stale target invalidation. Initial configuration has no pause or Back
+  and keeps its placement range exception; switching uses ordinary inspection range.
+- Preserve future completed output independently of selected recipe. Future
+  manufacturing must wait while incompatible old output remains uncollected.
+  Production, live progress and output collection are not implemented here.
+- Plate <-> Rod retains stored Ferrite Ingots with unchanged quantities and
+  20-unit per-ingredient capacity. Do not add recipes, manufacturing, logistics,
+  power or narrative advancement. Craft a Ferrite Plate stays current.
+
+Implementation is on the recipe-switching feature branch, pending owner acceptance
+and merge. Static validation does not establish runtime behavior. Synthetic tests
+for multi-material returns, progress and output preservation remain unexecuted and
+are separate from current player-facing acceptance. See the
+[implementation and ordered manual checklist](../README.md#switch-deployed-fabricator-recipes-feature-branch-pending-merge).
 
 ## Unresolved design details
 

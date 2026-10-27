@@ -37,7 +37,7 @@ func _check_material_transactions() -> void:
 	_check(not state.transfer_input(1, inventory, point, 96), "Unconfigured rejects inputs")
 	_check(not state.select_initial_recipe(1, &"unknown"), "Invalid recipe rejected")
 	_check(state.select_initial_recipe(1, &"ferrite_plate"), "Initial recipe selected")
-	_check(not state.select_initial_recipe(1, &"ferrite_rod"), "Recipe switching rejected")
+	_check(not state.select_initial_recipe(1, &"ferrite_rod"), "Initial configuration cannot overwrite recipe")
 	_check(not state.transfer_input(1, inventory, Vector2(500, 500), 96), "Range enforced")
 	var nested: Array[bool] = []
 	var retry := func() -> void:
@@ -160,15 +160,133 @@ func _check_panel_refresh(panel: MachineUI, configured: bool, transfer_enabled: 
 		_check(panel._input_section.is_visible_in_tree() == configured, "Input visibility matches configuration")
 		_check(not panel._progress.visible and not panel._output_section.visible, "Fabricator production controls hidden")
 		if configured:
+			_check(panel._change_button.visible and not panel._pause_label.visible, "Configured Change Recipe available")
 			_check(panel._recipe_summary.visible and panel._status.text == "Inactive", "Configured inspection preserved")
 			_check(panel._transfer_button.is_visible_in_tree(), "Transfer control accessible")
 			_check(panel._transfer_button.disabled == (not transfer_enabled), "Transfer eligibility preserved")
 		else:
+			_check(not panel._change_button.visible and not panel._back_button.visible
+				and not panel._pause_label.visible, "Initial chooser has no switching controls or pause")
 			_check(panel._recipe_cards.visible and not panel._transfer_button.is_visible_in_tree(),
 				"Chooser exposes no transfer control")
 	_check(changes[0] == 0, "Steady refresh must not emit input/button visibility changes")
 	panel._input_section.visibility_changed.disconnect(changed)
 	panel._transfer_button.visibility_changed.disconnect(changed)
+
+
+func _check_switching_refresh(panel: MachineUI) -> void:
+	var changes: Array[int] = [0]
+	var changed := func() -> void: changes[0] += 1
+	var controls: Array[Control] = [panel._panel, panel._recipe_cards, panel._back_button,
+		panel._pause_label, panel._change_button, panel._input_section, panel._transfer_button,
+		panel._recipe_summary]
+	for child in panel._recipe_cards.get_children():
+		controls.append(child)
+	for control in controls:
+		control.visibility_changed.connect(changed)
+	for _iteration in range(3):
+		panel._process(0.0)
+	_check(changes[0] == 0, "Recipe controls and ancestors stay stable across refreshes")
+	for control in controls:
+		control.visibility_changed.disconnect(changed)
+
+
+func _check_recipe_switching_ui(panel: MachineUI, state: PlaythroughState, cell: Vector2i) -> void:
+	var id := panel._machine_id
+	state.planet._machines[id].cycle_progress = 0.75
+	var before := state.planet.get_machine(id)
+	panel._change_button.pressed.emit()
+	_check(panel._changing_recipe and panel._recipe_cards.visible and panel._back_button.visible,
+		"Change Recipe opens explicit change mode")
+	_check(panel._pause_label.visible and state.planet.is_recipe_change_paused(id), "Target pause and subtle indicator")
+	_check(not panel._placement_session and not panel._input_section.visible, "Switch uses normal range; no loading")
+	_check(panel._recipe_cards.get_child_count() == 2, "Reuses both recipe cards")
+	var current: Button = panel._recipe_cards.get_child(0)
+	_check(current.text.contains("Current") and current.text.contains("Ferrite Plate")
+		and current.icon != null, "Current card marked with existing icon and requirements")
+	_check_switching_refresh(panel)
+	current.pressed.emit()
+	_check(panel.is_open() and not panel._changing_recipe and not state.planet.is_recipe_change_paused(id),
+		"Current card returns to same open inspection, releases pause")
+	_check(state.planet.get_machine(id) == before, "Current preserves every field")
+	panel._change_recipe()
+	panel._back_button.pressed.emit()
+	_check(panel.is_open() and not state.planet.is_recipe_change_paused(id)
+		and state.planet.get_machine(id) == before, "Back cancels without changing progress")
+	panel._change_recipe()
+	var cancel := InputEventAction.new()
+	cancel.action = &"ui_cancel"
+	cancel.pressed = true
+	panel._input(cancel)
+	_check(not panel.is_open() and not state.planet.is_recipe_change_paused(id)
+		and state.planet.get_machine(id) == before, "Esc closes entire panel without mutation")
+	panel.open_machine(id)
+	panel._change_recipe()
+	panel._select_recipe(id, &"unknown")
+	_check(panel._recipe_error.visible and panel._recipe_error.text.contains("unavailable"), "Cause-aware inline failure")
+	_check(panel._changing_recipe and state.planet.is_recipe_change_paused(id)
+		and state.planet.get_machine(id) == before, "Failure retains chooser, pause and machine")
+	_check_switching_refresh(panel)
+	panel._back_to_inspection()
+	_check(panel._recipe_error.text.is_empty() and not panel._recipe_error.visible, "Exit clears error")
+	panel._change_recipe()
+	panel._select_recipe(id, &"unknown")
+	panel._select_recipe(id, &"ferrite_rod")
+	_check(panel.is_open() and panel._machine_id == id and not panel._recipe_cards.visible,
+		"Different recipe succeeds in same panel")
+	_check(state.planet.get_machine(id).recipe_id == &"ferrite_rod"
+		and state.planet.get_machine(id).inputs == before.inputs
+		and state.planet.get_machine(id).cycle_progress == 0.0, "Switch retains materials and resets incomplete work")
+	_check(not state.planet.is_recipe_change_paused(id) and panel._recipe_error.text.is_empty(), "Success releases and clears")
+	_check_switching_refresh(panel)
+	# Verify Transfer All after switching using a deliberately seeded partial buffer.
+	state.planet._machines[id].inputs[INGOT.item_id] = 15
+	state.inventory.add_item(INGOT, 5)
+	var carried := state.inventory.get_quantity(INGOT.item_id)
+	panel._process(0.0)
+	panel._transfer_button.pressed.emit()
+	_check(state.planet.get_machine(id).inputs[INGOT.item_id] == 20
+		and state.inventory.get_quantity(INGOT.item_id) == carried - 5, "Transfer remains usable with same capacity")
+	panel._change_recipe()
+	panel._select_recipe(id, &"ferrite_plate")
+	_check(state.planet.get_machine(id).inputs == before.inputs, "Reverse switch retains buffer")
+	var center := FABRICATOR.footprint(cell, 0).get_center()
+	for interruption in [panel.transitions.transition_started, panel.inventory_ui.opened,
+			panel.construction.mode_started]:
+		panel.open_machine(id)
+		panel._change_recipe()
+		interruption.emit()
+		_check(not panel.is_open() and not state.planet.is_recipe_change_paused(id), "Interruption closes and releases")
+	panel.open_machine(id)
+	panel._change_recipe()
+	panel.player.global_position = center + Vector2(500, 500)
+	panel._process(0.0)
+	_check(not panel.is_open() and not state.planet.is_recipe_change_paused(id), "Leaving range closes and releases")
+	panel.player.global_position = center - Vector2(70, 0)
+	panel.open_machine(id)
+	panel._change_recipe()
+	# An unrelated machine is unaffected when this panel opens a different target.
+	state.planet._machines[99] = before.duplicate(true)
+	state.planet._machines[99].id = 99
+	panel.open_machine(99)
+	_check(not state.planet.is_recipe_change_paused(id) and not state.planet.is_recipe_change_paused(99),
+		"Replacing target releases old pause without pausing new target")
+	state.planet._machines.erase(99)
+	panel.open_machine(id)
+	panel._change_recipe()
+	panel._interaction.show_response("Synthetic interruption")
+	panel._process(0.0)
+	_check(not panel.is_open() and not state.planet.is_recipe_change_paused(id), "Another response releases pause")
+	panel._interaction.dismiss_response()
+	panel.open_machine(id)
+	panel._change_recipe()
+	var parent := panel.get_parent()
+	parent.remove_child(panel)
+	_check(not state.planet.is_recipe_change_paused(id), "Panel teardown releases pause")
+	# Reattach the same panel; _ready wiring must not be installed twice.
+	parent.add_child(panel)
+	panel.close()
+	panel.open_machine(id)
 
 
 func _check_output_labels(panel: MachineUI, state: PlaythroughState, cell: Vector2i) -> void:
@@ -254,6 +372,9 @@ func _run() -> void:
 	panel._select_recipe(1, &"ferrite_rod")
 	_check(panel.is_open() and not panel._recipe_cards.visible, "Selection keeps inspection open")
 	_check(state.planet.get_machine(1).recipe_id == &"ferrite_rod", "Exact ID configured")
+	panel._change_recipe()
+	_check(not panel._changing_recipe and not state.planet.is_recipe_change_paused(1),
+		"Initial placement range exception cannot open recipe-change mode")
 	_check_panel_refresh(panel, true, false)
 	panel._transfer()
 	_check(state.inventory.get_quantity(&"ferrite_ingot") == 35, "Placement exception cannot transfer")
@@ -286,6 +407,7 @@ func _run() -> void:
 	panel._select_recipe(2, &"ferrite_plate")
 	_check_panel_refresh(panel, true, true)
 	panel._transfer()
+	_check_recipe_switching_ui(panel, state, cell)
 	var retained := state.planet.get_machine(2)
 	var presenter := DeployedMachine.new()
 	presenter.configure(state.planet.get_machine(2), state.planet)
@@ -302,7 +424,9 @@ func _run() -> void:
 	transitions._current_world = world
 	panel.open_machine(2)
 	_check(state.planet.get_machine(2) == retained, "World detach/revisit preserves machine data")
-	_check(state.planet.recover_machine(2, state.inventory, center, 160), "Recover open panel target")
+	panel._change_recipe()
+	_check(state.planet.recover_machine(2, state.inventory, center, 160), "Recover open chooser target")
+	_check(not state.planet.is_recipe_change_paused(2), "Recovery immediately releases target pause")
 	panel._select_recipe(2, &"ferrite_plate")
 	panel._process(0.0)
 	_check(not panel.is_open(), "Recovered target invalidates panel and stale card")
@@ -316,11 +440,15 @@ func _run() -> void:
 	_check(panel._input_section.visible and panel._progress.visible and panel._output_section.visible,
 		"Smelter retains input, progress and output sections")
 	_check(not panel._recipe_cards.visible and not panel._recipe_summary.visible, "Smelter hides recipe UI")
+	_check(not panel._change_button.visible and not panel._back_button.visible
+		and not panel._pause_label.visible, "Smelter hides switching controls")
 	panel._refresh({"definition": state.EXTRACTOR, "cell": cell, "turns": 0,
 		"output": 0, "cycle_progress": 0.0})
 	_check(not panel._input_section.visible and panel._progress.visible and panel._output_section.visible,
 		"Extractor retains output-only production view")
 	_check(not panel._recipe_cards.visible and not panel._recipe_summary.visible, "Extractor hides recipe UI")
+	_check(not panel._change_button.visible and not panel._back_button.visible
+		and not panel._pause_label.visible, "Extractor hides switching controls")
 	_check_output_labels(panel, state, cell)
 	main.free()
 	print("Fabricator deployment regression failures: %d" % _failures)
