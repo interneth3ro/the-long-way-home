@@ -17,7 +17,7 @@ size = Vector2(64, 24)
 [sub_resource type="CircleShape2D" id="RockFootprint"]
 radius = 48.0
 
-[node name="PlanetExterior" type="Node2D"]
+[node name="PlanetExterior" type="Node2D" groups=["construction_world"]]
 texture_filter = 1
 script = ExtResource("2_world")
 
@@ -65,23 +65,19 @@ default_color = Color(0.57, 0.65, 0.70, 1)
 [node name="GroundObjects" type="Node2D" parent="."]
 y_sort_enabled = true
 
-[node name="FerriteInspection" type="StaticBody2D" parent="GroundObjects"]
-position = Vector2(288, 336)
+[node name="FerriteInspection" type="Area2D" parent="GroundObjects"]
+collision_layer = 1
+collision_mask = 0
+monitoring = false
+position = Vector2(304, 280)
 script = ExtResource("3_ferrite")
 interaction_prompt = "E — Examine mineral deposit"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="GroundObjects/FerriteInspection"]
 shape = SubResource("FerriteInspectionFootprint")
 
-[node name="Formation" type="Polygon2D" parent="GroundObjects/FerriteInspection"]
-polygon = PackedVector2Array(-24, -8, -18, -28, -4, -42, 16, -32, 26, -12, 18, 12, -12, 16)
-color = Color(0.30, 0.36, 0.42, 1)
-
-[node name="SilverFace" type="Polygon2D" parent="GroundObjects/FerriteInspection"]
-polygon = PackedVector2Array(-4, -42, 4, -20, 18, 12, 26, -12, 16, -32)
-color = Color(0.68, 0.75, 0.79, 1)
-
 [node name="CrashedShip" type="StaticBody2D" parent="GroundObjects"]
+collision_layer = 5
 position = Vector2(-384, -192)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="GroundObjects/CrashedShip"]
@@ -111,6 +107,7 @@ width = 8.0
 default_color = Color(0.72, 0.53, 0.31, 1)
 
 [node name="Hatch" type="StaticBody2D" parent="GroundObjects"]
+collision_layer = 5
 position = Vector2(-384, -176)
 script = ExtResource("1_hatch")
 interaction_prompt = "E — Enter ship"
@@ -131,6 +128,7 @@ width = 4.0
 default_color = Color(0.95, 0.72, 0.35, 1)
 
 [node name="WestRock" type="StaticBody2D" parent="GroundObjects"]
+collision_layer = 5
 position = Vector2(-768, 384)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="GroundObjects/WestRock"]
@@ -142,6 +140,7 @@ polygon = PackedVector2Array(-48, -64, -24, -96, 24, -96, 48, -64, 48, -24, 24, 
 color = Color(0.36, 0.42, 0.44, 1)
 
 [node name="EastRock" type="StaticBody2D" parent="GroundObjects"]
+collision_layer = 5
 position = Vector2(704, -384)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="GroundObjects/EastRock"]

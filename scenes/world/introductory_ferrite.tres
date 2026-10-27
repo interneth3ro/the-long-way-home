@@ -6,4 +6,5 @@
 script = ExtResource("1_deposit")
 deposit_id = &"crash_site_ferrite"
 resource_type = &"ferrite"
+construction_highlight = Color(0.63, 0.76, 0.88, 0.18)
 footprint = PackedVector2Array(128, 256, 144, 208, 192, 160, 288, 144, 384, 160, 432, 208, 448, 256, 432, 304, 384, 352, 288, 368, 192, 352, 144, 304)

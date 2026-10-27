@@ -3,6 +3,7 @@ extends Node
 
 signal ferrite_discovery_completed
 signal extractor_recovery_completed
+signal extractor_deployment_completed
 
 const EXTRACTOR: ItemDefinition = preload("res://inventory/extractor.tres")
 
@@ -16,6 +17,10 @@ var extractor_recovered: bool:
 		return _extractor_recovered
 var _extractor_recovered: bool = false
 var _recovering_extractor: bool = false
+var extractor_deployed: bool:
+	get:
+		return _extractor_deployed
+var _extractor_deployed: bool = false
 
 # Configure on Main/PlaythroughState before a new playthrough begins.
 @export var world_seed: int = 26026
@@ -24,7 +29,15 @@ var planet: PlanetWorldState
 
 func _ready() -> void:
 	planet = PlanetWorldState.new(world_seed)
+	planet.machine_deployed.connect(_on_machine_deployed)
 	add_to_group(&"playthrough")
+
+
+func _on_machine_deployed(definition: MachineDefinition) -> void:
+	if definition.item_id != EXTRACTOR.item_id or _extractor_deployed:
+		return
+	_extractor_deployed = true
+	extractor_deployment_completed.emit()
 
 
 func discover_ferrite(deposit_id: StringName) -> bool:

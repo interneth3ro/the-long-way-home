@@ -85,7 +85,8 @@ remains under development.
 - World Generation Foundation uses seeded deterministic rocky-scrubland terrain,
   a protected authored crash-site overlay, a configurable 5 x 5 chunk neighborhood
   and a modest retention margin. PR #27 is merged; owner runtime acceptance
-  remains separate from agent static validation. State is in memory only. Buildings and
+  remains separate from agent static validation. State is in memory only.
+  Building placement is added by the deployment feature described below;
   durable saves remain deferred.
 - Generated, explored and surveyed are distinct concepts. Loading terrain does
   not establish exploration or surveying. Future factories must simulate
@@ -107,11 +108,12 @@ Implementation and coordinate conventions are recorded in the
   Dave's engineering deduction and guidance to locate the Extractor in the
   maintenance bay. Computer does not identify the mineral in this sequence.
 - Mineral-bearing ground is independent of decorative artwork and terrain chunks.
-  Future Extractors occupy 2 x 2 independent 32-unit construction cells; their
+  Approved Extractors occupy 2 x 2 independent 32-unit construction cells; their
   designated extraction point must overlap compatible ground. Other parts may
   extend beyond the deposit. Machines may touch edges but footprints may not
-  overlap. All valid points give the same rate. Construction mode will highlight
-  only compatible deposits.
+  overlap. All valid points give the same rate. Construction mode highlights
+  only compatible deposits; the deployment feature implements this pending
+  owner verification.
 - Future production: Ferrite Ore → Smelter → Ferrite Ingot → Fabricator →
   Plate / Rod / Bearing. Computer's initial repair requires Plates and Rods.
   These machines, recipes and extraction remain unimplemented.
@@ -138,19 +140,53 @@ durable save/load. See the [implementation notes](../README.md#first-ferrite---d
   supports quantities greater than one. There is no capacity or weight system
   in this milestone.
 
-Recover the Extractor implementation is pending merge and owner gameplay testing.
-It adds only the bay, inventory and first recovery step; deployment, mining,
-power, production and later recovery remain unimplemented. Inventory and recovery
-are session-only and reset with a fresh Main instance. See the
-[implementation notes](../README.md#recover-the-extractor-feature-branch-pending-merge)
+Recover the Extractor implementation is merged in PR #30; agent validation was
+static only. It adds the bay, inventory and first recovery step. Deployment and
+deployed-machine recovery are added by the feature below; mining, power,
+production and later starter rack recovery remain unimplemented. Inventory and
+recovery are session-only and reset with a fresh Main instance. See the
+[implementation notes](../README.md#recover-the-extractor-pr-30-merged)
 for approved dialogue, ownership and validation limits.
+
+## Approved Extractor deployment direction
+
+- Clicking a packaged machine in Equipment immediately enters construction and
+  closes inventory; no separate Deploy button or selection state is required.
+  Construction uses a neutral translucent machine ghost, green/red footprint
+  validity, mouse grid positioning, clockwise quarter turns with R, left-click
+  confirmation and
+  right-click/Esc cancellation. Successful placement exits the mode.
+- Extraction compatibility belongs to machine definitions; resource deposits
+  define their mineral geometry and highlight treatment. Compatible visible,
+  loaded ground is highlighted without introducing surveying. Environmental
+  objects explicitly opt into construction blocking; future trees may block.
+- Construction and recovery have independently configurable limited ranges,
+  measured to the nearest point on the footprint. Recovery uses the dedicated B
+  mode and left-click targeting, exits after one success, and cancels with
+  right-click/Esc. Hovering an eligible machine shows Press B to recover.
+- Placement transfers one packaged item into one deployed machine, and recovery
+  reverses it. Persistent planet state owns identity, position and orientation
+  independently of disposable terrain presentation. Persistence remains in memory.
+- Dave inspects the introductory Ferrite deposit through a small invisible,
+  nonblocking region over recognizable mineral-bearing ground. Contextual E
+  triggers the approved discovery musing and disables that interaction for the
+  playthrough. Mineral ground and veins look the same before and after discovery;
+  resource data, future formations and genuine blocking obstacles remain separate.
+- The first successful deployment changes Restore Computer guidance to
+  **Produce Ferrite Ore with the Extractor.** Recovery never resets progression.
+  The Extractor stays unpowered and nonproducing; no new dialogue is added.
+
+Implementation is on the deployment feature branch, pending merge and owner
+playtesting. Controls, ranges, state ownership, exclusions and static-validation
+limits are recorded in the
+[implementation notes](../README.md#deploy-the-extractor-feature-branch-pending-merge).
 
 ## Unresolved design details
 
 - The precise conspiracy behind Dave's arrival remains under development.
-- Detailed machine footprints, port rules, rail behavior, research content,
-  chapter structure, dialogue formats, and ending conditions still require
-  design work. The approved intentions above do not settle these details.
+- Footprints beyond the approved Extractor, port rules, rail behavior, research
+  content, chapter structure, dialogue formats, and ending conditions still
+  require design work. The approved intentions above do not settle these details.
 
 Bootstrap establishes project files and documentation only. Gameplay systems,
 content pipelines, assets, and speculative frameworks are outside its scope.

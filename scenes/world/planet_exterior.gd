@@ -1,3 +1,4 @@
+class_name PlanetExterior
 extends Node2D
 
 @export_range(1, 4, 1) var loading_radius: int = 2
@@ -16,6 +17,9 @@ var _pending: Array[Vector2i] = []
 var _center := Vector2i(2147483647, 2147483647)
 var _revision: int = -1
 var _preparing: bool = false
+var _machine_presenters: Dictionary[int, DeployedMachine] = {}
+var _highlights: Node2D
+var _construction_definition: MachineDefinition
 
 
 # Transition hook: input stays locked and first arrival stays behind the fade.
@@ -24,6 +28,13 @@ func prepare_for_arrival(player: CharacterBody2D, state: PlanetWorldState) -> vo
 	_preparing = true
 	_player = player
 	_state = state
+	if not _state.machines_changed.is_connected(_queue_machine_sync):
+		_state.machines_changed.connect(_queue_machine_sync)
+	_sync_machines()
+	if _highlights == null:
+		_highlights = Node2D.new()
+		_highlights.z_index = -4
+		add_child(_highlights)
 	if _generator == null:
 		var overlays: Array[Dictionary] = []
 		for child in $AuthoredCrashSite.get_children():
@@ -75,9 +86,12 @@ func _update_neighborhood() -> void:
 				_pending.append(coordinate)
 	_pending.sort_custom(func(a: Vector2i, b: Vector2i) -> bool:
 		return _distance(a, center) < _distance(b, center))
+	_refresh_highlights()
 
 
 func _generate_budget() -> void:
+	if _pending.is_empty():
+		return
 	for index in range(mini(chunks_per_frame, _pending.size())):
 		var coordinate: Vector2i = _pending.pop_front()
 		var chunk := TerrainChunk.new()
@@ -89,6 +103,61 @@ func _generate_budget() -> void:
 			previous.queue_free()
 		add_child(chunk)
 		_chunks[coordinate] = chunk
+	_refresh_highlights()
+
+
+func _queue_machine_sync() -> void:
+	# Machine transactions can originate during physics; mutate bodies deferred.
+	_sync_machines.call_deferred()
+
+
+func _sync_machines() -> void:
+	if not is_inside_tree() or _state == null:
+		return
+	var retained: Array[int] = []
+	for machine in _state.get_machines():
+		var machine_id: int = machine.id
+		retained.append(machine_id)
+		if not _machine_presenters.has(machine_id):
+			var presenter := DeployedMachine.new()
+			presenter.configure(machine)
+			$GroundObjects.add_child(presenter)
+			_machine_presenters[machine_id] = presenter
+	for machine_id in _machine_presenters.keys():
+		if not retained.has(machine_id):
+			var presenter: DeployedMachine = _machine_presenters[machine_id]
+			presenter.get_parent().remove_child(presenter)
+			presenter.queue_free()
+			_machine_presenters.erase(machine_id)
+
+
+func set_construction_definition(definition: MachineDefinition) -> void:
+	_construction_definition = definition
+	_refresh_highlights()
+
+
+func _refresh_highlights() -> void:
+	if _highlights == null:
+		return
+	for child in _highlights.get_children():
+		_highlights.remove_child(child)
+		child.queue_free()
+	if _construction_definition == null or _state == null:
+		return
+	for deposit in _state.get_deposits():
+		if not _construction_definition.compatible_resources.has(deposit.resource_type):
+			continue
+		for coordinate in _chunks:
+			var start := Vector2(coordinate) * WorldCoordinates.CHUNK_SIZE
+			var end := start + Vector2.ONE * WorldCoordinates.CHUNK_SIZE
+			var boundary := PackedVector2Array([start, Vector2(end.x, start.y), end,
+				Vector2(start.x, end.y)])
+			# Exact mineral geometry clipped to loaded presentation, never its bounds.
+			for polygon in Geometry2D.intersect_polygons(deposit.footprint, boundary):
+				var highlight := Polygon2D.new()
+				highlight.polygon = polygon
+				highlight.color = deposit.construction_highlight
+				_highlights.add_child(highlight)
 
 
 func _distance(a: Vector2i, b: Vector2i) -> int:

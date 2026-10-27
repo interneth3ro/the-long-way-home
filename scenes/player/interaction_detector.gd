@@ -1,3 +1,4 @@
+class_name InteractionDetector
 extends Area2D
 
 @export var interaction_ui: InteractionUI
@@ -8,6 +9,13 @@ extends Area2D
 
 var _target: WorldInteractable
 var _interaction_requested: bool = false
+var _tool_active: bool = false
+
+
+func set_tool_active(active: bool) -> void:
+	_tool_active = active
+	if active:
+		clear_for_transition()
 
 
 func clear_for_transition() -> void:
@@ -18,7 +26,7 @@ func clear_for_transition() -> void:
 
 
 func _physics_process(_delta: float) -> void:
-	if dialogue_ui.is_conversation_open():
+	if _tool_active or dialogue_ui.is_conversation_open():
 		_interaction_requested = false
 		interaction_ui.set_prompt("")
 		return
@@ -31,10 +39,13 @@ func _physics_process(_delta: float) -> void:
 				interaction_ui.set_prompt("")
 			else:
 				interaction_ui.show_response(_target.interact())
+				if not is_instance_valid(_target) or not _target.can_interact():
+					_target = null
+					interaction_ui.set_prompt("")
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if event.is_echo():
+	if _tool_active or event.is_echo():
 		return
 	if dialogue_ui.is_conversation_open():
 		if event.is_action_pressed("ui_cancel"):
@@ -67,6 +78,7 @@ func _refresh_target() -> void:
 	proximity.shape = _range_shape
 	proximity.transform = $CollisionShape2D.global_transform
 	proximity.collision_mask = collision_mask
+	proximity.collide_with_areas = true
 	proximity.exclude = [_player.get_rid()]
 	var space := get_world_2d().direct_space_state
 	for result in space.intersect_shape(proximity):
@@ -78,9 +90,16 @@ func _refresh_target() -> void:
 		# The circle's radius is also the explicit maximum distance to the target point.
 		if distance > maximum_distance_squared or distance >= nearest_distance:
 			continue
-		# Keep the target in the ray query: its body must be the first solid hit.
+		# A nonblocking target can coincide with Dave's interaction origin.
+		if is_zero_approx(distance):
+			_target = body
+			nearest_distance = distance
+			continue
+		# Keep both areas and bodies in the ray query: the target must be first.
 		var query := PhysicsRayQueryParameters2D.create(global_position, point, collision_mask)
 		query.exclude = [_player.get_rid()]
+		query.collide_with_areas = true
+		query.hit_from_inside = true
 		var hit := space.intersect_ray(query)
 		if hit.get("collider") == body:
 			_target = body

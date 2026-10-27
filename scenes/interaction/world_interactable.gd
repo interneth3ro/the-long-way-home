@@ -1,5 +1,7 @@
 class_name WorldInteractable
-extends StaticBody2D
+extends CollisionObject2D
+
+# Shared interaction interface for solid bodies and nonblocking areas.
 
 @export var interaction_prompt: String = ""
 @export_multiline var inspection_response: String = ""

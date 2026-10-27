@@ -1,6 +1,9 @@
 class_name PlanetWorldState
 extends RefCounted
 
+signal machines_changed
+signal machine_deployed(definition: MachineDefinition)
+
 # Authoritative session data, independent of disposable terrain presenters.
 # Loading does not mark exploration or surveying. Neither system exists yet.
 var seed_value: int
@@ -8,6 +11,73 @@ var revision: int = 0
 var _terrain_changes: Dictionary[Vector2i, Color] = {}
 var _removed_details: Dictionary[Vector2i, bool] = {}
 var _deposits: Array[ResourceDeposit] = [preload("res://scenes/world/introductory_ferrite.tres")]
+var _machines: Dictionary[int, Dictionary] = {}
+var _next_machine_id: int = 1
+var _machine_transaction: bool = false
+
+
+func get_deposits() -> Array[ResourceDeposit]:
+	return _deposits.duplicate()
+
+
+func get_machines() -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	for machine in _machines.values():
+		result.append(machine.duplicate())
+	return result
+
+
+func machine_at(point: Vector2) -> Dictionary:
+	for machine in _machines.values():
+		var definition: MachineDefinition = machine.definition
+		if definition.footprint(machine.cell, machine.turns).has_point(point):
+			return machine.duplicate()
+	return {}
+
+
+# Synchronous transactions: no callbacks/await between item transfer and record
+# mutation. Failure leaves both unchanged. The guard also covers signal callbacks.
+func deploy_machine(definition: MachineDefinition, cell: Vector2i, turns: int,
+		inventory: InventoryState, player: CharacterBody2D, world: Node2D,
+		construction_range: float) -> bool:
+	if _machine_transaction or inventory == null:
+		return false
+	if not PlacementRules.rejection(self, definition, cell, turns, player, world,
+			construction_range, inventory).is_empty():
+		return false
+	_machine_transaction = true
+	if not inventory.remove_item(definition, 1, false):
+		_machine_transaction = false
+		return false
+	var machine := {"id": _next_machine_id, "definition": definition,
+		"cell": cell, "turns": posmod(turns, 4)}
+	_machines[_next_machine_id] = machine
+	_next_machine_id += 1
+	inventory.changed.emit()
+	machines_changed.emit()
+	machine_deployed.emit(definition)
+	_machine_transaction = false
+	return true
+
+
+func recover_machine(machine_id: int, inventory: InventoryState,
+		player_point: Vector2, recovery_range: float) -> bool:
+	if _machine_transaction or not _machines.has(machine_id) or inventory == null:
+		return false
+	var machine: Dictionary = _machines[machine_id]
+	var definition: MachineDefinition = machine.definition
+	if PlacementRules.distance_to_footprint(player_point,
+			definition.footprint(machine.cell, machine.turns)) > recovery_range:
+		return false
+	_machine_transaction = true
+	if not inventory.add_item(definition, 1, false):
+		_machine_transaction = false
+		return false
+	_machines.erase(machine_id)
+	inventory.changed.emit()
+	machines_changed.emit()
+	_machine_transaction = false
+	return true
 
 
 func get_deposit(deposit_id: StringName) -> ResourceDeposit:

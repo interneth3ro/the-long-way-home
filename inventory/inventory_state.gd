@@ -7,7 +7,8 @@ var _definitions: Dictionary[StringName, ItemDefinition] = {}
 var _quantities: Dictionary[StringName, int] = {}
 
 
-func add_item(definition: ItemDefinition, quantity: int = 1) -> bool:
+# Planet transactions defer notification until both inventory and world agree.
+func add_item(definition: ItemDefinition, quantity: int = 1, notify: bool = true) -> bool:
 	if definition == null or not definition.is_valid() or quantity <= 0:
 		return false
 	var item_id := definition.item_id
@@ -18,7 +19,24 @@ func add_item(definition: ItemDefinition, quantity: int = 1) -> bool:
 		return false
 	_definitions[item_id] = definition
 	_quantities[item_id] = current + quantity
-	changed.emit()
+	if notify:
+		changed.emit()
+	return true
+
+
+func remove_item(definition: ItemDefinition, quantity: int = 1, notify: bool = true) -> bool:
+	if definition == null or quantity <= 0 or _definitions.get(definition.item_id) != definition:
+		return false
+	var current := get_quantity(definition.item_id)
+	if current < quantity:
+		return false
+	if current == quantity:
+		_quantities.erase(definition.item_id)
+		_definitions.erase(definition.item_id)
+	else:
+		_quantities[definition.item_id] = current - quantity
+	if notify:
+		changed.emit()
 	return true
 
 
