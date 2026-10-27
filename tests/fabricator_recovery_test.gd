@@ -97,7 +97,7 @@ func _run() -> void:
 	_check(state.fabricator_recovered and completions[0] == 1, "Recovery completes exactly once")
 	_check(state.inventory.get_quantity(&"fabricator") == 1, "Recovery awards exactly one Fabricator")
 	_check(state.FABRICATOR.section == ItemDefinition.Section.EQUIPMENT, "Fabricator belongs in Equipment")
-	_check(not state.FABRICATOR is MachineDefinition, "Packaged Fabricator must not be deployable")
+	_check(state.FABRICATOR is MachineDefinition, "Packaged Fabricator must be deployable")
 	_check(not rack.get_node("Module").visible and not rack.get_node("Secured").visible, "Recovered module and straps hidden")
 	_check(rack.get_node("Empty").visible and not rack.can_interact(), "Recovered rack empty and disabled")
 	_check(_description(main) == "Craft a Ferrite Plate.", "Recovery advances directly to plate guidance")

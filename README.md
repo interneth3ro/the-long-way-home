@@ -10,8 +10,9 @@ and Extractor guidance. Merged PR #30 adds a maintenance bay and provisional
 inventory. Merged PR #32 adds Extractor deployment and recovery; merged PR #36
 adds Ferrite Ore production and collection. Merged PR #38 adds Smelter recovery
 and the Ferrite acquisition musing. Merged PR #39 adds Smelter deployment.
-Merged PR #40 adds Ferrite Ingot production. This feature branch adds Fabricator
-rack recovery, pending merge and owner playtesting.
+Merged PR #40 adds Ferrite Ingot production; merged PR #42 adds Fabricator rack
+recovery. This feature branch adds Fabricator deployment, initial recipe selection
+and material loading, pending merge and owner playtesting.
 Its gameplay implementation is independent of FactoryGame; the approved Dave
 migration below reuses only two legacy artwork sheets.
 
@@ -1387,7 +1388,7 @@ and gameplay acceptance require the owner's manual testing. The PR contains an
 ordered checklist, including acquisition by collection and by recovery in separate
 fresh playthroughs.
 
-## Recover the Fabricator (feature branch, pending merge)
+## Recover the Fabricator (PR #42, merged)
 
 After first Ferrite Ingot acquisition into Materials, approach the existing
 maintenance-bay Fabricator and press **E - Recover Fabricator**. The permanent
@@ -1399,9 +1400,9 @@ Spending ingots cannot relock it. No inspection, repair or material cost is adde
 check acquisition, completion and reentrant guards, insert exactly one packaged
 item, then record recovery and emit completion. Rejection leaves the rack and
 objective unchanged and permits retry. Repeated input and synchronous inventory
-callbacks cannot duplicate the item. `inventory/fabricator.tres` is a plain
-Equipment `ItemDefinition`, displayed with the existing name/quantity convention.
-It has no deployment action or construction definition.
+callbacks cannot duplicate the item. PR #42 introduced `inventory/fabricator.tres`
+as a plain Equipment `ItemDefinition` without deployment. The feature below
+extends the same item identity into a deployable `MachineDefinition`.
 
 `fabricator_rack.gd` uses the shared WorldInteractable interface and existing
 input priority, refreshes on completion and initialization, hides Module/Secured
@@ -1432,3 +1433,90 @@ Markdown links and `git diff --check`. No Godot, project code, imports, headless
 graphical or performance execution was performed. Godot type checking, regression
 test execution, E input/physics, visual feedback and actual hatch travel require
 owner verification. The feature PR provides an ordered manual checklist.
+
+## Configure and load the Fabricator (feature branch, pending merge)
+
+Deploy the recovered Fabricator by clicking it in Equipment. Existing preview,
+R rotation, left-click placement, right-click/Esc cancellation, range, planetary
+ground and collision checks apply. Its footprint is 2x2 cells (64x64 world units),
+with provisional teal assembly-bed artwork shared by ghost and world machine.
+
+After placement commits and construction exits, the shared panel opens for that
+exact instance. `PlanetWorldState.deploy_machine_instance()` returns its committed
+ID (zero on failure); the existing bool `deploy_machine()` remains available.
+Construction emits `deployment_completed(machine_id)` after exiting its tool.
+The consumed placement click cannot choose a card. Open panels block construction
+and recovery input. Failed placements consume nothing and open no chooser.
+
+The panel offers icon cards for Ferrite Plate (1 Ferrite Ingot -> 1 Ferrite Plate)
+and Ferrite Rod (1 Ferrite Ingot -> 2 Ferrite Rods). Selection stays in the panel,
+showing recipe requirements, expected product, stored inputs/capacity and Transfer
+All. Nothing loads automatically. Dismissing an unconfigured machine leaves it
+unconfigured; later in-range E opens the chooser directly. Configured machines
+reopen inspection. No Change Recipe control or recipe switching is included.
+
+Only the initial post-placement panel session bypasses inspection distance; it
+remains open after selection. Transfer All still checks normal range, including
+in that session. Closing or travelling ends the exception; later inspection uses
+the existing 96-unit range.
+
+`RecipeDefinition` and `RecipeIngredient` resources own recipe identity, required
+items/quantities and output item/quantity, without production duration.
+`MachineDefinition.recipes` lists available recipes and `input_capacity` sets
+20 units per accepted material. `PlanetWorldState` owns `recipe_id` separately
+from `inputs`, keyed by item identity. Machine snapshots deep-copy nested storage.
+The Smelter retains its existing scalar input and production behavior.
+
+Transfer All stages every ingredient removal with `InventoryState.remove_items()`
+before publishing any change. Both starter recipes accept only Ferrite Ingots:
+35 available loads 20 and leaves 15. Unaccepted materials stay with Dave. The
+storage/transaction path also supports independent capacities for multiple
+ingredients. Recovery atomically returns one packaged Fabricator and all inputs.
+Insertion failure preserves the machine, recipe and inventory; success removes
+the record. Redeployment gets a new ID, empty inputs and an unconfigured recipe.
+Transaction guards cover synchronous callbacks to prevent reentrant duplication.
+
+Persistent playthrough state survives chunk/presenter recreation, ship travel
+and panel closure. Fresh playthroughs reset it; disk saves are not implemented.
+Fabricators explicitly stay **Inactive**, with **Production not yet available**.
+There is no progress display, output collection, consumption or manufacturing.
+**Craft a Ferrite Plate.** remains incomplete; narrative content is unchanged.
+
+`tests/fabricator_deployment_test.gd` adds standalone regression coverage for
+placement identity/sequencing, overlap rejection, configuration, range, capacity,
+reentry, recovery failure/conservation, redeployment reset, stale UI, presenter
+recreation and world detach/revisit. A synthetic two-ingredient fixture exercises
+independent capacities and atomic failure of a later ingredient. The rack test
+now expects deployable Equipment. All tests remain **unexecuted** under the Godot
+restriction. Fixtures do not establish actual mouse routing, streaming or hatch
+travel; the PR provides an owner manual checklist.
+
+Validation is static only: standalone gdtoolkit 4.5 grammar parsing, scene and
+resource references, SVG XML, protected-source/UID comparisons, Markdown links
+and Git diff checks. No Godot, project code, imports, headless, graphical or
+performance execution was performed. Engine type checking, gameplay and visual
+layout remain unverified.
+
+
+The UI lifecycle amendment keeps configured Fabricator input controls continuously
+visible across ordinary refreshes, rather than hiding/showing their parent each
+frame. Regression assertions count visibility notifications across repeated
+refreshes, check transfer eligibility after selection/reopening, hide controls
+for unconfigured machines and check Extractor/Smelter section transitions.
+These assertions remain unexecuted. Direct transaction calls do not establish
+physical button behavior: owner playtesting must verify mouse-down, a hold across
+multiple frames and mouse-up, then a 25-ingot transfer (20 stored, 5 retained).
+The reported failure's runtime cause remains unconfirmed; no inventory, recipe,
+range, production or recovery logic was changed by this amendment.
+
+
+The output-label presentation amendment uses **Output** for empty production
+buffers and **Output - material name** when nonempty (rendered with an em dash),
+with quantity/capacity on the next line. Both Smelter and Extractor use the
+configured output item name. Collection refreshes the heading when the buffer
+empties. Fabricator output controls remain hidden. Added regression assertions
+cover empty/nonempty/collected output, Extractor quantities and unchanged input
+headings; these assertions are unexecuted under the Godot restriction.
+The owner reports all ten prior functional playtests, including the Transfer All
+lifecycle retest, passed before this label amendment. This amendment still needs
+the owner's focused UI retest; agent validation remains static only.
