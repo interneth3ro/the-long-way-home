@@ -1,0 +1,28 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scenes/dev/ship_interior_v2_scale_preview.gd" id="1_preview"]
+[ext_resource type="PackedScene" path="res://scenes/world/ship_interior_v2.tscn" id="2_interior"]
+[ext_resource type="PackedScene" path="res://scenes/player/dave.tscn" id="3_dave"]
+
+[node name="DevelopmentOnlyInteriorV2ScalePreview" type="Node2D"]
+script = ExtResource("1_preview")
+
+[node name="ShipInteriorV2" parent="." instance=ExtResource("2_interior")]
+
+[node name="Dave" parent="." instance=ExtResource("3_dave")]
+position = Vector2(-88, 23)
+collision_layer = 0
+collision_mask = 0
+
+[node name="PreviewHUD" type="CanvasLayer" parent="."]
+layer = 10
+
+[node name="Readout" type="Label" parent="PreviewHUD"]
+offset_left = 16.0
+offset_top = 16.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+text = "DEVELOPMENT ONLY - visual scale comparison"
