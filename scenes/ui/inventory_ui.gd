@@ -11,7 +11,6 @@ signal opened
 @onready var _materials: Label = $HUD/Panel/Content/Materials
 @onready var _equipment: Label = $HUD/Panel/Content/Equipment
 @onready var _actions: VBoxContainer = $HUD/Panel/Content/EquipmentActions
-var _selected: MachineDefinition
 
 
 func _ready() -> void:
@@ -45,14 +44,8 @@ func close() -> void:
 	_panel.hide()
 
 
-func _select_machine(definition: MachineDefinition) -> void:
-	_selected = definition
-	_refresh()
-
-
-func _deploy_selected() -> void:
-	if _selected != null:
-		construction.begin_deployment(_selected)
+func _deploy_machine(definition: MachineDefinition) -> void:
+	construction.begin_deployment(definition)
 
 
 func _refresh() -> void:
@@ -65,12 +58,12 @@ func _refresh() -> void:
 		var row := "%s ×%d" % [item.display_name, progression.inventory.get_quantity(item.item_id)]
 		if item.section == ItemDefinition.Section.EQUIPMENT:
 			if item is MachineDefinition:
-				var select := Button.new()
-				select.text = row
-				select.mouse_filter = Control.MOUSE_FILTER_STOP
-				select.focus_mode = Control.FOCUS_NONE
-				select.pressed.connect(_select_machine.bind(item))
-				_actions.add_child(select)
+				var deploy := Button.new()
+				deploy.text = row
+				deploy.mouse_filter = Control.MOUSE_FILTER_STOP
+				deploy.focus_mode = Control.FOCUS_NONE
+				deploy.pressed.connect(_deploy_machine.bind(item))
+				_actions.add_child(deploy)
 			else:
 				equipment.append(row)
 		else:
@@ -78,12 +71,3 @@ func _refresh() -> void:
 	_materials.text = "Empty" if materials.is_empty() else "\n".join(materials)
 	_equipment.text = "Empty" if equipment.is_empty() and _actions.get_child_count() == 0 else "\n".join(equipment)
 	_equipment.visible = not _equipment.text.is_empty()
-	if _selected != null and progression.inventory.get_quantity(_selected.item_id) > 0:
-		var deploy := Button.new()
-		deploy.text = "Deploy " + _selected.display_name
-		deploy.mouse_filter = Control.MOUSE_FILTER_STOP
-		deploy.focus_mode = Control.FOCUS_NONE
-		deploy.pressed.connect(_deploy_selected)
-		_actions.add_child(deploy)
-	else:
-		_selected = null

@@ -150,9 +150,11 @@ for approved dialogue, ownership and validation limits.
 
 ## Approved Extractor deployment direction
 
-- Equipment selection exposes a separate Deploy action. Construction uses a
-  neutral translucent machine ghost, green/red footprint validity, mouse grid
-  positioning, clockwise quarter turns with R, left-click confirmation and
+- Clicking a packaged machine in Equipment immediately enters construction and
+  closes inventory; no separate Deploy button or selection state is required.
+  Construction uses a neutral translucent machine ghost, green/red footprint
+  validity, mouse grid positioning, clockwise quarter turns with R, left-click
+  confirmation and
   right-click/Esc cancellation. Successful placement exits the mode.
 - Extraction compatibility belongs to machine definitions; resource deposits
   define their mineral geometry and highlight treatment. Compatible visible,
@@ -165,6 +167,10 @@ for approved dialogue, ownership and validation limits.
 - Placement transfers one packaged item into one deployed machine, and recovery
   reverses it. Persistent planet state owns identity, position and orientation
   independently of disposable terrain presentation. Persistence remains in memory.
+- The introductory Ferrite formation is a temporary nonblocking discovery marker.
+  It retains contextual E inspection and the approved discovery musing, then
+  disappears and stops targeting for that playthrough. Mineral-bearing ground
+  remains; permanent formations and genuine blocking obstacles are separate.
 - The first successful deployment changes Restore Computer guidance to
   **Produce Ferrite Ore with the Extractor.** Recovery never resets progression.
   The Extractor stays unpowered and nonproducing; no new dialogue is added.
