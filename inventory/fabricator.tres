@@ -12,4 +12,5 @@ display_name = "Fabricator"
 section = 1
 footprint_cells = Vector2i(2, 2)
 input_capacity = 20
+output_capacity = 20
 recipes = Array[ExtResource("4_recipe")]([ExtResource("2_plate"), ExtResource("3_rod")])

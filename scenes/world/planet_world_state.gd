@@ -73,6 +73,7 @@ func deploy_machine_instance(definition: MachineDefinition, cell: Vector2i, turn
 	if definition.has_recipes():
 		machine["recipe_id"] = &""
 		machine["inputs"] = {}
+		machine["output_item_id"] = &""
 	_machines[machine_id] = machine
 	_next_machine_id += 1
 	inventory.changed.emit()
@@ -110,8 +111,11 @@ func recover_machine(machine_id: int, inventory: InventoryState,
 				return false
 			if inputs[item_id] > 0:
 				recovered.append({"definition": accepted[item_id], "quantity": inputs[item_id]})
+	if definition.has_recipes() and not _valid_recipe_output(machine):
+		_machine_transaction = false
+		return false
 	if machine.output > 0:
-		recovered.append({"definition": definition.output_item, "quantity": machine.output})
+		recovered.append({"definition": stored_output_item(machine), "quantity": machine.output})
 	if not inventory.add_items(recovered, false):
 		_machine_transaction = false
 		return false
@@ -131,7 +135,9 @@ func machine_status(machine: Dictionary) -> OperatingStatus:
 	if machine.is_empty():
 		return OperatingStatus.INACTIVE
 	var definition: MachineDefinition = machine.definition
-	if definition.has_recipes() or not definition.has_production():
+	if definition.has_recipes():
+		return _recipe_status(machine)
+	if not definition.has_production():
 		return OperatingStatus.INACTIVE
 	var point := Vector2(machine.cell) * WorldCoordinates.CONSTRUCTION_SIZE \
 		+ definition.rotated_point(definition.extraction_point, machine.turns)
@@ -149,17 +155,105 @@ func machine_status(machine: Dictionary) -> OperatingStatus:
 	return OperatingStatus.PRODUCING
 
 
+# Resolve completed products from stored identity, never from selected recipe.
+# Recipe definitions form the small existing product catalog for this machine.
+func stored_output_item(machine: Dictionary) -> ItemDefinition:
+	var definition: MachineDefinition = machine.definition
+	if not definition.has_recipes():
+		return definition.output_item
+	var item_id: Variant = machine.get("output_item_id", &"")
+	if not item_id is StringName:
+		return null
+	var product: ItemDefinition
+	for recipe in definition.recipes:
+		if recipe == null or not recipe.is_valid() or recipe.output_item.item_id != item_id:
+			continue
+		if product != null and product != recipe.output_item:
+			return null
+		product = recipe.output_item
+	return product
+
+
+func _valid_recipe_output(machine: Dictionary) -> bool:
+	var definition: MachineDefinition = machine.definition
+	var quantity: Variant = machine.get("output")
+	if not quantity is int or quantity < 0 or quantity > definition.output_capacity:
+		return false
+	if quantity == 0:
+		return machine.get("output_item_id", &"") == &""
+	return stored_output_item(machine) != null
+
+
+func _recipe_status(machine: Dictionary) -> OperatingStatus:
+	var definition: MachineDefinition = machine.definition
+	var recipe := definition.get_recipe(machine.get("recipe_id", &""))
+	if recipe == null or is_recipe_change_paused(machine.id) \
+			or definition.input_capacity <= 0 or not _valid_recipe_output(machine) \
+			or not machine.get("inputs") is Dictionary \
+			or not is_finite(machine.cycle_progress) or machine.cycle_progress < 0.0 \
+			or machine.cycle_progress >= recipe.cycle_seconds:
+		return OperatingStatus.INACTIVE
+	var accepted: Dictionary = {}
+	for ingredient in recipe.ingredients:
+		accepted[ingredient.item.item_id] = true
+		if ingredient.quantity > definition.input_capacity:
+			return OperatingStatus.INACTIVE
+	for item_id in machine.inputs:
+		var quantity: Variant = machine.inputs[item_id]
+		if not accepted.has(item_id) or not quantity is int \
+				or quantity < 0 or quantity > definition.input_capacity:
+			return OperatingStatus.INACTIVE
+	if machine.output > definition.output_capacity - recipe.output_quantity \
+			or (machine.output > 0 and stored_output_item(machine) != recipe.output_item):
+		return OperatingStatus.OUTPUT_FULL
+	for ingredient in recipe.ingredients:
+		if machine.inputs.get(ingredient.item.item_id, 0) < ingredient.quantity:
+			return OperatingStatus.INPUT_EMPTY
+	return OperatingStatus.PRODUCING
+
+
+func _advance_recipe(machine: Dictionary, delta: float) -> void:
+	var definition: MachineDefinition = machine.definition
+	var recipe := definition.get_recipe(machine.recipe_id)
+	@warning_ignore("integer_division")
+	var available: int = (definition.output_capacity - machine.output) / recipe.output_quantity
+	for ingredient in recipe.ingredients:
+		@warning_ignore("integer_division")
+		var affordable: int = machine.inputs.get(ingredient.item.item_id, 0) / ingredient.quantity
+		available = mini(available, affordable)
+	# Use the fixed-machine boundary convention. Clamp before integer conversion;
+	# even huge deltas do constant work per ingredient, with no blocked backlog.
+	var capacity_time := available * recipe.cycle_seconds
+	var total := minf(machine.cycle_progress + delta, capacity_time)
+	var cycles := available if total == capacity_time \
+		else mini(int(floor(total / recipe.cycle_seconds)), available)
+	if cycles > 0:
+		for ingredient in recipe.ingredients:
+			machine.inputs[ingredient.item.item_id] -= cycles * ingredient.quantity
+		machine.output += cycles * recipe.output_quantity
+		machine.output_item_id = recipe.output_item.item_id
+	machine.cycle_progress = 0.0 if cycles == available \
+		else total - cycles * recipe.cycle_seconds
+
+
 # Called only by persistent PlaythroughState, never by terrain or UI nodes.
 func advance_production(delta: float) -> void:
 	if _machine_transaction or not is_finite(delta) or delta <= 0.0:
 		return
+	_machine_transaction = true
+	var changed := false
 	for machine in _machines.values():
-		# Future recipe production must retain this instance-specific pause gate.
+		# Pause only the instance whose chooser owns the lease.
 		if is_recipe_change_paused(machine.id):
 			continue
 		if machine_status(machine) != OperatingStatus.PRODUCING:
 			continue
 		var definition: MachineDefinition = machine.definition
+		if definition.has_recipes():
+			var previous_output: int = machine.output
+			_advance_recipe(machine, delta)
+			changed = changed or machine.output != previous_output
+			continue
 		@warning_ignore("integer_division")
 		var available_cycles: int = (definition.output_capacity - machine.output) / definition.output_per_cycle
 		if definition.has_input():
@@ -179,6 +273,10 @@ func advance_production(delta: float) -> void:
 			machine.input -= cycles * definition.input_per_cycle
 		machine.cycle_progress = 0.0 if cycles == available_cycles \
 			else total - cycles * definition.cycle_seconds
+
+	if changed:
+		machines_changed.emit()
+	_machine_transaction = false
 
 
 # Recipe configuration belongs to the persistent machine, never to its panel.
@@ -271,8 +369,7 @@ func change_recipe(machine_id: int, recipe_id: StringName,
 	machine.recipe_id = new_recipe.recipe_id
 	machine.inputs = retained
 	machine.cycle_progress = 0.0
-	# Completed output is deliberately untouched. Future recipe production must
-	# store output identity independently and block incompatible output until taken.
+	# Completed output and its independent identity are deliberately untouched.
 	if not returns.is_empty():
 		inventory.changed.emit()
 	machines_changed.emit()
@@ -345,14 +442,19 @@ func collect_output(machine_id: int, inventory: InventoryState,
 	var definition: MachineDefinition = machine.definition
 	if player_point.distance_to(definition.footprint(machine.cell, machine.turns).get_center()) > interaction_range:
 		return false
+	if definition.has_recipes() and not _valid_recipe_output(machine):
+		return false
 	if machine.output == 0:
 		return true
 	_machine_transaction = true
-	if not inventory.add_item(definition.output_item, machine.output, false):
+	if not inventory.add_item(stored_output_item(machine), machine.output, false):
 		_machine_transaction = false
 		return false
 	machine.output = 0
+	if definition.has_recipes():
+		machine.output_item_id = &""
 	inventory.changed.emit()
+	machines_changed.emit()
 	_machine_transaction = false
 	return true
 

@@ -144,9 +144,9 @@ func _check_synthetic_returns() -> void:
 	_check(state.change_recipe(1, return_both.recipe_id, inventory) == Result.OK, "Entire two-item return succeeds")
 	_check(state.get_machine(1).inputs.is_empty() and inventory.get_quantity(INGOT.item_id) == 15
 		and inventory.get_quantity(ORE.item_id) == 14, "Both returned items conserved")
-	# Recovery has no recipe-output representation yet; clear only synthetic output
-	# before exercising its existing input-only contract.
+	# Clear the intentionally invalid synthetic identity before recovery.
 	state._machines[1].output = 0
+	state._machines[1].output_item_id = &""
 	lease = state.begin_recipe_change(1)
 	_check(state.recover_machine(1, inventory, Vector2(192, 256), 160), "Recover paused machine")
 	_check(not state.is_recipe_change_paused(1), "Removal immediately clears pause")

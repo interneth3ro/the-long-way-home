@@ -281,21 +281,36 @@ func _recipe_change_error(result: PlanetWorldState.RecipeChangeResult) -> String
 
 
 func _refresh_fabricator(machine: Dictionary, definition: MachineDefinition) -> void:
-	_progress.hide()
-	_output_section.hide()
 	var recipe := definition.get_recipe(machine.get("recipe_id", &""))
 	# Assign the desired state once: hiding a visible ancestor cancels button presses.
 	_input_section.visible = not _recipe_cards.visible and recipe != null
-	_explanation.visible = not _recipe_cards.visible
-	_explanation.text = "Production not yet available"
-	_status.text = "Inactive"
-	_status.add_theme_color_override("font_color", Color(0.55, 0.58, 0.59))
+	_progress.visible = not _recipe_cards.visible and recipe != null
+	_output_section.visible = _progress.visible
+	_explanation.visible = not _recipe_cards.visible and recipe == null
+	_explanation.text = "No production configured."
+	_status.remove_theme_color_override("font_color")
+	match progression.planet.machine_status(machine):
+		PlanetWorldState.OperatingStatus.PRODUCING:
+			_status.text = "Producing"
+		PlanetWorldState.OperatingStatus.INPUT_EMPTY:
+			_status.text = "Input Empty"
+		PlanetWorldState.OperatingStatus.OUTPUT_FULL:
+			_status.text = "Output Full"
+		_:
+			_status.text = "Inactive"
 	if _recipe_cards.visible:
 		_title.text = "%s — %s" % [definition.display_name,
 			"Change Recipe" if _changing_recipe else "Select Recipe"]
 		return
 	if recipe == null:
 		return
+	_progress.value = 100.0 * machine.cycle_progress / recipe.cycle_seconds
+	var product := progression.planet.stored_output_item(machine)
+	var heading := "Output"
+	if machine.output > 0 and product != null:
+		heading += " — %s" % product.display_name
+	_output.text = "%s\n%d / %d" % [heading, machine.output, definition.output_capacity]
+	_collect_button.disabled = machine.output <= 0 or product == null
 	_recipe_summary.text = "Selected Recipe: %s\nRecipe: %s → %s" % [
 		recipe.display_name, recipe.input_summary(), recipe.output_summary()]
 	var rows := PackedStringArray()
@@ -314,7 +329,7 @@ func _refresh_fabricator(machine: Dictionary, definition: MachineDefinition) -> 
 
 func _collect() -> void:
 	var machine := progression.planet.get_machine(_machine_id)
-	if not _panel.visible or not _in_range(machine) or inventory_ui.is_open() \
+	if not _panel.visible or _changing_recipe or not _in_range(machine) or inventory_ui.is_open() \
 			or _dialogue.is_conversation_open() or _interaction.is_response_open():
 		return
 	var world := transitions.get_current_world()
