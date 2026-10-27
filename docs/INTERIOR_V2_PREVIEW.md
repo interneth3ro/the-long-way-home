@@ -161,7 +161,40 @@ Changed Markdown links and `git diff --check` are checked.
 
 No Godot/editor/import, headless execution, engine GDScript/type validation,
 runtime, graphical tests, performance probes or engine screenshots were performed.
-All eight acceptance results below remain **pending owner confirmation**.
+Owner Test 2 reported **FAIL**: Dave could stand partly on the port console.
+The focused amendment below awaits a Test 2 retest. No acceptance pass is inferred
+from static checks; do not advance to Test 3 until the owner confirms Test 2 passes.
+
+### Port console alignment amendment
+
+The owner's outlined screenshot shows a feet-circle center near source
+`(290,338)`, above the old footprint's y=365 rear edge. The old polygon blocked
+the lower cabinet but omitted its sloped upper/rear extent, leaving access from
+the wall side. This is a local footprint omission, not a 1.25x scale mismatch.
+
+Only `Footprint_PortConsole` changes. Its source-pixel vertices are now
+`(240,330), (295,307.5), (345,330), (345,415), (320,435), (270,420), (240,390)`.
+The front/lower contact points remain; the rear extends into the illustrated
+wall mount. Its rear edge shares part of existing `Segment_Wall01`, and its
+left edge shares part of `Segment_Wall23`, closing the former rear pocket.
+Those wall resources and every unrelated shape remain unchanged. The extension
+stays within the equipment/wall-mount region; the floor approaches east and
+south remain clear for Dave's 8-source-pixel-radius circle. Dave's unchanged
+`(0,-10)` shape offset puts his ground origin 8 source pixels below its center.
+
+Run the focused text-only check from the repository root:
+`python tests/static_port_console_geometry_test.py`. It checks convexity/local
+bounds, screenshot/art surface witnesses, continuous attachment to both existing
+wall edges, fixed scale/radius and circle clearance along east/south approaches.
+It reads scene text without Godot or gameplay execution. The upper-surface and
+wall-attachment checks reject the previous polygon. Sampled approach clearance
+and geometric contact do not establish engine collision response or corner feel.
+
+Resume **Test 2 of 8** in the same F6 collision preview, with C outlines enabled.
+Approach the console from the floor and both wall sides: Dave must no longer
+stand on its upper surface or enter behind it. Repeat the full perimeter for
+gaps/snags. This retest remains pending owner confirmation; no runtime success
+is claimed.
 
 ### Ordered collision acceptance (one test at a time)
 

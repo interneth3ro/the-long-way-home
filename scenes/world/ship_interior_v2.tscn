@@ -106,7 +106,7 @@ points = PackedVector2Array(-178, -277, 172, -277, 172, -222, -178, -222)
 points = PackedVector2Array(92, 68, 242, -52, 597, -127, 632, -42, 632, 138, 472, 313, 332, 303, 152, 198)
 
 [sub_resource type="ConvexPolygonShape2D" id="Footprint_PortConsole"]
-points = PackedVector2Array(-503, -147, -433, -147, -423, -97, -448, -77, -498, -92)
+points = PackedVector2Array(-528, -182, -473, -204.5, -423, -182, -423, -97, -448, -77, -498, -92, -528, -122)
 
 [sub_resource type="ConvexPolygonShape2D" id="Footprint_PortStorage"]
 points = PackedVector2Array(-518, 108, -433, 98, -323, 138, -333, 268, -418, 268, -523, 153)
