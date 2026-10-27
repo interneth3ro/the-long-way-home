@@ -30,14 +30,20 @@ accomplishes his goals.
   aligned full-canvas overlays. Computer starts damaged and doors closed. The
   maintenance closed panel is provisionally approved. The exterior closed hatch
   is painted into the background; its transparent overlay is intentional.
-- Compare world scales 1.0x, 1.25x and 1.5x with existing Dave and camera in an
-  isolated development scene. Final scale requires a later owner decision.
-  This feature branch adds the comparison only, pending merge; the production
-  interior and gameplay remain unchanged.
-- Later slices may add hybrid polygon/rectangle collision and fixed authored
-  inward-facing gameplay spawns. Collision, spawns, transitions, opening doors,
-  Computer restoration, Marvin discovery, cutover and legacy retirement are
-  deferred from this comparison.
+- PR #47's isolated 1.0x/1.25x/1.5x visual comparison remains available. The owner
+  selected 1.25x after its tests 1-6, as recorded in the collision implementation
+  request. The separate collision/navigation preview uses that fixed scale.
+- Approved collision direction: smooth simplified floor perimeter, independent
+  Computer/wreckage/permanent-equipment footprints and development-only outlines
+  of actual physics shapes. This feature branch implements that isolated slice,
+  pending merge and owner runtime acceptance; production gameplay is unchanged.
+- Future environment transitions will activate by walking across thresholds,
+  without E, for room-to-room and interior/exterior travel. E remains for
+  Computer, machines and intentional interactions. This supersedes the earlier
+  E-to-enter doorway design; existing production doorway behavior remains until
+  a separate transition slice. The collision preview's door barriers stay solid.
+- Gameplay spawns, transitions, opening doors, Computer restoration, Marvin
+  discovery, production cutover and legacy retirement remain deferred here.
 
 The [preview controls and ordered owner review](INTERIOR_V2_PREVIEW.md) record
 asset provenance and static-only validation limits. No Godot execution or visual

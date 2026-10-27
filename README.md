@@ -54,12 +54,14 @@ Headless checks do not verify graphical appearance. While execution is restricte
 use only nonexecuting checks under the policy above and report them as static
 validation; runtime and engine verification remain unperformed.
 
-## Primary interior V2 visual comparison (feature branch, pending merge)
+## Primary interior V2 development previews
 
 An isolated development preview compares the approved room artwork at world
 scales 1.0x, 1.25x and 1.5x using existing Dave and camera. Production gameplay
-remains unchanged; no final scale is selected. See the
-[preview controls, provenance and six owner tests](docs/INTERIOR_V2_PREVIEW.md).
+remains unchanged. The owner selected 1.25x following PR #47 review. This feature
+branch adds a separate collision/navigation preview at that fixed scale, pending
+merge and owner acceptance. See the
+[preview controls, provenance and ordered owner tests](docs/INTERIOR_V2_PREVIEW.md).
 Agent validation is static only under the Godot execution restriction.
 
 ## Layout and development
