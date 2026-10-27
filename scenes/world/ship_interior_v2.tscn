@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3]
+[gd_scene load_steps=36 format=3]
 
 [ext_resource type="Texture2D" path="res://assets/environment/ship_interior_v2/ship_interior_background.png" id="1_background"]
 [ext_resource type="Texture2D" path="res://assets/environment/ship_interior_v2/wreckage_hidden_marvin.png" id="2_wreckage"]
@@ -6,6 +6,116 @@
 [ext_resource type="Texture2D" path="res://assets/environment/ship_interior_v2/maintenance_closed_overlay.png" id="4_maintenance"]
 [ext_resource type="Texture2D" path="res://assets/environment/ship_interior_v2/exterior_closed_overlay.png" id="5_exterior"]
 [ext_resource type="Texture2D" path="res://assets/environment/ship_interior_v2/computer_repaired_overlay.png" id="6_repaired"]
+
+[sub_resource type="SegmentShape2D" id="Segment_Wall01"]
+a = Vector2(-528, -182)
+b = Vector2(-418, -227)
+
+[sub_resource type="SegmentShape2D" id="Segment_Wall02"]
+a = Vector2(-418, -227)
+b = Vector2(-303, -227)
+
+[sub_resource type="SegmentShape2D" id="Segment_Wall03"]
+a = Vector2(-303, -227)
+b = Vector2(-248, -262)
+
+[sub_resource type="SegmentShape2D" id="Segment_Wall04"]
+a = Vector2(-248, -262)
+b = Vector2(252, -262)
+
+[sub_resource type="SegmentShape2D" id="Segment_Wall05"]
+a = Vector2(252, -262)
+b = Vector2(372, -207)
+
+[sub_resource type="SegmentShape2D" id="Segment_Wall06"]
+a = Vector2(372, -207)
+b = Vector2(492, -147)
+
+[sub_resource type="SegmentShape2D" id="Segment_Wall07"]
+a = Vector2(492, -147)
+b = Vector2(632, -92)
+
+[sub_resource type="SegmentShape2D" id="Segment_Wall08"]
+a = Vector2(632, -92)
+b = Vector2(632, 138)
+
+[sub_resource type="SegmentShape2D" id="Segment_Wall09"]
+a = Vector2(632, 138)
+b = Vector2(452, 293)
+
+[sub_resource type="SegmentShape2D" id="Segment_Wall10"]
+a = Vector2(452, 293)
+b = Vector2(262, 293)
+
+[sub_resource type="SegmentShape2D" id="Segment_Wall11"]
+a = Vector2(262, 293)
+b = Vector2(132, 293)
+
+[sub_resource type="SegmentShape2D" id="Segment_Wall12"]
+a = Vector2(132, 293)
+b = Vector2(132, 343)
+
+[sub_resource type="SegmentShape2D" id="Segment_Wall13"]
+a = Vector2(132, 343)
+b = Vector2(82, 343)
+
+[sub_resource type="SegmentShape2D" id="Segment_ExteriorDoorBarrier"]
+a = Vector2(82, 343)
+b = Vector2(-108, 343)
+
+[sub_resource type="SegmentShape2D" id="Segment_Wall15"]
+a = Vector2(-108, 343)
+b = Vector2(-148, 343)
+
+[sub_resource type="SegmentShape2D" id="Segment_Wall16"]
+a = Vector2(-148, 343)
+b = Vector2(-148, 293)
+
+[sub_resource type="SegmentShape2D" id="Segment_Wall17"]
+a = Vector2(-148, 293)
+b = Vector2(-413, 293)
+
+[sub_resource type="SegmentShape2D" id="Segment_Wall18"]
+a = Vector2(-413, 293)
+b = Vector2(-528, 158)
+
+[sub_resource type="SegmentShape2D" id="Segment_Wall19"]
+a = Vector2(-528, 158)
+b = Vector2(-528, 23)
+
+[sub_resource type="SegmentShape2D" id="Segment_Wall20"]
+a = Vector2(-528, 23)
+b = Vector2(-568, 23)
+
+[sub_resource type="SegmentShape2D" id="Segment_MaintenanceDoorBarrier"]
+a = Vector2(-568, 23)
+b = Vector2(-568, -102)
+
+[sub_resource type="SegmentShape2D" id="Segment_Wall22"]
+a = Vector2(-568, -102)
+b = Vector2(-528, -102)
+
+[sub_resource type="SegmentShape2D" id="Segment_Wall23"]
+a = Vector2(-528, -102)
+b = Vector2(-528, -182)
+
+[sub_resource type="ConvexPolygonShape2D" id="Footprint_ComputerBase"]
+points = PackedVector2Array(-178, -277, 172, -277, 172, -222, -178, -222)
+
+[sub_resource type="ConvexPolygonShape2D" id="Footprint_MarvinWreckage"]
+points = PackedVector2Array(92, 68, 242, -52, 597, -127, 632, -42, 632, 138, 472, 313, 332, 303, 152, 198)
+
+[sub_resource type="ConvexPolygonShape2D" id="Footprint_PortConsole"]
+points = PackedVector2Array(-503, -147, -433, -147, -423, -97, -448, -77, -498, -92)
+
+[sub_resource type="ConvexPolygonShape2D" id="Footprint_PortStorage"]
+points = PackedVector2Array(-518, 108, -433, 98, -323, 138, -333, 268, -418, 268, -523, 153)
+
+[sub_resource type="ConvexPolygonShape2D" id="Footprint_NorthCrate"]
+points = PackedVector2Array(-288, -242, -228, -247, -223, -217, -258, -197, -288, -212)
+
+[sub_resource type="ConvexPolygonShape2D" id="Footprint_StarboardCabinet"]
+points = PackedVector2Array(397, -187, 482, -172, 492, -152, 432, -142, 397, -157)
 
 [node name="ShipInteriorV2" type="Node2D"]
 
@@ -30,3 +140,208 @@ texture = ExtResource("5_exterior")
 [node name="ComputerRepairedInactive" type="Sprite2D" parent="VisualContent"]
 visible = false
 texture = ExtResource("6_repaired")
+
+[node name="CollisionContent" type="Node2D" parent="."]
+
+[node name="Wall01" type="StaticBody2D" parent="CollisionContent"]
+collision_layer = 1
+collision_mask = 1
+
+[node name="Shape" type="CollisionShape2D" parent="CollisionContent/Wall01"]
+shape = SubResource("Segment_Wall01")
+
+[node name="Wall02" type="StaticBody2D" parent="CollisionContent"]
+collision_layer = 1
+collision_mask = 1
+
+[node name="Shape" type="CollisionShape2D" parent="CollisionContent/Wall02"]
+shape = SubResource("Segment_Wall02")
+
+[node name="Wall03" type="StaticBody2D" parent="CollisionContent"]
+collision_layer = 1
+collision_mask = 1
+
+[node name="Shape" type="CollisionShape2D" parent="CollisionContent/Wall03"]
+shape = SubResource("Segment_Wall03")
+
+[node name="Wall04" type="StaticBody2D" parent="CollisionContent"]
+collision_layer = 1
+collision_mask = 1
+
+[node name="Shape" type="CollisionShape2D" parent="CollisionContent/Wall04"]
+shape = SubResource("Segment_Wall04")
+
+[node name="Wall05" type="StaticBody2D" parent="CollisionContent"]
+collision_layer = 1
+collision_mask = 1
+
+[node name="Shape" type="CollisionShape2D" parent="CollisionContent/Wall05"]
+shape = SubResource("Segment_Wall05")
+
+[node name="Wall06" type="StaticBody2D" parent="CollisionContent"]
+collision_layer = 1
+collision_mask = 1
+
+[node name="Shape" type="CollisionShape2D" parent="CollisionContent/Wall06"]
+shape = SubResource("Segment_Wall06")
+
+[node name="Wall07" type="StaticBody2D" parent="CollisionContent"]
+collision_layer = 1
+collision_mask = 1
+
+[node name="Shape" type="CollisionShape2D" parent="CollisionContent/Wall07"]
+shape = SubResource("Segment_Wall07")
+
+[node name="Wall08" type="StaticBody2D" parent="CollisionContent"]
+collision_layer = 1
+collision_mask = 1
+
+[node name="Shape" type="CollisionShape2D" parent="CollisionContent/Wall08"]
+shape = SubResource("Segment_Wall08")
+
+[node name="Wall09" type="StaticBody2D" parent="CollisionContent"]
+collision_layer = 1
+collision_mask = 1
+
+[node name="Shape" type="CollisionShape2D" parent="CollisionContent/Wall09"]
+shape = SubResource("Segment_Wall09")
+
+[node name="Wall10" type="StaticBody2D" parent="CollisionContent"]
+collision_layer = 1
+collision_mask = 1
+
+[node name="Shape" type="CollisionShape2D" parent="CollisionContent/Wall10"]
+shape = SubResource("Segment_Wall10")
+
+[node name="Wall11" type="StaticBody2D" parent="CollisionContent"]
+collision_layer = 1
+collision_mask = 1
+
+[node name="Shape" type="CollisionShape2D" parent="CollisionContent/Wall11"]
+shape = SubResource("Segment_Wall11")
+
+[node name="Wall12" type="StaticBody2D" parent="CollisionContent"]
+collision_layer = 1
+collision_mask = 1
+
+[node name="Shape" type="CollisionShape2D" parent="CollisionContent/Wall12"]
+shape = SubResource("Segment_Wall12")
+
+[node name="Wall13" type="StaticBody2D" parent="CollisionContent"]
+collision_layer = 1
+collision_mask = 1
+
+[node name="Shape" type="CollisionShape2D" parent="CollisionContent/Wall13"]
+shape = SubResource("Segment_Wall13")
+
+[node name="ExteriorDoorBarrier" type="StaticBody2D" parent="CollisionContent"]
+collision_layer = 1
+collision_mask = 1
+
+[node name="Shape" type="CollisionShape2D" parent="CollisionContent/ExteriorDoorBarrier"]
+shape = SubResource("Segment_ExteriorDoorBarrier")
+
+[node name="Wall15" type="StaticBody2D" parent="CollisionContent"]
+collision_layer = 1
+collision_mask = 1
+
+[node name="Shape" type="CollisionShape2D" parent="CollisionContent/Wall15"]
+shape = SubResource("Segment_Wall15")
+
+[node name="Wall16" type="StaticBody2D" parent="CollisionContent"]
+collision_layer = 1
+collision_mask = 1
+
+[node name="Shape" type="CollisionShape2D" parent="CollisionContent/Wall16"]
+shape = SubResource("Segment_Wall16")
+
+[node name="Wall17" type="StaticBody2D" parent="CollisionContent"]
+collision_layer = 1
+collision_mask = 1
+
+[node name="Shape" type="CollisionShape2D" parent="CollisionContent/Wall17"]
+shape = SubResource("Segment_Wall17")
+
+[node name="Wall18" type="StaticBody2D" parent="CollisionContent"]
+collision_layer = 1
+collision_mask = 1
+
+[node name="Shape" type="CollisionShape2D" parent="CollisionContent/Wall18"]
+shape = SubResource("Segment_Wall18")
+
+[node name="Wall19" type="StaticBody2D" parent="CollisionContent"]
+collision_layer = 1
+collision_mask = 1
+
+[node name="Shape" type="CollisionShape2D" parent="CollisionContent/Wall19"]
+shape = SubResource("Segment_Wall19")
+
+[node name="Wall20" type="StaticBody2D" parent="CollisionContent"]
+collision_layer = 1
+collision_mask = 1
+
+[node name="Shape" type="CollisionShape2D" parent="CollisionContent/Wall20"]
+shape = SubResource("Segment_Wall20")
+
+[node name="MaintenanceDoorBarrier" type="StaticBody2D" parent="CollisionContent"]
+collision_layer = 1
+collision_mask = 1
+
+[node name="Shape" type="CollisionShape2D" parent="CollisionContent/MaintenanceDoorBarrier"]
+shape = SubResource("Segment_MaintenanceDoorBarrier")
+
+[node name="Wall22" type="StaticBody2D" parent="CollisionContent"]
+collision_layer = 1
+collision_mask = 1
+
+[node name="Shape" type="CollisionShape2D" parent="CollisionContent/Wall22"]
+shape = SubResource("Segment_Wall22")
+
+[node name="Wall23" type="StaticBody2D" parent="CollisionContent"]
+collision_layer = 1
+collision_mask = 1
+
+[node name="Shape" type="CollisionShape2D" parent="CollisionContent/Wall23"]
+shape = SubResource("Segment_Wall23")
+
+[node name="ComputerBase" type="StaticBody2D" parent="CollisionContent"]
+collision_layer = 1
+collision_mask = 1
+
+[node name="Shape" type="CollisionShape2D" parent="CollisionContent/ComputerBase"]
+shape = SubResource("Footprint_ComputerBase")
+
+[node name="MarvinWreckage" type="StaticBody2D" parent="CollisionContent"]
+collision_layer = 1
+collision_mask = 1
+
+[node name="Shape" type="CollisionShape2D" parent="CollisionContent/MarvinWreckage"]
+shape = SubResource("Footprint_MarvinWreckage")
+
+[node name="PortConsole" type="StaticBody2D" parent="CollisionContent"]
+collision_layer = 1
+collision_mask = 1
+
+[node name="Shape" type="CollisionShape2D" parent="CollisionContent/PortConsole"]
+shape = SubResource("Footprint_PortConsole")
+
+[node name="PortStorage" type="StaticBody2D" parent="CollisionContent"]
+collision_layer = 1
+collision_mask = 1
+
+[node name="Shape" type="CollisionShape2D" parent="CollisionContent/PortStorage"]
+shape = SubResource("Footprint_PortStorage")
+
+[node name="NorthCrate" type="StaticBody2D" parent="CollisionContent"]
+collision_layer = 1
+collision_mask = 1
+
+[node name="Shape" type="CollisionShape2D" parent="CollisionContent/NorthCrate"]
+shape = SubResource("Footprint_NorthCrate")
+
+[node name="StarboardCabinet" type="StaticBody2D" parent="CollisionContent"]
+collision_layer = 1
+collision_mask = 1
+
+[node name="Shape" type="CollisionShape2D" parent="CollisionContent/StarboardCabinet"]
+shape = SubResource("Footprint_StarboardCabinet")

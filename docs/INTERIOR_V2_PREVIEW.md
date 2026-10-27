@@ -1,9 +1,11 @@
-# Primary interior V2 visual scale preview
+# Primary interior V2 development previews
 
-Feature branch implementation, pending merge and owner visual acceptance. The
-normal main scene still starts in the original interior. No final scale is chosen.
-Collision, gameplay spawns, door opening, Computer restoration, Marvin discovery,
-production cutover and legacy retirement remain deferred.
+PR #47's visual comparison is merged. The owner selected **1.25x** following its
+tests 1-6, as recorded in the collision implementation request. This feature
+branch adds a separate collision/navigation preview, pending merge and owner
+acceptance. The normal main scene still starts in the original interior.
+Gameplay spawns, transitions, door opening, Computer restoration, Marvin
+discovery, production cutover and legacy retirement remain deferred.
 
 ## Open and compare (owner-operated)
 
@@ -82,5 +84,108 @@ runtime, graphical test or screenshots were performed under the restriction.
    proportions, perspective, framing, overlay edges and fractional-scale seams.
    No collision clearance or traversal is validated in this slice.
 6. Stop the preview, then launch the regular game (F5) and confirm the original
-   interior and opening gameplay remain unchanged. Report a preferred scale for
-   a later owner decision; no selection is committed by this preview.
+   interior and opening gameplay remain unchanged. These historical comparison
+   steps remain available; the later owner decision selected 1.25x.
+
+## Collision/navigation preview (feature branch, pending merge)
+
+Under the same [execution safety policy](../AGENTS.md#godot-execution-safety),
+the owner can open
+[`ship_interior_v2_collision_preview.tscn`](../scenes/dev/ship_interior_v2_collision_preview.tscn)
+and press **F6 (Run Current Scene)**. The project main scene is unchanged.
+WASD/arrows and mouse-wheel zoom use the original Dave controller/camera.
+**C** toggles actual physics outlines (initially off); **H** toggles the HUD.
+No teleports, interactions, progression or transition controller are present.
+Dave's body is enabled; only this instance's interaction detector is disabled
+and its unused UI hidden. Dave renders above the full-canvas art, as in the
+comparison preview; prop occlusion/depth sorting remains deferred.
+
+The V2 instance root is uniformly scaled **1.25x**, covering both unchanged
+`VisualContent` and new `CollisionContent`. The source canvas remains 1536x1024,
+displayed as 1920x1280 world units. All physics points are authored as
+`source_pixel - Vector2(768, 512)`; thus an image point maps to preview position
+`(source_pixel - center) * 1.25`. Moving/rotating the V2 root carries art and
+physics together. Dave is a sibling at original scale: radius **10** with the
+original shape offset `(0, -10)`. His root starts at `(-110, 28.75)`, source
+pixel `(680, 535)`; the circle center is source `(680, 527)` and radius is
+8 source pixels. Static geometry checks find it clear of all blockers.
+
+### Authored floor geometry
+
+`CollisionContent` contains layer-1/mask-1 StaticBody2D children, matching Dave's
+unchanged default layer/mask. The closed, simple perimeter uses 23 SegmentShape2D
+edges sharing exact endpoints. It follows a smoothed usable-floor boundary,
+ignoring small recesses. The central floor is empty, rather than a filled
+perimeter polygon. No alpha-derived collisions are used.
+
+Two edges belong to independently disableable/removable bodies:
+`MaintenanceDoorBarrier` at source `(200,535)-(200,410)`, and
+`ExteriorDoorBarrier` at `(850,855)-(660,855)`. Short approach alcoves remain
+inside these boundaries. A later crossing implementation must explicitly disable
+the corresponding barrier; there are no Area2D triggers or scene changes here.
+
+Six independent convex floor footprints block Computer's base, Marvin's wreckage,
+the port console, port storage, north crate and starboard cabinet. Tall silhouettes,
+shadows and small scattered debris do not define their outlines. Cables, papers,
+floor grates, lighting and scratches have no bodies. Wreckage can later be removed
+independently; no Marvin sprite, discovery or clearing behavior is introduced.
+Computer has no interaction script.
+
+These are conservative interpretations of illustrated contact points, especially
+the wreckage's irregular lower edge and stacked storage. The owner must assess
+alignment and corner feel in the ordered tests below; static inspection does not
+establish runtime navigation quality.
+
+The development-only
+[`physics_shape_outlines.gd`](../scenes/dev/physics_shape_outlines.gd)
+reads enabled CollisionShape2D resources: segment endpoints, convex polygon
+points and Dave's circle radius (drawn with 64 samples). Shape-global to
+overlay-local transforms include all ancestor transforms. Disabled shapes and
+layer-zero bodies are omitted. There is no duplicate outline geometry or
+physics/state mutation when toggling. The outline node exists only in this
+preview. The original scale-preview files are unchanged; Dave's layer/mask zero
+there keeps the new V2 physics inert while its visual-only scale controls remain.
+
+### Static verification and runtime limits
+
+Checks cover all nine manifest SHA-256 hashes, resource dependencies, supported
+shape resources, convex/nondegenerate prop polygons, a simple closed perimeter,
+shared endpoints, initial radius-10 circle clearance, and central route clearance.
+The source-pixel floor route from center `(680,527)` through `(760,650)` to hatch
+approach `(760,835)`, plus routes to Computer `(768,325)` and maintenance
+`(220,490)`, clears blockers for the circle's 8-source-pixel radius.
+These are mathematical checks of authored geometry, not simulated movement.
+PNG assets, manifest, original scale-preview files, production Dave/interior,
+main scene, project settings and transition code are unchanged.
+Changed Markdown links and `git diff --check` are checked.
+
+No Godot/editor/import, headless execution, engine GDScript/type validation,
+runtime, graphical tests, performance probes or engine screenshots were performed.
+All eight acceptance results below remain **pending owner confirmation**.
+
+### Ordered collision acceptance (one test at a time)
+
+After each test, obtain owner confirmation before treating it as passed.
+
+1. **Launch/artwork:** Open the collision preview and F6. Confirm no errors,
+   unchanged artwork and correct fixed 1.25x scale.
+2. **Perimeter:** Walk the entire asymmetric boundary. Check for escape gaps,
+   snagging corners and obvious wall misalignment.
+3. **Computer:** Approach from the open floor; confirm the base blocks walking
+   through the workstation while its accessible side remains reachable.
+4. **Wreckage:** Walk its accessible edge; confirm the floor pile blocks Dave
+   and the central route stays open.
+5. **Permanent equipment:** Check substantial consoles/storage/crate/cabinet
+   block movement, while small decorative details do not.
+6. **Doors:** Approach maintenance and exterior thresholds naturally. Both
+   remain solid and neither changes scenes.
+7. **Circulation/debug:** Walk between important areas, press C to inspect
+   shape alignment and Dave's feet circle, then toggle repeatedly. Physics must
+   remain identical; H only hides/shows the readout.
+8. **Production regression:** Stop the preview, run the regular game with F5,
+   and verify the original interior, Computer, exterior/maintenance transitions,
+   inventory/objectives and factory gameplay remain unchanged.
+
+Future automatic doorway transitions use threshold walking without E. That
+approved behavior is deferred; E remains for intentional object interactions.
+Collision acceptance provides no evidence that future transitions work.
