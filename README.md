@@ -10,7 +10,8 @@ and Extractor guidance. Merged PR #30 adds a maintenance bay and provisional
 inventory. Merged PR #32 adds Extractor deployment and recovery; merged PR #36
 adds Ferrite Ore production and collection. Merged PR #38 adds Smelter recovery
 and the Ferrite acquisition musing. Merged PR #39 adds Smelter deployment.
-This feature branch adds Ferrite Ingot production, pending merge and owner playtesting.
+Merged PR #40 adds Ferrite Ingot production. This feature branch adds Fabricator
+rack recovery, pending merge and owner playtesting.
 Its gameplay implementation is independent of FactoryGame; the approved Dave
 migration below reuses only two legacy artwork sheets.
 
@@ -1323,7 +1324,7 @@ were run. Engine parsing/type checking, physics/input, layout, visual readabilit
 travel persistence and gameplay acceptance require owner manual testing. The
 feature PR supplies the ordered playtest checklist.
 
-## Produce Ferrite Ingots (feature branch, pending merge)
+## Produce Ferrite Ingots (PR #40, merged)
 
 The deployed Smelter automatically converts **1 Ferrite Ore to 1 Ferrite Ingot**
 per **2-second cycle** (provisional maximum **30/minute**), without power.
@@ -1385,3 +1386,49 @@ engine parsing/type checking, timing, input behavior, layout, travel persistence
 and gameplay acceptance require the owner's manual testing. The PR contains an
 ordered checklist, including acquisition by collection and by recovery in separate
 fresh playthroughs.
+
+## Recover the Fabricator (feature branch, pending merge)
+
+After first Ferrite Ingot acquisition into Materials, approach the existing
+maintenance-bay Fabricator and press **E - Recover Fabricator**. The permanent
+`ferrite_ingot_acquired` milestone is reused unchanged: Smelter output alone does
+not unlock recovery; collection or recovery of an ingot-containing Smelter does.
+Spending ingots cannot relock it. No inspection, repair or material cost is added.
+
+`PlaythroughState.recover_fabricator()` follows the Smelter rack transaction:
+check acquisition, completion and reentrant guards, insert exactly one packaged
+item, then record recovery and emit completion. Rejection leaves the rack and
+objective unchanged and permits retry. Repeated input and synchronous inventory
+callbacks cannot duplicate the item. `inventory/fabricator.tres` is a plain
+Equipment `ItemDefinition`, displayed with the existing name/quantity convention.
+It has no deployment action or construction definition.
+
+`fabricator_rack.gd` uses the shared WorldInteractable interface and existing
+input priority, refreshes on completion and initialization, hides Module/Secured
+and shows EMPTY. Rack artwork, position, collision and frame remain intact.
+Persistent Main owns recovery across cached or newly instantiated bay visits;
+a fresh Main resets inventory, unlock and recovery. No disk saves are added.
+
+Successful recovery refreshes Restore Computer guidance directly to **Craft a
+Ferrite Plate.**, using the same objective ID with highest stage precedence.
+There is no deployment objective, new dialogue, musing or special recovery panel.
+The existing ingot musing and nonpausing presentation are unchanged. The crafting
+objective remains incomplete: deployment, production, recipes (including
+[recipe switching, issue #37](https://github.com/interneth3ro/the-long-way-home/issues/37)),
+power and logistics are outside this feature.
+
+`tests/fabricator_recovery_test.gd` adds standalone regression checks without a
+third-party framework. It covers locked/unlocked interaction, buffer-only ingots,
+collection and Smelter recovery acquisition, spending, rejected insertion and
+retry, synchronous reentry, exact quantity/category, empty rack, objective
+precedence, cached/new bay instances and fresh playthrough reset. It exercises
+bay detach/reattach rather than driving the asynchronous hatch transition.
+These tests are **not executed** under the current Godot restriction; run them
+only after explicit owner authorization lifts the relevant restriction.
+
+Agent validation is static only: standalone gdtoolkit 4.5 grammar parsing of
+changed/new scripts, scene/resource reference checks, protected-file comparisons,
+Markdown links and `git diff --check`. No Godot, project code, imports, headless,
+graphical or performance execution was performed. Godot type checking, regression
+test execution, E input/physics, visual feedback and actual hatch travel require
+owner verification. The feature PR provides an ordered manual checklist.

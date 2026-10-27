@@ -8,11 +8,13 @@ signal ferrite_acquisition_completed
 signal smelter_recovery_completed
 signal smelter_deployment_completed
 signal ferrite_ingot_acquisition_completed
+signal fabricator_recovery_completed
 
 const EXTRACTOR: ItemDefinition = preload("res://inventory/extractor.tres")
 const FERRITE_ORE: ItemDefinition = preload("res://inventory/ferrite_ore.tres")
 const SMELTER: ItemDefinition = preload("res://inventory/smelter.tres")
 const FERRITE_INGOT: ItemDefinition = preload("res://inventory/ferrite_ingot.tres")
+const FABRICATOR: ItemDefinition = preload("res://inventory/fabricator.tres")
 
 # Session state only. A fresh Main instance is a new playthrough.
 # No disk save/load workflow exists yet; do not store this in project settings.
@@ -35,6 +37,11 @@ var smelter_recovered: bool:
 		return _smelter_recovered
 var _smelter_recovered: bool = false
 var _recovering_smelter: bool = false
+var fabricator_recovered: bool:
+	get:
+		return _fabricator_recovered
+var _fabricator_recovered: bool = false
+var _recovering_fabricator: bool = false
 var smelter_deployed: bool:
 	get:
 		return _smelter_deployed
@@ -110,4 +117,18 @@ func recover_smelter() -> bool:
 	_smelter_recovered = true
 	_recovering_smelter = false
 	smelter_recovery_completed.emit()
+	return true
+
+
+func recover_fabricator() -> bool:
+	if not ferrite_ingot_acquired or _fabricator_recovered or _recovering_fabricator:
+		return false
+	# Guard synchronous inventory signal callbacks as well as repeated input.
+	_recovering_fabricator = true
+	if not inventory.add_item(FABRICATOR):
+		_recovering_fabricator = false
+		return false
+	_fabricator_recovered = true
+	_recovering_fabricator = false
+	fabricator_recovery_completed.emit()
 	return true

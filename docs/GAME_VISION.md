@@ -130,7 +130,7 @@ durable save/load. See the [implementation notes](../README.md#first-ferrite---d
 - The maintenance bay holds intact packaged Extractor, Smelter and Fabricator
   modules in three visible racks. Extractor becomes recoverable after Ferrite
   discovery; Smelter unlocks after first ore acquisition as described below.
-  Fabricator remains secured without an interaction prompt.
+  Fabricator unlocks after first ingot acquisition as described below.
 - One-time recovery grants one Extractor and advances Restore Computer guidance
   to deployment on Ferrite. It does not complete the overarching objective.
 - Dave's approved recovery musing is independently editable, using the existing
@@ -145,7 +145,8 @@ durable save/load. See the [implementation notes](../README.md#first-ferrite---d
 Recover the Extractor implementation is merged in PR #30; agent validation was
 static only. It adds the bay, inventory and first recovery step. Deployment and
 deployed-machine recovery are merged in PR #32; production is added by the
-feature below. Power and Fabricator rack recovery remain unimplemented.
+feature below. Power remains unimplemented; Fabricator rack recovery is added
+on the feature branch described below.
 Inventory and recovery are session-only and reset with a fresh Main instance. See the
 [implementation notes](../README.md#recover-the-extractor-pr-30-merged)
 for approved dialogue, ownership and validation limits.
@@ -233,8 +234,8 @@ ownership and limits are in the
   near the Extractor.** Inventory possession alone does not advance it and item
   removal cannot revert it. “Near” is guidance only. PR #38 kept the packaged
   Smelter inert; the approved deployment milestone below makes it deployable.
-  Smelting and recipes remain subsequent work. Fabricator stays visible,
-  noninteractive and unrecoverable.
+  Smelting and recipes remained subsequent work in PR #38. Fabricator recovery
+  is added on the feature branch described below.
 - The maintenance bay arrangement is temporary. Future HD environments should
   include varied mounting, damaged infrastructure, maintenance access and
   environmental storytelling rather than three evenly spaced machines. This
@@ -295,15 +296,37 @@ and limitations are recorded in the
   “One step closer. Assuming that fabricator survived the crash.” followed by
   “Guess there's only one way to find out.” Use the existing nonpausing automatic
   musing presentation. Spending, travel, recovery and redeployment cannot reset it.
-- Fabricator remains visible, noninteractive, unrecoverable and unavailable in
-  Equipment. Recipe switching remains future work in
+- PR #40 left Fabricator visible, noninteractive, unrecoverable and unavailable in
+  Equipment; the recovery milestone below extends this. Recipe switching remains future work in
   [issue #37](https://github.com/interneth3ro/the-long-way-home/issues/37).
   Future rotating lower-left input/lower-right output ports remain tracked in
   [issue #35](https://github.com/interneth3ro/the-long-way-home/issues/35).
 
-Implementation is on the Ferrite Ingot production feature branch, pending merge
-and owner manual testing. State ownership and validation limits are in the
-[implementation notes](../README.md#produce-ferrite-ingots-feature-branch-pending-merge).
+Implementation is merged in PR #40. Agent validation was static only. State
+ownership and validation limits are in the
+[implementation notes](../README.md#produce-ferrite-ingots-pr-40-merged).
+
+## Approved Fabricator recovery direction
+
+- First Ferrite Ingot acquisition into Materials permanently unlocks the existing
+  maintenance-bay Fabricator. Collection and Smelter recovery qualify; ingots
+  solely inside output storage do not. No further inspection, repair or cost.
+- Reuse **E - Recover Fabricator** and the established rack behavior to insert
+  exactly one packaged Fabricator into Equipment, then leave the rack empty.
+  Failed insertion cannot complete recovery or advance guidance; repeated input
+  cannot duplicate equipment. Recovery survives scene visits and item removal;
+  a fresh playthrough restores the rack and resets progression and inventory.
+- Successful recovery advances Restore Computer directly to **Craft a Ferrite
+  Plate.**, without an intermediate deployment objective. No additional dialogue
+  or musing is added; the approved ingot-acquisition wording remains unchanged.
+- The packaged item is inert. Deployment, production, Ferrite Plate crafting,
+  recipe switching, power and logistics remain later work. This objective may
+  remain incomplete until fabrication is implemented.
+
+Implementation is on the Fabricator recovery feature branch, pending merge and
+owner playtesting. Standalone regression checks are added but unexecuted under
+the Godot restriction. Static validation and scope are recorded in the
+[implementation notes](../README.md#recover-the-fabricator-feature-branch-pending-merge).
 
 ## Unresolved design details
 
