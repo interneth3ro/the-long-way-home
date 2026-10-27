@@ -47,13 +47,14 @@ func _draw_shape(collider: CollisionShape2D, color: Color) -> void:
 		closed = true
 	elif shape is CapsuleShape2D:
 		# Capsule height includes both caps; its local axis is vertical.
-		var cap_offset := shape.height * 0.5 - shape.radius
+		var capsule := shape as CapsuleShape2D
+		var cap_offset: float = capsule.height * 0.5 - capsule.radius
 		for index in range(33):
 			var angle := PI + PI * float(index) / 32.0
-			points.append(Vector2(0.0, -cap_offset) + Vector2.from_angle(angle) * shape.radius)
+			points.append(Vector2(0.0, -cap_offset) + Vector2.from_angle(angle) * capsule.radius)
 		for index in range(33):
 			var angle := PI * float(index) / 32.0
-			points.append(Vector2(0.0, cap_offset) + Vector2.from_angle(angle) * shape.radius)
+			points.append(Vector2(0.0, cap_offset) + Vector2.from_angle(angle) * capsule.radius)
 		closed = true
 	else:
 		# New physics types must explicitly add a resource-derived outline here.

@@ -251,6 +251,10 @@ The development C renderer now supports CapsuleShape2D: the straight section and
 two semicircles come only from `shape.height` and `shape.radius`, then use the
 existing collider-global to overlay-local transform. No independent outline
 dimensions or collision mutations are introduced.
+The owner subsequently reported a GDScript inference error for `cap_offset`.
+The renderer now casts the resource to CapsuleShape2D and explicitly declares
+that offset as a float. This follow-up is statically reviewed; engine parsing
+and rendering still require owner verification.
 
 `python tests/static_port_console_geometry_test.py` retains the four console
 checks and updates the three container checks to require a capsule, upper/lower
