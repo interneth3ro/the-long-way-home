@@ -6,6 +6,7 @@ signal extractor_recovery_completed
 signal extractor_deployment_completed
 signal ferrite_acquisition_completed
 signal smelter_recovery_completed
+signal smelter_deployment_completed
 
 const EXTRACTOR: ItemDefinition = preload("res://inventory/extractor.tres")
 const FERRITE_ORE: ItemDefinition = preload("res://inventory/ferrite_ore.tres")
@@ -31,6 +32,10 @@ var smelter_recovered: bool:
 		return _smelter_recovered
 var _smelter_recovered: bool = false
 var _recovering_smelter: bool = false
+var smelter_deployed: bool:
+	get:
+		return _smelter_deployed
+var _smelter_deployed: bool = false
 
 # Configure on Main/PlaythroughState before a new playthrough begins.
 @export var world_seed: int = 26026
@@ -55,10 +60,12 @@ func _on_inventory_changed() -> void:
 
 
 func _on_machine_deployed(definition: MachineDefinition) -> void:
-	if definition.item_id != EXTRACTOR.item_id or _extractor_deployed:
-		return
-	_extractor_deployed = true
-	extractor_deployment_completed.emit()
+	if definition.item_id == EXTRACTOR.item_id and not _extractor_deployed:
+		_extractor_deployed = true
+		extractor_deployment_completed.emit()
+	elif definition.item_id == SMELTER.item_id and not _smelter_deployed:
+		_smelter_deployed = true
+		smelter_deployment_completed.emit()
 
 
 func discover_ferrite(deposit_id: StringName) -> bool:

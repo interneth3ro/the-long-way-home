@@ -1,9 +1,14 @@
-[gd_resource type="Resource" script_class="ItemDefinition" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="MachineDefinition" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://inventory/item_definition.gd" id="1_item"]
+[ext_resource type="Script" path="res://construction/machine_definition.gd" id="1_item"]
 
 [resource]
 script = ExtResource("1_item")
 item_id = &"smelter"
 display_name = "Smelter"
 section = 1
+footprint_cells = Vector2i(2, 2)
+compatible_resources = Array[StringName]([])
+output_per_cycle = 0
+cycle_seconds = 0.0
+output_capacity = 0
