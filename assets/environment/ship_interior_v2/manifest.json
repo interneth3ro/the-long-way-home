@@ -1,0 +1,147 @@
+{
+  "package_version": "1.0",
+  "project": "The Long Way Home",
+  "purpose": "isolated visual-only ship_interior_v2 scale comparison",
+  "canvas": [
+    1536,
+    1024
+  ],
+  "asset_rules": [
+    "Approved art pixels must not be regenerated or modified.",
+    "All overlay PNGs use the same 1536x1024 pixel origin.",
+    "Approved composite is a reference, not a second background layer.",
+    "Open door states are deferred and should not be activated in first PR.",
+    "Wreckage is the owner-approved placement from composite review; original unaligned wreckage source is not used."
+  ],
+  "files": {
+    "assets/ship_interior_background.png": {
+      "sha256": "8b766b93d7e0bf5e427ee013653164c9bd414518644784da5bd284ec3e3af857",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        0,
+        0,
+        1536,
+        1024
+      ],
+      "source": "TLWH_Primary_Interior_Composite_Review/background_approved_unchanged.png",
+      "status": "approved/provisionally approved"
+    },
+    "assets/wreckage_hidden_marvin.png": {
+      "sha256": "ae1cb5e8556aa5e8262670109af281115bfda133450aeaf17acb59db048be71c",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        849,
+        314,
+        1449,
+        855
+      ],
+      "source": "TLWH_Primary_Interior_Composite_Review/wreckage_overlay_aligned_review.png",
+      "status": "approved/provisionally approved"
+    },
+    "assets/computer_damaged_overlay.png": {
+      "sha256": "0b47906ccb6bc8e935265b5194375fe8c4f6a8647a0b2f0f52c7c1d7dadd6ffe",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        718,
+        121,
+        815,
+        175
+      ],
+      "source": "TLWH_computer_screen_precise/damaged_screen_overlay_full_canvas.png",
+      "status": "approved/provisionally approved"
+    },
+    "assets/computer_repaired_overlay.png": {
+      "sha256": "58b59712d47900f5c38c60d7f2ad4e5d1e773de557b4fbf21931ca8e679db526",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        718,
+        121,
+        815,
+        175
+      ],
+      "source": "TLWH_computer_screen_precise/repaired_screen_overlay_full_canvas.png",
+      "status": "approved/provisionally approved"
+    },
+    "assets/maintenance_closed_overlay.png": {
+      "sha256": "52382e8bd75d1c21de9def2a483a92378366d5059bc1a01a54dedf31024e033e",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        128,
+        409,
+        199,
+        527
+      ],
+      "source": "TLWH_maintenance_door_v1/maintenance_closed_full_canvas.png",
+      "status": "approved/provisionally approved"
+    },
+    "assets/maintenance_open_overlay_DEFERRED.png": {
+      "sha256": "64085d665f67f408b0cd67f69bebaa5a814b79eeed296c3d952e62988d7a440f",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": null,
+      "source": "TLWH_maintenance_door_v1/maintenance_open_full_canvas.png",
+      "status": "deferred"
+    },
+    "assets/exterior_closed_overlay.png": {
+      "sha256": "64085d665f67f408b0cd67f69bebaa5a814b79eeed296c3d952e62988d7a440f",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": null,
+      "source": "TLWH_exterior_hatch_v2/exterior_closed_full_canvas.png",
+      "status": "approved/provisionally approved"
+    },
+    "assets/exterior_open_overlay_DEFERRED.png": {
+      "sha256": "66d405f38c605155c7393328524d186a9e028a06075cdf85bbce1f13f4f353e1",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        663,
+        857,
+        856,
+        918
+      ],
+      "source": "TLWH_exterior_hatch_v2/exterior_open_full_canvas.png",
+      "status": "deferred"
+    },
+    "assets/approved_initial_composite_REFERENCE.png": {
+      "sha256": "c92c2d07645800b43d4db59421c1a3ed75e59e5058c6f2d65f4b60abd71a52b1",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGB",
+      "alpha_bbox": null,
+      "source": "TLWH_Primary_Interior_Composite_Review/initial_room_composite.png",
+      "status": "reference-only"
+    }
+  }
+}

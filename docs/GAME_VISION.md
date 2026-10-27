@@ -20,6 +20,29 @@ accomplishes his goals.
   broader environment direction or import legacy gameplay. Implementation is
   merged in PR #25; runtime acceptance remains with the owner.
 
+## Approved primary interior V2 visual comparison
+
+- Dark, worn, retro-industrial prisoner transport: asymmetric damaged compartment,
+  moderately open center, Computer on the far wall, maintenance door left and
+  exterior hatch below. Marvin stays entirely concealed beneath the approved
+  lower-right wreckage placement, with no separate sprite or discovery here.
+- Preserve the owner-approved 1536x1024 artwork as a static background with
+  aligned full-canvas overlays. Computer starts damaged and doors closed. The
+  maintenance closed panel is provisionally approved. The exterior closed hatch
+  is painted into the background; its transparent overlay is intentional.
+- Compare world scales 1.0x, 1.25x and 1.5x with existing Dave and camera in an
+  isolated development scene. Final scale requires a later owner decision.
+  This feature branch adds the comparison only, pending merge; the production
+  interior and gameplay remain unchanged.
+- Later slices may add hybrid polygon/rectangle collision and fixed authored
+  inward-facing gameplay spawns. Collision, spawns, transitions, opening doors,
+  Computer restoration, Marvin discovery, cutover and legacy retirement are
+  deferred from this comparison.
+
+The [preview controls and ordered owner review](INTERIOR_V2_PREVIEW.md) record
+asset provenance and static-only validation limits. No Godot execution or visual
+acceptance is claimed.
+
 ## Approved construction and logistics direction
 
 - Defined machine connection ports aligned with tile-lane centers along footprint

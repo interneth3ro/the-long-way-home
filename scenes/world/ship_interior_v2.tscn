@@ -1,0 +1,32 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/environment/ship_interior_v2/ship_interior_background.png" id="1_background"]
+[ext_resource type="Texture2D" path="res://assets/environment/ship_interior_v2/wreckage_hidden_marvin.png" id="2_wreckage"]
+[ext_resource type="Texture2D" path="res://assets/environment/ship_interior_v2/computer_damaged_overlay.png" id="3_damaged"]
+[ext_resource type="Texture2D" path="res://assets/environment/ship_interior_v2/maintenance_closed_overlay.png" id="4_maintenance"]
+[ext_resource type="Texture2D" path="res://assets/environment/ship_interior_v2/exterior_closed_overlay.png" id="5_exterior"]
+[ext_resource type="Texture2D" path="res://assets/environment/ship_interior_v2/computer_repaired_overlay.png" id="6_repaired"]
+
+[node name="ShipInteriorV2" type="Node2D"]
+
+[node name="VisualContent" type="Node2D" parent="."]
+texture_filter = 2
+
+[node name="Background" type="Sprite2D" parent="VisualContent"]
+texture = ExtResource("1_background")
+
+[node name="WreckageHiddenMarvin" type="Sprite2D" parent="VisualContent"]
+texture = ExtResource("2_wreckage")
+
+[node name="ComputerDamaged" type="Sprite2D" parent="VisualContent"]
+texture = ExtResource("3_damaged")
+
+[node name="MaintenanceClosed" type="Sprite2D" parent="VisualContent"]
+texture = ExtResource("4_maintenance")
+
+[node name="ExteriorClosed" type="Sprite2D" parent="VisualContent"]
+texture = ExtResource("5_exterior")
+
+[node name="ComputerRepairedInactive" type="Sprite2D" parent="VisualContent"]
+visible = false
+texture = ExtResource("6_repaired")
