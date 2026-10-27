@@ -661,6 +661,15 @@ must reset the objective to inactive. Unrelated conversation IDs and signal coun
 require owner runtime verification; their paths were inspected statically.
 
 Add feature directories and GDScript files when they have a concrete purpose.
+
+On `codex/normalize-dave-import-uids` (pending merge), seven preserved Dave
+texture sidecars use canonical numeric UID encodings instead of manually authored
+readable strings. Each replacement represents the same numeric resource ID;
+asset paths, pixels and import settings are unchanged. This records the repeated
+editor-normalized values so cleanup does not keep restoring the old spellings.
+Keep these normalized sidecars in version control. Validation is static only;
+Godot was not run to verify reimport behavior.
+
 Track approved source artwork, source-adjacent asset `.import` sidecars (import
 settings and stable resource UIDs), and `.gd.uid` files. The `.import/` ignore rule
 applies to cache directories, not these sidecar files. Keep generated `.godot/`
