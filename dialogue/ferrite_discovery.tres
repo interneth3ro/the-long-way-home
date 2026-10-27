@@ -5,4 +5,4 @@
 [resource]
 script = ExtResource("1_musing")
 text = "Metal-rich. Looks close enough to Ferrite.\n\nShould work for the repairs. Maintenance had an extractor... somewhere."
-duration_seconds = 10.0
+duration_seconds = 5.0

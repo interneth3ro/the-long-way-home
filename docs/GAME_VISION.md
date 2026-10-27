@@ -114,8 +114,10 @@ Implementation and coordinate conventions are recorded in the
   Plate / Rod / Bearing. Computer's initial repair requires Plates and Rods.
   These machines, recipes and extraction remain unimplemented.
 
-First Ferrite implementation is pending merge and owner runtime review; its
-one-time discovery and compact timed musing use session-only state. There is no
+First Ferrite implementation is pending merge. The owner reports all 15 original
+manual playtests passed; final musing timing and temporary developer coordinate
+HUD adjustments remain pending owner review. One-time discovery and compact
+timed musings use session-only state. There is no
 durable save/load. See the [implementation notes](../README.md#first-ferrite---discovery-feature-branch-pending-merge).
 
 ## Unresolved design details

@@ -888,8 +888,10 @@ Main routes discovery to reusable `MusingUI` and separately editable
 `MusingDefinition` content in `dialogue/ferrite_discovery.tres`. Both approved
 thoughts appear together in an 18-point, portrait-free lower-left panel, above
 the interaction prompt and away from the upper-right objective tracker. It fades
-in for 0.25 seconds, holds for 10 seconds and fades out for 0.35 seconds. All
-controls ignore mouse input; it has no buttons, input handlers or gameplay lock.
+in for 0.25 seconds, holds for 5 seconds and fades out for 0.35 seconds
+(approximately 5.6 seconds total). Only this Ferrite content duration changed;
+the approved text, other definitions and global timing default are preserved.
+Controls ignore mouse input; it has no buttons, input handlers or gameplay lock.
 A new musing cancels/replaces the old tween. Accepted hatch transitions dismiss
 it immediately, including a transition that subsequently fails validation.
 Main owns its lifetime, so fresh playthroughs cannot inherit stale UI.
@@ -909,11 +911,38 @@ recovery will proceed strictly Extractor, then Smelter, then Fabricator. None of
 those recovery steps, mining, construction, recipes, inventory or power is
 implemented here. Future research allows broader freedom.
 
-Agent validation is static only: scene/resource paths and UID references,
-protected placement and two future footprints, unchanged original scene objects,
+The owner reports all 15 original PR #28 manual playtests passed before the
+final timing and temporary coordinate HUD adjustments. Those adjustments remain
+pending owner review. Agent validation is static only: scene/resource paths and UID
+references, protected placement and two future footprints, unchanged original scene objects,
 one-time state/signal ordering, objective idempotence, musing cancellation,
 transition wiring, preserved movement/dialogue/settings and Markdown/diff checks.
 No Godot editor, import, headless run, gameplay, rendering or performance test was
 performed. Engine parsing, appearance, text wrapping, timing, interaction physics
 and chunk travel require owner verification using the PR's ordered checklist,
 one item at a time.
+
+### Temporary developer coordinate display
+
+`scenes/ui/developer_coordinates.tscn` is a standalone CanvasLayer under the
+persistent Main scene. Its exported `player` reference points to the existing
+Dave instance and survives his reparenting between worlds. Each frame it reads
+Dave's `global_position` in the current scene's world coordinate system, rounds
+each component to the nearest integer, and displays explicit signs, for example
+`X: -2145   Y: +768`. It shows current position in both ship and exterior;
+coordinates may jump when a hatch places Dave at the destination spawn.
+It does not accumulate distance or alter movement, camera or world generation.
+
+The small 16-point label sits at (24, 24) in screen space, matching the Objective
+Tracker's 24-unit top offset and the HUD's horizontal margin. Muted text and a
+subtle shadow follow existing UI conventions. All controls ignore mouse input.
+Disable it through `Main/DeveloperCoordinates.display_enabled` in the Inspector;
+there are no persistent settings or new player controls. Removing that Main
+instance also removes the temporary display without changing gameplay scripts.
+
+Static review covers the persistent player reference, direct position read,
+signed integer formatting, scene/resource/UID wiring, mouse pass-through and
+screen offsets. Godot was not run for these adjustments. The owner should verify
+the approximately 5.6-second Ferrite musing and live signed coordinates while
+walking in both worlds, hatch coordinate changes, layout alongside the tracker,
+and the exported disable setting.
