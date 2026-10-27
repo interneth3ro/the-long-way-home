@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="ObjectiveDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://objectives/objective_definition.gd" id="1_definition"]
+
+[resource]
+script = ExtResource("1_definition")
+objective_id = &"restore_computer"
+title = "Restore Computer"
+description = "Deploy the Smelter near the Extractor."

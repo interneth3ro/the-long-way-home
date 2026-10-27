@@ -5,9 +5,11 @@ signal ferrite_discovery_completed
 signal extractor_recovery_completed
 signal extractor_deployment_completed
 signal ferrite_acquisition_completed
+signal smelter_recovery_completed
 
 const EXTRACTOR: ItemDefinition = preload("res://inventory/extractor.tres")
 const FERRITE_ORE: ItemDefinition = preload("res://inventory/ferrite_ore.tres")
+const SMELTER: ItemDefinition = preload("res://inventory/smelter.tres")
 
 # Session state only. A fresh Main instance is a new playthrough.
 # No disk save/load workflow exists yet; do not store this in project settings.
@@ -24,6 +26,11 @@ var extractor_deployed: bool:
 		return _extractor_deployed
 var _extractor_deployed: bool = false
 var ferrite_acquired: bool = false
+var smelter_recovered: bool:
+	get:
+		return _smelter_recovered
+var _smelter_recovered: bool = false
+var _recovering_smelter: bool = false
 
 # Configure on Main/PlaythroughState before a new playthrough begins.
 @export var world_seed: int = 26026
@@ -76,4 +83,18 @@ func recover_extractor() -> bool:
 	_extractor_recovered = true
 	_recovering_extractor = false
 	extractor_recovery_completed.emit()
+	return true
+
+
+func recover_smelter() -> bool:
+	if not ferrite_acquired or _smelter_recovered or _recovering_smelter:
+		return false
+	# Guard synchronous inventory signal callbacks as well as repeated input.
+	_recovering_smelter = true
+	if not inventory.add_item(SMELTER):
+		_recovering_smelter = false
+		return false
+	_smelter_recovered = true
+	_recovering_smelter = false
+	smelter_recovery_completed.emit()
 	return true
