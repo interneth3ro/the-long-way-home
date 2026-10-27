@@ -1,4 +1,4 @@
-[gd_scene load_steps=36 format=3]
+[gd_scene load_steps=37 format=3]
 
 [ext_resource type="Texture2D" path="res://assets/environment/ship_interior_v2/ship_interior_background.png" id="1_background"]
 [ext_resource type="Texture2D" path="res://assets/environment/ship_interior_v2/wreckage_hidden_marvin.png" id="2_wreckage"]
@@ -116,6 +116,9 @@ points = PackedVector2Array(-288, -242, -228, -247, -223, -217, -258, -197, -288
 
 [sub_resource type="ConvexPolygonShape2D" id="Footprint_StarboardCabinet"]
 points = PackedVector2Array(397, -187, 482, -172, 492, -152, 432, -142, 397, -157)
+
+[sub_resource type="CircleShape2D" id="Footprint_PortContainer"]
+radius = 17.0
 
 [node name="ShipInteriorV2" type="Node2D"]
 
@@ -345,3 +348,11 @@ collision_mask = 1
 
 [node name="Shape" type="CollisionShape2D" parent="CollisionContent/StarboardCabinet"]
 shape = SubResource("Footprint_StarboardCabinet")
+
+[node name="PortContainer" type="StaticBody2D" parent="CollisionContent"]
+position = Vector2(-387, -192)
+collision_layer = 1
+collision_mask = 1
+
+[node name="Shape" type="CollisionShape2D" parent="CollisionContent/PortContainer"]
+shape = SubResource("Footprint_PortContainer")

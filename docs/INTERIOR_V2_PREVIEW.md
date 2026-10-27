@@ -130,6 +130,8 @@ shadows and small scattered debris do not define their outlines. Cables, papers,
 floor grates, lighting and scratches have no bodies. Wreckage can later be removed
 independently; no Marvin sprite, discovery or clearing behavior is introduced.
 Computer has no interaction script.
+An additional independent circle blocks the freestanding port container; see
+the Test 5 amendment below.
 
 These are conservative interpretations of illustrated contact points, especially
 the wreckage's irregular lower edge and stacked storage. The owner must assess
@@ -161,9 +163,10 @@ Changed Markdown links and `git diff --check` are checked.
 
 No Godot/editor/import, headless execution, engine GDScript/type validation,
 runtime, graphical tests, performance probes or engine screenshots were performed.
-Owner Test 2 reported **FAIL**: Dave could stand partly on the port console.
-The focused amendment below awaits a Test 2 retest. No acceptance pass is inferred
-from static checks; do not advance to Test 3 until the owner confirms Test 2 passes.
+Owner Test 2 previously reported **FAIL** and prompted the console amendment below.
+The owner has since progressed to **Test 5 of 8: FAIL**, reporting missing container
+collision. Resume Test 5 after amendment 2; do not restart already-passed tests.
+No runtime success is inferred from agent static checks.
 
 ### Port console alignment amendment
 
@@ -190,11 +193,47 @@ It reads scene text without Godot or gameplay execution. The upper-surface and
 wall-attachment checks reject the previous polygon. Sampled approach clearance
 and geometric contact do not establish engine collision response or corner feel.
 
-Resume **Test 2 of 8** in the same F6 collision preview, with C outlines enabled.
+The original amendment requested a **Test 2 of 8** retest with C outlines enabled:
 Approach the console from the floor and both wall sides: Dave must no longer
 stand on its upper surface or enter behind it. Repeat the full perimeter for
-gaps/snags. This retest remains pending owner confirmation; no runtime success
-is claimed.
+gaps/snags. The current review is now Test 5; recheck the corrected console only
+as part of the nearby container circulation test.
+
+### Amendment 2: freestanding port container (Test 5)
+
+The approved background shows a cylinder at about source x=364-398, with the
+bottom rim near y=337 and raised lid near y=293. No existing body covered its
+floor base; it was omitted from the original six equipment footprints.
+The corrected console is separate and unchanged.
+
+Added `CollisionContent/PortContainer` (StaticBody2D, layer 1/mask 1) with a
+`Shape` CollisionShape2D using `Footprint_PortContainer` (CircleShape2D).
+Source center **(381,320)** maps to local **(-387,-192)**. Radius is **17**
+source/local units (34 diameter); at environment scale 1.25x, the preview center
+is **(-483.75,-240)** and radius **21.25** world units (42.5 diameter).
+The circle approximates the floor base, not the raised lid or cast shadow.
+There are no individual shape/visual scaling adjustments.
+
+The existing C outline renderer recursively reads this actual CircleShape2D and
+its body transform; no debug-code change is needed. Walls, six existing polygons,
+corrected console, artwork, Dave, camera, production interior and preview entry
+points are unchanged.
+
+`python tests/static_port_console_geometry_test.py` now includes three container
+checks in addition to the four console checks: independent enabled body/resource
+and layer/mask, base coverage with separation from existing blockers, and sampled
+radius-10 feet-circle routes around the container's west/north/east/south sides.
+The west route remains between console and container; the rear passage is narrow
+(18 source pixels between circle and wall, versus Dave's 16-source-pixel diameter).
+Static clearance does not establish comfortable movement, visual alignment or
+engine response. All nine PNG hashes still match the approved manifest.
+Godot was not run.
+
+Resume **Test 5 of 8**, F6 collision preview, C outlines: approach the container
+from all accessible sides, confirm Dave cannot cross or stand on its base, check
+comfortable circulation past the console and nearby equipment, and recheck the
+corrected console. Test 5 remains pending owner confirmation. Do not advance to
+Test 6 until it passes; do not repeat already-passed tests beyond this affected area.
 
 ### Ordered collision acceptance (one test at a time)
 
@@ -208,7 +247,7 @@ After each test, obtain owner confirmation before treating it as passed.
    through the workstation while its accessible side remains reachable.
 4. **Wreckage:** Walk its accessible edge; confirm the floor pile blocks Dave
    and the central route stays open.
-5. **Permanent equipment:** Check substantial consoles/storage/crate/cabinet
+5. **Permanent equipment:** Check substantial consoles/storage/crate/cabinet/container
    block movement, while small decorative details do not.
 6. **Doors:** Approach maintenance and exterior thresholds naturally. Both
    remain solid and neither changes scenes.
