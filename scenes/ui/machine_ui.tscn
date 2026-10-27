@@ -76,7 +76,7 @@ theme_override_constants/separation = 10
 [node name="Storage" type="Label" parent="HUD/Panel/Content/InputSection"]
 layout_mode = 2
 mouse_filter = 2
-text = "Input — No material configured\n0 / 20"
+text = "Input\n0 / 20"
 
 [node name="Transfer" type="Button" parent="HUD/Panel/Content/InputSection"]
 layout_mode = 2

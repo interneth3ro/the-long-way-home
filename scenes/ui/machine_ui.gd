@@ -104,7 +104,10 @@ func _refresh(machine: Dictionary) -> void:
 		return
 	_progress.value = 100.0 * machine.cycle_progress / definition.cycle_seconds
 	if definition.has_input():
-		_input_storage.text = "Input — %s\n%d / %d" % [definition.input_item.display_name,
+		var input_heading := "Input"
+		if machine.input > 0:
+			input_heading += " — %s" % definition.input_item.display_name
+		_input_storage.text = "%s\n%d / %d" % [input_heading,
 			machine.input, definition.input_capacity]
 		_transfer_button.disabled = machine.input >= definition.input_capacity \
 			or progression.inventory.get_quantity(definition.input_item.item_id) == 0

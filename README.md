@@ -1338,6 +1338,9 @@ ore and free input capacity; excess stays in inventory. Empty/full input disable
 Transfer All. Collect withdraws only completed output, and is disabled when empty.
 Both keep the panel open and retain fractional progress. Existing movement, range,
 inventory, tool, GUI and transition guards remain. Extractor controls are unchanged.
+The input heading is **Input** while empty and includes the configured material
+name only while input is stored. Live refresh updates it after transfers and after
+the last input is consumed; input-free machines keep the section hidden.
 
 Persistent `PlanetWorldState.advance_production()` owns processing even during
 ship visits and terrain unloading. Input remains stored during partial cycles;
