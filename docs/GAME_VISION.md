@@ -57,6 +57,9 @@ remains under development.
   presentation with automatic dismissal, rather than the conversation panel.
 - Dave has an established personality; player choices influence his development.
 - Contextual, pinnable objective tracking.
+- Starter machine recovery is sequential: Extractor, then Smelter, then
+  Fabricator. This restriction applies to the three introductory machines;
+  later research and discoveries allow greater freedom.
 - A Ship's Log records conversations, discoveries, objectives, and evidence.
 - Open-ended gameplay within narrative chapters.
 - A few meaningful endings influenced by major decisions.
@@ -79,8 +82,8 @@ remains under development.
   world units; machine footprints are not constrained to one terrain tile.
 - World Generation Foundation uses seeded deterministic rocky-scrubland terrain,
   a protected authored crash-site overlay, a configurable 5 x 5 chunk neighborhood
-  and a modest retention margin. Implementation is pending merge and owner
-  runtime review; state is in memory only. Buildings, resource depletion and
+  and a modest retention margin. PR #27 is merged; owner runtime acceptance
+  remains separate from agent static validation. State is in memory only. Buildings and
   durable saves remain deferred.
 - Generated, explored and surveyed are distinct concepts. Loading terrain does
   not establish exploration or surveying. Future factories must simulate
@@ -91,7 +94,31 @@ remains under development.
   state only; there is no implemented save/load workflow.
 
 Implementation and coordinate conventions are recorded in the
-[README](../README.md#world-generation-foundation-feature-branch-pending-merge).
+[README](../README.md#world-generation-foundation-pr-27-merged).
+
+## Approved Ferrite discovery direction
+
+- Ferrite is the first structural metal resource: dark slate-gray mineral ground
+  with silver metallic veins, a broadly oval usable area and occasional raised
+  formations. Deposits are infinite, uniformly rich and never deplete.
+- One guaranteed authored deposit near the ship introduces deliberate inspection,
+  Dave's engineering deduction and guidance to locate the Extractor in the
+  maintenance bay. Computer does not identify the mineral in this sequence.
+- Mineral-bearing ground is independent of decorative artwork and terrain chunks.
+  Future Extractors occupy 2 x 2 independent 32-unit construction cells; their
+  designated extraction point must overlap compatible ground. Other parts may
+  extend beyond the deposit. Machines may touch edges but footprints may not
+  overlap. All valid points give the same rate. Construction mode will highlight
+  only compatible deposits.
+- Future production: Ferrite Ore → Smelter → Ferrite Ingot → Fabricator →
+  Plate / Rod / Bearing. Computer's initial repair requires Plates and Rods.
+  These machines, recipes and extraction remain unimplemented.
+
+First Ferrite implementation is pending merge. The owner reports all 15 original
+manual playtests passed; final musing timing and temporary developer coordinate
+HUD adjustments remain pending owner review. One-time discovery and compact
+timed musings use session-only state. There is no
+durable save/load. See the [implementation notes](../README.md#first-ferrite---discovery-feature-branch-pending-merge).
 
 ## Unresolved design details
 
