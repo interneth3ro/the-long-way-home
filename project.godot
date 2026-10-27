@@ -16,6 +16,11 @@ window/stretch/mode="canvas_items"
 
 [input]
 
+inventory={
+"deadzone": 0.2,
+"events": [Object(InputEventKey,"physical_keycode":73)]
+}
+
 interact={
 "deadzone": 0.2,
 "events": [Object(InputEventKey,"physical_keycode":69)]

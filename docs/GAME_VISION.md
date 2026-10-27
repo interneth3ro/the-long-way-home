@@ -75,8 +75,10 @@ remains under development.
 
 ## Approved world and transition foundations
 
-- Authored ship interior (including the eventual equipment room in the same
-  scene) and a separate planetary exterior with an authored crash site.
+- Authored ship cabin, a separate compact maintenance bay and a separate
+  planetary exterior with an authored crash site. The approved maintenance-bay
+  milestone revises the earlier same-scene equipment-room plan. Cabin/bay
+  doorway transitions are immediate and reuse the existing controller.
 - Terrain tiles are 64 x 64 pixels; chunks are 32 x 32 terrain tiles,
   or 2,048 x 2,048 world units. The construction grid is independently 32 x 32
   world units; machine footprints are not constrained to one terrain tile.
@@ -114,11 +116,34 @@ Implementation and coordinate conventions are recorded in the
   Plate / Rod / Bearing. Computer's initial repair requires Plates and Rods.
   These machines, recipes and extraction remain unimplemented.
 
-First Ferrite implementation is pending merge. The owner reports all 15 original
+First Ferrite implementation is merged in PR #28. The owner reports all 15 original
 manual playtests passed; final musing timing and temporary developer coordinate
 HUD adjustments remain pending owner review. One-time discovery and compact
 timed musings use session-only state. There is no
-durable save/load. See the [implementation notes](../README.md#first-ferrite---discovery-feature-branch-pending-merge).
+durable save/load. See the [implementation notes](../README.md#first-ferrite---discovery-pr-28-merged).
+
+## Approved Extractor recovery direction
+
+- The maintenance bay holds intact packaged Extractor, Smelter and Fabricator
+  modules in three visible racks. Only Extractor becomes recoverable after
+  Ferrite discovery; the other two remain secured without interaction prompts.
+- One-time recovery grants one Extractor and advances Restore Computer guidance
+  to deployment on Ferrite. It does not complete the overarching objective.
+- Dave's approved recovery musing is independently editable, using the existing
+  nonpausing presentation: 0.25-second fade in, 5-second reading period,
+  0.35-second fade out; transitions dismiss it.
+- One inventory interface shows Materials and Equipment together. This split is
+  an approved **provisional experiment pending playtesting**; it may later merge
+  into one section. Item identity/quantity storage is shared, and Equipment
+  supports quantities greater than one. There is no capacity or weight system
+  in this milestone.
+
+Recover the Extractor implementation is pending merge and owner gameplay testing.
+It adds only the bay, inventory and first recovery step; deployment, mining,
+power, production and later recovery remain unimplemented. Inventory and recovery
+are session-only and reset with a fresh Main instance. See the
+[implementation notes](../README.md#recover-the-extractor-feature-branch-pending-merge)
+for approved dialogue, ownership and validation limits.
 
 ## Unresolved design details
 

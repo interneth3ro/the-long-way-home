@@ -1,0 +1,93 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scenes/ui/inventory_ui.gd" id="1_inventory"]
+
+[sub_resource type="StyleBoxFlat" id="InventoryStyle"]
+bg_color = Color(0.045, 0.075, 0.10, 0.97)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.47, 0.61, 0.60, 1)
+content_margin_left = 16.0
+content_margin_top = 12.0
+content_margin_right = 16.0
+content_margin_bottom = 12.0
+
+[node name="InventoryUI" type="CanvasLayer"]
+layer = 2
+script = ExtResource("1_inventory")
+
+[node name="HUD" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Toggle" type="Button" parent="HUD"]
+offset_left = 24.0
+offset_top = 56.0
+offset_right = 192.0
+offset_bottom = 90.0
+focus_mode = 0
+text = "Inventory (I)"
+
+[node name="Panel" type="PanelContainer" parent="HUD"]
+visible = false
+offset_left = 24.0
+offset_top = 100.0
+offset_right = 360.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("InventoryStyle")
+
+[node name="Content" type="VBoxContainer" parent="HUD/Panel"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 10
+
+[node name="Title" type="Label" parent="HUD/Panel/Content"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 22
+text = "Inventory"
+autowrap_mode = 3
+
+[node name="MaterialsTitle" type="Label" parent="HUD/Panel/Content"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 20
+text = "Materials"
+autowrap_mode = 3
+
+[node name="Materials" type="Label" parent="HUD/Panel/Content"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 18
+text = "Empty"
+autowrap_mode = 3
+
+[node name="EquipmentTitle" type="Label" parent="HUD/Panel/Content"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 20
+text = "Equipment"
+autowrap_mode = 3
+
+[node name="Equipment" type="Label" parent="HUD/Panel/Content"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 18
+text = "Empty"
+autowrap_mode = 3
+
+[node name="Hint" type="Label" parent="HUD/Panel/Content"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 16
+text = "I / Esc to close"
+autowrap_mode = 3
+
+[connection signal="pressed" from="HUD/Toggle" to="." method="_toggle"]
