@@ -12,6 +12,19 @@ extends ItemDefinition
 @export var input_item: ItemDefinition
 @export var input_per_cycle: int = 1
 @export var input_capacity: int = 0
+# Initial configuration only; recipe data does not enable production.
+@export var recipes: Array[RecipeDefinition] = []
+
+
+func has_recipes() -> bool:
+	return not recipes.is_empty()
+
+
+func get_recipe(recipe_id: StringName) -> RecipeDefinition:
+	for recipe in recipes:
+		if recipe != null and recipe.recipe_id == recipe_id and recipe.is_valid():
+			return recipe
+	return null
 
 
 func has_input() -> bool:

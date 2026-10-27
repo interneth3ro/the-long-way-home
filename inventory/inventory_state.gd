@@ -75,3 +75,27 @@ func get_items() -> Array[ItemDefinition]:
 	for definition in _definitions.values():
 		items.append(definition)
 	return items
+
+
+# Stage every removal before publishing any state; supports multiple ingredients.
+func remove_items(items: Array[Dictionary], notify: bool = true) -> bool:
+	var definitions := _definitions.duplicate()
+	var quantities := _quantities.duplicate()
+	for item in items:
+		var definition: ItemDefinition = item.get("definition")
+		var quantity: int = item.get("quantity", 0)
+		if definition == null or quantity <= 0 or definitions.get(definition.item_id) != definition:
+			return false
+		var current: int = quantities.get(definition.item_id, 0)
+		if current < quantity:
+			return false
+		if current == quantity:
+			quantities.erase(definition.item_id)
+			definitions.erase(definition.item_id)
+		else:
+			quantities[definition.item_id] = current - quantity
+	_definitions = definitions
+	_quantities = quantities
+	if notify:
+		changed.emit()
+	return true

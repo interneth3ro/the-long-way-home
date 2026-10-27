@@ -145,8 +145,8 @@ durable save/load. See the [implementation notes](../README.md#first-ferrite---d
 Recover the Extractor implementation is merged in PR #30; agent validation was
 static only. It adds the bay, inventory and first recovery step. Deployment and
 deployed-machine recovery are merged in PR #32; production is added by the
-feature below. Power remains unimplemented; Fabricator rack recovery is added
-on the feature branch described below.
+feature below. Power remains unimplemented; Fabricator rack recovery is merged
+in PR #42, with deployment/configuration pending on the feature branch below.
 Inventory and recovery are session-only and reset with a fresh Main instance. See the
 [implementation notes](../README.md#recover-the-extractor-pr-30-merged)
 for approved dialogue, ownership and validation limits.
@@ -319,19 +319,46 @@ ownership and validation limits are in the
 - Successful recovery advances Restore Computer directly to **Craft a Ferrite
   Plate.**, without an intermediate deployment objective. No additional dialogue
   or musing is added; the approved ingot-acquisition wording remains unchanged.
-- The packaged item is inert. Deployment, production, Ferrite Plate crafting,
-  recipe switching, power and logistics remain later work. This objective may
-  remain incomplete until fabrication is implemented.
+- PR #42 introduced inert packaged Equipment; the approved deployment milestone
+  below extends it. Production, Ferrite Plate crafting, recipe switching, power
+  and logistics remain later work. The crafting objective stays incomplete.
 
-Implementation is on the Fabricator recovery feature branch, pending merge and
-owner playtesting. Standalone regression checks are added but unexecuted under
-the Godot restriction. Static validation and scope are recorded in the
-[implementation notes](../README.md#recover-the-fabricator-feature-branch-pending-merge).
+Implementation is merged in PR #42. Agent validation was static only and the
+standalone regression checks remain unexecuted under the Godot restriction. See
+the [implementation notes](../README.md#recover-the-fabricator-pr-42-merged).
+
+## Approved Fabricator deployment and initial configuration
+
+- Deploy recovered Equipment using existing construction controls and placement
+  checks, with a 2x2-cell (64x64-unit) footprint and provisional artwork.
+- Finish placement and exit construction before opening the shared panel for the
+  new instance. Initial selection opens regardless of inspection distance; later
+  inspection and all transfers enforce normal range. The placement click cannot
+  select a recipe or trigger recovery.
+- Offer selectable icon cards for Ferrite Plate (1 Ferrite Ingot -> 1 Plate) and
+  Ferrite Rod (1 Ferrite Ingot -> 2 Rods). Selection stays in the panel, showing
+  requirements, expected product, stored quantities and Transfer All. Dismissed
+  unconfigured machines reopen the chooser directly on in-range E interaction.
+- Keep recipe identity separate from material-keyed inputs in authoritative
+  world-machine state. Each accepted ingredient independently holds 20 units,
+  configurable on the machine definition. Transfer All atomically loads all
+  accepted materials, preserving unrelated materials and Smelter storage.
+- Recovery atomically returns packaged Equipment and every stored ingredient.
+  Redeployment starts unconfigured. Presenter and panel lifetime do not own state.
+- Loaded machines stay gray **Inactive** with **Production not yet available**.
+  No consumption, progress, output collection, manufacturing or objective advance.
+  **Craft a Ferrite Plate.** stays current, without new dialogue or objectives.
+  Recipe switching remains future work in issue #37.
+
+Implementation is on the Fabricator configuration feature branch, pending merge
+and owner playtesting. Agent validation is static only; regression scripts are
+added but unexecuted. See the
+[implementation notes](../README.md#configure-and-load-the-fabricator-feature-branch-pending-merge).
 
 ## Unresolved design details
 
 - The precise conspiracy behind Dave's arrival remains under development.
-- Footprints beyond the approved Extractor and Smelter, port rules, rail behavior, research
+- Footprints beyond the approved Extractor, Smelter and Fabricator, port rules, rail behavior, research
   content, chapter structure, dialogue formats, and ending conditions still
   require design work. The approved intentions above do not settle these details.
 

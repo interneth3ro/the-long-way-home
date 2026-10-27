@@ -22,13 +22,20 @@ extends CanvasLayer
 @onready var _output: Label = $HUD/Panel/Content/OutputSection/Storage
 @onready var _collect_button: Button = $HUD/Panel/Content/OutputSection/Collect
 
+@onready var _recipe_cards: VBoxContainer = $HUD/Panel/Content/RecipeCards
+@onready var _recipe_summary: Label = $HUD/Panel/Content/RecipeSummary
+
 var _machine_id: int = 0
+# Only the post-placement panel session bypasses inspection range. Transfer
+# always checks real range; closing discards this exception.
+var _placement_session: bool = false
 
 
 func _ready() -> void:
 	_detector.machine_panel = self
 	inventory_ui.opened.connect(close)
 	construction.mode_started.connect(close)
+	construction.deployment_completed.connect(_open_placed_machine)
 	transitions.transition_started.connect(close)
 
 
@@ -50,12 +57,30 @@ func _in_range(machine: Dictionary) -> bool:
 		<= _detector.machine_interaction_range
 
 
+func _open_placed_machine(machine_id: int) -> void:
+	var machine := progression.planet.get_machine(machine_id)
+	if machine.is_empty():
+		return
+	var definition: MachineDefinition = machine.definition
+	if not definition.has_recipes() or not transitions.get_current_world() is PlanetExterior \
+			or transitions.is_transitioning() or inventory_ui.is_open() \
+			or _dialogue.is_conversation_open() or _interaction.is_response_open():
+		return
+	_show_machine(machine_id, machine, true)
+
+
 func open_machine(machine_id: int) -> void:
 	var machine := progression.planet.get_machine(machine_id)
 	if inventory_ui.is_open() or _dialogue.is_conversation_open() \
 			or _interaction.is_response_open() or not _in_range(machine):
 		return
+	_show_machine(machine_id, machine, false)
+
+
+func _show_machine(machine_id: int, machine: Dictionary, placement_session: bool) -> void:
 	_machine_id = machine_id
+	_placement_session = placement_session
+	_build_recipe_cards(machine)
 	_panel.show()
 	_interaction.set_prompt("")
 	_refresh(machine)
@@ -63,6 +88,7 @@ func open_machine(machine_id: int) -> void:
 
 func close() -> void:
 	_machine_id = 0
+	_placement_session = false
 	_panel.hide()
 
 
@@ -76,7 +102,9 @@ func _process(_delta: float) -> void:
 	if not _panel.visible:
 		return
 	var machine := progression.planet.get_machine(_machine_id)
-	if not _in_range(machine) or inventory_ui.is_open() \
+	if machine.is_empty() or (not _placement_session and not _in_range(machine)) \
+			or not transitions.get_current_world() is PlanetExterior \
+			or transitions.is_transitioning() or inventory_ui.is_open() \
 			or _dialogue.is_conversation_open() or _interaction.is_response_open():
 		close()
 		return
@@ -86,6 +114,14 @@ func _process(_delta: float) -> void:
 func _refresh(machine: Dictionary) -> void:
 	var definition: MachineDefinition = machine.definition
 	_title.text = definition.display_name
+	_recipe_cards.visible = definition.has_recipes() and machine.get("recipe_id", &"") == &""
+	_recipe_summary.hide()
+	_status.visible = not _recipe_cards.visible
+	if definition.has_recipes():
+		_refresh_fabricator(machine, definition)
+		return
+	_status.remove_theme_color_override("font_color")
+	_explanation.text = "No production configured."
 	match progression.planet.machine_status(machine):
 		PlanetWorldState.OperatingStatus.PRODUCING:
 			_status.text = "Producing"
@@ -117,6 +153,76 @@ func _refresh(machine: Dictionary) -> void:
 	else:
 		_output.text = "%s: %d / %d" % [name_text, machine.output, definition.output_capacity]
 	_collect_button.disabled = machine.output == 0
+
+
+func _build_recipe_cards(machine: Dictionary) -> void:
+	for child in _recipe_cards.get_children():
+		_recipe_cards.remove_child(child)
+		child.queue_free()
+	var definition: MachineDefinition = machine.definition
+	for recipe in definition.recipes:
+		if recipe == null or not recipe.is_valid():
+			continue
+		var card := Button.new()
+		card.text = "%s\nInput: %s\nOutput: %s" % [recipe.display_name,
+			recipe.input_summary(), recipe.output_summary()]
+		card.icon = recipe.icon
+		card.expand_icon = true
+		card.add_theme_constant_override("icon_max_width", 40)
+		card.custom_minimum_size = Vector2(0, 100)
+		card.alignment = HORIZONTAL_ALIGNMENT_LEFT
+		card.focus_mode = Control.FOCUS_NONE
+		card.mouse_filter = Control.MOUSE_FILTER_STOP
+		card.pressed.connect(_select_recipe.bind(machine.id, recipe.recipe_id))
+		_recipe_cards.add_child(card)
+
+
+func _select_recipe(machine_id: int, recipe_id: StringName) -> void:
+	var machine := progression.planet.get_machine(machine_id)
+	if not _panel.visible or machine_id != _machine_id or machine.is_empty() \
+			or (not _placement_session and not _in_range(machine)) \
+			or not transitions.get_current_world() is PlanetExterior \
+			or transitions.is_transitioning() or inventory_ui.is_open() \
+			or _dialogue.is_conversation_open() or _interaction.is_response_open():
+		return
+	if progression.planet.select_initial_recipe(machine_id, recipe_id):
+		var updated := progression.planet.get_machine(machine_id)
+		if updated.is_empty():
+			close()
+		else:
+			_refresh(updated)
+
+
+func _refresh_fabricator(machine: Dictionary, definition: MachineDefinition) -> void:
+	_progress.hide()
+	_output_section.hide()
+	_input_section.hide()
+	_explanation.visible = not _recipe_cards.visible
+	_explanation.text = "Production not yet available"
+	_status.text = "Inactive"
+	_status.add_theme_color_override("font_color", Color(0.55, 0.58, 0.59))
+	if _recipe_cards.visible:
+		_title.text = "%s — Select Recipe" % definition.display_name
+		return
+	var recipe := definition.get_recipe(machine.get("recipe_id", &""))
+	if recipe == null:
+		return
+	_recipe_summary.show()
+	_recipe_summary.text = "Selected Recipe: %s\nRecipe: %s → %s" % [
+		recipe.display_name, recipe.input_summary(), recipe.output_summary()]
+	_input_section.show()
+	var rows := PackedStringArray()
+	var can_transfer := false
+	var inputs: Dictionary = machine.inputs
+	for ingredient in recipe.ingredients:
+		var stored: int = inputs.get(ingredient.item.item_id, 0)
+		rows.append("Input — %s: %d / %d" % [ingredient.item.display_name,
+			stored, definition.input_capacity])
+		if stored < definition.input_capacity \
+				and progression.inventory.get_quantity(ingredient.item.item_id) > 0:
+			can_transfer = true
+	_input_storage.text = "\n".join(rows)
+	_transfer_button.disabled = not can_transfer or not _in_range(machine)
 
 
 func _collect() -> void:

@@ -3,6 +3,7 @@ extends Node2D
 
 enum Mode { NONE, CONSTRUCTION, RECOVERY }
 signal mode_started
+signal deployment_completed(machine_id: int)
 
 @export var player: CharacterBody2D
 @export var progression: PlaythroughState
@@ -85,7 +86,8 @@ func _clear_confirmation() -> void:
 
 func _context_blocked(include_inventory: bool = true) -> bool:
 	return transitions.is_transitioning() or _dialogue.is_conversation_open() \
-		or _interaction.is_response_open() or (include_inventory and inventory_ui.is_open())
+		or _interaction.is_response_open() or (include_inventory and inventory_ui.is_open()) \
+		or (_detector.machine_panel != null and _detector.machine_panel.is_open())
 
 
 func _process(_delta: float) -> void:
@@ -198,9 +200,14 @@ func _physics_process(_delta: float) -> void:
 		_clear_confirmation()
 		if request_matches:
 			if _mode == Mode.CONSTRUCTION:
-				if progression.planet.deploy_machine(_definition, _requested_cell, _requested_turns,
-						progression.inventory, player, _world, construction_range):
+				var machine_id := progression.planet.deploy_machine_instance(
+					_definition, _requested_cell, _requested_turns,
+					progression.inventory, player, _world, construction_range)
+				if machine_id != 0:
 					cancel()
+					# The click was consumed in _unhandled_input; opening now cannot
+					# activate a card. Both transaction and tool have finished.
+					deployment_completed.emit(machine_id)
 			elif _mode == Mode.RECOVERY:
 				if progression.planet.recover_machine(_requested_id, progression.inventory,
 						_world.to_local(player.global_position), recovery_range):

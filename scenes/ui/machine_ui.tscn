@@ -32,7 +32,7 @@ visible = false
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -360.0
+offset_left = -440.0
 offset_top = 100.0
 offset_right = -24.0
 grow_horizontal = 0
@@ -49,6 +49,18 @@ layout_mode = 2
 mouse_filter = 2
 theme_override_font_sizes/font_size = 22
 text = "Extractor"
+
+[node name="RecipeCards" type="VBoxContainer" parent="HUD/Panel/Content"]
+visible = false
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 10
+
+[node name="RecipeSummary" type="Label" parent="HUD/Panel/Content"]
+visible = false
+layout_mode = 2
+mouse_filter = 2
+autowrap_mode = 2
 
 [node name="Status" type="Label" parent="HUD/Panel/Content"]
 layout_mode = 2

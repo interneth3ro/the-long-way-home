@@ -16,6 +16,8 @@ func _draw() -> void:
 	draw_set_transform(origin, posmod(turns, 4) * PI / 2.0)
 	if definition.item_id == &"smelter":
 		_draw_smelter(size)
+	elif definition.item_id == &"fabricator":
+		_draw_fabricator(size)
 	else:
 		_draw_extractor(size)
 	if show_status:
@@ -51,3 +53,14 @@ func _draw_extractor(size: Vector2) -> void:
 	draw_rect(Rect2(Vector2(size.x * 0.5 - 5, 2), Vector2(10, 23)), Color(0.73, 0.63, 0.39))
 	draw_line(Vector2(12, size.y - 12), Vector2(size.x - 12, size.y - 12),
 		Color(0.12, 0.15, 0.17), 4.0)
+
+
+func _draw_fabricator(size: Vector2) -> void:
+	# A teal assembly bed with a transverse gantry; no physical port promises.
+	draw_rect(Rect2(Vector2(4, 4), size - Vector2(8, 8)), Color(0.15, 0.27, 0.29))
+	draw_rect(Rect2(Vector2(9, 10), size - Vector2(18, 20)), Color(0.35, 0.53, 0.54))
+	draw_rect(Rect2(Vector2(17, 17), size - Vector2(34, 32)), Color(0.13, 0.20, 0.23))
+	for x in [12.0, size.x - 12.0]:
+		draw_line(Vector2(x, 10), Vector2(x, size.y - 10), Color(0.65, 0.73, 0.73), 4.0)
+	draw_rect(Rect2(Vector2(7, 18), Vector2(size.x - 14, 9)), Color(0.73, 0.63, 0.39))
+	draw_rect(Rect2(Vector2(size.x / 2.0 - 5, 21), Vector2(10, 15)), Color(0.62, 0.70, 0.71))

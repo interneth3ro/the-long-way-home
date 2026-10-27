@@ -1,9 +1,15 @@
-[gd_resource type="Resource" script_class="ItemDefinition" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="MachineDefinition" load_steps=5 format=3]
 
-[ext_resource type="Script" path="res://inventory/item_definition.gd" id="1_item"]
+[ext_resource type="Script" path="res://construction/machine_definition.gd" id="1_item"]
+[ext_resource type="Resource" path="res://construction/recipes/ferrite_plate.tres" id="2_plate"]
+[ext_resource type="Resource" path="res://construction/recipes/ferrite_rod.tres" id="3_rod"]
+[ext_resource type="Script" path="res://construction/recipe_definition.gd" id="4_recipe"]
 
 [resource]
 script = ExtResource("1_item")
 item_id = &"fabricator"
 display_name = "Fabricator"
 section = 1
+footprint_cells = Vector2i(2, 2)
+input_capacity = 20
+recipes = Array[ExtResource("4_recipe")]([ExtResource("2_plate"), ExtResource("3_rod")])
