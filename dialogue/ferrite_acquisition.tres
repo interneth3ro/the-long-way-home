@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="MusingDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://dialogue/musing_definition.gd" id="1_musing"]
+
+[resource]
+script = ExtResource("1_musing")
+text = "Ore's no good to me like this. Need to refine it first.\n\nThat smelter should do the job."
+duration_seconds = 5.0

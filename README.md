@@ -7,9 +7,9 @@ Computer dialogue, inspection and objective activation. Merged PR #26 adds an
 authored exterior and reusable hatch transitions. Merged PR #27 adds seeded
 chunk terrain. Merged PR #28 adds First Ferrite discovery, an internal musing
 and Extractor guidance. Merged PR #30 adds a maintenance bay and provisional
-inventory. Merged PR #32 adds Extractor deployment and recovery. This feature
-branch adds Ferrite Ore production and collection, pending merge and owner
-playtesting.
+inventory. Merged PR #32 adds Extractor deployment and recovery; merged PR #36
+adds Ferrite Ore production and collection. This feature branch adds Smelter
+recovery and the Ferrite acquisition musing, pending merge and owner playtesting.
 Its gameplay implementation is independent of FactoryGame; the approved Dave
 migration below reuses only two legacy artwork sheets.
 
@@ -993,8 +993,9 @@ press; holding E does not immediately send Dave back. The first exterior reveal
 remains unchanged.
 
 Placeholder damage, debris and industrial markings leave a clear walking aisle.
-Three labeled storage racks hold intact deployable modules. Smelter and Fabricator
-are secured static bodies without interaction scripts, prompts or dialogue.
+Three labeled storage racks hold intact packaged modules. In PR #30, Smelter and
+Fabricator were secured static bodies without interactions. The Smelter recovery
+milestone below extends only the Smelter; Fabricator remains noninteractive.
 Extractor is visible but unavailable before Ferrite discovery. After discovery,
 approach its rack and press **E - Recover Extractor** (in-game em dash).
 
@@ -1040,7 +1041,7 @@ display definition reads **Deploy the Extractor on the Ferrite deposit.** after
 recovery, taking precedence over the post-discovery stage. Later Computer dialogue
 cannot revert it. Tracker pin/unpin, expand/collapse and hide/restore behavior is
 unchanged. Starter recovery remains strictly Extractor, then Smelter, then
-Fabricator; only Extractor rack recovery is implemented. Deployed-machine
+Fabricator; PR #30 implements only Extractor rack recovery. Deployed-machine
 recovery and placement are added below; mining, production, power and later
 starter rack recovery remain deferred.
 
@@ -1056,7 +1057,7 @@ checklist to conduct one item at a time.
 
 Open inventory with **I**, then click **Extractor** in Equipment to enter
 construction immediately. There is no selected-equipment state or separate
-Deploy button. Clicking any packaged machine calls the existing public
+Deploy button. Clicking a deployable packaged machine calls the existing public
 construction entry point, closes inventory and starts a neutral translucent
 machine ghost with a green valid or red invalid footprint and an invalid-placement
 reason. Move the mouse
@@ -1150,7 +1151,7 @@ layout and actual travel/persistence require owner playtesting. The feature PR
 contains an ordered manual checklist, including repeated cancel/place/recover,
 range limits, edge contact, GUI input, chunk travel and scene revisits.
 
-## Produce Ferrite Ore (feature branch, pending merge)
+## Produce Ferrite Ore (PR #36, merged)
 
 The Extractor automatically produces **1 Ferrite Ore per 1.0-second cycle**
 (provisional maximum **60/minute**) into its own **20-ore buffer**. Output item,
@@ -1211,9 +1212,9 @@ collection or recovery, permanently advances **Restore Computer** guidance to
 **Locate the Smelter in the maintenance bay.** Inventory notification drives
 this one-time playthrough flag; production into a machine buffer does not.
 Removing ore cannot revert it, and repeated collection cannot retrigger it.
-Earlier milestones and approved dialogue are preserved. Smelter recovery,
-smelting, fabrication, electricity and logistics remain deferred. Future
-conduits and two outputs sharing this buffer are tracked in
+Earlier milestones and approved dialogue are preserved. Smelter recovery is
+extended below; smelting, fabrication, electricity and logistics remain deferred.
+Future conduits and two outputs sharing this buffer are tracked in
 [issue #35](https://github.com/interneth3ro/the-long-way-home/issues/35);
 no ports, routing or transport are implemented here.
 
@@ -1224,3 +1225,56 @@ No Godot, imports, project code, headless, graphical or performance checks were
 run. Engine type checking, production timing, physics/input behavior, UI layout,
 travel persistence and all gameplay acceptance require owner manual testing.
 The feature PR provides the ordered playtest checklist.
+
+## Smelter recovery (feature branch, pending merge)
+
+The existing first-Ferrite-acquisition event now also presents Dave's exact musing
+from `dialogue/ferrite_acquisition.tres`:
+
+> Ore's no good to me like this. Need to refine it first.
+>
+> That smelter should do the job.
+
+It uses the existing nonpausing MusingUI: 0.25-second fade in, 5-second reading
+period and 0.35-second fade out, with transition dismissal and no confirmation.
+Only successful acquisition into Materials through Collect All or recovery of an
+ore-containing Extractor triggers it. Buffer production does not. The existing
+`ferrite_acquired` flag owns the one-time event; additional ore, removal and scene
+revisits do not repeat it. Main presents the musing and refreshes guidance in the
+same event handler. Smelter recovery has no musing or inspection step.
+
+The authored Smelter remains visible in its original bay location. Before first
+ore acquisition, its rack cannot interact and offers no prompt. Afterward, approach
+it and press **E — Recover Smelter**. `PlaythroughState.recover_smelter()` checks
+acquisition, recovery and reentrant guards, adds exactly one packaged item, then
+records recovery and emits completion. Failed insertion leaves recovery incomplete
+and the rack available. Inventory possession alone cannot advance this milestone.
+
+`inventory/smelter.tres` uses stable ID `smelter`, display name **Smelter** and the
+Equipment section. It deliberately uses the existing `ItemDefinition` type: the
+UI already renders Equipment without `MachineDefinition` as quantity text without
+a click action. No deployment capability, footprint or recipe is introduced.
+Extractor remains a `MachineDefinition` with its existing single-click deployment.
+
+`smelter_rack.gd` follows the Extractor rack presentation pattern, hiding Module
+and Secured and showing EMPTY after recovery. Rack, frame, sign, position and
+collision remain. It initializes from persistent playthrough state, and cached
+scene revisits retain the empty rack. Inventory and recovery reset only with a
+fresh Main instance; there is no disk save/load. Restore Computer retains its
+single objective ID and all earlier stages, with successful Smelter recovery
+taking precedence to show **Deploy the Smelter near the Extractor.** Removing
+items or revisiting Computer cannot revert this guidance. Actual deployment is
+the next milestone; "near" adds no placement rule.
+
+Fabricator remains visible, secured, noninteractive and unavailable in inventory.
+The maintenance bay remains provisional: future HD art should use varied mounting,
+damaged infrastructure, access and environmental storytelling rather than three
+evenly spaced machines. This milestone changes no layout, artwork or movement path.
+Smelting, power, logistics, manufacturing and Fabricator progression remain deferred.
+
+Validation is static only: source/control-flow inspection, resource and scene
+references, preservation comparisons, Markdown links and Git whitespace checks.
+No Godot, project code, engine import, headless or graphical checks were run.
+Engine parsing, physics, input, UI readability, persistence during travel and
+debugger output require owner manual playtesting. The feature PR supplies an
+ordered checklist for testing one item at a time.

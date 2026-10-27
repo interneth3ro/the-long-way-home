@@ -116,8 +116,8 @@ Implementation and coordinate conventions are recorded in the
   owner verification.
 - Future production: Ferrite Ore → Smelter → Ferrite Ingot → Fabricator →
   Plate / Rod / Bearing. Computer's initial repair requires Plates and Rods.
-  Extraction is added by the production feature below, pending merge and owner
-  playtesting. Smelting, fabrication and their recipes remain unimplemented.
+  Extraction is merged in PR #36; agent validation was static only.
+  Smelting, fabrication and their recipes remain unimplemented.
 
 First Ferrite implementation is merged in PR #28. The owner reports all 15 original
 manual playtests passed; final musing timing and temporary developer coordinate
@@ -128,8 +128,9 @@ durable save/load. See the [implementation notes](../README.md#first-ferrite---d
 ## Approved Extractor recovery direction
 
 - The maintenance bay holds intact packaged Extractor, Smelter and Fabricator
-  modules in three visible racks. Only Extractor becomes recoverable after
-  Ferrite discovery; the other two remain secured without interaction prompts.
+  modules in three visible racks. Extractor becomes recoverable after Ferrite
+  discovery; Smelter unlocks after first ore acquisition as described below.
+  Fabricator remains secured without an interaction prompt.
 - One-time recovery grants one Extractor and advances Restore Computer guidance
   to deployment on Ferrite. It does not complete the overarching objective.
 - Dave's approved recovery musing is independently editable, using the existing
@@ -144,15 +145,16 @@ durable save/load. See the [implementation notes](../README.md#first-ferrite---d
 Recover the Extractor implementation is merged in PR #30; agent validation was
 static only. It adds the bay, inventory and first recovery step. Deployment and
 deployed-machine recovery are merged in PR #32; production is added by the
-feature below. Power and later starter rack recovery remain unimplemented.
+feature below. Power and Fabricator rack recovery remain unimplemented.
 Inventory and recovery are session-only and reset with a fresh Main instance. See the
 [implementation notes](../README.md#recover-the-extractor-pr-30-merged)
 for approved dialogue, ownership and validation limits.
 
 ## Approved Extractor deployment direction
 
-- Clicking a packaged machine in Equipment immediately enters construction and
-  closes inventory; no separate Deploy button or selection state is required.
+- Clicking a deployable packaged machine in Equipment immediately enters
+  construction and closes inventory; no separate Deploy button or selection
+  state is required.
   Construction uses a neutral translucent machine ghost, green/red footprint
   validity, mouse grid positioning, clockwise quarter turns with R, left-click
   confirmation and
@@ -205,14 +207,42 @@ and static-validation limits are recorded in the
 - First successful acquisition through collection or recovery advances Restore
   Computer guidance to **Locate the Smelter in the maintenance bay.** Production
   alone does not advance it. Progression is permanent for this playthrough.
-- Smelter recovery, smelting, electrical networks and logistics remain deferred.
+- Smelter recovery is the next approved milestone below. Smelting, electrical
+  networks and logistics remain deferred.
   Future material conduits and two Extractor outputs sharing one buffer are
   documented in [issue #35](https://github.com/interneth3ro/the-long-way-home/issues/35).
   No ports or transport are implemented in this milestone.
 
-Implementation is on the production feature branch, pending merge and owner
-playtesting. Validation is static only; controls, ownership and limits are in the
-[implementation notes](../README.md#produce-ferrite-ore-feature-branch-pending-merge).
+Implementation is merged in PR #36. Agent validation was static only; controls,
+ownership and limits are in the
+[implementation notes](../README.md#produce-ferrite-ore-pr-36-merged).
+
+## Approved Smelter recovery direction
+
+- First Ferrite Ore acquisition into Materials, through collection or recovery of
+  an ore-containing Extractor, triggers Dave's approved one-time internal musing:
+  “Ore's no good to me like this. Need to refine it first.” followed by
+  “That smelter should do the job.” Production into the buffer alone does not.
+  Reuse the existing acquisition milestone and nonpausing, automatic musing UI.
+- The existing bay Smelter is visible but noninteractive until that acquisition.
+  Then **E — Recover Smelter** transfers exactly one packaged Smelter to Equipment,
+  without inspection, Computer interaction or another musing. Failed insertion
+  cannot complete recovery. One-time recovery persists through scene revisits,
+  leaving the rack empty; a fresh playthrough restores it.
+- Successful recovery advances Restore Computer guidance to **Deploy the Smelter
+  near the Extractor.** Inventory possession alone does not advance it and item
+  removal cannot revert it. “Near” is guidance only. Packaged Smelter is visible
+  in Equipment without a deployment action; deployment, smelting and recipes are
+  subsequent work. Fabricator stays visible, noninteractive and unrecoverable.
+- The maintenance bay arrangement is temporary. Future HD environments should
+  include varied mounting, damaged infrastructure, maintenance access and
+  environmental storytelling rather than three evenly spaced machines. This
+  milestone preserves the current layout and collision.
+
+Implementation is on the Smelter recovery feature branch, pending merge and owner
+playtesting. Validation is static only; state ownership, inert item representation
+and exact musing presentation are recorded in the
+[implementation notes](../README.md#smelter-recovery-feature-branch-pending-merge).
 
 ## Unresolved design details
 
