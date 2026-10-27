@@ -1,3 +1,4 @@
+class_name InteractionDetector
 extends Area2D
 
 @export var interaction_ui: InteractionUI
@@ -8,6 +9,13 @@ extends Area2D
 
 var _target: WorldInteractable
 var _interaction_requested: bool = false
+var _tool_active: bool = false
+
+
+func set_tool_active(active: bool) -> void:
+	_tool_active = active
+	if active:
+		clear_for_transition()
 
 
 func clear_for_transition() -> void:
@@ -18,7 +26,7 @@ func clear_for_transition() -> void:
 
 
 func _physics_process(_delta: float) -> void:
-	if dialogue_ui.is_conversation_open():
+	if _tool_active or dialogue_ui.is_conversation_open():
 		_interaction_requested = false
 		interaction_ui.set_prompt("")
 		return
@@ -34,7 +42,7 @@ func _physics_process(_delta: float) -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if event.is_echo():
+	if _tool_active or event.is_echo():
 		return
 	if dialogue_ui.is_conversation_open():
 		if event.is_action_pressed("ui_cancel"):

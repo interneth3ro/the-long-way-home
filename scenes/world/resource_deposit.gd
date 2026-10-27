@@ -6,6 +6,7 @@ extends Resource
 @export var deposit_id: StringName
 @export var resource_type: StringName
 @export var footprint: PackedVector2Array
+@export var construction_highlight: Color = Color(0.63, 0.76, 0.88, 0.18)
 
 
 func contains_point(world_point: Vector2) -> bool:

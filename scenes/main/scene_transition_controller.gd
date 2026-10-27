@@ -36,6 +36,10 @@ func is_transitioning() -> bool:
 	return _busy
 
 
+func get_current_world() -> Node2D:
+	return _current_world
+
+
 func request_transition(source_scene: String, destination_scene: String,
 		spawn_name: StringName, presentation: Presentation) -> bool:
 	if _busy or source_scene != _current_world.scene_file_path or destination_scene == source_scene:

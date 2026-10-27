@@ -6,8 +6,9 @@ minimal ship-interior environment and collision foundation, plus data-driven
 Computer dialogue, inspection and objective activation. Merged PR #26 adds an
 authored exterior and reusable hatch transitions. Merged PR #27 adds seeded
 chunk terrain. Merged PR #28 adds First Ferrite discovery, an internal musing
-and Extractor guidance. Recover the Extractor on this feature branch adds a
-maintenance bay and provisional inventory, pending merge and owner playtesting.
+and Extractor guidance. Merged PR #30 adds a maintenance bay and provisional
+inventory. This feature branch adds Extractor deployment and recovery, pending
+merge and owner playtesting.
 Its gameplay implementation is independent of FactoryGame; the approved Dave
 migration below reuses only two legacy artwork sheets.
 
@@ -961,7 +962,7 @@ the approximately 5.6-second Ferrite musing and live signed coordinates while
 walking in both worlds, hatch coordinate changes, layout alongside the tracker,
 and the exported disable setting.
 
-## Recover the Extractor (feature branch, pending merge)
+## Recover the Extractor (PR #30, merged)
 
 The maintenance bay is a separate 640 x 448 world-unit room, revising the previous
 same-scene equipment-room plan. In the cabin, approach the marked MAINTENANCE
@@ -984,7 +985,8 @@ approach its rack and press **E - Recover Extractor** (in-game em dash).
 **Esc**, or the button closes it. Movement and E interactions continue while it
 is open; Esc closes inventory first when it is visible. It is available in all
 three environments. Recovery displays Extractor with quantity 1 under Equipment.
-There is no drag/drop, deployment, capacity, weight or item splitting.
+That milestone has no drag/drop, deployment, capacity, weight or item splitting.
+The deployment milestone below extends its Equipment actions.
 
 `ItemDefinition` resources provide stable identity, display name and section
 metadata. `InventoryState` keeps shared integer quantities by ID, with definitions
@@ -1020,8 +1022,9 @@ display definition reads **Deploy the Extractor on the Ferrite deposit.** after
 recovery, taking precedence over the post-discovery stage. Later Computer dialogue
 cannot revert it. Tracker pin/unpin, expand/collapse and hide/restore behavior is
 unchanged. Starter recovery remains strictly Extractor, then Smelter, then
-Fabricator; only Extractor recovery is implemented. Deployment, mining,
-production, power and later recovery remain deferred.
+Fabricator; only Extractor rack recovery is implemented. Deployed-machine
+recovery and placement are added below; mining, production, power and later
+starter rack recovery remain deferred.
 
 Agent validation is static only: resource paths and node wiring, doorway spawn
 clearance, item/quantity and recovery guards, musing content and timing, objective
@@ -1030,3 +1033,86 @@ No Godot, project code, import, headless, graphical, runtime or performance chec
 were run. Engine parsing, input routing, text layout, interaction physics, travel
 and gameplay remain for owner verification. The PR includes an ordered manual
 checklist to conduct one item at a time.
+
+## Deploy the Extractor (feature branch, pending merge)
+
+Open inventory with **I**, select **Extractor** in Equipment, then choose the
+separate **Deploy Extractor** action. Selection alone does not deploy. Deploy
+closes inventory and starts a neutral translucent machine ghost with a green
+valid or red invalid footprint and an invalid-placement reason. Move the mouse
+to position it; **R** rotates 90 degrees clockwise, **left-click** confirms,
+and **right-click / Esc** cancels. A successful placement ends the mode.
+Previewing indoors is allowed, but placement requires planetary ground.
+Canceling or clicking an invalid location leaves inventory unchanged.
+
+The footprint is **2 x 2 construction cells (64 x 64 world units)** on the
+independent **32-unit grid**. Its top-left cell is authoritative; floor-based
+snapping works across zero and negative coordinates. Rotation preserves that
+cell, swaps asymmetric footprint dimensions on odd quarter turns, and rotates
+the extraction point in the same coordinate convention. The Extractor's center
+extraction point must fall inside compatible mineral-bearing ground; the rest
+of its footprint may extend outside. No depletion or rate calculation occurs.
+`MachineDefinition` extends the existing packaged `ItemDefinition`; the Extractor
+resource supplies Ferrite compatibility. Generic validation and highlighting
+contain no Ferrite rule. Each deposit supplies its highlight color; compatible
+polygons receive a restrained silver-blue overlay clipped to loaded terrain and
+normal viewport visibility, below the ghost and validity footprint. This adds
+no surveying, exploration state or offscreen deposit reveal.
+
+Both preview and commit use `PlacementRules.rejection`, including inventory
+availability, planetary ground, range, extraction-point compatibility, persistent
+machine overlap and physical blockers. Machines may touch footprint edges.
+Layer 3, **Construction blockers**, explicitly marks authored ship/hatch solids,
+large rocks and the raised inspection formation. Mineral-bearing ground and
+current decorative details do not carry that property. Future trees or other
+plants can opt into blocking; vegetation is not universally exempt. Dave cannot
+be enclosed in a new footprint. Deployed machines also have ordinary movement
+collision. Their record footprints remain authoritative for machine overlap.
+
+Hover a deployed machine within range to see the exact **Press B to recover**
+prompt. **B** enters recovery mode, with a small bottom-screen instruction and
+an amber eligible-target outline. **Left-click** an eligible machine to recover;
+**right-click / Esc** cancels. One successful recovery automatically exits;
+invalid or out-of-range clicks leave recovery mode active. Construction and
+recovery ranges are independent Inspector exports on `Main/Construction`, both
+initially **160 world units**, measured from Dave to the nearest point on the
+footprint. There are no range upgrades, batch selection or remote recovery.
+
+`ConstructionController.begin_deployment(definition)` is callable independently
+of Equipment presentation. Confirm clicks are handled after GUI input and
+queued for physics-time validation; rotation/cancel events are consumed. Active
+tools suspend contextual E requests and clear any already queued interaction.
+Opening inventory or starting a transition cancels the tool; dialogue or an
+inspection response blocks tool activation. Movement and camera zoom remain
+available. Tools neither add dialogue nor change approved internal musings.
+
+`PlanetWorldState` owns machine IDs, definitions, cells and normalized quarter
+turns. Synchronous guarded transactions remove exactly one packaged item before
+inserting one machine record, or add exactly one item before removing a record.
+Inventory transfer failure leaves world state unchanged. Inventory notifications
+are deferred until both sides agree; the guard covers reentrant signal callbacks.
+Canceling changes neither side. Exterior presenters synchronize by ID under
+`GroundObjects`, independently of disposable terrain chunks, and retain physical
+and visual representation on travel. Reattachment reconciles them from state.
+The existing playthrough and cached-world ownership preserve machines through
+cabin/bay visits and chunk unload/reload. A fresh playthrough resets everything;
+there is no disk save/load or second machine inventory.
+
+The first successful Extractor deployment permanently advances this playthrough's
+**Restore Computer** guidance to **Produce Ferrite Ore with the Extractor.**
+Recovery and redeployment do not revert it or repeat the milestone. Existing
+Ferrite discovery, rack recovery, dialogue and tracker preferences are preserved.
+The objective remains active. The machine is **unpowered and nonproducing**:
+mining, power, smelting, fabrication, logistics, manufacturing, hotbar support,
+terrain/vegetation removal, additional machines/resources and final artwork are
+deferred.
+
+Validation for this feature is static only: standalone gdtoolkit 4.5 syntax
+parsing of all 34 GDScript files, source/control-flow review, scene and resource
+references, footprint/coordinate geometry, objective wiring,
+protected-file comparison, Markdown links and Git diff checks. No Godot import,
+headless execution, project code, graphical checks, gameplay tests or performance
+probes were run. Engine parsing, input routing, physics contact, rendering/UI
+layout and actual travel/persistence require owner playtesting. The feature PR
+contains an ordered manual checklist, including repeated cancel/place/recover,
+range limits, edge contact, GUI input, chunk travel and scene revisits.
