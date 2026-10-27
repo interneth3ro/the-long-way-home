@@ -29,6 +29,8 @@ def edges(polygon):
 
 def distance(point, a, b):
     dx, dy = b[0] - a[0], b[1] - a[1]
+    if dx == 0 and dy == 0:
+        return math.dist(point, a)
     t = max(0, min(1, ((point[0] - a[0]) * dx
                       + (point[1] - a[1]) * dy) / (dx * dx + dy * dy)))
     return math.hypot(point[0] - a[0] - t * dx, point[1] - a[1] - t * dy)
@@ -106,6 +108,14 @@ class PortContainerGeometryTest(unittest.TestCase):
         self.center = source_point(vector_values(self.body)[0])
         self.radius = float(re.search(r"radius = ([\d.]+)", resource(
             self.scene, "Footprint_PortContainer"))[1])
+        self.raw_shape = resource(self.scene, "Footprint_PortContainer")
+        # Permit the old circle to reach coverage/attachment assertions in the
+        # negative control; an explicit resource-type assertion rejects it too.
+        height = re.search(r"height = ([\d.]+)", self.raw_shape)
+        self.height = float(height[1]) if height else 2 * self.radius
+        offset = self.height / 2 - self.radius
+        self.axis = [(self.center[0], self.center[1] - offset),
+                     (self.center[0], self.center[1] + offset)]
         self.polygons = []
         self.walls = []
         for kind, raw in re.findall(
@@ -119,29 +129,30 @@ class PortContainerGeometryTest(unittest.TestCase):
             elif kind == "SegmentShape2D":
                 self.walls.append([source_point(p) for p in vector_values(raw)])
 
-    def test_independent_circle_matches_base_and_solid_layer(self):
-        # Approved background: cylinder width about 34px, bottom near y=337;
-        # its raised lid near y=293 is not the floor-contact center.
-        self.assertEqual(self.center, (381, 320))
-        self.assertEqual(self.radius, 17)
-        self.assertIn('type="CircleShape2D" id="Footprint_PortContainer"', self.scene)
+    def test_independent_capsule_covers_full_obstruction(self):
+        # Background: lid near y=282-303, base down to y=337, wall at y=285.
+        self.assertIn('type="CapsuleShape2D" id="Footprint_PortContainer"', self.scene)
+        self.assertEqual(self.center, (381, 309))
+        self.assertEqual((self.radius, self.height), (18, 58))
+        self.assertNotIn("rotation", self.body)
         self.assertIn("collision_layer = 1", self.body)
         self.assertIn("collision_mask = 1", self.body)
         self.assertIn(
             '[node name="Shape" type="CollisionShape2D" parent="CollisionContent/PortContainer"]\n'
             'shape = SubResource("Footprint_PortContainer")', self.scene)
-        for witness in [(381, 320), (367, 320), (395, 320), (381, 334)]:
-            self.assertLess(math.dist(witness, self.center), self.radius)
-        self.assertGreater(math.dist((381, 293), self.center), self.radius)
+        for witness in [(381, 320), (367, 320), (395, 320), (381, 334),
+                        (381, 283), (366, 293), (396, 293), (381, 290)]:
+            self.assertLess(distance(witness, *self.axis), self.radius)
 
-    def test_container_base_was_not_covered_by_neighbors(self):
-        for polygon in self.polygons:
-            self.assertFalse(all(cross(a, b, self.center) >= 0
-                                 for a, b in edges(polygon)))
-            self.assertGreater(min(distance(self.center, a, b)
-                                   for a, b in edges(polygon)), self.radius)
-        self.assertGreater(min(distance(self.center, a, b)
-                               for a, b in self.walls), self.radius)
+    def test_rear_cap_overlaps_existing_wall_continuously(self):
+        wall = [source_point(p) for p in vector_values(
+            resource(self.scene, "Segment_Wall02"))]
+        self.assertEqual(wall, [(350, 285), (465, 285)])
+        self.assertLess(self.axis[0][1] - self.radius, wall[0][1])
+        # A continuous wall chord inside the capsule blocks diagonal passage,
+        # not merely a gap smaller than the player's collision diameter.
+        for x in range(370, 393):
+            self.assertLess(distance((x, 285), *self.axis), self.radius)
 
     def test_accessible_routes_clear_all_obstacles_for_daves_feet(self):
         preview = (ROOT / "scenes/dev/ship_interior_v2_collision_preview.tscn").read_text()
@@ -152,14 +163,14 @@ class PortContainerGeometryTest(unittest.TestCase):
             dave, "CircleShape2D_feet"))[1])
         self.assertEqual(radius, 10)
         feet_radius = radius / scale[0]
-        # Circle centers: west gap beside console, north gap at wall, east/south.
-        route = [(355, 360), (355, 294), (420, 294), (420, 360), (355, 360)]
+        # Feet-circle centers: west, front and east routes; rear is now blocked.
+        route = [(354, 307), (354, 360), (420, 360), (420, 307)]
         blockers = self.walls + [edge for p in self.polygons for edge in edges(p)]
         for a, b in zip(route, route[1:]):
             for step in range(201):
                 t = step / 200
                 point = (a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t)
-                self.assertGreater(math.dist(point, self.center), self.radius + feet_radius)
+                self.assertGreater(distance(point, *self.axis), self.radius + feet_radius)
                 self.assertGreater(min(distance(point, c, d)
                                        for c, d in blockers), feet_radius)
                 for polygon in self.polygons:

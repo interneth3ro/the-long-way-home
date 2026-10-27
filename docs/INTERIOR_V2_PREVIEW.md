@@ -130,8 +130,8 @@ shadows and small scattered debris do not define their outlines. Cables, papers,
 floor grates, lighting and scratches have no bodies. Wreckage can later be removed
 independently; no Marvin sprite, discovery or clearing behavior is introduced.
 Computer has no interaction script.
-An additional independent circle blocks the freestanding port container; see
-the Test 5 amendment below.
+An additional independent wall-connected capsule blocks the port container; see
+the Test 5 amendments below.
 
 These are conservative interpretations of illustrated contact points, especially
 the wreckage's irregular lower edge and stacked storage. The owner must assess
@@ -141,7 +141,8 @@ establish runtime navigation quality.
 The development-only
 [`physics_shape_outlines.gd`](../scenes/dev/physics_shape_outlines.gd)
 reads enabled CollisionShape2D resources: segment endpoints, convex polygon
-points and Dave's circle radius (drawn with 64 samples). Shape-global to
+points, circle radius (64 samples) and capsule radius/height (32 segments per
+semicircle, joined by the straight sides). Shape-global to
 overlay-local transforms include all ancestor transforms. Disabled shapes and
 layer-zero bodies are omitted. There is no duplicate outline geometry or
 physics/state mutation when toggling. The outline node exists only in this
@@ -165,7 +166,9 @@ No Godot/editor/import, headless execution, engine GDScript/type validation,
 runtime, graphical tests, performance probes or engine screenshots were performed.
 Owner Test 2 previously reported **FAIL** and prompted the console amendment below.
 The owner has since progressed to **Test 5 of 8: FAIL**, reporting missing container
-collision. Resume Test 5 after amendment 2; do not restart already-passed tests.
+collision. The circle added in amendment 2 also failed the owner's retest:
+Dave could reach the upper artwork through its rear passage. Resume Test 5
+after amendment 3; do not restart already-passed tests.
 No runtime success is inferred from agent static checks.
 
 ### Port console alignment amendment
@@ -199,7 +202,7 @@ stand on its upper surface or enter behind it. Repeat the full perimeter for
 gaps/snags. The current review is now Test 5; recheck the corrected console only
 as part of the nearby container circulation test.
 
-### Amendment 2: freestanding port container (Test 5)
+### Amendment 2: base-only container circle (superseded; Test 5 failed)
 
 The approved background shows a cylinder at about source x=364-398, with the
 bottom rim near y=337 and raised lid near y=293. No existing body covered its
@@ -214,26 +217,56 @@ is **(-483.75,-240)** and radius **21.25** world units (42.5 diameter).
 The circle approximates the floor base, not the raised lid or cast shadow.
 There are no individual shape/visual scaling adjustments.
 
-The existing C outline renderer recursively reads this actual CircleShape2D and
+At this stage the C outline renderer read the actual CircleShape2D and
 its body transform; no debug-code change is needed. Walls, six existing polygons,
 corrected console, artwork, Dave, camera, production interior and preview entry
 points are unchanged.
 
-`python tests/static_port_console_geometry_test.py` now includes three container
-checks in addition to the four console checks: independent enabled body/resource
-and layer/mask, base coverage with separation from existing blockers, and sampled
-radius-10 feet-circle routes around the container's west/north/east/south sides.
-The west route remains between console and container; the rear passage is narrow
+The original static checks covered the base circle and allowed routes on all
+four sides. They did not require upper-art coverage or wall attachment and thus
+missed the owner's reported defect. The rear passage was narrow
 (18 source pixels between circle and wall, versus Dave's 16-source-pixel diameter).
 Static clearance does not establish comfortable movement, visual alignment or
 engine response. All nine PNG hashes still match the approved manifest.
 Godot was not run.
 
-Resume **Test 5 of 8**, F6 collision preview, C outlines: approach the container
-from all accessible sides, confirm Dave cannot cross or stand on its base, check
-comfortable circulation past the console and nearby equipment, and recheck the
-corrected console. Test 5 remains pending owner confirmation. Do not advance to
-Test 6 until it passes; do not repeat already-passed tests beyond this affected area.
+### Amendment 3: wall-connected container capsule (Test 5 retest pending)
+
+Replaced `Footprint_PortContainer` with a vertical **CapsuleShape2D**, radius
+**18**, full height **58** (width **36**) in source/local units. The background's
+approximately x=364-398 cylinder, y=282 lid and y=337 bottom rim set the practical
+width/front extent; the horizontal wall at y=285 sets the required rear reach.
+The resulting bounds are source x=363-399 and y=280-338, including 5 source pixels
+past the wall. This covers both the visible upper portion and the physical base.
+
+`CollisionContent/PortContainer` is at local **(-387,-203)**, source **(381,309)**,
+with no rotation. Cap centers are source **(381,298)** and **(381,320)**.
+The rear cap intersects unchanged `Segment_Wall02` at y=285 along a continuous
+chord approximately x=368.55-393.45 (24.9 source pixels wide), closing the rear
+route including diagonal passage. No wall, console or unrelated shape was moved.
+Layer/mask remain 1/1. At 1.25x, center is **(-483.75,-253.75)** and dimensions
+are **45 x 72.5** world units, with radius **22.5**.
+
+The development C renderer now supports CapsuleShape2D: the straight section and
+two semicircles come only from `shape.height` and `shape.radius`, then use the
+existing collider-global to overlay-local transform. No independent outline
+dimensions or collision mutations are introduced.
+
+`python tests/static_port_console_geometry_test.py` retains the four console
+checks and updates the three container checks to require a capsule, upper/lower
+art coverage, a continuous wall intersection and feet-circle-clear front/side
+routes. The old base-only circle fails the coverage and attachment checks.
+The rear route is deliberately no longer a valid navigation path. Mathematical
+clearance on the west route is tight (minimum 1 source pixel beyond Dave's circle);
+comfortable movement and illustrated alignment still require owner assessment.
+
+All nine approved PNG hashes match, prior wall/console/other collision resources
+are unchanged, and production gameplay, Dave, scale and camera are unchanged.
+No Godot/editor/headless, engine GDScript/type check or runtime test was performed.
+Resume **Test 5 of 8**, F6 preview and C outlines: verify Dave cannot pass through,
+slip behind or stand on the upper container artwork, inspect comfortable front
+and side approaches, and recheck the corrected console. Do not proceed to Test 6
+until the owner confirms Test 5 passes.
 
 ### Ordered collision acceptance (one test at a time)
 

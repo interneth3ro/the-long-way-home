@@ -117,8 +117,9 @@ points = PackedVector2Array(-288, -242, -228, -247, -223, -217, -258, -197, -288
 [sub_resource type="ConvexPolygonShape2D" id="Footprint_StarboardCabinet"]
 points = PackedVector2Array(397, -187, 482, -172, 492, -152, 432, -142, 397, -157)
 
-[sub_resource type="CircleShape2D" id="Footprint_PortContainer"]
-radius = 17.0
+[sub_resource type="CapsuleShape2D" id="Footprint_PortContainer"]
+radius = 18.0
+height = 58.0
 
 [node name="ShipInteriorV2" type="Node2D"]
 
@@ -350,7 +351,7 @@ collision_mask = 1
 shape = SubResource("Footprint_StarboardCabinet")
 
 [node name="PortContainer" type="StaticBody2D" parent="CollisionContent"]
-position = Vector2(-387, -192)
+position = Vector2(-387, -203)
 collision_layer = 1
 collision_mask = 1
 

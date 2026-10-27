@@ -45,6 +45,16 @@ func _draw_shape(collider: CollisionShape2D, color: Color) -> void:
 		for index in range(64):
 			points.append(Vector2.from_angle(TAU * float(index) / 64.0) * shape.radius)
 		closed = true
+	elif shape is CapsuleShape2D:
+		# Capsule height includes both caps; its local axis is vertical.
+		var cap_offset := shape.height * 0.5 - shape.radius
+		for index in range(33):
+			var angle := PI + PI * float(index) / 32.0
+			points.append(Vector2(0.0, -cap_offset) + Vector2.from_angle(angle) * shape.radius)
+		for index in range(33):
+			var angle := PI * float(index) / 32.0
+			points.append(Vector2(0.0, cap_offset) + Vector2.from_angle(angle) * shape.radius)
+		closed = true
 	else:
 		# New physics types must explicitly add a resource-derived outline here.
 		push_error("Unsupported preview collision shape: " + shape.get_class())
