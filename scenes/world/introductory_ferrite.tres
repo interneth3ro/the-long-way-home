@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="ResourceDeposit" load_steps=2 format=3]
+
+[ext_resource type="Script" uid="uid://ca06730d8a53" path="res://scenes/world/resource_deposit.gd" id="1_deposit"]
+
+[resource]
+script = ExtResource("1_deposit")
+deposit_id = &"crash_site_ferrite"
+resource_type = &"ferrite"
+footprint = PackedVector2Array(128, 256, 144, 208, 192, 160, 288, 144, 384, 160, 432, 208, 448, 256, 432, 304, 384, 352, 288, 368, 192, 352, 144, 304)

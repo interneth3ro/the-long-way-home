@@ -4,6 +4,7 @@ extends Node
 # A future cinematic/musing presenter can listen without owning progression.
 signal first_exterior_reveal_completed
 signal transition_completed(source_scene: String, destination_scene: String)
+signal transition_started
 
 enum Presentation { IMMEDIATE, FIRST_EXTERIOR_REVEAL }
 
@@ -40,6 +41,7 @@ func request_transition(source_scene: String, destination_scene: String,
 	if _busy or source_scene != _current_world.scene_file_path or destination_scene == source_scene:
 		return false
 	_busy = true
+	transition_started.emit()
 	# The interaction request originates in physics; defer all tree mutations.
 	_perform_transition.call_deferred(source_scene, destination_scene, spawn_name, presentation)
 	return true

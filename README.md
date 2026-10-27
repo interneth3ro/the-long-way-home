@@ -4,9 +4,10 @@ A story-driven science-fiction automation adventure. This fresh Godot project
 has a player movement prototype with camera follow and mouse-wheel zoom, plus a
 minimal ship-interior environment and collision foundation, plus data-driven
 Computer dialogue, inspection and objective activation. Merged PR #26 adds an
-authored exterior and reusable hatch transitions. World Generation Foundation on
-`codex/world-generation-foundation` extends it with seeded chunk terrain, pending
-merge and owner runtime verification.
+authored exterior and reusable hatch transitions. Merged PR #27 adds seeded
+chunk terrain. First Ferrite discovery on this feature branch adds an authored
+mineral deposit, internal musing and Extractor guidance, pending merge and owner
+runtime verification.
 Its gameplay implementation is independent of FactoryGame; the approved Dave
 migration below reuses only two legacy artwork sheets.
 
@@ -713,21 +714,22 @@ persistence is NOT implemented. Future save/load must restore the flag alongside
 player location, objectives and world state; it must default false in unrelated
 new games. No owner save files or settings are read or written.
 
-No musing UI or provisional dialogue was added. The controller's
+PR #26 added no musing UI or provisional dialogue. The controller's
 first_exterior_reveal_completed signal fires after controls resume and is the
 integration point for a future small, portrait-free, timed, nonpausing presenter.
 It must not route internal thoughts through the regular dialogue panel.
 
 ### Exterior and coordinate conventions
 
-PR #26 originally bounded the clearing at [-1024, 1024] on each axis. The pending
-world generation feature removes that perimeter and samples AuthoredCrashSite
+PR #26 originally bounded the clearing at [-1024, 1024] on each axis. PR #27
+removed that perimeter and samples AuthoredCrashSite
 polygons into procedural terrain. GroundObjects contains the provisional ship,
 hatch and two rocks, plus Dave during a visit. Spawns is placement metadata.
 Ship and rock geometry is deliberately simple, with nearest filtering inherited
 by the exterior. Existing Dave filtering and Computer artwork are preserved.
-The open area east/south of the ship reserves room for later Ferrite discovery,
-reactor, machines and cable routes, without implementing any of them.
+The open area east/south of the ship reserves room for Ferrite discovery,
+reactor, machines and cable routes. First Ferrite below uses part of this area;
+the machines, reactor and cables remain deferred.
 
 World units equal unzoomed pixels: +X east/right, +Y south/down; Dave's origin
 remains ground contact. Terrain cell = floor(world_position / 64) per component.
@@ -766,7 +768,7 @@ playtest items remain unverified. Static inspection covers references, named
 spawns, collision clearances, flag lifecycle, lock/failure paths, preserved player
 files, documentation links and Git patch integrity.
 
-## World Generation Foundation (feature branch, pending merge)
+## World Generation Foundation (PR #27, merged)
 
 This feature extends PR #26 without changing Dave, camera, interior, narrative,
 objectives or input settings. Agent validation is static only: Godot parsing,
@@ -807,7 +809,8 @@ rectangular background and temporary perimeter walls are removed. Ship, hatch,
 spawn and both rock objects/collisions are preserved.
 
 `PlanetExterior.protected_gameplay` separately reserves ship entrance, spawn,
-main approach, factory clearing and future Ferrite space. No Ferrite is placed.
+main approach, factory clearing and Ferrite space. First Ferrite below adds the
+introductory deposit within that existing protection.
 A 48-unit clearance suppresses details around this polygon and the authored
 geology polygons. Existing solid-object anchors also exclude details within
 160 units, covering the two rocks; the larger ship is inside the clearing.
@@ -845,3 +848,72 @@ old boundaries, continuous coverage, revisit determinism, unloading/retention,
 seed variation, protected clearing, presentation/collision, transitions/objectives,
 and finally extended exploration without debugger errors. Only the owner runs
 these checks; agent static results do not establish gameplay acceptance.
+
+## First Ferrite - Discovery (feature branch, pending merge)
+
+One authored Ferrite deposit lies east/southeast of the hatch, centered near
+(288, 256), approximately three seconds' direct walking distance from FromShip.
+Provisional dark slate-gray ground, silver veins and a raised formation distinguish
+it from terrain. The patch is broadly oval with modest edge variation. Existing
+ship, hatch, spawn and rocks are unchanged. Existing protected gameplay geometry
+suppresses procedural details over the patch and its approach for every seed.
+
+`PlanetWorldState` owns a read-only authored `ResourceDeposit` definition from
+`scenes/world/introductory_ferrite.tres`: stable ID `crash_site_ferrite`, resource
+type `ferrite`, and a mineral-bearing polygon in planet world coordinates. Its
+bounds are (128, 144) to (448, 368). `get_deposit(id)` and
+`deposit_at(world_point, resource_type)` query identity and mineral ground without
+depending on artwork or disposable terrain chunks. Deposits are infinite,
+uniform and nondepleting; no quantity, yield or extraction simulation exists.
+Definitions are shared immutable content; discovery belongs to PlaythroughState.
+
+The mineral area is separate from the decorative outline. Two future adjacent
+64 x 64 footprints at (192, 192) and (256, 192) fit inside it, clear of the raised
+inspection solid at (288, 336), radius 24. The independent construction cell is
+32 x 32; future Extractors occupy 2 x 2 cells. Only a designated extraction point
+must overlap compatible mineral ground; the remaining footprint may extend off
+the deposit. Edge-to-edge machines are allowed, overlapping footprints are not.
+Every valid extraction point has equal richness. Construction validation,
+compatible-deposit highlights and placement previews remain deferred.
+
+Approach the raised formation to see **E - Examine mineral deposit** (an em dash
+is displayed in-game). It uses WorldInteractable and the unchanged detector's
+120-unit target-point range, nearest-target selection and obstruction ray. Only
+a deliberate E inspection calls `discover_ferrite`; proximity does not discover
+it. The state validates the deposit identity, sets `ferrite_discovered` before
+emitting one discovery signal, and rejects subsequent discovery attempts.
+Afterward the prompt disappears; there is no repeat inspection response.
+
+Main routes discovery to reusable `MusingUI` and separately editable
+`MusingDefinition` content in `dialogue/ferrite_discovery.tres`. Both approved
+thoughts appear together in an 18-point, portrait-free lower-left panel, above
+the interaction prompt and away from the upper-right objective tracker. It fades
+in for 0.25 seconds, holds for 10 seconds and fades out for 0.35 seconds. All
+controls ignore mouse input; it has no buttons, input handlers or gameplay lock.
+A new musing cancels/replaces the old tween. Accepted hatch transitions dismiss
+it immediately, including a transition that subsequently fails validation.
+Main owns its lifetime, so fresh playthroughs cannot inherit stale UI.
+
+Restore Computer remains the single registered overarching objective. A display
+definition with the same ID/title changes its guidance to **Locate the Extractor
+in the maintenance bay.** after discovery; no duplicate objective is registered
+or completed. Existing tracker expand/pin/hide/restore preferences remain intact.
+Computer's conversation still activates the original objective. If the player
+explores before finishing it, discovery also activates that same objective so
+guidance remains recoverable. Later Computer dialogue cannot revert the stage.
+
+Discovery and world identity survive ship travel, terrain unloading/regeneration
+and revisits. A fresh Main/application resets discovery and objective state.
+**Persistence is session-only; there is no disk save/load.** Introductory machine
+recovery will proceed strictly Extractor, then Smelter, then Fabricator. None of
+those recovery steps, mining, construction, recipes, inventory or power is
+implemented here. Future research allows broader freedom.
+
+Agent validation is static only: scene/resource paths and UID references,
+protected placement and two future footprints, unchanged original scene objects,
+one-time state/signal ordering, objective idempotence, musing cancellation,
+transition wiring, preserved movement/dialogue/settings and Markdown/diff checks.
+No Godot editor, import, headless run, gameplay, rendering or performance test was
+performed. Engine parsing, appearance, text wrapping, timing, interaction physics
+and chunk travel require owner verification using the PR's ordered checklist,
+one item at a time.

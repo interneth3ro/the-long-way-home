@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3]
+[gd_scene load_steps=11 format=3]
 
 [ext_resource type="Script" path="res://scenes/main/main.gd" id="1_main"]
 [ext_resource type="PackedScene" path="res://scenes/world/ship_interior.tscn" id="2_interior"]
@@ -9,6 +9,7 @@
 [ext_resource type="Script" path="res://objectives/objective_definition.gd" id="7_definition"]
 [ext_resource type="Script" path="res://scenes/main/playthrough_state.gd" id="8_progression"]
 [ext_resource type="Script" path="res://scenes/main/scene_transition_controller.gd" id="9_transitions"]
+[ext_resource type="PackedScene" path="res://scenes/ui/musing_ui.tscn" id="10_musing"]
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_main")
@@ -24,6 +25,8 @@ script = ExtResource("4_objectives")
 definitions = Array[ExtResource("7_definition")]([ExtResource("5_restore")])
 
 [node name="ObjectiveTracker" parent="." instance=ExtResource("6_tracker")]
+
+[node name="MusingUI" parent="." instance=ExtResource("10_musing")]
 
 [node name="PlaythroughState" type="Node" parent="."]
 script = ExtResource("8_progression")

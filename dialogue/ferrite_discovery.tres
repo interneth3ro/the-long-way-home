@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="MusingDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" uid="uid://cad68d3f48e7" path="res://dialogue/musing_definition.gd" id="1_musing"]
+
+[resource]
+script = ExtResource("1_musing")
+text = "Metal-rich. Looks close enough to Ferrite.\n\nShould work for the repairs. Maintenance had an extractor... somewhere."
+duration_seconds = 10.0

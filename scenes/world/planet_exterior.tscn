@@ -1,8 +1,12 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene load_steps=8 format=3]
 
 [ext_resource type="Script" path="res://scenes/interaction/scene_hatch.gd" id="1_hatch"]
 
 [ext_resource type="Script" path="res://scenes/world/planet_exterior.gd" id="2_world"]
+[ext_resource type="Script" uid="uid://c7294cf4973a" path="res://scenes/interaction/ferrite_inspection.gd" id="3_ferrite"]
+
+[sub_resource type="CircleShape2D" id="FerriteInspectionFootprint"]
+radius = 24.0
 
 [sub_resource type="RectangleShape2D" id="ShipFootprint"]
 size = Vector2(512, 224)
@@ -36,8 +40,46 @@ color = Color(0.22, 0.31, 0.34, 1)
 polygon = PackedVector2Array(-1024, 832, -512, 896, 0, 832, 512, 960, 1024, 768, 1024, 1024, -1024, 1024)
 color = Color(0.22, 0.31, 0.34, 1)
 
+[node name="FerriteGround" type="Node2D" parent="."]
+z_index = -5
+
+[node name="MineralPatch" type="Polygon2D" parent="FerriteGround"]
+polygon = PackedVector2Array(124, 256, 140, 212, 164, 180, 196, 156, 244, 144, 288, 140, 340, 148, 388, 156, 420, 184, 436, 212, 452, 256, 440, 288, 432, 308, 388, 356, 336, 364, 288, 372, 240, 364, 188, 356, 164, 328, 140, 300)
+color = Color(0.18, 0.22, 0.27, 1)
+
+[node name="VeinWest" type="Line2D" parent="FerriteGround"]
+points = PackedVector2Array(160, 260, 208, 244, 224, 212, 272, 192, 312, 172)
+width = 5.0
+default_color = Color(0.65, 0.72, 0.76, 1)
+
+[node name="VeinEast" type="Line2D" parent="FerriteGround"]
+points = PackedVector2Array(220, 324, 264, 296, 304, 280, 328, 244, 396, 212)
+width = 6.0
+default_color = Color(0.72, 0.78, 0.81, 1)
+
+[node name="VeinBranch" type="Line2D" parent="FerriteGround"]
+points = PackedVector2Array(304, 280, 356, 296, 412, 280)
+width = 3.0
+default_color = Color(0.57, 0.65, 0.70, 1)
+
 [node name="GroundObjects" type="Node2D" parent="."]
 y_sort_enabled = true
+
+[node name="FerriteInspection" type="StaticBody2D" parent="GroundObjects"]
+position = Vector2(288, 336)
+script = ExtResource("3_ferrite")
+interaction_prompt = "E — Examine mineral deposit"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="GroundObjects/FerriteInspection"]
+shape = SubResource("FerriteInspectionFootprint")
+
+[node name="Formation" type="Polygon2D" parent="GroundObjects/FerriteInspection"]
+polygon = PackedVector2Array(-24, -8, -18, -28, -4, -42, 16, -32, 26, -12, 18, 12, -12, 16)
+color = Color(0.30, 0.36, 0.42, 1)
+
+[node name="SilverFace" type="Polygon2D" parent="GroundObjects/FerriteInspection"]
+polygon = PackedVector2Array(-4, -42, 4, -20, 18, 12, 26, -12, 16, -32)
+color = Color(0.68, 0.75, 0.79, 1)
 
 [node name="CrashedShip" type="StaticBody2D" parent="GroundObjects"]
 position = Vector2(-384, -192)
