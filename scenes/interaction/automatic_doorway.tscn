@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scenes/interaction/automatic_doorway.gd" id="1_door"]
+
+[sub_resource type="RectangleShape2D" id="Threshold"]
+size = Vector2(24, 70)
+
+[node name="AutomaticDoorway" type="Area2D"]
+collision_layer = 0
+collision_mask = 1
+monitorable = false
+script = ExtResource("1_door")
+
+[node name="Shape" type="CollisionShape2D" parent="."]
+shape = SubResource("Threshold")

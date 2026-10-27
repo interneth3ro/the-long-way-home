@@ -1,0 +1,72 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/interaction/automatic_doorway.tscn" id="1_door"]
+
+[sub_resource type="SegmentShape2D" id="North"]
+a = Vector2(-360, -240)
+b = Vector2(360, -240)
+
+[sub_resource type="SegmentShape2D" id="East"]
+a = Vector2(360, -240)
+b = Vector2(360, 240)
+
+[sub_resource type="SegmentShape2D" id="South"]
+a = Vector2(360, 240)
+b = Vector2(-360, 240)
+
+[sub_resource type="SegmentShape2D" id="West"]
+a = Vector2(-360, 240)
+b = Vector2(-360, -240)
+
+[sub_resource type="RectangleShape2D" id="ReturnThreshold"]
+size = Vector2(100, 18)
+
+[node name="DevelopmentOnlyMaintenance" type="Node2D"]
+
+[node name="Floor" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(-360, -240, 360, -240, 360, 240, -360, 240)
+color = Color(0.10, 0.24, 0.32, 1)
+
+[node name="WorldLabel" type="Label" parent="."]
+offset_left = -300.0
+offset_top = -180.0
+text = "MAINTENANCE TEST WORLD\nDevelopment only; no production destination or gameplay.\nWalk into the orange threshold below to return without E."
+
+[node name="ReturnPad" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(-50, 201, 50, 201, 50, 219, -50, 219)
+color = Color(1, 0.4, 0.1, 0.8)
+
+[node name="Bounds" type="StaticBody2D" parent="."]
+collision_layer = 1
+collision_mask = 1
+
+[node name="North" type="CollisionShape2D" parent="Bounds"]
+shape = SubResource("North")
+
+[node name="East" type="CollisionShape2D" parent="Bounds"]
+shape = SubResource("East")
+
+[node name="South" type="CollisionShape2D" parent="Bounds"]
+shape = SubResource("South")
+
+[node name="West" type="CollisionShape2D" parent="Bounds"]
+shape = SubResource("West")
+
+[node name="GroundObjects" type="Node2D" parent="."]
+
+[node name="Spawns" type="Node2D" parent="."]
+
+[node name="FromInterior" type="Marker2D" parent="Spawns"]
+position = Vector2(0, 100)
+
+[node name="Doorways" type="Node2D" parent="."]
+
+[node name="Return" parent="Doorways" instance=ExtResource("1_door")]
+position = Vector2(0, 210)
+destination_scene = "res://scenes/dev/ship_interior_v2_transition_world.tscn"
+destination_spawn = &"FromMaintenance"
+
+[node name="Shape" parent="Doorways/Return" index="0"]
+shape = SubResource("ReturnThreshold")
+
+[editable path="Doorways/Return"]

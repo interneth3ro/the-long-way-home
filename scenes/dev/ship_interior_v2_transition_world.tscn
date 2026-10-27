@@ -1,0 +1,48 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/world/ship_interior_v2.tscn" id="1_v2"]
+[ext_resource type="PackedScene" path="res://scenes/interaction/automatic_doorway.tscn" id="2_door"]
+[ext_resource type="Script" path="res://scenes/dev/ship_interior_v2_transition_world.gd" id="3_world"]
+
+[sub_resource type="RectangleShape2D" id="MaintenanceThreshold"]
+size = Vector2(24, 70)
+
+[sub_resource type="RectangleShape2D" id="ExteriorThreshold"]
+size = Vector2(100, 18)
+
+[node name="DevelopmentOnlyInteriorV2TransitionWorld" type="Node2D"]
+script = ExtResource("3_world")
+
+[node name="ShipInteriorV2" parent="." instance=ExtResource("1_v2")]
+scale = Vector2(1.25, 1.25)
+
+[node name="GroundObjects" type="Node2D" parent="."]
+
+[node name="Spawns" type="Node2D" parent="."]
+
+[node name="FromMaintenance" type="Marker2D" parent="Spawns"]
+position = Vector2(-600, -45)
+
+[node name="FromExterior" type="Marker2D" parent="Spawns"]
+position = Vector2(-16, 340)
+
+[node name="Doorways" type="Node2D" parent="."]
+
+[node name="Maintenance" parent="Doorways" instance=ExtResource("2_door")]
+position = Vector2(-684, -50)
+destination_scene = "res://scenes/dev/transition_test_maintenance.tscn"
+destination_spawn = &"FromInterior"
+
+[node name="Shape" parent="Doorways/Maintenance" index="0"]
+shape = SubResource("MaintenanceThreshold")
+
+[node name="Exterior" parent="Doorways" instance=ExtResource("2_door")]
+position = Vector2(-16, 402)
+destination_scene = "res://scenes/dev/transition_test_exterior.tscn"
+destination_spawn = &"FromInterior"
+
+[node name="Shape" parent="Doorways/Exterior" index="0"]
+shape = SubResource("ExteriorThreshold")
+
+[editable path="Doorways/Maintenance"]
+[editable path="Doorways/Exterior"]

@@ -1,11 +1,17 @@
 # Primary interior V2 development previews
 
 PR #47's visual comparison is merged. The owner selected **1.25x** following its
-tests 1-6, as recorded in the collision implementation request. This feature
-branch adds a separate collision/navigation preview, pending merge and owner
-acceptance. The normal main scene still starts in the original interior.
+tests 1-6, as recorded in the collision implementation request. PR #49's separate
+collision/navigation preview is merged; its historical acceptance record below
+is preserved. The normal main scene still starts in the original interior.
 Gameplay spawns, transitions, door opening, Computer restoration, Marvin
 discovery, production cutover and legacy retirement remain deferred.
+
+The current feature branch adds a third, isolated
+[automatic-transition harness](INTERIOR_V2_TRANSITIONS.md), pending merge and
+owner acceptance. Its development-only wrapper provides arrival spawns and
+doorway wiring. The scale/collision previews and V2 scene described below remain
+unchanged; their solid doors still do not initiate travel.
 
 ## Open and compare (owner-operated)
 
@@ -295,6 +301,7 @@ After each test, obtain owner confirmation before treating it as passed.
    and verify the original interior, Computer, exterior/maintenance transitions,
    inventory/objectives and factory gameplay remain unchanged.
 
-Future automatic doorway transitions use threshold walking without E. That
-approved behavior is deferred; E remains for intentional object interactions.
-Collision acceptance provides no evidence that future transitions work.
+Automatic doorway transitions use threshold walking without E in the separate
+feature-branch [transition harness](INTERIOR_V2_TRANSITIONS.md); production
+cutover remains deferred. E remains for intentional object interactions.
+Collision acceptance provides no evidence that automatic transitions work.
