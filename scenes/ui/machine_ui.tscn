@@ -67,12 +67,34 @@ layout_mode = 2
 mouse_filter = 2
 step = 0.1
 
-[node name="Output" type="Label" parent="HUD/Panel/Content"]
+[node name="InputSection" type="VBoxContainer" parent="HUD/Panel/Content"]
+visible = false
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 10
+
+[node name="Storage" type="Label" parent="HUD/Panel/Content/InputSection"]
+layout_mode = 2
+mouse_filter = 2
+text = "Input\n0 / 20"
+
+[node name="Transfer" type="Button" parent="HUD/Panel/Content/InputSection"]
+layout_mode = 2
+mouse_filter = 0
+focus_mode = 0
+text = "Transfer All"
+
+[node name="OutputSection" type="VBoxContainer" parent="HUD/Panel/Content"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 10
+
+[node name="Storage" type="Label" parent="HUD/Panel/Content/OutputSection"]
 layout_mode = 2
 mouse_filter = 2
 text = "Ferrite Ore: 0 / 20"
 
-[node name="Collect" type="Button" parent="HUD/Panel/Content"]
+[node name="Collect" type="Button" parent="HUD/Panel/Content/OutputSection"]
 layout_mode = 2
 mouse_filter = 0
 focus_mode = 0
@@ -84,5 +106,6 @@ mouse_filter = 0
 focus_mode = 0
 text = "Close (Esc)"
 
-[connection signal="pressed" from="HUD/Panel/Content/Collect" to="." method="_collect"]
+[connection signal="pressed" from="HUD/Panel/Content/OutputSection/Collect" to="." method="_collect"]
+[connection signal="pressed" from="HUD/Panel/Content/InputSection/Transfer" to="." method="_transfer"]
 [connection signal="pressed" from="HUD/Panel/Content/Close" to="." method="close"]

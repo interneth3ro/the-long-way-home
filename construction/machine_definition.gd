@@ -9,12 +9,21 @@ extends ItemDefinition
 @export var output_per_cycle: int = 1
 @export var cycle_seconds: float = 1.0
 @export var output_capacity: int = 20
+@export var input_item: ItemDefinition
+@export var input_per_cycle: int = 1
+@export var input_capacity: int = 0
+
+
+func has_input() -> bool:
+	return input_item != null
 
 
 func has_production() -> bool:
 	return output_item != null and output_item.is_valid() and output_per_cycle > 0 \
 		and is_finite(cycle_seconds) and cycle_seconds > 0.0 \
-		and output_capacity >= output_per_cycle
+		and output_capacity >= output_per_cycle \
+		and (not has_input() or (input_item.is_valid() and input_per_cycle > 0 \
+			and input_capacity >= input_per_cycle))
 
 
 func is_valid() -> bool:

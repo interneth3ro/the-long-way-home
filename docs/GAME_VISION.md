@@ -117,7 +117,7 @@ Implementation and coordinate conventions are recorded in the
 - Future production: Ferrite Ore → Smelter → Ferrite Ingot → Fabricator →
   Plate / Rod / Bearing. Computer's initial repair requires Plates and Rods.
   Extraction is merged in PR #36; agent validation was static only.
-  Smelting, fabrication and their recipes remain unimplemented.
+  Smelting is added on the feature branch described below; fabrication remains deferred.
 
 First Ferrite implementation is merged in PR #28. The owner reports all 15 original
 manual playtests passed; final musing timing and temporary developer coordinate
@@ -260,15 +260,50 @@ are recorded in the
   Smelter. First successful deployment permanently advances Restore Computer
   guidance to **Produce Ferrite Ingots with the Smelter.** Recovery cannot reverse
   it; redeployment cannot repeat it. A fresh playthrough resets both states.
-- Actual smelting, inputs/outputs, recipes, ports, power and material transfer
+- PR #39 deferred actual smelting, inputs/outputs, recipes and material transfer;
+  the approved smelting milestone below extends those capabilities. Ports and power
   remain deferred. Future ports should rotate with the machine, with default
   lower-left input and lower-right output as tracked in
   [issue #35](https://github.com/interneth3ro/the-long-way-home/issues/35).
   No new dialogue or Fabricator functionality is added.
 
-Implementation is on the Smelter deployment feature branch, pending merge and
-owner playtesting. Static evidence and limitations are recorded in the
-[implementation notes](../README.md#deploy-the-smelter-feature-branch-pending-merge).
+Implementation is merged in PR #39. Agent validation was static only; evidence
+and limitations are recorded in the
+[implementation notes](../README.md#deploy-the-smelter-pr-39-merged).
+
+## Approved Ferrite Ingot production direction
+
+- Smelter processes one Ferrite Ore into one Ferrite Ingot every two seconds
+  (provisional 30/minute), with independent 20-item input and output storage.
+  Extractor remains output-only at 60 ore/minute: one can theoretically supply two
+  Smelters. No power, conduits, ports, recipe selection or queues are added.
+- Reuse the nonpausing machine panel with separate vertical input/output sections,
+  Transfer All and Collect All. Transfer inserts as much ore as fits; collection
+  withdraws only finished ingots. Both preserve partial progress and keep the panel
+  open. Existing interaction guards and Extractor controls remain.
+- Persistent planet simulation consumes input only on successful cycle completion,
+  together with output creation. Pause when input is insufficient or output cannot
+  accept another cycle, retain fractional progress and discard blocked elapsed
+  time. Status priority is Inactive, Output Full, Input Empty, Producing, with
+  gray/amber/blue/green lights. Simulation continues independently of presentation.
+- Recovery returns all input, output and one packaged machine atomically, discards
+  fractional progress, and commits inventory and world changes before notifying
+  observers. Failed recovery changes nothing; incomplete cycles retain their ore.
+- First ingot acquisition into Materials through collection or recovery permanently
+  advances Restore Computer guidance to **Locate the Fabricator in the maintenance
+  bay.** Buffer production alone does not qualify. Present Dave's exact musing once:
+  “One step closer. Assuming that fabricator survived the crash.” followed by
+  “Guess there's only one way to find out.” Use the existing nonpausing automatic
+  musing presentation. Spending, travel, recovery and redeployment cannot reset it.
+- Fabricator remains visible, noninteractive, unrecoverable and unavailable in
+  Equipment. Recipe switching remains future work in
+  [issue #37](https://github.com/interneth3ro/the-long-way-home/issues/37).
+  Future rotating lower-left input/lower-right output ports remain tracked in
+  [issue #35](https://github.com/interneth3ro/the-long-way-home/issues/35).
+
+Implementation is on the Ferrite Ingot production feature branch, pending merge
+and owner manual testing. State ownership and validation limits are in the
+[implementation notes](../README.md#produce-ferrite-ingots-feature-branch-pending-merge).
 
 ## Unresolved design details
 

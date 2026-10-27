@@ -4,7 +4,7 @@ extends RefCounted
 signal machines_changed
 signal machine_deployed(definition: MachineDefinition)
 
-enum OperatingStatus { INACTIVE, PRODUCING, OUTPUT_FULL }
+enum OperatingStatus { INACTIVE, PRODUCING, OUTPUT_FULL, INPUT_EMPTY }
 
 # Authoritative session data, independent of disposable terrain presenters.
 # Loading does not mark exploration or surveying. Neither system exists yet.
@@ -53,6 +53,8 @@ func deploy_machine(definition: MachineDefinition, cell: Vector2i, turns: int,
 		return false
 	var machine := {"id": _next_machine_id, "definition": definition,
 		"cell": cell, "turns": posmod(turns, 4), "cycle_progress": 0.0, "output": 0}
+	if definition.has_input():
+		machine["input"] = 0
 	_machines[_next_machine_id] = machine
 	_next_machine_id += 1
 	inventory.changed.emit()
@@ -72,12 +74,12 @@ func recover_machine(machine_id: int, inventory: InventoryState,
 			definition.footprint(machine.cell, machine.turns)) > recovery_range:
 		return false
 	_machine_transaction = true
-	if not inventory.add_item(definition, 1, false):
-		_machine_transaction = false
-		return false
-	if machine.output > 0 and not inventory.add_item(definition.output_item, machine.output, false):
-		# No notifications have fired: undo the packaged item on transfer failure.
-		inventory.remove_item(definition, 1, false)
+	var recovered: Array[Dictionary] = [{"definition": definition, "quantity": 1}]
+	if definition.has_input() and machine.get("input", 0) > 0:
+		recovered.append({"definition": definition.input_item, "quantity": machine.input})
+	if machine.output > 0:
+		recovered.append({"definition": definition.output_item, "quantity": machine.output})
+	if not inventory.add_items(recovered, false):
 		_machine_transaction = false
 		return false
 	_machines.erase(machine_id)
@@ -107,6 +109,8 @@ func machine_status(machine: Dictionary) -> OperatingStatus:
 		return OperatingStatus.INACTIVE
 	if machine.output > definition.output_capacity - definition.output_per_cycle:
 		return OperatingStatus.OUTPUT_FULL
+	if definition.has_input() and machine.get("input", 0) < definition.input_per_cycle:
+		return OperatingStatus.INPUT_EMPTY
 	# Electrical requirements are provisionally bypassed for this milestone.
 	return OperatingStatus.PRODUCING
 
@@ -121,6 +125,10 @@ func advance_production(delta: float) -> void:
 		var definition: MachineDefinition = machine.definition
 		@warning_ignore("integer_division")
 		var available_cycles: int = (definition.output_capacity - machine.output) / definition.output_per_cycle
+		if definition.has_input():
+			@warning_ignore("integer_division")
+			var input_cycles: int = machine.get("input", 0) / definition.input_per_cycle
+			available_cycles = mini(available_cycles, input_cycles)
 		# Bound elapsed working time before converting to integer cycles. Time spent
 		# blocked earns no backlog; existing fractional work survives the pause.
 		var capacity_time := available_cycles * definition.cycle_seconds
@@ -130,8 +138,34 @@ func advance_production(delta: float) -> void:
 		var cycles := available_cycles if total == capacity_time \
 			else mini(int(floor(total / definition.cycle_seconds)), available_cycles)
 		machine.output += cycles * definition.output_per_cycle
+		if definition.has_input():
+			machine.input -= cycles * definition.input_per_cycle
 		machine.cycle_progress = 0.0 if cycles == available_cycles \
 			else total - cycles * definition.cycle_seconds
+
+
+func transfer_input(machine_id: int, inventory: InventoryState,
+		player_point: Vector2, interaction_range: float) -> bool:
+	if _machine_transaction or inventory == null or not _machines.has(machine_id):
+		return false
+	var machine: Dictionary = _machines[machine_id]
+	var definition: MachineDefinition = machine.definition
+	if not definition.has_production() or not definition.has_input():
+		return false
+	if player_point.distance_to(definition.footprint(machine.cell, machine.turns).get_center()) > interaction_range:
+		return false
+	var quantity := mini(inventory.get_quantity(definition.input_item.item_id),
+		definition.input_capacity - int(machine.get("input", 0)))
+	if quantity <= 0:
+		return true
+	_machine_transaction = true
+	if not inventory.remove_item(definition.input_item, quantity, false):
+		_machine_transaction = false
+		return false
+	machine.input += quantity
+	inventory.changed.emit()
+	_machine_transaction = false
+	return true
 
 
 func collect_output(machine_id: int, inventory: InventoryState,

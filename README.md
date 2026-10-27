@@ -9,8 +9,8 @@ chunk terrain. Merged PR #28 adds First Ferrite discovery, an internal musing
 and Extractor guidance. Merged PR #30 adds a maintenance bay and provisional
 inventory. Merged PR #32 adds Extractor deployment and recovery; merged PR #36
 adds Ferrite Ore production and collection. Merged PR #38 adds Smelter recovery
-and the Ferrite acquisition musing. This feature branch adds Smelter deployment,
-pending merge and owner playtesting.
+and the Ferrite acquisition musing. Merged PR #39 adds Smelter deployment.
+This feature branch adds Ferrite Ingot production, pending merge and owner playtesting.
 Its gameplay implementation is independent of FactoryGame; the approved Dave
 migration below reuses only two legacy artwork sheets.
 
@@ -1205,7 +1205,8 @@ output and one packaged machine together, removes its persistent record and
 discards incomplete cycle progress. Synchronous transaction guards prevent
 collection, simulation and recovery from interleaving. Notifications occur only
 after inventory and machine state agree. If either inventory addition fails,
-recovery restores the prior inventory and retains the complete deployed record.
+recovery leaves inventory unchanged and retains the complete deployed record.
+The smelting extension below replaces rollback with prevalidated batch additions.
 No fluid/gas categories or generalized transfer framework are introduced.
 
 The first successful Ferrite Ore acquisition in Materials, through either
@@ -1280,7 +1281,7 @@ Engine parsing, physics, input, UI readability, persistence during travel and
 debugger output require owner manual playtesting. The feature PR supplies an
 ordered checklist for testing one item at a time.
 
-## Deploy the Smelter (feature branch, pending merge)
+## Deploy the Smelter (PR #39, merged)
 
 After rack recovery, click Smelter in Equipment to close inventory and enter
 the existing construction mode immediately. The same `smelter` item is now a
@@ -1292,14 +1293,14 @@ translucent ghost, range, obstacle/occupancy checks, confirmation and cancellati
 are reused without placement exceptions or controller changes.
 
 `MachineVisual` draws a provisional cold furnace chamber, industrial housing,
-side framing and directional top vent. Deployed status stays gray; the ghost
+side framing and directional top vent. In PR #39 deployed status stayed gray; the ghost
 omits the status light. Presentation owns no simulation state.
 
-The shared E inspection panel uses `has_production()` to show **Inactive** and
+In PR #39 the shared E inspection panel used `has_production()` to show **Inactive** and
 **No production configured.**, hiding progress, output/capacity and Collect All.
 Its Close button, movement, range closure and input/transition guards remain.
-Opening an Extractor restores its existing production controls. The Smelter has
-no output item, cycle or capacity, so persistent production skips it; no new
+Opening an Extractor restores its existing production controls. That milestone gave
+the Smelter no output item, cycle or capacity, so persistent production skipped it; no new
 timer, buffer, ports, power, recipe or transport is introduced.
 
 Existing atomic planet transactions consume one packaged item only on successful
@@ -1310,7 +1311,7 @@ The first committed Smelter deployment emits the existing planet deployment even
 `PlaythroughState` records `smelter_deployed` once and emits
 `smelter_deployment_completed`. Main gives it guidance precedence within the same
 Restore Computer objective: **Produce Ferrite Ingots with the Smelter.** This is
-future guidance; smelting remains unimplemented. Possession, failed/canceled
+guidance implemented by the smelting extension below. Possession, failed/canceled
 placement, recovery and redeployment cannot reset or repeat completion. A fresh
 Main resets both planet and progression. Rack recovery, all existing musings and
 Fabricator locks remain unchanged.
@@ -1321,3 +1322,66 @@ checks. No Godot, project code, imports, headless, graphical or performance chec
 were run. Engine parsing/type checking, physics/input, layout, visual readability,
 travel persistence and gameplay acceptance require owner manual testing. The
 feature PR supplies the ordered playtest checklist.
+
+## Produce Ferrite Ingots (feature branch, pending merge)
+
+The deployed Smelter automatically converts **1 Ferrite Ore to 1 Ferrite Ingot**
+per **2-second cycle** (provisional maximum **30/minute**), without power.
+`inventory/smelter.tres` configures the fixed recipe through `MachineDefinition`
+input/output exports: independent **20-ore input** and **20-ingot output** buffers.
+The stable `ferrite_ingot` item uses Materials and existing quantity storage.
+The Extractor retains its 60-ore/minute output-only recipe and no input record.
+
+The existing **E** machine panel adds a vertical input section with **Transfer All**,
+above the output section and **Collect All**. Transfer moves the smaller of available
+ore and free input capacity; excess stays in inventory. Empty/full input disables
+Transfer All. Collect withdraws only completed output, and is disabled when empty.
+Both keep the panel open and retain fractional progress. Existing movement, range,
+inventory, tool, GUI and transition guards remain. Extractor controls are unchanged.
+The input heading is **Input** while empty and includes the configured material
+name only while input is stored. Live refresh updates it after transfers and after
+the last input is consumed; input-free machines keep the section hidden.
+
+Persistent `PlanetWorldState.advance_production()` owns processing even during
+ship visits and terrain unloading. Input remains stored during partial cycles;
+completed cycles consume input and add output together without callbacks.
+Elapsed productive time is bounded by both available input and output capacity,
+discarding blocked time without a catch-up backlog. Blocked updates retain
+fractional progress; the final affordable cycle ends at zero progress. The existing
+capacity-boundary precision correction also applies to input-limited completion.
+Status priority is Inactive, Output Full, Input Empty, then Producing. The existing
+light uses gray, amber, blue and green respectively; the panel reads the same state.
+
+**B** recovery prevalidates packaged equipment, stored input and completed output
+with `InventoryState.add_items()`, using private dictionary copies. Any invalid
+identity, quantity or integer overflow rejects the whole payload without mutation.
+On success inventory is committed and the deployed record removed before either
+inventory or world observers are notified. No published partial recovery or
+rollback is used. Fractional progress is discarded; solid ore is returned intact.
+The same batch path preserves Extractor recovery with stored ore.
+
+First successful ingot acquisition through Collect All or recovery sets the
+per-playthrough `ferrite_ingot_acquired` flag through inventory notification.
+Buffer production alone cannot trigger it. It presents the exact musing:
+
+> One step closer. Assuming that fabricator survived the crash.
+>
+> Guess there's only one way to find out.
+
+The existing MusingUI uses its standard fades, a 7-second reading period and safe
+transition dismissal. Guidance becomes **Locate the Fabricator in the maintenance
+bay.** under the unchanged Restore Computer objective ID. Spending ingots,
+recovery, redeployment and travel cannot revert or repeat completion. Fresh Main
+resets session state; disk saves remain unimplemented. Fabricator rack, art,
+collision and interaction locks are unchanged. Recipe switching
+([issue #37](https://github.com/interneth3ro/the-long-way-home/issues/37)), power
+and logistics ([issue #35](https://github.com/interneth3ro/the-long-way-home/issues/35))
+remain deferred; no ports, conduits or new production manager are added.
+
+Validation is static only: standalone gdtoolkit 4.5 grammar parsing, source and
+transaction review, resource/scene wiring, protected-file comparisons, Markdown
+links and Git whitespace checks. Godot and project code were not run;
+engine parsing/type checking, timing, input behavior, layout, travel persistence
+and gameplay acceptance require the owner's manual testing. The PR contains an
+ordered checklist, including acquisition by collection and by recovery in separate
+fresh playthroughs.
