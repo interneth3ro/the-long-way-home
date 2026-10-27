@@ -5,6 +5,16 @@ extends ItemDefinition
 @export var footprint_cells: Vector2i = Vector2i(2, 2)
 @export var extraction_point: Vector2 = Vector2(32, 32)
 @export var compatible_resources: Array[StringName] = []
+@export var output_item: ItemDefinition
+@export var output_per_cycle: int = 1
+@export var cycle_seconds: float = 1.0
+@export var output_capacity: int = 20
+
+
+func has_production() -> bool:
+	return output_item != null and output_item.is_valid() and output_per_cycle > 0 \
+		and is_finite(cycle_seconds) and cycle_seconds > 0.0 \
+		and output_capacity >= output_per_cycle
 
 
 func is_valid() -> bool:

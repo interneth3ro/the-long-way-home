@@ -116,7 +116,8 @@ Implementation and coordinate conventions are recorded in the
   owner verification.
 - Future production: Ferrite Ore → Smelter → Ferrite Ingot → Fabricator →
   Plate / Rod / Bearing. Computer's initial repair requires Plates and Rods.
-  These machines, recipes and extraction remain unimplemented.
+  Extraction is added by the production feature below, pending merge and owner
+  playtesting. Smelting, fabrication and their recipes remain unimplemented.
 
 First Ferrite implementation is merged in PR #28. The owner reports all 15 original
 manual playtests passed; final musing timing and temporary developer coordinate
@@ -142,9 +143,9 @@ durable save/load. See the [implementation notes](../README.md#first-ferrite---d
 
 Recover the Extractor implementation is merged in PR #30; agent validation was
 static only. It adds the bay, inventory and first recovery step. Deployment and
-deployed-machine recovery are added by the feature below; mining, power,
-production and later starter rack recovery remain unimplemented. Inventory and
-recovery are session-only and reset with a fresh Main instance. See the
+deployed-machine recovery are merged in PR #32; production is added by the
+feature below. Power and later starter rack recovery remain unimplemented.
+Inventory and recovery are session-only and reset with a fresh Main instance. See the
 [implementation notes](../README.md#recover-the-extractor-pr-30-merged)
 for approved dialogue, ownership and validation limits.
 
@@ -174,12 +175,44 @@ for approved dialogue, ownership and validation limits.
   resource data, future formations and genuine blocking obstacles remain separate.
 - The first successful deployment changes Restore Computer guidance to
   **Produce Ferrite Ore with the Extractor.** Recovery never resets progression.
-  The Extractor stays unpowered and nonproducing; no new dialogue is added.
+  PR #32 left the Extractor unpowered and nonproducing; the milestone below
+  introduces temporary power-independent production. No new dialogue is added.
 
-Implementation is on the deployment feature branch, pending merge and owner
-playtesting. Controls, ranges, state ownership, exclusions and static-validation
-limits are recorded in the
-[implementation notes](../README.md#deploy-the-extractor-feature-branch-pending-merge).
+Implementation is merged in PR #32. Controls, ranges, state ownership, exclusions
+and static-validation limits are recorded in the
+[implementation notes](../README.md#deploy-the-extractor-pr-32-merged).
+
+## Approved Ferrite Ore production direction
+
+- Discrete repeating Extractor cycles provisionally produce 1 Ferrite Ore each
+  second (60/minute maximum) into one 20-ore internal buffer. Machine definitions
+  configure output, quantity, cycle duration and capacity. Infinite compatible
+  ground is required; electrical requirements are temporarily bypassed.
+- Persistent planet state owns production, independent of terrain presentation,
+  Dave's location and machine UI. Full output pauses work without losing existing
+  fractional progress; collection resumes it. There is no offline production or
+  disk save/load.
+- E opens a compact nonpausing machine panel within its own interaction range.
+  Live progress, status, stored quantity/capacity and Collect All are shown.
+  Producing is green, Output Full amber and Inactive gray on a subtle steady light.
+  Movement remains available; range exit, inventory, tools and transitions close
+  the panel, as do Esc and its close button.
+  While the panel is open, B cannot activate recovery; close it first. R does not
+  rotate a preview and E does not trigger another world interaction.
+- Collect All transfers available ore into Materials. B recovery automatically
+  returns stored solid ore and packaged machinery together, discarding incomplete
+  work. Failed transfers leave both inventories and the machine unchanged.
+- First successful acquisition through collection or recovery advances Restore
+  Computer guidance to **Locate the Smelter in the maintenance bay.** Production
+  alone does not advance it. Progression is permanent for this playthrough.
+- Smelter recovery, smelting, electrical networks and logistics remain deferred.
+  Future material conduits and two Extractor outputs sharing one buffer are
+  documented in [issue #35](https://github.com/interneth3ro/the-long-way-home/issues/35).
+  No ports or transport are implemented in this milestone.
+
+Implementation is on the production feature branch, pending merge and owner
+playtesting. Validation is static only; controls, ownership and limits are in the
+[implementation notes](../README.md#produce-ferrite-ore-feature-branch-pending-merge).
 
 ## Unresolved design details
 

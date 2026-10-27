@@ -7,8 +7,9 @@ Computer dialogue, inspection and objective activation. Merged PR #26 adds an
 authored exterior and reusable hatch transitions. Merged PR #27 adds seeded
 chunk terrain. Merged PR #28 adds First Ferrite discovery, an internal musing
 and Extractor guidance. Merged PR #30 adds a maintenance bay and provisional
-inventory. This feature branch adds Extractor deployment and recovery, pending
-merge and owner playtesting.
+inventory. Merged PR #32 adds Extractor deployment and recovery. This feature
+branch adds Ferrite Ore production and collection, pending merge and owner
+playtesting.
 Its gameplay implementation is independent of FactoryGame; the approved Dave
 migration below reuses only two legacy artwork sheets.
 
@@ -1051,7 +1052,7 @@ were run. Engine parsing, input routing, text layout, interaction physics, trave
 and gameplay remain for owner verification. The PR includes an ordered manual
 checklist to conduct one item at a time.
 
-## Deploy the Extractor (feature branch, pending merge)
+## Deploy the Extractor (PR #32, merged)
 
 Open inventory with **I**, then click **Extractor** in Equipment to enter
 construction immediately. There is no selected-equipment state or separate
@@ -1070,7 +1071,8 @@ snapping works across zero and negative coordinates. Rotation preserves that
 cell, swaps asymmetric footprint dimensions on odd quarter turns, and rotates
 the extraction point in the same coordinate convention. The Extractor's center
 extraction point must fall inside compatible mineral-bearing ground; the rest
-of its footprint may extend outside. No depletion or rate calculation occurs.
+of its footprint may extend outside. Deposits never deplete; production is
+described in the next milestone below.
 `MachineDefinition` extends the existing packaged `ItemDefinition`; the Extractor
 resource supplies Ferrite compatibility. Generic validation and highlighting
 contain no Ferrite rule. Each deposit supplies its highlight color; compatible
@@ -1132,8 +1134,9 @@ The first successful Extractor deployment permanently advances this playthrough'
 **Restore Computer** guidance to **Produce Ferrite Ore with the Extractor.**
 Recovery and redeployment do not revert it or repeat the milestone. Existing
 Ferrite discovery, rack recovery, dialogue and tracker preferences are preserved.
-The objective remains active. The machine is **unpowered and nonproducing**:
-mining, power, smelting, fabrication, logistics, manufacturing, hotbar support,
+The objective remains active. PR #32 left the machine unpowered and nonproducing;
+the production milestone below adds provisional power-independent extraction.
+Power, smelting, fabrication, logistics, manufacturing, hotbar support,
 terrain/vegetation removal, additional machines/resources and final artwork are
 deferred.
 
@@ -1146,3 +1149,78 @@ probes were run. Engine parsing, input routing, physics contact, rendering/UI
 layout and actual travel/persistence require owner playtesting. The feature PR
 contains an ordered manual checklist, including repeated cancel/place/recover,
 range limits, edge contact, GUI input, chunk travel and scene revisits.
+
+## Produce Ferrite Ore (feature branch, pending merge)
+
+The Extractor automatically produces **1 Ferrite Ore per 1.0-second cycle**
+(provisional maximum **60/minute**) into its own **20-ore buffer**. Output item,
+quantity per cycle, duration and capacity are exports on `MachineDefinition`,
+configured by `inventory/extractor.tres`. Ferrite Ore uses the existing shared
+quantity inventory with stable ID `ferrite_ore` and Materials presentation.
+The compatible infinite Ferrite deposit and placement geometry are unchanged.
+Electrical requirements are temporarily bypassed; there is no power simulation.
+
+`PlanetWorldState` remains authoritative for each machine's identity, definition,
+cell, rotation, elapsed cycle progress and whole-item output. Persistent
+`PlaythroughState._process` advances all machines while Main is active, including
+cabin/bay visits, transitions, open interfaces and chunk unloading.
+Delayed updates complete multiple cycles up to available capacity. Reaching the
+available-cycle time limit completes all affordable cycles directly, avoiding
+division-rounding undercounts for configurable durations such as 0.7 seconds.
+A machine pauses if another whole cycle cannot fit and resumes automatically
+after withdrawal. Blocked updates preserve existing fractional progress and earn no
+backlog; reaching capacity completes the final cycle. No visuals, animation,
+panel or terrain node drives production. Fresh Main resets machines, inventory
+and progression; there is no offline production, disk persistence or session
+catch-up.
+
+Approach a deployed machine and press **E** to inspect it through the existing
+nearest-visible-target interaction detector. Machine inspection has a separate
+**96-world-unit** range export on Dave's `InteractionDetector`, measured from
+the interaction origin to the machine center, independent of the 160-unit
+construction/recovery ranges. The compact nonpausing panel shows machine name,
+Producing / Output Full / Inactive, live cycle percentage and output/capacity.
+A small steady machine light reflects those authoritative states in green,
+amber or neutral gray. Presenters initialize the light from authoritative state
+before attachment, then poll status and request a redraw only when it changes.
+The placement ghost has no operating light.
+
+**Collect All** transfers completed output through the existing inventory API,
+clears the buffer only after successful transfer, leaves the panel open and
+preserves cycle progress. Empty collection is a no-op; the empty-buffer button
+is disabled. Movement remains available. **Esc** or **Close** dismisses the panel;
+walking out of range, opening inventory, entering construction/recovery, or
+starting a scene transition closes it automatically. While the panel is open,
+**B** cannot activate recovery and leaves the panel open; close it first. **R**
+does not rotate a preview and **E** cannot trigger another world interaction.
+Recovery activation checks `MachineUI.is_open()` before changing tool mode or
+emitting `mode_started`, using the detector's existing panel reference. **I**
+opens inventory and closes the panel. GUI clicks cannot also confirm
+construction/recovery; dialogue, responses and tools keep input ownership.
+
+The existing **B**, then **left-click** recovery now returns all completed solid
+output and one packaged machine together, removes its persistent record and
+discards incomplete cycle progress. Synchronous transaction guards prevent
+collection, simulation and recovery from interleaving. Notifications occur only
+after inventory and machine state agree. If either inventory addition fails,
+recovery restores the prior inventory and retains the complete deployed record.
+No fluid/gas categories or generalized transfer framework are introduced.
+
+The first successful Ferrite Ore acquisition in Materials, through either
+collection or recovery, permanently advances **Restore Computer** guidance to
+**Locate the Smelter in the maintenance bay.** Inventory notification drives
+this one-time playthrough flag; production into a machine buffer does not.
+Removing ore cannot revert it, and repeated collection cannot retrigger it.
+Earlier milestones and approved dialogue are preserved. Smelter recovery,
+smelting, fabrication, electricity and logistics remain deferred. Future
+conduits and two outputs sharing this buffer are tracked in
+[issue #35](https://github.com/interneth3ro/the-long-way-home/issues/35);
+no ports, routing or transport are implemented here.
+
+Validation is static only: standalone gdtoolkit 4.5 grammar parsing, resource and
+scene wiring inspection, production arithmetic and transaction/control-flow
+review, protected-file comparison, Markdown links and Git whitespace checks.
+No Godot, imports, project code, headless, graphical or performance checks were
+run. Engine type checking, production timing, physics/input behavior, UI layout,
+travel persistence and all gameplay acceptance require owner manual testing.
+The feature PR provides the ordered playtest checklist.

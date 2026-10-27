@@ -1,0 +1,82 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scenes/ui/machine_ui.gd" id="1_ui"]
+
+[sub_resource type="StyleBoxFlat" id="MachineStyle"]
+bg_color = Color(0.045, 0.075, 0.10, 0.97)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.47, 0.61, 0.60, 1)
+content_margin_left = 16.0
+content_margin_top = 12.0
+content_margin_right = 16.0
+content_margin_bottom = 12.0
+
+[node name="MachineUI" type="CanvasLayer"]
+layer = 2
+script = ExtResource("1_ui")
+
+[node name="HUD" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Panel" type="PanelContainer" parent="HUD"]
+visible = false
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -360.0
+offset_top = 100.0
+offset_right = -24.0
+grow_horizontal = 0
+mouse_filter = 0
+theme_override_styles/panel = SubResource("MachineStyle")
+
+[node name="Content" type="VBoxContainer" parent="HUD/Panel"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 10
+
+[node name="Title" type="Label" parent="HUD/Panel/Content"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 22
+text = "Extractor"
+
+[node name="Status" type="Label" parent="HUD/Panel/Content"]
+layout_mode = 2
+mouse_filter = 2
+text = "Inactive"
+
+[node name="Progress" type="ProgressBar" parent="HUD/Panel/Content"]
+custom_minimum_size = Vector2(0, 24)
+layout_mode = 2
+mouse_filter = 2
+step = 0.1
+
+[node name="Output" type="Label" parent="HUD/Panel/Content"]
+layout_mode = 2
+mouse_filter = 2
+text = "Ferrite Ore: 0 / 20"
+
+[node name="Collect" type="Button" parent="HUD/Panel/Content"]
+layout_mode = 2
+mouse_filter = 0
+focus_mode = 0
+text = "Collect All"
+
+[node name="Close" type="Button" parent="HUD/Panel/Content"]
+layout_mode = 2
+mouse_filter = 0
+focus_mode = 0
+text = "Close (Esc)"
+
+[connection signal="pressed" from="HUD/Panel/Content/Collect" to="." method="_collect"]
+[connection signal="pressed" from="HUD/Panel/Content/Close" to="." method="close"]

@@ -4,6 +4,8 @@ extends Node2D
 # Provisional, shared by deployed machines and the neutral placement ghost.
 var definition: MachineDefinition
 var turns: int = 0
+var show_status: bool = false
+var status: PlanetWorldState.OperatingStatus = PlanetWorldState.OperatingStatus.INACTIVE
 
 
 func _draw() -> void:
@@ -20,3 +22,10 @@ func _draw() -> void:
 	draw_rect(Rect2(Vector2(size.x * 0.5 - 5, 2), Vector2(10, 23)), Color(0.73, 0.63, 0.39))
 	draw_line(Vector2(12, size.y - 12), Vector2(size.x - 12, size.y - 12),
 		Color(0.12, 0.15, 0.17), 4.0)
+	if show_status:
+		var color := Color(0.55, 0.58, 0.59)
+		if status == PlanetWorldState.OperatingStatus.PRODUCING:
+			color = Color(0.35, 0.78, 0.46)
+		elif status == PlanetWorldState.OperatingStatus.OUTPUT_FULL:
+			color = Color(0.94, 0.69, 0.28)
+		draw_circle(Vector2(size.x - 13, size.y - 13), 3.5, color)

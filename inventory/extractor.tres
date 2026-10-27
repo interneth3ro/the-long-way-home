@@ -1,6 +1,7 @@
-[gd_resource type="Resource" script_class="MachineDefinition" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="MachineDefinition" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://construction/machine_definition.gd" id="1_item"]
+[ext_resource type="Resource" path="res://inventory/ferrite_ore.tres" id="2_ore"]
 
 [resource]
 script = ExtResource("1_item")
@@ -10,3 +11,7 @@ section = 1
 footprint_cells = Vector2i(2, 2)
 extraction_point = Vector2(32, 32)
 compatible_resources = Array[StringName]([&"ferrite"])
+output_item = ExtResource("2_ore")
+output_per_cycle = 1
+cycle_seconds = 1.0
+output_capacity = 20

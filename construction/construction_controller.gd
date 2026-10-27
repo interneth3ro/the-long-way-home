@@ -2,6 +2,7 @@ class_name ConstructionController
 extends Node2D
 
 enum Mode { NONE, CONSTRUCTION, RECOVERY }
+signal mode_started
 
 @export var player: CharacterBody2D
 @export var progression: PlaythroughState
@@ -55,6 +56,7 @@ func begin_deployment(definition: MachineDefinition) -> bool:
 	_definition = definition
 	_turns = 0
 	_mode = Mode.CONSTRUCTION
+	mode_started.emit()
 	_ghost.definition = definition
 	if _world is PlanetExterior:
 		_world.set_construction_definition(definition)
@@ -135,9 +137,13 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("machine_recovery") and _mode == Mode.NONE:
 		if not world is PlanetExterior:
 			return
+		# Reject before mode_started can close the interface that owns input.
+		if _detector.machine_panel != null and _detector.machine_panel.is_open():
+			return
 		cancel()
 		_world = world
 		_mode = Mode.RECOVERY
+		mode_started.emit()
 		_detector.set_tool_active(true)
 	elif _mode != Mode.NONE and event is InputEventMouseButton \
 			and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
