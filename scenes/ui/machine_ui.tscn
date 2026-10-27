@@ -55,6 +55,12 @@ layout_mode = 2
 mouse_filter = 2
 text = "Inactive"
 
+[node name="Explanation" type="Label" parent="HUD/Panel/Content"]
+visible = false
+layout_mode = 2
+mouse_filter = 2
+text = "No production configured."
+
 [node name="Progress" type="ProgressBar" parent="HUD/Panel/Content"]
 custom_minimum_size = Vector2(0, 24)
 layout_mode = 2

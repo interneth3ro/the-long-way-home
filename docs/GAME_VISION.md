@@ -231,23 +231,49 @@ ownership and limits are in the
   leaving the rack empty; a fresh playthrough restores it.
 - Successful recovery advances Restore Computer guidance to **Deploy the Smelter
   near the Extractor.** Inventory possession alone does not advance it and item
-  removal cannot revert it. “Near” is guidance only. Packaged Smelter is visible
-  in Equipment without a deployment action; deployment, smelting and recipes are
-  subsequent work. Fabricator stays visible, noninteractive and unrecoverable.
+  removal cannot revert it. “Near” is guidance only. PR #38 kept the packaged
+  Smelter inert; the approved deployment milestone below makes it deployable.
+  Smelting and recipes remain subsequent work. Fabricator stays visible,
+  noninteractive and unrecoverable.
 - The maintenance bay arrangement is temporary. Future HD environments should
   include varied mounting, damaged infrastructure, maintenance access and
   environmental storytelling rather than three evenly spaced machines. This
   milestone preserves the current layout and collision.
 
-Implementation is on the Smelter recovery feature branch, pending merge and owner
-playtesting. Validation is static only; state ownership, inert item representation
-and exact musing presentation are recorded in the
-[implementation notes](../README.md#smelter-recovery-feature-branch-pending-merge).
+Implementation is merged in PR #38. Agent validation was static only; state
+ownership, the original inert item representation and exact musing presentation
+are recorded in the
+[implementation notes](../README.md#smelter-recovery-pr-38-merged).
+
+## Approved Smelter deployment direction
+
+- Reuse the packaged Smelter identity and existing construction system: click
+  Equipment to deploy, 2×2 construction cells (64×64 units), R quarter turns,
+  neutral ghost, validity footprint and ordinary range/obstacle/occupancy rules.
+  Empty resource compatibility permits general ground without deposit
+  highlighting. “Near the Extractor” imposes no proximity constraint.
+- Use a distinctive provisional cold furnace silhouette and neutral gray status
+  indicator, without active furnace effects. The shared E panel shows Inactive
+  and “No production configured.” and hides production-only controls.
+- Existing planet ownership retains identity, position and rotation through
+  interior visits and terrain unloading. B recovery returns one packaged
+  Smelter. First successful deployment permanently advances Restore Computer
+  guidance to **Produce Ferrite Ingots with the Smelter.** Recovery cannot reverse
+  it; redeployment cannot repeat it. A fresh playthrough resets both states.
+- Actual smelting, inputs/outputs, recipes, ports, power and material transfer
+  remain deferred. Future ports should rotate with the machine, with default
+  lower-left input and lower-right output as tracked in
+  [issue #35](https://github.com/interneth3ro/the-long-way-home/issues/35).
+  No new dialogue or Fabricator functionality is added.
+
+Implementation is on the Smelter deployment feature branch, pending merge and
+owner playtesting. Static evidence and limitations are recorded in the
+[implementation notes](../README.md#deploy-the-smelter-feature-branch-pending-merge).
 
 ## Unresolved design details
 
 - The precise conspiracy behind Dave's arrival remains under development.
-- Footprints beyond the approved Extractor, port rules, rail behavior, research
+- Footprints beyond the approved Extractor and Smelter, port rules, rail behavior, research
   content, chapter structure, dialogue formats, and ending conditions still
   require design work. The approved intentions above do not settle these details.
 

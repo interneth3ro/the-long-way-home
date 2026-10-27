@@ -8,8 +8,9 @@ authored exterior and reusable hatch transitions. Merged PR #27 adds seeded
 chunk terrain. Merged PR #28 adds First Ferrite discovery, an internal musing
 and Extractor guidance. Merged PR #30 adds a maintenance bay and provisional
 inventory. Merged PR #32 adds Extractor deployment and recovery; merged PR #36
-adds Ferrite Ore production and collection. This feature branch adds Smelter
-recovery and the Ferrite acquisition musing, pending merge and owner playtesting.
+adds Ferrite Ore production and collection. Merged PR #38 adds Smelter recovery
+and the Ferrite acquisition musing. This feature branch adds Smelter deployment,
+pending merge and owner playtesting.
 Its gameplay implementation is independent of FactoryGame; the approved Dave
 migration below reuses only two legacy artwork sheets.
 
@@ -1226,7 +1227,7 @@ run. Engine type checking, production timing, physics/input behavior, UI layout,
 travel persistence and all gameplay acceptance require owner manual testing.
 The feature PR provides the ordered playtest checklist.
 
-## Smelter recovery (feature branch, pending merge)
+## Smelter recovery (PR #38, merged)
 
 The existing first-Ferrite-acquisition event now also presents Dave's exact musing
 from `dialogue/ferrite_acquisition.tres`:
@@ -1251,10 +1252,10 @@ records recovery and emits completion. Failed insertion leaves recovery incomple
 and the rack available. Inventory possession alone cannot advance this milestone.
 
 `inventory/smelter.tres` uses stable ID `smelter`, display name **Smelter** and the
-Equipment section. It deliberately uses the existing `ItemDefinition` type: the
-UI already renders Equipment without `MachineDefinition` as quantity text without
-a click action. No deployment capability, footprint or recipe is introduced.
-Extractor remains a `MachineDefinition` with its existing single-click deployment.
+Equipment section. PR #38 used `ItemDefinition` to display quantity text without
+a deployment action. The deployment milestone below promotes this same resource
+to `MachineDefinition`, preserving its identity and quantity storage.
+Extractor retains its existing single-click deployment.
 
 `smelter_rack.gd` follows the Extractor rack presentation pattern, hiding Module
 and Secured and showing EMPTY after recovery. Rack, frame, sign, position and
@@ -1263,8 +1264,8 @@ scene revisits retain the empty rack. Inventory and recovery reset only with a
 fresh Main instance; there is no disk save/load. Restore Computer retains its
 single objective ID and all earlier stages, with successful Smelter recovery
 taking precedence to show **Deploy the Smelter near the Extractor.** Removing
-items or revisiting Computer cannot revert this guidance. Actual deployment is
-the next milestone; "near" adds no placement rule.
+items or revisiting Computer cannot revert this milestone. The deployment stage
+below advances guidance further; "near" adds no placement rule.
 
 Fabricator remains visible, secured, noninteractive and unavailable in inventory.
 The maintenance bay remains provisional: future HD art should use varied mounting,
@@ -1278,3 +1279,45 @@ No Godot, project code, engine import, headless or graphical checks were run.
 Engine parsing, physics, input, UI readability, persistence during travel and
 debugger output require owner manual playtesting. The feature PR supplies an
 ordered checklist for testing one item at a time.
+
+## Deploy the Smelter (feature branch, pending merge)
+
+After rack recovery, click Smelter in Equipment to close inventory and enter
+the existing construction mode immediately. The same `smelter` item is now a
+`MachineDefinition` with a 2x2-cell (64x64-unit) footprint. Its empty
+`compatible_resources` list already permits ordinary unobstructed planetary
+ground and highlights no deposits. There is no Extractor proximity requirement.
+Existing 32-unit snapping, clockwise R rotation, green/red footprint, neutral
+translucent ghost, range, obstacle/occupancy checks, confirmation and cancellation
+are reused without placement exceptions or controller changes.
+
+`MachineVisual` draws a provisional cold furnace chamber, industrial housing,
+side framing and directional top vent. Deployed status stays gray; the ghost
+omits the status light. Presentation owns no simulation state.
+
+The shared E inspection panel uses `has_production()` to show **Inactive** and
+**No production configured.**, hiding progress, output/capacity and Collect All.
+Its Close button, movement, range closure and input/transition guards remain.
+Opening an Extractor restores its existing production controls. The Smelter has
+no output item, cycle or capacity, so persistent production skips it; no new
+timer, buffer, ports, power, recipe or transport is introduced.
+
+Existing atomic planet transactions consume one packaged item only on successful
+placement and create one record with ID, definition, cell and rotation. B recovery
+removes that record and returns one packaged item. Planet state owns machines
+independently of terrain chunks and cached interior visits; there is no disk save.
+The first committed Smelter deployment emits the existing planet deployment event;
+`PlaythroughState` records `smelter_deployed` once and emits
+`smelter_deployment_completed`. Main gives it guidance precedence within the same
+Restore Computer objective: **Produce Ferrite Ingots with the Smelter.** This is
+future guidance; smelting remains unimplemented. Possession, failed/canceled
+placement, recovery and redeployment cannot reset or repeat completion. A fresh
+Main resets both planet and progression. Rack recovery, all existing musings and
+Fabricator locks remain unchanged.
+
+Validation is static only: source/control-flow review, resource references and
+scene wiring, protected-file comparisons, Markdown destinations and Git whitespace
+checks. No Godot, project code, imports, headless, graphical or performance checks
+were run. Engine parsing/type checking, physics/input, layout, visual readability,
+travel persistence and gameplay acceptance require owner manual testing. The
+feature PR supplies the ordered playtest checklist.

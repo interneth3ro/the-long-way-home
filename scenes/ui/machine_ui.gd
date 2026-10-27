@@ -13,6 +13,7 @@ extends CanvasLayer
 @onready var _panel: PanelContainer = $HUD/Panel
 @onready var _title: Label = $HUD/Panel/Content/Title
 @onready var _status: Label = $HUD/Panel/Content/Status
+@onready var _explanation: Label = $HUD/Panel/Content/Explanation
 @onready var _progress: ProgressBar = $HUD/Panel/Content/Progress
 @onready var _output: Label = $HUD/Panel/Content/Output
 @onready var _collect_button: Button = $HUD/Panel/Content/Collect
@@ -88,8 +89,14 @@ func _refresh(machine: Dictionary) -> void:
 			_status.text = "Output Full"
 		_:
 			_status.text = "Inactive"
-	_progress.value = 100.0 * machine.cycle_progress / definition.cycle_seconds \
-		if definition.has_production() else 0.0
+	var has_production := definition.has_production()
+	_explanation.visible = not has_production
+	_progress.visible = has_production
+	_output.visible = has_production
+	_collect_button.visible = has_production
+	if not has_production:
+		return
+	_progress.value = 100.0 * machine.cycle_progress / definition.cycle_seconds
 	var name_text := definition.output_item.display_name if definition.output_item != null else "Output"
 	_output.text = "%s: %d / %d" % [name_text, machine.output, definition.output_capacity]
 	_collect_button.disabled = machine.output == 0
