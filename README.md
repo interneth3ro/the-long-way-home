@@ -75,6 +75,15 @@ production routes remain unchanged. See the guide's nine sequential owner tests.
 
 ## Maintenance bay V2 development previews
 
+This feature branch adds an isolated stationary Smelter visual, pending merge
+and final locked-file owner retests. The owner reports 9/9 initial tests PASS
+and approved X=435.00, Y=-159.00, width=20.0, opacity=1.00; outline starts OFF.
+F6 `scenes/dev/maintenance_bay_v2_smelter_preview.tscn`: O/V simulate objective
+outline/removal, C/H toggle collision outlines/HUD, and movement/camera remain.
+Temporary live-tuning controls and recording HUD are removed. See
+[source, locked placement, controls and owner retests](docs/MAINTENANCE_BAY_V2_PREVIEW.md#stationary-smelter-visual-feature-branch-pending-merge).
+Agent validation is static only; production and existing previews remain unchanged.
+
 The feature branch adds an isolated stationary Extractor visual, pending merge
 and owner acceptance. F6 `scenes/dev/maintenance_bay_v2_extractor_preview.tscn`:
 O toggles its muted amber silhouette outline (default OFF), V simulates visual

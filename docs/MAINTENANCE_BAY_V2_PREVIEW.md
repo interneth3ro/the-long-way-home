@@ -78,6 +78,129 @@ environment convention at
   scale were visual acceptance targets. The subsequent collision request fixes
   world scale at the selected 1.25x.
 
+## Stationary Smelter visual (feature branch, pending merge)
+
+Owner launch, subject to the execution policy: F6
+[the isolated Smelter preview](../scenes/dev/maintenance_bay_v2_smelter_preview.tscn).
+Its [script](../scenes/dev/maintenance_bay_v2_smelter_preview.gd) extends the
+collision-preview script and calls its isolation setup. It inherits the actual
+room at 1.25x, right-exit barrier, disabled doorways, existing Dave/feet/camera,
+and C/H controls. It does not instantiate PR #54's transition/progression harness
+or the Extractor preview. F5, older previews and the reusable room are unchanged.
+
+The [reusable Smelter visual](../scenes/visuals/smelter_stationary.tscn) contains
+one sprite and a separate contact shadow under one hideable Node2D. No machine
+collision is added: Dave can walk through the sprite; existing room fixtures
+still collide. This is dormant stationary artwork only. The source's painted
+orange furnace lighting remains authoritative; no effects, animation, production,
+recovery, deployment, progression, persistent state or production cutover is added.
+O/V are visual simulations. The owner reports all nine initial acceptance tests
+PASS and approved the locked values below through the actual Godot preview.
+This records owner feedback, not agent runtime verification. Final locked-file
+retests remain pending before merge approval.
+
+### Source and final owner-approved foundation placement
+
+- Provenance: owner attachment `C:\Users\inter\Downloads\smelter.png`, copied
+  byte-for-byte to
+  [smelter_stationary.png](../assets/environment/maintenance_bay_v2/machines/smelter_stationary.png).
+  No crop, retouching, alpha cleanup, substitution or recompression.
+- PNG: 1536 x 1024, 8-bit RGBA. SHA-256:
+  `bf11742f8ca6fecc08ddf4a7a4b18b5a3fce1a57d4508524359dcd6d73a0f54d`.
+  Fully transparent: 774,069 pixels; alpha 1–31: 18,237; 32–127: 2,791;
+  128–254: 777,767; fully opaque: zero. Maximum alpha is 254/255.
+  Exclusive nonzero bounds `(0,17)`–`(1528,1024)`; alpha >=32 bounds
+  `(260,32)`–`(1335,944)`; alpha >=128 bounds `(260,32)`–`(1334,944)`.
+  There are 1,618 detached nonzero-alpha pixels outside the main 8-connected
+  component, all alpha <=2/255. Canvas-edge maximum alpha: top 0, bottom 1,
+  left 1, right 0. Faint specks/fringe remain unchanged. Genuine background
+  transparency passed the static asset gate; the owner reports the initial
+  alpha/shadow acceptance test PASS. Final locked-file reproduction is pending.
+- Background remains native 1536 x 1024 and byte-identical with the SHA-256
+  recorded above. Image center `(768,512)` maps to room-local `(0,0)`.
+  The owner-approved front-center mounting point is now locked at
+  **image `(1203,353)`**, room-local **`(435.00,-159.00)`**, scaled preview world
+  **`(543.75,-198.75)`**. These values supersede provisional `(424,-139)`.
+  The gridded pad sits right of the raised side housing, under ventilation
+  artwork and left of the east cabinets. This base anchor adds no collider/spawn.
+- Sprite: `centered=false`, source-pixel offset **`(-800,-944)`**, uniform
+  scale **`0.18`**. Source `(800,944)` maps to the visual root at the base's
+  lower contact edge. Alpha >=32 yields room bounds approximately
+  `(337.8,-323.16)`–`(531.3,-159)`, image `(1105.8,188.84)`–`(1299.3,353)`,
+  or 193.5 x 164.16 native room pixels. Multiply room coordinates by 1.25 for
+  preview world bounds. Source texels scale to 0.225 world units; camera zoom
+  further changes screen size. Placement comes from the owner's live tuning;
+  no Extractor transforms were reused. Scale and offset are unchanged.
+- Contact shadow: separate Sprite2D at visual-local `(0,-8)`, radial gradient
+  texture 128 x 64, scale `(1.45,0.5)` = 185.6 x 32 room units. Black alpha
+  0.16 at center, 0.08 at radius 0.65, zero at edge. It moves and hides with
+  the machine and adds no collision. Sorting follows the Extractor pattern:
+  preview/root and PreviewRoom Y-sort, machine and Dave Z=1.
+- Outline reuses the unchanged
+  [objective silhouette shader](../shaders/objective_silhouette.gdshader).
+  Locked width **20.0 source texels**, opacity **1.00**, amber RGB
+  **`(0.65,0.43,0.19)`**, outline **OFF**, machine **installed**.
+  The shader's supported hint range remains **0–20**. No shader edit is needed.
+  At 20 texels the radius is 3.6 room units / 4.5 preview-world units.
+  `resource_local_to_scene=true` isolates each Smelter ShaderMaterial instance;
+  only that instance receives outline-toggle updates. Extractor's approved position,
+  material values and behavior remain unchanged.
+
+### Locked preview controls and HUD
+
+| Key | Action in this preview only |
+| --- | --- |
+| O | Toggle requested objective outline, initially OFF |
+| V | Hide/show sprite, shadow and outline together; requested outline retained |
+| C / H | Inherited collision-outline/HUD toggles, initially OFF/ON |
+| WASD / arrows; wheel | Existing movement; camera zoom |
+
+Temporary I/K/J/L (including Shift), U/P, brackets and R tuning handlers are
+removed, along with tuning baselines, deltas, reset logic, tuning legend and
+recording line. Position and outline width/color are authored in the scenes;
+only outline-enabled state changes through the instance-local material at runtime.
+No global InputMap bindings, clipboard, saved settings or additional controls
+are introduced. Key releases/repeats and Ctrl/Alt/Meta combinations are ignored.
+
+The development-only HUD shows installed/removed, requested outline ON/OFF,
+collision outlines ON/OFF and the retained controls. H hides/restores it. O while
+removed retains the requested state for V restoration. C/H refresh the status
+after the inherited handler. The preview scene/script remain future
+retirement-audit candidates; reusable scene/art remain.
+
+### Validation and focused owner retests
+
+The owner reports **9/9 initial acceptance tests PASS** in the final-lock prompt,
+including placement, alpha/shadow, tuning, O/V/C/H, prior previews and production.
+The owner selected X=435.00, Y=-159.00, width=20.0, opacity=1.00, unchanged amber
+RGB (0.65,0.43,0.19), initial outline OFF. This amendment locks those values and
+removes temporary tuning; it does not infer a new runtime PASS.
+
+Amendment validation is static only: exact scene position/material values,
+unchanged shader range, retained O/V/C/H code paths, absent temporary handlers
+and HUD text, scene/resource references/load counts, protected-file and image
+hashes, placement math, local documentation links and Git whitespace. The 24
+existing Python static transition/geometry/connection tests pass. Original PNG
+integrity and alpha analysis above were performed during the initial slice.
+No Godot import, GDScript engine/type check, shader compilation, headless execution,
+graphical launch, gameplay or performance verification was performed by the agent.
+The reusable Smelter scene, PNG, shadow, Extractor, background/collision, prior
+previews, PR #54 harness, Dave/camera and F5 production remain unchanged.
+
+Final locked-file retests are **pending, one result at a time**. These owner
+instructions do not authorize agent execution:
+
+1. F6 the Smelter preview: approved tuned position and outline initially OFF.
+2. O shows the approved amber silhouette width/intensity; O again removes it.
+3. V with outline ON and OFF hides/restores machine, shadow and outline together;
+   the original foundation stays intact.
+4. C/H and movement/camera still work; former tuning keys no longer adjust values.
+5. Check debugger errors and only the targeted regressions warranted by the diff.
+
+Stop for owner verification. Do not merge or perform cleanup. Owner merge
+approval remains a separate decision; any later cleanup must be explicitly
+requested through the dedicated maintenance conversation under repository policy.
+
 ## Stationary Extractor visual (feature branch, pending merge)
 
 Owner launch: F6 [the Extractor preview](../scenes/dev/maintenance_bay_v2_extractor_preview.tscn)
