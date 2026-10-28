@@ -111,28 +111,34 @@ PR #54 harness, transition infrastructure and F5 production files are unchanged.
   `(113, 11)`–`(1227, 1127)`; nonzero bounds `(0, 8)`–`(1311, 1186)`.
   Alpha-1 residuals touch the border. Inspection shows colored edge fringe
   and faint residual transparency; no solid rectangular background. Bytes are
-  preserved, with no optimized derivative. Halo acceptability remains unverified.
+  preserved, with no optimized derivative. Initial halo review passed per the
+  owner's amendment report; no agent graphical verification was performed.
 - The immutable 1536 x 1024 background hash documented above matches before
   and after implementation. No background or existing import metadata changes.
 - Actual pad rim is approximately image x 230–424, y 220–390, measured visually
   from the approved background, not old concept labels. Chosen front-center
-  anchor: image `(326, 380)`, room local `(-442, -132)` after subtracting the
-  centered image origin `(768, 512)`, preview world `(-552.5, -165)` at 1.25x.
+  anchor after polish: image `(326, 375)`, room local `(-442, -137)` after
+  subtracting the centered image origin `(768, 512)`, preview world
+  `(-552.5, -171.25)` at 1.25x. This moves the previous room-local anchor
+  `(-442, -132)` toward the far wall by 5 units (6.25 preview-world units).
 - Artwork base anchor `(669, 1108)` maps to that location with uncentered sprite
   offset `(-669, -1108)` and uniform scale `0.16` (effective preview scale `0.20`).
-  Alpha > 16 bounds map to room-image `(237.04, 204.48)`–`(415.28, 383.04)`,
-  size 178.24 x 178.56 room units. Body overhangs the rear rim about 16 units;
-  base sits on its front. Right edge stays left of raised side housing x 432–476;
+  Alpha > 16 bounds map to room-image `(237.04, 199.48)`–`(415.28, 378.04)`,
+  size 178.24 x 178.56 room units. Body overhangs the rear rim about 21 units;
+  base sits toward its front. Right edge stays left of raised side housing x 432–476;
   left edge stays right of west cabinet, which reaches about x 202. Faint-alpha
-  canvas extends further. Perspective, fit and scale remain provisional.
+  canvas extends further. Initial fit/scale passed per the owner; nudged placement
+  awaits targeted retest A.
 - Separate contact-shadow Sprite2D: local `(0, -7)`, radial GradientTexture2D
   128 x 64, scale `(1.4, 0.55)`, extent 179.2 x 35.2 room units. Black alpha
   0.18 at center, 0.10 at radius 0.65, zero at edge; transform, visibility and
   gradient are independently editable. Parent visibility hides all components.
 - [Reusable shader](../shaders/objective_silhouette.gdshader): eight radial alpha
-  samples; soft threshold 0.08–0.45 ignores faint specks. Default width 5 source
-  texels = 0.8 room units = 1 world pixel at preview camera zoom 1. Muted amber
-  `(0.65, 0.43, 0.19, 0.55)`, disabled by default. Expanded quad and UV remapping
+  samples; soft threshold 0.08–0.45 ignores faint specks. Scene-local width 7 source
+  texels = 1.12 room units = 1.4 preview-world units at camera zoom 1. Muted amber
+  `(0.65, 0.43, 0.19, 0.80)`, disabled by default. Width was 5 and alpha 0.55
+  before polish; reusable shader implementation and fallback defaults are unchanged.
+  Expanded quad and UV remapping
   with zero sampling outside bounds accommodate edge-touching silhouettes.
   Original RGBA composites over the outline without permanent tint. Linear
   filtering; no glow, pulse, animation or per-frame CPU outline work. Tune width
@@ -154,7 +160,19 @@ previews while allowing later isolated previews to add files. Resource/load-coun
 hash, placement-math, local-link and whitespace checks also pass. These results
 provide no engine or visual acceptance.
 
-Run **one test at a time**, recording PASS/FAIL before advancing:
+The owner reports all nine initial tests below PASS, with no failures, in the
+PR #55 polish amendment. This records owner feedback, not agent runtime checks.
+The placement and outline polish now requires these targeted owner retests,
+**one at a time**, before merge approval:
+
+- **Retest A — Placement:** F6 the Extractor preview; confirm the machine sits
+  slightly farther toward the back of the pad without unwanted wall/fixture overlap.
+- **Retest B — Outline:** press O; confirm noticeably clearer but restrained
+  amber emphasis, with no clipping or rectangular border.
+- **Quick spot checks:** O off/on reliability and V hide/restore with shadow and
+  outline; no new errors. These retests remain pending; no new PASS is inferred.
+
+Initial nine-test acceptance plan (owner-reported PASS before polish):
 
 1. F6 the new preview in Godot 4.7: approved bay at 1.25x, machine installed,
    outline OFF, existing Dave/camera, no errors.
