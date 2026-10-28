@@ -41,8 +41,9 @@ func refresh_presentation() -> void:
 	outline.set_shader_parameter("outline_enabled", not recovered and _is_highlighted())
 	$Body/Shape.set_deferred("disabled", recovered)
 	$Interaction/Shape.set_deferred("disabled", recovered)
-	# P3 provides a target contract only: never offer or dispatch recovery input.
-	$Interaction.interaction_enabled = false
+	# The V2 Extractor adapter owns eligibility; later machines remain dormant.
+	if machine_id != "extractor":
+		$Interaction.interaction_enabled = false
 
 
 func _is_recovered() -> bool:

@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3]
+[gd_scene load_steps=13 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/world/maintenance_bay_v2.tscn" id="1_room"]
 [ext_resource type="Script" path="res://scenes/world/v2_room_arrival.gd" id="2_arrival"]
@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" path="res://scenes/visuals/fabricator_stationary.tscn" id="5_fabricator"]
 [ext_resource type="Script" path="res://scenes/world/stationary_machine_presentation.gd" id="6_presentation"]
 [ext_resource type="Script" path="res://scenes/interaction/world_interactable.gd" id="7_interaction"]
+[ext_resource type="Script" path="res://scenes/interaction/v2_extractor_recovery.gd" id="8_extractor_recovery"]
 
 [sub_resource type="RectangleShape2D" id="ExtractorBase"]
 size = Vector2(152, 44)
@@ -65,8 +66,8 @@ position = Vector2(0, 8)
 collision_layer = 1
 collision_mask = 0
 monitoring = false
-script = ExtResource("7_interaction")
-interaction_enabled = false
+script = ExtResource("8_extractor_recovery")
+interaction_prompt = "E — Recover Extractor"
 max_interaction_distance = 45.0
 
 [node name="Shape" type="CollisionShape2D" parent="StationaryMachines/Extractor/Interaction"]
