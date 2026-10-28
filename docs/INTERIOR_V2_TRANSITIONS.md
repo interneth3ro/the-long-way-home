@@ -1,5 +1,11 @@
 # Interior V2 automatic-transition preview
 
+The separate [two-room V2 harness](V2_TWO_ROOM_CONNECTION.md) connects the actual
+Primary and Maintenance rooms in a new development scene. This older preview's
+minimal destinations, controls and wrapper barriers remain unchanged. New
+room-owned doorway components are disabled by default, preventing duplicate
+requests here; only the new connected instances enable them.
+
 Feature-branch implementation, pending merge and owner acceptance. No test below
 is premarked passed. Follow the [execution safety policy](../AGENTS.md#godot-execution-safety);
 these owner-operated instructions do not authorize agent engine execution.
@@ -12,8 +18,9 @@ does not read or write saves. There are no factory objects, Computer interaction
 new objectives or narrative events in these minimal worlds.
 
 The previous [scale and collision previews](INTERIOR_V2_PREVIEW.md) remain
-available and unchanged. The approved V2 scene, its artwork, nine manifest
-hashes and all its collision shapes remain unchanged. A new development-only
+available and unchanged. V2 artwork, nine manifest hashes and all existing
+collision shapes remain unchanged. The newer room-owned doorway additions stay
+disabled in this preview. A development-only
 wrapper instances V2 at **1.25x** and supplies the transition contract at an
 unscaled root. Dave remains at original scale, including radius-10 feet centered
 at `(0,-10)`. Initial ground position is `(-110,28.75)`.

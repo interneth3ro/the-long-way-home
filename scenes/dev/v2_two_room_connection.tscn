@@ -1,0 +1,60 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://scenes/dev/v2_two_room_connection.gd" id="1_preview"]
+[ext_resource type="PackedScene" path="res://scenes/dev/v2_connection_interior.tscn" id="2_world"]
+[ext_resource type="PackedScene" path="res://scenes/player/dave.tscn" id="3_dave"]
+[ext_resource type="Script" path="res://scenes/main/playthrough_state.gd" id="4_progression"]
+[ext_resource type="Script" path="res://scenes/main/scene_transition_controller.gd" id="5_transitions"]
+[ext_resource type="Script" path="res://scenes/dev/physics_shape_outlines.gd" id="6_outlines"]
+
+[node name="DevelopmentOnlyV2TwoRoomConnection" type="Node2D"]
+script = ExtResource("1_preview")
+
+[node name="Worlds" type="Node2D" parent="."]
+
+[node name="InteriorV2" parent="Worlds" instance=ExtResource("2_world")]
+
+[node name="Dave" parent="." instance=ExtResource("3_dave")]
+position = Vector2(-637.5, -39.375)
+
+[node name="PlaythroughState" type="Node" parent="."]
+script = ExtResource("4_progression")
+
+[node name="SceneTransitions" type="Node" parent="." node_paths=PackedStringArray("player", "world_host", "progression")]
+script = ExtResource("5_transitions")
+player = NodePath("../Dave")
+world_host = NodePath("../Worlds")
+progression = NodePath("../PlaythroughState")
+
+[node name="Fade" type="CanvasLayer" parent="SceneTransitions"]
+layer = 100
+
+[node name="Curtain" type="ColorRect" parent="SceneTransitions/Fade"]
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+color = Color(0, 0, 0, 0)
+
+[node name="PhysicsShapeOutlines" type="Node2D" parent="." node_paths=PackedStringArray("environment", "player")]
+visible = false
+z_index = 100
+script = ExtResource("6_outlines")
+environment = NodePath("../Worlds/InteriorV2")
+player = NodePath("../Dave")
+
+[node name="PreviewHUD" type="CanvasLayer" parent="."]
+layer = 10
+
+[node name="Readout" type="Label" parent="PreviewHUD"]
+offset_left = 16.0
+offset_top = 16.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+text = "DEVELOPMENT ONLY | Two V2 rooms"
