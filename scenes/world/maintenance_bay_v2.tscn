@@ -1,9 +1,257 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=36 format=3]
 
 [ext_resource type="Texture2D" path="res://assets/environment/maintenance_bay_v2/maintenance_bay_v2_machine_free_background.png" id="1_background"]
+
+[sub_resource type="SegmentShape2D" id="NorthWest01"]
+a = Vector2(-643, -107)
+b = Vector2(-643, -242)
+
+[sub_resource type="SegmentShape2D" id="NorthWest02"]
+a = Vector2(-643, -242)
+b = Vector2(-548, -297)
+
+[sub_resource type="SegmentShape2D" id="NorthWest03"]
+a = Vector2(-548, -297)
+b = Vector2(-348, -297)
+
+[sub_resource type="SegmentShape2D" id="NorthWest04"]
+a = Vector2(-348, -297)
+b = Vector2(-288, -227)
+
+[sub_resource type="SegmentShape2D" id="NorthWest05"]
+a = Vector2(-288, -227)
+b = Vector2(-188, -242)
+
+[sub_resource type="SegmentShape2D" id="NorthWest06"]
+a = Vector2(-188, -242)
+b = Vector2(67, -242)
+
+[sub_resource type="SegmentShape2D" id="NorthEast01"]
+a = Vector2(172, -242)
+b = Vector2(212, -252)
+
+[sub_resource type="SegmentShape2D" id="NorthEast02"]
+a = Vector2(212, -252)
+b = Vector2(312, -297)
+
+[sub_resource type="SegmentShape2D" id="NorthEast03"]
+a = Vector2(312, -297)
+b = Vector2(522, -297)
+
+[sub_resource type="SegmentShape2D" id="NorthEast04"]
+a = Vector2(522, -297)
+b = Vector2(547, -97)
+
+[sub_resource type="SegmentShape2D" id="NorthEast05"]
+a = Vector2(547, -97)
+b = Vector2(622, -77)
+
+[sub_resource type="SegmentShape2D" id="NorthEast06"]
+a = Vector2(622, -77)
+b = Vector2(622, -47)
+
+[sub_resource type="SegmentShape2D" id="SouthAndWest01"]
+a = Vector2(622, 113)
+b = Vector2(622, 353)
+
+[sub_resource type="SegmentShape2D" id="SouthAndWest02"]
+a = Vector2(622, 353)
+b = Vector2(592, 378)
+
+[sub_resource type="SegmentShape2D" id="SouthAndWest03"]
+a = Vector2(592, 378)
+b = Vector2(-623, 378)
+
+[sub_resource type="SegmentShape2D" id="SouthAndWest04"]
+a = Vector2(-623, 378)
+b = Vector2(-643, 353)
+
+[sub_resource type="SegmentShape2D" id="SouthAndWest05"]
+a = Vector2(-643, 353)
+b = Vector2(-643, 158)
+
+[sub_resource type="SegmentShape2D" id="SouthAndWest06"]
+a = Vector2(-643, 158)
+b = Vector2(-608, 148)
+
+[sub_resource type="SegmentShape2D" id="SouthAndWest07"]
+a = Vector2(-608, 148)
+b = Vector2(-608, 28)
+
+[sub_resource type="SegmentShape2D" id="SouthAndWest08"]
+a = Vector2(-608, 28)
+b = Vector2(-643, 8)
+
+[sub_resource type="SegmentShape2D" id="SouthAndWest09"]
+a = Vector2(-643, 8)
+b = Vector2(-643, -107)
+
+[sub_resource type="SegmentShape2D" id="ReservedUpperDoorSolid"]
+a = Vector2(67, -242)
+b = Vector2(172, -242)
+
+[sub_resource type="ConvexPolygonShape2D" id="MainFloorBody"]
+points = PackedVector2Array(-223, -82, 132, -82, 184, -50, 184, 100, 97, 138, -198, 128, -238, 91, -238, -50)
+
+[sub_resource type="ConvexPolygonShape2D" id="ExtractorRaisedSideHousing"]
+points = PackedVector2Array(-336, -257, -292, -257, -292, -162, -320, -142, -336, -162)
+
+[sub_resource type="ConvexPolygonShape2D" id="SmelterRaisedSideHousing"]
+points = PackedVector2Array(277, -227, 327, -242, 342, -192, 312, -162, 277, -184)
+
+[sub_resource type="ConvexPolygonShape2D" id="FabricatorSideCabinets"]
+points = PackedVector2Array(-293, 198, -243, 198, -233, 363, -293, 363)
+
+[sub_resource type="ConvexPolygonShape2D" id="WestUpperCabinet"]
+points = PackedVector2Array(-628, -222, -573, -222, -566, -162, -588, -137, -628, -157)
+
+[sub_resource type="ConvexPolygonShape2D" id="WestLowerCabinet"]
+points = PackedVector2Array(-656, 63, -598, 63, -583, 128, -603, 153, -656, 138)
+
+[sub_resource type="ConvexPolygonShape2D" id="WestLowerMountingBlock"]
+points = PackedVector2Array(-620, 188, -573, 188, -573, 258, -608, 273, -620, 258)
+
+[sub_resource type="ConvexPolygonShape2D" id="NorthTank"]
+points = PackedVector2Array(-244, -294, -218, -302, -200, -280, -210, -250, -235, -245, -248, -266)
+
+[sub_resource type="ConvexPolygonShape2D" id="NorthEastTanks"]
+points = PackedVector2Array(214, -315, 287, -315, 302, -288, 272, -266, 227, -266, 212, -282)
+
+[sub_resource type="ConvexPolygonShape2D" id="EastUpperCabinets"]
+points = PackedVector2Array(552, -237, 620, -237, 620, -92, 552, -92)
+
+[sub_resource type="ConvexPolygonShape2D" id="EastLowerCabinet"]
+points = PackedVector2Array(562, 133, 622, 133, 622, 296, 542, 296, 542, 188)
+
+[sub_resource type="ConvexPolygonShape2D" id="SouthEastEquipment"]
+points = PackedVector2Array(267, 333, 382, 303, 512, 293, 602, 313, 622, 353, 592, 378, 267, 378)
 
 [node name="MaintenanceBayV2" type="Node2D"]
 texture_filter = 2
 
 [node name="Background" type="Sprite2D" parent="."]
 texture = ExtResource("1_background")
+
+[node name="StaticCollision" type="Node2D" parent="."]
+
+[node name="Perimeter" type="StaticBody2D" parent="StaticCollision"]
+collision_layer = 1
+collision_mask = 1
+
+[node name="NorthWest01" type="CollisionShape2D" parent="StaticCollision/Perimeter"]
+shape = SubResource("NorthWest01")
+
+[node name="NorthWest02" type="CollisionShape2D" parent="StaticCollision/Perimeter"]
+shape = SubResource("NorthWest02")
+
+[node name="NorthWest03" type="CollisionShape2D" parent="StaticCollision/Perimeter"]
+shape = SubResource("NorthWest03")
+
+[node name="NorthWest04" type="CollisionShape2D" parent="StaticCollision/Perimeter"]
+shape = SubResource("NorthWest04")
+
+[node name="NorthWest05" type="CollisionShape2D" parent="StaticCollision/Perimeter"]
+shape = SubResource("NorthWest05")
+
+[node name="NorthWest06" type="CollisionShape2D" parent="StaticCollision/Perimeter"]
+shape = SubResource("NorthWest06")
+
+[node name="NorthEast01" type="CollisionShape2D" parent="StaticCollision/Perimeter"]
+shape = SubResource("NorthEast01")
+
+[node name="NorthEast02" type="CollisionShape2D" parent="StaticCollision/Perimeter"]
+shape = SubResource("NorthEast02")
+
+[node name="NorthEast03" type="CollisionShape2D" parent="StaticCollision/Perimeter"]
+shape = SubResource("NorthEast03")
+
+[node name="NorthEast04" type="CollisionShape2D" parent="StaticCollision/Perimeter"]
+shape = SubResource("NorthEast04")
+
+[node name="NorthEast05" type="CollisionShape2D" parent="StaticCollision/Perimeter"]
+shape = SubResource("NorthEast05")
+
+[node name="NorthEast06" type="CollisionShape2D" parent="StaticCollision/Perimeter"]
+shape = SubResource("NorthEast06")
+
+[node name="SouthAndWest01" type="CollisionShape2D" parent="StaticCollision/Perimeter"]
+shape = SubResource("SouthAndWest01")
+
+[node name="SouthAndWest02" type="CollisionShape2D" parent="StaticCollision/Perimeter"]
+shape = SubResource("SouthAndWest02")
+
+[node name="SouthAndWest03" type="CollisionShape2D" parent="StaticCollision/Perimeter"]
+shape = SubResource("SouthAndWest03")
+
+[node name="SouthAndWest04" type="CollisionShape2D" parent="StaticCollision/Perimeter"]
+shape = SubResource("SouthAndWest04")
+
+[node name="SouthAndWest05" type="CollisionShape2D" parent="StaticCollision/Perimeter"]
+shape = SubResource("SouthAndWest05")
+
+[node name="SouthAndWest06" type="CollisionShape2D" parent="StaticCollision/Perimeter"]
+shape = SubResource("SouthAndWest06")
+
+[node name="SouthAndWest07" type="CollisionShape2D" parent="StaticCollision/Perimeter"]
+shape = SubResource("SouthAndWest07")
+
+[node name="SouthAndWest08" type="CollisionShape2D" parent="StaticCollision/Perimeter"]
+shape = SubResource("SouthAndWest08")
+
+[node name="SouthAndWest09" type="CollisionShape2D" parent="StaticCollision/Perimeter"]
+shape = SubResource("SouthAndWest09")
+
+[node name="DoorwayBoundaries" type="StaticBody2D" parent="StaticCollision"]
+collision_layer = 1
+collision_mask = 1
+
+[node name="ReservedUpperDoorSolid" type="CollisionShape2D" parent="StaticCollision/DoorwayBoundaries"]
+shape = SubResource("ReservedUpperDoorSolid")
+
+[node name="RepairPlatform" type="StaticBody2D" parent="StaticCollision"]
+collision_layer = 1
+collision_mask = 1
+
+[node name="MainFloorBody" type="CollisionShape2D" parent="StaticCollision/RepairPlatform"]
+shape = SubResource("MainFloorBody")
+
+[node name="MachineFoundations" type="StaticBody2D" parent="StaticCollision"]
+collision_layer = 1
+collision_mask = 1
+
+[node name="ExtractorRaisedSideHousing" type="CollisionShape2D" parent="StaticCollision/MachineFoundations"]
+shape = SubResource("ExtractorRaisedSideHousing")
+
+[node name="SmelterRaisedSideHousing" type="CollisionShape2D" parent="StaticCollision/MachineFoundations"]
+shape = SubResource("SmelterRaisedSideHousing")
+
+[node name="FabricatorSideCabinets" type="CollisionShape2D" parent="StaticCollision/MachineFoundations"]
+shape = SubResource("FabricatorSideCabinets")
+
+[node name="EnvironmentalObstacles" type="StaticBody2D" parent="StaticCollision"]
+collision_layer = 1
+collision_mask = 1
+
+[node name="WestUpperCabinet" type="CollisionShape2D" parent="StaticCollision/EnvironmentalObstacles"]
+shape = SubResource("WestUpperCabinet")
+
+[node name="WestLowerCabinet" type="CollisionShape2D" parent="StaticCollision/EnvironmentalObstacles"]
+shape = SubResource("WestLowerCabinet")
+
+[node name="WestLowerMountingBlock" type="CollisionShape2D" parent="StaticCollision/EnvironmentalObstacles"]
+shape = SubResource("WestLowerMountingBlock")
+
+[node name="NorthTank" type="CollisionShape2D" parent="StaticCollision/EnvironmentalObstacles"]
+shape = SubResource("NorthTank")
+
+[node name="NorthEastTanks" type="CollisionShape2D" parent="StaticCollision/EnvironmentalObstacles"]
+shape = SubResource("NorthEastTanks")
+
+[node name="EastUpperCabinets" type="CollisionShape2D" parent="StaticCollision/EnvironmentalObstacles"]
+shape = SubResource("EastUpperCabinets")
+
+[node name="EastLowerCabinet" type="CollisionShape2D" parent="StaticCollision/EnvironmentalObstacles"]
+shape = SubResource("EastLowerCabinet")
+
+[node name="SouthEastEquipment" type="CollisionShape2D" parent="StaticCollision/EnvironmentalObstacles"]
+shape = SubResource("SouthEastEquipment")
