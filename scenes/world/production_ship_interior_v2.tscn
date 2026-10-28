@@ -62,6 +62,7 @@ interaction_prompt = "E — Talk to Computer"
 inspection_response = "Computer's primary systems are offline. The console has sustained significant damage."
 conversation = ExtResource("5_conversation")
 interaction_point = Vector2(0, 0)
+max_interaction_distance = 45.0
 
 [node name="Shape" type="CollisionShape2D" parent="ComputerInteraction"]
 shape = SubResource("ComputerInteraction")

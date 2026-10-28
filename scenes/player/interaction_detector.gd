@@ -108,7 +108,10 @@ func _refresh_target() -> void:
 			else machine.to_global(machine.interaction_point)
 		var distance := global_position.distance_squared_to(point)
 		var limit := maximum_distance_squared if body != null else machine_interaction_range * machine_interaction_range
-		# The circle's radius is also the explicit maximum distance to the target point.
+		# Optional target caps use the same global distance for prompt and dispatch.
+		if body != null and body.max_interaction_distance > 0.0:
+			limit = minf(limit, body.max_interaction_distance * body.max_interaction_distance)
+		# The search radius remains the outer limit; target caps can only tighten it.
 		if distance > limit or distance >= nearest_distance:
 			continue
 		# A nonblocking target can coincide with Dave's interaction origin.

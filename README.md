@@ -61,7 +61,8 @@ Main host connects production-owned V2 room wrappers at 1.25x, reuses the existi
 player/controllers/UI and exterior, and returns from exterior to V2 Primary.
 **F5 remains the legacy game**, including its original exterior return. P1 merged
 in PR #59. P2 adds the existing Computer conversation/objective interaction only
-to the production Primary wrapper; its front-edge position needs owner acceptance.
+to the production Primary wrapper. The owner reports 7/7 initial tests passed;
+the approved 45-world-unit Computer range amendment awaits focused owner retests.
 Repair and stationary machine integration remain deferred. See the
 [architecture, provisional positions and sequential owner tests](docs/V2_PRODUCTION_HOST.md).
 Agent verification is static only; no Godot launch or runtime acceptance is claimed.

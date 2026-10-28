@@ -138,18 +138,32 @@ room, all previews, legacy Computer, approved art and collision remain unchanged
 `VisualContent/ComputerDamaged` stays visible; `ComputerRepairedInactive` stays
 hidden. No repair transaction or overlay switching is implemented.
 
-The **provisional** area position is room-local `(0, -214)`, world `(0, -267.5)`
+The **owner-accepted provisional** area position is room-local `(0, -214)`, world `(0, -267.5)`
 at 1.25x, with `interaction_point = Vector2(0, 0)`. The solid base spans
 x=-178..172, y=-277..-222 locally; the proxy spans x=-32..32, y=-218..-210.
 It sits entirely in front of the base with a 4-local-unit gap. Dave's detector
 and feet center are 10 world units above his ground origin. Along the central
 approach, ground y=-111..-197 locally yields detector-to-point distances
-118.75..11.25 world units, within the unchanged 120-unit limit. The sampled
+118.75..11.25 world units, within the unchanged 120-unit search radius. The
+45-unit amendment limits Computer eligibility to the closer part of that approach
+(centerline ground y=-170 or closer). The sampled
 approach from Initial clears permanent collision; the front ray reaches the
 area before the base or wall. Area queries and rays already include areas,
 and require the selected target to be the first hit on mask 1. The proxy does
-not block Dave. Position, prompt feel and actual physics selection still require
-owner verification; these coordinates are not accepted placement.
+not block Dave. The owner accepted the initial placement and interaction in the
+seven initial tests; the amended 45-unit range still requires owner verification.
+
+The optional `WorldInteractable.max_interaction_distance` is a cap in **world
+units**, default 0 (retain existing detector behavior). Only this Computer sets
+it to **45.0**. The detector retains its 120-world-unit search radius and compares
+its existing `global_position.distance_squared_to(body.to_global(interaction_point))`
+against `min(120 * 120, 45.0 * 45.0)`, with no extra room-scale multiplication.
+Out-of-range candidates are skipped before nearest-target selection and the
+unchanged line-of-sight ray. The same target refresh clears/reselects the target,
+updates the prompt, and precedes queued E dispatch on each physics callback.
+Thus prompt and activation share eligibility, including after movement or
+repeated keypresses. Legacy Computer, other interactables and machine ranges
+retain their previous behavior; no additional geometry or ray obstruction is added.
 
 The prompt and fallback text match legacy. E opens the exact existing
 [`dialogue/computer_opening.tres`](../dialogue/computer_opening.tres), ID
@@ -167,16 +181,22 @@ Startup binding/order, inherited UI ownership and P1 routing/cache remain as
 described above. The area belongs to the cached production room; Dave's existing
 detector/UI and Main's connection persist across room reentry.
 
-All 31 static checks passed in the P2 run (7 host, 24 existing), along with
+All 31 static checks passed in the initial P2 run (7 host, 24 existing), along with
 `git diff --check`. Static validation uses the four commands above. The host suite includes
 Computer contract/signal-chain inspection and front-approach geometry. The
 preservation check allows additive declarations only in the Primary production
-wrapper while retaining all original nodes/resources; all other protected files
-still compare against `origin/main`. This is text/geometry evidence only, not
+wrapper while retaining all original nodes/resources. The amendment additionally
+allows only the exact optional-cap additions in the two shared scripts; remaining
+protected content still compares against `origin/main`. This is text/geometry evidence only, not
 Godot parsing, physics, gameplay or graphical verification. Existing GDScript
 tests were inspected but not executed under the headless restriction.
 
-### P2 sequential owner acceptance — pending, no PASS/FAIL recorded
+### P2 initial sequential owner acceptance — owner reported 7/7 PASS
+
+The owner's 45-unit amendment reports all seven initial tests passed and accepts
+the provisional placement. Individual observations are not supplied here. This
+is owner-reported runtime evidence, separate from agent static validation. The
+original sequence is retained below; the range amendment needs retests A-C.
 
 Perform one test at a time and record **PASS/FAIL, observations and errors**.
 Fix defects in this PR and retest affected scenarios before proceeding.
@@ -198,6 +218,24 @@ Fix defects in this PR and retest affected scenarios before proceeding.
 7. **Legacy:** F5; verify original Computer prompt/dialogue/objective, legacy
    routes/exterior return, machine recovery and production smoke paths.
 
-Stop after P2 PR creation. All seven owner tests are required before merge
-approval; merge and specific post-merge cleanup require separate owner requests.
-Computer repair, stationary machines, P3 and F5 cutover remain deferred.
+### PR #60 range amendment — focused owner retests pending
+
+The approved target is 45 world units for V2 Computer only. Static checks cover
+the default-preserving cap, exclusive scene assignment, global distance/boundary
+geometry, and shared prompt/E selection order. All 33 static checks passed after
+the amendment (9 host, 24 existing); Markdown links and `git diff --check` passed.
+No Godot execution or amended
+runtime PASS is claimed. Record PASS/FAIL and observations one at a time:
+
+A. **Distance:** F6 `main_v2.tscn`; check prompt absent and E inactive beyond 45
+   world units, original conversation available within range, left/center/right
+   approaches and debugger errors.
+B. **Dialogue parity:** Complete to activate `restore_computer`; in a separate
+   fresh session dismiss early without activation. Verify repeats and damaged overlay.
+C. **Regression:** Leave/reenter Primary V2 and verify the cap persists; F5 legacy
+   Computer and brief navigation/progression smoke check. Other interactions and
+   the shared 120-unit search radius must retain their existing behavior.
+
+Stop for owner retesting on existing PR #60. Merge approval and specific cleanup
+require separate owner requests. Computer repair, stationary machines, P3 and
+F5 cutover remain deferred.

@@ -91,8 +91,10 @@ runtime acceptance remains separate. It reuses Main's gameplay
 ownership with inherited production V2 wrappers, automatic compartment travel,
 the existing first exterior reveal and a V2-specific exterior return. Its initial
 spawn and exterior return marker are provisional. P2's feature branch, pending
-merge and owner acceptance, adds existing Computer conversation/objective parity
-only in the production Primary wrapper, at a provisional front-facing point.
+merge, adds existing Computer conversation/objective parity only in the production
+Primary wrapper, at an owner-accepted provisional front-facing point. The owner
+reports 7/7 initial acceptance tests passed; its approved 45-world-unit Computer
+range amendment awaits focused runtime retesting.
 F5 stays legacy; Computer repair, stationary machine integration and later
 cutover remain deferred. This changes
 no approved narrative, inventory or progression requirements.

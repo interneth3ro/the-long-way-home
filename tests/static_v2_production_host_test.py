@@ -163,7 +163,7 @@ class V2ProductionHostStaticTest(unittest.TestCase):
         nodes = geometry.nodes(read(PRIMARY))
         target = geometry.vectors(nodes["ComputerInteraction"][1])[0]
         size = geometry.vectors(geometry.resources(read(PRIMARY))["ComputerInteraction"][1])[0]
-        self.assertEqual(target, (0, -214))  # Provisional; owner must accept visually.
+        self.assertEqual(target, (0, -214))  # Owner-accepted provisional placement.
         native = read("scenes/world/ship_interior_v2.tscn")
         shapes = geometry.resources(native)
         base = shapes["Footprint_ComputerBase"][1]
@@ -200,6 +200,50 @@ class V2ProductionHostStaticTest(unittest.TestCase):
         detector = read("scenes/player/interaction_detector.gd")
         self.assertIn('query.collide_with_areas = true', detector)
         self.assertIn('hit.get("collider") == collider', detector)
+
+    def test_computer_only_world_distance_cap_and_default_preservation(self):
+        contract = read("scenes/interaction/world_interactable.gd")
+        self.assertIn('@export var max_interaction_distance: float = 0.0', contract)
+        body = geometry.nodes(read(PRIMARY))["ComputerInteraction"][1]
+        self.assertIn('max_interaction_distance = 45.0', body)
+        # No other authored scene opts into a cap, including legacy Computer.
+        scenes = subprocess.check_output(['git', 'ls-files', 'scenes/*.tscn'],
+                                         cwd=ROOT, text=True).splitlines()
+        overrides = [(path, node) for path in scenes
+                     for node, (_, properties) in geometry.nodes(read(path)).items()
+                     if re.search(r'^max_interaction_distance =', properties, re.M)]
+        self.assertEqual(overrides, [(PRIMARY, "ComputerInteraction")])
+        refresh = geometry.function(read("scenes/player/interaction_detector.gd"), "_refresh_target")
+        cap = ('if body != null and body.max_interaction_distance > 0.0:\n'
+               '\t\t\tlimit = minf(limit, body.max_interaction_distance * body.max_interaction_distance)')
+        self.assertIn(cap, refresh)
+        self.assertIn('body.to_global(body.interaction_point)', refresh)
+        self.assertIn('global_position.distance_squared_to(point)', refresh)
+        self.assertIn('if distance > limit or distance >= nearest_distance:\n\t\t\tcontinue', refresh)
+        self.assertLess(refresh.index(cap), refresh.index('if distance > limit'))
+        self.assertLess(refresh.index('if distance > limit'), refresh.index('nearest_distance = distance'))
+        # 45 world units = 36 native units at 1.25x, not 45 native units.
+        point = (0, -214 * 1.25)
+        for dx, dy, eligible in [(0, 45, True), (0, 45.01, False),
+                                 (-27, 36, True), (27, 36, True), (27, 36.01, False)]:
+            center = (point[0] + dx, point[1] + dy)
+            self.assertEqual(math.dist(center, point) ** 2 <= 45.0 ** 2, eligible)
+
+    def test_prompt_and_queued_e_share_fresh_selection_and_line_of_sight(self):
+        detector = read("scenes/player/interaction_detector.gd")
+        physics = geometry.function(detector, "_physics_process")
+        self.assertLess(physics.index('_refresh_target()'), physics.index('if _interaction_requested:'))
+        self.assertLess(physics.index('_refresh_target()'), physics.index('dialogue_ui.show_conversation'))
+        input_handler = geometry.function(detector, "_unhandled_input")
+        self.assertIn('_interaction_requested = true', input_handler)
+        self.assertNotIn('show_conversation', input_handler)
+        refresh = geometry.function(detector, "_refresh_target")
+        self.assertLess(refresh.index('_target = null'), refresh.index('for result in'))
+        self.assertIn('PhysicsRayQueryParameters2D.create(global_position, point, collision_mask)', refresh)
+        self.assertIn('query.collide_with_areas = true', refresh)
+        self.assertIn('if hit.get("collider") == collider:', refresh)
+        self.assertIn('prompt = _target.interaction_prompt', refresh)
+        self.assertIn('interaction_ui.set_prompt(prompt)', refresh)
 
     def test_spawn_and_exterior_approach_clearance(self):
         native = read("scenes/world/ship_interior_v2.tscn")
@@ -270,6 +314,18 @@ class V2ProductionHostStaticTest(unittest.TestCase):
                 if not path.endswith(".png"):
                     expected = expected.replace(b"\r\n", b"\n")
                     actual = actual.replace(b"\r\n", b"\n")
+                # Only these exact optional-cap additions may differ in shared code.
+                if path == "scenes/interaction/world_interactable.gd":
+                    actual = actual.replace(
+                        b"# Optional world-unit cap; zero preserves the detector's existing range.\n"
+                        b"@export var max_interaction_distance: float = 0.0\n", b"")
+                elif path == "scenes/player/interaction_detector.gd":
+                    actual = actual.replace(
+                        b"\t\t# Optional target caps use the same global distance for prompt and dispatch.\n"
+                        b"\t\tif body != null and body.max_interaction_distance > 0.0:\n"
+                        b"\t\t\tlimit = minf(limit, body.max_interaction_distance * body.max_interaction_distance)\n"
+                        b"\t\t# The search radius remains the outer limit; target caps can only tighten it.\n",
+                        b"\t\t# The circle's radius is also the explicit maximum distance to the target point.\n")
                 self.assertEqual(hashlib.sha256(actual).digest(), hashlib.sha256(expected).digest(), path)
         finally:
             proc.stdin.close()
