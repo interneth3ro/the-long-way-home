@@ -60,7 +60,8 @@ class V2ProductionHostStaticTest(unittest.TestCase):
                     ids = [re.search(r'\bid="([^"]+)"', h)[1] for h, _ in entries]
                     self.assertEqual(len(ids), len(set(ids)), path)
                     self.assertTrue(set(re.findall(rf'{kind}\("([^"]+)"\)', text)) <= set(ids), path)
-        for script in ["scenes/main/main_v2.gd", "scenes/world/v2_room_arrival.gd"]:
+        for script in ["scenes/main/main_v2.gd", "scenes/world/v2_room_arrival.gd",
+                       "scenes/world/stationary_machine_presentation.gd"]:
             uid = read(script + ".uid").strip()
             self.assertRegex(uid, r"^uid://[a-z0-9]+$")
             self.assertEqual(sum(p.read_text().strip() == uid
@@ -122,7 +123,7 @@ class V2ProductionHostStaticTest(unittest.TestCase):
             self.assertIn("scale = Vector2(1.25, 1.25)", text)
             self.assertIn("scale = Vector2(0.8, 0.8)", geometry.nodes(text)["GroundObjects"][1])
             self.assertNotIn('name="Dave"', text)
-            for forbidden in ["rack", "stationary", "request_transition"]:
+            for forbidden in ["rack", "request_transition"]:
                 self.assertNotIn(forbidden, text.lower())
             if path == MAINTENANCE:
                 self.assertNotIn("computer_opening", text)
@@ -206,13 +207,15 @@ class V2ProductionHostStaticTest(unittest.TestCase):
         self.assertIn('@export var max_interaction_distance: float = 0.0', contract)
         body = geometry.nodes(read(PRIMARY))["ComputerInteraction"][1]
         self.assertIn('max_interaction_distance = 45.0', body)
-        # No other authored scene opts into a cap, including legacy Computer.
+        # P3 adds dormant per-machine caps; legacy Computer still uses defaults.
         scenes = subprocess.check_output(['git', 'ls-files', 'scenes/*.tscn'],
                                          cwd=ROOT, text=True).splitlines()
         overrides = [(path, node) for path in scenes
                      for node, (_, properties) in geometry.nodes(read(path)).items()
                      if re.search(r'^max_interaction_distance =', properties, re.M)]
-        self.assertEqual(overrides, [(PRIMARY, "ComputerInteraction")])
+        self.assertEqual(set(overrides), {(PRIMARY, "ComputerInteraction")} | {
+            (MAINTENANCE, f"StationaryMachines/{name}/Interaction")
+            for name in ["Extractor", "Smelter", "Fabricator"]})
         refresh = geometry.function(read("scenes/player/interaction_detector.gd"), "_refresh_target")
         cap = ('if body != null and body.max_interaction_distance > 0.0:\n'
                '\t\t\tlimit = minf(limit, body.max_interaction_distance * body.max_interaction_distance)')
@@ -302,30 +305,20 @@ class V2ProductionHostStaticTest(unittest.TestCase):
                 expected = proc.stdout.read(int(header[2]))
                 self.assertEqual(proc.stdout.read(1), b"\n")
                 actual = (ROOT / path).read_bytes()
-                if path == PRIMARY:
-                    # P2 is additive in this wrapper only: every pre-P2 node and
-                    # resource must retain exactly its original header/body.
+                if path == MAINTENANCE:
+                    # Only the root sorting property changes in existing blocks.
+                    # Background and machine blocks are additive wrapper overrides.
                     for kind in ["node", "ext_resource", "sub_resource"]:
-                        current = [(h, b.strip()) for h, b in geometry.blocks(
-                            actual.decode().replace("\r\n", "\n"), kind)]
+                        current = [(h, b.replace("y_sort_enabled = true\n", "", 1).strip()
+                                    if 'name="ProductionMaintenanceBayV2"' in h else b.strip())
+                                   for h, b in geometry.blocks(
+                                       actual.decode().replace("\r\n", "\n"), kind)]
                         for header, body in geometry.blocks(expected.decode(), kind):
                             self.assertIn((header, body.strip()), current, (path, kind, header))
                     continue
                 if not path.endswith(".png"):
                     expected = expected.replace(b"\r\n", b"\n")
                     actual = actual.replace(b"\r\n", b"\n")
-                # Only these exact optional-cap additions may differ in shared code.
-                if path == "scenes/interaction/world_interactable.gd":
-                    actual = actual.replace(
-                        b"# Optional world-unit cap; zero preserves the detector's existing range.\n"
-                        b"@export var max_interaction_distance: float = 0.0\n", b"")
-                elif path == "scenes/player/interaction_detector.gd":
-                    actual = actual.replace(
-                        b"\t\t# Optional target caps use the same global distance for prompt and dispatch.\n"
-                        b"\t\tif body != null and body.max_interaction_distance > 0.0:\n"
-                        b"\t\t\tlimit = minf(limit, body.max_interaction_distance * body.max_interaction_distance)\n"
-                        b"\t\t# The search radius remains the outer limit; target caps can only tighten it.\n",
-                        b"\t\t# The circle's radius is also the explicit maximum distance to the target point.\n")
                 self.assertEqual(hashlib.sha256(actual).digest(), hashlib.sha256(expected).digest(), path)
         finally:
             proc.stdin.close()

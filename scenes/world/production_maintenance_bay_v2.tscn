@@ -1,11 +1,32 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=12 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/world/maintenance_bay_v2.tscn" id="1_room"]
 [ext_resource type="Script" path="res://scenes/world/v2_room_arrival.gd" id="2_arrival"]
+[ext_resource type="PackedScene" path="res://scenes/visuals/extractor_stationary.tscn" id="3_extractor"]
+[ext_resource type="PackedScene" path="res://scenes/visuals/smelter_stationary.tscn" id="4_smelter"]
+[ext_resource type="PackedScene" path="res://scenes/visuals/fabricator_stationary.tscn" id="5_fabricator"]
+[ext_resource type="Script" path="res://scenes/world/stationary_machine_presentation.gd" id="6_presentation"]
+[ext_resource type="Script" path="res://scenes/interaction/world_interactable.gd" id="7_interaction"]
+
+[sub_resource type="RectangleShape2D" id="ExtractorBase"]
+size = Vector2(152, 44)
+
+[sub_resource type="RectangleShape2D" id="SmelterBase"]
+size = Vector2(136, 40)
+
+[sub_resource type="RectangleShape2D" id="FabricatorBase"]
+size = Vector2(172, 40)
+
+[sub_resource type="RectangleShape2D" id="InteractionTarget"]
+size = Vector2(48, 8)
 
 [node name="ProductionMaintenanceBayV2" instance=ExtResource("1_room")]
 scale = Vector2(1.25, 1.25)
+y_sort_enabled = true
 script = ExtResource("2_arrival")
+
+[node name="Background" parent="." index="0"]
+z_index = -1
 
 [node name="FromInterior" parent="Spawns" index="0"]
 metadata/facing = 2
@@ -20,3 +41,87 @@ destination_spawn = &"FromMaintenance"
 [node name="GroundObjects" type="Node2D" parent="."]
 scale = Vector2(0.8, 0.8)
 y_sort_enabled = true
+
+[node name="StationaryMachines" type="Node2D" parent="."]
+y_sort_enabled = true
+
+[node name="Extractor" type="Node2D" parent="StationaryMachines"]
+position = Vector2(-442, -156)
+script = ExtResource("6_presentation")
+machine_id = "extractor"
+
+[node name="Visual" parent="StationaryMachines/Extractor" instance=ExtResource("3_extractor")]
+
+[node name="Body" type="StaticBody2D" parent="StationaryMachines/Extractor"]
+collision_layer = 1
+collision_mask = 1
+
+[node name="Shape" type="CollisionShape2D" parent="StationaryMachines/Extractor/Body"]
+position = Vector2(0, -24)
+shape = SubResource("ExtractorBase")
+
+[node name="Interaction" type="Area2D" parent="StationaryMachines/Extractor"]
+position = Vector2(0, 8)
+collision_layer = 1
+collision_mask = 0
+monitoring = false
+script = ExtResource("7_interaction")
+interaction_enabled = false
+max_interaction_distance = 45.0
+
+[node name="Shape" type="CollisionShape2D" parent="StationaryMachines/Extractor/Interaction"]
+shape = SubResource("InteractionTarget")
+
+[node name="Smelter" type="Node2D" parent="StationaryMachines"]
+position = Vector2(435, -159)
+script = ExtResource("6_presentation")
+machine_id = "smelter"
+
+[node name="Visual" parent="StationaryMachines/Smelter" instance=ExtResource("4_smelter")]
+
+[node name="Body" type="StaticBody2D" parent="StationaryMachines/Smelter"]
+collision_layer = 1
+collision_mask = 1
+
+[node name="Shape" type="CollisionShape2D" parent="StationaryMachines/Smelter/Body"]
+position = Vector2(0, -22)
+shape = SubResource("SmelterBase")
+
+[node name="Interaction" type="Area2D" parent="StationaryMachines/Smelter"]
+position = Vector2(0, 8)
+collision_layer = 1
+collision_mask = 0
+monitoring = false
+script = ExtResource("7_interaction")
+interaction_enabled = false
+max_interaction_distance = 45.0
+
+[node name="Shape" type="CollisionShape2D" parent="StationaryMachines/Smelter/Interaction"]
+shape = SubResource("InteractionTarget")
+
+[node name="Fabricator" type="Node2D" parent="StationaryMachines"]
+position = Vector2(-451, 295)
+script = ExtResource("6_presentation")
+machine_id = "fabricator"
+
+[node name="Visual" parent="StationaryMachines/Fabricator" instance=ExtResource("5_fabricator")]
+
+[node name="Body" type="StaticBody2D" parent="StationaryMachines/Fabricator"]
+collision_layer = 1
+collision_mask = 1
+
+[node name="Shape" type="CollisionShape2D" parent="StationaryMachines/Fabricator/Body"]
+position = Vector2(0, -22)
+shape = SubResource("FabricatorBase")
+
+[node name="Interaction" type="Area2D" parent="StationaryMachines/Fabricator"]
+position = Vector2(0, 8)
+collision_layer = 1
+collision_mask = 0
+monitoring = false
+script = ExtResource("7_interaction")
+interaction_enabled = false
+max_interaction_distance = 45.0
+
+[node name="Shape" type="CollisionShape2D" parent="StationaryMachines/Fabricator/Interaction"]
+shape = SubResource("InteractionTarget")
