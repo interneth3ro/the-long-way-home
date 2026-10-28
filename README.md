@@ -66,6 +66,17 @@ The [automatic-transition harness and eight owner tests](docs/INTERIOR_V2_TRANSI
 cover development-only destinations and the separate 0.15-second quick fade.
 Agent validation is static only under the Godot execution restriction.
 
+## Maintenance bay V2 development preview
+
+This feature branch adds a separate machine-free maintenance-bay visual preview,
+pending merge and owner acceptance. Open
+`scenes/dev/maintenance_bay_v2_scale_preview.tscn` and press F6: initial room
+scale is 1.25x; 1/2/3 select 1.0x/1.25x/1.5x, 4-9 select comparison positions,
+WASD/arrows move, wheel zooms and H toggles the HUD. Walking through artwork is
+expected. Existing Dave/camera and all production environments/routes are unchanged.
+See [art provenance, scope and sequential owner tests](docs/MAINTENANCE_BAY_V2_PREVIEW.md).
+Agent validation is static only; no final bay scale or runtime acceptance is claimed.
+
 ## Layout and development
 
 - `project.godot`: engine settings and main-scene entry point.

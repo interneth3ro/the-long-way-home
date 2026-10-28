@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/environment/maintenance_bay_v2/maintenance_bay_v2_machine_free_background.png" id="1_background"]
+
+[node name="MaintenanceBayV2" type="Node2D"]
+texture_filter = 2
+
+[node name="Background" type="Sprite2D" parent="."]
+texture = ExtResource("1_background")
