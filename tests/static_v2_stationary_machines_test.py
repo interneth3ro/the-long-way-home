@@ -1,4 +1,4 @@
-"""P3 source/scene/geometry inspection only; never executes GDScript or Godot."""
+"""P3/P4 source/scene/geometry inspection only; never executes GDScript or Godot."""
 
 from collections import deque
 import math
@@ -41,19 +41,29 @@ class StationaryMachinesStaticTest(unittest.TestCase):
             self.assertIn("shader_parameter/outline_enabled = false", scene)
             self.assertLess(scene.index('name="ContactShadow"'), scene.index('name="Machine"'))
 
-    def test_dormant_contract_and_world_space_front_approaches(self):
+    def test_extractor_action_dormant_later_machines_and_world_space_front_approaches(self):
         for name, (x, y) in MACHINES.items():
             path = "StationaryMachines/" + name
             target = self.nodes[path + "/Interaction"][1]
-            self.assertIn("interaction_enabled = false", target)
+            if name == "Extractor":
+                self.assertIn('script = ExtResource("8_extractor_recovery")', target)
+                self.assertIn('interaction_prompt = "E — Recover Extractor"', target)
+                self.assertNotIn("interaction_enabled = false", target)
+            else:
+                self.assertIn('script = ExtResource("7_interaction")', target)
+                self.assertIn("interaction_enabled = false", target)
+                self.assertNotIn("interaction_prompt", target)
             self.assertIn("max_interaction_distance = 45.0", target)
-            for forbidden in ["interaction_prompt", "conversation =", "inspection_response"]:
+            for forbidden in ["conversation =", "inspection_response"]:
                 self.assertNotIn(forbidden, target)
             self.assertIn('path="res://scenes/interaction/world_interactable.gd"', self.text)
             bx, by = geometry.vectors(self.nodes[path + "/Body/Shape"][1])[0]
             width, height = geometry.vectors(self.shapes[name + "Base"][1])[0]
             tx, ty = geometry.vectors(target)[0]
             tw, th = geometry.vectors(self.shapes["InteractionTarget"][1])[0]
+            self.assertEqual((tx, ty, tw, th), (0, 8, 48, 8))
+            if name == "Extractor":
+                self.assertEqual((bx, by, width, height), (0, -24, 152, 44))
             self.assertGreater(ty - th/2, by + height/2)
             self.assertLessEqual(abs(tx - bx), width/2)
             # Feet/detector center at front+20 local has 25 world units clearance.
@@ -63,7 +73,42 @@ class StationaryMachinesStaticTest(unittest.TestCase):
             self.assertGreater(feet[1], point[1] + th/2)
         contract = read("scenes/interaction/world_interactable.gd")
         self.assertIn("interaction_enabled and", geometry.function(contract, "can_interact"))
-        self.assertIn("$Interaction.interaction_enabled = false", self.script)
+        refresh = geometry.function(self.script, "refresh_presentation")
+        self.assertIn('if machine_id != "extractor":\n\t\t$Interaction.interaction_enabled = false', refresh)
+
+    def test_extractor_action_dispatch_and_transaction_authority(self):
+        adapter = read("scenes/interaction/v2_extractor_recovery.gd")
+        self.assertTrue(adapter.startswith("extends WorldInteractable\n"))
+        eligible = geometry.function(adapter, "can_interact")
+        self.assertIn("is_inside_tree() and interaction_enabled and _progression != null", eligible)
+        self.assertIn("_progression.ferrite_discovered and not _progression.extractor_recovered", eligible)
+        self.assertNotRegex(adapter, r"Objective|conversation|\.inventory|\$Module|\$Empty")
+        self.assertNotRegex(adapter, r"_progression\.\w+\s*=(?!=)")
+        self.assertEqual(re.findall(r"(?:@onready )?var (\w+)", adapter), ["_progression"])
+        action = geometry.function(adapter, "interact")
+        self.assertIn('if not can_interact():\n\t\treturn ""', action)
+        self.assertIn('if not _progression.recover_extractor():\n\t\treturn "Unable to recover the Extractor."', action)
+        self.assertTrue(action.rstrip().endswith('return ""'))
+        self.assertEqual(adapter.count(".recover_extractor()"), 1)
+        detector = read("scenes/player/interaction_detector.gd")
+        self.assertIn("collider as WorldInteractable", detector)
+        self.assertIn("not body.can_interact()", detector)
+        self.assertIn("interaction_ui.show_response(_target.interact())", detector)
+        response = geometry.function(read("scenes/ui/interaction_ui.gd"), "show_response")
+        self.assertIn('if text.is_empty():\n\t\treturn', response)
+        self.assertNotIn("process_mode", response)  # Existing response leaves movement active.
+        transaction = geometry.function(read("scenes/main/playthrough_state.gd"), "recover_extractor")
+        self.assertIn("not ferrite_discovered or _extractor_recovered or _recovering_extractor", transaction)
+        self.assertIn('if not inventory.add_item(EXTRACTOR):\n\t\t_recovering_extractor = false\n\t\treturn false', transaction)
+        self.assertLess(transaction.index("_recovering_extractor = true"), transaction.index("inventory.add_item"))
+        self.assertLess(transaction.index("inventory.add_item"), transaction.index("_extractor_recovered = true"))
+        self.assertLess(transaction.index("_extractor_recovered = true"), transaction.index("extractor_recovery_completed.emit()"))
+        main = read("scenes/main/main.gd")
+        self.assertEqual(main.count("extractor_recovery_completed.connect(_on_extractor_recovered)"), 1)
+        recovered = geometry.function(main, "_on_extractor_recovered")
+        self.assertIn("$MusingUI.show_musing(EXTRACTOR_MUSING)", recovered)
+        self.assertIn("_refresh_objective_tracker()", recovered)
+        self.assertNotIn("complete_objective", recovered)
 
     def test_presentation_uses_authority_and_all_lifecycle_events_without_writes(self):
         progression = read("scenes/main/playthrough_state.gd")

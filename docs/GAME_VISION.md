@@ -94,11 +94,13 @@ spawn and exterior return marker are provisional. P2 merged in PR #60 and
 adds existing Computer conversation/objective parity only in the production
 Primary wrapper, at an owner-accepted provisional front-facing point. The owner
 reports 7/7 initial acceptance tests passed; the approved Computer cap is 45 world
-units. P3's feature branch, pending merge and owner acceptance, integrates all
+units. P3 merged in PR #61 and integrates all
 three approved stationary visuals into production Maintenance with removable
 base collision, dormant interaction targets and presentation derived from existing
-recovery/objective state. It adds no retrieval or progression. F5 stays legacy;
-Computer repair, machine recovery wiring and later cutover remain deferred. This changes
+recovery/objective state. P4's feature branch, pending merge and owner acceptance,
+connects only the stationary Extractor to existing recovery after Ferrite discovery.
+Smelter/Fabricator targets remain dormant. F5 stays legacy; Computer repair,
+later machine recovery wiring and cutover remain deferred. This changes
 no approved narrative, inventory or progression requirements.
 
 Future emergency/partial -> dim/moody -> operational lighting is gated by story

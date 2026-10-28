@@ -17,6 +17,8 @@ EXTERIOR = "scenes/world/planet_exterior.tscn"
 
 
 def read(path):
+    if path == MAINTENANCE:
+        return (ROOT / path).read_text(encoding="utf-8")
     return (ROOT / path).read_text()
 
 
@@ -61,7 +63,8 @@ class V2ProductionHostStaticTest(unittest.TestCase):
                     self.assertEqual(len(ids), len(set(ids)), path)
                     self.assertTrue(set(re.findall(rf'{kind}\("([^"]+)"\)', text)) <= set(ids), path)
         for script in ["scenes/main/main_v2.gd", "scenes/world/v2_room_arrival.gd",
-                       "scenes/world/stationary_machine_presentation.gd"]:
+                       "scenes/world/stationary_machine_presentation.gd",
+                       "scenes/interaction/v2_extractor_recovery.gd"]:
             uid = read(script + ".uid").strip()
             self.assertRegex(uid, r"^uid://[a-z0-9]+$")
             self.assertEqual(sum(p.read_text().strip() == uid
@@ -306,16 +309,23 @@ class V2ProductionHostStaticTest(unittest.TestCase):
                 self.assertEqual(proc.stdout.read(1), b"\n")
                 actual = (ROOT / path).read_bytes()
                 if path == MAINTENANCE:
-                    # Only the root sorting property changes in existing blocks.
-                    # Background and machine blocks are additive wrapper overrides.
+                    # P4 replaces only Extractor's action binding/prompt. Every
+                    # other existing node/resource stays protected (including P3).
+                    normalized = actual.decode().replace("\r\n", "\n").replace(
+                        'script = ExtResource("8_extractor_recovery")\n'
+                        'interaction_prompt = "E — Recover Extractor"',
+                        'script = ExtResource("7_interaction")\ninteraction_enabled = false')
                     for kind in ["node", "ext_resource", "sub_resource"]:
-                        current = [(h, b.replace("y_sort_enabled = true\n", "", 1).strip()
-                                    if 'name="ProductionMaintenanceBayV2"' in h else b.strip())
-                                   for h, b in geometry.blocks(
-                                       actual.decode().replace("\r\n", "\n"), kind)]
+                        current = [(h, b.strip()) for h, b in geometry.blocks(normalized, kind)]
                         for header, body in geometry.blocks(expected.decode(), kind):
                             self.assertIn((header, body.strip()), current, (path, kind, header))
                     continue
+                if path == "scenes/world/stationary_machine_presentation.gd":
+                    actual = actual.replace(b"\r\n", b"\n").replace(
+                        b'# The V2 Extractor adapter owns eligibility; later machines remain dormant.\n'
+                        b'\tif machine_id != "extractor":\n\t\t$Interaction.interaction_enabled = false',
+                        b'# P3 provides a target contract only: never offer or dispatch recovery input.\n'
+                        b'\t$Interaction.interaction_enabled = false')
                 if not path.endswith(".png"):
                     expected = expected.replace(b"\r\n", b"\n")
                     actual = actual.replace(b"\r\n", b"\n")

@@ -1,7 +1,8 @@
-# Opt-in V2 production host — P1, P2 and P3
+# Opt-in V2 production host — P1 through P4
 
-P1 merged in PR #59; P2 Computer parity merged in PR #60. P3 stationary-machine
-integration is on its feature branch, pending merge and owner acceptance. This is not the
+P1 merged in PR #59; P2 Computer parity merged in PR #60; P3 stationary-machine
+integration merged in PR #61 (`96f47e4`). P4 Extractor recovery is on its feature
+branch, pending merge and owner acceptance. This is not the
 F5 cutover. Follow the [execution policy](../AGENTS.md#godot-execution-safety);
 this guide does not authorize agent Godot execution.
 
@@ -25,7 +26,8 @@ retain inherited exported player references. No binding uses a new Dave path
 after reparenting. The coordinate display is disabled in the opt-in scene.
 There is one inherited Dave/camera, PlaythroughState/planet/inventory,
 ObjectiveController, tracker, musing UI, inventory UI, Construction, MachineUI and
-SceneTransitionController. There are no inventory grants or new progression.
+SceneTransitionController. P4 reuses its existing Extractor recovery transaction;
+there is no second inventory owner or new progression state.
 
 The production-owned wrappers inherit the approved reusable rooms:
 
@@ -45,7 +47,8 @@ Only production Primary disables the MaintenanceDoorBarrier shape. Its new
 exterior trigger lies inside the retained exterior barrier. Reusable defaults,
 closed-door artwork and the reserved upper Maintenance door remain unchanged.
 P2 adds only the Computer interaction described below. P3 adds the stationary
-presentation and dormant targets described below. Approved machine assets/transforms, legacy worlds,
+presentation and initially dormant targets described below; P4 activates only
+Extractor recovery. Approved machine assets/transforms, legacy worlds,
 exterior scene/script/simulation and PR #54's harness remain unchanged.
 
 ## Routes and arrival contracts
@@ -241,7 +244,7 @@ The preceding range retest checklist records PR #60's historical validation scop
 its merge is confirmed by the P3 owner request, without inventing individual
 retest observations. Computer repair and F5 cutover remain deferred.
 
-## P3 stationary machines (feature branch, pending merge)
+## P3 stationary machines (merged PR #61)
 
 The architecture inspection found compatible existing authority and interaction
 contracts; no new progression state or recovery API was needed. Only the
@@ -279,7 +282,7 @@ The Smelter rectangle is narrower to retain passage between its base and the
 permanent raised side housing; a broader initial rectangle isolated rear floor
 in the static clearance grid and was reduced before owner testing.
 
-Each machine uses the existing `WorldInteractable` script directly on a nonblocking
+In the P3 baseline each machine uses `WorldInteractable` directly on a nonblocking
 Area2D: layer 1, mask 0, monitoring off, local `(0, 8)`, rectangle `48 x 8`.
 The target's rear edge is 6 native units beyond the machine collider's front.
 Its origin is the interaction point. `max_interaction_distance = 45.0` is independently
@@ -312,7 +315,7 @@ The existing scene-local ShaderMaterial receives only `outline_enabled`; width
 The complete `Visual` subtree hides on recovery, including its contact shadow.
 Shape disablement is deferred safely when state signals originate in physics.
 
-Each component binds once in `_ready` to Main's existing playthrough and sibling
+Each presentation component binds once in `_ready` to Main's existing playthrough and sibling
 ObjectiveController, then subscribes to its nine existing milestone signals and
 `objective_state_changed`. It refreshes immediately on ready and after each
 relevant event. `_enter_tree` schedules a refresh on every attach, including cached
@@ -360,6 +363,83 @@ Owner tests, **one at a time**, reporting PASS/FAIL plus observations/errors:
    presentation states as unverified where normal P3 gameplay cannot reach them.
 8. Stop F6; F5 retains legacy rooms/recovery/production, and F6 retains V2 routes.
 
-Keep subsequent fixes in the P3 PR. Do not merge automatically or perform cleanup
-in this implementation chat. Machine retrieval is deferred to P4-P6; no Computer
-repair, save/load, testing-framework expansion, CI or F5 cutover is included.
+This records P3's historical scope; P4 below extends Extractor activation only.
+Smelter/Fabricator recovery remains deferred to P5/P6. No Computer repair,
+save/load, testing-framework expansion, CI or F5 cutover is included.
+
+## P4 Extractor recovery (feature branch, pending merge)
+
+The architecture inspection confirmed that the detector casts targets to
+`WorldInteractable`, selects through overridden `can_interact()`, then dispatches
+`interact() -> String` when no conversation is configured. The generic method
+requires conversation/inspection content; enabling it alone cannot offer an
+action. The new V2-only
+[Extractor adapter](../scenes/interaction/v2_extractor_recovery.gd) overrides both
+methods on the existing Area2D. The legacy rack script cannot be attached
+unchanged because it expects `Module` and `Empty` children.
+
+The adapter alone owns action eligibility: attached to the tree, interaction
+enabled, valid PlaythroughState, `ferrite_discovered && !extractor_recovered`.
+It reads current authority on selection and again on dispatch, independent of
+Computer dialogue and tracker stage. No local flag, inventory listener or manager
+is added. Its prompt is **E — Recover Extractor**. Existing detector safety gates
+for tools, dialogue, machine UI, responses and transitions remain unchanged.
+
+`interact()` calls only `PlaythroughState.recover_extractor()`. That transaction
+guards synchronous inventory callbacks and repeated input, inserts exactly one
+packaged Extractor, sets recovery state, then emits `extractor_recovery_completed`.
+An insertion failure commits no recovery and returns the existing dismissible,
+nonblocking response **Unable to recover the Extractor.** Success returns empty
+text, so no success UI is added. Main's single existing completion listener shows
+the existing musing and refreshes deployment guidance; `restore_computer` remains
+active. Ferrite discovery already activates that objective for exploration before
+Computer dialogue; later dialogue cannot reset its stage.
+
+The [presentation component](../scenes/world/stationary_machine_presentation.gd)
+no longer writes Extractor activation. It still owns visuals, outline, shadow and
+deferred removable body/target shape disablement. The existing completion signal
+immediately hides the complete Visual subtree and turns its outline off. Ready,
+nine milestone signals, objective signals and deferred reattachment refresh retain
+the P3 lifecycle contract. Cached rooms read the same authoritative recovered
+state; no reconstruction, rollback of committed recovery or cache change is added.
+Smelter and Fabricator retain generic disabled targets in every state.
+
+Extractor anchor `(-442, -156)`, room scale 1.25, base `152 x 44` at `(0, -24)`,
+target `48 x 8` at `(0, 8)` and independently editable **45.0 world-unit** cap are
+unchanged. The detector remains 120; Computer remains capped at 45. First-hit
+occlusion and the same fresh range selection govern prompt and action. Approved
+PNGs, visual scenes, materials, shadows, Y-sorting, permanent foundation artwork
+and collision, legacy F5 and the F6 host are preserved.
+
+### P4 validation and sequential owner acceptance
+
+Use the static discovery command above and `git diff --check`. The existing suites
+now check the Extractor action contract, failure-only response, transaction order,
+Main's single musing connection and narrow presentation activation ownership.
+P1/P2/P3 geometry, resources, lifecycle, later-machine dormancy and broad byte
+preservation checks remain. These inspect text and geometry only. Godot parsing,
+physics, UI dispatch, signal delivery, deferred collision updates, rendering,
+cached reentry and gameplay remain unverified; no engine or project code was run.
+
+All **38 static checks passed** with
+`python -B -m unittest discover -s tests -p 'static_*test.py'`; changed-document
+local links and `git diff --check` also passed. No runtime or owner PASS is inferred.
+
+Owner tests: perform **one at a time**, record **PASS/FAIL**, optional observations
+and errors; resolve failures before proceeding. Merge approval is separate.
+
+1. Before Ferrite discovery: Extractor visible, no recovery prompt/action.
+2. After discovery: highlight and **E — Recover Extractor**; assess accessible
+   front/side approaches, the 45-world-unit boundary and first-hit occlusion.
+3. Recover once: one packaged Extractor, one existing musing, deployment guidance;
+   visual/shadow/outline removed, removable collision gone, foundation retained.
+4. Repeat E and deploy/remove equipment: no duplicate grant or musing.
+5. Exit/return repeatedly to cached Maintenance: recovered machine stays absent
+   and noninteractive.
+6. Explore/recover before finishing Computer dialogue: later dialogue preserves
+   state and guidance.
+7. Inventory/UI focus and normal room transitions do not accidentally dispatch
+   recovery. Do not force unsafe transition-cancellation scenarios.
+8. Smelter/Fabricator remain dormant; P2 Computer interaction is unchanged.
+9. F6 Extractor deployment/production smoke test, then separate F5 legacy
+   recovery/Computer/navigation regression.
