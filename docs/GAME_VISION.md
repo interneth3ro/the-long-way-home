@@ -45,6 +45,15 @@ accomplishes his goals.
 - Gameplay spawns, transitions, opening doors, Computer restoration, Marvin
   discovery, production cutover and legacy retirement remain deferred here.
 
+The automatic-transition feature branch implements a separate development-only
+harness, pending merge and owner runtime acceptance. It uses the approved 1.25x
+V2 instance with safe wrapper spawns, automatic thresholds and distinct minimal
+test destinations. Closed door artwork and solid barriers remain active; a
+separate quick fade conceals transfer. Production routing, special first-exterior
+reveal, narrative and progression are unchanged. See the
+[transition acceptance guide](INTERIOR_V2_TRANSITIONS.md). This isolated work does
+not establish production player access or complete the deferred V2 features.
+
 The [preview controls and ordered owner review](INTERIOR_V2_PREVIEW.md) record
 asset provenance and static-only validation limits. No Godot execution or visual
 acceptance is claimed.

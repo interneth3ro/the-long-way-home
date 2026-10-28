@@ -58,10 +58,12 @@ validation; runtime and engine verification remain unperformed.
 
 An isolated development preview compares the approved room artwork at world
 scales 1.0x, 1.25x and 1.5x using existing Dave and camera. Production gameplay
-remains unchanged. The owner selected 1.25x following PR #47 review. This feature
-branch adds a separate collision/navigation preview at that fixed scale, pending
-merge and owner acceptance. See the
+remains unchanged. The owner selected 1.25x following PR #47 review; PR #49's
+separate collision/navigation preview is merged. This feature branch adds an
+isolated automatic-transition preview, pending merge and owner acceptance. See the
 [preview controls, provenance and ordered owner tests](docs/INTERIOR_V2_PREVIEW.md).
+The [automatic-transition harness and eight owner tests](docs/INTERIOR_V2_TRANSITIONS.md)
+cover development-only destinations and the separate 0.15-second quick fade.
 Agent validation is static only under the Godot execution restriction.
 
 ## Layout and development
@@ -725,6 +727,13 @@ camera/zoom and UI. The objective controller/tracker remain under Main. Cached
 inactive environments are detached from the tree, preserving their state without
 participating in physics; they are freed with the playthrough. Reload Main to
 start fresh. Run Main/F5 for playtesting; environment scenes alone have no player.
+
+The automatic-transition feature branch adds `QUICK_FADE` as enum value 2;
+existing presentation values and production hatch callers are unchanged. Only
+the isolated development harness selects it. Its synchronous input lock, separate
+fade duration and cancellation/recovery contract are documented in the
+[transition preview guide](docs/INTERIOR_V2_TRANSITIONS.md). The production
+transition behavior described below continues to use the original modes.
 
 The interior hatch is at (512, 512), southeast on the deck. E uses the existing
 range/visibility detector to request travel. A busy guard accepts only one request,
