@@ -40,6 +40,11 @@ Alternatively, import `project.godot` through Godot's Project Manager.
 
 ## Launch and validation
 
+The feature-branch [local PowerShell test runner](docs/LOCAL_TESTING.md) runs the
+existing Python static suite in this checkout. Its optional native plan copies
+tracked working inputs for inspection; all Godot execution paths remain disabled.
+See the guide for invocation, synthetic checks and the unapplied policy proposal.
+
 **F5** starts production V2 (P8 merged in PR #65). F6 with
 `scenes/main/main_v2.tscn` open also starts V2. For the legacy fallback, stop,
 open `scenes/main/main.tscn` and press **F6**. F5 stays configured for V2.
