@@ -164,7 +164,7 @@ func stored_output_item(machine: Dictionary) -> ItemDefinition:
 	var item_id: Variant = machine.get("output_item_id", &"")
 	if not item_id is StringName:
 		return null
-	var product: ItemDefinition
+	var product: ItemDefinition = null
 	for recipe in definition.recipes:
 		if recipe == null or not recipe.is_valid() or recipe.output_item.item_id != item_id:
 			continue
