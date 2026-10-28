@@ -120,7 +120,7 @@ and the four accessible platform sides (8,785 reachable samples, none at image
 edges). This checks geometry only, not Godot physics or runtime navigation. Spawn
 feet clearance is approximately 106.5 source pixels versus the required radius 8.
 
-### Test 4 platform amendment (pending owner retest)
+### Test 4 platform amendment (owner-reported retest PASS)
 
 The owner's Test 4 screenshot showed Dave standing on the upper metal rim:
 the original collision edge at source-image Y=430 lay inside that rim. Native
@@ -129,19 +129,67 @@ artwork inspection places the broad upper rim near Y=415. Only the two upper
 `(-223, -100)` / `(132, -100)`, placing the edge at image Y=412, just outside
 the rim. This is 18 source pixels outward (22.5 world units at 1.25x). Dave's
 unchanged feet-circle offset and radius put his lower contact/anchor at that
-edge when approaching from above; rendered appearance still requires retesting.
-The other six vertices, all other collision resources and all preview files
-are unchanged. Static convexity, resource/ownership and scoped-diff checks pass;
+edge when approaching from above. The subsequent Test 5 amendment request reports
+that the owner passed the Test 4 retest. In the Test 4 amendment, the other six
+vertices, all other collision resources and all preview files were unchanged.
+Static convexity, resource/ownership and scoped-diff checks passed;
 the earlier grid sample count above describes the original geometry only.
 
-### Collision owner acceptance — Test 4 retest pending
+### Test 5 prop amendment (pending owner retest)
 
-The amendment request reports **Tests 1–3 PASS, without observations**, and
-**Test 4 FAIL** for the upper-rim overlap. Tests 5–9 are paused. Resume with
-**Test 4 only**: approach the upper rim, confirm Dave stops just outside it,
-then circle accessible sides/corners and check for new snagging or gaps with
-C outlines. Continue to Tests 5–9 sequentially only after owner confirmation
-that Test 4 passes. No agent runtime or new owner acceptance is claimed.
+The three supplied owner screenshots were inspected against native artwork.
+They identify these `CollisionShape2D` nodes under `StaticCollision` in the room;
+each uses the identically named `ConvexPolygonShape2D` resource:
+
+| Screenshot | Category / node | Correction |
+| --- | --- | --- |
+| `maintenance bay collision 1.png` | `EnvironmentalObstacles/WestUpperCabinet` | Extend the upper edge to the solid stacked cabinet casing, closing the false standing area against the wall; trim the bottom to its metal base rather than the cable/shadow below. |
+| `maintenance bay collision 2.png` | `EnvironmentalObstacles/WestLowerMountingBlock` | Move the upper edge to the twin permanent mounting rails; tighten the lower corners around their base, excluding the conduit below. |
+| `maintenance bay collision 3.png` | `MachineFoundations/SmelterRaisedSideHousing` | Level the upper edge with the solid side housing's top/base extent and tighten the lower mounting corners; retain traversable flat pad. |
+
+Exact vertex changes, in **room-local coordinates**, in polygon order:
+
+```text
+WestUpperCabinet
+before: (-628,-222), (-573,-222), (-566,-162), (-588,-137), (-628,-157)
+after:  (-628,-300), (-574,-300), (-566,-164), (-584,-152), (-628,-162)
+
+WestLowerMountingBlock
+before: (-620,188), (-573,188), (-573,258), (-608,273), (-620,258)
+after:  (-620,160), (-574,160), (-574,252), (-588,266), (-620,258)
+
+SmelterRaisedSideHousing
+before: (277,-227), (327,-242), (342,-192), (312,-162), (277,-184)
+after:  (280,-263), (328,-263), (342,-192), (312,-168), (275,-185)
+```
+
+Only those three resources change; each remains a single five-point convex
+footprint. The cabinet's rear cap meets the existing wall boundary. Narrow gaps
+beside neighboring fixtures are not intended routes; the room-facing approaches
+and flat installation pads remain accessible in static geometry. No overhead
+arms, loose cables or cast shadows are added as obstacles. The accepted Test 4
+platform, all other shapes, ownership, layers and preview/production files remain
+unchanged. The original PNG hash and existing local import-sidecar bytes match
+their pre-amendment values; the sidecar is excluded from the commit.
+
+Static checks passed: all 12 polygons strictly convex/nondegenerate, no target
+polygon overlaps another prop polygon, exact perimeter/preview-barrier endpoint
+continuity, resource paths/load counts and shape ownership. A conservative 4-pixel
+source-coordinate grid with greater than 10-pixel obstacle clearance (feet radius
+8 at 1.25x, plus edge-sampling margin) has **35,193 connected clear floor samples
+and zero detached clear samples**. Entry connects to all three pad centers, all
+four platform sides and the corrected props' room-facing approaches. This is
+geometric evidence, not a physics, visual, snagging or runtime acceptance test.
+Only the three scene resource lines and this existing guide changed.
+
+### Collision owner acceptance — Test 5 retest pending
+
+The Test 5 amendment request reports **Tests 1–3 PASS**, **Test 4 retest PASS**,
+and **Test 5 FAIL** for the three pictured props. Tests 6–9 remain paused. Resume
+with **Test 5 only**: inspect all three corrected props with C outlines and walk
+around their neighboring fixtures and pad approaches. Continue to Tests 6–9
+sequentially only after the owner confirms Test 5 passes. No new owner PASS or
+agent runtime acceptance is claimed; PR merge readiness remains unestablished.
 
 Run **one test at a time**, recording PASS/FAIL and optional observations before
 continuing. These owner instructions do not authorize agent execution.

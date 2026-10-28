@@ -97,19 +97,19 @@ points = PackedVector2Array(-223, -100, 132, -100, 184, -50, 184, 100, 97, 138, 
 points = PackedVector2Array(-336, -257, -292, -257, -292, -162, -320, -142, -336, -162)
 
 [sub_resource type="ConvexPolygonShape2D" id="SmelterRaisedSideHousing"]
-points = PackedVector2Array(277, -227, 327, -242, 342, -192, 312, -162, 277, -184)
+points = PackedVector2Array(280, -263, 328, -263, 342, -192, 312, -168, 275, -185)
 
 [sub_resource type="ConvexPolygonShape2D" id="FabricatorSideCabinets"]
 points = PackedVector2Array(-293, 198, -243, 198, -233, 363, -293, 363)
 
 [sub_resource type="ConvexPolygonShape2D" id="WestUpperCabinet"]
-points = PackedVector2Array(-628, -222, -573, -222, -566, -162, -588, -137, -628, -157)
+points = PackedVector2Array(-628, -300, -574, -300, -566, -164, -584, -152, -628, -162)
 
 [sub_resource type="ConvexPolygonShape2D" id="WestLowerCabinet"]
 points = PackedVector2Array(-656, 63, -598, 63, -583, 128, -603, 153, -656, 138)
 
 [sub_resource type="ConvexPolygonShape2D" id="WestLowerMountingBlock"]
-points = PackedVector2Array(-620, 188, -573, 188, -573, 258, -608, 273, -620, 258)
+points = PackedVector2Array(-620, 160, -574, 160, -574, 252, -588, 266, -620, 258)
 
 [sub_resource type="ConvexPolygonShape2D" id="NorthTank"]
 points = PackedVector2Array(-244, -294, -218, -302, -200, -280, -210, -250, -235, -245, -248, -266)
