@@ -1,7 +1,7 @@
-# Opt-in V2 production host — P1 and P2
+# Opt-in V2 production host — P1, P2 and P3
 
-P1 merged in PR #59; P2 Computer parity is on its feature branch, pending merge
-and owner acceptance. This is not the
+P1 merged in PR #59; P2 Computer parity merged in PR #60. P3 stationary-machine
+integration is on its feature branch, pending merge and owner acceptance. This is not the
 F5 cutover. Follow the [execution policy](../AGENTS.md#godot-execution-safety);
 this guide does not authorize agent Godot execution.
 
@@ -44,8 +44,8 @@ existing `prepare_for_arrival(player, planet)` hook. It owns no route/state.
 Only production Primary disables the MaintenanceDoorBarrier shape. Its new
 exterior trigger lies inside the retained exterior barrier. Reusable defaults,
 closed-door artwork and the reserved upper Maintenance door remain unchanged.
-P2 adds only the Computer interaction described below. No stationary machine
-placement/highlights or recovery adapters are installed. Approved machine assets/transforms, legacy worlds,
+P2 adds only the Computer interaction described below. P3 adds the stationary
+presentation and dormant targets described below. Approved machine assets/transforms, legacy worlds,
 exterior scene/script/simulation and PR #54's harness remain unchanged.
 
 ## Routes and arrival contracts
@@ -127,7 +127,7 @@ P1 stopped before Computer migration, stationary machine integration, progressio
 changes, save/load, eviction, F5 cutover or retirement. The opt-in host and wrappers
 are later retirement-audit candidates; no deletion or cleanup is authorized here.
 
-## P2 Computer interaction parity (feature branch, pending merge)
+## P2 Computer interaction parity (merged PR #60)
 
 The production wrapper alone adds `ProductionShipInteriorV2/ComputerInteraction`,
 a nonblocking `Area2D` using the existing
@@ -155,7 +155,8 @@ seven initial tests; the amended 45-unit range still requires owner verification
 
 The optional `WorldInteractable.max_interaction_distance` is a cap in **world
 units**, default 0 (retain existing detector behavior). Only this Computer sets
-it to **45.0**. The detector retains its 120-world-unit search radius and compares
+it to **45.0** in P2; P3's dormant machine targets also use that initial reference.
+The detector retains its 120-world-unit search radius and compares
 its existing `global_position.distance_squared_to(body.to_global(interaction_point))`
 against `min(120 * 120, 45.0 * 45.0)`, with no extra room-scale multiplication.
 Out-of-range candidates are skipped before nearest-target selection and the
@@ -236,6 +237,129 @@ C. **Regression:** Leave/reenter Primary V2 and verify the cap persists; F5 lega
    Computer and brief navigation/progression smoke check. Other interactions and
    the shared 120-unit search radius must retain their existing behavior.
 
-Stop for owner retesting on existing PR #60. Merge approval and specific cleanup
-require separate owner requests. Computer repair, stationary machines, P3 and
-F5 cutover remain deferred.
+The preceding range retest checklist records PR #60's historical validation scope;
+its merge is confirmed by the P3 owner request, without inventing individual
+retest observations. Computer repair and F5 cutover remain deferred.
+
+## P3 stationary machines (feature branch, pending merge)
+
+The architecture inspection found compatible existing authority and interaction
+contracts; no new progression state or recovery API was needed. Only the
+production Maintenance wrapper gains `StationaryMachines`, containing independent
+`Extractor`, `Smelter` and `Fabricator` assemblies. Each has an unchanged approved
+`Visual` PackedScene, separate `Body/Shape`, dormant `Interaction/Shape`, and an
+instance of [stationary_machine_presentation.gd](../scenes/world/stationary_machine_presentation.gd).
+The reusable visual scenes and PNGs, inherited foundation/background art and
+permanent `StaticCollision/MachineFoundations` are preserved.
+
+### Coordinates, collision and depth
+
+Machine anchors are room-native siblings of compensated `GroundObjects`, never
+children of Dave's 0.8-scale container. Maintenance's production root now enables
+Y-sorting; both organizational containers also enable it, joining their nested
+children in one sorting context at default z=0. The machine roots are floor-contact
+sort anchors, with unsorted visual children preserving the approved shadow/sprite
+order. Dave retains effective scale 1; machines inherit 1.25. The inherited
+Background has a production-only z=-1 override, keeping the complete room artwork
+behind sorted actors even at negative Y. No new architectural overlay is invented;
+permanent architecture retains its existing flattened background and collision.
+Visual occlusion at accessible approaches requires owner review.
+
+| Assembly | Room-native anchor | World anchor at 1.25x | Base center relative to anchor | Rectangle size (native) |
+| --- | --- | --- | --- | --- |
+| Extractor | `(-442, -156)` | `(-552.5, -195)` | `(0, -24)` | `152 x 44` |
+| Smelter | `(435, -159)` | `(543.75, -198.75)` | `(0, -22)` | `136 x 40` |
+| Fabricator | `(-451, 295)` | `(-563.75, 368.75)` | `(0, -22)` | `172 x 40` |
+
+These initial rectangles follow the broad lower mounting bases seen in the PNGs,
+excluding elevated machine bounds and their cast shadows. They use layer/mask 1.
+They are independent of permanent foundation shapes and remain owner-tunable;
+static geometry establishes clearance, not collision feel or final visual fit.
+The Smelter rectangle is narrower to retain passage between its base and the
+permanent raised side housing; a broader initial rectangle isolated rear floor
+in the static clearance grid and was reduced before owner testing.
+
+Each machine uses the existing `WorldInteractable` script directly on a nonblocking
+Area2D: layer 1, mask 0, monitoring off, local `(0, 8)`, rectangle `48 x 8`.
+The target's rear edge is 6 native units beyond the machine collider's front.
+Its origin is the interaction point. `max_interaction_distance = 45.0` is independently
+editable per machine and measured in world units by the unchanged detector
+(36 native units at 1.25x); its search radius remains 120. A feet/detector center
+20 native units beyond the collider front is outside collision and within that cap.
+The detector retains its existing first-hit ray test against architecture.
+No prompt, response or conversation is configured and `interaction_enabled` stays
+false in every P3 state. There is no player activation, grant, objective mutation
+or recovery dialogue. Future P4-P6 work must wire intentional recovery behavior.
+
+### Authoritative presentation and cached-room lifecycle
+
+`PlaythroughState.extractor_recovered`, `smelter_recovered` and
+`fabricator_recovered` exclusively determine removal. Highlighting requires
+`ObjectiveController.get_active_objective()` to select `restore_computer` and
+uses Main's existing tracker-stage precedence: Ferrite discovery selects Extractor;
+ore acquisition selects Smelter; ingot acquisition selects Fabricator. Later
+recovery/deployment/Plate stages suppress superseded highlights. There are no
+new objective IDs, recovery flags or mutable presentation-stage stores.
+
+| Derived state | Visual and contact shadow | Amber outline | Machine collider | Target shape / activation |
+| --- | --- | --- | --- | --- |
+| Normal | Visible | Off | Enabled | Present / disabled |
+| Current recovery guidance | Visible | On | Enabled | Present / disabled |
+| Recovered (takes precedence) | Hidden | Off | Disabled | Disabled / disabled |
+
+The existing scene-local ShaderMaterial receives only `outline_enabled`; width
+20, fixed amber `(0.65, 0.43, 0.19)`, opacity and all visual transforms stay exact.
+The complete `Visual` subtree hides on recovery, including its contact shadow.
+Shape disablement is deferred safely when state signals originate in physics.
+
+Each component binds once in `_ready` to Main's existing playthrough and sibling
+ObjectiveController, then subscribes to its nine existing milestone signals and
+`objective_state_changed`. It refreshes immediately on ready and after each
+relevant event. `_enter_tree` schedules a refresh on every attach, including cached
+return and quick-transition rollback, where `_ready` does not repeat. Detached
+callbacks skip updates; reattachment reads current authority again before normal
+play resumes. There is no per-frame polling or modification to the transition
+controller, cache identities, arrival hook, cancellation or rollback semantics.
+
+### P3 permitted verification and owner acceptance
+
+```text
+python -B -m unittest discover -s tests -p 'static_*test.py'
+git diff --check
+```
+
+The static suites inspect resource graphs, scene declarations, approved anchors,
+shared sorting context, local visual/material settings, dormant contracts,
+world-distance geometry, state-source/precedence/signal/lifecycle wiring and
+preservation of existing code/art. A conservative grid with 9-native-unit obstacle
+clearance checks connected entry/front/side/rear approach samples for all machines,
+including permanent geometry and new rectangles. Existing P1/P2, connection,
+transition and console checks remain included. These are source/geometry checks;
+they do not execute presentation state transitions or prove engine parsing,
+inherited rendering, physics registration, signal delivery, deferred updates or
+cached reattachment behavior. No Godot, headless, graphical, performance or
+GDScript test execution is authorized/performed. Alternate states are unreachable
+through P3's dormant recovery targets; no fake gameplay or debug state controls
+are added to expose them.
+
+All 37 static checks passed for P3, together with changed-document local link
+validation and `git diff --check`. No runtime or owner PASS is inferred.
+
+Owner tests, **one at a time**, reporting PASS/FAIL plus observations/errors:
+
+1. F6 `main_v2.tscn`; enter Maintenance and inspect the three approved visuals,
+   size, foundation placement, shadows and default outline state.
+2. Navigate around Extractor and assess its floor-contact rectangle.
+3. Navigate around Smelter and assess its floor-contact rectangle.
+4. Navigate around Fabricator and assess its floor-contact rectangle.
+5. Check Dave in front/behind machinery, shadows and permanent architectural
+   occlusion from accessible approaches. Check camera zoom as needed.
+6. Confirm no premature recovery E prompt or action. Target/range configuration
+   has static evidence only; no active recovery interaction is claimed.
+7. Leave and revisit Maintenance, including cached returns. Report alternate
+   presentation states as unverified where normal P3 gameplay cannot reach them.
+8. Stop F6; F5 retains legacy rooms/recovery/production, and F6 retains V2 routes.
+
+Keep subsequent fixes in the P3 PR. Do not merge automatically or perform cleanup
+in this implementation chat. Machine retrieval is deferred to P4-P6; no Computer
+repair, save/load, testing-framework expansion, CI or F5 cutover is included.

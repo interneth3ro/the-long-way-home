@@ -54,16 +54,17 @@ Headless checks do not verify graphical appearance. While execution is restricte
 use only nonexecuting checks under the policy above and report them as static
 validation; runtime and engine verification remain unperformed.
 
-## Opt-in V2 production integration (P1 merged, P2 pending merge)
+## Opt-in V2 production integration (P1/P2 merged, P3 pending merge)
 
 Open `scenes/main/main_v2.tscn` and press **F6** for owner testing. This inherited
 Main host connects production-owned V2 room wrappers at 1.25x, reuses the existing
 player/controllers/UI and exterior, and returns from exterior to V2 Primary.
 **F5 remains the legacy game**, including its original exterior return. P1 merged
-in PR #59. P2 adds the existing Computer conversation/objective interaction only
-to the production Primary wrapper. The owner reports 7/7 initial tests passed;
-the approved 45-world-unit Computer range amendment awaits focused owner retests.
-Repair and stationary machine integration remain deferred. See the
+in PR #59; P2 merged in PR #60 and adds the existing Computer interaction only
+to the production Primary wrapper, capped at 45 world units. P3's feature branch
+adds the approved stationary machines, independent base collision, dormant
+interaction targets and authoritative presentation in production Maintenance.
+Recovery gameplay and Computer repair remain deferred. See the
 [architecture, provisional positions and sequential owner tests](docs/V2_PRODUCTION_HOST.md).
 Agent verification is static only; no Godot launch or runtime acceptance is claimed.
 
