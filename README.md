@@ -54,7 +54,7 @@ Headless checks do not verify graphical appearance. While execution is restricte
 use only nonexecuting checks under the policy above and report them as static
 validation; runtime and engine verification remain unperformed.
 
-## Opt-in V2 production integration (P1-P4 merged, P5 pending merge)
+## Opt-in V2 production integration (P1-P5 merged, P6 pending merge)
 
 Open `scenes/main/main_v2.tscn` and press **F6** for owner testing. This inherited
 Main host connects production-owned V2 room wrappers at 1.25x, reuses the existing
@@ -65,8 +65,12 @@ to the production Primary wrapper, capped at 45 world units. P3 merged in PR #61
 with approved stationary machines, independent base collision and authoritative
 presentation in production Maintenance. P4 merged in PR #62 and connects the
 Extractor to existing recovery after Ferrite discovery, at 45 world units.
-P5's feature branch adds Smelter recovery after first ore acquisition, at 45 world
-units, with no recovery musing. Fabricator stays dormant; Computer repair is deferred. See the
+P5 merged in PR #63 with Smelter recovery after first ore acquisition, at 45 world
+units, with no recovery musing. P6's feature branch, pending owner acceptance and
+merge, activates Fabricator recovery only in opt-in V2 after first ingot acquisition,
+at 45 world units. The existing seven-second ingot-acquisition musing and direct
+**Craft a Ferrite Plate.** guidance remain unchanged; recovery adds no musing or
+deployment objective. Computer repair is deferred. See the
 [architecture, provisional positions and sequential owner tests](docs/V2_PRODUCTION_HOST.md).
 Agent verification is static only; no Godot launch or runtime acceptance is claimed.
 
@@ -1696,7 +1700,7 @@ Both available recipes use only Ferrite Ingots and manufacturing does not exist.
 Synthetic regression fixtures do not satisfy these future gameplay checks.
 
 
-## Fabricator production (feature branch, pending merge)
+## Fabricator production (PR #45, merged)
 
 Configured, supplied Fabricators automatically turn 1 Ferrite Ingot into 1 Ferrite
 Plate or 2 Ferrite Rods every **3 seconds**, configured in `RecipeDefinition` and

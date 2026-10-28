@@ -6,7 +6,7 @@
 [ext_resource type="PackedScene" path="res://scenes/visuals/smelter_stationary.tscn" id="4_smelter"]
 [ext_resource type="PackedScene" path="res://scenes/visuals/fabricator_stationary.tscn" id="5_fabricator"]
 [ext_resource type="Script" path="res://scenes/world/stationary_machine_presentation.gd" id="6_presentation"]
-[ext_resource type="Script" path="res://scenes/interaction/world_interactable.gd" id="7_interaction"]
+[ext_resource type="Script" path="res://scenes/interaction/v2_fabricator_recovery.gd" id="7_interaction"]
 [ext_resource type="Script" path="res://scenes/interaction/v2_extractor_recovery.gd" id="8_extractor_recovery"]
 
 [ext_resource type="Script" path="res://scenes/interaction/v2_smelter_recovery.gd" id="9_smelter_recovery"]
@@ -123,7 +123,7 @@ collision_layer = 1
 collision_mask = 0
 monitoring = false
 script = ExtResource("7_interaction")
-interaction_enabled = false
+interaction_prompt = "E — Recover Fabricator"
 max_interaction_distance = 45.0
 
 [node name="Shape" type="CollisionShape2D" parent="StationaryMachines/Fabricator/Interaction"]

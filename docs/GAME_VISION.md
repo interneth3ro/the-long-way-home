@@ -99,10 +99,15 @@ three approved stationary visuals into production Maintenance with removable
 base collision, dormant interaction targets and presentation derived from existing
 recovery/objective state. P4 merged in PR #62 and
 connects only the stationary Extractor to existing recovery after Ferrite discovery.
-P5's feature branch, pending merge and owner acceptance, adds Smelter recovery
+P5 merged in PR #63 and adds Smelter recovery
 after first Ferrite Ore acquisition; the existing musing remains at acquisition.
-Fabricator stays dormant. F5 stays legacy; Computer repair, Fabricator recovery
-wiring and cutover remain deferred. This changes
+P6's feature branch, pending owner acceptance and merge, activates only opt-in V2
+Fabricator recovery after historical ingot acquisition. The existing seven-second
+first-ingot musing remains acquisition-only; recovery advances directly to
+**Craft a Ferrite Plate.**, with no deployment objective or recovery musing.
+Plate acquisition into inventory clears that guidance; output alone and Rods do
+not, and `restore_computer` remains active/incomplete.
+F5 stays legacy; Computer repair and cutover remain deferred. This changes
 no approved narrative, inventory or progression requirements.
 
 Future emergency/partial -> dim/moody -> operational lighting is gated by story
@@ -502,10 +507,10 @@ are separate from current player-facing acceptance. See the
   Clear Craft a Ferrite Plate guidance while `restore_computer` remains active and
   incomplete. No next objective, dialogue, musing, cinematic or repair transition.
 
-Implementation is on the production feature branch, pending owner acceptance and
-merge. Agent checks are static only; regression scripts are added/updated but
-unexecuted. No Godot type checking, runtime or graphical verification is claimed.
-See [implementation and ordered owner checklist](../README.md#fabricator-production-feature-branch-pending-merge).
+Implementation merged in PR #45; owner runtime acceptance remains separate.
+Agent checks were static only; added/updated regression scripts were unexecuted.
+No Godot type checking, runtime or graphical verification is claimed.
+See [implementation and ordered owner checklist](../README.md#fabricator-production-pr-45-merged).
 Earlier Fabricator sections retain their milestone-specific historical scope;
 this approved production direction extends their formerly deferred behavior.
 

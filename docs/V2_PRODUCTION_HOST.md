@@ -1,8 +1,10 @@
-# Opt-in V2 production host — P1 through P5
+# Opt-in V2 production host — P1 through P6
 
 P1 merged in PR #59; P2 Computer parity merged in PR #60; P3 stationary-machine
 integration merged in PR #61 (`96f47e4`). P4 Extractor recovery merged in PR #62
-(`bf18f09`). P5 Smelter recovery is pending merge and owner acceptance.
+(`bf18f09`). P5 Smelter recovery merged in PR #63 (`59275b0`).
+P6 Fabricator recovery is implemented on a feature branch, pending owner
+acceptance and merge.
 This is not the F5 cutover. Follow the [execution policy](../AGENTS.md#godot-execution-safety);
 this guide does not authorize agent Godot execution.
 
@@ -26,8 +28,8 @@ retain inherited exported player references. No binding uses a new Dave path
 after reparenting. The coordinate display is disabled in the opt-in scene.
 There is one inherited Dave/camera, PlaythroughState/planet/inventory,
 ObjectiveController, tracker, musing UI, inventory UI, Construction, MachineUI and
-SceneTransitionController. P4/P5 reuse existing Extractor/Smelter recovery
-transactions;
+SceneTransitionController. P4/P5/P6 reuse existing Extractor/Smelter/Fabricator
+recovery transactions;
 there is no second inventory owner or new progression state.
 
 The production-owned wrappers inherit the approved reusable rooms:
@@ -49,7 +51,8 @@ exterior trigger lies inside the retained exterior barrier. Reusable defaults,
 closed-door artwork and the reserved upper Maintenance door remain unchanged.
 P2 adds only the Computer interaction described below. P3 adds the stationary
 presentation and initially dormant targets described below; P4 activates only
-Extractor recovery; P5 activates Smelter recovery. Approved machine
+Extractor recovery; P5 activates Smelter recovery; P6 activates Fabricator recovery.
+Approved machine
 assets/transforms, legacy worlds,
 exterior scene/script/simulation and PR #54's harness remain unchanged.
 
@@ -366,7 +369,7 @@ Owner tests, **one at a time**, reporting PASS/FAIL plus observations/errors:
 8. Stop F6; F5 retains legacy rooms/recovery/production, and F6 retains V2 routes.
 
 This records P3's historical scope; P4 below extends Extractor activation only.
-Smelter/Fabricator recovery remains deferred to P5/P6. No Computer repair,
+Smelter/Fabricator recovery was deferred to P5/P6 at that baseline. No Computer repair,
 save/load, testing-framework expansion, CI or F5 cutover is included.
 
 ## P4 Extractor recovery (PR #62, merged)
@@ -449,7 +452,7 @@ and errors; resolve failures before proceeding. Merge approval is separate.
 9. F6 Extractor deployment/production smoke test, then separate F5 legacy
    recovery/Computer/navigation regression.
 
-## P5 Smelter recovery (feature branch, pending merge)
+## P5 Smelter recovery (PR #63, merged)
 
 Baseline: clean synchronized main at PR #62 merge
 `bf18f09df74680372e1eb842929431915a409f9f`. The thin
@@ -472,8 +475,8 @@ Smelter-related musing remains at first ore acquisition. Recovery only refreshes
 existing guidance, ordinarily **Deploy the Smelter near the Extractor.**, unless
 superseded by later progression. It does not complete `restore_computer`.
 
-Adapters exclusively own Extractor/Smelter eligibility; presentation's dormancy
-guard applies only to Fabricator. Existing P3 ready, nine milestone signals,
+At the P5 baseline, adapters exclusively own Extractor/Smelter eligibility;
+presentation's dormancy guard applied only to Fabricator. Existing P3 ready, nine milestone signals,
 objective signals and deferred cached reattachment synchronization remain.
 Success immediately hides the entire Visual subtree (machine/shadow/outline),
 defers safe disabling of removable body/target shapes, and makes interaction
@@ -487,14 +490,14 @@ collision layer/mask/monitoring, independently editable **45.0 world-unit** cap
 without another scale multiplier, 120-unit detector, Computer/Extractor caps,
 first-hit occlusion, approved visual scene/PNG/shadow, 20-wide amber
 `(0.65, 0.43, 0.19)` outline, material isolation and sorting. Legacy F5, P4 and
-Fabricator dormancy remain unchanged.
+Fabricator dormancy remained unchanged in P5; P6 below activates it.
 
 ### P5 static validation and limitations
 
 `python -B -m unittest discover -s tests -p 'static_*test.py'`: **39 tests pass**.
 `git diff --check` and changed-document local Markdown links pass. Existing
 resource graph/load-count checks include the new adapter and unique UID.
-The broad source/artwork/sidecar preservation check compares the actual
+The P5 broad source/artwork/sidecar preservation check compared the actual
 `origin/main` baseline, reversing only P5 binding/declaration and activation
 changes when absent from that baseline. Merged P4 is protected rather than
 normalized away. Focused assertions cover eligibility, dispatch, default grant
@@ -508,8 +511,8 @@ is available to the owner. No debug gameplay or forced cancellation is added.
 
 ### P5 owner acceptance — ten sequential tests
 
-Run manually, **one test at a time**, reporting **PASS/FAIL** and optional
-observations. Fix defects in this PR before merge. Start with F6
+This historical P5 checklist was for manual execution, **one test at a time**,
+reporting **PASS/FAIL** and optional observations. Start with F6
 [main_v2.tscn](../scenes/main/main_v2.tscn); test 10 uses legacy F5 separately.
 
 1. **Before ore acquisition:** With Ferrite discovered but none acquired, Smelter
@@ -536,3 +539,119 @@ observations. Fix defects in this PR before merge. Start with F6
    Existing Fabricator guidance may appear; V2 Fabricator remains disabled.
 10. **Legacy F5:** Legacy Smelter recovery, empty rack/collision, Computer,
     navigation and production remain unchanged; F6 routes still work.
+
+## P6 Fabricator recovery (feature branch, pending merge)
+
+The verified pre-P6 baseline is live main at PR #63 merge
+`59275b0da9550ce9c2ec4aeeafd36037e0567e2a`. Architecture inspection confirmed
+the existing transaction, response UI and guidance already satisfy P6. The thin
+[Fabricator adapter](../scenes/interaction/v2_fabricator_recovery.gd) follows P4/P5
+at `ProductionMaintenanceBayV2/StationaryMachines/Fabricator/Interaction`.
+It checks attached-tree state, activation and valid PlaythroughState, then
+`ferrite_ingot_acquired && !fabricator_recovered`, on selection and dispatch.
+An ingot must have entered Dave's inventory once; Smelter output alone does not
+qualify. Spending or transferring ingots does not revoke historical eligibility.
+Current quantity, Computer conversation, objective stage, Smelter recovery or
+deployment, recipes and material costs add no gates. Highlighting remains separate
+and follows the existing higher-precedence guidance rules.
+
+The prompt is **E — Recover Fabricator**. The adapter calls only
+`PlaythroughState.recover_fabricator()`, whose existing duplicate/reentry guard
+precedes insertion of exactly one packaged Fabricator. Recovery commits before
+the completion signal. Rejection commits no recovery and returns exactly
+**Unable to recover the Fabricator.** through existing nonblocking, dismissible
+response UI; retry remains eligible. Success and ineligibility return empty text.
+No flags, inventory, planet records or objectives are written by the adapter.
+
+Both dormancy controls are removed narrowly: the Fabricator target replaces its
+generic script with the adapter and its explicit disabled setting with the
+prompt; presentation loses only its final Fabricator activation override.
+The unused generic external declaration is replaced in place (`7_interaction`),
+so the wrapper retains `load_steps=14`. All adapters now own eligibility.
+Presentation retains its existing nine milestone subscriptions, objective signal,
+ready refresh and deferred reattachment refresh. Completion hides the complete
+Visual subtree including contact shadow, disables the amber outline, and defers
+disabling removable body/interaction shapes. Permanent cabinet/foundation artwork
+and `StaticCollision/MachineFoundations` remain. Cached returns read committed
+authority; deploying or removing packaged equipment never resets shipboard recovery.
+
+The existing **seven-second first-ingot acquisition musing** and resource content
+are unchanged. Recovery adds no musing, dialogue, animation, cinematic or audio.
+Main's completion listener refreshes guidance directly to **Craft a Ferrite Plate.**
+with no Fabricator deployment objective. Deployment, Plate/Rod recipes, loading
+and production remain as-is. A Plate in output alone does not clear guidance;
+Dave acquiring a Plate does. Rod acquisition does not substitute, and
+`restore_computer` stays active/incomplete. No new progression, transaction,
+manager or save/load behavior is introduced.
+
+Preserved exactly: Fabricator room-native anchor `(-451, 295)`, room scale 1.25
+and Dave compensation, body `172 x 40` at `(0, -22)`, target `48 x 8` at `(0, 8)`,
+layer 1/mask 0/monitoring off, **45.0 world-unit** cap without scale multiplication,
+global 120-unit detector, first-hit occlusion, input/UI/transition safeguards,
+Computer/Extractor/Smelter ranges, approved visual scenes/PNGs, scene-local
+shader/material, outline width 20.0 and amber `(0.65, 0.43, 0.19)`, shadows,
+transforms and Y-sorting. P4/P5 adapters, legacy F5 racks, Main, construction,
+inventory, production and transitions are unchanged.
+
+### P6 static validation and limitations
+
+Baseline: **39/39** static tests passed. After P6:
+`python -B -m unittest discover -s tests -p 'static_*test.py'`: **41/41 pass**.
+`git diff --check` and changed-document local Markdown link/anchor validation pass.
+The existing resource graph/load-count and unique UID checks include Fabricator.
+Preservation now pins the verified pre-P6 SHA above instead of moving `origin/main`,
+reversing only the exact P6 wrapper declaration/binding and presentation dormancy
+removal. Merged P4/P5 and all existing protected code/art/sidecars remain protected.
+Focused checks inspect historical eligibility, dispatch recheck, failure-only
+response, one delegated transaction, grant/commit ordering, acquisition-only
+musing, direct Plate guidance and Plate acquisition semantics.
+
+These checks execute neither Godot nor project code. Engine parsing, physics,
+signal delivery, UI behavior, rendering, deferred shape updates, room-return
+correctness and gameplay remain runtime-unverified. Existing GDScript recovery,
+deployment, recipe-switching and production suites were not executed. Exceptional
+inventory rejection, synchronous reentry and engineered transition rollback remain
+runtime-unverified; no debug controls or forced reproduction were added. No CI,
+Actions, new test framework, performance probes, P7 rehearsal or F5 cutover.
+
+### P6 owner acceptance — ten sequential tests (all pending)
+
+For later **owner-run F6 gameplay**, run **one at a time**, report **PASS/FAIL**
+and optional observations/errors; resolve failures before proceeding. None passes
+from static checks. Start with [main_v2.tscn](../scenes/main/main_v2.tscn).
+
+1. **Pre-ingot eligibility:** Fresh F6 progression: before first ingot enters
+   inventory, no Fabricator recovery prompt/action. Smelter output alone must
+   not unlock it.
+2. **First ingot acquisition:** Collect an ingot; existing first-ingot musing plays
+   once, Locate Fabricator guidance and amber highlight appear when appropriate.
+   Check **E — Recover Fabricator** at accessible front/side approaches, the
+   45-world-unit cap and cabinet occlusion. **Do not recover yet.**
+3. **Successful recovery:** E once grants exactly one packaged Fabricator, with
+   no recovery musing and direct **Craft a Ferrite Plate.** guidance. Machine,
+   shadow and outline vanish; removable collision/target disable; permanent
+   foundation/cabinet remain.
+4. **Duplicate prevention:** Repeated E and subsequent deployment/planetary
+   retrieval never grant another shipboard Fabricator or replay the ingot musing.
+5. **Historical eligibility and cached returns:** Where normally achievable,
+   spend ingots before recovery and verify eligibility persists. Repeated room
+   exits/returns before/after recovery retain presentation without stale prompts.
+   Separately, in a fresh session, ingots returned by deployed Smelter recovery
+   may satisfy acquisition.
+6. **Before Computer dialogue:** Acquire ingot and recover Fabricator before
+   finishing the opening Computer conversation; later dialogue preserves state
+   and the most advanced guidance.
+7. **Input/transition safeguards:** Inventory, dialogue, machine panel,
+   construction mode and normal doorway transitions do not accidentally dispatch
+   recovery. No forced cancellation or stress tests.
+8. **Adjacent regressions:** P4 Extractor recovery/musing, P5 Smelter recovery
+   with acquisition-only musing, and P2 Computer range/conversation are unchanged.
+9. **Existing Fabricator chain:** Deploy, select Plate recipe, load ingots,
+   produce and collect a Plate. Output alone must not clear guidance; acquisition
+   must. `restore_computer` stays active/incomplete. Recipe selection/loading
+   add no musing; Rod acquisition must not substitute for Plate acquisition.
+10. **Legacy F5:** Original Fabricator rack recovery retains its empty frame/rack
+    and collision. Check Computer, navigation and existing production, then
+    confirm opt-in F6 routes still work.
+
+The P6 PR is not merged. Owner gameplay testing, acceptance and merge are pending.
