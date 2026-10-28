@@ -64,7 +64,8 @@ class V2ProductionHostStaticTest(unittest.TestCase):
                     self.assertTrue(set(re.findall(rf'{kind}\("([^"]+)"\)', text)) <= set(ids), path)
         for script in ["scenes/main/main_v2.gd", "scenes/world/v2_room_arrival.gd",
                        "scenes/world/stationary_machine_presentation.gd",
-                       "scenes/interaction/v2_extractor_recovery.gd"]:
+                       "scenes/interaction/v2_extractor_recovery.gd",
+                       "scenes/interaction/v2_smelter_recovery.gd"]:
             uid = read(script + ".uid").strip()
             self.assertRegex(uid, r"^uid://[a-z0-9]+$")
             self.assertEqual(sum(p.read_text().strip() == uid
@@ -309,23 +310,31 @@ class V2ProductionHostStaticTest(unittest.TestCase):
                 self.assertEqual(proc.stdout.read(1), b"\n")
                 actual = (ROOT / path).read_bytes()
                 if path == MAINTENANCE:
-                    # P4 replaces only Extractor's action binding/prompt. Every
-                    # other existing node/resource stays protected (including P3).
-                    normalized = actual.decode().replace("\r\n", "\n").replace(
-                        'script = ExtResource("8_extractor_recovery")\n'
-                        'interaction_prompt = "E — Recover Extractor"',
-                        'script = ExtResource("7_interaction")\ninteraction_enabled = false')
-                    for kind in ["node", "ext_resource", "sub_resource"]:
-                        current = [(h, b.strip()) for h, b in geometry.blocks(normalized, kind)]
-                        for header, body in geometry.blocks(expected.decode(), kind):
-                            self.assertIn((header, body.strip()), current, (path, kind, header))
-                    continue
+                    # Compare to the actual baseline, reversing only the P5
+                    # Smelter binding if that baseline still has a dormant target.
+                    # P4 Extractor nodes/resources are protected byte-for-byte.
+                    actual_text = actual.decode().replace("\r\n", "\n")
+                    expected_text = expected.decode().replace("\r\n", "\n")
+                    declaration = ('[ext_resource type="Script" '
+                                   'path="res://scenes/interaction/v2_smelter_recovery.gd" '
+                                   'id="9_smelter_recovery"]\n\n')
+                    if declaration not in expected_text:
+                        self.assertEqual(actual_text.count(declaration), 1)
+                        actual_text = actual_text.replace(declaration, "").replace(
+                            'load_steps=14', 'load_steps=13').replace(
+                            'script = ExtResource("9_smelter_recovery")\n'
+                            'interaction_prompt = "E — Recover Smelter"',
+                            'script = ExtResource("7_interaction")\ninteraction_enabled = false')
+                    actual, expected = actual_text.encode(), expected_text.encode()
                 if path == "scenes/world/stationary_machine_presentation.gd":
-                    actual = actual.replace(b"\r\n", b"\n").replace(
-                        b'# The V2 Extractor adapter owns eligibility; later machines remain dormant.\n'
-                        b'\tif machine_id != "extractor":\n\t\t$Interaction.interaction_enabled = false',
-                        b'# P3 provides a target contract only: never offer or dispatch recovery input.\n'
-                        b'\t$Interaction.interaction_enabled = false')
+                    actual = actual.replace(b"\r\n", b"\n")
+                    expected = expected.replace(b"\r\n", b"\n")
+                    if b'if machine_id != "extractor":' in expected:
+                        actual = actual.replace(
+                            b'# V2 recovery adapters own eligibility; Fabricator remains dormant.\n'
+                            b'\tif machine_id == "fabricator":',
+                            b'# The V2 Extractor adapter owns eligibility; later machines remain dormant.\n'
+                            b'\tif machine_id != "extractor":')
                 if not path.endswith(".png"):
                     expected = expected.replace(b"\r\n", b"\n")
                     actual = actual.replace(b"\r\n", b"\n")

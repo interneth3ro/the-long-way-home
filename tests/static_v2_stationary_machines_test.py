@@ -1,4 +1,4 @@
-"""P3/P4 source/scene/geometry inspection only; never executes GDScript or Godot."""
+"""P3/P4/P5 source/scene/geometry inspection only; never executes GDScript or Godot."""
 
 from collections import deque
 import math
@@ -41,13 +41,14 @@ class StationaryMachinesStaticTest(unittest.TestCase):
             self.assertIn("shader_parameter/outline_enabled = false", scene)
             self.assertLess(scene.index('name="ContactShadow"'), scene.index('name="Machine"'))
 
-    def test_extractor_action_dormant_later_machines_and_world_space_front_approaches(self):
+    def test_recovery_actions_dormant_fabricator_and_world_space_front_approaches(self):
         for name, (x, y) in MACHINES.items():
             path = "StationaryMachines/" + name
             target = self.nodes[path + "/Interaction"][1]
-            if name == "Extractor":
-                self.assertIn('script = ExtResource("8_extractor_recovery")', target)
-                self.assertIn('interaction_prompt = "E — Recover Extractor"', target)
+            if name in ("Extractor", "Smelter"):
+                resource = "8_extractor_recovery" if name == "Extractor" else "9_smelter_recovery"
+                self.assertIn(f'script = ExtResource("{resource}")', target)
+                self.assertIn(f'interaction_prompt = "E — Recover {name}"', target)
                 self.assertNotIn("interaction_enabled = false", target)
             else:
                 self.assertIn('script = ExtResource("7_interaction")', target)
@@ -62,8 +63,13 @@ class StationaryMachinesStaticTest(unittest.TestCase):
             tx, ty = geometry.vectors(target)[0]
             tw, th = geometry.vectors(self.shapes["InteractionTarget"][1])[0]
             self.assertEqual((tx, ty, tw, th), (0, 8, 48, 8))
-            if name == "Extractor":
-                self.assertEqual((bx, by, width, height), (0, -24, 152, 44))
+            expected_base = {"Extractor": (0, -24, 152, 44),
+                             "Smelter": (0, -22, 136, 40),
+                             "Fabricator": (0, -22, 172, 40)}
+            self.assertEqual((bx, by, width, height), expected_base[name])
+            self.assertIn("collision_layer = 1", target)
+            self.assertIn("collision_mask = 0", target)
+            self.assertIn("monitoring = false", target)
             self.assertGreater(ty - th/2, by + height/2)
             self.assertLessEqual(abs(tx - bx), width/2)
             # Feet/detector center at front+20 local has 25 world units clearance.
@@ -74,7 +80,7 @@ class StationaryMachinesStaticTest(unittest.TestCase):
         contract = read("scenes/interaction/world_interactable.gd")
         self.assertIn("interaction_enabled and", geometry.function(contract, "can_interact"))
         refresh = geometry.function(self.script, "refresh_presentation")
-        self.assertIn('if machine_id != "extractor":\n\t\t$Interaction.interaction_enabled = false', refresh)
+        self.assertIn('if machine_id == "fabricator":\n\t\t$Interaction.interaction_enabled = false', refresh)
 
     def test_extractor_action_dispatch_and_transaction_authority(self):
         adapter = read("scenes/interaction/v2_extractor_recovery.gd")
@@ -109,6 +115,43 @@ class StationaryMachinesStaticTest(unittest.TestCase):
         self.assertIn("$MusingUI.show_musing(EXTRACTOR_MUSING)", recovered)
         self.assertIn("_refresh_objective_tracker()", recovered)
         self.assertNotIn("complete_objective", recovered)
+
+    def test_smelter_action_dispatch_and_transaction_authority(self):
+        adapter = read("scenes/interaction/v2_smelter_recovery.gd")
+        self.assertTrue(adapter.startswith("extends WorldInteractable\n"))
+        eligible = geometry.function(adapter, "can_interact")
+        self.assertIn("is_inside_tree() and interaction_enabled and _progression != null", eligible)
+        self.assertIn("_progression.ferrite_acquired and not _progression.smelter_recovered", eligible)
+        self.assertNotRegex(adapter, r"Objective|conversation|\.inventory|extractor_deployed|\$Module|\$Secured|\$Empty")
+        self.assertNotRegex(adapter, r"_progression\.\w+\s*=(?!=)")
+        self.assertEqual(re.findall(r"(?:@onready )?var (\w+)", adapter), ["_progression"])
+        action = geometry.function(adapter, "interact")
+        self.assertIn('if not can_interact():\n\t\treturn ""', action)
+        self.assertIn('if not _progression.recover_smelter():\n\t\treturn "Unable to recover the Smelter."', action)
+        self.assertTrue(action.rstrip().endswith('return ""'))
+        self.assertEqual(adapter.count(".recover_smelter()"), 1)
+        progression = read("scenes/main/playthrough_state.gd")
+        transaction = geometry.function(progression, "recover_smelter")
+        self.assertIn("not ferrite_acquired or _smelter_recovered or _recovering_smelter", transaction)
+        self.assertIn('if not inventory.add_item(SMELTER):\n\t\t_recovering_smelter = false\n\t\treturn false', transaction)
+        self.assertEqual(transaction.count("inventory.add_item(SMELTER)"), 1)
+        statements = ["_recovering_smelter = true", "inventory.add_item(SMELTER)",
+                      "_smelter_recovered = true", "smelter_recovery_completed.emit()"]
+        self.assertEqual(sorted(map(transaction.index, statements)), list(map(transaction.index, statements)))
+        acquisition = geometry.function(progression, "_on_inventory_changed")
+        self.assertIn("if not ferrite_acquired and inventory.get_quantity(FERRITE_ORE.item_id) > 0:", acquisition)
+        self.assertLess(acquisition.index("ferrite_acquired = true"), acquisition.index("ferrite_acquisition_completed.emit()"))
+        self.assertEqual(progression.count("ferrite_acquired = true"), 1)
+        self.assertNotIn("ferrite_acquired = false", progression)
+        main = read("scenes/main/main.gd")
+        self.assertEqual(main.count("smelter_recovery_completed.connect(_refresh_objective_tracker)"), 1)
+        self.assertEqual(main.count("ferrite_acquisition_completed.connect(_on_ferrite_acquired)"), 1)
+        self.assertEqual(main.count("show_musing(FERRITE_ACQUISITION_MUSING)"), 1)
+        self.assertIn("show_musing(FERRITE_ACQUISITION_MUSING)", geometry.function(main, "_on_ferrite_acquired"))
+        self.assertNotIn("show_musing", geometry.function(main, "_refresh_objective_tracker"))
+        self.assertNotIn("complete_objective", adapter + transaction)
+        item_insertion = geometry.function(read("inventory/inventory_state.gd"), "add_item")
+        self.assertIn("quantity: int = 1", item_insertion)
 
     def test_presentation_uses_authority_and_all_lifecycle_events_without_writes(self):
         progression = read("scenes/main/playthrough_state.gd")

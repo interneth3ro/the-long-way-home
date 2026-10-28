@@ -41,8 +41,8 @@ func refresh_presentation() -> void:
 	outline.set_shader_parameter("outline_enabled", not recovered and _is_highlighted())
 	$Body/Shape.set_deferred("disabled", recovered)
 	$Interaction/Shape.set_deferred("disabled", recovered)
-	# The V2 Extractor adapter owns eligibility; later machines remain dormant.
-	if machine_id != "extractor":
+	# V2 recovery adapters own eligibility; Fabricator remains dormant.
+	if machine_id == "fabricator":
 		$Interaction.interaction_enabled = false
 
 
