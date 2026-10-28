@@ -78,6 +78,138 @@ environment convention at
   scale were visual acceptance targets. The subsequent collision request fixes
   world scale at the selected 1.25x.
 
+## Stationary Smelter visual (feature branch, pending merge)
+
+Owner launch, subject to the execution policy: F6
+[the isolated Smelter preview](../scenes/dev/maintenance_bay_v2_smelter_preview.tscn).
+Its [script](../scenes/dev/maintenance_bay_v2_smelter_preview.gd) extends the
+collision-preview script and calls its isolation setup. It inherits the actual
+room at 1.25x, right-exit barrier, disabled doorways, existing Dave/feet/camera,
+and C/H controls. It does not instantiate PR #54's transition/progression harness
+or the Extractor preview. F5, older previews and the reusable room are unchanged.
+
+The [reusable Smelter visual](../scenes/visuals/smelter_stationary.tscn) contains
+one sprite and a separate contact shadow under one hideable Node2D. No machine
+collision is added: Dave can walk through the sprite; existing room fixtures
+still collide. This is dormant stationary artwork only. The source's painted
+orange furnace lighting remains authoritative; no effects, animation, production,
+recovery, deployment, progression, persistent state or production cutover is added.
+O/V are visual simulations. Placement and runtime acceptance remain provisional.
+
+### Source and initial foundation placement
+
+- Provenance: owner attachment `C:\Users\inter\Downloads\smelter.png`, copied
+  byte-for-byte to
+  [smelter_stationary.png](../assets/environment/maintenance_bay_v2/machines/smelter_stationary.png).
+  No crop, retouching, alpha cleanup, substitution or recompression.
+- PNG: 1536 x 1024, 8-bit RGBA. SHA-256:
+  `bf11742f8ca6fecc08ddf4a7a4b18b5a3fce1a57d4508524359dcd6d73a0f54d`.
+  Fully transparent: 774,069 pixels; alpha 1–31: 18,237; 32–127: 2,791;
+  128–254: 777,767; fully opaque: zero. Maximum alpha is 254/255.
+  Exclusive nonzero bounds `(0,17)`–`(1528,1024)`; alpha >=32 bounds
+  `(260,32)`–`(1335,944)`; alpha >=128 bounds `(260,32)`–`(1334,944)`.
+  There are 1,618 detached nonzero-alpha pixels outside the main 8-connected
+  component, all alpha <=2/255. Canvas-edge maximum alpha: top 0, bottom 1,
+  left 1, right 0. Faint specks/fringe remain unchanged; their appearance at
+  several zoom levels needs owner inspection. Genuine background transparency
+  passes the static asset gate; visual edge acceptance is unverified.
+- Background remains native 1536 x 1024 and byte-identical with the SHA-256
+  recorded above. Image center `(768,512)` maps to room-local `(0,0)`.
+  Inspecting its upper-right pad suggests a front-center mounting point at
+  **image `(1192,373)`**, room-local **`(424,-139)`**, scaled preview world
+  **`(530,-173.75)`**. The gridded pad sits right of the raised side housing,
+  under ventilation artwork and left of the east cabinets. This inferred base
+  anchor is for owner review, not a new collider or spawn.
+- Sprite: `centered=false`, source-pixel offset **`(-800,-944)`**, uniform
+  scale **`0.18`**. Source `(800,944)` maps to the visual root at the base's
+  lower contact edge. Alpha >=32 yields room bounds approximately
+  `(326.8,-303.16)`–`(520.3,-139)`, image `(1094.8,208.84)`–`(1288.3,373)`,
+  or 193.5 x 164.16 native room pixels. Multiply room coordinates by 1.25 for
+  preview world bounds. Source texels scale to 0.225 world units; camera zoom
+  further changes screen size. Foundation fit, perspective and fixture overlap
+  need owner review; no Extractor transforms were reused.
+- Contact shadow: separate Sprite2D at visual-local `(0,-8)`, radial gradient
+  texture 128 x 64, scale `(1.45,0.5)` = 185.6 x 32 room units. Black alpha
+  0.16 at center, 0.08 at radius 0.65, zero at edge. It moves and hides with
+  the machine and adds no collision. Sorting follows the Extractor pattern:
+  preview/root and PreviewRoom Y-sort, machine and Dave Z=1.
+- Outline reuses the unchanged
+  [objective silhouette shader](../shaders/objective_silhouette.gdshader).
+  Initial width **20.0 source texels**, opacity **1.00**, amber RGB
+  **`(0.65,0.43,0.19)`**, outline **OFF**, machine **installed**.
+  Width clamps to the shader's existing supported hint range **0–20**; the
+  increase control initially stays at the upper limit. No shader edit is needed.
+  At 20 texels the radius is 3.6 room units / 4.5 preview-world units.
+  `resource_local_to_scene=true` isolates each Smelter ShaderMaterial instance;
+  only that instance receives parameter updates. Extractor's approved position,
+  material values and behavior remain unchanged.
+
+### Session-local live tuning and recording
+
+| Key | Action in this preview only |
+| --- | --- |
+| I / K | Move up/down 1 room-local pixel |
+| J / L | Move left/right 1 room-local pixel |
+| Shift + I/K/J/L | Move 5 room-local pixels |
+| U / P | Decrease/increase width 1 source texel, clamped 0–20 |
+| [ / ] | Decrease/increase opacity 0.05, clamped 0–1 |
+| O | Toggle requested objective outline, initially OFF |
+| V | Hide/show sprite, shadow and outline together; requested outline retained |
+| R | Reset position, width, opacity, outline OFF, installed, collision OFF, HUD ON |
+| C / H | Inherited collision-outline/HUD toggles, initially OFF/ON |
+| WASD / arrows; wheel | Existing movement; camera zoom |
+
+Key releases and repeats are ignored. Ctrl/Alt/Meta combinations are ignored;
+Shift only changes the movement step. There are no global InputMap changes.
+I and R also name production inventory/rotation bindings, but those controllers
+are absent here; Dave's interaction detector is disabled by the inherited setup.
+Camera handles wheel input and Dave polls WASD/arrows independently. No movement,
+interaction or editor shortcut is rebound. Runtime input ordering is untested.
+
+The outlined, shadowed 14px HUD reports X/Y to two decimal places, width to one,
+opacity to two, requested outline, installed/removed, collision state, legend,
+defaults and numeric deltas. It refreshes on every handled change, including C/H,
+O while removed and changes while hidden. Values reach the local ShaderMaterial
+via `set_shader_parameter`; there is no per-frame tuning loop. Its single
+recording line initially reads:
+
+```text
+COPY THESE VALUES: X=424.00; Y=-139.00; width=20.0; opacity=1.00
+```
+
+H hides/restores the HUD. Relaunch resets everything; there is no clipboard,
+save-file or configuration write. Preview scene/script and temporary tuning
+controls are future retirement-audit candidates. Reusable scene/art remain.
+
+### Validation and sequential owner acceptance
+
+Static checks cover PNG decoding, source/copy and background hashes, PNG chunk
+integrity, alpha/fringe analysis, scene/resource references and load counts,
+placement math, input ownership, protected-file preservation, documentation links
+and Git whitespace. The 24 existing static transition/geometry/connection tests
+pass. No Godot import, GDScript engine/type check, shader compilation, headless
+execution, graphical launch, gameplay or performance check was performed.
+These checks do not establish runtime or visual acceptance.
+
+Owner tests are **one at a time**, pending results. They do not authorize agent
+execution. Stop after creating/updating the PR; no merge or cleanup.
+
+1. F6 Smelter preview at 1.25x: asset imports, no shader/errors, outline OFF.
+2. Check initial foundation fit, scale, perspective and neighboring fixtures.
+3. Inspect alpha/fringe and separate contact shadow at several zoom levels.
+4. Tune X/Y with fine/coarse controls; verify HUD/copy values and reset.
+5. Toggle outline; tune width/opacity including limits; inspect silhouette/clipping.
+6. O OFF restores original appearance; HUD and material state agree.
+7. V hides/restores machine, shadow and outline, revealing intact foundation.
+8. Verify C/H, movement, camera and walk-through sprite; regress Extractor and
+   existing V2 previews, including PR #54's connection harness.
+9. F5 production smoke test: rooms, machinery and progression unchanged.
+
+After the owner supplies final X/Y/width/opacity, make a separate focused amendment
+within this PR: lock those values, remove only temporary tuning controls, retain
+O/V/C/H and perform targeted owner retests before merge. No final values or PASS
+are inferred from this implementation.
+
 ## Stationary Extractor visual (feature branch, pending merge)
 
 Owner launch: F6 [the Extractor preview](../scenes/dev/maintenance_bay_v2_extractor_preview.tscn)

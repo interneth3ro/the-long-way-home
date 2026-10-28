@@ -75,6 +75,15 @@ production routes remain unchanged. See the guide's nine sequential owner tests.
 
 ## Maintenance bay V2 development previews
 
+This feature branch adds an isolated stationary Smelter visual with session-local
+live tuning, pending merge and owner acceptance. F6
+`scenes/dev/maintenance_bay_v2_smelter_preview.tscn`: I/K/J/L move it (Shift for
+5-pixel steps), U/P tune outline width, brackets tune opacity, R resets, O/V
+simulate outline/removal, and C/H retain collision-outline/HUD controls. The HUD
+provides an exact `COPY THESE VALUES` line. See
+[source, placement, controls and sequential owner tests](docs/MAINTENANCE_BAY_V2_PREVIEW.md#stationary-smelter-visual-feature-branch-pending-merge).
+Validation is static only; production and existing previews remain unchanged.
+
 The feature branch adds an isolated stationary Extractor visual, pending merge
 and owner acceptance. F6 `scenes/dev/maintenance_bay_v2_extractor_preview.tscn`:
 O toggles its muted amber silhouette outline (default OFF), V simulates visual
