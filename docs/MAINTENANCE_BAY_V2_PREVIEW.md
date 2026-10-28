@@ -89,62 +89,27 @@ V hides/restores machine, shadow and outline together (default installed).
 The HUD reports visibility, requested outline state and collision outlines.
 O also updates the requested state while removed; V restores that state.
 C/H retain collision outlines/HUD, WASD/arrows move and wheel zooms. No global
-bindings change; O/V have no existing binding conflict. Temporary live tuning
-controls below are confined to this preview.
+bindings change; O/V have no existing binding conflict.
 
-### Temporary live tuning (not saved; final values pending)
+### Final owner-approved values
 
-Starting baseline is read from the actual preview instance and material at
-startup: room-local X `-442`, Y `-137`, width `7` source texels, opacity `0.80`,
-RGB `(0.65, 0.43, 0.19)`. Outline starts OFF and machine installed. No final
-values are selected or locked by this amendment. Relaunching F6 resets tuning;
-no scene/resource/shader files, source assets or saves are written at runtime.
+The owner selected these authoritative values in the actual Godot live-tuning
+preview and approved them in the finalization amendment. They are now locked:
+room-local position `(-442, -156.00)`, outline width `20.0` source texels,
+opacity `1.00`, unchanged amber RGB `(0.65, 0.43, 0.19)`. Outline starts OFF.
+These supersede all provisional values and recording examples. Temporary I/K,
+Shift variants, U/P, J/L and R handlers, runtime tuning state, reset logic and
+copy-values HUD are removed. No live adjustment or persistence remains.
+The compact HUD shows installed/removed, outline ON/OFF and collision outlines;
+O/V/C/H, movement and camera controls remain. H restores current status, and
+O changes the requested outline state while V hides the visual group.
 
-| Key | Runtime-only effect |
-| --- | --- |
-| I / K | Move parent Extractor up/down 1 room-local unit; shadow follows |
-| Shift+I / Shift+K | Move up/down 5 room-local units |
-| U / P | Decrease/increase outline width by 1 source texel, clamped 0–20 |
-| J / L | Decrease/increase outline opacity by 0.05, clamped 0.00–1.00 |
-| R | Reset only Y, width and opacity to startup baseline |
-| O / V / C / H | Retained outline / visibility / collision outlines / HUD toggles |
-
-X stays fixed at `-442`; Y has no artificial tuning bounds, so owner must assess
-wall clearance. Negative Y is toward the far wall. One room-local unit equals
-1.25 preview-world units. One source texel of outline width equals 0.16 room
-units / 0.20 preview-world units; maximum width 20 equals 4 preview-world units.
-The shader hint extends to 20; existing expanded-quad UV mapping and sampling
-are otherwise unchanged. Large-width outline appearance/clipping needs review.
-Runtime material duplication isolates tuning from all other visual instances;
-RGB, source texture and shadow characteristics remain unchanged. Key echoes are
-ignored. I/R have production InputMap bindings, but this preview instantiates
-neither InventoryUI nor the construction controller, so no active handler
-conflicts here. Global bindings and other previews remain unchanged.
-
-The HUD's `EXTRACTOR TUNING (DEV ONLY)` section displays room-local X/Y,
-signed Y delta, source-texel width, opacity to two decimals, baseline values,
-outline/visibility state and a control legend. It updates on relevant keypresses
-only. H restores current values after hiding; tuning and O work while V removes
-the visual. R preserves outline ON/OFF, removal, collision outlines, HUD visibility,
-Dave and camera. Example exact recording line at startup:
-
-```text
-COPY THESE VALUES: Y = -137.00; width = 7; opacity = 0.80
-```
-
-Owner retest, **one result at a time**, superseding the earlier polish retests:
-
-1. F6 the Extractor preview; verify unchanged normal appearance, no errors and
-   legible complete baseline HUD.
-2. Test I/K and Shift+I/K; verify direction, exact Y/delta and fixed X; assess
-   foundation fit, wall clearance and shadow following.
-3. O enables outline; test U/P and J/L, including 0/20 width and 0/1 opacity
-   limits. Confirm accurate HUD values, clean silhouette, no rectangle or clipping.
-4. Test O/V/C/H/R, tuning while removed and H hide/restore. Confirm R affects
-   only tuning; F6 relaunch restores all startup defaults. Spot-check prior
-   previews/production isolation because the shared shader hint changed.
-5. Record the `COPY THESE VALUES:` line and return chosen Y, width and opacity
-   for a separate final-value amendment. No new runtime PASS is claimed here.
+Width 20 source texels equals 3.2 room units / 4 preview-world units, not 20
+world pixels. Shader hint remains 0–20 with no smaller clamp; quad expansion,
+UV remapping and out-of-bounds zero sampling all use the same width. Rendering
+algorithm and shader fallback defaults are unchanged; the scene-local material
+explicitly supplies the approved width/color. Final locked-file appearance and
+clipping still require owner retest; static inspection is not engine validation.
 
 The [reusable visual](../scenes/visuals/extractor_stationary.tscn) contains only
 presentation nodes and a scene-local material. No controls, machine collision,
@@ -172,33 +137,31 @@ PR #54 harness, transition infrastructure and F5 production files are unchanged.
   and after implementation. No background or existing import metadata changes.
 - Actual pad rim is approximately image x 230–424, y 220–390, measured visually
   from the approved background, not old concept labels. Chosen front-center
-  anchor after polish: image `(326, 375)`, room local `(-442, -137)` after
+  final anchor: image `(326, 356)`, room local `(-442, -156.00)` after
   subtracting the centered image origin `(768, 512)`, preview world
-  `(-552.5, -171.25)` at 1.25x. This moves the previous room-local anchor
-  `(-442, -132)` toward the far wall by 5 units (6.25 preview-world units).
+  `(-552.5, -195)` at 1.25x. This is the owner-selected rearward placement.
 - Artwork base anchor `(669, 1108)` maps to that location with uncentered sprite
   offset `(-669, -1108)` and uniform scale `0.16` (effective preview scale `0.20`).
-  Alpha > 16 bounds map to room-image `(237.04, 199.48)`–`(415.28, 378.04)`,
-  size 178.24 x 178.56 room units. Body overhangs the rear rim about 21 units;
-  base sits toward its front. Right edge stays left of raised side housing x 432–476;
+  Alpha > 16 bounds map to room-image `(237.04, 180.48)`–`(415.28, 359.04)`,
+  size 178.24 x 178.56 room units. Body overhangs the rear rim about 40 units.
+  Right edge stays left of raised side housing x 432–476;
   left edge stays right of west cabinet, which reaches about x 202. Faint-alpha
-  canvas extends further. Initial fit/scale passed per the owner; nudged placement
-  awaits targeted retest A.
+  canvas extends further. The owner chose this fit during live tuning; final
+  scene-file reproduction awaits the focused retests below.
 - Separate contact-shadow Sprite2D: local `(0, -7)`, radial GradientTexture2D
   128 x 64, scale `(1.4, 0.55)`, extent 179.2 x 35.2 room units. Black alpha
   0.18 at center, 0.10 at radius 0.65, zero at edge; transform, visibility and
   gradient are independently editable. Parent visibility hides all components.
 - [Reusable shader](../shaders/objective_silhouette.gdshader): eight radial alpha
-  samples; soft threshold 0.08–0.45 ignores faint specks. Scene-local width 7 source
-  texels = 1.12 room units = 1.4 preview-world units at camera zoom 1. Muted amber
-  `(0.65, 0.43, 0.19, 0.80)`, disabled by default. Width was 5 and alpha 0.55
-  before polish; reusable shader rendering and fallback defaults are unchanged,
-  with its editor width hint extended to 20 for temporary live tuning.
+  samples; soft threshold 0.08–0.45 ignores faint specks. Locked scene-local width
+  20 source texels = 3.2 room units = 4 preview-world units at camera zoom 1.
+  Muted amber `(0.65, 0.43, 0.19, 1.00)`, disabled by default. Reusable shader
+  rendering, fallback defaults and editor width hint 0–20 remain unchanged.
   Expanded quad and UV remapping
   with zero sampling outside bounds accommodate edge-touching silhouettes.
   Original RGBA composites over the outline without permanent tint. Linear
-  filtering; no glow, pulse, animation or per-frame CPU outline work. Tune width
-  and color in the scene-local material; controls update only on input.
+  filtering; no glow, pulse, animation or per-frame CPU outline work. Locked width
+  and color reside in the scene-local material; status updates only on input.
 
 ### Validation and sequential owner acceptance
 
@@ -218,15 +181,19 @@ provide no engine or visual acceptance.
 
 The owner reports all nine initial tests below PASS, with no failures, in the
 PR #55 polish amendment. This records owner feedback, not agent runtime checks.
-The earlier placement/outline polish proposed these targeted owner retests;
-the live-tuning sequence above now supersedes them before merge approval:
+The owner subsequently completed live tuning and approved the final values
+above. This records the owner's outcome, not agent runtime verification. Final
+locked-file retests remain pending, **one result at a time**, before merge approval:
 
-- **Retest A — Placement:** F6 the Extractor preview; confirm the machine sits
-  slightly farther toward the back of the pad without unwanted wall/fixture overlap.
-- **Retest B — Outline:** press O; confirm noticeably clearer but restrained
-  amber emphasis, with no clipping or rectangular border.
-- **Quick spot checks:** O off/on reliability and V hide/restore with shadow and
-  outline; no new errors. These retests remain pending; no new PASS is inferred.
+1. F6 the Extractor preview: approved rearward position and outline initially OFF.
+2. O shows the approved stronger amber silhouette, without clipping or rectangular
+   artifacts; O again removes it completely.
+3. V with outline ON and OFF hides/restores machine, shadow and outline together;
+   unchanged foundation remains intact.
+4. C/H still work and movement/camera remain normal. Former tuning keys no longer
+   adjust position, width or opacity.
+5. Check debugger errors and only the targeted regressions warranted by this diff.
+   Return for owner merge approval after retests pass; no automatic merge.
 
 Initial nine-test acceptance plan (owner-reported PASS before polish):
 
