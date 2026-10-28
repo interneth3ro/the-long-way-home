@@ -78,6 +78,141 @@ environment convention at
   scale were visual acceptance targets. The subsequent collision request fixes
   world scale at the selected 1.25x.
 
+## Stationary Fabricator visual (feature branch, pending merge)
+
+Owner launch, subject to the [execution policy](../AGENTS.md#godot-execution-safety):
+F6 [the isolated Fabricator preview](../scenes/dev/maintenance_bay_v2_fabricator_preview.tscn).
+Its [script](../scenes/dev/maintenance_bay_v2_fabricator_preview.gd) inherits the
+collision preview and calls its isolation setup. The room stays at **1.25x**,
+with the existing collisions, right-exit barrier, disabled doorways and Dave/camera.
+The preview does not instantiate the Extractor, Smelter or PR #54 connection
+harness. F5 production, reusable rooms and prior previews remain unchanged.
+
+The [reusable Fabricator visual](../scenes/visuals/fabricator_stationary.tscn)
+groups one sprite, its scene-local outline material and a separate contact shadow
+under one hideable Node2D. This is stationary shipboard equipment artwork only:
+no recovery, inventory mutation, save state, deployment, production, animation,
+lighting effects, objective wiring or scene cutover. **No Fabricator collision is
+added; Dave walking through it is expected.** Existing room fixtures still collide.
+Painted amber lighting remains part of the unchanged source artwork.
+
+### Source verification and provisional lower-left foundation placement
+
+- Owner source: `C:/Users/inter/Downloads/fabricator.png`, copied byte-for-byte to
+  [fabricator_stationary.png](../assets/environment/maintenance_bay_v2/machines/fabricator_stationary.png).
+  PNG signature, all chunk CRCs and full image decode pass static inspection.
+  Native **1326 x 1186**, 8-bit RGBA, noninterlaced. SHA-256:
+  `b8639413684ed4ea90068ef9a330087dd4c48b696633b9f5f4a7040262e7ce12`.
+  No crop, resampling, recompression, recoloring, alpha cleanup or alternate PNG.
+- Alpha: 444,104 fully transparent pixels; 15,300 at alpha 1–31; 2,553 at
+  32–127; 1,110,192 at 128–254; 487 fully opaque. All four corners are
+  transparent black. Exclusive nonzero bounds `(0,49)`–`(1326,1156)`;
+  alpha >=32 bounds `(11,96)`–`(1323,1118)`; alpha >=128 bounds
+  `(11,96)`–`(1322,1118)`. Border maximum alpha is 13/255. The main
+  8-connected nonzero component contains 1,128,475 pixels; 57 detached pixels
+  across 43 other components are all alpha 1/255. Genuine usable transparency
+  passes the static handoff gate: no opaque rectangular backdrop is present.
+  Faint fringe/specks remain intact for owner review at multiple zoom levels;
+  this does not claim an in-engine edge-quality PASS.
+- The real, unchanged 1536 x 1024 room background has the SHA-256 recorded above.
+  Static image inspection places the lower-left mounting pad at approximately
+  image **X=210–425, Y=630–845**, below the west cabinet, left of the repair
+  platform, and inside the bottom wall. These are provisional visual measurements,
+  not a collider definition. Image `(768,512)` maps to room-local `(0,0)`.
+- Initial front-center mounting point: image **`(317,831)`**, room-local
+  **`(-451.00,319.00)`**, preview-world **`(-563.75,398.75)`** at 1.25x.
+  The source mounting-base anchor is **`(663,1100)`**, on the lower central
+  plinth contact edge, rather than the canvas center. Sprite `centered=false`,
+  source offset **`(-663,-1100)`**, uniform scale **`0.16`** (effective preview
+  scale 0.20). These values derive from this PNG and the lower-left pad, not
+  Extractor/Smelter coordinates. Final fit and perspective require owner tuning.
+- Alpha >=32 maps to image approximately `(212.68,670.36)`–`(422.60,833.88)`,
+  size **209.92 x 163.52 room units**, or room-local
+  `(-555.32,158.36)`–`(-345.40,321.88)`. Faint nonzero canvas bounds extend
+  to image `(210.92,662.84)`–`(423.08,839.96)`. The machine is centered over
+  the lower-left pad without covering the central repair platform. These are
+  static placement calculations; nearby fixture clearance/occlusion is unverified.
+- Separate shadow: visual-local `(0,-7)`, radial GradientTexture2D 128 x 64,
+  scale `(1.5,0.5)` = **192 x 32 room units**; black alpha 0.16 at center,
+  0.08 at radius 0.65, zero at edge. It follows the root for movement/removal.
+  Preview/root and PreviewRoom Y-sort, with Fabricator and Dave Z=1, follow the
+  accepted machine previews. No production sorting changes are introduced.
+- Existing [objective shader](../shaders/objective_silhouette.gdshader) is unchanged;
+  its supported width hint is 0–20, with quad expansion and UV remapping.
+  Scene-local material fixes **width=20.0 source texels; opacity=1.00**,
+  amber RGB **`(0.65,0.43,0.19)`**, outline **OFF** by default. Radius is
+  3.2 room units / 4 preview-world units at camera zoom 1. The shader samples
+  sprite alpha for a silhouette, with out-of-bounds zero sampling; no rectangle
+  border or extra highlighted image. `resource_local_to_scene=true` isolates
+  material state from other instances and the accepted machines.
+
+### Session-only X/Y controls and recording HUD
+
+| Key | Fabricator preview behavior |
+| --- | --- |
+| I / K | Up / down by 1 room-local pixel |
+| J / L | Left / right by 1 room-local pixel |
+| Shift + I/K/J/L | Move by 5 room-local pixels |
+| R | Reset position only to initial X/Y; retain visibility and outline state |
+| O | Toggle the fixed amber outline, initially OFF |
+| V | Hide/restore machine, shadow and outline together; retain requested outline |
+| C / H | Inherited collision-outline/HUD toggles, initially OFF/ON |
+| WASD / arrows; wheel | Existing Dave movement; camera zoom |
+
+The HUD shows current room-local X/Y, initial X/Y and deltas, all to two decimal
+places, plus the legend, installed/removed, outline and collision-outline status.
+It labels the fixed values `width=20.0 source texels; opacity=1.00` and updates
+the following recording line on every adjustment/reset (also while HUD is hidden):
+
+`COPY THESE VALUES: X=-451.00; Y=319.00`
+
+The numbers always reflect current position with two decimal places. There are no
+outline width/opacity controls, global InputMap edits, clipboard operations, disk
+writes or saved tuning. Restarting restores the authored initial position.
+Key releases/repeats and Ctrl/Alt/Meta combinations are ignored. Shift is accepted
+only with I/K/J/L, avoiding modified toggle/reset shortcuts. Each accepted position
+press moves once, independently of the room's 1.25x scale.
+
+The actual InputMap assigns I to inventory and R to construction rotation, but
+the inherited preview has neither inventory UI/controller nor construction
+controller. Dave polls only WASD/arrows; the camera handles wheel events, and
+the interaction detector is disabled. I/R therefore have no active competing
+handler in this isolated scene. C/H delegate to the inherited handler then refresh
+the Fabricator HUD. O while removed retains its requested state for restoration.
+
+### Static validation and sequential owner acceptance
+
+Validation is static only: PNG integrity/alpha and source-copy/background hashes,
+scene reference/load counts, placement math, fixed shader/material settings,
+input/HUD review, existing Python transition/geometry/connection suites, protected
+tracked-file comparison, local documentation links and `git diff --check`.
+No Godot import, GDScript engine/type check, shader compilation, headless run,
+graphical launch, gameplay or performance verification is claimed. Extractor
+`(-442,-156.00)` and Smelter `(435.00,-159.00)`, their 20.0/1.00 outlines,
+PNGs/scenes/shadows/controls, room background/collision, earlier previews,
+PR #54 harness, Dave/camera and F5 production are unchanged.
+
+Owner acceptance is **pending**, one test/result at a time. These instructions
+do not authorize agent execution:
+
+1. F6 Fabricator preview: world 1.25x, installed, outline OFF, no Godot errors.
+2. Review initial lower-left foundation fit, perspective, scale and nearby fixtures.
+3. Inspect transparency, faint edges and restrained contact shadow at several zooms.
+4. Verify X/Y fine/coarse steps, two-decimal HUD/copy line and position-only R reset.
+5. O: fixed amber silhouette, width 20.0 and opacity 1.00, without clipping.
+6. O OFF and repeated toggles: stable appearance, no residual outline.
+7. V with outline ON/OFF: machine/shadow/outline hide/restore; foundation remains.
+8. C/H, movement/zoom, expected machine walk-through, earlier machine/V2 previews.
+9. F5 production smoke test: existing gameplay, machinery and progression unchanged.
+
+After all nine pass, request the owner's final **X and Y only**. A narrow
+amendment in the same PR will lock those coordinates and remove I/K/J/L, Shift/R
+tuning, baselines/deltas and recording HUD while preserving O/V/C/H, fixed outline,
+artwork and shadow. Then perform targeted owner retests and await merge approval.
+The Fabricator isolated preview scene/script and tuning controls are future
+retirement-audit candidates after V2 production migration; no existing files are
+retired here. Do not merge or clean up as part of this implementation.
+
 ## Stationary Smelter visual (feature branch, pending merge)
 
 Owner launch, subject to the execution policy: F6
