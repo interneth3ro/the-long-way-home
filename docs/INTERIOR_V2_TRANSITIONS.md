@@ -1,5 +1,19 @@
 # Interior V2 automatic-transition preview
 
+> **Archived workflow; retirement proposed in this PR (pending merge).** The
+> preview files described below are removed from this checkout. All launch steps,
+> controls, pending tests and implementation-status statements below are historical
+> records of their original slices, not current instructions or new acceptance.
+> Retired-source links open immutable Git history. Geometry, art provenance,
+> decisions and owner findings are retained as recorded.
+>
+> Current F5 starts production `scenes/main/main_v2.tscn`; F6 with
+> `scenes/main/main.tscn` open runs the legacy fallback. See the
+> [retirement and restoration record](../README.md#primary-interior-v2-development-previews)
+> for exact commands to restore the 38 files from
+> `c6d236e5ad47d11e285287f93d69d87f8a5213dc` (PR #66).
+> Godot execution restrictions still apply; this record authorizes no execution.
+
 The separate [two-room V2 harness](V2_TWO_ROOM_CONNECTION.md) connects the actual
 Primary and Maintenance rooms in a new development scene. This older preview's
 minimal destinations, controls and wrapper barriers remain unchanged. New
@@ -10,7 +24,7 @@ Feature-branch implementation, pending merge and owner acceptance. No test below
 is premarked passed. Follow the [execution safety policy](../AGENTS.md#godot-execution-safety);
 these owner-operated instructions do not authorize agent engine execution.
 
-Open [ship_interior_v2_transition_preview.tscn](../scenes/dev/ship_interior_v2_transition_preview.tscn)
+Historical launch (retired): open [ship_interior_v2_transition_preview.tscn](https://github.com/interneth3ro/the-long-way-home/blob/c6d236e5ad47d11e285287f93d69d87f8a5213dc/scenes/dev/ship_interior_v2_transition_preview.tscn)
 and press **F6 (Run Current Scene)**. Keep the project main scene unchanged.
 This host instances production Dave, camera, PlaythroughState and the real
 SceneTransitionController script. Progression is session-local; the preview

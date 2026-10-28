@@ -1,10 +1,24 @@
 # V2 two-room development connection
 
+> **Archived workflow; retirement proposed in this PR (pending merge).** The
+> preview files described below are removed from this checkout. All launch steps,
+> controls, pending tests and implementation-status statements below are historical
+> records of their original slices, not current instructions or new acceptance.
+> Retired-source links open immutable Git history. Geometry, art provenance,
+> decisions and owner findings are retained as recorded.
+>
+> Current F5 starts production `scenes/main/main_v2.tscn`; F6 with
+> `scenes/main/main.tscn` open runs the legacy fallback. See the
+> [retirement and restoration record](../README.md#primary-interior-v2-development-previews)
+> for exact commands to restore the 38 files from
+> `c6d236e5ad47d11e285287f93d69d87f8a5213dc` (PR #66).
+> Godot execution restrictions still apply; this record authorizes no execution.
+
 Implementation merged in PR #54; owner acceptance is tracked separately. Follow the
 [execution policy](../AGENTS.md#godot-execution-safety). This guide does not
 authorize agent Godot execution. No owner acceptance result is recorded yet.
 
-Open [v2_two_room_connection.tscn](../scenes/dev/v2_two_room_connection.tscn)
+Historical launch (retired): open [v2_two_room_connection.tscn](https://github.com/interneth3ro/the-long-way-home/blob/c6d236e5ad47d11e285287f93d69d87f8a5213dc/scenes/dev/v2_two_room_connection.tscn)
 in Godot and press **F6 (Run Current Scene)**. Keep the project main scene
 unchanged. Start near Primary Interior V2's left entrance, facing left. Walk left
 into its threshold to enter Maintenance Bay V2 through the right entrance, facing
@@ -32,11 +46,11 @@ already has a controller, and preserves collision-disabled visual previews.
 AutomaticDoorway also safely returns when no controller exists.
 
 Development-only inherited instances
-[v2_connection_interior.tscn](../scenes/dev/v2_connection_interior.tscn) and
-[v2_connection_maintenance.tscn](../scenes/dev/v2_connection_maintenance.tscn)
+[v2_connection_interior.tscn](https://github.com/interneth3ro/the-long-way-home/blob/c6d236e5ad47d11e285287f93d69d87f8a5213dc/scenes/dev/v2_connection_interior.tscn) and
+[v2_connection_maintenance.tscn](https://github.com/interneth3ro/the-long-way-home/blob/c6d236e5ad47d11e285287f93d69d87f8a5213dc/scenes/dev/v2_connection_maintenance.tscn)
 reuse the real rooms without copying art, collision or marker coordinates. They
 enable Doorways, supply reciprocal destinations, and attach a small
-[presentation adapter](../scenes/dev/v2_connection_world.gd) using the existing
+[presentation adapter](https://github.com/interneth3ro/the-long-way-home/blob/c6d236e5ad47d11e285287f93d69d87f8a5213dc/scenes/dev/v2_connection_world.gd) using the existing
 `prepare_for_arrival` hook. Routing belongs to these development configurations.
 There is no replacement controller or permanent development dependency in rooms.
 

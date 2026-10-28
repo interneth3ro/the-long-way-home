@@ -1,5 +1,19 @@
 # Primary interior V2 development previews
 
+> **Archived workflow; retirement proposed in this PR (pending merge).** The
+> preview files described below are removed from this checkout. All launch steps,
+> controls, pending tests and implementation-status statements below are historical
+> records of their original slices, not current instructions or new acceptance.
+> Retired-source links open immutable Git history. Geometry, art provenance,
+> decisions and owner findings are retained as recorded.
+>
+> Current F5 starts production `scenes/main/main_v2.tscn`; F6 with
+> `scenes/main/main.tscn` open runs the legacy fallback. See the
+> [retirement and restoration record](../README.md#primary-interior-v2-development-previews)
+> for exact commands to restore the 38 files from
+> `c6d236e5ad47d11e285287f93d69d87f8a5213dc` (PR #66).
+> Godot execution restrictions still apply; this record authorizes no execution.
+
 PR #47's visual comparison is merged. The owner selected **1.25x** following its
 tests 1-6, as recorded in the collision implementation request. PR #49's separate
 collision/navigation preview is merged; its historical acceptance record below
@@ -17,8 +31,8 @@ unchanged; their solid doors still do not initiate travel.
 
 Follow the [execution safety policy](../AGENTS.md#godot-execution-safety). These
 manual owner instructions do not authorize agent engine execution.
-Open the project in Godot, open
-[`scenes/dev/ship_interior_v2_scale_preview.tscn`](../scenes/dev/ship_interior_v2_scale_preview.tscn),
+Historical launch (retired): open the project in Godot, then open
+[`scenes/dev/ship_interior_v2_scale_preview.tscn`](https://github.com/interneth3ro/the-long-way-home/blob/c6d236e5ad47d11e285287f93d69d87f8a5213dc/scenes/dev/ship_interior_v2_scale_preview.tscn),
 then run **Current Scene (F6)**. Keep the project's main scene unchanged.
 The preview starts at world **1.0x** and camera **1.0x**, using existing Dave and
 his existing follow/zoom camera.
@@ -96,8 +110,8 @@ runtime, graphical test or screenshots were performed under the restriction.
 ## Collision/navigation preview (feature branch, pending merge)
 
 Under the same [execution safety policy](../AGENTS.md#godot-execution-safety),
-the owner can open
-[`ship_interior_v2_collision_preview.tscn`](../scenes/dev/ship_interior_v2_collision_preview.tscn)
+the historical owner launch used
+[`ship_interior_v2_collision_preview.tscn`](https://github.com/interneth3ro/the-long-way-home/blob/c6d236e5ad47d11e285287f93d69d87f8a5213dc/scenes/dev/ship_interior_v2_collision_preview.tscn)
 and press **F6 (Run Current Scene)**. The project main scene is unchanged.
 WASD/arrows and mouse-wheel zoom use the original Dave controller/camera.
 **C** toggles actual physics outlines (initially off); **H** toggles the HUD.
@@ -147,7 +161,7 @@ alignment and corner feel in the ordered tests below; static inspection does not
 establish runtime navigation quality.
 
 The development-only
-[`physics_shape_outlines.gd`](../scenes/dev/physics_shape_outlines.gd)
+[`physics_shape_outlines.gd`](https://github.com/interneth3ro/the-long-way-home/blob/c6d236e5ad47d11e285287f93d69d87f8a5213dc/scenes/dev/physics_shape_outlines.gd)
 reads enabled CollisionShape2D resources: segment endpoints, convex polygon
 points, circle radius (64 samples) and capsule radius/height (32 segments per
 semicircle, joined by the straight sides). Shape-global to

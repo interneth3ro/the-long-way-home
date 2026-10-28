@@ -40,7 +40,7 @@ Alternatively, import `project.godot` through Godot's Project Manager.
 
 ## Launch and validation
 
-**F5** starts V2 on the P8 feature branch (pending merge). F6 with
+**F5** starts production V2 (P8 merged in PR #65). F6 with
 `scenes/main/main_v2.tscn` open also starts V2. For the legacy fallback, stop,
 open `scenes/main/main.tscn` and press **F6**. F5 stays configured for V2.
 From a terminal in the project root:
@@ -84,6 +84,31 @@ approved narrative/objective-guidance correction is excluded from P8. See
 
 ## Primary interior V2 development previews
 
+**Retirement proposed in this PR (pending merge):** all 38 tracked `scenes/dev/`
+files are removed after PR #66 migrated the static tests. The two preview
+sections below are historical records; their controls and owner test plans apply
+only to restored historical previews. They are not current launch instructions.
+The four linked preview guides retain geometry, art provenance, design decisions
+and owner findings. Their retired-source links point to the exact pre-retirement
+commit, not missing checkout files.
+
+Current **F5** runs production `scenes/main/main_v2.tscn`; **F6** with
+`scenes/main/main.tscn` open runs the legacy fallback. Developer coordinates
+(`scenes/ui/developer_coordinates.*`) remain an approved feature.
+
+Tracked preview source is preserved at **`c6d236e5ad47d11e285287f93d69d87f8a5213dc`**
+(the PR #66 merge). Inspect or restore from the repository root, after preserving
+any local changes; restoration belongs on a separate feature branch:
+
+```sh
+git ls-tree -r --name-only c6d236e5ad47d11e285287f93d69d87f8a5213dc -- scenes/dev/
+git show c6d236e5ad47d11e285287f93d69d87f8a5213dc:scenes/dev/v2_two_room_connection.tscn
+git restore --source=c6d236e5ad47d11e285287f93d69d87f8a5213dc --worktree -- scenes/dev/
+```
+
+This restores exactly the 38 historical tracked files, without launching Godot.
+It does not authorize engine execution or change the current production entry point.
+
 An isolated development preview compares the approved room artwork at world
 scales 1.0x, 1.25x and 1.5x using existing Dave and camera. These previews remain
 isolated from production gameplay. The owner selected 1.25x following PR #47
@@ -96,7 +121,7 @@ cover development-only destinations and the separate 0.15-second quick fade.
 Agent validation is static only under the Godot execution restriction.
 
 PR #54 merged the separate [two-room V2 connection](docs/V2_TWO_ROOM_CONNECTION.md);
-owner acceptance is separate. F6 `scenes/dev/v2_two_room_connection.tscn`
+owner acceptance is separate. The historical F6 harness was `scenes/dev/v2_two_room_connection.tscn`
 to start near Primary's left entrance and travel automatically to the actual
 Maintenance Bay V2 and back. Both rooms are 1.25x; one is attached at a time,
 with the existing detached-room cache retained. That historical slice preserved
@@ -107,28 +132,28 @@ F5 routes; P8 now selects the V2 host. See the guide's nine sequential owner tes
 This feature branch adds an isolated stationary Smelter visual, pending merge
 and final locked-file owner retests. The owner reports 9/9 initial tests PASS
 and approved X=435.00, Y=-159.00, width=20.0, opacity=1.00; outline starts OFF.
-F6 `scenes/dev/maintenance_bay_v2_smelter_preview.tscn`: O/V simulate objective
+Historical F6 scene: `scenes/dev/maintenance_bay_v2_smelter_preview.tscn`; O/V simulate objective
 outline/removal, C/H toggle collision outlines/HUD, and movement/camera remain.
 Temporary live-tuning controls and recording HUD are removed. See
 [source, locked placement, controls and owner retests](docs/MAINTENANCE_BAY_V2_PREVIEW.md#stationary-smelter-visual-feature-branch-pending-merge).
 Agent validation is static only; production and existing previews remain unchanged.
 
 The feature branch adds an isolated stationary Extractor visual, pending merge
-and owner acceptance. F6 `scenes/dev/maintenance_bay_v2_extractor_preview.tscn`:
+and owner acceptance. Historical F6 scene: `scenes/dev/maintenance_bay_v2_extractor_preview.tscn`;
 O toggles its muted amber silhouette outline (default OFF), V simulates visual
 removal/reappearance, and C/H retain collision-outline/HUD controls. See the
 [placement and acceptance plan](docs/MAINTENANCE_BAY_V2_PREVIEW.md#stationary-extractor-visual-feature-branch-pending-merge).
 Validation is static only; no recovery, objectives or production logic is added.
 
-PR #51 added a separate machine-free maintenance-bay visual preview. Open
-`scenes/dev/maintenance_bay_v2_scale_preview.tscn` and press F6: initial room
+PR #51 added a separate machine-free maintenance-bay visual preview. Its historical
+F6 scene was `scenes/dev/maintenance_bay_v2_scale_preview.tscn`: initial room
 scale is 1.25x; 1/2/3 select 1.0x/1.25x/1.5x, 4-9 select comparison positions,
 WASD/arrows move, wheel zooms and H toggles the HUD. Walking through artwork is
 expected. Existing Dave/camera and all production environments/routes are unchanged.
 See [art provenance, scope and sequential owner tests](docs/MAINTENANCE_BAY_V2_PREVIEW.md).
 The owner selected **1.25x** for collision work. This feature branch adds static
 room collision and a separate isolated playable preview, pending merge and owner
-acceptance: open `scenes/dev/maintenance_bay_v2_collision_preview.tscn` and press
+acceptance. The historical launch used `scenes/dev/maintenance_bay_v2_collision_preview.tscn` and
 F6. WASD/arrows move, wheel zooms, C toggles actual collision outlines (initially
 off), and H toggles the HUD. The right exit has a preview-only barrier; the upper
 door remains solid. Stop and F6 the scale preview to return to visual comparison.
