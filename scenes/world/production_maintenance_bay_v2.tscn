@@ -1,0 +1,22 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/world/maintenance_bay_v2.tscn" id="1_room"]
+[ext_resource type="Script" path="res://scenes/world/v2_room_arrival.gd" id="2_arrival"]
+
+[node name="ProductionMaintenanceBayV2" instance=ExtResource("1_room")]
+scale = Vector2(1.25, 1.25)
+script = ExtResource("2_arrival")
+
+[node name="FromInterior" parent="Spawns" index="0"]
+metadata/facing = 2
+
+[node name="Doorways" parent="." index="3"]
+process_mode = 0
+
+[node name="Interior" parent="Doorways" index="0"]
+destination_scene = "res://scenes/world/production_ship_interior_v2.tscn"
+destination_spawn = &"FromMaintenance"
+
+[node name="GroundObjects" type="Node2D" parent="."]
+scale = Vector2(0.8, 0.8)
+y_sort_enabled = true
