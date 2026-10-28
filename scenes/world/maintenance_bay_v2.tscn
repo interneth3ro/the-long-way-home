@@ -91,7 +91,7 @@ a = Vector2(67, -242)
 b = Vector2(172, -242)
 
 [sub_resource type="ConvexPolygonShape2D" id="MainFloorBody"]
-points = PackedVector2Array(-223, -82, 132, -82, 184, -50, 184, 100, 97, 138, -198, 128, -238, 91, -238, -50)
+points = PackedVector2Array(-223, -100, 132, -100, 184, -50, 184, 100, 97, 138, -198, 128, -238, 91, -238, -50)
 
 [sub_resource type="ConvexPolygonShape2D" id="ExtractorRaisedSideHousing"]
 points = PackedVector2Array(-336, -257, -292, -257, -292, -162, -320, -142, -336, -162)

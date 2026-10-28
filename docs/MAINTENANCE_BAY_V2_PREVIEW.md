@@ -112,7 +112,7 @@ obstructed. Owner review must assess the inferred floor contact edges, especiall
 the raised foundation housings and southeast equipment. No design conflict was
 identified; perspective-dependent geometry still requires hands-on judgment.
 
-Static checks on this slice passed: scene resource paths/load counts, direct
+Static checks on the original slice passed: scene resource paths/load counts, direct
 physics-body ownership of all shapes, unique script UID, 12 convex footprints,
 and exact perimeter/barrier endpoint continuity. A conservative 8-source-pixel
 grid with 12-pixel obstacle clearance connected the entry to all three pad centers
@@ -120,7 +120,28 @@ and the four accessible platform sides (8,785 reachable samples, none at image
 edges). This checks geometry only, not Godot physics or runtime navigation. Spawn
 feet clearance is approximately 106.5 source pixels versus the required radius 8.
 
-### Collision owner acceptance — all pending
+### Test 4 platform amendment (pending owner retest)
+
+The owner's Test 4 screenshot showed Dave standing on the upper metal rim:
+the original collision edge at source-image Y=430 lay inside that rim. Native
+artwork inspection places the broad upper rim near Y=415. Only the two upper
+`MainFloorBody` vertices move from room-local `(-223, -82)` / `(132, -82)` to
+`(-223, -100)` / `(132, -100)`, placing the edge at image Y=412, just outside
+the rim. This is 18 source pixels outward (22.5 world units at 1.25x). Dave's
+unchanged feet-circle offset and radius put his lower contact/anchor at that
+edge when approaching from above; rendered appearance still requires retesting.
+The other six vertices, all other collision resources and all preview files
+are unchanged. Static convexity, resource/ownership and scoped-diff checks pass;
+the earlier grid sample count above describes the original geometry only.
+
+### Collision owner acceptance — Test 4 retest pending
+
+The amendment request reports **Tests 1–3 PASS, without observations**, and
+**Test 4 FAIL** for the upper-rim overlap. Tests 5–9 are paused. Resume with
+**Test 4 only**: approach the upper rim, confirm Dave stops just outside it,
+then circle accessible sides/corners and check for new snagging or gaps with
+C outlines. Continue to Tests 5–9 sequentially only after owner confirmation
+that Test 4 passes. No agent runtime or new owner acceptance is claimed.
 
 Run **one test at a time**, recording PASS/FAIL and optional observations before
 continuing. These owner instructions do not authorize agent execution.
