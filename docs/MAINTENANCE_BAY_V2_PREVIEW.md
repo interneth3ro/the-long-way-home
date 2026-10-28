@@ -1,5 +1,19 @@
 # Maintenance bay V2 development previews
 
+> **Archived workflow; retirement proposed in this PR (pending merge).** The
+> preview files described below are removed from this checkout. All launch steps,
+> controls, pending tests and implementation-status statements below are historical
+> records of their original slices, not current instructions or new acceptance.
+> Retired-source links open immutable Git history. Geometry, art provenance,
+> decisions and owner findings are retained as recorded.
+>
+> Current F5 starts production `scenes/main/main_v2.tscn`; F6 with
+> `scenes/main/main.tscn` open runs the legacy fallback. See the
+> [retirement and restoration record](../README.md#primary-interior-v2-development-previews)
+> for exact commands to restore the 38 files from
+> `c6d236e5ad47d11e285287f93d69d87f8a5213dc` (PR #66).
+> Godot execution restrictions still apply; this record authorizes no execution.
+
 The separate [two-room connection](V2_TWO_ROOM_CONNECTION.md) now supplies a
 development-only route to Primary Interior V2, pending merge and owner acceptance.
 New room-owned doorway components stay disabled in both previews documented here;
@@ -17,8 +31,8 @@ hands-on acceptance.
 ## Owner-operated launch and controls
 
 Follow the [execution policy](../AGENTS.md#godot-execution-safety). These owner
-instructions do not authorize agent execution. Open
-[`maintenance_bay_v2_scale_preview.tscn`](../scenes/dev/maintenance_bay_v2_scale_preview.tscn)
+instructions do not authorize agent execution. Historical launch (retired): open
+[`maintenance_bay_v2_scale_preview.tscn`](https://github.com/interneth3ro/the-long-way-home/blob/c6d236e5ad47d11e285287f93d69d87f8a5213dc/scenes/dev/maintenance_bay_v2_scale_preview.tscn)
 in Godot and press **F6** (Run Current Scene). Project startup is unchanged.
 
 | Control | Preview behavior |
@@ -80,9 +94,9 @@ environment convention at
 
 ## Stationary Fabricator visual (feature branch, pending merge)
 
-Owner launch, subject to the [execution policy](../AGENTS.md#godot-execution-safety):
-F6 [the isolated Fabricator preview](../scenes/dev/maintenance_bay_v2_fabricator_preview.tscn).
-Its [script](../scenes/dev/maintenance_bay_v2_fabricator_preview.gd) inherits the
+Historical owner launch (retired), subject to the [execution policy](../AGENTS.md#godot-execution-safety):
+F6 [the isolated Fabricator preview](https://github.com/interneth3ro/the-long-way-home/blob/c6d236e5ad47d11e285287f93d69d87f8a5213dc/scenes/dev/maintenance_bay_v2_fabricator_preview.tscn).
+Its [script](https://github.com/interneth3ro/the-long-way-home/blob/c6d236e5ad47d11e285287f93d69d87f8a5213dc/scenes/dev/maintenance_bay_v2_fabricator_preview.gd) inherits the
 collision preview and calls its isolation setup. The room stays at **1.25x**,
 with the existing collisions, right-exit barrier, disabled doorways and Dave/camera.
 The preview does not instantiate the Extractor, Smelter or PR #54 connection
@@ -209,9 +223,9 @@ the separate production-migration architecture review in this amendment.
 
 ## Stationary Smelter visual (feature branch, pending merge)
 
-Owner launch, subject to the execution policy: F6
-[the isolated Smelter preview](../scenes/dev/maintenance_bay_v2_smelter_preview.tscn).
-Its [script](../scenes/dev/maintenance_bay_v2_smelter_preview.gd) extends the
+Historical owner launch (retired), subject to the execution policy: F6
+[the isolated Smelter preview](https://github.com/interneth3ro/the-long-way-home/blob/c6d236e5ad47d11e285287f93d69d87f8a5213dc/scenes/dev/maintenance_bay_v2_smelter_preview.tscn).
+Its [script](https://github.com/interneth3ro/the-long-way-home/blob/c6d236e5ad47d11e285287f93d69d87f8a5213dc/scenes/dev/maintenance_bay_v2_smelter_preview.gd) extends the
 collision-preview script and calls its isolation setup. It inherits the actual
 room at 1.25x, right-exit barrier, disabled doorways, existing Dave/feet/camera,
 and C/H controls. It does not instantiate PR #54's transition/progression harness
@@ -332,10 +346,10 @@ requested through the dedicated maintenance conversation under repository policy
 
 ## Stationary Extractor visual (feature branch, pending merge)
 
-Owner launch: F6 [the Extractor preview](../scenes/dev/maintenance_bay_v2_extractor_preview.tscn)
+Historical owner launch (retired): F6 [the Extractor preview](https://github.com/interneth3ro/the-long-way-home/blob/c6d236e5ad47d11e285287f93d69d87f8a5213dc/scenes/dev/maintenance_bay_v2_extractor_preview.tscn)
 under the execution policy. It inherits the existing collision preview: actual
 room, 1.25x transform, right-exit barrier, disabled doorways, Dave, feet collider
-and camera. The [derived script](../scenes/dev/maintenance_bay_v2_extractor_preview.gd)
+and camera. The [derived script](https://github.com/interneth3ro/the-long-way-home/blob/c6d236e5ad47d11e285287f93d69d87f8a5213dc/scenes/dev/maintenance_bay_v2_extractor_preview.gd)
 calls the existing isolation setup. O toggles objective outline (default OFF);
 V hides/restores machine, shadow and outline together (default installed).
 The HUD reports visibility, requested outline state and collision outlines.
@@ -473,8 +487,8 @@ evidence in ignored `artifacts/screenshots/`. Agent captured no engine screensho
 
 ## Isolated collision preview (feature branch, pending merge)
 
-Subject to the execution policy, open
-[`maintenance_bay_v2_collision_preview.tscn`](../scenes/dev/maintenance_bay_v2_collision_preview.tscn)
+Historical launch (retired), subject to the execution policy: open
+[`maintenance_bay_v2_collision_preview.tscn`](https://github.com/interneth3ro/the-long-way-home/blob/c6d236e5ad47d11e285287f93d69d87f8a5213dc/scenes/dev/maintenance_bay_v2_collision_preview.tscn)
 and press **F6**. Existing Dave movement, wheel camera zoom and feet collision
 remain active. **C** toggles resource-derived outlines, initially off; **H** toggles
 the HUD. These keys are handled only by this preview, without InputMap changes.
