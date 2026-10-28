@@ -3,7 +3,7 @@ render_mode unshaded;
 
 uniform bool outline_enabled = false;
 // Source texels: 5 * 0.16 * 1.25 = 1 screen pixel at camera zoom 1.
-uniform float outline_width : hint_range(0.0, 8.0, 0.25) = 5.0;
+uniform float outline_width : hint_range(0.0, 20.0, 0.25) = 5.0;
 uniform vec4 outline_color : source_color = vec4(0.65, 0.43, 0.19, 0.55);
 varying vec4 vertex_color;
 

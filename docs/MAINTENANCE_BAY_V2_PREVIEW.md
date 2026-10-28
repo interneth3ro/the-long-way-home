@@ -89,7 +89,62 @@ V hides/restores machine, shadow and outline together (default installed).
 The HUD reports visibility, requested outline state and collision outlines.
 O also updates the requested state while removed; V restores that state.
 C/H retain collision outlines/HUD, WASD/arrows move and wheel zooms. No global
-bindings change; O/V have no existing binding conflict.
+bindings change; O/V have no existing binding conflict. Temporary live tuning
+controls below are confined to this preview.
+
+### Temporary live tuning (not saved; final values pending)
+
+Starting baseline is read from the actual preview instance and material at
+startup: room-local X `-442`, Y `-137`, width `7` source texels, opacity `0.80`,
+RGB `(0.65, 0.43, 0.19)`. Outline starts OFF and machine installed. No final
+values are selected or locked by this amendment. Relaunching F6 resets tuning;
+no scene/resource/shader files, source assets or saves are written at runtime.
+
+| Key | Runtime-only effect |
+| --- | --- |
+| I / K | Move parent Extractor up/down 1 room-local unit; shadow follows |
+| Shift+I / Shift+K | Move up/down 5 room-local units |
+| U / P | Decrease/increase outline width by 1 source texel, clamped 0–20 |
+| J / L | Decrease/increase outline opacity by 0.05, clamped 0.00–1.00 |
+| R | Reset only Y, width and opacity to startup baseline |
+| O / V / C / H | Retained outline / visibility / collision outlines / HUD toggles |
+
+X stays fixed at `-442`; Y has no artificial tuning bounds, so owner must assess
+wall clearance. Negative Y is toward the far wall. One room-local unit equals
+1.25 preview-world units. One source texel of outline width equals 0.16 room
+units / 0.20 preview-world units; maximum width 20 equals 4 preview-world units.
+The shader hint extends to 20; existing expanded-quad UV mapping and sampling
+are otherwise unchanged. Large-width outline appearance/clipping needs review.
+Runtime material duplication isolates tuning from all other visual instances;
+RGB, source texture and shadow characteristics remain unchanged. Key echoes are
+ignored. I/R have production InputMap bindings, but this preview instantiates
+neither InventoryUI nor the construction controller, so no active handler
+conflicts here. Global bindings and other previews remain unchanged.
+
+The HUD's `EXTRACTOR TUNING (DEV ONLY)` section displays room-local X/Y,
+signed Y delta, source-texel width, opacity to two decimals, baseline values,
+outline/visibility state and a control legend. It updates on relevant keypresses
+only. H restores current values after hiding; tuning and O work while V removes
+the visual. R preserves outline ON/OFF, removal, collision outlines, HUD visibility,
+Dave and camera. Example exact recording line at startup:
+
+```text
+COPY THESE VALUES: Y = -137.00; width = 7; opacity = 0.80
+```
+
+Owner retest, **one result at a time**, superseding the earlier polish retests:
+
+1. F6 the Extractor preview; verify unchanged normal appearance, no errors and
+   legible complete baseline HUD.
+2. Test I/K and Shift+I/K; verify direction, exact Y/delta and fixed X; assess
+   foundation fit, wall clearance and shadow following.
+3. O enables outline; test U/P and J/L, including 0/20 width and 0/1 opacity
+   limits. Confirm accurate HUD values, clean silhouette, no rectangle or clipping.
+4. Test O/V/C/H/R, tuning while removed and H hide/restore. Confirm R affects
+   only tuning; F6 relaunch restores all startup defaults. Spot-check prior
+   previews/production isolation because the shared shader hint changed.
+5. Record the `COPY THESE VALUES:` line and return chosen Y, width and opacity
+   for a separate final-value amendment. No new runtime PASS is claimed here.
 
 The [reusable visual](../scenes/visuals/extractor_stationary.tscn) contains only
 presentation nodes and a scene-local material. No controls, machine collision,
@@ -137,7 +192,8 @@ PR #54 harness, transition infrastructure and F5 production files are unchanged.
   samples; soft threshold 0.08–0.45 ignores faint specks. Scene-local width 7 source
   texels = 1.12 room units = 1.4 preview-world units at camera zoom 1. Muted amber
   `(0.65, 0.43, 0.19, 0.80)`, disabled by default. Width was 5 and alpha 0.55
-  before polish; reusable shader implementation and fallback defaults are unchanged.
+  before polish; reusable shader rendering and fallback defaults are unchanged,
+  with its editor width hint extended to 20 for temporary live tuning.
   Expanded quad and UV remapping
   with zero sampling outside bounds accommodate edge-touching silhouettes.
   Original RGBA composites over the outline without permanent tint. Linear
@@ -162,8 +218,8 @@ provide no engine or visual acceptance.
 
 The owner reports all nine initial tests below PASS, with no failures, in the
 PR #55 polish amendment. This records owner feedback, not agent runtime checks.
-The placement and outline polish now requires these targeted owner retests,
-**one at a time**, before merge approval:
+The earlier placement/outline polish proposed these targeted owner retests;
+the live-tuning sequence above now supersedes them before merge approval:
 
 - **Retest A — Placement:** F6 the Extractor preview; confirm the machine sits
   slightly farther toward the back of the pad without unwanted wall/fixture overlap.
