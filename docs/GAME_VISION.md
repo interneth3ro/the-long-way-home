@@ -8,6 +8,29 @@ science-fiction automation adventure. Narrative drives progression; factory
 construction, research, and exploration are the means through which Dave
 accomplishes his goals.
 
+## Current V2 production status
+
+P1-P6 merged in PRs #59-#64; the verified post-P6 baseline is
+`e14703e64aef961f18feba8a616acec00c4f069e`. The owner approved P7 after a
+continuous six-phase rehearsal, **6/6 PASS (owner-reported)**. P8 is implemented
+on `codex/p8-f5-production-cutover`, pending owner cutover acceptance and merge.
+
+**F5 / Run Project** now starts V2 Primary through `scenes/main/main_v2.tscn`.
+**F6 / Run Current Scene** with that scene open also starts V2. For the explicit
+**legacy F6 fallback**, stop the game, open `scenes/main/main.tscn` and press F6.
+F5 stays configured for V2. This is an editor workflow, with no startup selector.
+Computer repair remains deferred. Agent validation is static only; no Godot
+launch or P8 runtime acceptance is claimed.
+
+**P7 Observation #1 (nonblocking missed implementation):** After the Computer's
+opening conversation, the player is not explicitly directed outside to investigate
+the Ferrite deposit. P7 owner rehearsal passed 6/6 phases despite this gap. A
+separate, later approved narrative/objective-guidance correction is needed; it is
+**excluded from P8** and remains unfixed.
+
+See the [P8 scope and owner checklist](V2_PRODUCTION_HOST.md#p8-production-cutover-feature-branch-pending-merge).
+Earlier milestone descriptions retain their historical scope and launch expectations.
+
 ## Approved visual direction
 
 - Rich, illustrated 2D artwork in an angled overhead perspective.
@@ -101,14 +124,15 @@ recovery/objective state. P4 merged in PR #62 and
 connects only the stationary Extractor to existing recovery after Ferrite discovery.
 P5 merged in PR #63 and adds Smelter recovery
 after first Ferrite Ore acquisition; the existing musing remains at acquisition.
-P6's feature branch, pending owner acceptance and merge, activates only opt-in V2
-Fabricator recovery after historical ingot acquisition. The existing seven-second
+P6 merged in PR #64 and activates V2 Fabricator recovery after historical ingot
+acquisition. The existing seven-second
 first-ingot musing remains acquisition-only; recovery advances directly to
 **Craft a Ferrite Plate.**, with no deployment objective or recovery musing.
 Plate acquisition into inventory clears that guidance; output alone and Rods do
 not, and `restore_computer` remains active/incomplete.
-F5 stays legacy; Computer repair and cutover remain deferred. This changes
-no approved narrative, inventory or progression requirements.
+P8 selects this host for F5 on its feature branch; legacy Main remains an F6
+fallback. Computer repair remains deferred. This changes no approved narrative,
+inventory or progression requirements.
 
 Future emergency/partial -> dim/moody -> operational lighting is gated by story
 and electrical repairs. The approved background composition does not complete

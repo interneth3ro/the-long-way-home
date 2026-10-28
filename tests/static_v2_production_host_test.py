@@ -14,8 +14,8 @@ ROOT = Path(__file__).resolve().parents[1]
 PRIMARY = "scenes/world/production_ship_interior_v2.tscn"
 MAINTENANCE = "scenes/world/production_maintenance_bay_v2.tscn"
 EXTERIOR = "scenes/world/planet_exterior.tscn"
-# Live main verified before P6; pin preservation rather than follow a moving ref.
-P6_BASE = "59275b0da9550ce9c2ec4aeeafd36037e0567e2a"
+# Live post-P6 / pre-P8 main verified for cutover; never follow a moving ref.
+P8_BASE = "e14703e64aef961f18feba8a616acec00c4f069e"
 
 
 def read(path):
@@ -40,6 +40,22 @@ def merged_nodes(path):
 
 
 class V2ProductionHostStaticTest(unittest.TestCase):
+    def test_f5_v2_host_and_independent_legacy_f6_scene(self):
+        project = read("project.godot")
+        self.assertEqual(re.findall(r'^[ \t]*run/main_scene[ \t]*=(.*)$', project, re.M),
+                         ['"res://scenes/main/main_v2.tscn"'])
+        configured = re.search(r'^run/main_scene="res://([^"]+)"$', project, re.M)[1]
+        self.assertTrue((ROOT / configured).is_file())
+        self.assertIn('[node name="MainV2" instance=ExtResource("1_main")]', read(configured))
+        self.assertIn('path="res://scenes/main/main_v2.gd"', read(configured))
+        legacy = read("scenes/main/main.tscn")
+        self.assertIn('[node name="Main" type="Node2D"]', legacy)
+        self.assertIn('path="res://scenes/main/main.gd"', legacy)
+        self.assertIn('path="res://scenes/world/ship_interior.tscn"', legacy)
+        self.assertIn('instance=ExtResource("2_interior")',
+                      geometry.nodes(legacy)["Worlds/ShipInterior"][0])
+        self.assertNotIn("main_v2", legacy)
+
     def test_resource_graph_has_no_dev_dependency_and_valid_declarations(self):
         pending = ["scenes/main/main_v2.tscn"]
         visited = set()
@@ -296,9 +312,9 @@ class V2ProductionHostStaticTest(unittest.TestCase):
 
     def test_protected_existing_code_art_and_sidecars_unchanged(self):
         # Existing production/dev code, project settings, assets and sidecars are
-        # all protected in this additive slice. Compare SHA-256 of working bytes
+        # protected against post-P6, allowing only P8 startup. Compare working bytes
         # with baseline blobs (normalize text CRLF only, never binary assets).
-        files = subprocess.check_output(["git", "ls-tree", "-r", "--name-only", P6_BASE,
+        files = subprocess.check_output(["git", "ls-tree", "-r", "--name-only", P8_BASE,
                                          "assets", "scenes", "construction", "dialogue",
                                          "inventory", "objectives", "world", "project.godot"],
                                         cwd=ROOT, text=True).splitlines()
@@ -306,42 +322,21 @@ class V2ProductionHostStaticTest(unittest.TestCase):
                                 stdin=subprocess.PIPE, stdout=subprocess.PIPE)
         try:
             for path in files:
-                proc.stdin.write(f"{P6_BASE}:{path}\n".encode())
+                proc.stdin.write(f"{P8_BASE}:{path}\n".encode())
                 proc.stdin.flush()
                 header = proc.stdout.readline().split()
                 expected = proc.stdout.read(int(header[2]))
                 self.assertEqual(proc.stdout.read(1), b"\n")
                 actual = (ROOT / path).read_bytes()
-                if path == MAINTENANCE:
-                    # Reverse only P6's exact declaration and Fabricator binding.
-                    # All merged P4/P5 nodes/resources remain byte-protected.
-                    actual_text = actual.decode().replace("\r\n", "\n")
-                    expected_text = expected.decode().replace("\r\n", "\n")
-                    declaration = ('[ext_resource type="Script" '
-                                   'path="res://scenes/interaction/v2_fabricator_recovery.gd" '
-                                   'id="7_interaction"]')
-                    if declaration not in expected_text:
-                        self.assertEqual(actual_text.count(declaration), 1)
-                        binding = ('script = ExtResource("7_interaction")\n'
-                                   'interaction_prompt = "E — Recover Fabricator"')
-                        self.assertEqual(actual_text.count(binding), 1)
-                        actual_text = actual_text.replace(declaration,
-                            '[ext_resource type="Script" '
-                            'path="res://scenes/interaction/world_interactable.gd" '
-                            'id="7_interaction"]').replace(binding,
-                            'script = ExtResource("7_interaction")\ninteraction_enabled = false')
-                    actual, expected = actual_text.encode(), expected_text.encode()
-                if path == "scenes/world/stationary_machine_presentation.gd":
+                if path == "project.godot":
                     actual = actual.replace(b"\r\n", b"\n")
                     expected = expected.replace(b"\r\n", b"\n")
-                    dormancy = (b'\t# V2 recovery adapters own eligibility; Fabricator remains dormant.\n'
-                                b'\tif machine_id == "fabricator":\n'
-                                b'\t\t$Interaction.interaction_enabled = false\n')
-                    if dormancy in expected:
-                        anchor = b'\t$Interaction/Shape.set_deferred("disabled", recovered)\n'
-                        self.assertEqual(actual.count(anchor), 1)
-                        actual = actual.replace(
-                            anchor, anchor + dormancy)
+                    approved = b'run/main_scene="res://scenes/main/main_v2.tscn"'
+                    baseline = b'run/main_scene="res://scenes/main/main.tscn"'
+                    pattern = rb"^[ \t]*run/main_scene[ \t]*=.*$"
+                    self.assertEqual(re.findall(pattern, actual, re.M), [approved])
+                    self.assertEqual(re.findall(pattern, expected, re.M), [baseline])
+                    actual = actual.replace(approved, baseline, 1)
                 if not path.endswith(".png"):
                     expected = expected.replace(b"\r\n", b"\n")
                     actual = actual.replace(b"\r\n", b"\n")

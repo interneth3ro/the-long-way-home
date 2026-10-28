@@ -1,21 +1,31 @@
-# Opt-in V2 production host — P1 through P6
+# V2 production host — P1 through P8
 
 P1 merged in PR #59; P2 Computer parity merged in PR #60; P3 stationary-machine
 integration merged in PR #61 (`96f47e4`). P4 Extractor recovery merged in PR #62
 (`bf18f09`). P5 Smelter recovery merged in PR #63 (`59275b0`).
-P6 Fabricator recovery is implemented on a feature branch, pending owner
-acceptance and merge.
-This is not the F5 cutover. Follow the [execution policy](../AGENTS.md#godot-execution-safety);
-this guide does not authorize agent Godot execution.
+P6 Fabricator recovery merged in PR #64; the verified post-P6 baseline is
+`e14703e64aef961f18feba8a616acec00c4f069e`. The owner approved P7 after a
+continuous six-phase rehearsal, **6/6 PASS (owner-reported)**. P8 is implemented
+on `codex/p8-f5-production-cutover`, pending owner cutover acceptance and merge.
 
-For owner testing, open [main_v2.tscn](../scenes/main/main_v2.tscn) and press
-**F6 (Run Current Scene)**. F5 still launches `scenes/main/main.tscn` and the
-legacy opening. Main retains movement, camera zoom, inventory and UI input.
-No harness HUD, C/H controls or failure probes are added.
+**F5 / Run Project** now starts V2 Primary through `scenes/main/main_v2.tscn`.
+**F6 / Run Current Scene** with that scene open also starts V2. For the explicit
+**legacy F6 fallback**, stop the game, open `scenes/main/main.tscn` and press F6.
+F5 stays configured for V2. This is an editor workflow, with no startup selector.
+Computer repair remains deferred. Agent validation is static only; no Godot
+launch or P8 runtime acceptance is claimed.
+
+**P7 Observation #1 remains nonblocking and unfixed.** See the
+[observation and P8 scope](#p8-production-cutover-feature-branch-pending-merge)
+for the deferred outside/Ferrite guidance correction.
+
+Follow the [execution policy](../AGENTS.md#godot-execution-safety); this guide
+does not authorize agent Godot execution. Main retains movement, camera zoom,
+inventory and UI input. No harness HUD, C/H controls or failure probes are added.
 
 ## Architecture gate and ownership
 
-The opt-in scene inherits Main; its [script](../scenes/main/main_v2.gd) extends
+The V2 production scene inherits Main; its [script](../scenes/main/main_v2.gd) extends
 Main's script. In `_enter_tree`, it replaces only the inherited opening instance
 under `Worlds`, before children enter/ready. The legacy opening never readies in
 this host. No file or authored asset is removed. In `_ready`, it calls Main's
@@ -25,7 +35,7 @@ arrival-facing hook and resets camera smoothing/scroll.
 Main's inherited `@onready` DialogueUI reference is captured before initialize
 reparents Dave. Construction, MachineUI, DeveloperCoordinates and SceneTransitions
 retain inherited exported player references. No binding uses a new Dave path
-after reparenting. The coordinate display is disabled in the opt-in scene.
+after reparenting. The coordinate display is disabled in the V2 production scene.
 There is one inherited Dave/camera, PlaythroughState/planet/inventory,
 ObjectiveController, tracker, musing UI, inventory UI, Construction, MachineUI and
 SceneTransitionController. P4/P5/P6 reuse existing Extractor/Smelter/Fabricator
@@ -67,8 +77,8 @@ initial room. Cache, cancellation, rollback, fades, locks and teardown are uncha
 | Primary Maintenance doorway | `production_maintenance_bay_v2.tscn` | `Spawns/FromInterior` | Existing QUICK_FADE (0.15s each way) |
 | Maintenance Interior doorway | `production_ship_interior_v2.tscn` | `Spawns/FromMaintenance` | Existing QUICK_FADE |
 | Primary Exterior doorway | `planet_exterior.tscn` | `Spawns/FromShip` | Existing FIRST_EXTERIOR_REVEAL |
-| Exterior Hatch (E), opt-in | `production_ship_interior_v2.tscn` | `Spawns/FromPlanet` | Existing IMMEDIATE |
-| Exterior Hatch (E), legacy F5 | `ship_interior.tscn` | `Spawns/FromPlanet` | Existing IMMEDIATE |
+| Exterior Hatch (E), V2 F5/F6 | `production_ship_interior_v2.tscn` | `Spawns/FromPlanet` | Existing IMMEDIATE |
+| Exterior Hatch (E), legacy F6 | `ship_interior.tscn` | `Spawns/FromPlanet` | Existing IMMEDIATE |
 
 The host listens only to `Worlds.child_entered_tree`. When the actual exterior
 attaches, including cached revisits, it configures that instance's existing
@@ -86,8 +96,9 @@ existing PlaythroughState flag still controls first reveal and session reset.
 | Maintenance FromInterior (inherited) | `(550, 41)` | `(687.5, 51.25)` | West |
 | Exterior FromShip (unchanged) | `(-384, -64)` | `(-384, -64)` | Existing retained facing |
 
-Initial and FromPlanet require owner visual acceptance; these coordinates were
-not previously approved. Static feet-circle checks clear Primary walls, polygons
+Initial and FromPlanet were provisional at P1. The owner later approved P7
+after the 6/6 continuous rehearsal; P8 retains these positions for cutover checks.
+Static feet-circle checks clear Primary walls, polygons
 and capsule at all three Primary markers, and sample the exterior approach at
 native x=-13, ground y=281..339. The exterior threshold center is `(-13, 323)`,
 size `(170, 16)`. Initial/return markers are outside both Primary triggers.
@@ -540,7 +551,7 @@ reporting **PASS/FAIL** and optional observations. Start with F6
 10. **Legacy F5:** Legacy Smelter recovery, empty rack/collision, Computer,
     navigation and production remain unchanged; F6 routes still work.
 
-## P6 Fabricator recovery (feature branch, pending merge)
+## P6 Fabricator recovery (PR #64, merged; historical milestone)
 
 The verified pre-P6 baseline is live main at PR #63 merge
 `59275b0da9550ce9c2ec4aeeafd36037e0567e2a`. Architecture inspection confirmed
@@ -599,7 +610,7 @@ Baseline: **39/39** static tests passed. After P6:
 `python -B -m unittest discover -s tests -p 'static_*test.py'`: **41/41 pass**.
 `git diff --check` and changed-document local Markdown link/anchor validation pass.
 The existing resource graph/load-count and unique UID checks include Fabricator.
-Preservation now pins the verified pre-P6 SHA above instead of moving `origin/main`,
+P6 preservation pinned the verified pre-P6 SHA above instead of moving `origin/main`,
 reversing only the exact P6 wrapper declaration/binding and presentation dormancy
 removal. Merged P4/P5 and all existing protected code/art/sidecars remain protected.
 Focused checks inspect historical eligibility, dispatch recheck, failure-only
@@ -614,11 +625,12 @@ inventory rejection, synchronous reentry and engineered transition rollback rema
 runtime-unverified; no debug controls or forced reproduction were added. No CI,
 Actions, new test framework, performance probes, P7 rehearsal or F5 cutover.
 
-### P6 owner acceptance — ten sequential tests (all pending)
+### P6 owner acceptance — ten sequential tests (historical checklist)
 
-For later **owner-run F6 gameplay**, run **one at a time**, report **PASS/FAIL**
-and optional observations/errors; resolve failures before proceeding. None passes
-from static checks. Start with [main_v2.tscn](../scenes/main/main_v2.tscn).
+This historical P6 checklist used **owner-run F6 gameplay**, **one at a time**,
+with **PASS/FAIL** and optional observations/errors. No individual P6 result is
+inferred from static checks or the later aggregate P7 report. Start with
+[main_v2.tscn](../scenes/main/main_v2.tscn).
 
 1. **Pre-ingot eligibility:** Fresh F6 progression: before first ingot enters
    inventory, no Fabricator recovery prompt/action. Smelter output alone must
@@ -654,4 +666,94 @@ from static checks. Start with [main_v2.tscn](../scenes/main/main_v2.tscn).
     and collision. Check Computer, navigation and existing production, then
     confirm opt-in F6 routes still work.
 
-The P6 PR is not merged. Owner gameplay testing, acceptance and merge are pending.
+P6 merged in PR #64. P7 later passed 6/6 phases in the owner-reported continuous
+rehearsal. Earlier P1-P6 checklists retain their historical F5/F6 expectations;
+use the P8 checklist below for current launch acceptance.
+
+
+## P8 production cutover (feature branch, pending merge)
+
+The fixed verified live pre-P8 baseline is PR #64 merge
+`e14703e64aef961f18feba8a616acec00c4f069e`. P8 changes only `run/main_scene`
+in `project.godot` from `res://scenes/main/main.tscn` to
+`res://scenes/main/main_v2.tscn`. All gameplay scripts, scenes, autoloads, authored
+exterior hatch destination, scale, spawn positions, 45-unit interaction caps,
+recovery adapters, authoritative progression and cached-room behavior are preserved.
+The existing host configures its attached exterior instance's V2 return.
+There is no new gameplay, narrative guidance, P7 replay or P9 stabilization.
+
+### P7 Observation #1 - nonblocking and unfixed
+
+**P7 Observation #1 (nonblocking missed implementation):** After the Computer's
+opening conversation, the player is not explicitly directed outside to investigate
+the Ferrite deposit. P7 owner rehearsal passed 6/6 phases despite this gap. A
+separate, later approved narrative/objective-guidance correction is needed; it is
+**excluded from P8** and remains unfixed.
+
+No objective, dialogue, prompt or Ferrite discovery change is included, and no
+issue is created by this cutover.
+
+### P8 static verification and limits
+
+Before P8, the permitted static suite passed **41/41**. After P8:
+`python -B -m unittest discover -s tests -p 'static_*test.py'` passed **42/42**.
+`git diff --check` and all **48 local links/anchors** in the three changed
+documents passed. Six in-memory negative checks confirmed both preservation
+tests reject duplicate startup assignments, unrelated project-setting changes
+and reverting to legacy startup; no project files were mutated by these checks.
+P8 pins production-host
+preservation to the post-P6 SHA above, directly protecting Fabricator activation
+and all three adapters, without reverse-P6 normalization. Both affected tests
+require one exact V2 startup assignment, normalize only that assignment to the
+fixed pre-P8 value, then compare the entire project file (existing CRLF
+normalization only). All other source/artwork/sidecar protection remains.
+A focused static check resolves F5 to the V2 host and checks independent legacy
+Main's root, script and opening scene; the existing resource graph validates
+references and declarations for both scenes.
+
+No Godot, headless, graphical, GDScript gameplay or performance tests are run.
+Static checks do not prove engine parsing, rendering, physics or gameplay.
+All P8 runtime results below remain pending, separate from the P7 owner report.
+Exceptional inventory rejection, synchronous reentry and engineered transition
+rollback remain outside ordinary acceptance without a safe existing test mechanism.
+
+### P8 owner acceptance - eight sequential tests (all PENDING)
+
+After PR review, the **owner** runs these **one at a time**, reporting **PASS/FAIL**
+and optional observations, resolving blocking defects before merge. Agents must
+not execute these tests or infer passes from static validation.
+
+1. **PENDING - Default F5 opening:** F5 launches V2 Primary at accepted spawn/facing;
+   Dave movement/camera, Computer prompt and opening dialogue work. Legacy interior
+   must not appear by default.
+2. **PENDING - V2 routes and input:** Primary <-> Maintenance automatic doors,
+   exterior departure and hatch return reach approved V2 rooms/markers; controls
+   restore after dialogue/transitions.
+3. **PENDING - Discovery and machine recovery:** Ferrite discovery and historical
+   ore/ingot acquisition unlock Extractor, Smelter, Fabricator in order; no premature
+   prompts, duplicate grants or extra recovery musings.
+4. **PENDING - Representative production chain:** Recover/deploy equipment, acquire
+   Ferrite Ore, acquire Ferrite Ingot, craft and **acquire** Ferrite Plate. Output
+   alone does not advance acquisition guidance. `restore_computer` stays active/incomplete.
+5. **PENDING - Cached-room persistence:** Repeated ordinary Maintenance returns
+   retain recovered-machine absence, permanent foundations, disabled interactions
+   and correct inventory grants.
+6. **PENDING - Legacy F6 fallback:** Stop F5, open `scenes/main/main.tscn`, F6;
+   verify original interior, navigation, Computer and representative legacy
+   rack/empty-rack collision. Stop and confirm F5 still starts V2.
+7. **PENDING - Runtime and resource health:** During ordinary tests check for
+   startup/import/missing-resource errors, scene-loading failures, unexpected input
+   locks and runtime errors. No forced cancellation, stress tests or benchmarks.
+8. **PENDING - Documentation and static review:** F5/F6 instructions match observed
+   behavior; required static suite, preservation checks, diff validation and changed
+   document links pass; P7 Observation #1 remains nonblocking and unfixed.
+
+### Merge gate and rollback
+
+Require reviewed narrow diff, passing permitted static checks, owner-run acceptance,
+no unresolved startup/routing blockers and **explicit owner merge approval**.
+Do not merge automatically, retire branches, clean up, begin P9 or change F5 again.
+If rollback is needed after a future merge, use a separate reviewed PR restoring
+only the prior main-scene setting and corresponding test/current documentation
+assumptions. Preserve history and V2. Ended sessions cannot be restored: disk
+save/load is not implemented.
