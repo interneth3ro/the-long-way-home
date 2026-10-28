@@ -97,10 +97,12 @@ reports 7/7 initial acceptance tests passed; the approved Computer cap is 45 wor
 units. P3 merged in PR #61 and integrates all
 three approved stationary visuals into production Maintenance with removable
 base collision, dormant interaction targets and presentation derived from existing
-recovery/objective state. P4's feature branch, pending merge and owner acceptance,
+recovery/objective state. P4 merged in PR #62 and
 connects only the stationary Extractor to existing recovery after Ferrite discovery.
-Smelter/Fabricator targets remain dormant. F5 stays legacy; Computer repair,
-later machine recovery wiring and cutover remain deferred. This changes
+P5's feature branch, pending merge and owner acceptance, adds Smelter recovery
+after first Ferrite Ore acquisition; the existing musing remains at acquisition.
+Fabricator stays dormant. F5 stays legacy; Computer repair, Fabricator recovery
+wiring and cutover remain deferred. This changes
 no approved narrative, inventory or progression requirements.
 
 Future emergency/partial -> dim/moody -> operational lighting is gated by story

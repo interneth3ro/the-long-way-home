@@ -1,9 +1,9 @@
-# Opt-in V2 production host — P1 through P4
+# Opt-in V2 production host — P1 through P5
 
 P1 merged in PR #59; P2 Computer parity merged in PR #60; P3 stationary-machine
-integration merged in PR #61 (`96f47e4`). P4 Extractor recovery is on its feature
-branch, pending merge and owner acceptance. This is not the
-F5 cutover. Follow the [execution policy](../AGENTS.md#godot-execution-safety);
+integration merged in PR #61 (`96f47e4`). P4 Extractor recovery merged in PR #62
+(`bf18f09`). P5 Smelter recovery is pending merge and owner acceptance.
+This is not the F5 cutover. Follow the [execution policy](../AGENTS.md#godot-execution-safety);
 this guide does not authorize agent Godot execution.
 
 For owner testing, open [main_v2.tscn](../scenes/main/main_v2.tscn) and press
@@ -26,7 +26,8 @@ retain inherited exported player references. No binding uses a new Dave path
 after reparenting. The coordinate display is disabled in the opt-in scene.
 There is one inherited Dave/camera, PlaythroughState/planet/inventory,
 ObjectiveController, tracker, musing UI, inventory UI, Construction, MachineUI and
-SceneTransitionController. P4 reuses its existing Extractor recovery transaction;
+SceneTransitionController. P4/P5 reuse existing Extractor/Smelter recovery
+transactions;
 there is no second inventory owner or new progression state.
 
 The production-owned wrappers inherit the approved reusable rooms:
@@ -48,7 +49,8 @@ exterior trigger lies inside the retained exterior barrier. Reusable defaults,
 closed-door artwork and the reserved upper Maintenance door remain unchanged.
 P2 adds only the Computer interaction described below. P3 adds the stationary
 presentation and initially dormant targets described below; P4 activates only
-Extractor recovery. Approved machine assets/transforms, legacy worlds,
+Extractor recovery; P5 activates Smelter recovery. Approved machine
+assets/transforms, legacy worlds,
 exterior scene/script/simulation and PR #54's harness remain unchanged.
 
 ## Routes and arrival contracts
@@ -367,7 +369,7 @@ This records P3's historical scope; P4 below extends Extractor activation only.
 Smelter/Fabricator recovery remains deferred to P5/P6. No Computer repair,
 save/load, testing-framework expansion, CI or F5 cutover is included.
 
-## P4 Extractor recovery (feature branch, pending merge)
+## P4 Extractor recovery (PR #62, merged)
 
 The architecture inspection confirmed that the detector casts targets to
 `WorldInteractable`, selects through overridden `can_interact()`, then dispatches
@@ -402,7 +404,8 @@ immediately hides the complete Visual subtree and turns its outline off. Ready,
 nine milestone signals, objective signals and deferred reattachment refresh retain
 the P3 lifecycle contract. Cached rooms read the same authoritative recovered
 state; no reconstruction, rollback of committed recovery or cache change is added.
-Smelter and Fabricator retain generic disabled targets in every state.
+At the P4 baseline, Smelter and Fabricator retained generic disabled targets.
+P5 below activates Smelter only.
 
 Extractor anchor `(-442, -156)`, room scale 1.25, base `152 x 44` at `(0, -24)`,
 target `48 x 8` at `(0, 8)` and independently editable **45.0 world-unit** cap are
@@ -421,9 +424,11 @@ preservation checks remain. These inspect text and geometry only. Godot parsing,
 physics, UI dispatch, signal delivery, deferred collision updates, rendering,
 cached reentry and gameplay remain unverified; no engine or project code was run.
 
-All **38 static checks passed** with
+The P4 implementation recorded **38 static checks passed** with
 `python -B -m unittest discover -s tests -p 'static_*test.py'`; changed-document
-local links and `git diff --check` also passed. No runtime or owner PASS is inferred.
+local links and `git diff --check` also passed. A later audit on merged P4
+reproduced 37 passes and one stale preservation-baseline failure, corrected in P5
+below. No runtime or owner PASS is inferred.
 
 Owner tests: perform **one at a time**, record **PASS/FAIL**, optional observations
 and errors; resolve failures before proceeding. Merge approval is separate.
@@ -443,3 +448,91 @@ and errors; resolve failures before proceeding. Merge approval is separate.
 8. Smelter/Fabricator remain dormant; P2 Computer interaction is unchanged.
 9. F6 Extractor deployment/production smoke test, then separate F5 legacy
    recovery/Computer/navigation regression.
+
+## P5 Smelter recovery (feature branch, pending merge)
+
+Baseline: clean synchronized main at PR #62 merge
+`bf18f09df74680372e1eb842929431915a409f9f`. The thin
+[Smelter adapter](../scenes/interaction/v2_smelter_recovery.gd) follows P4's
+WorldInteractable contract on `StationaryMachines/Smelter/Interaction`.
+It checks attached-tree state, interaction activation and valid PlaythroughState,
+then `ferrite_acquired && !smelter_recovered` on selection and again on dispatch.
+Ore must have entered inventory once; production in an Extractor output buffer
+alone does not qualify. Spending or transfer does not revoke eligibility.
+Computer conversation, current quantity, Extractor deployment, objective stage
+and highlight are not prerequisites.
+
+The prompt is **E — Recover Smelter**. Dispatch calls only
+`PlaythroughState.recover_smelter()`. Its existing reentry/duplicate guard inserts
+exactly one packaged Smelter, commits recovery, then emits completion. Rejection
+commits no recovery, removal, grant or completion and returns only **Unable to
+recover the Smelter.** through existing nonblocking, dismissible response UI.
+Retry stays eligible. Success/ineligibility return empty text. Main's one-time
+Smelter-related musing remains at first ore acquisition. Recovery only refreshes
+existing guidance, ordinarily **Deploy the Smelter near the Extractor.**, unless
+superseded by later progression. It does not complete `restore_computer`.
+
+Adapters exclusively own Extractor/Smelter eligibility; presentation's dormancy
+guard applies only to Fabricator. Existing P3 ready, nine milestone signals,
+objective signals and deferred cached reattachment synchronization remain.
+Success immediately hides the entire Visual subtree (machine/shadow/outline),
+defers safe disabling of removable body/target shapes, and makes interaction
+ineligible immediately. Permanent foundation and raised housing art/collision
+remain. Cached-room return and rollback read current session authority; they
+never reset recovery. No disk persistence, new state or scene reconstruction.
+
+Preserved: Smelter anchor `(435, -159)`, room scale 1.25 and GroundObjects/Dave
+compensation, base `136 x 40` at `(0, -22)`, target `48 x 8` at `(0, 8)`, target
+collision layer/mask/monitoring, independently editable **45.0 world-unit** cap
+without another scale multiplier, 120-unit detector, Computer/Extractor caps,
+first-hit occlusion, approved visual scene/PNG/shadow, 20-wide amber
+`(0.65, 0.43, 0.19)` outline, material isolation and sorting. Legacy F5, P4 and
+Fabricator dormancy remain unchanged.
+
+### P5 static validation and limitations
+
+`python -B -m unittest discover -s tests -p 'static_*test.py'`: **39 tests pass**.
+`git diff --check` and changed-document local Markdown links pass. Existing
+resource graph/load-count checks include the new adapter and unique UID.
+The broad source/artwork/sidecar preservation check compares the actual
+`origin/main` baseline, reversing only P5 binding/declaration and activation
+changes when absent from that baseline. Merged P4 is protected rather than
+normalized away. Focused assertions cover eligibility, dispatch, default grant
+quantity, rejection/commit ordering and acquisition-only musing timing.
+
+No Godot or project code was executed. Static checks do not establish engine
+parsing, gameplay, physics, signal delivery, UI dispatch, rendering, deferred
+collision removal or cached reattachment. Inventory rejection and unsafe
+transition cancellation remain runtime-unverified unless a safe existing mechanism
+is available to the owner. No debug gameplay or forced cancellation is added.
+
+### P5 owner acceptance — ten sequential tests
+
+Run manually, **one test at a time**, reporting **PASS/FAIL** and optional
+observations. Fix defects in this PR before merge. Start with F6
+[main_v2.tscn](../scenes/main/main_v2.tscn); test 10 uses legacy F5 separately.
+
+1. **Before ore acquisition:** With Ferrite discovered but none acquired, Smelter
+   has no prompt/action; ore only in an Extractor buffer does not qualify.
+2. **First ore acquisition:** Collect ore; existing acquisition musing occurs once;
+   guidance/highlight and **E — Recover Smelter** appear as appropriate. Check
+   front/side approaches, 45-world-unit boundary and first-hit occlusion near
+   raised housing. Do not recover yet.
+3. **Successful recovery:** Press E once: exactly one packaged Smelter, deployment
+   guidance, no recovery musing, visual/shadow/outline gone, removable collision
+   and target disabled, permanent foundation/housing retained.
+4. **Duplicate prevention:** Repeat E, then deploy/remove Smelter: no second
+   starter grant or replay of acquisition musing.
+5. **Cached-room persistence:** Repeated exits/returns leave Smelter absent and
+   noninteractive. Where practical, confirm eligibility survives ore spending.
+6. **Out-of-order exploration:** In a fresh session acquire ore/recover before
+   finishing Computer dialogue; later dialogue preserves state and guidance.
+7. **Input/transition safeguards:** Inventory, dialogue, machine UI, construction
+   tools and normal transitions do not accidentally dispatch recovery. No forced
+   cancellation or stress tests.
+8. **Adjacent regression:** P4 Extractor unchanged, Fabricator dormant, P2
+   Computer range and conversation unchanged.
+9. **Deployment/production:** Deploy outside, transfer ore, produce/collect Ingot.
+   Existing Fabricator guidance may appear; V2 Fabricator remains disabled.
+10. **Legacy F5:** Legacy Smelter recovery, empty rack/collision, Computer,
+    navigation and production remain unchanged; F6 routes still work.
