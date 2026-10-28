@@ -58,6 +58,29 @@ The [preview controls and ordered owner review](INTERIOR_V2_PREVIEW.md) record
 asset provenance and static-only validation limits. No Godot execution or visual
 acceptance is claimed.
 
+## Approved maintenance bay V2 visual comparison
+
+The approved machine-free room is a gritty industrial prisoner-transport
+compartment, with three empty foundations (Extractor upper-left, Smelter
+upper-right, Fabricator lower-left), a central visual-only repair platform and
+moderate localized crash damage. Its right doorway is the eventual primary
+interior connection; the closed top-wall door is reserved, noninteractive and
+has no destination. Future arrivals from the primary interior should face left.
+
+The intended apparent usable floor area is about 70-80% of Primary Interior V2,
+without stretching artwork. Direct owner comparison must assess scale and style.
+This feature branch adds an isolated 1.0x/1.25x/1.5x preview starting at 1.25x,
+pending merge and owner acceptance; no final scale is selected. Production bay,
+machines, narrative and scene routing are unchanged. Collision, interactions,
+spawns and production integration remain deferred.
+
+Future emergency/partial -> dim/moody -> operational lighting is gated by story
+and electrical repairs. The approved background composition does not complete
+the initial emergency state. Independent machine/lighting overlays remain future
+work; no variants or sprite extraction are included. See
+[preview provenance, controls and ordered acceptance](MAINTENANCE_BAY_V2_PREVIEW.md)
+for the implemented visual-only scope and static validation limits.
+
 ## Approved construction and logistics direction
 
 - Defined machine connection ports aligned with tile-lane centers along footprint
