@@ -35,8 +35,8 @@ accomplishes his goals.
   request. The separate collision/navigation preview uses that fixed scale.
 - Approved collision direction: smooth simplified floor perimeter, independent
   Computer/wreckage/permanent-equipment footprints and development-only outlines
-  of actual physics shapes. This feature branch implements that isolated slice,
-  pending merge and owner runtime acceptance; production gameplay is unchanged.
+  of actual physics shapes. PR #49 merged that isolated slice; owner runtime
+  acceptance is separate. F5 production gameplay is unchanged.
 - Future environment transitions will activate by walking across thresholds,
   without E, for room-to-room and interior/exterior travel. E remains for
   Computer, machines and intentional interactions. This supersedes the earlier
@@ -45,8 +45,8 @@ accomplishes his goals.
 - Gameplay spawns, transitions, opening doors, Computer restoration, Marvin
   discovery, production cutover and legacy retirement remain deferred here.
 
-The automatic-transition feature branch implements a separate development-only
-harness, pending merge and owner runtime acceptance. It uses the approved 1.25x
+PR #50 merged a separate development-only automatic-transition harness; owner
+runtime acceptance is separate. It uses the approved 1.25x
 V2 instance with safe wrapper spawns, automatic thresholds and distinct minimal
 test destinations. Closed door artwork and solid barriers remain active; a
 separate quick fade conceals transfer. Production routing, special first-exterior
@@ -75,16 +75,24 @@ Approved collision uses a simplified asymmetric floor perimeter, solid reserved
 upper door, one floor-level repair-platform footprint, traversable flat pads and
 simple footprints for substantial raised housings and permanent equipment.
 Future removable machines own their collision. Workstation mechanics and positions
-remain undecided. This feature branch implements that collision and a separate
-isolated playable preview with a temporary right-exit barrier and C outlines,
-pending merge and owner hands-on acceptance. Production bay, machines, narrative
+remain undecided. PR #52 merged that collision and a separate isolated playable
+preview with a temporary right-exit barrier and C outlines; owner hands-on
+acceptance is separate. The legacy production bay, machines, narrative
 and routing are unchanged. Connecting the V2 rooms, gameplay arrivals,
 interactions and production integration remain deferred for production. A separate
-feature-branch [two-room development connection](V2_TWO_ROOM_CONNECTION.md),
-pending merge and owner acceptance, connects the reusable V2 rooms at 1.25x with
+[two-room development connection](V2_TWO_ROOM_CONNECTION.md), merged in PR #54,
+connects the reusable V2 rooms at 1.25x with
 fixed inward-facing arrivals. It retains the existing detached-room cache with
 one attached room at a time, as explicitly authorized by the owner. This
 establishes no production access, machine/story persistence or V2 cutover.
+
+P1's [opt-in production integration](V2_PRODUCTION_HOST.md) is implemented on its
+feature branch, pending merge and owner acceptance. It reuses Main's gameplay
+ownership with inherited production V2 wrappers, automatic compartment travel,
+the existing first exterior reveal and a V2-specific exterior return. Its initial
+spawn and exterior return marker are provisional. F5 stays legacy; Computer,
+stationary machine integration and later cutover remain deferred. This changes
+no approved narrative, inventory or progression requirements.
 
 Future emergency/partial -> dim/moody -> operational lighting is gated by story
 and electrical repairs. The approved background composition does not complete

@@ -12,9 +12,9 @@ adds Ferrite Ore production and collection. Merged PR #38 adds Smelter recovery
 and the Ferrite acquisition musing. Merged PR #39 adds Smelter deployment.
 Merged PR #40 adds Ferrite Ingot production; merged PR #42 adds Fabricator rack
 recovery. Merged PR #43 adds Fabricator deployment, initial recipe selection
-and material loading; merged PR #44 adds in-place recipe switching. This feature
-branch adds automatic Fabricator production and first Plate acquisition, pending
-merge and owner acceptance.
+and material loading; merged PR #44 adds in-place recipe switching. Merged PR #45
+adds automatic Fabricator production and first Plate acquisition; owner acceptance
+remains separate from agent static checks.
 Its gameplay implementation is independent of FactoryGame; the approved Dave
 migration below reuses only two legacy artwork sheets.
 
@@ -54,20 +54,30 @@ Headless checks do not verify graphical appearance. While execution is restricte
 use only nonexecuting checks under the policy above and report them as static
 validation; runtime and engine verification remain unperformed.
 
+## Opt-in V2 production integration (P1, pending merge)
+
+Open `scenes/main/main_v2.tscn` and press **F6** for owner testing. This inherited
+Main host connects production-owned V2 room wrappers at 1.25x, reuses the existing
+player/controllers/UI and exterior, and returns from exterior to V2 Primary.
+**F5 remains the legacy game**, including its original exterior return. Computer
+and stationary machines are not migrated in P1. See the
+[architecture, provisional spawns and nine sequential owner tests](docs/V2_PRODUCTION_HOST.md).
+Agent verification is static only; no Godot launch or runtime acceptance is claimed.
+
 ## Primary interior V2 development previews
 
 An isolated development preview compares the approved room artwork at world
 scales 1.0x, 1.25x and 1.5x using existing Dave and camera. Production gameplay
 remains unchanged. The owner selected 1.25x following PR #47 review; PR #49's
-separate collision/navigation preview is merged. This feature branch adds an
-isolated automatic-transition preview, pending merge and owner acceptance. See the
+separate collision/navigation preview is merged. PR #50 merged the isolated
+automatic-transition preview; owner acceptance is separate. See the
 [preview controls, provenance and ordered owner tests](docs/INTERIOR_V2_PREVIEW.md).
 The [automatic-transition harness and eight owner tests](docs/INTERIOR_V2_TRANSITIONS.md)
 cover development-only destinations and the separate 0.15-second quick fade.
 Agent validation is static only under the Godot execution restriction.
 
-This feature branch adds a separate [two-room V2 connection](docs/V2_TWO_ROOM_CONNECTION.md),
-pending merge and owner acceptance. F6 `scenes/dev/v2_two_room_connection.tscn`
+PR #54 merged the separate [two-room V2 connection](docs/V2_TWO_ROOM_CONNECTION.md);
+owner acceptance is separate. F6 `scenes/dev/v2_two_room_connection.tscn`
 to start near Primary's left entrance and travel automatically to the actual
 Maintenance Bay V2 and back. Both rooms are 1.25x; one is attached at a time,
 with the existing detached-room cache retained. Existing previews and F5

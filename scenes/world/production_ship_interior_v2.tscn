@@ -1,0 +1,48 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/world/ship_interior_v2.tscn" id="1_room"]
+[ext_resource type="Script" path="res://scenes/world/v2_room_arrival.gd" id="2_arrival"]
+[ext_resource type="PackedScene" path="res://scenes/interaction/automatic_doorway.tscn" id="3_door"]
+
+[sub_resource type="RectangleShape2D" id="ExteriorThreshold"]
+size = Vector2(170, 16)
+
+[node name="ProductionShipInteriorV2" instance=ExtResource("1_room")]
+scale = Vector2(1.25, 1.25)
+script = ExtResource("2_arrival")
+
+[node name="Shape" parent="CollisionContent/MaintenanceDoorBarrier" index="0"]
+disabled = true
+
+[node name="FromMaintenance" parent="Spawns" index="0"]
+metadata/facing = 3
+
+[node name="Initial" type="Marker2D" parent="Spawns"]
+position = Vector2(0, 80)
+metadata/facing = 1
+
+[node name="FromPlanet" type="Marker2D" parent="Spawns"]
+position = Vector2(-13, 281)
+metadata/facing = 1
+
+[node name="Doorways" parent="." index="3"]
+process_mode = 0
+
+[node name="Maintenance" parent="Doorways" index="0"]
+destination_scene = "res://scenes/world/production_maintenance_bay_v2.tscn"
+destination_spawn = &"FromInterior"
+
+[node name="Exterior" parent="Doorways" instance=ExtResource("3_door")]
+position = Vector2(-13, 323)
+destination_scene = "res://scenes/world/planet_exterior.tscn"
+destination_spawn = &"FromShip"
+presentation = 1
+
+[node name="Shape" parent="Doorways/Exterior" index="0"]
+shape = SubResource("ExteriorThreshold")
+
+[node name="GroundObjects" type="Node2D" parent="."]
+scale = Vector2(0.8, 0.8)
+y_sort_enabled = true
+
+[editable path="Doorways/Exterior"]

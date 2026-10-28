@@ -1,6 +1,6 @@
 # V2 two-room development connection
 
-Feature-branch implementation, pending merge and owner acceptance. Follow the
+Implementation merged in PR #54; owner acceptance is tracked separately. Follow the
 [execution policy](../AGENTS.md#godot-execution-safety). This guide does not
 authorize agent Godot execution. No owner acceptance result is recorded yet.
 
