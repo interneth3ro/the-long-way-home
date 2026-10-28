@@ -1,0 +1,22 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/world/ship_interior_v2.tscn" id="1_room"]
+[ext_resource type="Script" path="res://scenes/dev/v2_connection_world.gd" id="2_adapter"]
+
+[node name="ConnectedInteriorV2" instance=ExtResource("1_room")]
+scale = Vector2(1.25, 1.25)
+script = ExtResource("2_adapter")
+arrival_facing = 3
+
+[node name="Shape" parent="CollisionContent/MaintenanceDoorBarrier" index="0"]
+disabled = true
+
+[node name="Doorways" parent="." index="3"]
+process_mode = 0
+
+[node name="Maintenance" parent="Doorways" index="0"]
+destination_scene = "res://scenes/dev/v2_connection_maintenance.tscn"
+destination_spawn = &"FromInterior"
+
+[node name="GroundObjects" type="Node2D" parent="."]
+scale = Vector2(0.8, 0.8)

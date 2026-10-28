@@ -79,7 +79,12 @@ remain undecided. This feature branch implements that collision and a separate
 isolated playable preview with a temporary right-exit barrier and C outlines,
 pending merge and owner hands-on acceptance. Production bay, machines, narrative
 and routing are unchanged. Connecting the V2 rooms, gameplay arrivals,
-interactions and production integration remain deferred.
+interactions and production integration remain deferred for production. A separate
+feature-branch [two-room development connection](V2_TWO_ROOM_CONNECTION.md),
+pending merge and owner acceptance, connects the reusable V2 rooms at 1.25x with
+fixed inward-facing arrivals. It retains the existing detached-room cache with
+one attached room at a time, as explicitly authorized by the owner. This
+establishes no production access, machine/story persistence or V2 cutover.
 
 Future emergency/partial -> dim/moody -> operational lighting is gated by story
 and electrical repairs. The approved background composition does not complete

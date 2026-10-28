@@ -66,6 +66,13 @@ The [automatic-transition harness and eight owner tests](docs/INTERIOR_V2_TRANSI
 cover development-only destinations and the separate 0.15-second quick fade.
 Agent validation is static only under the Godot execution restriction.
 
+This feature branch adds a separate [two-room V2 connection](docs/V2_TWO_ROOM_CONNECTION.md),
+pending merge and owner acceptance. F6 `scenes/dev/v2_two_room_connection.tscn`
+to start near Primary's left entrance and travel automatically to the actual
+Maintenance Bay V2 and back. Both rooms are 1.25x; one is attached at a time,
+with the existing detached-room cache retained. Existing previews and F5
+production routes remain unchanged. See the guide's nine sequential owner tests.
+
 ## Maintenance bay V2 development previews
 
 PR #51 added a separate machine-free maintenance-bay visual preview. Open

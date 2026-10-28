@@ -128,7 +128,9 @@ Two edges belong to independently disableable/removable bodies:
 `MaintenanceDoorBarrier` at source `(200,535)-(200,410)`, and
 `ExteriorDoorBarrier` at `(850,855)-(660,855)`. Short approach alcoves remain
 inside these boundaries. A later crossing implementation must explicitly disable
-the corresponding barrier; there are no Area2D triggers or scene changes here.
+the corresponding barrier. Reusable Area2D doorway additions for the separate
+[two-room connection](V2_TWO_ROOM_CONNECTION.md) are disabled here; this preview
+still performs no scene changes and keeps its door barriers solid.
 
 Six independent convex floor footprints block Computer's base, Marvin's wreckage,
 the port console, port storage, north crate and starboard cabinet. Tall silhouettes,

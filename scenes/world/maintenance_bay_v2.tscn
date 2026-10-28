@@ -1,6 +1,10 @@
-[gd_scene load_steps=36 format=3]
+[gd_scene load_steps=38 format=3]
 
 [ext_resource type="Texture2D" path="res://assets/environment/maintenance_bay_v2/maintenance_bay_v2_machine_free_background.png" id="1_background"]
+[ext_resource type="PackedScene" path="res://scenes/interaction/automatic_doorway.tscn" id="2_door"]
+
+[sub_resource type="RectangleShape2D" id="InteriorThreshold"]
+size = Vector2(16, 140)
 
 [sub_resource type="SegmentShape2D" id="NorthWest01"]
 a = Vector2(-643, -107)
@@ -255,3 +259,19 @@ shape = SubResource("EastLowerCabinet")
 
 [node name="SouthEastEquipment" type="CollisionShape2D" parent="StaticCollision/EnvironmentalObstacles"]
 shape = SubResource("SouthEastEquipment")
+
+[node name="Spawns" type="Node2D" parent="."]
+
+[node name="FromInterior" type="Marker2D" parent="Spawns"]
+position = Vector2(550, 41)
+
+[node name="Doorways" type="Node2D" parent="."]
+process_mode = 4
+
+[node name="Interior" parent="Doorways" instance=ExtResource("2_door")]
+position = Vector2(606, 33)
+
+[node name="Shape" parent="Doorways/Interior" index="0"]
+shape = SubResource("InteriorThreshold")
+
+[editable path="Doorways/Interior"]

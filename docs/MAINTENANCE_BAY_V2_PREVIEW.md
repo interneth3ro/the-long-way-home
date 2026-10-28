@@ -1,5 +1,10 @@
 # Maintenance bay V2 development previews
 
+The separate [two-room connection](V2_TWO_ROOM_CONNECTION.md) now supplies a
+development-only route to Primary Interior V2, pending merge and owner acceptance.
+New room-owned doorway components stay disabled in both previews documented here;
+their controls and collision-preview right-exit barrier remain unchanged.
+
 This new isolated visual slice uses the exact owner-approved machine-free room.
 It does not replace the production maintenance bay or connect to any scene route.
 The owner selected **1.25x** in the subsequent collision implementation request.
