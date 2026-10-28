@@ -1,11 +1,16 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=8 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/world/ship_interior_v2.tscn" id="1_room"]
 [ext_resource type="Script" path="res://scenes/world/v2_room_arrival.gd" id="2_arrival"]
 [ext_resource type="PackedScene" path="res://scenes/interaction/automatic_doorway.tscn" id="3_door"]
+[ext_resource type="Script" path="res://scenes/interaction/world_interactable.gd" id="4_computer"]
+[ext_resource type="Resource" path="res://dialogue/computer_opening.tres" id="5_conversation"]
 
 [sub_resource type="RectangleShape2D" id="ExteriorThreshold"]
 size = Vector2(170, 16)
+
+[sub_resource type="RectangleShape2D" id="ComputerInteraction"]
+size = Vector2(64, 8)
 
 [node name="ProductionShipInteriorV2" instance=ExtResource("1_room")]
 scale = Vector2(1.25, 1.25)
@@ -44,5 +49,21 @@ shape = SubResource("ExteriorThreshold")
 [node name="GroundObjects" type="Node2D" parent="."]
 scale = Vector2(0.8, 0.8)
 y_sort_enabled = true
+
+[node name="ComputerInteraction" type="Area2D" parent="."]
+; Nonblocking target just in front of the inherited solid base (front y=-222).
+; Room-local coordinates inherit 1.25x; Dave retains world scale under GroundObjects.
+position = Vector2(0, -214)
+collision_layer = 1
+collision_mask = 0
+monitoring = false
+script = ExtResource("4_computer")
+interaction_prompt = "E — Talk to Computer"
+inspection_response = "Computer's primary systems are offline. The console has sustained significant damage."
+conversation = ExtResource("5_conversation")
+interaction_point = Vector2(0, 0)
+
+[node name="Shape" type="CollisionShape2D" parent="ComputerInteraction"]
+shape = SubResource("ComputerInteraction")
 
 [editable path="Doorways/Exterior"]

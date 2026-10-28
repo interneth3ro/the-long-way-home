@@ -122,8 +122,84 @@ class V2ProductionHostStaticTest(unittest.TestCase):
             self.assertIn("scale = Vector2(1.25, 1.25)", text)
             self.assertIn("scale = Vector2(0.8, 0.8)", geometry.nodes(text)["GroundObjects"][1])
             self.assertNotIn('name="Dave"', text)
-            for forbidden in ["rack", "stationary", "computer_opening", "request_transition"]:
+            for forbidden in ["rack", "stationary", "request_transition"]:
                 self.assertNotIn(forbidden, text.lower())
+            if path == MAINTENANCE:
+                self.assertNotIn("computer_opening", text)
+
+    def test_computer_reuses_legacy_contract_without_progression_authority(self):
+        text = read(PRIMARY)
+        nodes = geometry.nodes(text)
+        header, body = nodes["ComputerInteraction"]
+        self.assertIn('type="Area2D" parent="."', header)
+        self.assertIn('collision_layer = 1', body)
+        self.assertIn('collision_mask = 0', body)
+        self.assertIn('monitoring = false', body)
+        self.assertIn('interaction_point = Vector2(0, 0)', body)
+        self.assertNotIn('interaction_enabled = false', body)
+        legacy = geometry.nodes(read("scenes/world/ship_interior.tscn"))["GroundObjects/WestObstacle"][1]
+        for property_name in ["interaction_prompt", "inspection_response"]:
+            value = re.search(rf'^{property_name} = .*$', legacy, re.M)[0]
+            self.assertIn(value, body)
+        for property_name, path in [("script", "scenes/interaction/world_interactable.gd"),
+                                    ("conversation", "dialogue/computer_opening.tres")]:
+            resource_id = re.search(rf'{property_name} = ExtResource\("([^"]+)"\)', body)[1]
+            self.assertTrue(any(f'id="{resource_id}"' in h and f'path="res://{path}"' in h
+                                for h, _ in geometry.blocks(text, "ext_resource")))
+        self.assertNotIn('[connection ', text)
+        self.assertIn('conversation_id = &"computer_opening"', read("dialogue/computer_opening.tres"))
+        main = read("scenes/main/main.gd")
+        self.assertEqual(main.count('_dialogue.conversation_completed.connect(_on_conversation_completed)'), 1)
+        completed = geometry.function(main, "_on_conversation_completed")
+        self.assertIn('conversation_id == &"computer_opening"', completed)
+        self.assertIn('_objectives.activate_objective(&"restore_computer")', completed)
+        dialogue = read("scenes/ui/dialogue_ui.gd")
+        self.assertNotIn('conversation_completed.emit', geometry.function(dialogue, "dismiss"))
+        self.assertIn('conversation_dismissed.emit', geometry.function(dialogue, "dismiss"))
+        self.assertIn('_objectives.activate_objective(&"restore_computer")',
+                      geometry.function(main, "_on_ferrite_discovered"))
+
+    def test_computer_front_approach_range_and_solid_clearance(self):
+        nodes = geometry.nodes(read(PRIMARY))
+        target = geometry.vectors(nodes["ComputerInteraction"][1])[0]
+        size = geometry.vectors(geometry.resources(read(PRIMARY))["ComputerInteraction"][1])[0]
+        self.assertEqual(target, (0, -214))  # Provisional; owner must accept visually.
+        native = read("scenes/world/ship_interior_v2.tscn")
+        shapes = geometry.resources(native)
+        base = shapes["Footprint_ComputerBase"][1]
+        raw = list(map(float, re.search(r'PackedVector2Array\(([^)]+)\)', base)[1].split(',')))
+        front = max(raw[1::2])
+        self.assertGreater(target[1] - size[1]/2, front)
+        # Dave detector/feet center is 10 world units above ground. Sample the
+        # straight walk from Initial toward Computer without crossing its base.
+        for ground_y in range(80, -198, -1):
+            center = (0, ground_y - 8)
+            for key, (header, body) in shapes.items():
+                if key == "Segment_MaintenanceDoorBarrier":
+                    continue
+                if 'type="SegmentShape2D"' in header:
+                    self.assertGreater(geometry.segment_distance(center, *geometry.vectors(body)), 8)
+                elif 'type="ConvexPolygonShape2D"' in header:
+                    raw = list(map(float, re.search(r'PackedVector2Array\(([^)]+)\)', body)[1].split(',')))
+                    polygon = list(zip(raw[::2], raw[1::2]))
+                    self.assertFalse(geometry.point_in_polygon(center, polygon))
+                    self.assertGreater(min(geometry.segment_distance(center, a, b)
+                                           for a, b in zip(polygon, polygon[1:] + polygon[:1])), 8)
+                    # For the in-range front approach the ray is vertical at x=0.
+                    # No polygon intersects this x except Computer, behind target.
+                    if min(raw[::2]) <= 0 <= max(raw[::2]):
+                        self.assertLessEqual(max(raw[1::2]), front)
+                elif 'type="CapsuleShape2D"' in header:
+                    self.assertGreater(abs(center[0] - (-387)), 18 + 8)
+            if ground_y <= -111:
+                self.assertLessEqual(math.dist(center, target) * 1.25, 120)
+                self.assertGreater(center[1], target[1])
+        dave = read("scenes/player/dave.tscn")
+        self.assertIn('radius = 120.0', geometry.resources(dave)["CircleShape2D_interaction"][1])
+        self.assertIn('collision_mask = 1', geometry.nodes(dave)["InteractionDetector"][1])
+        detector = read("scenes/player/interaction_detector.gd")
+        self.assertIn('query.collide_with_areas = true', detector)
+        self.assertIn('hit.get("collider") == collider', detector)
 
     def test_spawn_and_exterior_approach_clearance(self):
         native = read("scenes/world/ship_interior_v2.tscn")
@@ -182,6 +258,15 @@ class V2ProductionHostStaticTest(unittest.TestCase):
                 expected = proc.stdout.read(int(header[2]))
                 self.assertEqual(proc.stdout.read(1), b"\n")
                 actual = (ROOT / path).read_bytes()
+                if path == PRIMARY:
+                    # P2 is additive in this wrapper only: every pre-P2 node and
+                    # resource must retain exactly its original header/body.
+                    for kind in ["node", "ext_resource", "sub_resource"]:
+                        current = [(h, b.strip()) for h, b in geometry.blocks(
+                            actual.decode().replace("\r\n", "\n"), kind)]
+                        for header, body in geometry.blocks(expected.decode(), kind):
+                            self.assertIn((header, body.strip()), current, (path, kind, header))
+                    continue
                 if not path.endswith(".png"):
                     expected = expected.replace(b"\r\n", b"\n")
                     actual = actual.replace(b"\r\n", b"\n")
