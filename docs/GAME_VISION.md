@@ -62,24 +62,31 @@ acceptance is claimed.
 
 The approved machine-free room is a gritty industrial prisoner-transport
 compartment, with three empty foundations (Extractor upper-left, Smelter
-upper-right, Fabricator lower-left), a central visual-only repair platform and
+upper-right, Fabricator lower-left), a central permanent repair platform and
 moderate localized crash damage. Its right doorway is the eventual primary
 interior connection; the closed top-wall door is reserved, noninteractive and
 has no destination. Future arrivals from the primary interior should face left.
 
 The intended apparent usable floor area is about 70-80% of Primary Interior V2,
 without stretching artwork. Direct owner comparison must assess scale and style.
-This feature branch adds an isolated 1.0x/1.25x/1.5x preview starting at 1.25x,
-pending merge and owner acceptance; no final scale is selected. Production bay,
-machines, narrative and scene routing are unchanged. Collision, interactions,
-spawns and production integration remain deferred.
+PR #51 added an isolated 1.0x/1.25x/1.5x visual preview. The owner subsequently
+selected **1.25x** in the maintenance-bay collision implementation request.
+Approved collision uses a simplified asymmetric floor perimeter, solid reserved
+upper door, one floor-level repair-platform footprint, traversable flat pads and
+simple footprints for substantial raised housings and permanent equipment.
+Future removable machines own their collision. Workstation mechanics and positions
+remain undecided. This feature branch implements that collision and a separate
+isolated playable preview with a temporary right-exit barrier and C outlines,
+pending merge and owner hands-on acceptance. Production bay, machines, narrative
+and routing are unchanged. Connecting the V2 rooms, gameplay arrivals,
+interactions and production integration remain deferred.
 
 Future emergency/partial -> dim/moody -> operational lighting is gated by story
 and electrical repairs. The approved background composition does not complete
 the initial emergency state. Independent machine/lighting overlays remain future
 work; no variants or sprite extraction are included. See
 [preview provenance, controls and ordered acceptance](MAINTENANCE_BAY_V2_PREVIEW.md)
-for the implemented visual-only scope and static validation limits.
+for both isolated previews and their static validation limits.
 
 ## Approved construction and logistics direction
 
