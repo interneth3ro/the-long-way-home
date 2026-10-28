@@ -1,6 +1,7 @@
-# Opt-in V2 production host — P1
+# Opt-in V2 production host — P1 and P2
 
-Feature-branch integration, pending merge and owner acceptance. This is not the
+P1 merged in PR #59; P2 Computer parity is on its feature branch, pending merge
+and owner acceptance. This is not the
 F5 cutover. Follow the [execution policy](../AGENTS.md#godot-execution-safety);
 this guide does not authorize agent Godot execution.
 
@@ -43,8 +44,8 @@ existing `prepare_for_arrival(player, planet)` hook. It owns no route/state.
 Only production Primary disables the MaintenanceDoorBarrier shape. Its new
 exterior trigger lies inside the retained exterior barrier. Reusable defaults,
 closed-door artwork and the reserved upper Maintenance door remain unchanged.
-No Computer interaction, stationary machine placement/highlights or recovery
-adapters are installed. Approved machine assets/transforms, legacy worlds,
+P2 adds only the Computer interaction described below. No stationary machine
+placement/highlights or recovery adapters are installed. Approved machine assets/transforms, legacy worlds,
 exterior scene/script/simulation and PR #54's harness remain unchanged.
 
 ## Routes and arrival contracts
@@ -85,7 +86,7 @@ size `(170, 16)`. Initial/return markers are outside both Primary triggers.
 Existing tests cover compartment arrivals and approach paths. Existing doorway
 separation/rearm behavior remains. These checks do not establish navigation feel.
 
-## Static verification and owner acceptance
+## P1 static verification and owner acceptance (historical)
 
 ```text
 python -B tests/static_v2_production_host_test.py
@@ -122,6 +123,119 @@ failures before proceeding. Merge approval is separate.
 9. Stop opt-in; F5 legacy. Verify original rooms, Computer, machine recovery/
    progression and original exterior return.
 
-Stop at P1: no Computer migration, stationary machine integration, progression
+P1 stopped before Computer migration, stationary machine integration, progression
 changes, save/load, eviction, F5 cutover or retirement. The opt-in host and wrappers
 are later retirement-audit candidates; no deletion or cleanup is authorized here.
+
+## P2 Computer interaction parity (feature branch, pending merge)
+
+The production wrapper alone adds `ProductionShipInteriorV2/ComputerInteraction`,
+a nonblocking `Area2D` using the existing
+[WorldInteractable](../scenes/interaction/world_interactable.gd) script directly.
+It uses layer 1, mask 0, no monitoring, and a centered 64x8 local rectangle.
+There is no new adapter script, visible console or solid footprint. The reusable
+room, all previews, legacy Computer, approved art and collision remain unchanged.
+`VisualContent/ComputerDamaged` stays visible; `ComputerRepairedInactive` stays
+hidden. No repair transaction or overlay switching is implemented.
+
+The **owner-accepted provisional** area position is room-local `(0, -214)`, world `(0, -267.5)`
+at 1.25x, with `interaction_point = Vector2(0, 0)`. The solid base spans
+x=-178..172, y=-277..-222 locally; the proxy spans x=-32..32, y=-218..-210.
+It sits entirely in front of the base with a 4-local-unit gap. Dave's detector
+and feet center are 10 world units above his ground origin. Along the central
+approach, ground y=-111..-197 locally yields detector-to-point distances
+118.75..11.25 world units, within the unchanged 120-unit search radius. The
+45-unit amendment limits Computer eligibility to the closer part of that approach
+(centerline ground y=-170 or closer). The sampled
+approach from Initial clears permanent collision; the front ray reaches the
+area before the base or wall. Area queries and rays already include areas,
+and require the selected target to be the first hit on mask 1. The proxy does
+not block Dave. The owner accepted the initial placement and interaction in the
+seven initial tests; the amended 45-unit range still requires owner verification.
+
+The optional `WorldInteractable.max_interaction_distance` is a cap in **world
+units**, default 0 (retain existing detector behavior). Only this Computer sets
+it to **45.0**. The detector retains its 120-world-unit search radius and compares
+its existing `global_position.distance_squared_to(body.to_global(interaction_point))`
+against `min(120 * 120, 45.0 * 45.0)`, with no extra room-scale multiplication.
+Out-of-range candidates are skipped before nearest-target selection and the
+unchanged line-of-sight ray. The same target refresh clears/reselects the target,
+updates the prompt, and precedes queued E dispatch on each physics callback.
+Thus prompt and activation share eligibility, including after movement or
+repeated keypresses. Legacy Computer, other interactables and machine ranges
+retain their previous behavior; no additional geometry or ray obstruction is added.
+
+The prompt and fallback text match legacy. E opens the exact existing
+[`dialogue/computer_opening.tres`](../dialogue/computer_opening.tres), ID
+`computer_opening`. The inherited detector opens Dave's persistent DialogueUI;
+finishing emits `conversation_completed` to Main's single existing
+`_on_conversation_completed`, which calls
+`ObjectiveController.activate_objective(&"restore_computer")`. The existing
+state-change listener refreshes the tracker. Early dismissal emits only
+`conversation_dismissed`, with no objective activation. There is no new listener,
+objective, flag or local completion state. Interaction remains enabled after
+dismissal/completion, and repeated activation cannot reset objective stage.
+Main's exploration-first Ferrite activation and tracker precedence stay intact.
+
+Startup binding/order, inherited UI ownership and P1 routing/cache remain as
+described above. The area belongs to the cached production room; Dave's existing
+detector/UI and Main's connection persist across room reentry.
+
+All 31 static checks passed in the initial P2 run (7 host, 24 existing), along with
+`git diff --check`. Static validation uses the four commands above. The host suite includes
+Computer contract/signal-chain inspection and front-approach geometry. The
+preservation check allows additive declarations only in the Primary production
+wrapper while retaining all original nodes/resources. The amendment additionally
+allows only the exact optional-cap additions in the two shared scripts; remaining
+protected content still compares against `origin/main`. This is text/geometry evidence only, not
+Godot parsing, physics, gameplay or graphical verification. Existing GDScript
+tests were inspected but not executed under the headless restriction.
+
+### P2 initial sequential owner acceptance — owner reported 7/7 PASS
+
+The owner's 45-unit amendment reports all seven initial tests passed and accepts
+the provisional placement. Individual observations are not supplied here. This
+is owner-reported runtime evidence, separate from agent static validation. The
+original sequence is retained below; the range amendment needs retests A-C.
+
+Perform one test at a time and record **PASS/FAIL, observations and errors**.
+Fix defects in this PR and retest affected scenarios before proceeding.
+
+1. **Availability:** F6 `main_v2.tscn`; approach from accessible floor. Accept or
+   revise the provisional front point; verify E prompt, distance, line of sight
+   and no debugger errors.
+2. **Completion:** Fresh V2 session; finish Computer dialogue. Verify
+   `restore_computer` activation/tracker, existing dialogue and damaged overlay.
+3. **Dismissal:** Separate fresh session; dismiss early. Verify no activation,
+   unless independently activated by the existing Ferrite discovery path.
+4. **Repeat:** Reopen after dismissal and completion. Check no duplicate UI,
+   grants or objective anomalies.
+5. **Transitions:** Interact, visit Maintenance and/or exterior, then return.
+   Verify interaction, dialogue and objective state across cached-room reentry.
+6. **Preservation:** Damaged screen stays visible, repaired stays hidden, console
+   collision and room geometry remain intact; Dave navigates normally with no
+   duplicate console or blocking proxy.
+7. **Legacy:** F5; verify original Computer prompt/dialogue/objective, legacy
+   routes/exterior return, machine recovery and production smoke paths.
+
+### PR #60 range amendment — focused owner retests pending
+
+The approved target is 45 world units for V2 Computer only. Static checks cover
+the default-preserving cap, exclusive scene assignment, global distance/boundary
+geometry, and shared prompt/E selection order. All 33 static checks passed after
+the amendment (9 host, 24 existing); Markdown links and `git diff --check` passed.
+No Godot execution or amended
+runtime PASS is claimed. Record PASS/FAIL and observations one at a time:
+
+A. **Distance:** F6 `main_v2.tscn`; check prompt absent and E inactive beyond 45
+   world units, original conversation available within range, left/center/right
+   approaches and debugger errors.
+B. **Dialogue parity:** Complete to activate `restore_computer`; in a separate
+   fresh session dismiss early without activation. Verify repeats and damaged overlay.
+C. **Regression:** Leave/reenter Primary V2 and verify the cap persists; F5 legacy
+   Computer and brief navigation/progression smoke check. Other interactions and
+   the shared 120-unit search radius must retain their existing behavior.
+
+Stop for owner retesting on existing PR #60. Merge approval and specific cleanup
+require separate owner requests. Computer repair, stationary machines, P3 and
+F5 cutover remain deferred.

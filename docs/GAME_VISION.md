@@ -86,12 +86,17 @@ fixed inward-facing arrivals. It retains the existing detached-room cache with
 one attached room at a time, as explicitly authorized by the owner. This
 establishes no production access, machine/story persistence or V2 cutover.
 
-P1's [opt-in production integration](V2_PRODUCTION_HOST.md) is implemented on its
-feature branch, pending merge and owner acceptance. It reuses Main's gameplay
+P1's [opt-in production integration](V2_PRODUCTION_HOST.md) merged in PR #59;
+runtime acceptance remains separate. It reuses Main's gameplay
 ownership with inherited production V2 wrappers, automatic compartment travel,
 the existing first exterior reveal and a V2-specific exterior return. Its initial
-spawn and exterior return marker are provisional. F5 stays legacy; Computer,
-stationary machine integration and later cutover remain deferred. This changes
+spawn and exterior return marker are provisional. P2's feature branch, pending
+merge, adds existing Computer conversation/objective parity only in the production
+Primary wrapper, at an owner-accepted provisional front-facing point. The owner
+reports 7/7 initial acceptance tests passed; its approved 45-world-unit Computer
+range amendment awaits focused runtime retesting.
+F5 stays legacy; Computer repair, stationary machine integration and later
+cutover remain deferred. This changes
 no approved narrative, inventory or progression requirements.
 
 Future emergency/partial -> dim/moody -> operational lighting is gated by story

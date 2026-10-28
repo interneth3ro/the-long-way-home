@@ -8,6 +8,8 @@ extends CollisionObject2D
 @export var conversation: DialogueConversation
 @export var interaction_enabled: bool = true
 @export var interaction_point: Vector2 = Vector2.ZERO
+# Optional world-unit cap; zero preserves the detector's existing range.
+@export var max_interaction_distance: float = 0.0
 
 
 func can_interact() -> bool:
