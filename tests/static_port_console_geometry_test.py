@@ -47,8 +47,8 @@ class PortConsoleGeometryTest(unittest.TestCase):
         numbers = list(map(float, re.search(
             r"PackedVector2Array\(([^)]+)\)", raw)[1].split(",")))
         self.polygon = [source_point(p) for p in zip(numbers[::2], numbers[1::2])]
-        preview = (ROOT / "scenes/dev/ship_interior_v2_collision_preview.tscn").read_text()
-        scale = vector_values(preview.split('[node name="ShipInteriorV2"')[1])[0]
+        production = (ROOT / "scenes/world/production_ship_interior_v2.tscn").read_text()
+        scale = vector_values(production.split('[node name="ProductionShipInteriorV2"')[1])[0]
         self.assertEqual(scale, (1.25, 1.25))
         dave = (ROOT / "scenes/player/dave.tscn").read_text()
         radius = float(re.search(r"radius = ([\d.]+)", resource(
@@ -155,8 +155,8 @@ class PortContainerGeometryTest(unittest.TestCase):
             self.assertLess(distance((x, 285), *self.axis), self.radius)
 
     def test_accessible_routes_clear_all_obstacles_for_daves_feet(self):
-        preview = (ROOT / "scenes/dev/ship_interior_v2_collision_preview.tscn").read_text()
-        scale = vector_values(preview.split('[node name="ShipInteriorV2"')[1])[0]
+        production = (ROOT / "scenes/world/production_ship_interior_v2.tscn").read_text()
+        scale = vector_values(production.split('[node name="ProductionShipInteriorV2"')[1])[0]
         self.assertEqual(scale, (1.25, 1.25))
         dave = (ROOT / "scenes/player/dave.tscn").read_text()
         radius = float(re.search(r"radius = ([\d.]+)", resource(

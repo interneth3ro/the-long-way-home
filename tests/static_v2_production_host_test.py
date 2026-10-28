@@ -1,42 +1,74 @@
 """Read-only scene/route/geometry checks; no Godot or gameplay code execution."""
 
-from pathlib import Path
 import hashlib
 import math
+import posixpath
 import re
 import subprocess
 import unittest
+from unittest.mock import patch
 
 import static_automatic_transitions_test as geometry
+from static_automatic_transitions_test import ROOT, PRIMARY, MAINTENANCE, EXTERIOR, read, merged_nodes
 
 
-ROOT = Path(__file__).resolve().parents[1]
-PRIMARY = "scenes/world/production_ship_interior_v2.tscn"
-MAINTENANCE = "scenes/world/production_maintenance_bay_v2.tscn"
-EXTERIOR = "scenes/world/planet_exterior.tscn"
 # Live post-P6 / pre-P8 main verified for cutover; never follow a moving ref.
 P8_BASE = "e14703e64aef961f18feba8a616acec00c4f069e"
 
+# Owner-approved Option A: only these baseline files may retire in separate PR B.
+# Their contents/existence are deliberately not test inputs. This is not a glob
+# exemption for other current/future development files or production resources.
+APPROVED_DEV_RETIREMENT = frozenset("""
+scenes/dev/maintenance_bay_v2_collision_preview.gd
+scenes/dev/maintenance_bay_v2_collision_preview.gd.uid
+scenes/dev/maintenance_bay_v2_collision_preview.tscn
+scenes/dev/maintenance_bay_v2_extractor_preview.gd
+scenes/dev/maintenance_bay_v2_extractor_preview.gd.uid
+scenes/dev/maintenance_bay_v2_extractor_preview.tscn
+scenes/dev/maintenance_bay_v2_fabricator_preview.gd
+scenes/dev/maintenance_bay_v2_fabricator_preview.gd.uid
+scenes/dev/maintenance_bay_v2_fabricator_preview.tscn
+scenes/dev/maintenance_bay_v2_scale_preview.gd
+scenes/dev/maintenance_bay_v2_scale_preview.gd.uid
+scenes/dev/maintenance_bay_v2_scale_preview.tscn
+scenes/dev/maintenance_bay_v2_smelter_preview.gd
+scenes/dev/maintenance_bay_v2_smelter_preview.gd.uid
+scenes/dev/maintenance_bay_v2_smelter_preview.tscn
+scenes/dev/physics_shape_outlines.gd
+scenes/dev/physics_shape_outlines.gd.uid
+scenes/dev/ship_interior_v2_collision_preview.gd
+scenes/dev/ship_interior_v2_collision_preview.gd.uid
+scenes/dev/ship_interior_v2_collision_preview.tscn
+scenes/dev/ship_interior_v2_scale_preview.gd
+scenes/dev/ship_interior_v2_scale_preview.gd.uid
+scenes/dev/ship_interior_v2_scale_preview.tscn
+scenes/dev/ship_interior_v2_transition_preview.gd
+scenes/dev/ship_interior_v2_transition_preview.gd.uid
+scenes/dev/ship_interior_v2_transition_preview.tscn
+scenes/dev/ship_interior_v2_transition_world.gd
+scenes/dev/ship_interior_v2_transition_world.gd.uid
+scenes/dev/ship_interior_v2_transition_world.tscn
+scenes/dev/transition_test_exterior.tscn
+scenes/dev/transition_test_maintenance.tscn
+scenes/dev/v2_connection_interior.tscn
+scenes/dev/v2_connection_maintenance.tscn
+scenes/dev/v2_connection_world.gd
+scenes/dev/v2_connection_world.gd.uid
+scenes/dev/v2_two_room_connection.gd
+scenes/dev/v2_two_room_connection.gd.uid
+scenes/dev/v2_two_room_connection.tscn
+""".split())
 
-def read(path):
-    if path == MAINTENANCE:
-        return (ROOT / path).read_text(encoding="utf-8")
-    return (ROOT / path).read_text()
+
+def is_dev_path(path):
+    path = posixpath.normpath(path.replace("\\", "/")).casefold()
+    return path == "scenes/dev" or path.startswith("scenes/dev/")
 
 
-def merged_nodes(path):
-    text = read(path)
-    nodes = geometry.nodes(text)
-    root = next(iter(nodes.values()))[0]
-    instance = re.search(r'instance=ExtResource\("([^"]+)"\)', root)
-    if not instance:
-        return nodes
-    header = next(h for h, _ in geometry.blocks(text, "ext_resource")
-                  if f'id="{instance[1]}"' in h)
-    base = merged_nodes(re.search(r'path="res://([^"]+)"', header)[1])
-    for key, (header, body) in nodes.items():
-        base[key] = (header, base.get(key, ("", ""))[1] + body)
-    return base
+def tracked_non_dev_files(pattern):
+    # Filter Git metadata before opening anything, including UID sidecars.
+    paths = subprocess.check_output(["git", "ls-files", pattern], cwd=ROOT, text=True).splitlines()
+    return [path for path in paths if not is_dev_path(path)]
 
 
 class V2ProductionHostStaticTest(unittest.TestCase):
@@ -57,20 +89,46 @@ class V2ProductionHostStaticTest(unittest.TestCase):
         self.assertNotIn("main_v2", legacy)
 
     def test_resource_graph_has_no_dev_dependency_and_valid_declarations(self):
-        pending = ["scenes/main/main_v2.tscn"]
+        self.assert_resource_graph(["project.godot", "scenes/main/main.tscn"])
+
+    def assert_resource_graph(self, roots):
+        # Follow literal paths, global script classes and tracked UID metadata.
+        # Variable load targets remain covered by explicit route-contract tests;
+        # this text traversal is not runtime or full GDScript analysis.
+        classes = {}
+        for path in tracked_non_dev_files("*.gd"):
+            match = re.search(r'^class_name (\w+)', read(path), re.M)
+            if match:
+                self.assertNotIn(match[1], classes, match[1])
+                classes[match[1]] = path
+        uids = {}
+        for pattern, suffix in [("*.uid", ".uid"), ("*.import", ".import")]:
+            for path in tracked_non_dev_files(pattern):
+                text = read(path)
+                uid = text.strip() if suffix == ".uid" else re.search(r'^uid="([^"]+)"', text, re.M)[1]
+                self.assertNotIn(uid, uids, uid)
+                uids[uid] = path[:-len(suffix)]
+        pending = list(roots)
         visited = set()
         while pending:
             path = pending.pop()
             if path in visited:
                 continue
             visited.add(path)
-            self.assertNotIn("scenes/dev/", path)
+            self.assertFalse(is_dev_path(path), path)
             self.assertTrue((ROOT / path).is_file(), path)
-            if not path.endswith((".tscn", ".tres", ".gd", ".gdshader")):
+            if not path.endswith((".tscn", ".tres", ".gd", ".gdshader", ".godot")):
                 continue
             text = read(path)
-            references = re.findall(r'res://([^"\n]+)', text)
+            references = re.findall(r'res://([^"\s)]+)', text)
             pending.extend(references)
+            for uid in re.findall(r'uid://[a-z0-9]+', text):
+                self.assertIn(uid, uids, f"Unresolved tracked UID in {path}: {uid}")
+                pending.append(uids[uid])
+            if path.endswith(".gd"):
+                code = "\n".join(line.split("#", 1)[0] for line in text.splitlines())
+                pending.extend(target for name, target in classes.items()
+                               if re.search(rf'\b{name}\b', code))
             if path.endswith(".tscn"):
                 ext = geometry.blocks(text, "ext_resource")
                 sub = geometry.blocks(text, "sub_resource")
@@ -88,8 +146,22 @@ class V2ProductionHostStaticTest(unittest.TestCase):
             uid = read(script + ".uid").strip()
             self.assertRegex(uid, r"^uid://[a-z0-9]+$")
             self.assertEqual(sum(p.read_text().strip() == uid
-                                 for p in ROOT.glob("**/*.gd.uid")
-                                 if ".godot" not in p.parts), 1)
+                                 for p in (ROOT / path for path in tracked_non_dev_files("*.gd.uid"))), 1)
+
+    def test_resource_graph_rejects_dev_paths_and_unknown_uids(self):
+        source_read = read
+        cases = [("scenes/main/main.gd", 'res://scenes/dev/forbidden.tscn'),
+                 ("scenes/main/main.gd", 'res://SCENES\\DEV\\forbidden.gd'),
+                 ("scenes/main/main.gd", 'uid://unmappeddevfixture'),
+                 ("inventory/inventory_state.gd", 'res://scenes/dev/forbidden.tscn')]
+        for source, edge in cases:
+            original = source_read(source)
+            with self.subTest(source=source, edge=edge), patch(__name__ + ".read", side_effect=lambda path:
+                    original + f'\nconst INVALID = preload("{edge}")\n'
+                    if path == source else source_read(path)):
+                with self.assertRaisesRegex(AssertionError,
+                        "Unresolved tracked UID" if edge.startswith("uid://") else "forbidden"):
+                    self.assert_resource_graph(["scenes/main/main.tscn"])
 
     def test_routes_resolve_to_real_wrapper_identity_and_markers(self):
         expected = [(PRIMARY, "Maintenance", MAINTENANCE, "FromInterior"),
@@ -231,8 +303,7 @@ class V2ProductionHostStaticTest(unittest.TestCase):
         body = geometry.nodes(read(PRIMARY))["ComputerInteraction"][1]
         self.assertIn('max_interaction_distance = 45.0', body)
         # P3 adds dormant per-machine caps; legacy Computer still uses defaults.
-        scenes = subprocess.check_output(['git', 'ls-files', 'scenes/*.tscn'],
-                                         cwd=ROOT, text=True).splitlines()
+        scenes = tracked_non_dev_files('scenes/*.tscn')
         overrides = [(path, node) for path in scenes
                      for node, (_, properties) in geometry.nodes(read(path)).items()
                      if re.search(r'^max_interaction_distance =', properties, re.M)]
@@ -311,17 +382,22 @@ class V2ProductionHostStaticTest(unittest.TestCase):
             self.assertIn(f"metadata/facing = {facing}", merged_nodes(path)[f"Spawns/{name}"][1])
 
     def test_protected_existing_code_art_and_sidecars_unchanged(self):
-        # Existing production/dev code, project settings, assets and sidecars are
-        # protected against post-P6, allowing only P8 startup. Compare working bytes
-        # with baseline blobs (normalize text CRLF only, never binary assets).
+        # Existing code, project settings, assets and sidecars are protected
+        # against post-P6, allowing P8 startup and exactly the approved retirement.
+        # Compare working bytes with baseline blobs (normalize text CRLF only,
+        # never binary assets).
         files = subprocess.check_output(["git", "ls-tree", "-r", "--name-only", P8_BASE,
                                          "assets", "scenes", "construction", "dialogue",
                                          "inventory", "objectives", "world", "project.godot"],
                                         cwd=ROOT, text=True).splitlines()
+        self.assertEqual(len(APPROVED_DEV_RETIREMENT), 38)
+        self.assertEqual({path for path in files if is_dev_path(path)}, APPROVED_DEV_RETIREMENT)
         proc = subprocess.Popen(["git", "cat-file", "--batch"], cwd=ROOT,
                                 stdin=subprocess.PIPE, stdout=subprocess.PIPE)
         try:
             for path in files:
+                if path in APPROVED_DEV_RETIREMENT:
+                    continue
                 proc.stdin.write(f"{P8_BASE}:{path}\n".encode())
                 proc.stdin.flush()
                 header = proc.stdout.readline().split()
