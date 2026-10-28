@@ -14,6 +14,8 @@ ROOT = Path(__file__).resolve().parents[1]
 PRIMARY = "scenes/world/production_ship_interior_v2.tscn"
 MAINTENANCE = "scenes/world/production_maintenance_bay_v2.tscn"
 EXTERIOR = "scenes/world/planet_exterior.tscn"
+# Live main verified before P6; pin preservation rather than follow a moving ref.
+P6_BASE = "59275b0da9550ce9c2ec4aeeafd36037e0567e2a"
 
 
 def read(path):
@@ -65,7 +67,8 @@ class V2ProductionHostStaticTest(unittest.TestCase):
         for script in ["scenes/main/main_v2.gd", "scenes/world/v2_room_arrival.gd",
                        "scenes/world/stationary_machine_presentation.gd",
                        "scenes/interaction/v2_extractor_recovery.gd",
-                       "scenes/interaction/v2_smelter_recovery.gd"]:
+                       "scenes/interaction/v2_smelter_recovery.gd",
+                       "scenes/interaction/v2_fabricator_recovery.gd"]:
             uid = read(script + ".uid").strip()
             self.assertRegex(uid, r"^uid://[a-z0-9]+$")
             self.assertEqual(sum(p.read_text().strip() == uid
@@ -295,7 +298,7 @@ class V2ProductionHostStaticTest(unittest.TestCase):
         # Existing production/dev code, project settings, assets and sidecars are
         # all protected in this additive slice. Compare SHA-256 of working bytes
         # with baseline blobs (normalize text CRLF only, never binary assets).
-        files = subprocess.check_output(["git", "ls-tree", "-r", "--name-only", "origin/main",
+        files = subprocess.check_output(["git", "ls-tree", "-r", "--name-only", P6_BASE,
                                          "assets", "scenes", "construction", "dialogue",
                                          "inventory", "objectives", "world", "project.godot"],
                                         cwd=ROOT, text=True).splitlines()
@@ -303,38 +306,42 @@ class V2ProductionHostStaticTest(unittest.TestCase):
                                 stdin=subprocess.PIPE, stdout=subprocess.PIPE)
         try:
             for path in files:
-                proc.stdin.write(f"origin/main:{path}\n".encode())
+                proc.stdin.write(f"{P6_BASE}:{path}\n".encode())
                 proc.stdin.flush()
                 header = proc.stdout.readline().split()
                 expected = proc.stdout.read(int(header[2]))
                 self.assertEqual(proc.stdout.read(1), b"\n")
                 actual = (ROOT / path).read_bytes()
                 if path == MAINTENANCE:
-                    # Compare to the actual baseline, reversing only the P5
-                    # Smelter binding if that baseline still has a dormant target.
-                    # P4 Extractor nodes/resources are protected byte-for-byte.
+                    # Reverse only P6's exact declaration and Fabricator binding.
+                    # All merged P4/P5 nodes/resources remain byte-protected.
                     actual_text = actual.decode().replace("\r\n", "\n")
                     expected_text = expected.decode().replace("\r\n", "\n")
                     declaration = ('[ext_resource type="Script" '
-                                   'path="res://scenes/interaction/v2_smelter_recovery.gd" '
-                                   'id="9_smelter_recovery"]\n\n')
+                                   'path="res://scenes/interaction/v2_fabricator_recovery.gd" '
+                                   'id="7_interaction"]')
                     if declaration not in expected_text:
                         self.assertEqual(actual_text.count(declaration), 1)
-                        actual_text = actual_text.replace(declaration, "").replace(
-                            'load_steps=14', 'load_steps=13').replace(
-                            'script = ExtResource("9_smelter_recovery")\n'
-                            'interaction_prompt = "E — Recover Smelter"',
+                        binding = ('script = ExtResource("7_interaction")\n'
+                                   'interaction_prompt = "E — Recover Fabricator"')
+                        self.assertEqual(actual_text.count(binding), 1)
+                        actual_text = actual_text.replace(declaration,
+                            '[ext_resource type="Script" '
+                            'path="res://scenes/interaction/world_interactable.gd" '
+                            'id="7_interaction"]').replace(binding,
                             'script = ExtResource("7_interaction")\ninteraction_enabled = false')
                     actual, expected = actual_text.encode(), expected_text.encode()
                 if path == "scenes/world/stationary_machine_presentation.gd":
                     actual = actual.replace(b"\r\n", b"\n")
                     expected = expected.replace(b"\r\n", b"\n")
-                    if b'if machine_id != "extractor":' in expected:
+                    dormancy = (b'\t# V2 recovery adapters own eligibility; Fabricator remains dormant.\n'
+                                b'\tif machine_id == "fabricator":\n'
+                                b'\t\t$Interaction.interaction_enabled = false\n')
+                    if dormancy in expected:
+                        anchor = b'\t$Interaction/Shape.set_deferred("disabled", recovered)\n'
+                        self.assertEqual(actual.count(anchor), 1)
                         actual = actual.replace(
-                            b'# V2 recovery adapters own eligibility; Fabricator remains dormant.\n'
-                            b'\tif machine_id == "fabricator":',
-                            b'# The V2 Extractor adapter owns eligibility; later machines remain dormant.\n'
-                            b'\tif machine_id != "extractor":')
+                            anchor, anchor + dormancy)
                 if not path.endswith(".png"):
                     expected = expected.replace(b"\r\n", b"\n")
                     actual = actual.replace(b"\r\n", b"\n")

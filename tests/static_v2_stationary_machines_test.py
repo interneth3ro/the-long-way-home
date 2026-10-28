@@ -1,4 +1,4 @@
-"""P3/P4/P5 source/scene/geometry inspection only; never executes GDScript or Godot."""
+"""P3-P6 source/scene/geometry inspection only; never executes GDScript or Godot."""
 
 from collections import deque
 import math
@@ -41,23 +41,19 @@ class StationaryMachinesStaticTest(unittest.TestCase):
             self.assertIn("shader_parameter/outline_enabled = false", scene)
             self.assertLess(scene.index('name="ContactShadow"'), scene.index('name="Machine"'))
 
-    def test_recovery_actions_dormant_fabricator_and_world_space_front_approaches(self):
+    def test_recovery_actions_and_world_space_front_approaches(self):
         for name, (x, y) in MACHINES.items():
             path = "StationaryMachines/" + name
             target = self.nodes[path + "/Interaction"][1]
-            if name in ("Extractor", "Smelter"):
-                resource = "8_extractor_recovery" if name == "Extractor" else "9_smelter_recovery"
-                self.assertIn(f'script = ExtResource("{resource}")', target)
-                self.assertIn(f'interaction_prompt = "E — Recover {name}"', target)
-                self.assertNotIn("interaction_enabled = false", target)
-            else:
-                self.assertIn('script = ExtResource("7_interaction")', target)
-                self.assertIn("interaction_enabled = false", target)
-                self.assertNotIn("interaction_prompt", target)
+            resource = {"Extractor": "8_extractor_recovery", "Smelter": "9_smelter_recovery",
+                        "Fabricator": "7_interaction"}[name]
+            self.assertIn(f'script = ExtResource("{resource}")', target)
+            self.assertIn(f'interaction_prompt = "E — Recover {name}"', target)
+            self.assertNotIn("interaction_enabled = false", target)
             self.assertIn("max_interaction_distance = 45.0", target)
             for forbidden in ["conversation =", "inspection_response"]:
                 self.assertNotIn(forbidden, target)
-            self.assertIn('path="res://scenes/interaction/world_interactable.gd"', self.text)
+            self.assertIn(f'path="res://scenes/interaction/v2_{name.lower()}_recovery.gd" id="{resource}"', self.text)
             bx, by = geometry.vectors(self.nodes[path + "/Body/Shape"][1])[0]
             width, height = geometry.vectors(self.shapes[name + "Base"][1])[0]
             tx, ty = geometry.vectors(target)[0]
@@ -79,8 +75,7 @@ class StationaryMachinesStaticTest(unittest.TestCase):
             self.assertGreater(feet[1], point[1] + th/2)
         contract = read("scenes/interaction/world_interactable.gd")
         self.assertIn("interaction_enabled and", geometry.function(contract, "can_interact"))
-        refresh = geometry.function(self.script, "refresh_presentation")
-        self.assertIn('if machine_id == "fabricator":\n\t\t$Interaction.interaction_enabled = false', refresh)
+        self.assertNotIn("interaction_enabled", self.script)
 
     def test_extractor_action_dispatch_and_transaction_authority(self):
         adapter = read("scenes/interaction/v2_extractor_recovery.gd")
@@ -152,6 +147,69 @@ class StationaryMachinesStaticTest(unittest.TestCase):
         self.assertNotIn("complete_objective", adapter + transaction)
         item_insertion = geometry.function(read("inventory/inventory_state.gd"), "add_item")
         self.assertIn("quantity: int = 1", item_insertion)
+
+    def test_fabricator_action_dispatch_and_transaction_authority(self):
+        adapter = read("scenes/interaction/v2_fabricator_recovery.gd")
+        self.assertTrue(adapter.startswith("extends WorldInteractable\n"))
+        self.assertIn('get_tree().get_first_node_in_group(&"playthrough") as PlaythroughState', adapter)
+        eligible = geometry.function(adapter, "can_interact")
+        self.assertIn("is_inside_tree() and interaction_enabled and _progression != null", eligible)
+        self.assertIn("_progression.ferrite_ingot_acquired and not _progression.fabricator_recovered", eligible)
+        self.assertEqual(re.findall(r"_progression\.(\w+)", eligible),
+                         ["ferrite_ingot_acquired", "fabricator_recovered"])
+        self.assertNotRegex(adapter, r"Objective|conversation|\.inventory|\.planet|\$Module|\$Secured|\$Empty|musing")
+        self.assertNotRegex(adapter, r"_progression\.\w+\s*=(?!=)")
+        self.assertEqual(re.findall(r"(?:@onready )?var (\w+)", adapter), ["_progression"])
+        action = geometry.function(adapter, "interact")
+        self.assertIn('if not can_interact():\n\t\treturn ""', action)
+        self.assertIn('if not _progression.recover_fabricator():\n\t\treturn "Unable to recover the Fabricator."', action)
+        self.assertLess(action.index("can_interact()"), action.index("recover_fabricator()"))
+        self.assertEqual(re.findall(r'return "([^"]*)"', action),
+                         ["", "Unable to recover the Fabricator.", ""])
+        self.assertEqual(adapter.count(".recover_fabricator()"), 1)
+        progression = read("scenes/main/playthrough_state.gd")
+        transaction = geometry.function(progression, "recover_fabricator")
+        self.assertIn("not ferrite_ingot_acquired or _fabricator_recovered or _recovering_fabricator", transaction)
+        self.assertIn('if not inventory.add_item(FABRICATOR):\n\t\t_recovering_fabricator = false\n\t\treturn false', transaction)
+        self.assertEqual(transaction.count("inventory.add_item(FABRICATOR)"), 1)
+        statements = ["_recovering_fabricator = true", "inventory.add_item(FABRICATOR)",
+                      "_fabricator_recovered = true", "fabricator_recovery_completed.emit()"]
+        self.assertEqual(sorted(map(transaction.index, statements)), list(map(transaction.index, statements)))
+        self.assertIn("quantity: int = 1", geometry.function(read("inventory/inventory_state.gd"), "add_item"))
+        detector = read("scenes/player/interaction_detector.gd")
+        self.assertIn("interaction_ui.show_response(_target.interact())", detector)
+        self.assertIn("interaction_ui.dismiss_response()", geometry.function(detector, "_unhandled_input"))
+        response = geometry.function(read("scenes/ui/interaction_ui.gd"), "show_response")
+        self.assertIn('if text.is_empty():\n\t\treturn', response)
+        self.assertNotIn("process_mode", response)
+
+    def test_fabricator_acquisition_only_musing_and_direct_plate_guidance(self):
+        progression = read("scenes/main/playthrough_state.gd")
+        acquisition = geometry.function(progression, "_on_inventory_changed")
+        for milestone, item in [("ferrite_ingot", "FERRITE_INGOT"), ("ferrite_plate", "FERRITE_PLATE")]:
+            self.assertIn(f"if not {milestone}_acquired and inventory.get_quantity({item}.item_id) > 0:", acquisition)
+            self.assertLess(acquisition.index(f"{milestone}_acquired = true"),
+                            acquisition.index(f"{milestone}_acquisition_completed.emit()"))
+            self.assertEqual(progression.count(f"{milestone}_acquired = true"), 1)
+            self.assertNotIn(f"{milestone}_acquired = false", progression)
+        self.assertNotIn("FERRITE_ROD", acquisition)
+        main = read("scenes/main/main.gd")
+        self.assertEqual(main.count("ferrite_ingot_acquisition_completed.connect(_on_ferrite_ingot_acquired)"), 1)
+        self.assertEqual(main.count("fabricator_recovery_completed.connect(_refresh_objective_tracker)"), 1)
+        self.assertEqual(main.count("ferrite_plate_acquisition_completed.connect(_refresh_objective_tracker)"), 1)
+        self.assertEqual(main.count("show_musing(INGOT_MUSING)"), 1)
+        self.assertIn("show_musing(INGOT_MUSING)", geometry.function(main, "_on_ferrite_ingot_acquired"))
+        self.assertIn('preload("res://dialogue/ferrite_ingot_acquisition.tres")', main)
+        self.assertIn("duration_seconds = 7.0", read("dialogue/ferrite_ingot_acquisition.tres"))
+        tracker = geometry.function(main, "_refresh_objective_tracker")
+        self.assertIn('if $PlaythroughState.ferrite_plate_acquired:\n\t\t\t# The acquisition stage is done; the overarching objective stays active.\n\t\t\tdefinition = null', tracker)
+        self.assertIn('elif $PlaythroughState.fabricator_recovered:\n\t\t\tdefinition = PLATE_GUIDANCE', tracker)
+        self.assertNotIn("show_musing", tracker)
+        self.assertNotIn("complete_objective", main)
+        self.assertNotIn("FABRICATOR_DEPLOYMENT", main)
+        plate = read("objectives/restore_computer_plate.tres")
+        self.assertIn('description = "Craft a Ferrite Plate."', plate)
+        self.assertIn('objective_id = &"restore_computer"', plate)
 
     def test_presentation_uses_authority_and_all_lifecycle_events_without_writes(self):
         progression = read("scenes/main/playthrough_state.gd")
