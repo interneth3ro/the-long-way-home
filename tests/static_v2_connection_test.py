@@ -11,6 +11,8 @@ import static_automatic_transitions_test as geometry
 
 
 ROOT = Path(__file__).resolve().parents[1]
+# Fixed verified post-P6 / pre-P8 project baseline for the sole startup allowance.
+P8_BASE = "e14703e64aef961f18feba8a616acec00c4f069e"
 PAIRS = [
     ("ship_interior_v2", "interior", "Maintenance", "FromMaintenance"),
     ("maintenance_bay_v2", "maintenance", "Interior", "FromInterior"),
@@ -145,8 +147,17 @@ class V2ConnectionStaticTest(unittest.TestCase):
         self.assertNotIn("scale =", nodes["Dave"][1])
         for file in ["scenes/main/scene_transition_controller.gd", "scenes/main/playthrough_state.gd",
                      "scenes/interaction/automatic_doorway.gd", "scenes/player/dave.tscn",
-                     "scenes/player/dave.gd", "scenes/main/main.tscn", "project.godot"]:
+                     "scenes/player/dave.gd", "scenes/main/main.tscn"]:
             self.assertEqual(read(file), base(file))
+        actual = (ROOT / "project.godot").read_bytes().replace(b"\r\n", b"\n")
+        expected = subprocess.check_output(
+            ["git", "show", f"{P8_BASE}:project.godot"], cwd=ROOT).replace(b"\r\n", b"\n")
+        approved = b'run/main_scene="res://scenes/main/main_v2.tscn"'
+        baseline = b'run/main_scene="res://scenes/main/main.tscn"'
+        pattern = rb"^[ \t]*run/main_scene[ \t]*=.*$"
+        self.assertEqual(re.findall(pattern, actual, re.M), [approved])
+        self.assertEqual(re.findall(pattern, expected, re.M), [baseline])
+        self.assertEqual(actual.replace(approved, baseline, 1), expected)
         for role in ["player", "world_host", "progression"]:
             self.assertIn(f"{role} = NodePath", nodes["SceneTransitions"][1])
         for script in ["scene_transition_controller.gd", "playthrough_state.gd"]:

@@ -40,7 +40,9 @@ Alternatively, import `project.godot` through Godot's Project Manager.
 
 ## Launch and validation
 
-Press **F6** with `scenes/main/main.tscn` open, or **F5** to run the project.
+**F5** starts V2 on the P8 feature branch (pending merge). F6 with
+`scenes/main/main_v2.tscn` open also starts V2. For the legacy fallback, stop,
+open `scenes/main/main.tscn` and press **F6**. F5 stays configured for V2.
 From a terminal in the project root:
 
 ```sh
@@ -54,31 +56,38 @@ Headless checks do not verify graphical appearance. While execution is restricte
 use only nonexecuting checks under the policy above and report them as static
 validation; runtime and engine verification remain unperformed.
 
-## Opt-in V2 production integration (P1-P5 merged, P6 pending merge)
+## V2 production integration (P1-P6 merged, P7 approved, P8 pending merge)
 
-Open `scenes/main/main_v2.tscn` and press **F6** for owner testing. This inherited
-Main host connects production-owned V2 room wrappers at 1.25x, reuses the existing
-player/controllers/UI and exterior, and returns from exterior to V2 Primary.
-**F5 remains the legacy game**, including its original exterior return. P1 merged
-in PR #59; P2 merged in PR #60 and adds the existing Computer interaction only
-to the production Primary wrapper, capped at 45 world units. P3 merged in PR #61
-with approved stationary machines, independent base collision and authoritative
-presentation in production Maintenance. P4 merged in PR #62 and connects the
-Extractor to existing recovery after Ferrite discovery, at 45 world units.
-P5 merged in PR #63 with Smelter recovery after first ore acquisition, at 45 world
-units, with no recovery musing. P6's feature branch, pending owner acceptance and
-merge, activates Fabricator recovery only in opt-in V2 after first ingot acquisition,
-at 45 world units. The existing seven-second ingot-acquisition musing and direct
-**Craft a Ferrite Plate.** guidance remain unchanged; recovery adds no musing or
-deployment objective. Computer repair is deferred. See the
-[architecture, provisional positions and sequential owner tests](docs/V2_PRODUCTION_HOST.md).
-Agent verification is static only; no Godot launch or runtime acceptance is claimed.
+P1-P6 merged in PRs #59-#64; the verified post-P6 baseline is
+`e14703e64aef961f18feba8a616acec00c4f069e`. The owner approved P7 after a
+continuous six-phase rehearsal, **6/6 PASS (owner-reported)**. P8 is implemented
+on `codex/p8-f5-production-cutover`, pending owner cutover acceptance and merge.
+
+**F5 / Run Project** now starts V2 Primary through `scenes/main/main_v2.tscn`.
+**F6 / Run Current Scene** with that scene open also starts V2. For the explicit
+**legacy F6 fallback**, stop the game, open `scenes/main/main.tscn` and press F6.
+F5 stays configured for V2. This is an editor workflow, with no startup selector.
+Computer repair remains deferred. Agent validation is static only; no Godot
+launch or P8 runtime acceptance is claimed.
+
+The inherited host connects production V2 rooms at 1.25x, reuses existing
+player/controllers/UI and exterior, and configures exterior return to V2 Primary.
+Legacy Main keeps its original exterior return. Computer and machine interaction
+caps remain 45 world units. P4/P5/P6 enable Extractor/Smelter/Fabricator recovery
+after discovery/ore acquisition/ingot acquisition, respectively. Acquisition
+musings and direct **Craft a Ferrite Plate.** guidance remain unchanged.
+
+**P7 Observation #1 remains nonblocking and unfixed:** after the Computer's opening
+conversation, the player is not directed outside to investigate Ferrite. A later
+approved narrative/objective-guidance correction is excluded from P8. See
+[current status, observation and eight pending owner cutover tests](docs/V2_PRODUCTION_HOST.md#p8-production-cutover-feature-branch-pending-merge).
 
 ## Primary interior V2 development previews
 
 An isolated development preview compares the approved room artwork at world
-scales 1.0x, 1.25x and 1.5x using existing Dave and camera. Production gameplay
-remains unchanged. The owner selected 1.25x following PR #47 review; PR #49's
+scales 1.0x, 1.25x and 1.5x using existing Dave and camera. These previews remain
+isolated from production gameplay. The owner selected 1.25x following PR #47
+review; PR #49's
 separate collision/navigation preview is merged. PR #50 merged the isolated
 automatic-transition preview; owner acceptance is separate. See the
 [preview controls, provenance and ordered owner tests](docs/INTERIOR_V2_PREVIEW.md).
@@ -90,8 +99,8 @@ PR #54 merged the separate [two-room V2 connection](docs/V2_TWO_ROOM_CONNECTION.
 owner acceptance is separate. F6 `scenes/dev/v2_two_room_connection.tscn`
 to start near Primary's left entrance and travel automatically to the actual
 Maintenance Bay V2 and back. Both rooms are 1.25x; one is attached at a time,
-with the existing detached-room cache retained. Existing previews and F5
-production routes remain unchanged. See the guide's nine sequential owner tests.
+with the existing detached-room cache retained. That historical slice preserved
+F5 routes; P8 now selects the V2 host. See the guide's nine sequential owner tests.
 
 ## Maintenance bay V2 development previews
 
