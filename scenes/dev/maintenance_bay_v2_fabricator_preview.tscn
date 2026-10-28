@@ -12,7 +12,7 @@ script = ExtResource("2_script")
 y_sort_enabled = true
 
 [node name="Fabricator" parent="PreviewRoom" instance=ExtResource("3_fabricator")]
-position = Vector2(-451.00, 319.00)
+position = Vector2(-451.00, 295.00)
 z_index = 1
 
 [node name="Dave" parent="." index="1"]
