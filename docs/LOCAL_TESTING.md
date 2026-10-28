@@ -62,31 +62,55 @@ retain only meaningful failure evidence under `artifacts/logs/` or
 `artifacts/evidence/` following [repository preservation rules](../AGENTS.md).
 The fixture test removes only its freshly created synthetic temporary tree.
 
-## Proposed future native phases - not implemented or authorized
+## Restricted native dispatcher (synthetic only, pending merge)
 
 The dry-run prints this sequential plan using only the explicitly pinned binary:
 
 1. `--headless --editor --path <stage> --quit`: cold import, 60 seconds.
 2. Only after successful import: `--headless --path <stage> --script res://tests/fabricator_recipe_switching_test.gd`, 30 seconds.
 
-Each phase would allow 1 MiB **combined raw stdout/stderr bytes**, one process at a
-time, no retries and no additional flags/scripts/scenes. The generic process helper
-is exercised with synthetic processes: asynchronous byte reads avoid full-pipe
-deadlocks, capture at most a 4096-byte excerpt and stop on timeout/output overflow.
-Detection can consume up to one read buffer per stream beyond the ceiling; retained
-output stays bounded. It requests process-tree termination with a two-second wait.
-Cleanup is best effort: escaped descendants, inherited pipes and host failures are
-not guaranteed recoverable. A disposable copy is not a security sandbox; a timeout
-cannot guarantee recovery from a host-wide freeze.
+`New-NativeCommandPlan` constructs these two commands as data, rechecks the pinned
+identity, and rejects changed staged bytes, unexpected files/directories and links.
+There are no parameters for extra arguments, scripts, scenes or limits.
+`Invoke-SyntheticNativeSequence` consumes fabricated process-result records only:
+static PASS permits import; import PASS permits the test; every failure stops the
+sequence without retries. It returns separate static/import/native outcomes,
+command/identity/stage data, a failure reason and a diagnostic decoded from at most
+4096 raw bytes. The command arguments print as unambiguous JSON arrays. These
+are **synthetic outcomes**, never evidence of engine execution.
+Neither helper launches processes or accepts an executor callback. The public
+`Native` mode still fails unconditionally, before prerequisites or staging.
 
-Future execution wiring must also classify engine `ERROR`, `SCRIPT ERROR`, parse
-errors and abnormal exits as failures even when the exit code is zero. Only the
-allowlisted test's expected terminal failure-count message with zero failures,
-exit 0 and no engine errors could establish test PASS. A positive assertion count
-would be assertion FAIL; missing/malformed completion, crash, parse/import errors,
-timeout and overflow would be infrastructure FAIL. Later phases must stay NOT RUN
-after any earlier failure. This engine-output classification and real process-tree
-behavior with Godot remain unimplemented/unverified; planning cannot certify them.
+The shared bounded process helper is exercised using PowerShell subprocesses only.
+It enforces 1 MiB **combined raw stdout/stderr bytes** with asynchronous reads,
+retains at most that much stream data for classification, and limits console
+diagnostics to an excerpt of 4096 raw bytes. Errors beyond the excerpt remain visible to
+the classifier. Detection can consume up to one read buffer per stream beyond the
+ceiling; retained raw output stays bounded. Timeout and overflow fail, with a
+process-tree termination request and at most a two-second wait.
+Cleanup is best effort: escaped descendants, inherited pipes and host failures are
+not guaranteed recoverable. Timeout/overflow always report termination uncertainty,
+even if the root exits after a kill; the dispatcher stops further phases. Normal
+exit plus pipe EOF confirms only the observed process/pipes, not all possible
+escaped descendants. A disposable copy is not a security sandbox; a timeout cannot
+guarantee recovery from a host-wide freeze.
+
+`Get-NativeOutcome` classifies `ERROR`, `SCRIPT ERROR`, parse errors and assertion
+errors on either stream as failures, including with exit zero. Native PASS also
+requires exit zero and exactly one completion record, on stdout as its last
+nonempty line: `Fabricator recipe switching regression failures: 0`. Positive
+failure counts, missing/malformed/duplicate completion, abnormal exits, uncertain
+termination, timeouts and overflow fail. Import does not require a test completion
+record. Later phases remain NOT RUN after any earlier failure.
+
+The fixture suite checks the existing staging/preservation behavior plus fixed
+arguments and deadlines, sequential stop conditions, output classification,
+completion requirements, errors beyond the excerpt, Unicode byte accounting,
+timeout/overflow, changed identities/stages and the unconditional public gate.
+Only inert fixtures and harmless PowerShell child processes run. The unchanged
+Python suite retains all 43 test methods and historical Git preservation checks.
+Actual Godot parsing, import, test assertions, engine process-tree behavior and
+graphical behavior remain **NOT RUN**.
 
 ## Proposed AGENTS.md amendment - not applied
 
@@ -101,11 +125,21 @@ not lift the existing restriction:
 > followed only on success by `--headless --path <approved-stage> --script
 > res://tests/fabricator_recipe_switching_test.gd` (at most 30 seconds). Each process
 > is limited to 1 MiB combined output; execute sequentially without retries and
-> stop on engine errors, abnormal exit, timeout or output overflow. No other Godot
+> stop on engine errors, assertion failure, missing/malformed completion, abnormal
+> exit, timeout, output overflow or uncertain termination. No other Godot
 > invocation, script, scene, extra flag, graphical launch, benchmark, prolonged
 > test, VM/SSH integration or freeze reproduction is permitted by this exception.
 > All other execution restrictions and preservation requirements remain active.
 
 The first real Godot run requires **separate owner approval after code review**
-with the exact executable identity, commands, paths and limits. This PR changes
-neither AGENTS.md nor the execution policy and adds no VM or CI integration.
+with the reviewed commit, exact absolute executable path and SHA-256, both complete
+argument arrays, source revision/working-input status and hashes, approved fresh
+staging paths, deadlines/output limits, and all stop conditions above. The proposed
+exception must first be explicitly authorized and applied to AGENTS.md in a later
+reviewed change. A policy edit alone does not enable this implementation: that
+later change must replace the unconditional gate with a narrowly reviewed approval
+check, wire the fixed commands to the bounded helper, recheck identity immediately
+before each launch, report all phases, and retain bounded meaningful failure
+evidence in an approved ignored artifact location without deleting owner material.
+No flag, environment variable or fixture record can enable real execution today.
+This PR changes neither AGENTS.md nor execution policy and adds no VM or CI integration.

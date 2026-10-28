@@ -8,7 +8,7 @@ param(
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
-# Generic bounded subprocess helper. Native execution has no call site in this PR.
+# Generic bounded subprocess helper. No Godot execution call site exists.
 function Invoke-BoundedProcess {
     param([string]$Executable, [string[]]$Arguments, [string]$Directory,
           [int]$Seconds = 60, [int]$MaxBytes = 1048576, [int]$ExcerptBytes = 4096)
@@ -25,6 +25,8 @@ function Invoke-BoundedProcess {
     $process.StartInfo = $info
     $status = 'PASS'; $code = $null; $total = 0; $started = $false
     $excerpt = [IO.MemoryStream]::new()
+    $capture = @([IO.MemoryStream]::new(), [IO.MemoryStream]::new())
+    $captured = 0; $terminationCertain = $false
     $watch = [Diagnostics.Stopwatch]::StartNew()
     try {
         if (-not $process.Start()) { throw 'Process did not start.' }
@@ -38,6 +40,11 @@ function Invoke-BoundedProcess {
                 if ($null -ne $pending[$i] -and $pending[$i].IsCompleted) {
                     $count = $pending[$i].GetAwaiter().GetResult()
                     $total += $count
+                    $retain = [Math]::Min($count, $MaxBytes - $captured)
+                    if ($retain -gt 0) {
+                        $capture[$i].Write($buffers[$i], 0, $retain)
+                        $captured += $retain
+                    }
                     $keep = [Math]::Min($count, $ExcerptBytes - [int]$excerpt.Length)
                     if ($keep -gt 0) { $excerpt.Write($buffers[$i], 0, $keep) }
                     $pending[$i] = if ($count -gt 0) {
@@ -49,6 +56,7 @@ function Invoke-BoundedProcess {
             if ($watch.Elapsed.TotalSeconds -ge $Seconds) { $status = 'TIMEOUT'; break }
             if ($process.HasExited -and $null -eq $pending[0] -and $null -eq $pending[1]) {
                 $code = $process.ExitCode
+                $terminationCertain = $true
                 if ($code -ne 0) { $status = 'NONZERO_EXIT' }
                 break
             }
@@ -60,11 +68,143 @@ function Invoke-BoundedProcess {
             try { $process.Kill($true); $null = $process.WaitForExit(2000) }
             catch { Write-Warning "Process-tree cleanup failed: $_" }
         }
+        # Timeout/overflow cannot certify descendant termination, even if the root exits.
+        if ($started -and -not $terminationCertain) {
+            Write-Warning 'Termination uncertain; process-tree kill is best effort. Stop further engine execution.'
+        }
         $process.Dispose()
     }
     $diagnostic = [Text.Encoding]::UTF8.GetString($excerpt.ToArray())
     $excerpt.Dispose()
-    [pscustomobject]@{ Status = $status; ExitCode = $code; Bytes = $total; Excerpt = $diagnostic }
+    $stdout = [Text.Encoding]::UTF8.GetString($capture[0].ToArray())
+    $stderr = [Text.Encoding]::UTF8.GetString($capture[1].ToArray())
+    foreach ($stream in $capture) { $stream.Dispose() }
+    [pscustomobject]@{ Status = $status; ExitCode = $code; Bytes = $total; Excerpt = $diagnostic;
+        Stdout = $stdout; Stderr = $stderr; TerminationCertain = $terminationCertain }
+}
+
+function Assert-PinnedEngine {
+    param([string]$Engine, [string]$EngineHash)
+    if (-not $Engine -or -not [IO.Path]::IsPathFullyQualified($Engine) -or
+        $EngineHash -notmatch '^[0-9a-fA-F]{64}$') {
+        throw 'NativePlan requires absolute GodotPath and exact GodotSha256.'
+    }
+    Assert-PlainPath $Engine
+    if (-not (Test-Path -LiteralPath $Engine -PathType Leaf) -or
+        (Get-FileHash -LiteralPath $Engine).Hash -ne $EngineHash) {
+        throw 'Pinned executable missing or SHA-256 mismatch.'
+    }
+}
+
+# Data only: callers cannot supply flags, scripts, scenes, deadlines or extra arguments.
+function New-NativeCommandPlan {
+    [CmdletBinding()]
+    param([string]$Engine, [string]$EngineHash, $Stage)
+    Assert-PinnedEngine $Engine $EngineHash
+    Assert-PlainPath $Stage.Directory
+    $directory = [IO.Path]::GetFullPath($Stage.Directory)
+    $source = [IO.Path]::GetFullPath($Stage.Source).TrimEnd('\', '/')
+    if (-not [IO.Path]::IsPathFullyQualified($Stage.Directory) -or
+        $directory.Equals($source, [StringComparison]::OrdinalIgnoreCase) -or
+        $directory.StartsWith($source + [IO.Path]::DirectorySeparatorChar, [StringComparison]::OrdinalIgnoreCase) -or
+        [IO.Path]::GetFileName($directory) -notmatch '^tlwh-native-plan-[0-9a-f]{32}$') {
+        throw 'Only a fresh external input stage is permitted.'
+    }
+    $expected = @($Stage.Inputs.Path)
+    if ('project.godot' -cnotin $expected -or 'tests/fabricator_recipe_switching_test.gd' -cnotin $expected) {
+        throw 'Required project/test input missing.'
+    }
+    foreach ($entry in $Stage.Inputs) {
+        if (-not (Test-ApprovedInput $entry.Path)) { throw 'Unapproved staged input.' }
+        $path = Join-Path $directory $entry.Path
+        Assert-PlainPath $path
+        if ((Get-FileHash -LiteralPath $path).Hash -ne $entry.Sha256) { throw 'Staged input changed.' }
+    }
+    # Inspect links before recursing into each directory; never traverse a linked tree.
+    $pendingDirectories = [Collections.Generic.Queue[string]]::new()
+    $pendingDirectories.Enqueue($directory)
+    $found = 0
+    while ($pendingDirectories.Count) {
+        foreach ($item in Get-ChildItem -Force -LiteralPath $pendingDirectories.Dequeue()) {
+            Assert-PlainPath $item.FullName
+            $relative = [IO.Path]::GetRelativePath($directory, $item.FullName).Replace('\', '/')
+            if ($item.PSIsContainer) {
+                if (-not @($expected | Where-Object { $_.StartsWith($relative + '/', [StringComparison]::Ordinal) }).Count) {
+                    throw 'Unexpected staged directory.'
+                }
+                $pendingDirectories.Enqueue($item.FullName)
+            } else {
+                if ($relative -cnotin $expected) { throw 'Unexpected staged file.' }
+                $found++
+            }
+        }
+    }
+    if ($found -ne $expected.Count) { throw 'Ambiguous staged inventory.' }
+    foreach ($phase in @('Import', 'Native')) {
+        $arguments = if ($phase -eq 'Import') {
+            @('--headless', '--editor', '--path', $directory, '--quit')
+        } else {
+            @('--headless', '--path', $directory, '--script', 'res://tests/fabricator_recipe_switching_test.gd')
+        }
+        [pscustomobject]@{ Phase = $phase; Executable = $Engine; Sha256 = $EngineHash;
+            Arguments = $arguments; Directory = $directory;
+            Seconds = $(if ($phase -eq 'Import') { 60 } else { 30 }); MaxBytes = 1048576 }
+    }
+}
+
+function Get-NativeOutcome {
+    param([ValidateSet('Import', 'Native')][string]$Phase, $Result)
+    $reason = 'OK'
+    $output = $Result.Stdout + "`n" + $Result.Stderr
+    if ($Result.Status -ne 'PASS') { $reason = $Result.Status }
+    elseif (-not $Result.TerminationCertain) { $reason = 'UNCERTAIN_TERMINATION' }
+    elseif ($Result.Bytes -gt 1048576 -or
+        [Text.Encoding]::UTF8.GetByteCount($Result.Stdout + $Result.Stderr) -gt 1048576) { $reason = 'OUTPUT_LIMIT' }
+    elseif ($Result.ExitCode -cne 0) { $reason = 'ABNORMAL_EXIT' }
+    elseif ($output -match '(?im)\b(ERROR|SCRIPT ERROR|parse error|assertion failed|assertion failure)\b') { $reason = 'ENGINE_ERROR' }
+    elseif ($Phase -eq 'Native') {
+        $prefix = 'Fabricator recipe switching regression failures:'
+        $records = @([regex]::Matches($output, '(?m)^Fabricator recipe switching regression failures:.*$'))
+        $lines = @($Result.Stdout.TrimEnd().Split("`n"))
+        if ($records.Count -ne 1 -or $records[0].Value.TrimEnd("`r") -cne "$prefix 0" -or
+            $lines[-1].TrimEnd("`r") -cne "$prefix 0") {
+            $reason = if ($records.Count -eq 1 -and $records[0].Value -match ': [1-9][0-9]*\r?$') {
+                'ASSERTION_FAILURE'
+            } else { 'MISSING_OR_MALFORMED_COMPLETION' }
+        }
+    }
+    $diagnosticBytes = [Text.Encoding]::UTF8.GetBytes($output)
+    $diagnostic = [Text.Encoding]::UTF8.GetString($diagnosticBytes, 0, [Math]::Min(4096, $diagnosticBytes.Length))
+    [pscustomobject]@{ Status = $(if ($reason -eq 'OK') { 'PASS' } else { 'FAIL' });
+        Reason = $reason; Diagnostic = $diagnostic }
+}
+
+# Inert dispatcher: consumes synthetic result records, never calls a process helper.
+# There is deliberately no executor callback or real-execution switch.
+function Invoke-SyntheticNativeSequence {
+    [CmdletBinding()]
+    param([string]$Engine, [string]$EngineHash, $Stage,
+          [ValidateSet('PASS', 'FAIL', 'NOT RUN')][string]$StaticStatus, [object[]]$Results = @())
+    $summary = [pscustomobject]@{ Static = $StaticStatus; Import = 'NOT RUN'; Native = 'NOT RUN';
+        Reason = 'STATIC_NOT_PASS'; Commands = @(); Synthetic = $true; Diagnostic = '';
+        Executable = $Engine; Sha256 = $EngineHash; StageDirectory = $Stage.Directory }
+    if ($StaticStatus -ne 'PASS') { return $summary }
+    $commands = @(New-NativeCommandPlan $Engine $EngineHash $Stage)
+    foreach ($command in $commands) {
+        # Recheck bytes at each simulated dispatch, without invoking the executable.
+        Assert-PinnedEngine $Engine $EngineHash
+        $index = $summary.Commands.Count
+        $summary.Commands += $command
+        $summary.($command.Phase) = 'FAIL'
+        if ($index -ge $Results.Count) { $summary.Reason = 'MISSING_RESULT'; break }
+        try { $outcome = Get-NativeOutcome $command.Phase $Results[$index] }
+        catch { $summary.Reason = 'MALFORMED_RESULT'; break }
+        $summary.($command.Phase) = $outcome.Status
+        $summary.Reason = $outcome.Reason
+        $summary.Diagnostic = $outcome.Diagnostic
+        if ($outcome.Status -ne 'PASS') { break }
+    }
+    return $summary
 }
 
 function Assert-PlainPath {
@@ -135,7 +275,7 @@ function New-InputStage {
             throw "Input changed during staging: $($entry.Path); inspect retained stage $stage"
         }
     }
-    [pscustomobject]@{ Directory = $stage; Inputs = @($inputs) }
+    [pscustomobject]@{ Directory = $stage; Source = $Source; Inputs = @($inputs) }
 }
 
 function Invoke-LocalTests {
@@ -161,11 +301,7 @@ function Invoke-LocalTests {
         Write-Host "Working status (untracked files are excluded from staging):`n$($changes.Excerpt.Trim())"
         # Configuration is checked without invoking the pinned binary, even for --version.
         if ($RequestedMode -eq 'NativePlan') {
-            if (-not $Engine -or -not [IO.Path]::IsPathFullyQualified($Engine) -or
-                $EngineHash -notmatch '^[0-9a-fA-F]{64}$') { throw 'NativePlan requires absolute GodotPath and exact GodotSha256.' }
-            Assert-PlainPath $Engine
-            if (-not (Test-Path -LiteralPath $Engine -PathType Leaf) -or
-                (Get-FileHash -LiteralPath $Engine).Hash -ne $EngineHash) { throw 'Pinned executable missing or SHA-256 mismatch.' }
+            Assert-PinnedEngine $Engine $EngineHash
             Write-Host "Pinned executable (not invoked): $Engine SHA256=$EngineHash"
         } elseif ($Engine -or $EngineHash) { throw 'Engine configuration requires NativePlan.' }
         $suite = @(Get-ChildItem -LiteralPath (Join-Path $Root 'tests') -Filter 'static_*test.py' -File)
@@ -189,11 +325,13 @@ function Invoke-LocalTests {
                 $Matches[1]
             }
             $stage = New-InputStage $Root ([IO.Path]::GetTempPath()) $tracked
+            $commands = @(New-NativeCommandPlan $Engine $EngineHash $stage)
             $plan = 'PASS'
             Write-Host "Retained dry-run stage: $($stage.Directory)"
             foreach ($entry in $stage.Inputs) { Write-Host "$($entry.Sha256) $($entry.Path)" }
-            Write-Host "PROPOSED ONLY: `"$Engine`" --headless --editor --path `"$($stage.Directory)`" --quit (60s, 1048576 bytes)"
-            Write-Host "THEN ONLY IF IMPORT PASSES: `"$Engine`" --headless --path `"$($stage.Directory)`" --script res://tests/fabricator_recipe_switching_test.gd (30s, 1048576 bytes)"
+            foreach ($command in $commands) {
+                Write-Host "PROPOSED ONLY ($($command.Phase), sequential after prior PASS): executable=$($command.Executable | ConvertTo-Json -Compress) arguments=$($command.Arguments | ConvertTo-Json -Compress) ($($command.Seconds)s, $($command.MaxBytes) bytes)"
+            }
         }
         $exitCode = 0
     } catch { Write-Host "FAIL (configuration/infrastructure or earlier phase): $_" }
