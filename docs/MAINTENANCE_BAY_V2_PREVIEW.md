@@ -78,6 +78,147 @@ environment convention at
   scale were visual acceptance targets. The subsequent collision request fixes
   world scale at the selected 1.25x.
 
+## Stationary Extractor visual (feature branch, pending merge)
+
+Owner launch: F6 [the Extractor preview](../scenes/dev/maintenance_bay_v2_extractor_preview.tscn)
+under the execution policy. It inherits the existing collision preview: actual
+room, 1.25x transform, right-exit barrier, disabled doorways, Dave, feet collider
+and camera. The [derived script](../scenes/dev/maintenance_bay_v2_extractor_preview.gd)
+calls the existing isolation setup. O toggles objective outline (default OFF);
+V hides/restores machine, shadow and outline together (default installed).
+The HUD reports visibility, requested outline state and collision outlines.
+O also updates the requested state while removed; V restores that state.
+C/H retain collision outlines/HUD, WASD/arrows move and wheel zooms. No global
+bindings change; O/V have no existing binding conflict.
+
+### Final owner-approved values
+
+The owner selected these authoritative values in the actual Godot live-tuning
+preview and approved them in the finalization amendment. They are now locked:
+room-local position `(-442, -156.00)`, outline width `20.0` source texels,
+opacity `1.00`, unchanged amber RGB `(0.65, 0.43, 0.19)`. Outline starts OFF.
+These supersede all provisional values and recording examples. Temporary I/K,
+Shift variants, U/P, J/L and R handlers, runtime tuning state, reset logic and
+copy-values HUD are removed. No live adjustment or persistence remains.
+The compact HUD shows installed/removed, outline ON/OFF and collision outlines;
+O/V/C/H, movement and camera controls remain. H restores current status, and
+O changes the requested outline state while V hides the visual group.
+
+Width 20 source texels equals 3.2 room units / 4 preview-world units, not 20
+world pixels. Shader hint remains 0–20 with no smaller clamp; quad expansion,
+UV remapping and out-of-bounds zero sampling all use the same width. Rendering
+algorithm and shader fallback defaults are unchanged; the scene-local material
+explicitly supplies the approved width/color. Final locked-file appearance and
+clipping still require owner retest; static inspection is not engine validation.
+
+The [reusable visual](../scenes/visuals/extractor_stationary.tscn) contains only
+presentation nodes and a scene-local material. No controls, machine collision,
+recovery, objectives, inventory, deployment, animation or production logic is
+added. The approved flat pad stays walkable: Dave can pass through the installed
+visual. This is a limitation of preserving collision in this visual-only slice.
+Preview-only Y sorting puts Dave and machine at their ground anchors on Z 1;
+the unchanged room stays on Z 0. Occlusion requires owner review. No new
+architectural overlay is indicated by static placement. Existing previews,
+PR #54 harness, transition infrastructure and F5 production files are unchanged.
+
+### Provenance and placement
+
+- Owner source: `C:/Users/inter/Downloads/TLWH_Extractor_Standalone_Transparent.png`,
+  copied byte-for-byte to [the asset](../assets/environment/maintenance_bay_v2/machines/extractor_stationary.png).
+  SHA-256: `1640723731cb25a224ac797b1c0b5006ea82895507bba39e41e61f62e5abc9bb`.
+- Decoded 1319 x 1186 RGBA, alpha 0–255: 563,758 transparent, 1,000,447
+  partial-alpha, 129 opaque pixels. Alpha > 16 exclusive bounds are
+  `(113, 11)`–`(1227, 1127)`; nonzero bounds `(0, 8)`–`(1311, 1186)`.
+  Alpha-1 residuals touch the border. Inspection shows colored edge fringe
+  and faint residual transparency; no solid rectangular background. Bytes are
+  preserved, with no optimized derivative. Initial halo review passed per the
+  owner's amendment report; no agent graphical verification was performed.
+- The immutable 1536 x 1024 background hash documented above matches before
+  and after implementation. No background or existing import metadata changes.
+- Actual pad rim is approximately image x 230–424, y 220–390, measured visually
+  from the approved background, not old concept labels. Chosen front-center
+  final anchor: image `(326, 356)`, room local `(-442, -156.00)` after
+  subtracting the centered image origin `(768, 512)`, preview world
+  `(-552.5, -195)` at 1.25x. This is the owner-selected rearward placement.
+- Artwork base anchor `(669, 1108)` maps to that location with uncentered sprite
+  offset `(-669, -1108)` and uniform scale `0.16` (effective preview scale `0.20`).
+  Alpha > 16 bounds map to room-image `(237.04, 180.48)`–`(415.28, 359.04)`,
+  size 178.24 x 178.56 room units. Body overhangs the rear rim about 40 units.
+  Right edge stays left of raised side housing x 432–476;
+  left edge stays right of west cabinet, which reaches about x 202. Faint-alpha
+  canvas extends further. The owner chose this fit during live tuning; final
+  scene-file reproduction awaits the focused retests below.
+- Separate contact-shadow Sprite2D: local `(0, -7)`, radial GradientTexture2D
+  128 x 64, scale `(1.4, 0.55)`, extent 179.2 x 35.2 room units. Black alpha
+  0.18 at center, 0.10 at radius 0.65, zero at edge; transform, visibility and
+  gradient are independently editable. Parent visibility hides all components.
+- [Reusable shader](../shaders/objective_silhouette.gdshader): eight radial alpha
+  samples; soft threshold 0.08–0.45 ignores faint specks. Locked scene-local width
+  20 source texels = 3.2 room units = 4 preview-world units at camera zoom 1.
+  Muted amber `(0.65, 0.43, 0.19, 1.00)`, disabled by default. Reusable shader
+  rendering, fallback defaults and editor width hint 0–20 remain unchanged.
+  Expanded quad and UV remapping
+  with zero sampling outside bounds accommodate edge-touching silhouettes.
+  Original RGBA composites over the outline without permanent tint. Linear
+  filtering; no glow, pulse, animation or per-frame CPU outline work. Locked width
+  and color reside in the scene-local material; status updates only on input.
+
+### Validation and sequential owner acceptance
+
+Agent checks are static only: image decode/hash identity, scene references/load
+counts, coordinate math, protected-file preservation, Markdown links and Git
+whitespace. No Godot import, shader compilation, GDScript engine/type check,
+headless, graphical, gameplay or performance verification was performed. No owner
+PASS is inferred. New development-only preview scene/script are retirement-audit
+candidates after production migration; reusable visual/art/shader remain.
+
+The 24 existing static automatic-transition, port-console geometry and V2
+connection checks pass. The connection suite's preservation check now enumerates
+baseline preview files from `origin/main`, retaining byte/text comparison of old
+previews while allowing later isolated previews to add files. Resource/load-count,
+hash, placement-math, local-link and whitespace checks also pass. These results
+provide no engine or visual acceptance.
+
+The owner reports all nine initial tests below PASS, with no failures, in the
+PR #55 polish amendment. This records owner feedback, not agent runtime checks.
+The owner subsequently completed live tuning and approved the final values
+above. This records the owner's outcome, not agent runtime verification. Final
+locked-file retests remain pending, **one result at a time**, before merge approval:
+
+1. F6 the Extractor preview: approved rearward position and outline initially OFF.
+2. O shows the approved stronger amber silhouette, without clipping or rectangular
+   artifacts; O again removes it completely.
+3. V with outline ON and OFF hides/restores machine, shadow and outline together;
+   unchanged foundation remains intact.
+4. C/H still work and movement/camera remain normal. Former tuning keys no longer
+   adjust position, width or opacity.
+5. Check debugger errors and only the targeted regressions warranted by this diff.
+   Return for owner merge approval after retests pass; no automatic merge.
+
+Initial nine-test acceptance plan (owner-reported PASS before polish):
+
+1. F6 the new preview in Godot 4.7: approved bay at 1.25x, machine installed,
+   outline OFF, existing Dave/camera, no errors.
+2. Check scale, perspective and base anchor against actual pad and approved
+   concept; reject unacceptable overlap with fixtures or walkable approaches.
+3. Check normal transparency, colored edge fringe and subtle shadow at camera
+   zoom 1.0x, 0.75x and 1.5x; no checkerboard or unwanted outline.
+4. O enables a thin soft amber silhouette, without rectangle, clipping or bloom.
+5. O disables it completely; repeat while standing/moving and check HUD state.
+6. Walk around the pad with C: collision unchanged. Assess sorting; walking
+   through the machine is expected in this visual-only preview.
+7. V hides/restores machine, shadow and outline together, revealing intact pad.
+   Test O while removed, then V. HUD labels removal as visual simulation.
+8. Separately regress original bay visual/collision previews and PR #54 harness.
+9. F5 production smoke test: original rooms, interactions, progression, all three
+   machine systems and saves unaffected.
+
+Screenshot comparison plan (owner-operated): after placement review, hold Dave,
+camera and zoom fixed; capture OFF, O/ON, restored OFF and V/removed. Compare
+anchor, silhouette width, shadow, fringe and revealed pad. Inspect zoom extremes,
+then return to 1.0x for like-for-like comparisons. Retain only selected meaningful
+evidence in ignored `artifacts/screenshots/`. Agent captured no engine screenshots.
+
 ## Isolated collision preview (feature branch, pending merge)
 
 Subject to the execution policy, open

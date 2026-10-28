@@ -159,9 +159,12 @@ class V2ConnectionStaticTest(unittest.TestCase):
         self.assertNotIn("request_transition", startup + adapter)
 
     def test_art_production_and_old_previews_preserved(self):
-        for path in (ROOT / "scenes/dev").glob("*"):
-            if not path.name.startswith("v2_") and path.is_file():
-                relative = path.relative_to(ROOT).as_posix()
+        # Compare baseline previews only; later isolated previews may add files.
+        baseline = subprocess.check_output(
+            ["git", "ls-tree", "-r", "--name-only", "origin/main", "scenes/dev"],
+            cwd=ROOT, text=True).splitlines()
+        for relative in baseline:
+            if not Path(relative).name.startswith("v2_"):
                 self.assertEqual(read(relative), base(relative))
         art = ROOT / "assets/environment/maintenance_bay_v2/maintenance_bay_v2_machine_free_background.png"
         self.assertEqual(hashlib.sha256(art.read_bytes()).hexdigest(),

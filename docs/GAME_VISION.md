@@ -88,10 +88,13 @@ establishes no production access, machine/story persistence or V2 cutover.
 
 Future emergency/partial -> dim/moody -> operational lighting is gated by story
 and electrical repairs. The approved background composition does not complete
-the initial emergency state. Independent machine/lighting overlays remain future
-work; no variants or sprite extraction are included. See
+the initial emergency state. This feature branch adds the approved stationary,
+crash-worn but recoverable shipboard Extractor as an independent visual in a new
+isolated preview, pending merge and owner acceptance. Optional muted amber
+silhouette emphasis and removal are visual simulations only. Recovery, production
+integration, other machine visuals and lighting variants remain deferred. See
 [preview provenance, controls and ordered acceptance](MAINTENANCE_BAY_V2_PREVIEW.md)
-for both isolated previews and their static validation limits.
+for the isolated previews and their static validation limits.
 
 ## Approved construction and logistics direction
 

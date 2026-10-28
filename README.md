@@ -75,6 +75,13 @@ production routes remain unchanged. See the guide's nine sequential owner tests.
 
 ## Maintenance bay V2 development previews
 
+The feature branch adds an isolated stationary Extractor visual, pending merge
+and owner acceptance. F6 `scenes/dev/maintenance_bay_v2_extractor_preview.tscn`:
+O toggles its muted amber silhouette outline (default OFF), V simulates visual
+removal/reappearance, and C/H retain collision-outline/HUD controls. See the
+[placement and acceptance plan](docs/MAINTENANCE_BAY_V2_PREVIEW.md#stationary-extractor-visual-feature-branch-pending-merge).
+Validation is static only; no recovery, objectives or production logic is added.
+
 PR #51 added a separate machine-free maintenance-bay visual preview. Open
 `scenes/dev/maintenance_bay_v2_scale_preview.tscn` and press F6: initial room
 scale is 1.25x; 1/2/3 select 1.0x/1.25x/1.5x, 4-9 select comparison positions,

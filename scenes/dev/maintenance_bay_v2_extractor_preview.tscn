@@ -1,0 +1,19 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/dev/maintenance_bay_v2_collision_preview.tscn" id="1_preview"]
+[ext_resource type="Script" path="res://scenes/dev/maintenance_bay_v2_extractor_preview.gd" id="2_script"]
+[ext_resource type="PackedScene" path="res://scenes/visuals/extractor_stationary.tscn" id="3_extractor"]
+
+[node name="DevelopmentOnlyExtractorPreview" instance=ExtResource("1_preview")]
+y_sort_enabled = true
+script = ExtResource("2_script")
+
+[node name="PreviewRoom" parent="." index="0"]
+y_sort_enabled = true
+
+[node name="Extractor" parent="PreviewRoom" instance=ExtResource("3_extractor")]
+position = Vector2(-442, -156.00)
+z_index = 1
+
+[node name="Dave" parent="." index="1"]
+z_index = 1
