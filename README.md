@@ -104,6 +104,14 @@ expose finite room-art boundaries; no camera clamping, artwork change, HUD
 relocation, inventory redesign, Tab remapping, hotbar, settings or UI-scale option
 is included. Headless checks cannot accept the appearance or native window behavior.
 
+Validation at `0f7070a`: 43 Python static checks PASS, 54 inert runner fixtures
+PASS, and restricted Native cold import plus recipe-switching regression PASS.
+The first B1 run at `4d741f1` stopped after import because generated font sidecars
+were unexpected; the recipe test was NOT RUN. After separate owner authorization,
+the exact three sidecars were tracked/allowlisted and one fresh-stage rerun passed.
+The initial failure evidence remains in ignored artifacts/logs; both stages remain
+preserved. No graphical Godot, window-mode acceptance or performance test was run.
+
 Owner acceptance checks, when the owner chooses to launch graphically:
 
 1. Inspect a deployed Smelter: typography, panel transparency/border, button normal,
