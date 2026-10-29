@@ -55,7 +55,10 @@ static func popup_at_slot(menu: PopupMenu, slot: Control, above: bool = false) -
 		attachment_transform = slot.get_screen_transform()
 	var local_point := Vector2.ZERO if above else Vector2(0, slot.size.y)
 	var point := Vector2i((attachment_transform * local_point).round())
-	var bounds := menu.get_usable_parent_rect()
+	# Window.get_usable_parent_rect() is engine-internal, not a script API.
+	var bounds := Rect2i(slot.get_viewport_rect())
+	if not menu.is_embedded():
+		bounds = DisplayServer.screen_get_usable_rect(slot.get_window().current_screen)
 	menu.max_size = bounds.size
 	menu.reset_size()
 	menu.popup(Rect2i(point, Vector2i.ZERO))

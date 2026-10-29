@@ -131,10 +131,18 @@ eleven-file normalized-byte allowance and rejection assertions in
 `tests/static_v2_production_host_test.py` (file SHA-256
 `115D9B737322606C1C5B232BDCDE5199130A68794DF027862AD3DB1079D74B33`).
 The proposed suite passes **47 Python static tests**. Existing B1/hotbar/P8
-historical comparisons remain behind those exact byte checks. Restricted Native
-verification is pending one authorized attempt; no graphical execution or
-graphical acceptance is claimed. Runner, allowlists, execution policy and native
-test assertions are unchanged.
+historical comparisons remain behind those exact byte checks. The one authorized
+Native attempt at `edaf334` passed static checks but stopped at cold import with
+`ENGINE_ERROR`; the recipe test did not run. The retained 4,096-byte excerpt
+contains startup output, so it does not identify the engine error. Static API
+review found and corrected a call to engine-internal `Window.get_usable_parent_rect()`;
+the helper now uses public viewport bounds / DisplayServer screen bounds.
+That correction has not been engine-verified. No automatic retry was performed;
+a fresh restricted run requires explicit owner renewal. Failure evidence remains
+in ignored `artifacts/logs/native-failure-f71e06401208402a83fea6aec24accd7.json` and
+the external stage is preserved. No graphical execution or graphical acceptance
+is claimed. Runner, allowlists, execution policy and native test assertions are
+unchanged.
 
 Owner graphical acceptance (separate authorization required):
 
