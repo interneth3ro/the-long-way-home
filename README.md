@@ -210,6 +210,38 @@ coverage and long-quantity readability were not separately recorded; these remai
 useful acceptance checks rather than claims established by the static metrics.
 No display settings or player UI-scale control changes are included.
 
+B2 Balanced frame on `codex/b1-refined-industrial-inventory` (pending merge):
+[the reusable NinePatchRect scene](scenes/ui/b2_panel_frame.tscn) uses the
+[owner-supplied 96 x 96 RGBA texture](assets/ui/TLWH_B2_ninepatch_96.png), unchanged.
+All four patch margins are 24; horizontal and vertical edges use TILE, with fixed
+corners, linear filtering and center drawing disabled. The transparent center
+preserves the existing B1 background. The procedural experiment has been removed.
+The accompanying standard texture-import metadata uses lossless compression and
+no mipmaps; no engine cache is tracked.
+
+Inventory alone instances this frame in a mouse-transparent Control wrapper.
+PanelContainer fits the wrapper to its padded content rectangle; full anchors
+and offsets (-16, -14, +16, +14) compensate for the existing 8/6 padding and add
+eight units of outward framing. The panel's minimum size, content, placement and
+padding stay unchanged. The frame starts at (16, 92), leaving two units below
+the Inventory button. Both decorative nodes ignore mouse input and inherit panel
+visibility. No script, input handler, shared theme or hotbar changes are required.
+To reuse later, instance the scene under a similar wrapper and adjust its offsets
+for the host's padding. Other panels have not been restyled.
+
+Validation: 46 Python static tests PASS; `git diff --check` PASS. Static asset
+checks confirm original PNG bytes, transparent content clearance and matching
+edge-tile endpoints.
+Source inspection covers resource wiring, fixed patch margins, local anchors,
+mouse filtering and preserved layout/behavior code. Native execution awaits owner
+review of the exact inventory scene hash update in the existing preservation test;
+its script hash and historical comparisons are unchanged. Engine import, graphical
+appearance and interaction acceptance remain unverified. Owner checks: inspect
+corners, tile joins and content clearance over bright/dark environments at
+1280 x 720, 1024 x 576 and expanded aspect ratios, including overflow; verify
+Tab/Esc, tooltips, right-click assignment and single-click deployment.
+
+
 Tab replaces I in the inventory InputMap action. Inventory consumes Tab presses
 and repeats in `_input`, before GUI focus navigation; only the initial press
 toggles. Tab, Esc and the Inventory (Tab) button close the panel. Existing opening

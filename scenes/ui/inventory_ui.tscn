@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=4 format=3]
 
 [ext_resource type="Script" path="res://scenes/ui/inventory_ui.gd" id="1_inventory"]
 [ext_resource type="Theme" path="res://assets/ui/b1_theme.tres" id="2_b1"]
+[ext_resource type="PackedScene" path="res://scenes/ui/b2_panel_frame.tscn" id="3_frame"]
 
 [node name="InventoryUI" type="CanvasLayer"]
 layer = 2
@@ -98,5 +99,16 @@ theme_type_variation = &"B1MutedLabel"
 theme_override_font_sizes/font_size = 14
 text = "Tab / Esc to close"
 autowrap_mode = 3
+
+[node name="FrameBounds" type="Control" parent="HUD/Panel"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="B2PanelFrame" parent="HUD/Panel/FrameBounds" instance=ExtResource("3_frame")]
+layout_mode = 0
+offset_left = -16.0
+offset_top = -14.0
+offset_right = 16.0
+offset_bottom = 14.0
 
 [connection signal="pressed" from="HUD/Toggle" to="." method="_toggle"]
