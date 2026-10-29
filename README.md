@@ -43,9 +43,10 @@ Alternatively, import `project.godot` through Godot's Project Manager.
 
 The feature-branch [local PowerShell test runner](docs/LOCAL_TESTING.md) runs the
 existing Python static suite in this checkout. Its optional native plan copies
-tracked working inputs for inspection. Stage B proposes controlled native activation
-requiring a fresh exact owner authorization, verified through GitHub, for each run.
-See the guide for the gate, first-run process and synthetic verification limits.
+tracked working inputs for inspection. Native execution remains inactive pending
+separate exact first-run owner approval. Routine testing would additionally require
+successful first-run validation and a separately owner-approved repository policy.
+See the guide for the two-stage process and synthetic verification limits.
 No first engine run or recurring native run has been authorized.
 
 **F5** starts production V2 (P8 merged in PR #65). F6 with

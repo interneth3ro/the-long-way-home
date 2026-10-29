@@ -31,24 +31,30 @@
   headless execution is suspended, including editor imports, headless scene
   launches, and GDScript tests executed through Godot. This restriction remains
   active until the owner explicitly lifts it.
-- Narrow conditional local-runner exception (inactive without separate exact
-  owner authorization): the reviewed, merged `tools/run-local-tests.ps1` may run
-  one cold headless editor import in its fresh external copy (60 seconds), then
-  only after PASS run `tests/fabricator_recipe_switching_test.gd` (30 seconds).
-  Actual static-suite PASS is required first. Each process has a 1,048,576-byte
-  combined output ceiling; commands are sequential, with no retries. Stop on
-  engine/script errors, assertion failure, missing/malformed completion, abnormal
-  exit, timeout, overflow, uncertain termination, or changed inputs/identity/approval.
-  The owner must separately authorize the exact displayed specification with a
-  fresh authenticated GitHub comment, as described in
-  [LOCAL_TESTING.md](docs/LOCAL_TESTING.md#controlled-native-activation-stage-b-pending-merge).
-  Approval binds the live merged runner/source revision, working status/index and
-  input hashes, executable path/SHA-256, new external stage, both complete command
-  arrays, limits, evidence destination and stop conditions. It expires after ten
-  minutes and cannot be reused for another stage. Merge, this policy text,
-  environment variables, local approval files and switches provide no approval.
-  Agents must never create the owner's authorization comment or invoke Native
-  during this code-only assignment. No first run or recurring run is authorized.
+- Local-runner authorization has two separate stages; neither is active in this
+  code-only PR. First-run execution requires separate explicit owner approval of
+  the exact reviewed runner commit, absolute executable path/SHA-256, source and
+  working-input identity, external stage, fixed commands, limits, evidence
+  destination and stop conditions. Merge or this policy text is not that approval.
+- After successful first-run validation, routine local native testing additionally
+  requires a separately owner-approved, narrowly scoped repository execution
+  policy. First-run approval and a successful test do not grant routine permission.
+  That later policy must define the approved runner/executable identities, allowed
+  source/working-input variation, invocation scope, revocation and reapproval when
+  scope or identities change. It may allow repeated local runs within that scope
+  without a new GitHub comment for each run. This PR enables neither routine nor
+  unattended execution; its public Native gate remains unconditionally inactive.
+  Activation requires a separate reviewed owner-authorized change, not a switch,
+  environment variable, local approval file or automatic reaction to test PASS.
+- Any later authorized runner execution retains actual static-suite PASS, a fresh
+  external project copy, source/executable hash verification, and precisely one
+  cold headless import (60 seconds) followed only on PASS by the recipe-switching
+  test (30 seconds). Each process has a 1,048,576-byte combined output limit;
+  commands run sequentially without retries. Stop on engine/script errors,
+  assertion failure, missing/malformed completion, abnormal exit/crash, timeout,
+  overflow, uncertain termination, or changed source/executable identity.
+  Preserve bounded failure evidence and all owner files. See the two-stage
+  [authorization process](docs/LOCAL_TESTING.md#controlled-native-activation-stage-b-pending-merge).
   All other headless, graphical, performance and preservation restrictions remain.
 - While execution is restricted, use static code inspection, scene and resource
   text inspection, Git diff validation, Markdown and documentation checks, and

@@ -152,7 +152,7 @@ function New-NativeCommandPlan {
     }
 }
 
-# Restricted dispatcher. Approval is obtained after staging and checked per launch.
+# Restricted dispatcher. Authorization is inactive and checked before each launch.
 # Tests replace named helpers in child scope; no executable/callback injection API.
 function Get-NativeSourceIdentity {
     param([string]$Source)
@@ -299,18 +299,17 @@ function Invoke-RestrictedNativeDispatch {
             throw 'Failure evidence destination is not confirmed ignored.'
         }
         $summary.Authorization = 'FAIL'
-        $approval = Request-NativeOwnerApproval $stage $identity $commands
+        Assert-NativeExecutionAuthorization
+        Assert-ReviewedNativeRunner $Source $identity.Revision
         $summary.Authorization = 'PASS'
         foreach ($command in $commands) {
             $phase = $command.Phase
             $summary.Commands += $command
             $summary.$phase = 'FAIL'
-            try { Assert-NativeOwnerApproval $approval $stage $identity $commands }
+            try { Assert-NativeExecutionAuthorization }
             catch { $summary.Authorization = 'FAIL'; throw }
+            Assert-ReviewedNativeRunner $Source $identity.Revision
             Assert-NativeDispatchInputs $stage $identity ($phase -eq 'Native')
-            if ([DateTimeOffset]::UtcNow -gt $approval.Expires) {
-                $summary.Authorization = 'FAIL'; throw 'Stale owner approval before launch.'
-            }
             # Last check before the one synchronous bounded launch. No retries.
             Assert-PinnedEngine $Engine $EngineHash
             $result = Invoke-BoundedProcess $command.Executable $command.Arguments $command.Directory `
@@ -334,25 +333,25 @@ function Invoke-RestrictedNativeDispatch {
     return $summary
 }
 
-# Read-only GitHub API calls through the authenticated CLI; never execute response text.
-function Get-NativeApprovalApi {
-    param([string]$Endpoint)
-    $gh = @(Get-Command gh -CommandType Application -ErrorAction Stop)[0].Source
-    $r = Invoke-BoundedProcess $gh @('api', '--hostname', 'github.com', $Endpoint) $PSScriptRoot -ExcerptBytes 1048576
-    if ($r.Status -ne 'PASS' -or $r.ExitCode -ne 0 -or -not $r.TerminationCertain) {
-        throw 'Owner approval API unavailable.'
-    }
-    return ($r.Stdout | ConvertFrom-Json)
+# Code-only revision: neither first-run approval nor a routine policy is active.
+# A later owner-authorized activation change must implement the exact reviewed
+# first-run scope. Successful validation alone must not enable routine execution;
+# that requires a separate, narrowly scoped repository execution policy.
+function Assert-NativeExecutionAuthorization {
+    [CmdletBinding()]
+    param()
+    throw 'Native execution inactive: separate explicit owner approval of the exact first run is required. Routine testing additionally requires successful first-run validation and a separately owner-approved repository execution policy. Use NativePlan for nonexecuting inspection.'
 }
 
 function Assert-ReviewedNativeRunner {
     param([string]$Source, [string]$Revision)
-    # The exact source revision must already be on live main, not merely a local ref.
-    $main = Get-NativeApprovalApi 'repos/interneth3ro/the-long-way-home/commits/main'
-    if ($main.sha -cne $Revision) { throw 'Native requires the exact live merged main revision.' }
+    # Local checks only. The future owner-authorized gate must bind the reviewed
+    # commit; an arbitrary local HEAD or a policy paragraph is not authorization.
     $git = @(Get-Command git -CommandType Application -ErrorAction Stop)[0].Source
-    # Refuse modified runner, policy or static-suite implementation, including staged edits.
-    $r = Invoke-BoundedProcess $git @('diff', '--quiet', 'HEAD', '--', 'tools', 'AGENTS.md', 'tests/static_*test.py') $Source
+    $head = Invoke-BoundedProcess $git @('rev-parse', 'HEAD') $Source
+    if ($head.Status -ne 'PASS' -or $head.ExitCode -ne 0 -or -not $head.TerminationCertain -or
+        $head.Stdout.Trim() -cne $Revision) { throw 'Reviewed runner source revision changed.' }
+    $r = Invoke-BoundedProcess $git @('diff', '--quiet', $Revision, '--', 'tools', 'AGENTS.md', 'tests/static_*test.py') $Source
     if ($r.Status -ne 'PASS' -or $r.ExitCode -ne 0 -or -not $r.TerminationCertain) {
         throw 'Reviewed runner, policy or static suite has working changes.'
     }
@@ -360,82 +359,6 @@ function Assert-ReviewedNativeRunner {
         (Join-Path $Source 'tools/run-local-tests.ps1'), [StringComparison]::OrdinalIgnoreCase)) {
         throw 'Native must use the reviewed checkout runner.'
     }
-}
-
-function Get-NativeApprovalSpecification {
-    param($Stage, $Identity, $Commands)
-    [ordered]@{ Schema = 1; Repository = 'interneth3ro/the-long-way-home';
-        RunnerCommit = $Identity.Revision; Source = $Stage.Source; Working = $Identity.Working;
-        Index = $Identity.Index; Inputs = @($Stage.Inputs); Stage = $Stage.Directory;
-        Commands = @($Commands); Static = 'PASS'; Evidence = (Join-Path $Stage.Source 'artifacts/logs');
-        DiagnosticBytes = 4096; TerminationWaitSeconds = 2; Retries = 0;
-        StopConditions = @('engine/script error', 'assertion failure', 'missing/malformed completion',
-            'abnormal exit', 'timeout', 'output overflow', 'uncertain termination', 'identity/input/approval mutation') }
-}
-
-function Get-NativeSpecificationHash {
-    param([string]$Json)
-    $hasher = [Security.Cryptography.SHA256]::Create()
-    try { return [BitConverter]::ToString($hasher.ComputeHash([Text.Encoding]::UTF8.GetBytes($Json))).Replace('-', '') }
-    finally { $hasher.Dispose() }
-}
-
-function Assert-NativeApprovalConsole {
-    if (-not [Environment]::UserInteractive -or [Console]::IsInputRedirected -or [Console]::IsOutputRedirected) {
-        throw 'Native approval requires an interactive owner console; redirected input/output is denied.'
-    }
-}
-
-function Assert-NativeOwnerApproval {
-    param($Approval, $Stage, $Identity, $Commands)
-    if ($null -eq $Approval -or [DateTimeOffset]::UtcNow -gt $Approval.Expires) { throw 'Missing or stale owner approval.' }
-    $json = Get-NativeApprovalSpecification $Stage $Identity $Commands | ConvertTo-Json -Depth 10 -Compress
-    if ((Get-NativeSpecificationHash $json) -cne $Approval.Hash) { throw 'Approval specification mismatch.' }
-    Assert-ReviewedNativeRunner $Stage.Source $Identity.Revision
-    $comment = Get-NativeApprovalApi "repos/interneth3ro/the-long-way-home/issues/comments/$($Approval.CommentId)"
-    if ($comment.user.login -cne 'interneth3ro' -or $comment.user.type -cne 'User' -or
-        $comment.body -cne "I authorize one TLWH native run: $($Approval.Hash)" -or
-        [DateTimeOffset]::Parse($comment.created_at) -lt $Approval.Created -or
-        [DateTimeOffset]::Parse($comment.created_at) -gt [DateTimeOffset]::UtcNow -or
-        $comment.html_url -cne $Approval.Url -or
-        $comment.issue_url -cnotmatch '^https://api.github.com/repos/interneth3ro/the-long-way-home/issues/[1-9][0-9]*$') {
-        throw 'Missing, denied, mismatched or non-owner GitHub approval.'
-    }
-    # The exclusively created local record must remain byte-identical, too.
-    if ($Approval.Record) {
-        Assert-PlainPath $Approval.Record
-        if ((Get-FileHash -LiteralPath $Approval.Record).Hash -cne $Approval.RecordHash) { throw 'Approval record changed.' }
-    }
-    if ([DateTimeOffset]::UtcNow -gt $Approval.Expires) { throw 'Stale owner approval.' }
-}
-
-function Request-NativeOwnerApproval {
-    param($Stage, $Identity, $Commands)
-    Assert-NativeApprovalConsole
-    Assert-ReviewedNativeRunner $Stage.Source $Identity.Revision
-    # GitHub timestamps have second precision; the fresh random stage binds this request.
-    $created = [DateTimeOffset]::FromUnixTimeSeconds([DateTimeOffset]::UtcNow.ToUnixTimeSeconds())
-    $json = Get-NativeApprovalSpecification $Stage $Identity $Commands | ConvertTo-Json -Depth 10 -Compress
-    $hash = Get-NativeSpecificationHash $json
-    Write-Host "EXACT ONE-RUN SPECIFICATION (review all fields):`n$json"
-    Write-Host "Within ten minutes, the repository owner must post a NEW GitHub issue/PR comment in this repository containing exactly:`nI authorize one TLWH native run: $hash"
-    $url = Read-Host 'Paste that owner comment URL (blank denies; no engine has run)'
-    if ($url -cnotmatch '^https://github.com/interneth3ro/the-long-way-home/(?:issues|pull)/[1-9][0-9]*#issuecomment-([1-9][0-9]*)$') {
-        throw 'Missing or malformed owner approval URL.'
-    }
-    $approval = [pscustomobject]@{ Hash = $hash; Created = $created; Expires = $created.AddMinutes(10);
-        CommentId = $Matches[1]; Url = $url; Record = ''; RecordHash = '' }
-    Assert-NativeOwnerApproval $approval $Stage $Identity $Commands
-    # Sibling of the new external stage, not a staged project input or a success log.
-    $approval.Record = $Stage.Directory + '.approval.json'
-    Assert-PlainPath $approval.Record
-    $bytes = [Text.Encoding]::UTF8.GetBytes((@{ Specification = ($json | ConvertFrom-Json);
-        OwnerComment = $url; SpecificationSha256 = $hash; Expires = $approval.Expires.ToString('O') } | ConvertTo-Json -Depth 12))
-    $stream = [IO.File]::Open($approval.Record, [IO.FileMode]::CreateNew, [IO.FileAccess]::Write, [IO.FileShare]::None)
-    try { $stream.Write($bytes, 0, $bytes.Length) } finally { $stream.Dispose() }
-    $approval.RecordHash = (Get-FileHash -LiteralPath $approval.Record).Hash
-    Write-Host "One-run owner authorization recorded: $($approval.Record)"
-    return $approval
 }
 
 function Get-NativeOutcome {
@@ -568,7 +491,7 @@ function Invoke-LocalTests {
     param([string]$Root, [string]$RequestedMode, [string]$Engine, [string]$EngineHash)
     $static = 'NOT RUN'; $plan = 'NOT RUN'; $exitCode = 1
     try {
-        if ($RequestedMode -eq 'Native') { Assert-NativeApprovalConsole }
+        if ($RequestedMode -eq 'Native') { Assert-NativeExecutionAuthorization }
         if (-not $IsWindows) { throw 'This entry point supports Windows PowerShell 7 only.' }
         Assert-PlainPath $Root
         $git = @(Get-Command git -CommandType Application -ErrorAction Stop)[0].Source

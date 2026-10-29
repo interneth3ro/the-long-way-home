@@ -48,10 +48,10 @@ function Invoke-DispatchFixture([object[]]$Results, [string]$Mutation = '') {
     $calls = [Collections.Generic.List[object]]::new()
     $state = @{ IdentityReads = 0; Stage = $null; ApprovalChecks = 0 }
     $stageFunction = (Get-Command New-InputStage).ScriptBlock
-    function Request-NativeOwnerApproval { return [pscustomobject]@{ Expires = [DateTimeOffset]::UtcNow.AddMinutes(10) } }
-    function Assert-NativeOwnerApproval {
+    function Assert-ReviewedNativeRunner { }
+    function Assert-NativeExecutionAuthorization {
         $state.ApprovalChecks++
-        if ($Mutation -eq 'revoked' -and $state.ApprovalChecks -eq 2) { throw 'Synthetic revoked owner approval' }
+        if ($Mutation -eq 'revoked' -and $state.ApprovalChecks -eq 3) { throw 'Synthetic revoked owner approval' }
     }
     function Get-NativeSourceIdentity {
         param($Source)
@@ -274,7 +274,7 @@ try {
         $r = Invoke-DispatchFixture @((NativeResult), (NativeResult $completion)) cache
         Require ($r.Summary.Import -eq 'PASS' -and $r.Summary.Native -eq 'PASS') 'Dispatch failed'
         Require ($r.Calls.Count -eq 2 -and $r.Reads -eq 3) 'Missing per-phase validation or wrong launch count'
-        Require ($r.ApprovalChecks -eq 2) 'Missing per-launch approval validation'
+        Require ($r.ApprovalChecks -eq 3) 'Missing per-launch approval validation'
         Require ($r.Calls[0].Seconds -eq 60 -and $r.Calls[1].Seconds -eq 30) 'Wrong launch deadlines'
         Require (($r.Calls[0].Arguments -join '|') -ceq "--headless|--editor|--path|$($r.Summary.StageDirectory)|--quit") 'Wrong import'
         Require (($r.Calls[1].Arguments -join '|') -ceq "--headless|--path|$($r.Summary.StageDirectory)|--script|res://tests/fabricator_recipe_switching_test.gd") 'Wrong script'
@@ -372,122 +372,64 @@ try {
         $null = New-Item -ItemType Directory -Path "$($nativeStage.Directory)/.godot"
         Reject { New-NativeCommandPlan $inertEngine $inertHash $nativeStage } 'Unexpected staged directory'
     }
-    # Real approval helpers, mocked read-only API and console. No GitHub writes.
-    $approvalStage = New-InputStage $source $fixture $tracked
-    $approvalIdentity = [pscustomobject]@{ Revision = ('a' * 40); Working = ' M project.godot'; Index = 'index'; Tracked = $tracked }
-    $approvalCommands = @(New-NativeCommandPlan $inertEngine $inertHash $approvalStage)
-    $approvalJson = Get-NativeApprovalSpecification $approvalStage $approvalIdentity $approvalCommands | ConvertTo-Json -Depth 10 -Compress
-    $approvalHash = Get-NativeSpecificationHash $approvalJson
-    function Invoke-ApprovalFixture([string]$Scenario = '', [switch]$Request) {
-        $approval = [pscustomobject]@{ Hash = $approvalHash; Created = [DateTimeOffset]::UtcNow.AddSeconds(-1);
-            Expires = [DateTimeOffset]::UtcNow.AddMinutes(10); CommentId = '123';
-            Url = 'https://github.com/interneth3ro/the-long-way-home/pull/71#issuecomment-123'; Record = ''; RecordHash = '' }
-        $state = @{ ApiCalls = 0 }
-        function Assert-NativeApprovalConsole { }
-        function Assert-ReviewedNativeRunner { if ($Scenario -eq 'unmerged') { throw 'Unmerged runner' } }
-        function Read-Host { if ($Scenario -eq 'missing') { return '' }; return $approval.Url }
-        function Get-NativeApprovalApi {
-            param($Endpoint)
-            $state.ApiCalls++
-            if ($Scenario -eq 'offline') { throw 'API unavailable' }
-            [pscustomobject]@{ user = [pscustomobject]@{
-                login = $(if ($Scenario -eq 'wrong-owner') { 'someone-else' } else { 'interneth3ro' }); type = 'User' };
-                body = $(if ($Scenario -eq 'denied') { 'Denied' } else { "I authorize one TLWH native run: $approvalHash" });
-                created_at = $(if ($Scenario -eq 'old-comment') { '2020-01-01T00:00:00Z' } else { [DateTimeOffset]::UtcNow.ToString('O') });
-                html_url = $(if ($Scenario -eq 'url') { 'https://example.com' } else { $approval.Url });
-                issue_url = $(if ($Scenario -eq 'repository') { 'https://api.github.com/repos/other/repo/issues/1' } else { 'https://api.github.com/repos/interneth3ro/the-long-way-home/issues/71' }) }
+    Check 'inactive authorization gate rejects direct dispatch without engine execution' {
+        $stage = New-InputStage $source $fixture $tracked
+        function Get-NativeSourceIdentity {
+            [pscustomobject]@{ Revision = ('a' * 40); Working = ''; Index = 'fixture'; Tracked = $tracked }
         }
-        if ($Scenario -eq 'stale') { $approval.Expires = [DateTimeOffset]::UtcNow.AddSeconds(-1) }
-        if ($Scenario -eq 'hash') { $approval.Hash = '0' * 64 }
-        if ($Request) { return Request-NativeOwnerApproval $approvalStage $approvalIdentity $approvalCommands }
-        Assert-NativeOwnerApproval $approval $approvalStage $approvalIdentity $approvalCommands
-        return $state.ApiCalls
-    }
-    Check 'exact fresh owner approval accepted using read-only API mock' {
-        Require ((Invoke-ApprovalFixture) -eq 1) 'Approval not checked remotely'
-    }
-    Check 'reviewed runner requires live main and unchanged control files' {
-        $review = @{ Main = ('a' * 40); Dirty = $false }
-        function Get-NativeApprovalApi { return [pscustomobject]@{ sha = $review.Main } }
+        function New-InputStage { return $stage }
         function Invoke-BoundedProcess {
             param($Executable, $Arguments)
-            Require (($Arguments -join '|') -ceq 'diff|--quiet|HEAD|--|tools|AGENTS.md|tests/static_*test.py') 'Reviewed-file check changed'
-            NativeResult '' '' $(if ($review.Dirty) { 'NONZERO_EXIT' } else { 'PASS' }) $(if ($review.Dirty) { 1 } else { 0 })
-        }
-        $root = Split-Path $PSScriptRoot -Parent
-        Assert-ReviewedNativeRunner $root ('a' * 40)
-        $review.Main = 'b' * 40
-        Reject { Assert-ReviewedNativeRunner $root ('a' * 40) } 'live merged'
-        $review.Main = 'a' * 40; $review.Dirty = $true
-        Reject { Assert-ReviewedNativeRunner $root ('a' * 40) } 'working changes'
-        $review.Dirty = $false
-        Reject { Assert-ReviewedNativeRunner $source ('a' * 40) } 'reviewed checkout runner'
-    }
-    Check 'approval API uses only bounded read-only GitHub command and fails closed' {
-        $api = @{ Bad = $false }
-        function Get-Command {
-            param($Name, $CommandType, $ErrorAction)
-            Require ($Name -ceq 'gh') 'Unexpected API prerequisite'
-            [pscustomobject]@{ Source = $inertEngine }
-        }
-        function Invoke-BoundedProcess {
-            param($Executable, $Arguments, $Directory, $ExcerptBytes)
-            Require (($Arguments -join '|') -ceq 'api|--hostname|github.com|repos/interneth3ro/the-long-way-home/commits/main') 'Unexpected API write/host/endpoint'
-            Require ($ExcerptBytes -eq 1048576) 'Unbounded API capture'
-            NativeResult '{"sha":"synthetic"}' '' $(if ($api.Bad) { 'TIMEOUT' } else { 'PASS' }) 0 (-not $api.Bad)
-        }
-        Require ((Get-NativeApprovalApi 'repos/interneth3ro/the-long-way-home/commits/main').sha -ceq 'synthetic') 'API response lost'
-        $api.Bad = $true
-        Reject { Get-NativeApprovalApi 'repos/interneth3ro/the-long-way-home/commits/main' } 'API unavailable'
-    }
-    foreach ($scenario in @('stale', 'hash', 'wrong-owner', 'denied', 'old-comment', 'url', 'repository', 'offline', 'unmerged')) {
-        Check "approval rejects $scenario" { Reject { Invoke-ApprovalFixture $scenario } '.' }
-    }
-    Check 'missing approval rejected without an execution path' {
-        Reject { Invoke-ApprovalFixture missing -Request } 'Missing|malformed'
-        Reject { Assert-NativeOwnerApproval $null $approvalStage $approvalIdentity $approvalCommands } 'Missing'
-    }
-    Check 'approval specification binds commands limits stage source and input bytes' {
-        $original = $approvalCommands[0].Seconds
-        try {
-            $approvalCommands[0].Seconds = 61
-            Reject { Invoke-ApprovalFixture } 'mismatch'
-        } finally { $approvalCommands[0].Seconds = $original }
-        $other = New-InputStage $source $fixture $tracked
-        $json = Get-NativeApprovalSpecification $other $approvalIdentity @(New-NativeCommandPlan $inertEngine $inertHash $other) | ConvertTo-Json -Depth 10 -Compress
-        Require ((Get-NativeSpecificationHash $json) -cne $approvalHash) 'Authorization replayable in another stage'
-    }
-    Check 'approval recorded exclusively, mutation and overwrite denied' {
-        $record = Invoke-ApprovalFixture -Request
-        Require ((Test-Path -LiteralPath $record.Record) -and $record.RecordHash) 'Authorization not recorded'
-        Reject { Invoke-ApprovalFixture -Request } 'exist'
-        [IO.File]::WriteAllText($record.Record, 'modified local record')
-        function Assert-ReviewedNativeRunner { }
-        function Get-NativeApprovalApi {
-            [pscustomobject]@{ user = [pscustomobject]@{ login = 'interneth3ro'; type = 'User' };
-                body = "I authorize one TLWH native run: $approvalHash"; created_at = [DateTimeOffset]::UtcNow.ToString('O');
-                html_url = $record.Url; issue_url = 'https://api.github.com/repos/interneth3ro/the-long-way-home/issues/71' }
-        }
-        Reject { Assert-NativeOwnerApproval $record $approvalStage $approvalIdentity $approvalCommands } 'record changed'
-    }
-    Check 'dispatcher denied approval never invokes engine and reports infrastructure separately' {
-        function Request-NativeOwnerApproval { throw 'Synthetic missing approval' }
-        function Get-NativeSourceIdentity { return $approvalIdentity }
-        function New-InputStage { return $approvalStage }
-        function Invoke-BoundedProcess {
-            param($Executable, $Arguments)
-            Require ($Arguments[0] -eq 'check-ignore') 'Denied approval reached engine'
+            Require ($Arguments[0] -eq 'check-ignore') 'Inactive gate reached engine'
             NativeResult
         }
         function Save-NativeFailureEvidence { return 'synthetic evidence destination' }
         $r = Invoke-RestrictedNativeDispatch $source $inertEngine $inertHash PASS
         Require ($r.Commands.Count -eq 0 -and $r.Import -eq 'NOT RUN' -and $r.Native -eq 'NOT RUN' -and
-            $r.Authorization -eq 'FAIL' -and $r.Infrastructure -eq 'FAIL') 'Denied gate reached engine'
+            $r.Authorization -eq 'FAIL' -and $r.Infrastructure -eq 'FAIL') 'Inactive dispatch gate failed'
     }
+    Check 'first-run approval and routine policy remain separate inactive stages' {
+        Reject { Assert-NativeExecutionAuthorization } 'exact first run.*successful first-run validation.*separately owner-approved repository execution policy'
+        foreach ($attempt in @(
+            { Assert-NativeExecutionAuthorization -FirstRunApproved },
+            { Assert-NativeExecutionAuthorization -Routine },
+            { Assert-NativeExecutionAuthorization -ApprovalFile 'anything.json' })) {
+            Reject $attempt 'parameter'
+        }
+    }
+    Check 'runner has no online approval, expiration or approval-file input' {
+        $text = Get-Content -Raw -LiteralPath "$PSScriptRoot/../tools/run-local-tests.ps1"
+        Require ($text -notmatch 'Get-NativeApprovalApi|Get-Command gh|issuecomment|Read-Host|DateTimeOffset|approval\.json') 'Removed authorization machinery remains'
+        $tokens = $null; $errors = $null
+        $ast = [Management.Automation.Language.Parser]::ParseInput($text, [ref]$tokens, [ref]$errors)
+        Require ($errors.Count -eq 0) 'Runner parse failed'
+        Require (($ast.ParamBlock.Parameters.Name.VariablePath.UserPath -join ',') -ceq 'Mode,GodotPath,GodotSha256') 'Unexpected activation parameter'
+    }
+    Check 'offline reviewed-runner checks retain source and control-file protection' {
+        $review = @{ ChangedRevision = $false; Dirty = $false }
+        function Invoke-BoundedProcess {
+            param($Executable, $Arguments)
+            if ($Arguments[0] -ceq 'rev-parse') {
+                return NativeResult $(if ($review.ChangedRevision) { 'b' * 40 } else { 'a' * 40 })
+            }
+            Require (($Arguments -join '|') -ceq "diff|--quiet|$('a' * 40)|--|tools|AGENTS.md|tests/static_*test.py") 'Reviewed controls changed'
+            NativeResult '' '' $(if ($review.Dirty) { 'NONZERO_EXIT' } else { 'PASS' }) $(if ($review.Dirty) { 1 } else { 0 })
+        }
+        $root = Split-Path $PSScriptRoot -Parent
+        Assert-ReviewedNativeRunner $root ('a' * 40)
+        $review.ChangedRevision = $true
+        Reject { Assert-ReviewedNativeRunner $root ('a' * 40) } 'revision changed'
+        $review.ChangedRevision = $false; $review.Dirty = $true
+        Reject { Assert-ReviewedNativeRunner $root ('a' * 40) } 'working changes'
+        $review.Dirty = $false
+        Reject { Assert-ReviewedNativeRunner $source ('a' * 40) } 'reviewed checkout runner'
+    }
+    $approvalIdentity = [pscustomobject]@{ Revision = ('a' * 40); Working = ''; Index = 'fixture'; Tracked = $tracked }
+    $approvalStage = New-InputStage $source $fixture $tracked
     Check 'source changes since static-suite start deny even before approval' {
         function Get-NativeSourceIdentity { return $approvalIdentity }
         function New-InputStage { return $approvalStage }
-        function Request-NativeOwnerApproval { throw 'Changed source reached approval' }
+        function Assert-NativeExecutionAuthorization { throw 'Changed source reached approval' }
         function Save-NativeFailureEvidence { return 'synthetic evidence destination' }
         $oldIdentity = [pscustomobject]@{ Revision = ('b' * 40); Working = ''; Index = 'old' }
         $r = Invoke-RestrictedNativeDispatch $source $inertEngine $inertHash PASS ([pscustomobject]@{ Identity = $oldIdentity; Inputs = @() })
@@ -496,10 +438,9 @@ try {
         Require ($r.Commands.Count -eq 0 -and $r.Diagnostic -match 'Working inputs changed since static-suite') 'Static working-byte mutation accepted'
     }
     Check 'public Native static failure prevents dispatch and approval' {
-        function Assert-NativeApprovalConsole { }
+        function Assert-NativeExecutionAuthorization { }
         function Assert-PinnedEngine { }
         function Get-NativeSourceIdentity { return $approvalIdentity }
-        function Request-NativeOwnerApproval { throw 'Failed static suite reached owner approval' }
         function Invoke-RestrictedNativeDispatch { throw 'Failed static suite reached dispatch' }
         function Invoke-BoundedProcess {
             param($Executable, $Arguments, $Directory)
@@ -511,7 +452,7 @@ try {
     }
     Check 'public Native passes actual static PASS and captured source snapshot to dispatch' {
         $state = @{ Dispatched = $false }
-        function Assert-NativeApprovalConsole { }
+        function Assert-NativeExecutionAuthorization { }
         function Assert-PinnedEngine { }
         function Get-NativeSourceIdentity { return $approvalIdentity }
         function Invoke-BoundedProcess {
@@ -529,7 +470,6 @@ try {
     }
     Check 'public Native mode cannot reach prerequisites, staging or execution' {
         $gateCalls = [Collections.Generic.List[string]]::new()
-        function Assert-NativeApprovalConsole { throw 'Synthetic noninteractive console denied' }
         function Assert-PlainPath { $gateCalls.Add('prerequisite'); throw 'Gate reached prerequisites' }
         function New-InputStage { $gateCalls.Add('stage'); throw 'Gate created a stage' }
         function Invoke-BoundedProcess { $gateCalls.Add('process'); throw 'Gate started a process' }

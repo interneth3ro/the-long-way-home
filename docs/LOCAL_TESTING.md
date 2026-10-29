@@ -12,9 +12,10 @@ The first command runs the unchanged static suite:
 Its historical Git baselines must be available. Exit 0 means requested operations
 passed; exit 1 means failure. Static success is not engine or runtime validation.
 The fixture suite uses inert temporary files, named helper mocks and harmless
-PowerShell children only. It neither executes Godot nor posts GitHub comments.
-Git, Python and (for Native only) authenticated GitHub CLI `gh` resolve to the first
-application on PATH; use trusted local installations. No engine discovery occurs.
+PowerShell children only. It never executes Godot.
+Git and Python resolve to the first application on PATH; use trusted local
+installations. The runner has no GitHub API or GitHub CLI dependency and performs
+no engine discovery.
 
 ## Native planning only
 
@@ -53,57 +54,48 @@ Only the fixture's freshly created synthetic tree is removed by the fixture.
 RUN during this implementation.** Merge and the conditional policy amendment in
 [AGENTS.md](../AGENTS.md#godot-execution-safety) do not authorize execution.
 
-After review and merge, the owner may start the following command in their own
-interactive console to prepare a request for a separate exact authorization:
+The workflow has two distinct owner decisions:
 
-```powershell
-pwsh -NoProfile -File tools/run-local-tests.ps1 -Mode Native `
-  -GodotPath 'C:\absolute\reviewed\Godot.exe' -GodotSha256 '<64 hexadecimal SHA-256 characters>'
-```
+1. **First-run authorization:** after runner review, present the exact reviewed
+   runner commit, absolute executable path and SHA-256, source revision and
+   working status/input hashes, newly created external stage, both complete
+   command arrays, deadlines/output limits, evidence destination and stop
+   conditions. NativePlan supplies nonexecuting stage/input/command data; record
+   its provenance for owner review. Obtain separate explicit owner authorization
+   for the first real run in the owner conversation/review record. No GitHub
+   comment, expiring token or network approval service is required. This PR and
+   its merge do not supply that authorization. A later reviewed activation change
+   must bind the gate to that exact approved first-run scope before execution.
+2. **Routine authorization:** only after the first real import and recipe test
+   have both passed and their results have been reviewed may the owner separately
+   approve a narrowly scoped repository execution policy. Record the accepted
+   first-run evidence and explicit routine authorization in that later policy.
+   Define allowed runner/executable identities, commands/limits, source and working
+   input variation, local invocation scope, evidence handling, revocation and
+   reapproval requirements. That policy may permit repeated runs within its scope
+   without asking for a new GitHub comment each time. Changes outside its scope
+   require renewed owner review. Successful first-run validation must never
+   automatically activate routine or unattended testing.
 
-This is not permission for an agent to start Native now. It does not accept scripts,
-scenes, extra engine arguments, test lists, timeouts, approval files, callbacks,
-environment overrides or an approval switch. Redirected console input/output is
-rejected before prerequisites. Dot-sourcing internal helpers is for non-Godot
-fixtures only and never supplies owner approval.
+**Current implementation:** `Assert-NativeExecutionAuthorization` fails closed
+unconditionally. Public `-Mode Native` exits 1 before prerequisites, staging or
+process calls, regardless of console type, flags, environment or local files.
+The internal dispatcher checks the same gate before its sequence and each
+prospective launch. It remains available for non-Godot scoped mocks only.
+There is deliberately no approval-record loader, online identity check,
+expiration timer, interactive authorization prompt or self-activation switch.
+Neither stage can be enabled by editing prose or by merging this PR. A separate
+owner-authorized activation change is still needed; first-run and routine
+permissions have not been granted by this workflow simplification request.
 
-The first-run process is:
-
-1. Require actual static-suite PASS (normal exit, zero code, certain termination).
-   Capture source identity and approved input hashes before static checks and
-   compare them with the subsequent stage. Any observed change stops the run.
-2. Create a fresh external copy. Check the exact source HEAD against live GitHub
-   `main` through the read-only authenticated CLI. Refuse working/staged changes
-   to tools, AGENTS.md or the Python static tests. The runner must reside at the
-   checkout's reviewed path. Gameplay working changes remain visible in the exact
-   inventory and must receive separate approval with that specification.
-3. Display the entire canonical JSON specification: merged runner/source commit,
-   source path, full working status/index, all input hashes, fresh stage, absolute
-   executable and SHA-256, both command arrays and deadlines/output limits,
-   ignored evidence destination, diagnostic/termination limits, no retries and
-   every stop condition. Review all fields before authorizing.
-4. Within ten minutes of that display, the owner `interneth3ro` must post a **new**
-   issue/PR conversation comment in `interneth3ro/the-long-way-home`, containing
-   exactly the displayed text `I authorize one TLWH native run: <specification SHA-256>`.
-   This is the separate explicit owner authorization, not a PR merge/review.
-   Agents must not create this authorization comment for the owner. Paste its
-   full `https://github.com/interneth3ro/the-long-way-home/pull/<number>#issuecomment-<id>`
-   (or `/issues/`) URL at the runner prompt. Blank input denies.
-5. The runner verifies the comment via GitHub's read-only API: exact repository,
-   URL, owner login and User type, exact body and fresh creation time. Missing,
-   denied, malformed, stale, non-owner, mismatched or unavailable records fail
-   closed. There is no local-record fallback and no secret approval token.
-6. Exclusively create `<stage>.approval.json` beside the external stage, recording
-   the specification, hash, owner-comment URL and expiration. Existing files are
-   never overwritten. This is an authorization record, not a permanent success
-   log. Each new invocation creates another stage/hash and needs a new comment;
-   the runner has no resume, record-loading, replay or automatic retry route.
-7. Before **each** engine call, revalidate live merged revision, approval comment,
-   expiry, unchanged local record, source revision/status/index, approved inventory,
-   source/stage hashes and no links/unexpected files. Rehash the absolute pinned
-   executable last, immediately before dispatch. Editing/deleting the comment
-   revokes subsequent phases. Expiration is ten minutes from display, including
-   review time; an already-started bounded process may finish after expiry.
+The dormant static-to-dispatch wiring still requires actual Python static-suite
+PASS (normal exit, zero exit code and certain termination). It captures source
+identity and input hashes before the suite and compares them with the external
+stage. Before each prospective engine call it rechecks local reviewed-runner identity, rejects
+working/staged runner, policy or Python static-suite changes, and checks source
+revision, working status/index, approved inventory and source/stage hashes, links and
+unexpected files; the pinned absolute executable is rehashed last. These checks
+remain mandatory in any later activation change, including routine use.
 
 Only these two sequential argument arrays exist:
 
@@ -115,7 +107,7 @@ Only these two sequential argument arrays exist:
 The dispatcher accepts no arbitrary executor or alternate launch route. It stops
 without retries on engine/script/parse errors (including zero-exit errors),
 assertion failure, absent/malformed/duplicate completion, abnormal exit, timeout,
-output overflow, uncertain termination, or identity/input/approval changes.
+output overflow, uncertain termination, or identity/input changes or withdrawn authorization.
 Native PASS requires exactly one completion record, as the last nonempty stdout
 line: `Fabricator recipe switching regression failures: 0`. Import requires no
 completion record. Only a generated `.godot/` tree is allowed after import, with
@@ -137,10 +129,12 @@ never overwritten or deleted. Follow the [preservation policy](../AGENTS.md).
 
 ## Validation and remaining limits
 
-Synthetic tests cover fixed arrays/deadlines/byte limits, static gating, approval
-denial/expiry/owner/repository/hash/URL mismatches, offline API, exclusive records,
-record mutation, stage replay rejection, sequential failure stops, source/index/
-stage/executable mutation, completion classification, and bounded unique evidence.
+Synthetic tests cover fixed arrays/deadlines/byte limits, actual static-result
+wiring, the inactive first-run/routine gate, rejection of invented approval
+switches, absence of online approval machinery, sequential failure stops,
+authorization withdrawal, source/index/stage/executable mutation, completion
+classification and bounded unique evidence. Public-gate spies require zero
+prerequisite, staging or process calls even with an environment override.
 Only mocks establish the prospective native behavior. Python assertions and
 GDScript assertions are unchanged; report Python and PowerShell fixture counts
 separately from unexecuted engine tests.
@@ -151,8 +145,10 @@ buffer per stream beyond the ceiling. Timeout/overflow requests process-tree
 termination with at most a two-second wait, always reporting uncertainty. Normal
 exit plus EOF certifies only observed process/pipes, not escaped descendants.
 A stage is not a security sandbox; host-wide freeze recovery is not guaranteed.
-GitHub author identity relies on the owner's account and trusted CLI/API; local
-path/hash checks do not defend against hostile concurrent filesystem changes.
+Local path/hash checks do not defend against hostile concurrent filesystem
+changes. Future first-run activation and routine-policy enforcement remain
+unimplemented until separately authorized and reviewed; no unattended scheduling
+or automatic promotion from first-run success is present.
 
 Actual Godot import compatibility, parsing, native assertions/completion output,
 process containment, graphical behavior and host stability remain **unverified**.
