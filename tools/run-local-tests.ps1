@@ -487,6 +487,45 @@ function New-InputStage {
     [pscustomobject]@{ Directory = $stage; Source = $Source; Inputs = @($inputs) }
 }
 
+# Review data only. This object is never consumed by the authorization gate.
+# A matching scope, even after static PASS, grants no permission to execute.
+function New-FirstRunReviewScope {
+    [CmdletBinding()]
+    param([string]$Engine, [string]$EngineHash, $Stage, $StaticSnapshot)
+    if ($null -eq $StaticSnapshot) { throw 'Static snapshot required for first-run review.' }
+    $identity = $StaticSnapshot.Identity
+    Assert-NativeDispatchInputs $Stage $identity $false
+    if ((ConvertTo-Json -InputObject @($Stage.Inputs) -Compress) -cne
+        (ConvertTo-Json -InputObject @($StaticSnapshot.Inputs) -Compress)) {
+        throw 'Working inputs changed since static-suite start.'
+    }
+    $commands = @(New-NativeCommandPlan $Engine $EngineHash $Stage)
+    $controls = @(foreach ($relative in $identity.Tracked) {
+        if ($relative -cmatch '^(tools/|AGENTS\.md$|docs/LOCAL_TESTING\.md$|tests/local_runner_fixture_test\.ps1$|tests/static_[^/]*test\.py$)') {
+            $path = Join-Path $Stage.Source $relative
+            Assert-PlainPath $path
+            [pscustomobject]@{ Path = $relative; Sha256 = (Get-FileHash -LiteralPath $path).Hash }
+        }
+    })
+    if ('tools/run-local-tests.ps1' -cnotin @($controls.Path) -or 'AGENTS.md' -cnotin @($controls.Path)) {
+        throw 'Runner/policy review identity missing.'
+    }
+    $hasher = [Security.Cryptography.SHA256]::Create()
+    try {
+        $indexHash = [BitConverter]::ToString($hasher.ComputeHash(
+            [Text.Encoding]::UTF8.GetBytes($identity.Index))).Replace('-', '')
+    } finally { $hasher.Dispose() }
+    [pscustomobject][ordered]@{
+        Purpose = 'FIRST_RUN_REVIEW_ONLY'; Authorization = 'INACTIVE'; Routine = 'INACTIVE'
+        RunnerPath = (Join-Path $Stage.Source 'tools/run-local-tests.ps1')
+        Source = $Stage.Source; Revision = $identity.Revision; Working = $identity.Working
+        IndexSha256 = $indexHash
+        Controls = $controls; Inputs = @($Stage.Inputs); StageDirectory = $Stage.Directory
+        Commands = $commands; EvidenceDirectory = (Join-Path $Stage.Source 'artifacts/logs')
+        MaxAttemptsPerPhase = 1; MaxConcurrentProcesses = 1
+    }
+}
+
 function Invoke-LocalTests {
     param([string]$Root, [string]$RequestedMode, [string]$Engine, [string]$EngineHash)
     $static = 'NOT RUN'; $plan = 'NOT RUN'; $exitCode = 1
@@ -516,7 +555,7 @@ function Invoke-LocalTests {
         if ($suite.Count -eq 0) { throw 'Static suite is missing.' }
         foreach ($file in $suite) { Assert-PlainPath $file.FullName }
         $snapshot = $null
-        if ($RequestedMode -eq 'Native') {
+        if ($RequestedMode -in @('NativePlan', 'Native')) {
             $identity = Get-NativeSourceIdentity $Root
             $inputs = @(foreach ($relative in $identity.Tracked) {
                 if (Test-ApprovedInput $relative) {
@@ -541,23 +580,12 @@ function Invoke-LocalTests {
         }
         if ($RequestedMode -eq 'NativePlan') {
             $plan = 'FAIL'
-            $listing = Invoke-BoundedProcess $git @('ls-files', '--stage', '-z') $Root -ExcerptBytes 1048576
-            if ($listing.Status -ne 'PASS') { throw 'Tracked inventory unavailable.' }
-            $tracked = foreach ($record in $listing.Excerpt.Split([char]0, [StringSplitOptions]::RemoveEmptyEntries)) {
-                if ($record -notmatch '^100644 [0-9a-f]+ 0\t(.+)$' -and
-                    $record -notmatch '^100755 [0-9a-f]+ 0\t(.+)$') {
-                    throw 'Only regular, resolved Git index files may be staged.'
-                }
-                $Matches[1]
-            }
-            $stage = New-InputStage $Root ([IO.Path]::GetTempPath()) $tracked
-            $commands = @(New-NativeCommandPlan $Engine $EngineHash $stage)
+            $stage = New-InputStage $Root ([IO.Path]::GetTempPath()) $snapshot.Identity.Tracked
+            $scope = New-FirstRunReviewScope $Engine $EngineHash $stage $snapshot
             $plan = 'PASS'
             Write-Host "Retained dry-run stage: $($stage.Directory)"
-            foreach ($entry in $stage.Inputs) { Write-Host "$($entry.Sha256) $($entry.Path)" }
-            foreach ($command in $commands) {
-                Write-Host "PROPOSED ONLY ($($command.Phase), sequential after prior PASS): executable=$($command.Executable | ConvertTo-Json -Compress) arguments=$($command.Arguments | ConvertTo-Json -Compress) ($($command.Seconds)s, $($command.MaxBytes) bytes)"
-            }
+            Write-Host 'PROPOSED ONLY: first-run review scope; not authorization or a loadable approval file.'
+            Write-Host ($scope | ConvertTo-Json -Depth 10)
         }
         $exitCode = 0
     } catch { Write-Host "FAIL (configuration/infrastructure or earlier phase): $_" }

@@ -1,4 +1,4 @@
-# Local testing runner (Stage B feature branch, pending merge)
+# Local testing runner (first-run review preparation, pending merge)
 
 Use PowerShell **7+** on Windows, Git and Python on PATH, from the actual checkout:
 
@@ -29,6 +29,14 @@ NativePlan never invokes that binary, including for version/help. Static and
 NativePlan never call the restricted native dispatcher or request authorization.
 After static PASS, planning prints executable identity, source revision/status,
 stage path, every approved input/hash, and both fixed command arrays and limits.
+The proposed first-run review scope also includes the absolute runner path,
+tracked runner/policy/static-suite/documentation/fixture control hashes, index
+digest, evidence directory, one attempt per phase and one concurrent process.
+NativePlan now captures source identity/input hashes before the static suite and
+rejects changes against that snapshot before producing the scope. Its JSON is
+console review data only: no gate reads it, and neither a matching scope nor
+synthetic PASS authorizes execution. Controls may have working changes during
+planning; their hashes describe those bytes, not an approved runner commit.
 
 Git index regular-file entries select inputs copied from **current working files**,
 including tracked staged/unstaged edits and staged additions. Untracked files are
@@ -88,6 +96,45 @@ Neither stage can be enabled by editing prose or by merging this PR. A separate
 owner-authorized activation change is still needed; first-run and routine
 permissions have not been granted by this workflow simplification request.
 
+### First-run checklist and separate activation patch
+
+This preparation patch leaves the gate unchanged. The minimal second patch must
+be reviewed and separately authorized before any engine invocation. It must:
+
+1. Bind the exact reviewed runner commit and control hashes, source checkout and
+   revision, working status/index digest and complete tracked input hashes.
+   Replan after committing/reviewing changes; a precommit plan is not that scope.
+2. Bind the owner-verified absolute **Windows Godot 4.7.2** executable path and
+   SHA-256. Both are **pending owner verification**; this implementation does not
+   search for an installation or invoke version/help to infer them.
+3. Bind one fresh, external, pristine stage and its input hashes, the two complete
+   argument arrays in the table below, 60/30-second deadlines and 1,048,576-byte
+   per-process output caps. Current Native dispatch generates another random
+   stage; the later patch must validate/use the exact reviewed stage rather than
+   silently substitute a different one. Revalidate source, stage, controls and
+   executable immediately before each launch, after actual static PASS.
+4. Bind the absolute evidence directory and failure stops below. Preserve all
+   source/stage/owner files. Stop if authorization is withdrawn or any identity
+   changes. No arbitrary flags, scripts, scenes, retries or parallel launches.
+5. Consume the single authorized attempt **before** import, including failed or
+   interrupted attempts. The later reviewed patch must specify an exclusively
+   created, fail-closed attempt receipt at an owner-approved destination and
+   refuse reuse or uncertain receipt state across process restarts. A receipt
+   records consumption; it must never serve as a loadable approval or bypass.
+   Do not implement activation as merely replacing the unconditional throw with
+   an identity comparison: that would permit repeated runs. Review any receipt
+   failure/race handling and authorization revocation before activation.
+6. Record explicit owner authorization of that exact activation revision and
+   scope in the owner conversation/review record, then permit only that one
+   attempt. Do not interpret merging either patch as execution permission.
+   Keep routine/unattended execution inactive after PASS or failure; a later
+   routine policy remains a separate decision.
+
+The current code emits review data and tests its identity checks only. No attempt
+receipt, approval loader, activation parameter or live authorization path is
+implemented here. The second patch and exact first-run owner decision remain
+outstanding; no GitHub-comment gate or online approval service is proposed.
+
 The dormant static-to-dispatch wiring still requires actual Python static-suite
 PASS (normal exit, zero exit code and certain termination). It captures source
 identity and input hashes before the suite and compares them with the external
@@ -135,6 +182,9 @@ switches, absence of online approval machinery, sequential failure stops,
 authorization withdrawal, source/index/stage/executable mutation, completion
 classification and bounded unique evidence. Public-gate spies require zero
 prerequisite, staging or process calls even with an environment override.
+First-run review fixtures additionally check scope provenance/control hashes,
+static-snapshot changes, stage/executable changes, missing control identity and
+continued denial after repeated successful planning. They use inert files only.
 Only mocks establish the prospective native behavior. Python assertions and
 GDScript assertions are unchanged; report Python and PowerShell fixture counts
 separately from unexecuted engine tests.
