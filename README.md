@@ -74,8 +74,9 @@ validation; runtime and engine verification remain unperformed.
 presenter. The right-edge panel is vertically centered between a 24-unit top
 clearance and the bottom hotbar/hint region. Its normal logical size is 640 x 510;
 width is capped at 48% of the logical HUD, and logical heights below 740 use a
-480-unit panel, tighter spacing and a smaller gauge. These are pilot choices
-pending owner graphical acceptance, not constraints for later machine panels.
+480-unit panel, tighter spacing and a smaller gauge. The owner has accepted the
+overall layout, artwork, gauge, styling and proportions. The targeted divider/grid
+refinements below remain pending graphical acceptance.
 
 The unchanged [Extractor artwork](assets/environment/maintenance_bay_v2/machines/extractor_stationary.png)
 uses aspect-preserving fit with native texture size excluded from layout minimums.
@@ -83,8 +84,12 @@ No portrait border, crop, new artwork or import-setting change is added. Output
 identity, exact stored/capacity quantities and a utilization bar sit above Collect
 All. The right column shows status, actual cycle percentage and definition-derived
 nominal rate, duration and yield (currently 60.0 ore/min, 1.0 s and 1 Ferrite Ore).
-The rate is nominal capacity, not measured throughput. Secondary details alone may
-scroll; Close and Collect All stay outside that region.
+The rate is nominal capacity, not measured throughput. A subdued header divider
+spans the inner content width. The existing column separator uses an explicitly
+vertical line style; both remain separate from the B2 frame. Production details
+use compact label/value rows with right-aligned, wrapping values and a muted rule
+beneath each row. Secondary details alone may scroll; Close and Collect All stay
+outside that region.
 
 The reusable [cycle gauge](scenes/ui/cycle_gauge.gd) draws a subtle bezel, ticks,
 track, status-colored arc and numeric percentage with CanvasItem drawing. It has
@@ -100,8 +105,9 @@ progression continues. Smelter/Fabricator content layouts, recipe configuration,
 pause leases, range guards, stored-output identity and transaction methods remain
 unchanged. The 85% default and UIScaleRoot/hybrid formula are unchanged.
 
-All 51 Python static checks pass. Engine parsing, graphical appearance and input delivery
-remain unverified. Proposed exact-file preservation allowances in
+All 51 Python static checks pass. Agent validation remains static only; engine
+parsing and input delivery are unverified by the agent. The owner reviewed the
+overall graphical appearance; the divider/grid refinement needs owner comparison. Proposed exact-file preservation allowances in
 `tests/static_v2_production_host_test.py` require owner review before Native use.
 No Native or graphical Godot execution is authorized by this pilot's test changes.
 
@@ -109,7 +115,9 @@ Owner graphical acceptance, performed separately under the execution policy:
 
 1. Inspect a deployed Extractor at 1280 x 720, 1024 x 576 and maximized, comparing
    75%, 85% and 100%. Check portrait fit, B2 edges, column proportions, gauge/text
-   clarity and Close/Collect hit targets; confirm the 85% startup default.
+   clarity and Close/Collect hit targets; confirm the 85% startup default. Check
+   the header rule, vertical column rule, aligned production values and row rules,
+   including wrapped Cycle Yield text and scrolling at compact sizes.
 2. Watch real production progress; check teal Producing, amber Output Full and
    gray Inactive where reachable. Confirm definition values and storage/bar agree.
 3. Collect empty, partial and full output; verify disabled empty state and exact

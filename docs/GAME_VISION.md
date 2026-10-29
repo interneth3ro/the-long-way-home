@@ -281,7 +281,9 @@ This is a scaling foundation, not the Machine Interface Redesign or new narrativ
 behavior.
 
 The separately approved Extractor visual pilot is implemented on
-`codex/extractor-inspection-pilot`, pending merge and owner graphical acceptance.
+`codex/extractor-inspection-pilot`, pending merge. The owner accepted its overall
+layout, artwork, gauge, styling and proportions; targeted header/column dividers
+and aligned production-detail rows remain pending graphical acceptance.
 It uses existing artwork, B1/B2 styling, two columns, actual cycle progress and
 definition-derived nominal production details. Smelter/Fabricator layouts and
 production semantics remain unchanged. Machine inspection temporarily suppresses

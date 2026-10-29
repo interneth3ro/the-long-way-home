@@ -13,7 +13,11 @@ const INACTIVE := Color(0.53, 0.59, 0.60)
 @onready var _quantity: Label = $Columns/Storage/Output/Rows/Quantity
 @onready var _capacity: ProgressBar = $Columns/Storage/Output/Rows/Capacity
 @onready var _collect: Button = $Columns/Storage/Collect
-@onready var _details: Label = $Columns/Production/DetailsScroll/Details
+@onready var _details: VBoxContainer = $Columns/Production/DetailsScroll/Details/Rows
+@onready var _rate: Label = $Columns/Production/DetailsScroll/Details/Rows/Rate/Value
+@onready var _duration: Label = $Columns/Production/DetailsScroll/Details/Rows/Duration/Value
+@onready var _yield: Label = $Columns/Production/DetailsScroll/Details/Rows/Yield/Value
+@onready var _unavailable: Label = $Columns/Production/DetailsScroll/Details/Unavailable
 var _compact: bool = false
 
 
@@ -52,9 +56,10 @@ func refresh(machine: Dictionary, status: PlanetWorldState.OperatingStatus, in_r
 	_capacity.value = 100.0 * machine.output / definition.output_capacity if definition.output_capacity > 0 else 0.0
 	_collect.disabled = not configured or machine.output <= 0 or not in_range
 	_collect.tooltip_text = "Move closer to interact" if not in_range else "Collect all stored output"
+	_details.visible = configured
+	_unavailable.visible = not configured
 	if configured:
 		var rate := 60.0 * definition.output_per_cycle / definition.cycle_seconds
-		_details.text = "NOMINAL RATE\n%.1f ore/min\nCYCLE DURATION\n%.1f s\nCYCLE YIELD\n%d %s" % [
-			rate, definition.cycle_seconds, definition.output_per_cycle, product.display_name]
-	else:
-		_details.text = "No production configured."
+		_rate.text = "%.1f ore/min" % rate
+		_duration.text = "%.1f s" % definition.cycle_seconds
+		_yield.text = "%d %s" % [definition.output_per_cycle, product.display_name]
