@@ -1,4 +1,4 @@
-# Local testing runner (dormant one-time first-run mechanism, pending merge)
+# Local testing runner (first-run provider and stable staging, pending merge)
 
 Use PowerShell **7+** on Windows, Git and Python on PATH, from the actual checkout:
 
@@ -51,8 +51,13 @@ import sidecars and bytes are preserved. Other tests, tools, docs, hidden paths,
 Filename filters cannot detect secrets embedded in approved content. Inventory
 expansion requires review.
 
-Each NativePlan creates a new `tlwh-native-plan-<GUID>` under OS temp, outside the
-checkout. Source and copy hashes are compared. Stages (including partial failures)
+Each NativePlan creates a new `tlwh-native-plan-<GUID>` under the fixed external
+parent `D:\GameDev\Godot\TLWH-NativeStages`. The owner must provision this plain,
+accessible directory before planning; the runner never creates the parent or
+falls back to OS/sandbox temp. The parent must be separate from the checkout
+(neither an ancestor nor a descendant), readable and free of reparse points.
+Creating the unique stage must succeed; source and copy hashes are compared.
+No stage is reused. Stages (including partial failures)
 remain for inspection; the runner never deletes owner files or stages. These are
 observational checks, not an atomic snapshot: avoid editing during a plan/run.
 Only the fixture's freshly created synthetic tree is removed by the fixture.
@@ -86,13 +91,14 @@ The workflow has two distinct owner decisions:
    require renewed owner review. Successful first-run validation must never
    automatically activate routine or unattended testing.
 
-**Current implementation:** `Assert-NativeExecutionAuthorization` fails closed
-unconditionally. Public `-Mode Native` exits 1 before prerequisites, staging or
-process calls, regardless of console type, flags, environment or local files.
-The internal dispatcher checks the same gate before identity reads or staging,
-before consumption and before each prospective launch. Its separate
-`Get-ApprovedFirstRunContext` provider also throws unconditionally; neither
-function accepts approval inputs. It remains available for non-Godot scoped mocks only.
+**Feature-branch implementation, pending merge:** `Get-ReviewedFirstRunApproval`
+returns null unconditionally. Consequently `Assert-NativeExecutionAuthorization`
+and `Get-ApprovedFirstRunContext` always deny real execution. Public `-Mode Native`
+exits 1 before prerequisites, staging or process calls, regardless of console type,
+flags, environment or local files. The internal dispatcher checks the same gate
+before identity reads, before consumption and before each prospective launch.
+None of these functions accepts approval inputs. Only scoped inert fixture mocks
+supply a synthetic reviewed decision/scope.
 There is deliberately no approval-record loader, online identity check,
 expiration timer, interactive authorization prompt or self-activation switch.
 Neither stage can be enabled by editing prose or by merging this PR. A separate
@@ -101,12 +107,32 @@ permissions have not been granted by this workflow simplification request.
 
 ### First-run checklist and separate activation patch
 
-This code-only feature leaves both authorization functions unconditionally inactive.
-It prepares exact scope comparison and durable attempt consumption. The smallest
-future activation change must implement the owner-reviewed scope provider and
-explicit authorization/revocation checks, then be separately reviewed. Replacing
-only the public denial cannot activate execution: the provider still refuses.
-No current invocation can supply a scope, token, callback or approval file.
+This implementation completes the provider/withdrawal logic while leaving its
+reviewed approval record empty. The provider requires `APPROVED_FIRST_RUN`, a
+Boolean false `Revoked`, an exact reviewed scope with routine permission inactive,
+absolute existing plain source/stage/evidence directories, and the fixed receipt
+path. It returns an independent scope snapshot and reconstructs the stage only
+from approved data. The gate also verifies the reviewed runner/source revision.
+Existing dispatch binding compares all control/input/index/command identities.
+
+A fixed `first-run-withdrawn` file in the approved evidence directory withdraws
+permission if present (any contents, including empty). It is never an approval
+file: absence alone cannot enable execution. The provider checks it before
+consumption, at each phase gate and again immediately before a prospective launch;
+that final check also rejects replacement of the approved scope. A reviewed
+`Revoked = true` decision also denies. Preserve withdrawal files and receipts;
+removing a withdrawal marker is not renewed owner authorization. These local
+observations cannot guarantee revocation delivery or stop an already running
+process; withdrawal prevents subsequent launches when observed.
+
+**Exact remaining activation step:** a separate owner-authorized reviewed code
+change must supply the decision and complete approved scope in
+`Get-ReviewedFirstRunApproval`. This PR deliberately does not fabricate that scope
+or infer it from local HEAD. Present the final resulting revision/control hashes
+and stage to the owner for separate execution approval; a preliminary review
+record cannot approve a changed revision. No CLI argument, environment variable,
+local approval file, test result or merge can populate the record. The fixed
+receipt/one-attempt behavior remains mandatory; routine execution remains inactive.
 
 Before that future change can run, the owner must explicitly approve:
 
@@ -124,15 +150,16 @@ Before that future change can run, the owner must explicitly approve:
    local filesystem before activation. No new receipt filename may be selected to
    bypass a consumed attempt. An existing receipt requires an explicit owner
    decision and new reviewed authorization; the runner never resets it.
-5. Explicit permission for that single attempt, with a concrete withdrawal check
-   supplied in the activation patch. This assignment, merge and fixture PASS are
-   never approval. Routine/unattended permission remains a separate later decision.
+5. Explicit permission for that single attempt, including the reviewed decision
+   and fixed withdrawal-marker path above. This assignment, merge and fixture
+   PASS are never approval. Routine/unattended permission remains a separate later
+   decision.
 
 `Assert-FirstRunBinding` rebuilds and compares the entire ordered review scope,
 including controls, input hashes, commands, stage, evidence/receipt paths and limits,
 before consumption and again before each prospective engine call. The approved
 snapshot is also compared with the pre-static snapshot. These are identity checks,
-not an authorization verifier. The future provider must bind the exact reviewed
+not an authorization verifier. The reviewed record must bind the exact reviewed
 activation revision and retain stable approved data throughout the attempt.
 
 `New-FirstRunAttemptReceipt` exclusively creates the fixed path using `CreateNew`,
@@ -202,6 +229,11 @@ prerequisite, staging or process calls even with an environment override.
 First-run review fixtures additionally check scope provenance/control hashes,
 static-snapshot changes, stage/executable changes, missing control identity and
 continued denial after repeated successful planning. They use inert files only.
+Stage fixtures verify the fixed parent selection, rejection of missing/relative/
+overlapping/linked parents, unique pristine copies and hash accessibility from a
+separate harmless PowerShell process. Provider fixtures cover denied decisions,
+revocation, independent scope snapshots, withdrawal between mocked phases and
+replacement of approved scope before a prospective launch.
 Only mocks establish the prospective native behavior. Python assertions and
 GDScript assertions are unchanged; report Python and PowerShell fixture counts
 separately from unexecuted engine tests.
@@ -213,8 +245,8 @@ termination with at most a two-second wait, always reporting uncertainty. Normal
 exit plus EOF certifies only observed process/pipes, not escaped descendants.
 A stage is not a security sandbox; host-wide freeze recovery is not guaranteed.
 Local path/hash checks do not defend against hostile concurrent filesystem
-changes. Live first-run authorization and routine-policy enforcement remain
-unimplemented until separately authorized and reviewed; no unattended scheduling
+changes. The reviewed first-run approval record and routine-policy enforcement remain
+inactive until separately authorized and reviewed; no unattended scheduling
 or automatic promotion from first-run success is present.
 
 Actual Godot import compatibility, parsing, native assertions/completion output,

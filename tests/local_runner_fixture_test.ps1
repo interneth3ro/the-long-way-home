@@ -52,8 +52,11 @@ function Invoke-DispatchFixture([object[]]$Results, [string]$Mutation = '') {
     $calls = [Collections.Generic.List[object]]::new()
     $state = @{ IdentityReads = 0; Stage = $null; ApprovalChecks = 0 }
     $stageFunction = (Get-Command New-InputStage).ScriptBlock
+    $authorizationFunction = (Get-Command Assert-NativeExecutionAuthorization).ScriptBlock
+    $contextFunction = (Get-Command Get-ApprovedFirstRunContext).ScriptBlock
     function Assert-ReviewedNativeRunner { }
     function Assert-NativeExecutionAuthorization {
+        if ($Mutation -in @('withdrawal-record', 'scope-record')) { & $authorizationFunction; return }
         $state.ApprovalChecks++
         if ($Mutation -eq 'revoked' -and $state.ApprovalChecks -eq 4) { throw 'Synthetic revoked owner approval' }
     }
@@ -82,6 +85,8 @@ function Invoke-DispatchFixture([object[]]$Results, [string]$Mutation = '') {
                 stage { [IO.File]::WriteAllText("$Directory/project.godot", 'tampered') }
                 extra { [IO.File]::WriteAllText("$Directory/unexpected.txt", 'tampered') }
                 engine { [IO.File]::WriteAllText($inertEngine, 'tampered') }
+                withdrawal-record { [IO.File]::WriteAllText((Join-Path $receiptDirectory 'first-run-withdrawn'), 'owner withdrew synthetic approval') }
+                scope-record { $reviewScope.Working = 'changed reviewed scope' }
             }
         }
         if ($calls.Count -gt $Results.Count) { throw 'Unexpected retry' }
@@ -96,7 +101,13 @@ function Invoke-DispatchFixture([object[]]$Results, [string]$Mutation = '') {
     $null = New-Item -ItemType Directory -Path $receiptDirectory
     $reviewScope.ReceiptPath = Join-Path $receiptDirectory 'first-run-attempt.receipt'
     $reviewScope.EvidenceDirectory = $receiptDirectory
-    function Get-ApprovedFirstRunContext { [pscustomobject]@{ Stage = $preparedStage; Scope = $reviewScope } }
+    function Get-ReviewedFirstRunApproval {
+        [pscustomobject]@{ Decision = 'APPROVED_FIRST_RUN'; Revoked = $false; Scope = $reviewScope }
+    }
+    function Get-ApprovedFirstRunContext {
+        if ($Mutation -in @('withdrawal-record', 'scope-record')) { & $contextFunction; return }
+        [pscustomobject]@{ Stage = $preparedStage; Scope = $reviewScope }
+    }
     # Bind using the actual review builder; only redirect fixture evidence paths.
     $scopeBuilder = (Get-Command New-FirstRunReviewScope).ScriptBlock
     function New-FirstRunReviewScope {
@@ -186,6 +197,7 @@ try {
     }
     Check 'full synthetic NativePlan succeeds without invoking pinned binary' {
         $stageFunction = (Get-Command New-InputStage).ScriptBlock
+        function Get-NativeStageParent { $fixture }
         function New-InputStage {
             param($Source, $Parent, $Tracked)
             & $stageFunction $Source $fixture $Tracked
@@ -596,6 +608,78 @@ try {
             [IO.File]::WriteAllText($control, 'changed control')
             Reject { Assert-FirstRunBinding $context $inertEngine $inertHash $stage $snapshot } 'scope changed'
         } finally { [IO.File]::WriteAllBytes($control, $original) }
+    }
+    Check 'stable stage parent has no temp or environment selection' {
+        $selection = @{ Source = ''; Parent = '' }
+        function Assert-ExternalStageParent {
+            param($Source, $Parent)
+            $selection.Source = $Source; $selection.Parent = $Parent
+        }
+        Require ((Get-NativeStageParent $source) -ceq 'D:\GameDev\Godot\TLWH-NativeStages') 'Unstable parent'
+        Require ($selection.Source -ceq $source -and $selection.Parent -ceq 'D:\GameDev\Godot\TLWH-NativeStages') 'Parent validation bypassed'
+    }
+    Check 'external stage parent rejects missing relative overlapping and linked paths' {
+        $stageParent = Join-Path $fixture 'external-stages'
+        $null = New-Item -ItemType Directory -Path $stageParent
+        Assert-ExternalStageParent $source $stageParent
+        Reject { Assert-ExternalStageParent $source 'relative' } 'absolute'
+        Reject { Assert-ExternalStageParent $source (Join-Path $fixture 'absent') } 'unavailable'
+        foreach ($overlap in @($source, (Join-Path $source 'nested'), $fixture)) {
+            Reject { Assert-ExternalStageParent $source $overlap } 'separate'
+        }
+        function Get-Item {
+            param([switch]$Force, [string]$LiteralPath)
+            if ($LiteralPath -ceq $stageParent) {
+                return [pscustomobject]@{ Attributes = [IO.FileAttributes]::ReparsePoint }
+            }
+            Microsoft.PowerShell.Management\Get-Item -Force:$Force -LiteralPath $LiteralPath
+        }
+        Reject { Assert-ExternalStageParent $source $stageParent } 'Reparse point'
+    }
+    Check 'unique pristine external copies are accessible in a separate harmless process' {
+        $stageParent = Join-Path $fixture 'accessible-stages'
+        $null = New-Item -ItemType Directory -Path $stageParent
+        Assert-ExternalStageParent $source $stageParent
+        $first = New-InputStage $source $stageParent $tracked
+        $second = New-InputStage $source $stageParent $tracked
+        Require ($first.Directory -cne $second.Directory) 'Old stage reused'
+        $stageJson = (ConvertTo-Json $first -Depth 5 -Compress).Replace("'", "''")
+        $code = "`$stage = ConvertFrom-Json '$stageJson'; foreach (`$entry in `$stage.Inputs) { if ((Get-FileHash -LiteralPath (Join-Path `$stage.Directory `$entry.Path)).Hash -cne `$entry.Sha256) { exit 7 } }; if (Test-Path -LiteralPath (Join-Path `$stage.Directory '.godot')) { exit 8 }"
+        $encoded = [Convert]::ToBase64String([Text.Encoding]::Unicode.GetBytes($code))
+        $r = Invoke-BoundedProcess $hostExe @('-NoProfile', '-EncodedCommand', $encoded) $fixture -Seconds 15
+        Require ($r.Status -eq 'PASS' -and $r.ExitCode -eq 0 -and $r.TerminationCertain) 'Stage inaccessible or changed'
+    }
+    Check 'reviewed provider requires exact decision and returns independent scope snapshots' {
+        $stage = New-InputStage $source $fixture $tracked
+        $identity = [pscustomobject]@{ Revision = ('a' * 40); Working = ''; Index = 'fixture'; Tracked = $tracked }
+        function Get-NativeSourceIdentity { $identity }
+        $scope = New-FirstRunReviewScope $inertEngine $inertHash $stage ([pscustomobject]@{ Identity = $identity; Inputs = $stage.Inputs })
+        $record = [pscustomobject]@{ Decision = 'APPROVED_FIRST_RUN'; Revoked = $false; Scope = $scope }
+        function Get-ReviewedFirstRunApproval { $record }
+        $context = Get-ApprovedFirstRunContext
+        Require ($context.Stage.Directory -ceq $stage.Directory -and $context.Stage.Inputs.Count -eq 5) 'Approved stage substituted'
+        $context.Scope.Revision = 'changed'
+        Require ($record.Scope.Revision -ceq ('a' * 40)) 'Approved scope mutated'
+        $record.Decision = 'PENDING'
+        Reject { Get-ApprovedFirstRunContext } 'absent or withdrawn'
+        $record.Decision = 'APPROVED_FIRST_RUN'; $record.Revoked = $true
+        Reject { Get-ApprovedFirstRunContext } 'withdrawn'
+        $record.Revoked = 'false'
+        Reject { Get-ApprovedFirstRunContext } 'withdrawn'
+        $record.Revoked = $false; $record.Scope.Routine = 'ACTIVE'
+        Reject { Get-ApprovedFirstRunContext } 'Invalid reviewed'
+    }
+    Check 'real withdrawal check stops between mock import and test and consumes the attempt' {
+        $r = Invoke-DispatchFixture @((NativeResult), (NativeResult $completion)) 'withdrawal-record'
+        Require ($r.Calls.Count -eq 1 -and $r.Summary.Authorization -ceq 'FAIL' -and
+            $r.Summary.Import -ceq 'PASS' -and $r.Summary.Native -ceq 'FAIL') 'Withdrawal ignored'
+        Require (Test-Path -LiteralPath $r.Receipt) 'Consumed attempt lost'
+        Reject { New-FirstRunAttemptReceipt $r.Scope } 'exists'
+    }
+    Check 'replacement approved scope stops before the next mock launch' {
+        $r = Invoke-DispatchFixture @((NativeResult), (NativeResult $completion)) 'scope-record'
+        Require ($r.Calls.Count -eq 1 -and $r.Summary.Authorization -ceq 'FAIL' -and
+            $r.Summary.Diagnostic -match 'approval changed during the attempt') 'Approved scope replacement accepted'
     }
     Check 'exclusive consumption survives restart and preserves incomplete owner receipt' {
         $directory = Join-Path $fixture 'receipt-restart'
