@@ -125,6 +125,14 @@ are unchanged. This correction still requires owner graphical retesting in a
 separate native game window; editor/OS interception cannot be excluded by static
 inspection. No new graphical execution is authorized by this note.
 
+Correction validation at `dee6050`: existing Python static suite 43 PASS;
+restricted Native cold import and recipe-switching regression PASS after explicit
+owner renewal of one invocation. Static inspection confirms press/echo/modifier
+checks and unchanged window restoration/maximize code. These checks do not inject
+real key events or verify fullscreen visually. The existing static preservation
+helper now accepts editor omission of the three default-valued window flags while
+rejecting nondefault changes. Owner-authored local omissions remain uncommitted.
+
 Owner acceptance checks, when the owner chooses to launch graphically:
 
 1. Inspect a deployed Smelter: typography, panel transparency/border, button normal,
