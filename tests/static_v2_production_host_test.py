@@ -19,8 +19,8 @@ P8_BASE = "e14703e64aef961f18feba8a616acec00c4f069e"
 # Freeze normalized candidate bytes rather than exempting them from preservation.
 # B2 nine-patch inventory scene candidate requires owner review before Native execution.
 B1_INVENTORY_SHA256 = {
-    "scenes/ui/inventory_ui.gd": "5a5273e46ebd4d0f8817f2f0c4d7bab615d5c054de6faeb8f44f043eba307a48",
-    "scenes/ui/inventory_ui.tscn": "364a24a602c82cf364bb08c44c877b1df680e5f14a5cc753b0695c7d7e479c52",
+    "scenes/ui/inventory_ui.gd": "9a9e68709e46ca84bddfc0f0e552e2218d1b2417f3be3e76057094b28d1d6817",
+    "scenes/ui/inventory_ui.tscn": "ffa02b016227dab6cc54a709af3ccf671c94ea28d8b675274f191be2f22ce601",
 }
 
 # The inventory hash now delegates artwork/quantity formatting to this exact
