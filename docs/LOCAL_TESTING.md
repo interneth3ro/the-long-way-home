@@ -1,4 +1,4 @@
-# Local testing runner (Native activation, pending merge)
+# Restricted local testing runner
 
 Use PowerShell **7+** on Windows, with trusted Git and Python applications on PATH,
 from the actual checkout. No new testing framework or engine discovery is used.
@@ -24,22 +24,26 @@ PASS; a plan stage is never reused. Do not edit files during a plan or run.
 
 ## Authorization and standing scope
 
-On **2026-10-29**, following PR #75 at
-`5f0fc13347ae1ebabb7e75e279a7a00bb74e666f`, the owner explicitly authorized
-minimal Native activation and **one controlled invocation**, covering only the
-fixed cold import and recipe-switching phases below. This feature branch removes
-the unconditional denial in `Assert-NativeExecutionAuthorization`, pending merge.
+On **2026-10-29**, the owner approved standing routine use of the existing
+restricted Native runner, superseding the earlier one-invocation permission after
+PR #75. Only the fixed cold import and recipe-switching phases below are covered.
 The dispatcher retains its checks before staging and each prospective launch.
-The [execution policy](../AGENTS.md#godot-execution-safety) requires stopping after
-that invocation and awaiting owner review; routine use and retries require separate
-owner authorization. A PASS or merge does not grant further execution permission.
+Stop on failure; no automatic retries or unattended runs are authorized. A PASS
+or merge does not broaden this scope. See the
+[execution policy](../AGENTS.md#godot-execution-safety).
+
+For B1 font compatibility the owner separately authorized staging only the IBM
+Plex Sans Regular, Medium and SemiBold `.ttf` files under
+`assets/fonts/ibm-plex-sans/`. No executable type, command, test or engine limit is
+added. The existing inert fixture checks font byte preservation and rejected
+paths/types; this is not a new test framework or Godot test.
 
 There is no embedded approval scope, self-hash, receipt, environment switch or
 local approval file. Authorization is supplied by the owner and repository workflow.
 Preserve historical receipts, withdrawal files and evidence; the runner does not
 read or delete them.
 
-The single authorized invocation, only after preconditions and verification pass:
+The authorized invocation, only after preconditions and verification pass:
 
 ```powershell
 pwsh -NoProfile -File tools/run-local-tests.ps1 -Mode Native
@@ -84,10 +88,10 @@ intended inputs first; missing/deleted tracked inputs fail closed (stage intenti
 deletions first). Unmerged entries, submodules/Git links and filesystem reparse
 points fail closed. Preserve paths, bytes, UIDs and import sidecars.
 
-The unchanged allowlist includes `project.godot`, only
+The resource allowlist includes `project.godot`, only
 `tests/fabricator_recipe_switching_test.gd` and its UID, and reviewed resource
 extensions under assets, construction, dialogue, inventory, objectives, scenes and
-shaders. Other tests, tools, docs, hidden paths, .git, .godot, artifacts, saves,
+shaders, plus the three exact font paths above. Other tests, tools, docs, hidden paths, .git, .godot, artifacts, saves,
 settings and credential/secret names are excluded. Filename filters cannot detect
 secrets embedded in approved content. No owner save/settings/artwork is deleted.
 
@@ -141,7 +145,9 @@ unsafe paths/links/unexpected files, output/completion/error classification,
 sequential failure stops, no retries, bounded unique evidence, owner-file
 preservation and authorization-withdrawal stops. They do not execute Godot or establish
 native compatibility, GDScript parsing, runtime assertions or graphical behavior.
-The Python baseline assertions and GDScript assertions remain unchanged.
+The Python preservation assertions account only for the exact approved B1 display
+and machine-scene edits; all other baseline comparisons remain in force. GDScript
+recipe-switching assertions remain unchanged.
 
 The process helper reads both streams asynchronously. Detection may consume one
 read buffer per stream beyond the output ceiling while retaining at most 1 MiB.

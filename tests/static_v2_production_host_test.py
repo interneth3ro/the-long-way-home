@@ -60,6 +60,157 @@ scenes/dev/v2_two_room_connection.tscn
 """.split())
 
 
+# Exact owner-approved B1 edits only. Normalize them before the existing fixed
+# historical comparisons; unrelated properties, transforms and gameplay stay protected.
+B1_REPLACEMENTS = {'project.godot': [('window/size/viewport_width=1280\n'
+                    'window/size/viewport_height=720\n'
+                    'window/size/mode=0\n'
+                    'window/size/resizable=true\n'
+                    'window/size/borderless=false\n'
+                    'window/size/window_width_override=1280\n'
+                    'window/size/window_height_override=720\n'
+                    'window/stretch/mode="canvas_items"\n'
+                    'window/stretch/aspect="expand"\n'
+                    '\n'
+                    '[input]\n'
+                    '\n'
+                    'toggle_fullscreen={\n'
+                    '"deadzone": 0.2,\n'
+                    '"events": '
+                    '[Object(InputEventKey,"alt_pressed":true,"physical_keycode":4194309)]\n'
+                    '}\n'
+                    'inventory={\n'
+                    '"deadzone": 0.2,\n',
+                    'window/size/viewport_width=1280\n'
+                    'window/size/viewport_height=720\n'
+                    'window/stretch/mode="canvas_items"\n'
+                    '\n'
+                    '[input]\n'
+                    '\n'
+                    'inventory={\n'
+                    '"deadzone": 0.2,\n')],
+ 'scenes/main/main.tscn': [('[gd_scene load_steps=16 format=3]\n'
+                            '\n'
+                            '[ext_resource type="Script" path="res://scenes/main/main.gd" '
+                            'id="1_main"]\n',
+                            '[gd_scene load_steps=15 format=3]\n'
+                            '\n'
+                            '[ext_resource type="Script" path="res://scenes/main/main.gd" '
+                            'id="1_main"]\n'),
+                           ('[ext_resource type="PackedScene" '
+                            'path="res://construction/construction_controller.tscn" '
+                            'id="13_construction"]\n'
+                            '[ext_resource type="PackedScene" '
+                            'path="res://scenes/ui/machine_ui.tscn" id="14_machine"]\n'
+                            '[ext_resource type="Script" '
+                            'path="res://scenes/main/display_configuration.gd" id="15_display"]\n'
+                            '\n'
+                            '[node name="Main" type="Node2D"]\n',
+                            '[ext_resource type="PackedScene" '
+                            'path="res://construction/construction_controller.tscn" '
+                            'id="13_construction"]\n'
+                            '[ext_resource type="PackedScene" '
+                            'path="res://scenes/ui/machine_ui.tscn" id="14_machine"]\n'
+                            '\n'
+                            '[node name="Main" type="Node2D"]\n'),
+                           ('construction = NodePath("../Construction")\n'
+                            '\n'
+                            '[node name="DisplayConfiguration" type="Node" parent="."]\n'
+                            'script = ExtResource("15_display")\n'
+                            '\n'
+                            '[node name="Construction" parent="." '
+                            'node_paths=PackedStringArray("player", "progression", "transitions", '
+                            '"inventory_ui") instance=ExtResource("13_construction")]\n'
+                            'player = NodePath("../Dave")\n',
+                            'construction = NodePath("../Construction")\n'
+                            '\n'
+                            '[node name="Construction" parent="." '
+                            'node_paths=PackedStringArray("player", "progression", "transitions", '
+                            '"inventory_ui") instance=ExtResource("13_construction")]\n'
+                            'player = NodePath("../Dave")\n')],
+ 'scenes/ui/machine_ui.tscn': [('\n'
+                                '[ext_resource type="Script" path="res://scenes/ui/machine_ui.gd" '
+                                'id="1_ui"]\n'
+                                '[ext_resource type="Theme" path="res://assets/ui/b1_theme.tres" '
+                                'id="2_b1"]\n'
+                                '\n'
+                                '[node name="MachineUI" type="CanvasLayer"]\n',
+                                '\n'
+                                '[ext_resource type="Script" path="res://scenes/ui/machine_ui.gd" '
+                                'id="1_ui"]\n'
+                                '\n'
+                                '[sub_resource type="StyleBoxFlat" id="MachineStyle"]\n'
+                                'bg_color = Color(0.045, 0.075, 0.10, 0.97)\n'
+                                'border_width_left = 1\n'
+                                'border_width_top = 1\n'
+                                'border_width_right = 1\n'
+                                'border_width_bottom = 1\n'
+                                'border_color = Color(0.47, 0.61, 0.60, 1)\n'
+                                'content_margin_left = 16.0\n'
+                                'content_margin_top = 12.0\n'
+                                'content_margin_right = 16.0\n'
+                                'content_margin_bottom = 12.0\n'
+                                '\n'
+                                '[node name="MachineUI" type="CanvasLayer"]\n'),
+                               ('grow_vertical = 2\n'
+                                'mouse_filter = 2\n'
+                                'theme = ExtResource("2_b1")\n'
+                                '\n'
+                                '[node name="Panel" type="PanelContainer" parent="HUD"]\n',
+                                'grow_vertical = 2\n'
+                                'mouse_filter = 2\n'
+                                '\n'
+                                '[node name="Panel" type="PanelContainer" parent="HUD"]\n'),
+                               ('grow_horizontal = 0\n'
+                                'mouse_filter = 0\n'
+                                '\n'
+                                '[node name="Content" type="VBoxContainer" parent="HUD/Panel"]\n',
+                                'grow_horizontal = 0\n'
+                                'mouse_filter = 0\n'
+                                'theme_override_styles/panel = SubResource("MachineStyle")\n'
+                                '\n'
+                                '[node name="Content" type="VBoxContainer" parent="HUD/Panel"]\n'),
+                               ('layout_mode = 2\n'
+                                'mouse_filter = 2\n'
+                                'theme_type_variation = &"B1Title"\n'
+                                'text = "Extractor"\n'
+                                '\n',
+                                'layout_mode = 2\n'
+                                'mouse_filter = 2\n'
+                                'theme_override_font_sizes/font_size = 22\n'
+                                'text = "Extractor"\n'
+                                '\n'),
+                               ('layout_mode = 2\n'
+                                'mouse_filter = 2\n'
+                                'theme_type_variation = &"B1MutedLabel"\n'
+                                'text = "Production Paused"\n'
+                                '\n',
+                                'layout_mode = 2\n'
+                                'mouse_filter = 2\n'
+                                'theme_override_colors/font_color = Color(0.55, 0.58, 0.59, 1)\n'
+                                'theme_override_font_sizes/font_size = 14\n'
+                                'text = "Production Paused"\n'
+                                '\n'),
+                               ('layout_mode = 2\n'
+                                'mouse_filter = 2\n'
+                                'theme_type_variation = &"B1WarningLabel"\n'
+                                'autowrap_mode = 2\n'
+                                '\n',
+                                'layout_mode = 2\n'
+                                'mouse_filter = 2\n'
+                                'theme_override_colors/font_color = Color(0.95, 0.65, 0.45, 1)\n'
+                                'autowrap_mode = 2\n'
+                                '\n')]}
+
+
+def without_approved_b1_changes(path, text):
+    for approved, historical in B1_REPLACEMENTS.get(path, []):
+        if text.count(approved) != 1:
+            raise AssertionError(f"Missing or modified approved B1 edit: {path}")
+        text = text.replace(approved, historical, 1)
+    return text
+
+
 def is_dev_path(path):
     path = posixpath.normpath(path.replace("\\", "/")).casefold()
     return path == "scenes/dev" or path.startswith("scenes/dev/")
@@ -404,6 +555,8 @@ class V2ProductionHostStaticTest(unittest.TestCase):
                 expected = proc.stdout.read(int(header[2]))
                 self.assertEqual(proc.stdout.read(1), b"\n")
                 actual = (ROOT / path).read_bytes()
+                if path in B1_REPLACEMENTS:
+                    actual = without_approved_b1_changes(path, actual.decode("utf-8").replace("\r\n", "\n")).encode("utf-8")
                 if path == "project.godot":
                     actual = actual.replace(b"\r\n", b"\n")
                     expected = expected.replace(b"\r\n", b"\n")

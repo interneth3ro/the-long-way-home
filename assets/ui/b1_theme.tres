@@ -1,0 +1,135 @@
+[gd_resource type="Theme" load_steps=14 format=3]
+
+[ext_resource type="FontFile" path="res://assets/fonts/ibm-plex-sans/IBMPlexSans-Regular.ttf" id="1_regular"]
+[ext_resource type="FontFile" path="res://assets/fonts/ibm-plex-sans/IBMPlexSans-Medium.ttf" id="2_medium"]
+[ext_resource type="FontFile" path="res://assets/fonts/ibm-plex-sans/IBMPlexSans-SemiBold.ttf" id="3_semibold"]
+[ext_resource type="StyleBox" path="res://assets/ui/b1_panel.tres" id="4_panel"]
+
+[sub_resource type="StyleBoxFlat" id="ButtonNormal"]
+content_margin_left = 12.0
+content_margin_top = 7.0
+content_margin_right = 12.0
+content_margin_bottom = 7.0
+bg_color = Color(0.125, 0.169, 0.192, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.29, 0.40, 0.43, 1)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_left = 2
+corner_radius_bottom_right = 2
+
+[sub_resource type="StyleBoxFlat" id="ButtonHover"]
+content_margin_left = 12.0
+content_margin_top = 7.0
+content_margin_right = 12.0
+content_margin_bottom = 7.0
+bg_color = Color(0.15, 0.23, 0.25, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.282, 0.663, 0.682, 1)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_left = 2
+corner_radius_bottom_right = 2
+
+[sub_resource type="StyleBoxFlat" id="ButtonPressed"]
+content_margin_left = 12.0
+content_margin_top = 7.0
+content_margin_right = 12.0
+content_margin_bottom = 7.0
+bg_color = Color(0.075, 0.12, 0.14, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.773, 0.545, 0.322, 1)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_left = 2
+corner_radius_bottom_right = 2
+
+[sub_resource type="StyleBoxFlat" id="ButtonDisabled"]
+content_margin_left = 12.0
+content_margin_top = 7.0
+content_margin_right = 12.0
+content_margin_bottom = 7.0
+bg_color = Color(0.09, 0.12, 0.14, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.20, 0.26, 0.28, 1)
+
+[sub_resource type="StyleBoxFlat" id="ButtonFocus"]
+bg_color = Color(0, 0, 0, 0)
+draw_center = false
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.85, 0.65, 0.44, 1)
+expand_margin_left = 2.0
+expand_margin_top = 2.0
+expand_margin_right = 2.0
+expand_margin_bottom = 2.0
+
+[sub_resource type="StyleBoxFlat" id="ProgressBackground"]
+bg_color = Color(0.04, 0.065, 0.08, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.25, 0.36, 0.39, 1)
+
+[sub_resource type="StyleBoxFlat" id="ProgressFill"]
+bg_color = Color(0.282, 0.663, 0.682, 1)
+
+[sub_resource type="StyleBoxEmpty" id="NoDecoration"]
+
+[sub_resource type="StyleBoxEmpty" id="TitleSpacing"]
+content_margin_bottom = 4.0
+
+[resource]
+resource_name = "B1 - Refined Industrial"
+default_font = ExtResource("1_regular")
+default_font_size = 18
+Button/fonts/font = ExtResource("2_medium")
+Button/font_sizes/font_size = 18
+Button/colors/font_color = Color(0.843, 0.851, 0.824, 1)
+Button/colors/font_hover_color = Color(0.96, 0.97, 0.94, 1)
+Button/colors/font_pressed_color = Color(0.96, 0.97, 0.94, 1)
+Button/colors/font_disabled_color = Color(0.47, 0.53, 0.54, 1)
+Button/colors/font_focus_color = Color(0.96, 0.97, 0.94, 1)
+Button/constants/h_separation = 10
+Button/styles/normal = SubResource("ButtonNormal")
+Button/styles/hover = SubResource("ButtonHover")
+Button/styles/pressed = SubResource("ButtonPressed")
+Button/styles/disabled = SubResource("ButtonDisabled")
+Button/styles/focus = SubResource("ButtonFocus")
+Label/colors/font_color = Color(0.843, 0.851, 0.824, 1)
+Label/styles/normal = SubResource("NoDecoration")
+B1Title/base_type = &"Label"
+B1Title/fonts/font = ExtResource("3_semibold")
+B1Title/font_sizes/font_size = 22
+B1Title/colors/font_color = Color(0.84, 0.65, 0.45, 1)
+B1Title/styles/normal = SubResource("TitleSpacing")
+B1MutedLabel/base_type = &"Label"
+B1MutedLabel/colors/font_color = Color(0.65, 0.70, 0.70, 1)
+B1MutedLabel/font_sizes/font_size = 16
+B1WarningLabel/base_type = &"Label"
+B1WarningLabel/colors/font_color = Color(0.94, 0.70, 0.48, 1)
+PanelContainer/styles/panel = ExtResource("4_panel")
+ProgressBar/fonts/font = ExtResource("2_medium")
+ProgressBar/font_sizes/font_size = 16
+ProgressBar/colors/font_color = Color(0.96, 0.97, 0.94, 1)
+ProgressBar/colors/font_outline_color = Color(0.04, 0.065, 0.08, 1)
+ProgressBar/constants/outline_size = 2
+ProgressBar/styles/background = SubResource("ProgressBackground")
+ProgressBar/styles/fill = SubResource("ProgressFill")
+VBoxContainer/constants/separation = 10
+HBoxContainer/constants/separation = 10

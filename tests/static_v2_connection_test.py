@@ -8,7 +8,7 @@ import unittest
 
 import static_automatic_transitions_test as geometry
 from static_automatic_transitions_test import ROOT, PRIMARY, MAINTENANCE, read, merged_nodes
-from static_v2_production_host_test import P8_BASE, tracked_non_dev_files
+from static_v2_production_host_test import P8_BASE, tracked_non_dev_files, without_approved_b1_changes
 
 
 PAIRS = [
@@ -143,8 +143,8 @@ class V2ConnectionStaticTest(unittest.TestCase):
         for file in ["scenes/main/scene_transition_controller.gd", "scenes/main/playthrough_state.gd",
                      "scenes/interaction/automatic_doorway.gd", "scenes/player/dave.tscn",
                      "scenes/player/dave.gd", "scenes/main/main.tscn"]:
-            self.assertEqual(read(file), base(file))
-        actual = (ROOT / "project.godot").read_bytes().replace(b"\r\n", b"\n")
+            self.assertEqual(without_approved_b1_changes(file, read(file)), base(file))
+        actual = without_approved_b1_changes("project.godot", read("project.godot")).encode("utf-8")
         expected = subprocess.check_output(
             ["git", "show", f"{P8_BASE}:project.godot"], cwd=ROOT).replace(b"\r\n", b"\n")
         approved = b'run/main_scene="res://scenes/main/main_v2.tscn"'

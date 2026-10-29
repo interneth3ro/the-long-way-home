@@ -102,6 +102,30 @@ function Invoke-DispatchFixture([object[]]$Results, [string]$Mutation = '') {
     } finally { [IO.File]::WriteAllText($inertEngine, 'inert identity fixture') }
 }
 try {
+    Check 'B1 font staging allows only required fonts and rejects executable types' {
+        $fontDirectory = "$source/assets/fonts/ibm-plex-sans"
+        $null = New-Item -ItemType Directory -Path $fontDirectory
+        $fontPaths = @('Regular', 'Medium', 'SemiBold') | ForEach-Object {
+            $relative = "assets/fonts/ibm-plex-sans/IBMPlexSans-$_.ttf"
+            [IO.File]::WriteAllBytes((Join-Path $source $relative), [byte[]]@(0, 1, 0, 0))
+            $relative
+        }
+        $stage = New-InputStage $source $fixture ($tracked + $fontPaths)
+        foreach ($path in $fontPaths) {
+            Require (Test-Path -LiteralPath (Join-Path $stage.Directory $path)) 'Font not staged'
+            Require ((Get-FileHash (Join-Path $stage.Directory $path)).Hash -eq
+                (Get-FileHash (Join-Path $source $path)).Hash) 'Font bytes changed'
+        }
+        foreach ($path in @('assets/fonts/other.ttf',
+                'assets/fonts/ibm-plex-sans/IBMPlexSans-Bold.ttf',
+                'assets/fonts/ibm-plex-sans/IBMPlexSans-Regular.otf',
+                'assets/fonts/ibm-plex-sans/IBMPlexSans-Regular.ttf.exe',
+                'assets/fonts/ibm-plex-sans/IBMPlexSans-Regular.dll',
+                'assets/fonts/ibm-plex-sans/IBMPlexSans-Regular.ps1')) {
+            Require (-not (Test-ApprovedInput $path)) 'Unexpected font or executable allowed'
+        }
+        Reject { Test-ApprovedInput 'assets/fonts/ibm-plex-sans/../escape.ttf' } 'Unsafe'
+    }
     Check 'bounded process success' {
         $r = Invoke-BoundedProcess $hostExe @('-NoProfile', '-Command', "[Console]::Write('fixture-ok')") $fixture
         Require ($r.Status -eq 'PASS' -and $r.ExitCode -eq 0 -and $r.Excerpt -eq 'fixture-ok') 'Wrong success result'
