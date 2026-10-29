@@ -8,8 +8,8 @@ signal opened
 @export var construction: Node
 @export var transitions: SceneTransitionController
 
-const MATERIAL_SLOTS := 15
-const EQUIPMENT_SLOTS := 5
+const MATERIAL_SLOTS := 24
+const EQUIPMENT_SLOTS := 8
 const SLOT_SIZE := Vector2(42, 42)
 # Shared presentation lookup; storage remains independent of UI.
 const ITEM_ICONS := ItemPresentation.ICONS

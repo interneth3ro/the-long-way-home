@@ -267,7 +267,7 @@ durable save/load. See the [implementation notes](../README.md#first-ferrite---d
   in this milestone.
 
 The approved B1 inventory follow-up keeps this shared aggregate storage and
-uses 15 material positions (three rows of five) plus five machine/equipment
+uses 24 material positions (three rows of eight) plus eight machine/equipment
 positions, with all empty positions visible. This compact follow-up is implemented
 on `codex/compact-20-slot-inventory`, pending merge and owner acceptance. These are presentation positions,
 not capacity limits; extra types retain access in a small overflow list. Tab
@@ -289,8 +289,8 @@ The original implementation and the owner-approved refinement both passed
 the restricted Native runner (static suite, cold import and existing recipe
 regression). Hotbar graphical/interaction acceptance remains separate; the
 feature is pending merge. The hotbar refinement required no preservation-assertion changes. The separate
-compact inventory final-size refinement narrows the panel to 242 units (from
-726 originally and 376 in the first compact candidate), with 42-unit slots,
+compact inventory eight-column experiment sets the panel width to 380 units
+(from 242 in the five-column candidate), with unchanged 42-unit slots,
 four-unit gaps and reduced local padding. It preserves overflow access and B1
 styling; the hint is `Tab / Esc to close`, with deployment/assignment guidance
 in tooltips. Its exact-file preservation amendment requires owner review before

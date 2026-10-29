@@ -30,7 +30,7 @@ text = "Inventory (Tab)"
 visible = false
 offset_left = 24.0
 offset_top = 100.0
-offset_right = 266.0
+offset_right = 404.0
 mouse_filter = 0
 
 [node name="Content" type="VBoxContainer" parent="HUD/Panel"]
@@ -57,7 +57,7 @@ layout_mode = 2
 mouse_filter = 2
 theme_override_constants/h_separation = 4
 theme_override_constants/v_separation = 4
-columns = 5
+columns = 8
 
 [node name="Divider" type="HSeparator" parent="HUD/Panel/Content"]
 layout_mode = 2
@@ -76,7 +76,7 @@ layout_mode = 2
 mouse_filter = 2
 theme_override_constants/h_separation = 4
 theme_override_constants/v_separation = 4
-columns = 5
+columns = 8
 
 [node name="Overflow" type="ScrollContainer" parent="HUD/Panel/Content"]
 visible = false
