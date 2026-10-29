@@ -156,7 +156,7 @@ Owner acceptance checks, when the owner chooses to launch graphically:
    dialogue, prompts, musings and construction hints. Their broader responsive
    modernization remains future work.
 
-## B1 inventory modernization (feature branch, pending merge)
+## B1 inventory modernization (PR #78 merged)
 
 The persistent left-side inventory uses the shared B1 theme and panel with a
 30-position Materials grid (three rows of ten) and a ten-position Machines /
@@ -168,7 +168,8 @@ construction controller. Unavailable/non-machine equipment is disabled and marke
 not deployable in its tooltip. Context-dependent deployment rejection remains
 with the controller. There is no selection step or Deploy button.
 
-`InventoryUI.ITEM_ICONS` is a presentation-only lookup: Plate/Rod reuse existing
+`ItemPresentation.ICONS`, also exposed as `InventoryUI.ITEM_ICONS`, is the shared
+presentation-only lookup for inventory and hotbar: Plate/Rod reuse existing
 recipe textures; ORE, BAR, EX, SM and FB are temporary distinguishing symbols for
 Ore, Ingot, Extractor, Smelter and Fabricator. Each can be replaced by a Texture2D
 in the lookup without changing storage or layout. Unknown future types use `?`
@@ -241,6 +242,84 @@ Owner acceptance, when the owner chooses to launch graphically:
 5. Travel between rooms/exterior and verify inventory quantities, machine panels
    and objectives continue normally. Overflow is a future-catalog safeguard;
    current gameplay cannot populate it without additional item definitions.
+
+## B1 hybrid hotbar (feature branch, pending preservation review)
+
+`codex/b1-hybrid-hotbar` adds ten persistent 64-unit B1 slots centered at the
+bottom, labeled **1-9, 0**, with six-unit gaps and a 16-unit bottom margin.
+Temporary machine symbols and integer-safe quantities share
+`scenes/ui/item_presentation.gd` with inventory. Empty slots are subdued;
+assigned zero-quantity slots retain their type, show zero and remain clearable.
+The deploying type uses a steady copper-amber border; hover stays teal.
+Tooltips give machine identity, exact quantity and physical shortcut.
+
+`Main/PlaythroughState` owns ten type references, per-slot customization flags
+and per-type default-considered flags. First packaged possession (successful rack
+recovery in current progression) considers Extractor/Smelter/Fabricator for
+slots 1/2/3 exactly once. Occupied/customized slots and existing assignments of
+that type prevent automatic insertion; there is no fallback or later restoration.
+Manual replacement and deliberate clearing protect the chosen slot. Depletion,
+placement/recovery and world transitions retain assignments; a fresh Main resets
+them. Disk persistence and inventory transactions are unchanged.
+
+Right-click a deployable inventory position, including a future overflow row,
+for **Assign to Hotbar** and ten destinations showing their current contents.
+Slot 10 displays shortcut 0. Left-click still requests immediate deployment.
+Right-click an assigned hotbar slot for **Clear Assignment**, even at zero stock.
+Assignment changes never consume inventory. Built-in PopupMenus use B1 styling
+and own menu input; Tab also closes inventory from its menu. Travel dismisses menus.
+
+Unmodified physical number keys (held-key repeats ignored), or left-clicking a
+hotbar slot, call `ConstructionController.activate_hotbar`. The same type cancels;
+a different available type uses `begin_deployment`, whose checks precede
+cancellation. A rejected switch leaves the current tool intact and displays a
+brief reason. Inventory, inspection, conversations/responses, transitions and
+recovery block activation. Empty shortcuts do nothing. Existing preview/commit
+validation, R rotation, successful-placement exit and Fabricator inspection remain.
+Only successful placement consumes equipment. World right-click cancellation now
+runs in `_unhandled_input`, allowing GUI context clicks to be consumed first;
+Esc retains its existing input priority.
+
+Interaction prompts move to offsets -128/-96, construction hints to -144/-92,
+and musings up 64 units to -296/-160. Narrative content and completion/dismissal
+semantics remain unchanged. The bar stays visible with inventory, inspection and
+ambient musings; conversation/response panels and transitions temporarily hide it.
+
+Preservation candidates in `tests/static_v2_production_host_test.py` update the
+two inventory normalized hashes and pin the extracted presentation helper.
+Fourteen exact literal edits across six files are reversed before the unchanged
+historical comparisons: session state, construction script/scene, Main and
+interaction/musing scenes. Three added checks cover the shared helper hash,
+restoration of entire pre-feature files at immutable
+`92947fac8b9a7866c740ae5ee11b5cfd0b549ea4`, and rejection of modified/duplicated
+allowances while unrelated changes remain detectable. The connection suite reuses
+the same normalizer. No runner, execution policy or native test is changed.
+
+Validation: 46 Python static checks PASS, including resource graph/UID/load-step
+checks and the three added preservation checks. Changed Markdown links and
+`git diff --check` PASS. These are text/static checks only. Native execution is
+paused for owner assertion review; no Godot parsing, hotbar interaction correctness,
+graphical acceptance or PR is claimed.
+
+Owner acceptance, after the owner chooses to launch graphically:
+
+1. Recover all three machines: defaults appear in 1/2/3 and all ten slots remain
+   visible. Place/recover and travel through every environment; types persist at
+   zero quantity while quantities follow inventory.
+2. Replace destinations from inventory, including slot 10 / key 0; verify Current
+   labels. Clear a zero-stock assignment and acquire/recover that type again: it
+   must stay cleared. Customize a future default position before its machine
+   arrives: the default must not overwrite it.
+3. Verify key/click deployment, held-key suppression, same-type cancellation,
+   immediate switching, rejected zero-stock switching, R, Esc and world
+   right-click. Cancel/switch must not consume equipment; successful placement
+   consumes exactly one and exits construction.
+4. Right-click hotbar during placement: the clear menu must open without
+   cancelling/confirming the ghost. Dismiss menus with Esc/outside clicks and
+   close inventory with Tab; no click may reach placement or world interaction.
+5. Verify numbers cannot deploy through inventory, inspection, conversations,
+   responses, recovery or travel. Check bar, prompts, instructions, musings and
+   feedback at 1280 x 720 and 1024 x 576; preserve narrative dismissal semantics.
 
 ## V2 production integration (P1-P6 merged, P7 approved, P8 pending merge)
 

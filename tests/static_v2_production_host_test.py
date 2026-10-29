@@ -15,12 +15,228 @@ from static_automatic_transitions_test import ROOT, PRIMARY, MAINTENANCE, EXTERI
 # Live post-P6 / pre-P8 main verified for cutover; never follow a moving ref.
 P8_BASE = "e14703e64aef961f18feba8a616acec00c4f069e"
 
-# B1 inventory presentation replaces exactly these two historical UI files.
-# Freeze normalized reviewed bytes rather than exempting them from preservation.
+# B1 inventory and hotbar context-menu integration replace exactly these UI files.
+# Freeze normalized candidate bytes rather than exempting them from preservation.
+# Updated hotbar candidates require owner review before Native execution.
 B1_INVENTORY_SHA256 = {
-    "scenes/ui/inventory_ui.gd": "3d36552878a3dfb58b1e1d43255b822248180afc0a324a578cf5932f217ea424",
-    "scenes/ui/inventory_ui.tscn": "4799a048eafee18a51ca07d7a85e80fcc44cd16b1c72e687ac7e64b78f6ab91b",
+    "scenes/ui/inventory_ui.gd": "f06e97daf12847b32c38d52e007ba9b8628f8e706d4a67001e3ca0ca1ddde580",
+    "scenes/ui/inventory_ui.tscn": "21050cdb0976b6c4893f48a8e9ccf51a1ca4864f5ab2ec4f77d391467178c944",
 }
+
+# The inventory hash now delegates artwork/quantity formatting to this exact
+# shared helper; retain full normalized-byte protection for the moved code.
+HOTBAR_ITEM_PRESENTATION_SHA256 = "90e58359dd26d202848461ddd212dbfc5a37e7d50f5cf1c997f56e4138f47862"
+
+# Hybrid hotbar allowance, pending owner review before Native execution.
+# Reverse only these literal, single-occurrence edits, then retain the existing
+# immutable historical comparisons. No path/directory exemptions are added.
+HOTBAR_BASE = "92947fac8b9a7866c740ae5ee11b5cfd0b549ea4"
+HOTBAR_REPLACEMENTS = {'construction/construction_controller.gd': [('\n'
+                                              'func get_deployment_item_id() -> StringName:\n'
+                                              '\treturn _definition.item_id if _mode == '
+                                              'Mode.CONSTRUCTION and _definition != null else &""\n'
+                                              '\n'
+                                              '\n'
+                                              '# Empty string means accepted. Reject before '
+                                              'cancel() so a failed switch keeps\n'
+                                              '# the current ghost, orientation and pending '
+                                              'confirmation intact.\n'
+                                              'func activate_hotbar(definition: MachineDefinition) '
+                                              '-> String:\n'
+                                              '\tif _context_blocked() or _mode == Mode.RECOVERY:\n'
+                                              '\t\treturn "Close the current interaction or '
+                                              'recovery mode before deploying."\n'
+                                              '\tif definition == null or not '
+                                              'definition.is_valid():\n'
+                                              '\t\treturn "Machine unavailable."\n'
+                                              '\tif get_deployment_item_id() == '
+                                              'definition.item_id:\n'
+                                              '\t\tcancel()\n'
+                                              '\t\treturn ""\n'
+                                              '\tif '
+                                              'progression.inventory.get_quantity(definition.item_id) '
+                                              '< 1:\n'
+                                              '\t\treturn "No %s in inventory." % '
+                                              'definition.display_name\n'
+                                              '\tif not begin_deployment(definition):\n'
+                                              '\t\treturn "Cannot deploy %s here." % '
+                                              'definition.display_name\n'
+                                              '\treturn ""\n'
+                                              '\n'
+                                              '\n'
+                                              'func cancel() -> void:\n',
+                                              '\nfunc cancel() -> void:\n'),
+                                             ('\t\treturn\n'
+                                              '\tif event.is_action_pressed("ui_cancel"):\n'
+                                              '\t\tcancel()\n',
+                                              '\t\treturn\n'
+                                              '\tif event.is_action_pressed("ui_cancel") or (event '
+                                              'is InputEventMouseButton \\\n'
+                                              '\t\t\tand event.pressed and event.button_index == '
+                                              'MOUSE_BUTTON_RIGHT):\n'
+                                              '\t\tcancel()\n'),
+                                             ('\tif event.is_echo() or _context_blocked():\n'
+                                              '\t\treturn\n'
+                                              '\t# GUI gets first refusal for cancellation too: '
+                                              'hotbar context clicks must\n'
+                                              '\t# never cancel a placement before their slot '
+                                              'receives gui_input.\n'
+                                              '\tif _mode != Mode.NONE and event is '
+                                              'InputEventMouseButton \\\n'
+                                              '\t\t\tand event.pressed and event.button_index == '
+                                              'MOUSE_BUTTON_RIGHT:\n'
+                                              '\t\tcancel()\n'
+                                              '\t\tget_viewport().set_input_as_handled()\n'
+                                              '\t\treturn\n',
+                                              '\tif event.is_echo() or _context_blocked():\n'
+                                              '\t\treturn\n')],
+ 'construction/construction_controller.tscn': [('offset_left = -390.0\n'
+                                                'offset_top = -144.0\n'
+                                                'offset_right = 390.0\n'
+                                                'offset_bottom = -92.0\n'
+                                                'mouse_filter = 2\n',
+                                                'offset_left = -390.0\n'
+                                                'offset_top = -128.0\n'
+                                                'offset_right = 390.0\n'
+                                                'offset_bottom = -80.0\n'
+                                                'mouse_filter = 2\n')],
+ 'scenes/main/main.tscn': [('[gd_scene load_steps=17 format=3]\n\n',
+                            '[gd_scene load_steps=16 format=3]\n\n'),
+                           ('[ext_resource type="Script" '
+                            'path="res://scenes/main/display_configuration.gd" id="15_display"]\n'
+                            '\n'
+                            '[ext_resource type="PackedScene" '
+                            'path="res://scenes/ui/hotbar_ui.tscn" id="16_hotbar"]\n'
+                            '\n',
+                            '[ext_resource type="Script" '
+                            'path="res://scenes/main/display_configuration.gd" id="15_display"]\n'
+                            '\n'),
+                           ('\n'
+                            '[node name="InventoryUI" parent="." '
+                            'node_paths=PackedStringArray("progression", "construction", '
+                            '"transitions") instance=ExtResource("12_inventory")]\n'
+                            'progression = NodePath("../PlaythroughState")\n'
+                            'construction = NodePath("../Construction")\n'
+                            'transitions = NodePath("../SceneTransitions")\n'
+                            '\n',
+                            '\n'
+                            '[node name="InventoryUI" parent="." '
+                            'node_paths=PackedStringArray("progression", "construction") '
+                            'instance=ExtResource("12_inventory")]\n'
+                            'progression = NodePath("../PlaythroughState")\n'
+                            'construction = NodePath("../Construction")\n'
+                            '\n'),
+                           ('construction = NodePath("../Construction")\n'
+                            '\n'
+                            '[node name="HotbarUI" parent="." '
+                            'node_paths=PackedStringArray("progression", "construction", '
+                            '"transitions", "player") instance=ExtResource("16_hotbar")]\n'
+                            'progression = NodePath("../PlaythroughState")\n'
+                            'construction = NodePath("../Construction")\n'
+                            'transitions = NodePath("../SceneTransitions")\n'
+                            'player = NodePath("../Dave")\n',
+                            'construction = NodePath("../Construction")\n')],
+ 'scenes/main/playthrough_state.gd': [('signal fabricator_recovery_completed\n'
+                                       'signal hotbar_changed\n'
+                                       '\n',
+                                       'signal fabricator_recovery_completed\n\n'),
+                                      ('var inventory: InventoryState = InventoryState.new()\n'
+                                       '# Type assignments belong to the session, never the '
+                                       'disposable HUD or inventory.\n'
+                                       'const HOTBAR_SIZE := 10\n'
+                                       'var _hotbar: Array[MachineDefinition] = [null, null, null, '
+                                       'null, null, null, null, null, null, null]\n'
+                                       'var _hotbar_customized: Array[bool] = [false, false, '
+                                       'false, false, false, false, false, false, false, false]\n'
+                                       'var _hotbar_defaults_seen: Dictionary[StringName, bool] = '
+                                       '{}\n'
+                                       'var extractor_recovered: bool:\n',
+                                       'var inventory: InventoryState = InventoryState.new()\n'
+                                       'var extractor_recovered: bool:\n'),
+                                      ('func _on_inventory_changed() -> void:\n'
+                                       '\t_apply_hotbar_defaults()\n'
+                                       '\tif not ferrite_acquired and '
+                                       'inventory.get_quantity(FERRITE_ORE.item_id) > 0:\n',
+                                       'func _on_inventory_changed() -> void:\n'
+                                       '\tif not ferrite_acquired and '
+                                       'inventory.get_quantity(FERRITE_ORE.item_id) > 0:\n'),
+                                      ('\t\tferrite_plate_acquisition_completed.emit()\n'
+                                       '\n'
+                                       '\n'
+                                       'func get_hotbar_assignment(slot: int) -> '
+                                       'MachineDefinition:\n'
+                                       '\treturn _hotbar[slot] if slot >= 0 and slot < HOTBAR_SIZE '
+                                       'else null\n'
+                                       '\n'
+                                       '\n'
+                                       'func assign_hotbar(slot: int, definition: '
+                                       'MachineDefinition) -> bool:\n'
+                                       '\tif slot < 0 or slot >= HOTBAR_SIZE or definition == null '
+                                       'or not definition.is_valid() \\\n'
+                                       '\t\t\tor inventory.get_quantity(definition.item_id) < 1:\n'
+                                       '\t\treturn false\n'
+                                       '\t_hotbar[slot] = definition\n'
+                                       '\t_hotbar_customized[slot] = true\n'
+                                       '\thotbar_changed.emit()\n'
+                                       '\treturn true\n'
+                                       '\n'
+                                       '\n'
+                                       'func clear_hotbar(slot: int) -> void:\n'
+                                       '\tif slot < 0 or slot >= HOTBAR_SIZE:\n'
+                                       '\t\treturn\n'
+                                       '\t_hotbar[slot] = null\n'
+                                       '\t_hotbar_customized[slot] = true\n'
+                                       '\thotbar_changed.emit()\n'
+                                       '\n'
+                                       '\n'
+                                       'func _apply_hotbar_defaults() -> void:\n'
+                                       '\t# First possession is the existing packaged-machine '
+                                       'availability boundary.\n'
+                                       '\t# Consider each default once, even when its preferred '
+                                       'slot is customized.\n'
+                                       '\tvar defaults: Array[MachineDefinition] = [EXTRACTOR as '
+                                       'MachineDefinition,\n'
+                                       '\t\tSMELTER as MachineDefinition, FABRICATOR as '
+                                       'MachineDefinition]\n'
+                                       '\tfor slot in defaults.size():\n'
+                                       '\t\tvar definition := defaults[slot]\n'
+                                       '\t\tif _hotbar_defaults_seen.has(definition.item_id) \\\n'
+                                       '\t\t\t\tor inventory.get_quantity(definition.item_id) < '
+                                       '1:\n'
+                                       '\t\t\tcontinue\n'
+                                       '\t\t_hotbar_defaults_seen[definition.item_id] = true\n'
+                                       '\t\tvar already_assigned := false\n'
+                                       '\t\tfor assigned in _hotbar:\n'
+                                       '\t\t\tif assigned != null and assigned.item_id == '
+                                       'definition.item_id:\n'
+                                       '\t\t\t\talready_assigned = true\n'
+                                       '\t\tif not _hotbar_customized[slot] and _hotbar[slot] == '
+                                       'null and not already_assigned:\n'
+                                       '\t\t\t_hotbar[slot] = definition\n'
+                                       '\t\t\thotbar_changed.emit()\n'
+                                       '\n',
+                                       '\t\tferrite_plate_acquisition_completed.emit()\n\n')],
+ 'scenes/ui/interaction_ui.tscn': [('offset_left = -280.0\n'
+                                    'offset_top = -128.0\n'
+                                    'offset_right = 280.0\n'
+                                    'offset_bottom = -96.0\n'
+                                    'mouse_filter = 2\n',
+                                    'offset_left = -280.0\n'
+                                    'offset_top = -72.0\n'
+                                    'offset_right = 280.0\n'
+                                    'offset_bottom = -40.0\n'
+                                    'mouse_filter = 2\n')],
+ 'scenes/ui/musing_ui.tscn': [('offset_left = 24.0\n'
+                               'offset_top = -296.0\n'
+                               'offset_right = 0.0\n'
+                               'offset_bottom = -160.0\n'
+                               'grow_vertical = 0\n',
+                               'offset_left = 24.0\n'
+                               'offset_top = -232.0\n'
+                               'offset_right = 0.0\n'
+                               'offset_bottom = -96.0\n'
+                               'grow_vertical = 0\n')]}
+
 
 # Owner-approved Option A: only these baseline files may retire in separate PR B.
 # Their contents/existence are deliberately not test inputs. This is not a glob
@@ -205,7 +421,16 @@ B1_REPLACEMENTS = {'project.godot': [('window/size/viewport_width=1280\n'
                                 '\n')]}
 
 
+def without_approved_hotbar_changes(path, text):
+    for approved, historical in HOTBAR_REPLACEMENTS.get(path, []):
+        if text.count(approved) != 1:
+            raise AssertionError(f"Missing or modified hotbar edit pending review: {path}")
+        text = text.replace(approved, historical, 1)
+    return text
+
+
 def without_approved_b1_changes(path, text):
+    text = without_approved_hotbar_changes(path, text)
     if path == "project.godot":
         # Normalize only the inventory action's owner-approved I -> Tab binding.
         start = text.index('inventory={\n')
@@ -551,6 +776,34 @@ class V2ProductionHostStaticTest(unittest.TestCase):
                                    (PRIMARY, "FromMaintenance", 3), (MAINTENANCE, "FromInterior", 2)]:
             self.assertIn(f"metadata/facing = {facing}", merged_nodes(path)[f"Spawns/{name}"][1])
 
+    def test_shared_inventory_presentation_preserved(self):
+        path = "scenes/ui/item_presentation.gd"
+        actual = (ROOT / path).read_bytes().replace(b"\r\n", b"\n")
+        self.assertEqual(hashlib.sha256(actual).hexdigest(), HOTBAR_ITEM_PRESENTATION_SHA256)
+
+    def test_hotbar_allowance_restores_exact_pre_feature_bytes(self):
+        # Prove each allowance recovers the entire pre-feature file, including
+        # gameplay not touched by this feature. The old P8 checks still run too.
+        for path in HOTBAR_REPLACEMENTS:
+            with self.subTest(path=path):
+                before = subprocess.check_output(["git", "show", f"{HOTBAR_BASE}:{path}"],
+                                                 cwd=ROOT).decode("utf-8").replace("\r\n", "\n")
+                self.assertEqual(without_approved_hotbar_changes(path, read(path)), before)
+
+    def test_hotbar_allowance_rejects_changed_duplicate_and_unrelated_edits(self):
+        for path, changes in HOTBAR_REPLACEMENTS.items():
+            original = read(path)
+            for approved, _historical in changes:
+                with self.subTest(path=path, edit=approved[:60]):
+                    with self.assertRaises(AssertionError):
+                        without_approved_hotbar_changes(path, original.replace(approved, "CHANGED\n", 1))
+                    with self.assertRaises(AssertionError):
+                        without_approved_hotbar_changes(path, original + approved)
+            # Unrelated edits survive normalization and therefore still fail the
+            # full-file comparison; they cannot be hidden by the allowance.
+            self.assertNotEqual(without_approved_hotbar_changes(path, original + "UNRELATED\n"),
+                                without_approved_hotbar_changes(path, original))
+
     def test_protected_existing_code_art_and_sidecars_unchanged(self):
         # Existing code, project settings, assets and sidecars are protected
         # against post-P6, allowing P8 startup and exactly the approved retirement.
@@ -578,7 +831,7 @@ class V2ProductionHostStaticTest(unittest.TestCase):
                     actual = actual.replace(b"\r\n", b"\n")
                     self.assertEqual(hashlib.sha256(actual).hexdigest(), B1_INVENTORY_SHA256[path], path)
                     continue
-                if path in B1_REPLACEMENTS:
+                if path in B1_REPLACEMENTS or path in HOTBAR_REPLACEMENTS:
                     actual = without_approved_b1_changes(path, actual.decode("utf-8").replace("\r\n", "\n")).encode("utf-8")
                 if path == "project.godot":
                     actual = actual.replace(b"\r\n", b"\n")
