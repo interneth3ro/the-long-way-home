@@ -133,7 +133,12 @@ owner renewal of one invocation. Static inspection confirms press/echo/modifier
 checks and unchanged window restoration/maximize code. These checks do not inject
 real key events or verify fullscreen visually. The existing static preservation
 helper now accepts editor omission of the three default-valued window flags while
-rejecting nondefault changes. Owner-authored local omissions remain uncommitted.
+rejecting nondefault changes. Those omissions were initially left uncommitted.
+PR #78 now tracks Godot's normalized form: mode, resizable and borderless use the
+engine defaults (0, true, false) without redundant entries. This prevents recurring
+editor-save diffs while keeping all other project configuration changes visible.
+The normalization passed the existing 43 static tests; no further Native run was
+performed after the separately recorded successful attempt.
 
 Owner acceptance checks, when the owner chooses to launch graphically:
 
