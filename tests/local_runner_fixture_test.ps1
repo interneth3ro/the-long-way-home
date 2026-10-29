@@ -32,6 +32,10 @@ $null = New-Item -ItemType Directory -Path "$source/tests", "$source/assets", "$
 $tracked = @('project.godot', 'tests/fabricator_recipe_switching_test.gd',
     'tests/fabricator_recipe_switching_test.gd.uid', 'assets/sample.png', 'assets/sample.png.import',
     'saves/private.json', '.godot/cache')
+$null = New-Item -ItemType Directory -Path "$source/tools"
+[IO.File]::WriteAllText("$source/tools/run-local-tests.ps1", '# inert runner identity')
+[IO.File]::WriteAllText("$source/AGENTS.md", 'inert policy identity')
+$tracked += @('tools/run-local-tests.ps1', 'AGENTS.md')
 # This pinned identity is inert text, never an executable or a Godot installation.
 $inertEngine = Join-Path $fixture 'pinned-engine.txt'
 [IO.File]::WriteAllText($inertEngine, 'inert identity fixture')
@@ -166,6 +170,10 @@ try {
             param($Source, $Parent, $Tracked)
             & $stageFunction $Source $fixture $Tracked
         }
+        function Get-NativeSourceIdentity {
+            [pscustomobject]@{ Revision = ('a' * 40); Working = ' M project.godot';
+                Index = 'inert-index'; Tracked = $tracked }
+        }
         function Invoke-BoundedProcess {
             param($Executable, $Arguments, $Directory, $ExcerptBytes)
             Require ($Executable -ne $hostExe) 'Pinned binary was invoked'
@@ -181,6 +189,55 @@ try {
         Require ((Invoke-LocalTests $source 'NativePlan' $hostExe (Get-FileHash $hostExe).Hash) -eq 0) 'Plan failed'
     }
     $nativeStage = New-InputStage $source $fixture $tracked
+    Check 'first-run review scope binds identities without authorizing execution' {
+        function Get-NativeSourceIdentity {
+            [pscustomobject]@{ Revision = ('a' * 40); Working = ' M project.godot';
+                Index = 'inert-index'; Tracked = $tracked }
+        }
+        function Invoke-BoundedProcess { throw 'Review scope attempted a process' }
+        $snapshot = [pscustomobject]@{ Identity = (Get-NativeSourceIdentity); Inputs = $nativeStage.Inputs }
+        $scope = New-FirstRunReviewScope $inertEngine $inertHash $nativeStage $snapshot
+        Require ($scope.Authorization -ceq 'INACTIVE' -and $scope.Routine -ceq 'INACTIVE') 'Scope grants permission'
+        Require ($scope.Revision -ceq ('a' * 40) -and $scope.Source -ceq $source -and
+            $scope.StageDirectory -ceq $nativeStage.Directory -and $scope.Inputs.Count -eq 5) 'Source/stage identity missing'
+        Require ($scope.RunnerPath -ceq (Join-Path $source 'tools/run-local-tests.ps1') -and
+            $scope.Controls[0].Sha256 -ceq (Get-FileHash "$source/tools/run-local-tests.ps1").Hash -and
+            $scope.IndexSha256 -match '^[A-F0-9]{64}$') 'Runner/control/index identity missing'
+        Require ($scope.Commands.Count -eq 2 -and $scope.Commands[0].Executable -ceq $inertEngine -and
+            $scope.Commands[1].Sha256 -ceq $inertHash -and $scope.MaxAttemptsPerPhase -eq 1 -and
+            $scope.MaxConcurrentProcesses -eq 1 -and $scope.EvidenceDirectory -ceq (Join-Path $source 'artifacts/logs')) 'Review limits missing'
+        Reject { Assert-NativeExecutionAuthorization } 'inactive'
+        # Repeated successful planning cannot consume or unlock permission.
+        $null = New-FirstRunReviewScope $inertEngine $inertHash $nativeStage $snapshot
+        Reject { Assert-NativeExecutionAuthorization } 'inactive'
+        Reject { Assert-NativeExecutionAuthorization -Scope $scope } 'parameter'
+    }
+    Check 'first-run review rejects changed static snapshot identity and bytes' {
+        $reviewIdentity = [pscustomobject]@{ Revision = ('a' * 40); Working = ''; Index = 'inert-index'; Tracked = $tracked }
+        function Get-NativeSourceIdentity { return $reviewIdentity }
+        function Invoke-BoundedProcess { throw 'Review scope attempted a process' }
+        Reject { New-FirstRunReviewScope $inertEngine $inertHash $nativeStage $null } 'snapshot required'
+        foreach ($key in @('Revision', 'Working', 'Index')) {
+            $old = $reviewIdentity.PSObject.Copy(); $old.$key = 'changed'
+            $snapshot = [pscustomobject]@{ Identity = $old; Inputs = $nativeStage.Inputs }
+            Reject { New-FirstRunReviewScope $inertEngine $inertHash $nativeStage $snapshot } 'Source changed'
+        }
+        $snapshot = [pscustomobject]@{ Identity = $reviewIdentity; Inputs = @() }
+        Reject { New-FirstRunReviewScope $inertEngine $inertHash $nativeStage $snapshot } 'Working inputs changed'
+    }
+    Check 'first-run review rejects tampered stage engine and missing control identity' {
+        $identity = [pscustomobject]@{ Revision = ('a' * 40); Working = ''; Index = 'inert-index'; Tracked = $tracked }
+        function Get-NativeSourceIdentity { return $identity }
+        function Invoke-BoundedProcess { throw 'Review scope attempted a process' }
+        $stage = New-InputStage $source $fixture $tracked
+        $snapshot = [pscustomobject]@{ Identity = $identity; Inputs = $stage.Inputs }
+        Reject { New-FirstRunReviewScope $inertEngine ('0' * 64) $stage $snapshot } 'mismatch'
+        [IO.File]::WriteAllText("$($stage.Directory)/project.godot", 'tampered')
+        Reject { New-FirstRunReviewScope $inertEngine $inertHash $stage $snapshot } 'input changed'
+        [IO.File]::Copy("$source/project.godot", "$($stage.Directory)/project.godot", $true)
+        $identity.Tracked = @($tracked | Where-Object { $_ -cne 'AGENTS.md' })
+        Reject { New-FirstRunReviewScope $inertEngine $inertHash $stage $snapshot } 'review identity missing'
+    }
     Check 'fixed command allowlist, limits and no arbitrary flags' {
         $commands = @(New-NativeCommandPlan $inertEngine $inertHash $nativeStage)
         Require ($commands.Count -eq 2) 'Wrong command count'
