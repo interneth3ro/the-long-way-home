@@ -22,8 +22,9 @@ migration below reuses only two legacy artwork sheets.
 
 Codex must follow the [Godot execution safety policy](AGENTS.md#godot-execution-safety)
 before using the setup or launch instructions below. Graphical execution requires
-explicit owner authorization; all headless execution is suspended following the
-PR #5 incident until the owner explicitly lifts that restriction.
+explicit owner authorization; headless execution remains suspended following the
+PR #5 incident, subject only to the separately authorized exact local-runner
+exception in that policy.
 
 - Godot **4.7.2 stable**, standard build. GDScript is the initial scripting language;
   no .NET SDK or third-party plugins are required.
@@ -42,8 +43,10 @@ Alternatively, import `project.godot` through Godot's Project Manager.
 
 The feature-branch [local PowerShell test runner](docs/LOCAL_TESTING.md) runs the
 existing Python static suite in this checkout. Its optional native plan copies
-tracked working inputs for inspection; all Godot execution paths remain disabled.
-See the guide for invocation, synthetic checks and the unapplied policy proposal.
+tracked working inputs for inspection. Stage B proposes controlled native activation
+requiring a fresh exact owner authorization, verified through GitHub, for each run.
+See the guide for the gate, first-run process and synthetic verification limits.
+No first engine run or recurring native run has been authorized.
 
 **F5** starts production V2 (P8 merged in PR #65). F6 with
 `scenes/main/main_v2.tscn` open also starts V2. For the legacy fallback, stop,

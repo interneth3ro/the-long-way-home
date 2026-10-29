@@ -31,6 +31,25 @@
   headless execution is suspended, including editor imports, headless scene
   launches, and GDScript tests executed through Godot. This restriction remains
   active until the owner explicitly lifts it.
+- Narrow conditional local-runner exception (inactive without separate exact
+  owner authorization): the reviewed, merged `tools/run-local-tests.ps1` may run
+  one cold headless editor import in its fresh external copy (60 seconds), then
+  only after PASS run `tests/fabricator_recipe_switching_test.gd` (30 seconds).
+  Actual static-suite PASS is required first. Each process has a 1,048,576-byte
+  combined output ceiling; commands are sequential, with no retries. Stop on
+  engine/script errors, assertion failure, missing/malformed completion, abnormal
+  exit, timeout, overflow, uncertain termination, or changed inputs/identity/approval.
+  The owner must separately authorize the exact displayed specification with a
+  fresh authenticated GitHub comment, as described in
+  [LOCAL_TESTING.md](docs/LOCAL_TESTING.md#controlled-native-activation-stage-b-pending-merge).
+  Approval binds the live merged runner/source revision, working status/index and
+  input hashes, executable path/SHA-256, new external stage, both complete command
+  arrays, limits, evidence destination and stop conditions. It expires after ten
+  minutes and cannot be reused for another stage. Merge, this policy text,
+  environment variables, local approval files and switches provide no approval.
+  Agents must never create the owner's authorization comment or invoke Native
+  during this code-only assignment. No first run or recurring run is authorized.
+  All other headless, graphical, performance and preservation restrictions remain.
 - While execution is restricted, use static code inspection, scene and resource
   text inspection, Git diff validation, Markdown and documentation checks, and
   other nonexecuting checks that invoke neither Godot nor project code.

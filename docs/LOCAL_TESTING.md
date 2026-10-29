@@ -1,4 +1,4 @@
-# Local testing runner (feature branch, pending merge)
+# Local testing runner (Stage B feature branch, pending merge)
 
 Use PowerShell **7+** on Windows, Git and Python on PATH, from the actual checkout:
 
@@ -7,27 +7,16 @@ pwsh -NoProfile -File tools/run-local-tests.ps1
 pwsh -NoProfile -File tests/local_runner_fixture_test.ps1
 ```
 
-The first command runs the unchanged suite in the source checkout:
+The first command runs the unchanged static suite:
 `python -B -m unittest discover -s tests -p 'static_*test.py'`.
-It retains the suite's historical Git baselines; a shallow checkout missing those
-objects fails. It prints revision, working status, phase results, process exit
-code and a diagnostic excerpt. Exit 0 means the requested static/plan operations
-passed; exit 1 means failure. Native import and recipe test always say **NOT RUN**.
-The fixture command uses inert temporary files and PowerShell subprocesses only.
-
-Git and Python resolve to the first application on PATH. No engine executable is
-discovered or invoked. Missing prerequisites, bad configuration, failed static
-checks, timeout and combined stdout/stderr overflow stop the runner. Static-suite
-nonzero exit is a suite failure; start/configuration failures, timeouts and output
-overflow are infrastructure failures. Successful static checks are not Godot
-parsing, gameplay, headless or graphical verification.
+Its historical Git baselines must be available. Exit 0 means requested operations
+passed; exit 1 means failure. Static success is not engine or runtime validation.
+The fixture suite uses inert temporary files, named helper mocks and harmless
+PowerShell children only. It neither executes Godot nor posts GitHub comments.
+Git, Python and (for Native only) authenticated GitHub CLI `gh` resolve to the first
+application on PATH; use trusted local installations. No engine discovery occurs.
 
 ## Native planning only
-
-`-Mode Native` fails unconditionally, before prerequisite discovery. There is no
-authorization token, environment variable or switch that enables engine execution.
-The following opt-in command only checks an executable's bytes and stages inputs;
-it never invokes that executable, including for a version check:
 
 ```powershell
 pwsh -NoProfile -File tools/run-local-tests.ps1 -Mode NativePlan `
@@ -35,180 +24,137 @@ pwsh -NoProfile -File tools/run-local-tests.ps1 -Mode NativePlan `
 ```
 
 Supply a real absolute path/hash to plan; the example is deliberately incomplete.
-The path and hash are printed. After static success, Git index regular-file entries
-select inputs, copied from **current working files**, including tracked staged and
-unstaged edits and staged additions. Untracked files are excluded: add intended new
-inputs to the index first. Missing/deleted approved inputs fail closed; stage their
-deletion in Git first. Unmerged entries, Git symlinks/submodules and filesystem
-reparse points fail closed. The process never modifies source files or runs code
-from the copy.
+NativePlan never invokes that binary, including for version/help. Static and
+NativePlan never call the restricted native dispatcher or request authorization.
+After static PASS, planning prints executable identity, source revision/status,
+stage path, every approved input/hash, and both fixed command arrays and limits.
 
-The inventory allows `project.godot`, the recipe-switching test and its UID, and
-reviewed resource extensions in assets, construction, dialogue, inventory,
-objectives, scenes and shaders. It preserves paths, UIDs, import sidecars and bytes.
-It excludes other tests, tools, docs, .git, .godot, artifacts, hidden paths, saves,
-settings, credential/secret names and unrelated ignored/untracked files. Extending
-the resource inventory requires review; check the printed complete input/hash list
-when a feature introduces a new resource type. Never track secrets in resource
-files: filename filtering cannot detect secrets embedded in approved content.
+Git index regular-file entries select inputs copied from **current working files**,
+including tracked staged/unstaged edits and staged additions. Untracked files are
+excluded; add intended new inputs first. Missing/deleted inputs fail closed; stage
+intentional deletions first. Unmerged entries, Git links/submodules and filesystem
+reparse points fail closed. The inventory allows `project.godot`, only the recipe
+switching test and its UID, and reviewed resource extensions under assets,
+construction, dialogue, inventory, objectives, scenes and shaders. Paths, UIDs,
+import sidecars and bytes are preserved. Other tests, tools, docs, hidden paths,
+.git, .godot, artifacts, saves, settings and credential/secret names are excluded.
+Filename filters cannot detect secrets embedded in approved content. Inventory
+expansion requires review.
 
-Each plan creates a unique `tlwh-native-plan-<GUID>` directory under the OS temp
-directory, outside the checkout. It prints its path and every included SHA-256.
-Copies and source hashes are compared. Changes during copying fail; this is not an
-atomic snapshot of concurrent editing, so avoid editing while planning. Stages,
-including partial stages on failure, are retained for inspection. The runner never
-automatically deletes them or other owner files. Routine output stays on console;
-retain only meaningful failure evidence under `artifacts/logs/` or
-`artifacts/evidence/` following [repository preservation rules](../AGENTS.md).
-The fixture test removes only its freshly created synthetic temporary tree.
+Each plan/run creates a new `tlwh-native-plan-<GUID>` under OS temp, outside the
+checkout. Source and copy hashes are compared. Stages (including partial failures)
+remain for inspection; the runner never deletes owner files or stages. These are
+observational checks, not an atomic snapshot: avoid editing during a plan/run.
+Only the fixture's freshly created synthetic tree is removed by the fixture.
 
-## Restricted native dispatcher (Stage A code only, pending merge)
+## Controlled native activation (Stage B, pending merge)
 
-The dry-run prints this sequential plan using only the explicitly pinned binary:
+**No first engine run or recurring native run has been authorized. Godot was NOT
+RUN during this implementation.** Merge and the conditional policy amendment in
+[AGENTS.md](../AGENTS.md#godot-execution-safety) do not authorize execution.
 
-1. `--headless --editor --path <stage> --quit`: cold import, 60 seconds.
-2. Only after successful import: `--headless --path <stage> --script res://tests/fabricator_recipe_switching_test.gd`, 30 seconds.
+After review and merge, the owner may start the following command in their own
+interactive console to prepare a request for a separate exact authorization:
 
-`New-NativeCommandPlan` constructs these two commands as data, rechecks the pinned
-identity, and rejects changed staged bytes, unexpected files/directories and links.
-There are no parameters for extra arguments, scripts, scenes or limits.
-`Invoke-SyntheticNativeSequence` consumes fabricated process-result records only:
-static PASS permits import; import PASS permits the test; every failure stops the
-sequence without retries. It returns separate static/import/native outcomes,
-command/identity/stage data, a failure reason and a diagnostic decoded from at most
-4096 raw bytes. The command arguments print as unambiguous JSON arrays. These
-are **synthetic outcomes**, never evidence of engine execution.
-Neither of those helpers launches processes or accepts an executor callback.
-Stage A adds `Invoke-RestrictedNativeDispatch`, an internal real-execution
-implementation with **no caller in any public mode**. It is tested only through
-scoped named helper doubles. Do not invoke it directly: dot-sourcing helpers is
-for non-Godot fixtures, not owner authorization to run the engine. There is no
-executor callback, bypass flag, environment variable, hidden token, extra command,
-script or limit parameter. The public `Native` mode still fails unconditionally,
-before prerequisites, staging or dispatch. Static and NativePlan never call it.
+```powershell
+pwsh -NoProfile -File tools/run-local-tests.ps1 -Mode Native `
+  -GodotPath 'C:\absolute\reviewed\Godot.exe' -GodotSha256 '<64 hexadecimal SHA-256 characters>'
+```
 
-The dormant implementation creates its own fresh external stage from approved
-tracked working files. It records HEAD, full porcelain working status, input
-hashes, executable path/hash, stage path, attempted command arrays and limits,
-separate static/import/native status, reason and bounded diagnostic. A non-PASS
-static status returns without any identity lookup, staging or process call.
-Before each prospective launch it rechecks revision, working status, index,
-approved source inventory and source/stage hashes, stage identity and separation,
-inventory and filesystem links. It rehashes the absolute pinned executable last,
-immediately before the fixed synchronous bounded call. There are two calls at
-most, one at a time, with no retry path. Static PASS is an internal precondition;
-the later activation PR must connect it to the actual static-suite outcome.
+This is not permission for an agent to start Native now. It does not accept scripts,
+scenes, extra engine arguments, test lists, timeouts, approval files, callbacks,
+environment overrides or an approval switch. Redirected console input/output is
+rejected before prerequisites. Dot-sourcing internal helpers is for non-Godot
+fixtures only and never supplies owner approval.
 
-Only after successful import may the copy contain a generated `.godot/` tree;
-its descendants are inspected without traversing links. Original inputs remain
-immutable and unexpected additions elsewhere fail closed. If a real engine
-rewrites an input sidecar, validation will stop; Stage A has not established
-compatibility with actual engine import behavior. Revision/status/hash checks
-detect observed changes, not a transactional snapshot or protection from hostile
-concurrent filesystem modification. Avoid editing during any later approved run.
+The first-run process is:
 
-Failures retain a unique, exclusively created `artifacts/logs/native-failure-<GUID>.json`
-in the source checkout, only after Git confirms the destination is ignored and
-path checks reject links. Evidence is capped at 64 KiB, contains phase results,
-revision, executable/stage identity, attempted arguments/limits, failure reason
-and diagnostics decoded from at most 4096 bytes. Working status is represented
-in evidence by SHA-256, along with a digest of the input path/hash inventory;
-the returned summary has the full status and input list.
-Evidence save errors are reported separately and never turn a failure into PASS.
-Existing evidence is never overwritten or deleted. Success creates no permanent
-log; disposable stages remain retained. Synthetic evidence lives only in the
-fixture-owned temporary source and is removed with that fixture tree.
+1. Require actual static-suite PASS (normal exit, zero code, certain termination).
+   Capture source identity and approved input hashes before static checks and
+   compare them with the subsequent stage. Any observed change stops the run.
+2. Create a fresh external copy. Check the exact source HEAD against live GitHub
+   `main` through the read-only authenticated CLI. Refuse working/staged changes
+   to tools, AGENTS.md or the Python static tests. The runner must reside at the
+   checkout's reviewed path. Gameplay working changes remain visible in the exact
+   inventory and must receive separate approval with that specification.
+3. Display the entire canonical JSON specification: merged runner/source commit,
+   source path, full working status/index, all input hashes, fresh stage, absolute
+   executable and SHA-256, both command arrays and deadlines/output limits,
+   ignored evidence destination, diagnostic/termination limits, no retries and
+   every stop condition. Review all fields before authorizing.
+4. Within ten minutes of that display, the owner `interneth3ro` must post a **new**
+   issue/PR conversation comment in `interneth3ro/the-long-way-home`, containing
+   exactly the displayed text `I authorize one TLWH native run: <specification SHA-256>`.
+   This is the separate explicit owner authorization, not a PR merge/review.
+   Agents must not create this authorization comment for the owner. Paste its
+   full `https://github.com/interneth3ro/the-long-way-home/pull/<number>#issuecomment-<id>`
+   (or `/issues/`) URL at the runner prompt. Blank input denies.
+5. The runner verifies the comment via GitHub's read-only API: exact repository,
+   URL, owner login and User type, exact body and fresh creation time. Missing,
+   denied, malformed, stale, non-owner, mismatched or unavailable records fail
+   closed. There is no local-record fallback and no secret approval token.
+6. Exclusively create `<stage>.approval.json` beside the external stage, recording
+   the specification, hash, owner-comment URL and expiration. Existing files are
+   never overwritten. This is an authorization record, not a permanent success
+   log. Each new invocation creates another stage/hash and needs a new comment;
+   the runner has no resume, record-loading, replay or automatic retry route.
+7. Before **each** engine call, revalidate live merged revision, approval comment,
+   expiry, unchanged local record, source revision/status/index, approved inventory,
+   source/stage hashes and no links/unexpected files. Rehash the absolute pinned
+   executable last, immediately before dispatch. Editing/deleting the comment
+   revokes subsequent phases. Expiration is ten minutes from display, including
+   review time; an already-started bounded process may finish after expiry.
 
-The shared bounded process helper is exercised using PowerShell subprocesses only.
-It enforces 1 MiB **combined raw stdout/stderr bytes** with asynchronous reads,
-retains at most that much stream data for classification, and limits console
-diagnostics to an excerpt of 4096 raw bytes. Errors beyond the excerpt remain visible to
-the classifier. Detection can consume up to one read buffer per stream beyond the
-ceiling; retained raw output stays bounded. Timeout and overflow fail, with a
-process-tree termination request and at most a two-second wait.
-Cleanup is best effort: escaped descendants, inherited pipes and host failures are
-not guaranteed recoverable. Timeout/overflow always report termination uncertainty,
-even if the root exits after a kill; the dispatcher stops further phases. Normal
-exit plus pipe EOF confirms only the observed process/pipes, not all possible
-escaped descendants. A disposable copy is not a security sandbox; a timeout cannot
-guarantee recovery from a host-wide freeze.
+Only these two sequential argument arrays exist:
 
-`Get-NativeOutcome` classifies `ERROR`, `SCRIPT ERROR`, parse errors and assertion
-errors on either stream as failures, including with exit zero. Native PASS also
-requires exit zero and exactly one completion record, on stdout as its last
-nonempty line: `Fabricator recipe switching regression failures: 0`. Positive
-failure counts, missing/malformed/duplicate completion, abnormal exits, uncertain
-termination, timeouts and overflow fail. Import does not require a test completion
-record. Later phases remain NOT RUN after any earlier failure.
+| Phase | Exact arguments (stage substituted) | Deadline | Combined raw stdout/stderr |
+| --- | --- | --- | --- |
+| Cold import | `["--headless","--editor","--path","<stage>","--quit"]` | 60 seconds | 1,048,576 bytes |
+| Recipe test, after import PASS only | `["--headless","--path","<stage>","--script","res://tests/fabricator_recipe_switching_test.gd"]` | 30 seconds | 1,048,576 bytes |
 
-The fixture suite checks the existing staging/preservation behavior plus fixed
-arguments and deadlines, sequential stop conditions, output classification,
-completion requirements, errors beyond the excerpt, Unicode byte accounting,
-timeout/overflow, changed identities/stages and the unconditional public gate.
-Stage A also exercises the real dispatcher with mocked launch results: command
-order/limits, import/native failures, source/index/stage/engine mutation between
-phases, allowed generated cache, unique bounded evidence, ignored-path refusal,
-owner-file preservation and evidence failures. An AST check proves the production
-script has no call to the dormant dispatcher; gate spies prove Native touches no
-prerequisite, stage or process helper even with a putative environment override.
-Only inert fixtures and harmless PowerShell child processes run. The unchanged
-Python suite retains all 43 test methods and historical Git preservation checks.
-Actual Godot parsing, import, test assertions, engine process-tree behavior and
-graphical behavior remain **NOT RUN**.
+The dispatcher accepts no arbitrary executor or alternate launch route. It stops
+without retries on engine/script/parse errors (including zero-exit errors),
+assertion failure, absent/malformed/duplicate completion, abnormal exit, timeout,
+output overflow, uncertain termination, or identity/input/approval changes.
+Native PASS requires exactly one completion record, as the last nonempty stdout
+line: `Fabricator recipe switching regression failures: 0`. Import requires no
+completion record. Only a generated `.godot/` tree is allowed after import, with
+no linked descendants. Rewritten source sidecars cause validation failure.
 
-## Proposed AGENTS.md amendment - not applied
+The returned summary distinguishes Static, Import, Native, Infrastructure and
+Authorization outcomes, provenance, attempted commands, reason, bounded diagnostic
+and evidence-save error. Pre-dispatch refusal leaves both engine phases NOT RUN;
+failed import leaves Native NOT RUN. Actual command attempts are recorded even
+when their final validation fails. Successful runs create no permanent success log.
 
-The following exact additional paragraph is a proposal for owner review. It does
-not lift the existing restriction:
+Failures retain exclusively created `artifacts/logs/native-failure-<GUID>.json`
+only after Git confirms the location is ignored and path checks reject links.
+Evidence is capped at 64 KiB and includes outcomes, commit, executable/stage,
+attempted arrays/limits, reason, at most 4096 diagnostic raw bytes, and SHA-256
+digests of working status and the input inventory. The console summary contains
+the full inventory/status. Save errors remain separate failures; owner files are
+never overwritten or deleted. Follow the [preservation policy](../AGENTS.md).
 
-> Narrow local-runner exception: only after a separate explicit owner approval
-> recording the reviewed runner commit, full native Godot executable path and
-> SHA-256, exact commands, disposable staging paths and limits, that reviewed
-> `tools/run-local-tests.ps1` may perform one cold headless import in its disposable
-> copy (`--headless --editor --path <approved-stage> --quit`, at most 60 seconds),
-> followed only on success by `--headless --path <approved-stage> --script
-> res://tests/fabricator_recipe_switching_test.gd` (at most 30 seconds). Each process
-> is limited to 1 MiB combined output; execute sequentially without retries and
-> stop on engine errors, assertion failure, missing/malformed completion, abnormal
-> exit, timeout, output overflow or uncertain termination. No other Godot
-> invocation, script, scene, extra flag, graphical launch, benchmark, prolonged
-> test, VM/SSH integration or freeze reproduction is permitted by this exception.
-> All other execution restrictions and preservation requirements remain active.
+## Validation and remaining limits
 
-The first real Godot run requires **separate owner approval after code review**
-with the reviewed commit, exact absolute executable path and SHA-256, both complete
-argument arrays, source revision/working-input status and hashes, approved fresh
-staging paths, deadlines/output limits, and all stop conditions above. The proposed
-exception must first be explicitly authorized and applied to AGENTS.md in a later
-reviewed change. A policy edit alone does not enable this implementation: that
-later change must replace the unconditional gate with a narrowly reviewed approval
-check and connect static success to the dormant fixed dispatcher. Stage A already
-implements the prospective bounded calls, per-launch validation, phase reporting
-and ignored failure evidence, but supplies no public activation route.
-No flag, environment variable or fixture record can enable real execution today.
-This PR changes neither AGENTS.md nor execution policy and adds no VM or CI integration.
+Synthetic tests cover fixed arrays/deadlines/byte limits, static gating, approval
+denial/expiry/owner/repository/hash/URL mismatches, offline API, exclusive records,
+record mutation, stage replay rejection, sequential failure stops, source/index/
+stage/executable mutation, completion classification, and bounded unique evidence.
+Only mocks establish the prospective native behavior. Python assertions and
+GDScript assertions are unchanged; report Python and PowerShell fixture counts
+separately from unexecuted engine tests.
 
-### First-run authorization checklist (future separate approval)
+The process helper asynchronously reads both streams, retaining at most 1 MiB
+combined raw output and 4096 diagnostic bytes. Detection may consume one read
+buffer per stream beyond the ceiling. Timeout/overflow requests process-tree
+termination with at most a two-second wait, always reporting uncertainty. Normal
+exit plus EOF certifies only observed process/pipes, not escaped descendants.
+A stage is not a security sandbox; host-wide freeze recovery is not guaranteed.
+GitHub author identity relies on the owner's account and trusted CLI/API; local
+path/hash checks do not defend against hostile concurrent filesystem changes.
 
-- Apply the approved narrow policy exception and review activation in a separate PR.
-- Record the exact reviewed runner commit and tested source revision, full working
-  status and every approved input path/SHA-256. Preserve the 43 existing Python
-  assertions and historical Git baselines; require static PASS first.
-- Select an exact absolute Godot executable path and compute its SHA-256 without
-  executing it. No Godot identity is selected or approved by Stage A fixtures;
-  their text identity and PowerShell child executable are not Godot candidates.
-- Approve a fresh absolute external `tlwh-native-plan-<GUID>` stage path and its
-  input inventory, and the ignored source `artifacts/logs/` evidence destination.
-  A later run must create a fresh copy; do not approve a stale committed snapshot.
-- Record both complete argument arrays with that exact path substituted:
-  `["--headless","--editor","--path","<approved-stage>","--quit"]` (60 seconds),
-  then `["--headless","--path","<approved-stage>","--script","res://tests/fabricator_recipe_switching_test.gd"]`
-  (30 seconds), only after clean import.
-- Approve 1,048,576 combined raw output bytes per process, 4096-byte diagnostic
-  excerpts, at most two seconds for best-effort termination, sequential execution,
-  no retries, and all failure/uncertain-termination stop conditions above.
-- Obtain explicit owner authorization for that exact first run. No engine path,
-  hash, native stage or first-run approval can be inferred from this code-only PR.
-
-Without engine execution, actual import compatibility, GDScript/runtime behavior,
-native completion output, process-tree recovery and host stability remain unverified.
+Actual Godot import compatibility, parsing, native assertions/completion output,
+process containment, graphical behavior and host stability remain **unverified**.
+No Godot invocation (including --version/--help), VM/SSH, CI, benchmark, prolonged
+run or freeze reproduction is authorized by this code-only assignment.
