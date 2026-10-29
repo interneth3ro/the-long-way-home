@@ -17,26 +17,10 @@ P8_BASE = "e14703e64aef961f18feba8a616acec00c4f069e"
 
 # B1 inventory and hotbar context-menu integration replace exactly these UI files.
 # Freeze normalized candidate bytes rather than exempting them from preservation.
-# Updated hotbar candidates require owner review before Native execution.
+# Updated compact inventory candidates require owner review before Native execution.
 B1_INVENTORY_SHA256 = {
-    "scenes/ui/inventory_ui.gd": "f06e97daf12847b32c38d52e007ba9b8628f8e706d4a67001e3ca0ca1ddde580",
-    "scenes/ui/inventory_ui.tscn": "21050cdb0976b6c4893f48a8e9ccf51a1ca4864f5ab2ec4f77d391467178c944",
-}
-
-# Compact inventory candidates: reverse only these exact presentation edits
-# before checking the existing reviewed hashes. Owner review required before Native.
-COMPACT_INVENTORY_REPLACEMENTS = {
-    "scenes/ui/inventory_ui.gd": [
-        ("const MATERIAL_SLOTS := 15\nconst EQUIPMENT_SLOTS := 5\n",
-         "const MATERIAL_SLOTS := 30\nconst EQUIPMENT_SLOTS := 10\n", 1),
-    ],
-    "scenes/ui/inventory_ui.tscn": [
-        ("offset_right = 400.0\n", "offset_right = 750.0\n", 1),
-        ("columns = 5\n", "columns = 10\n", 2),
-        ('text = "Hover totals · Left-click deploy · Right-click assign · Tab / Esc close"\n'
-         'autowrap_mode = 3\n',
-         'text = "Hover totals · Left-click deploy · Right-click assign · Tab / Esc close"\n', 1),
-    ],
+    "scenes/ui/inventory_ui.gd": "73c8ae7afaf1eb3cb603357beb91436244c31ab331b727bd9b06f10859533769",
+    "scenes/ui/inventory_ui.tscn": "d63315bf1286fe1fafc627ddba324041cd7552155706aa9f6e6ed17206509dec",
 }
 
 # The inventory hash now delegates artwork/quantity formatting to this exact
@@ -845,9 +829,6 @@ class V2ProductionHostStaticTest(unittest.TestCase):
                 actual = (ROOT / path).read_bytes()
                 if path in B1_INVENTORY_SHA256:
                     actual = actual.replace(b"\r\n", b"\n")
-                    for candidate, historical, count in COMPACT_INVENTORY_REPLACEMENTS[path]:
-                        self.assertEqual(actual.count(candidate.encode("utf-8")), count, path)
-                        actual = actual.replace(candidate.encode("utf-8"), historical.encode("utf-8"))
                     self.assertEqual(hashlib.sha256(actual).hexdigest(), B1_INVENTORY_SHA256[path], path)
                     continue
                 if path in B1_REPLACEMENTS or path in HOTBAR_REPLACEMENTS:

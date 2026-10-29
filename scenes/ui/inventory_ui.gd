@@ -10,7 +10,7 @@ signal opened
 
 const MATERIAL_SLOTS := 15
 const EQUIPMENT_SLOTS := 5
-const SLOT_SIZE := Vector2(64, 64)
+const SLOT_SIZE := Vector2(42, 42)
 # Shared presentation lookup; storage remains independent of UI.
 const ITEM_ICONS := ItemPresentation.ICONS
 
@@ -25,6 +25,12 @@ var _assignment_machine: MachineDefinition
 
 
 func _ready() -> void:
+	var panel_style := _panel.get_theme_stylebox("panel").duplicate() as StyleBox
+	panel_style.content_margin_left = 8
+	panel_style.content_margin_right = 8
+	panel_style.content_margin_top = 6
+	panel_style.content_margin_bottom = 6
+	_panel.add_theme_stylebox_override("panel", panel_style)
 	_assignment_menu = PopupMenu.new()
 	_assignment_menu.name = "AssignToHotbar"
 	_assignment_menu.force_native = false
@@ -87,8 +93,8 @@ func _create_slots(grid: GridContainer, count: int) -> void:
 		var icon := TextureRect.new()
 		icon.name = "Icon"
 		icon.set_anchors_and_offsets_preset(Control.PRESET_CENTER_TOP)
-		icon.position = Vector2(-18, 5)
-		icon.size = Vector2(36, 36)
+		icon.position = Vector2(-11, 1)
+		icon.size = Vector2(22, 22)
 		icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 		icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -96,23 +102,23 @@ func _create_slots(grid: GridContainer, count: int) -> void:
 		var symbol := Label.new()
 		symbol.name = "Symbol"
 		symbol.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
-		symbol.offset_top = 5
-		symbol.offset_bottom = 41
+		symbol.offset_top = 1
+		symbol.offset_bottom = 23
 		symbol.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		symbol.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-		symbol.add_theme_font_size_override("font_size", 18)
+		symbol.add_theme_font_size_override("font_size", 14)
 		symbol.add_theme_color_override("font_color", Color(0.84, 0.65, 0.45))
 		symbol.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		slot.add_child(symbol)
 		var quantity := Label.new()
 		quantity.name = "Quantity"
 		quantity.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
-		quantity.offset_left = 4
-		quantity.offset_right = -4
-		quantity.offset_top = -24
-		quantity.offset_bottom = -3
+		quantity.offset_left = 2
+		quantity.offset_right = -2
+		quantity.offset_top = -19
+		quantity.offset_bottom = -1
 		quantity.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-		quantity.add_theme_font_size_override("font_size", 16)
+		quantity.add_theme_font_size_override("font_size", 12)
 		quantity.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		slot.add_child(quantity)
 

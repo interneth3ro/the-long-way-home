@@ -289,10 +289,12 @@ The original implementation and the owner-approved refinement both passed
 the restricted Native runner (static suite, cold import and existing recipe
 regression). Hotbar graphical/interaction acceptance remains separate; the
 feature is pending merge. The hotbar refinement required no preservation-assertion changes. The separate
-compact inventory follow-up narrows the panel from 726 to 376 units, preserves
-64-unit slots and overflow access, and wraps the hint. Its exact-change
-preservation amendment requires owner review before Native execution; graphical
-acceptance remains separate.
+compact inventory final-size refinement narrows the panel to 242 units (from
+726 originally and 376 in the first compact candidate), with 42-unit slots,
+four-unit gaps and reduced local padding. It preserves overflow access and B1
+styling; the hint is `Tab / Esc to close`, with deployment/assignment guidance
+in tooltips. Its exact-file preservation amendment requires owner review before
+Native execution; graphical acceptance remains separate.
 See the [implementation and acceptance checklist](../README.md#b1-hybrid-hotbar-feature-branch-pending-merge).
 No movable stacks, final artwork, new tools or disk persistence are added.
 

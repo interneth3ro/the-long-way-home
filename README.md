@@ -161,7 +161,8 @@ Owner acceptance checks, when the owner chooses to launch graphically:
 The persistent left-side inventory uses the shared B1 theme and panel with a
 15-position Materials grid (three rows of five) and a five-position Machines /
 Equipment row (compact follow-up on `codex/compact-20-slot-inventory`, pending merge). All empty positions remain visible and subdued; they have no
-action or tooltip. Occupied positions show a 36-unit icon/symbol and quantity.
+action or tooltip. Occupied positions show a 22-unit icon or 14-point symbol
+and a 12-point quantity.
 Hover shows the full name and exact total. Materials have no click action;
 one left-click on a packaged machine requests deployment through the unchanged
 construction controller. Unavailable/non-machine equipment is disabled and marked
@@ -185,15 +186,26 @@ the equipment row with section, name and exact total; overflow machines retain
 direct deployment. This is a presentation fallback, with no storage capacity,
 stack records, pagination, rearrangement or transaction changes.
 
-Both grids use five-column GridContainers, 64-unit slots and six-unit gaps. The
-panel keeps its left/top placement (24, 100); its width shrinks from 726 to 376
-units (344-unit grid plus 16-unit padding on each side). The hint wraps to the
-new width. Height remains content-driven: the slot rows still occupy 268 units
-plus section spacing, headings, hint and padding. Overflow adds its existing
-bounded 64-unit scroll area and container gap. Vertical containers retain the
-four rows and optional overflow within the 1280 x 720 reference canvas. Automatic project scaling gives roughly
-51-pixel slots at the 1024 x 576 minimum; appearance/readability need owner
-acceptance. No display settings or player UI-scale control changes are included.
+Both grids use five-column GridContainers, 42-unit slots and four-unit gaps.
+The panel keeps its left/top placement (24, 100); its width is 242 units
+(226-unit grid plus eight-unit padding on each side), down from the initial
+compact candidate's 376 and the original 726. A private copy of the shared panel
+style changes only padding: eight horizontally, six vertically. B1 colors,
+transparency, borders and corners remain unchanged; the hotbar and shared theme
+are untouched. Section spacing is four units; the title is 18-point, section
+headings/hint are 14-point, and the hint reads `Tab / Esc to close`. Deployment
+and hotbar-assignment guidance remains in machine and overflow tooltips.
+
+Height remains content-driven. Static font/spacing arithmetic estimates about
+301 units without overflow, 369 with its existing 64-unit scroll area. These
+are layout estimates, not measured Godot output. At 1024 x 576 the existing
+0.8 scaling gives a roughly 194-pixel-wide panel, 33.6-pixel slots,
+17.6-pixel icons, 11.2-pixel symbols/headings and 9.6-pixel quantities. The panel
+bounds fit both supported canvases by static inspection. IBM Plex Sans Regular
+advance metrics put the widest quantity at about 36.5 of 38 available logical
+units; its 15.6-unit line height fits the 18-unit quantity region. Rasterization,
+minimum-resolution readability and actual container sizing need owner testing.
+No display settings or player UI-scale control changes are included.
 
 Tab replaces I in the inventory InputMap action. Inventory consumes Tab presses
 and repeats in `_input`, before GUI focus navigation; only the initial press
@@ -247,15 +259,17 @@ Owner acceptance, when the owner chooses to launch graphically:
    current gameplay cannot populate it without additional item definitions.
 
 Compact inventory follow-up validation (pending merge): all 46 Python static
-checks PASS; Native execution awaits owner review of the preservation amendment.
-That assertion reverses only the two slot counts, panel right edge, two column
-properties and hint wrapping before checking the original normalized SHA-256
-hashes. No hash baseline, runner policy, hotbar code or native assertions change.
-No graphical acceptance is claimed. The current catalog cannot populate overflow;
-code inspection confirms the same scroll rows start at material index 15/equipment
-index 5, with deployment and assignment connections preserved. When future catalog
-types populate it, owner acceptance should include scrolling both sections and
-deploying/assigning overflow equipment.
+checks PASS; Native execution awaits owner review of the final-size preservation
+amendment. The two normalized inventory file hashes pin the complete final scene
+and script. The earlier compact-candidate reversal mapping is removed; all other
+preservation comparisons remain unchanged. No runner policy, hotbar code or native
+assertions change. No graphical acceptance is claimed. The current catalog cannot
+populate overflow; code inspection confirms the same scroll rows start at material
+index 15/equipment index 5, with deployment and assignment connections preserved.
+Owner acceptance should check quantities including three digits and Qa suffixes
+at both display sizes, tooltips, all empty slots, Tab/Esc, machine left/right-click
+and the unchanged hotbar. When future catalog types populate overflow, also check
+scrolling both sections and deploying/assigning overflow equipment.
 
 ## B1 hybrid hotbar (feature branch, pending merge)
 

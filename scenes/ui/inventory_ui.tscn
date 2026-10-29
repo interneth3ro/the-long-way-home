@@ -30,31 +30,33 @@ text = "Inventory (Tab)"
 visible = false
 offset_left = 24.0
 offset_top = 100.0
-offset_right = 400.0
+offset_right = 266.0
 mouse_filter = 0
 
 [node name="Content" type="VBoxContainer" parent="HUD/Panel"]
 layout_mode = 2
 mouse_filter = 2
-theme_override_constants/separation = 6
+theme_override_constants/separation = 4
 
 [node name="Title" type="Label" parent="HUD/Panel/Content"]
 layout_mode = 2
 mouse_filter = 2
 theme_type_variation = &"B1Title"
+theme_override_font_sizes/font_size = 18
 text = "Inventory"
 
 [node name="MaterialsTitle" type="Label" parent="HUD/Panel/Content"]
 layout_mode = 2
 mouse_filter = 2
 theme_type_variation = &"B1MutedLabel"
+theme_override_font_sizes/font_size = 14
 text = "Materials"
 
 [node name="Materials" type="GridContainer" parent="HUD/Panel/Content"]
 layout_mode = 2
 mouse_filter = 2
-theme_override_constants/h_separation = 6
-theme_override_constants/v_separation = 6
+theme_override_constants/h_separation = 4
+theme_override_constants/v_separation = 4
 columns = 5
 
 [node name="Divider" type="HSeparator" parent="HUD/Panel/Content"]
@@ -66,13 +68,14 @@ theme_type_variation = &"B1InventoryDivider"
 layout_mode = 2
 mouse_filter = 2
 theme_type_variation = &"B1MutedLabel"
+theme_override_font_sizes/font_size = 14
 text = "Machines / Equipment"
 
 [node name="Equipment" type="GridContainer" parent="HUD/Panel/Content"]
 layout_mode = 2
 mouse_filter = 2
-theme_override_constants/h_separation = 6
-theme_override_constants/v_separation = 6
+theme_override_constants/h_separation = 4
+theme_override_constants/v_separation = 4
 columns = 5
 
 [node name="Overflow" type="ScrollContainer" parent="HUD/Panel/Content"]
@@ -92,7 +95,8 @@ theme_override_constants/separation = 4
 layout_mode = 2
 mouse_filter = 2
 theme_type_variation = &"B1MutedLabel"
-text = "Hover totals · Left-click deploy · Right-click assign · Tab / Esc close"
+theme_override_font_sizes/font_size = 14
+text = "Tab / Esc to close"
 autowrap_mode = 3
 
 [connection signal="pressed" from="HUD/Toggle" to="." method="_toggle"]
