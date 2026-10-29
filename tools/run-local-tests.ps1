@@ -8,7 +8,7 @@ param(
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
-# Generic bounded subprocess helper. No Godot execution call site exists.
+# Generic bounded subprocess helper. Public modes never dispatch Godot.
 function Invoke-BoundedProcess {
     param([string]$Executable, [string[]]$Arguments, [string]$Directory,
           [int]$Seconds = 60, [int]$MaxBytes = 1048576, [int]$ExcerptBytes = 4096)
@@ -150,6 +150,162 @@ function New-NativeCommandPlan {
             Arguments = $arguments; Directory = $directory;
             Seconds = $(if ($phase -eq 'Import') { 60 } else { 30 }); MaxBytes = 1048576 }
     }
+}
+
+# Internal Stage A implementation: deliberately has NO public entry-point caller.
+# Tests replace named helpers in child scope; no executable/callback injection API.
+function Get-NativeSourceIdentity {
+    param([string]$Source)
+    Assert-PlainPath $Source
+    $git = @(Get-Command git -CommandType Application -ErrorAction Stop)[0].Source
+    $values = @{}
+    foreach ($key in @('Root', 'Revision', 'Working', 'Index')) {
+        $arguments = switch ($key) {
+            Root { @('rev-parse', '--show-toplevel') }
+            Revision { @('rev-parse', 'HEAD') }
+            Working { @('status', '--porcelain=v1', '--untracked-files=normal') }
+            Index { @('ls-files', '--stage', '-z') }
+        }
+        $r = Invoke-BoundedProcess $git $arguments $Source -ExcerptBytes 1048576
+        if ($r.Status -ne 'PASS' -or -not $r.TerminationCertain -or $r.ExitCode -ne 0) {
+            throw "Source identity unavailable: $key"
+        }
+        $values[$key] = $r.Stdout
+    }
+    if (-not ([IO.Path]::GetFullPath($values.Root.Trim())).Equals(
+        [IO.Path]::GetFullPath($Source), [StringComparison]::OrdinalIgnoreCase) -or
+        $values.Revision.Trim() -notmatch '^([0-9a-f]{40}|[0-9a-f]{64})$') { throw 'Invalid source identity.' }
+    $tracked = @(foreach ($record in $values.Index.Split([char]0, [StringSplitOptions]::RemoveEmptyEntries)) {
+        if ($record -notmatch '^100(644|755) [0-9a-f]+ 0\t(.+)$') { throw 'Unsafe or unresolved source index.' }
+        $Matches[2]
+    })
+    [pscustomobject]@{ Revision = $values.Revision.Trim(); Working = $values.Working;
+        Index = $values.Index; Tracked = $tracked }
+}
+
+function Assert-NativeDispatchInputs {
+    param($Stage, $Identity, [bool]$Imported)
+    if (-not [IO.Path]::IsPathFullyQualified($Stage.Directory) -or
+        -not [IO.Path]::IsPathFullyQualified($Stage.Source)) { throw 'Stage paths must be absolute.' }
+    $directory = [IO.Path]::GetFullPath($Stage.Directory).TrimEnd('\', '/')
+    $source = [IO.Path]::GetFullPath($Stage.Source).TrimEnd('\', '/')
+    if ([IO.Path]::GetFileName($directory) -notmatch '^tlwh-native-plan-[0-9a-f]{32}$' -or
+        $directory.Equals($source, [StringComparison]::OrdinalIgnoreCase) -or
+        $directory.StartsWith($source + [IO.Path]::DirectorySeparatorChar, [StringComparison]::OrdinalIgnoreCase) -or
+        $source.StartsWith($directory + [IO.Path]::DirectorySeparatorChar, [StringComparison]::OrdinalIgnoreCase)) {
+        throw 'Stage identity or source separation invalid.'
+    }
+    $current = Get-NativeSourceIdentity $Stage.Source
+    foreach ($key in @('Revision', 'Working', 'Index')) {
+        if ($current.$key -cne $Identity.$key) { throw "Source changed: $key" }
+    }
+    $approved = @($current.Tracked | Where-Object { Test-ApprovedInput $_ })
+    if ($approved.Count -ne $Stage.Inputs.Count -or
+        @($approved | Select-Object -Unique).Count -ne $approved.Count) { throw 'Source inventory changed.' }
+    foreach ($entry in $Stage.Inputs) {
+        if ($entry.Path -cnotin $approved) { throw 'Unapproved source input.' }
+        foreach ($root in @($Stage.Source, $Stage.Directory)) {
+            $path = Join-Path $root $entry.Path
+            Assert-PlainPath $path
+            if ((Get-FileHash -LiteralPath $path -Algorithm SHA256).Hash -cne $entry.Sha256) {
+                throw "Source or staged input changed: $($entry.Path)"
+            }
+        }
+    }
+    # Import may create .godot only. Traverse it with the same no-link rule;
+    # never delete it or allow additions elsewhere. Original inputs stay immutable.
+    Assert-PlainPath $Stage.Directory
+    $queue = [Collections.Generic.Queue[string]]::new()
+    $queue.Enqueue($Stage.Directory)
+    while ($queue.Count) {
+        foreach ($item in Get-ChildItem -Force -LiteralPath $queue.Dequeue()) {
+            Assert-PlainPath $item.FullName
+            $relative = [IO.Path]::GetRelativePath($Stage.Directory, $item.FullName).Replace('\', '/')
+            if ($Imported -and ($relative -ceq '.godot' -or $relative.StartsWith('.godot/', [StringComparison]::Ordinal))) {
+                if ($item.PSIsContainer) { $queue.Enqueue($item.FullName) }
+                continue
+            }
+            if ($item.PSIsContainer) {
+                if (-not @($approved | Where-Object { $_.StartsWith($relative + '/', [StringComparison]::Ordinal) }).Count) {
+                    throw 'Unexpected staged directory.'
+                }
+                $queue.Enqueue($item.FullName)
+            } elseif ($relative -cnotin $approved) { throw 'Unexpected staged file.' }
+        }
+    }
+}
+
+function Save-NativeFailureEvidence {
+    param([string]$Source, $Summary)
+    $directory = Join-Path $Source 'artifacts/logs'
+    Assert-PlainPath $directory
+    $path = Join-Path $directory ('native-failure-' + [Guid]::NewGuid().ToString('N') + '.json')
+    $git = @(Get-Command git -CommandType Application -ErrorAction Stop)[0].Source
+    $ignored = Invoke-BoundedProcess $git @('check-ignore', '--quiet', '--', $path) $Source
+    if ($ignored.Status -ne 'PASS' -or $ignored.ExitCode -ne 0 -or -not $ignored.TerminationCertain) {
+        throw 'Failure evidence destination is not confirmed ignored.'
+    }
+    # Inventory is reported to the caller; evidence retains bounded diagnostics
+    # and provenance, never an unbounded copy of the complete working-status text.
+    $record = [ordered]@{}
+    foreach ($key in @('Static', 'Import', 'Native', 'Reason', 'Revision', 'Executable', 'Sha256',
+        'StageDirectory', 'Commands', 'Diagnostic')) { $record[$key] = $Summary.$key }
+    $hasher = [Security.Cryptography.SHA256]::Create()
+    try {
+        $record.WorkingSha256 = [BitConverter]::ToString($hasher.ComputeHash(
+            [Text.Encoding]::UTF8.GetBytes($Summary.Working))).Replace('-', '')
+        $record.InputsSha256 = [BitConverter]::ToString($hasher.ComputeHash(
+            [Text.Encoding]::UTF8.GetBytes((ConvertTo-Json -InputObject @($Summary.Inputs) -Depth 4 -Compress)))).Replace('-', '')
+    } finally { $hasher.Dispose() }
+    $bytes = [Text.Encoding]::UTF8.GetBytes(($record | ConvertTo-Json -Depth 8))
+    if ($bytes.Length -gt 65536) { throw 'Failure evidence exceeds 64 KiB.' }
+    $null = [IO.Directory]::CreateDirectory($directory)
+    Assert-PlainPath $directory
+    $stream = [IO.File]::Open($path, [IO.FileMode]::CreateNew, [IO.FileAccess]::Write, [IO.FileShare]::None)
+    try { $stream.Write($bytes, 0, $bytes.Length) } finally { $stream.Dispose() }
+    return $path
+}
+
+function Invoke-RestrictedNativeDispatch {
+    [CmdletBinding()]
+    param([string]$Source, [string]$Engine, [string]$EngineHash,
+          [ValidateSet('PASS', 'FAIL', 'NOT RUN')][string]$StaticStatus)
+    $summary = [pscustomobject]@{ Static = $StaticStatus; Import = 'NOT RUN'; Native = 'NOT RUN';
+        Reason = 'STATIC_NOT_PASS'; Revision = ''; Working = ''; Executable = $Engine; Sha256 = $EngineHash;
+        StageDirectory = ''; Inputs = @(); Commands = @(); Diagnostic = ''; Evidence = ''; EvidenceError = '' }
+    if ($StaticStatus -ne 'PASS') { return $summary }
+    $phase = 'Import'
+    try {
+        Assert-PinnedEngine $Engine $EngineHash
+        $identity = Get-NativeSourceIdentity $Source
+        $summary.Revision = $identity.Revision; $summary.Working = $identity.Working
+        $stage = New-InputStage $Source ([IO.Path]::GetTempPath()) $identity.Tracked
+        $summary.StageDirectory = $stage.Directory; $summary.Inputs = $stage.Inputs
+        $commands = @(New-NativeCommandPlan $Engine $EngineHash $stage)
+        foreach ($command in $commands) {
+            $phase = $command.Phase
+            $summary.Commands += $command
+            $summary.$phase = 'FAIL'
+            Assert-NativeDispatchInputs $stage $identity ($phase -eq 'Native')
+            # Last check before the one synchronous bounded launch. No retries.
+            Assert-PinnedEngine $Engine $EngineHash
+            $result = Invoke-BoundedProcess $command.Executable $command.Arguments $command.Directory `
+                -Seconds $command.Seconds -MaxBytes $command.MaxBytes -ExcerptBytes 4096
+            $outcome = Get-NativeOutcome $phase $result
+            $summary.$phase = $outcome.Status; $summary.Reason = $outcome.Reason
+            $summary.Diagnostic = $outcome.Diagnostic
+            if ($outcome.Status -ne 'PASS') { break }
+        }
+    } catch {
+        $summary.$phase = 'FAIL'; $summary.Reason = 'DISPATCH_VALIDATION_OR_PROCESS_FAILURE'
+        $message = [Text.Encoding]::UTF8.GetBytes([string]$_)
+        $summary.Diagnostic = [Text.Encoding]::UTF8.GetString($message, 0, [Math]::Min(4096, $message.Length))
+    }
+    if ($summary.Import -eq 'FAIL' -or $summary.Native -eq 'FAIL') {
+        try { $summary.Evidence = Save-NativeFailureEvidence $Source $summary }
+        catch { $summary.EvidenceError = 'Failure evidence could not be saved; inspect returned bounded diagnostic.' }
+    }
+    return $summary
 }
 
 function Get-NativeOutcome {
@@ -339,7 +495,7 @@ function Invoke-LocalTests {
     return $exitCode
 }
 
-# Dot-sourcing exposes only helpers for harmless synthetic fixtures.
+# Dot-sourcing is used by non-Godot fixtures; it does not authorize dispatch.
 if ($MyInvocation.InvocationName -ne '.') {
     exit (Invoke-LocalTests (Split-Path $PSScriptRoot -Parent) $Mode $GodotPath $GodotSha256)
 }

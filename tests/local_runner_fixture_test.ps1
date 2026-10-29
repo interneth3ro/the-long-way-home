@@ -42,6 +42,46 @@ function NativeResult([string]$Stdout = '', [string]$Stderr = '',
     [pscustomobject]@{ Status = $Status; ExitCode = $ExitCode; Stdout = $Stdout; Stderr = $Stderr;
         Bytes = [Text.Encoding]::UTF8.GetByteCount($Stdout + $Stderr); TerminationCertain = $Certain }
 }
+# Exercise the real dispatcher with scoped, named non-Godot doubles only.
+# The production API has no injection parameters. Unexpected process calls throw.
+function Invoke-DispatchFixture([object[]]$Results, [string]$Mutation = '') {
+    $calls = [Collections.Generic.List[object]]::new()
+    $state = @{ IdentityReads = 0; Stage = $null }
+    $stageFunction = (Get-Command New-InputStage).ScriptBlock
+    function Get-NativeSourceIdentity {
+        param($Source)
+        $state.IdentityReads++
+        [pscustomobject]@{ Revision = ('a' * 40); Working = ' M project.godot';
+            Index = $(if ($Mutation -eq 'source' -and $state.IdentityReads -gt 2) { 'changed' } else { 'inert-index' });
+            Tracked = $tracked }
+    }
+    function New-InputStage {
+        param($Source, $Parent, $Tracked)
+        $state.Stage = & $stageFunction $Source $fixture $Tracked
+        return $state.Stage
+    }
+    function Invoke-BoundedProcess {
+        param($Executable, $Arguments, $Directory, $Seconds, $MaxBytes, $ExcerptBytes)
+        if ($Arguments[0] -eq 'check-ignore') { return NativeResult }
+        Require ($Executable -ceq $inertEngine -and $Arguments[0] -ceq '--headless') 'Unexpected process'
+        Require ($MaxBytes -eq 1048576 -and $ExcerptBytes -eq 4096) 'Wrong dispatch limits'
+        $calls.Add([pscustomobject]@{ Arguments = $Arguments; Seconds = $Seconds })
+        if ($calls.Count -eq 1) {
+            switch ($Mutation) {
+                cache { $null = New-Item -ItemType Directory -Path "$Directory/.godot" }
+                stage { [IO.File]::WriteAllText("$Directory/project.godot", 'tampered') }
+                extra { [IO.File]::WriteAllText("$Directory/unexpected.txt", 'tampered') }
+                engine { [IO.File]::WriteAllText($inertEngine, 'tampered') }
+            }
+        }
+        if ($calls.Count -gt $Results.Count) { throw 'Unexpected retry' }
+        return $Results[$calls.Count - 1]
+    }
+    try {
+        $r = Invoke-RestrictedNativeDispatch $source $inertEngine $inertHash PASS
+        [pscustomobject]@{ Summary = $r; Calls = $calls; Reads = $state.IdentityReads }
+    } finally { [IO.File]::WriteAllText($inertEngine, 'inert identity fixture') }
+}
 try {
     Check 'bounded process success' {
         $r = Invoke-BoundedProcess $hostExe @('-NoProfile', '-Command', "[Console]::Write('fixture-ok')") $fixture
@@ -224,6 +264,98 @@ try {
         [IO.File]::WriteAllText($inertEngine, 'changed identity')
         Reject { Invoke-SyntheticNativeSequence $inertEngine $inertHash $nativeStage PASS @((NativeResult)) } 'mismatch'
         [IO.File]::WriteAllText($inertEngine, 'inert identity fixture')
+    }
+    Check 'real dispatch wiring uses only fixed sequential commands, no retries' {
+        $r = Invoke-DispatchFixture @((NativeResult), (NativeResult $completion)) cache
+        Require ($r.Summary.Import -eq 'PASS' -and $r.Summary.Native -eq 'PASS') 'Dispatch failed'
+        Require ($r.Calls.Count -eq 2 -and $r.Reads -eq 3) 'Missing per-phase validation or wrong launch count'
+        Require ($r.Calls[0].Seconds -eq 60 -and $r.Calls[1].Seconds -eq 30) 'Wrong launch deadlines'
+        Require (($r.Calls[0].Arguments -join '|') -ceq "--headless|--editor|--path|$($r.Summary.StageDirectory)|--quit") 'Wrong import'
+        Require (($r.Calls[1].Arguments -join '|') -ceq "--headless|--path|$($r.Summary.StageDirectory)|--script|res://tests/fabricator_recipe_switching_test.gd") 'Wrong script'
+        Require ($r.Summary.Evidence -eq '' -and $r.Summary.Working -eq ' M project.godot') 'Success log or missing provenance'
+    }
+    Check 'source identity reads actual revision working status and regular tracked index without project execution' {
+        $identity = Get-NativeSourceIdentity (Split-Path $PSScriptRoot -Parent)
+        Require ($identity.Revision -match '^[0-9a-f]{40}$' -and
+            'project.godot' -cin $identity.Tracked -and $identity.Index.Length -gt 0) 'Incomplete source identity'
+        Require ($identity.Working -is [string]) 'Working status omitted'
+    }
+    Check 'synthetic generated reparse point and stage source overlap rejected' {
+        $stage = New-InputStage $source $fixture $tracked
+        $identity = [pscustomobject]@{ Revision = 'fixture'; Working = ''; Index = ''; Tracked = $tracked }
+        function Get-NativeSourceIdentity { return $identity }
+        $cache = Join-Path $stage.Directory '.godot'
+        $null = New-Item -ItemType Directory -Path $cache
+        $link = Join-Path $cache 'external'
+        $null = New-Item -ItemType Directory -Path $link
+        # No junction privilege needed: expose synthetic link metadata to the
+        # real path validator; it must reject before enumerating the child.
+        function Get-Item {
+            param([switch]$Force, [string]$LiteralPath)
+            if ($LiteralPath -ceq $link) {
+                return [pscustomobject]@{ Attributes = [IO.FileAttributes]::ReparsePoint }
+            }
+            Microsoft.PowerShell.Management\Get-Item -Force:$Force -LiteralPath $LiteralPath
+        }
+        Reject { Assert-NativeDispatchInputs $stage $identity $true } 'Reparse point'
+        $stage.Directory = $source
+        Reject { Assert-NativeDispatchInputs $stage $identity $false } 'identity|separation'
+    }
+    Check 'real dispatch stops every failed import and retains bounded unique evidence' {
+        foreach ($bad in @((NativeResult '' 'SCRIPT ERROR: failure'), (NativeResult '' '' TIMEOUT $null $false),
+            (NativeResult '' '' OUTPUT_LIMIT $null $false), (NativeResult '' '' PASS 0 $false),
+            (NativeResult '' '' NONZERO_EXIT 7))) {
+            $r = Invoke-DispatchFixture @($bad)
+            Require ($r.Calls.Count -eq 1 -and $r.Summary.Import -eq 'FAIL' -and $r.Summary.Native -eq 'NOT RUN') 'Continued after import failure'
+            Require ((Get-Item -LiteralPath $r.Summary.Evidence).Length -le 65536) 'Unbounded or missing evidence'
+            $saved = Get-Content -Raw -LiteralPath $r.Summary.Evidence | ConvertFrom-Json
+            Require ($saved.Revision -ceq ('a' * 40) -and $saved.Commands.Count -eq 1) 'Evidence missing provenance'
+        }
+        Require (@(Get-ChildItem "$source/artifacts/logs").Count -eq 5) 'Evidence overwritten'
+    }
+    Check 'real dispatch native failure preserves import and does not retry' {
+        $r = Invoke-DispatchFixture @((NativeResult), (NativeResult 'Fabricator recipe switching regression failures: 2'))
+        Require ($r.Summary.Import -eq 'PASS' -and $r.Summary.Native -eq 'FAIL' -and $r.Calls.Count -eq 2) 'Wrong native failure'
+    }
+    Check 'source stage inventory and engine changes between phases stop dispatch' {
+        foreach ($mutation in @('source', 'stage', 'extra', 'engine')) {
+            $r = Invoke-DispatchFixture @((NativeResult), (NativeResult $completion)) $mutation
+            Require ($r.Calls.Count -eq 1 -and $r.Summary.Import -eq 'PASS' -and $r.Summary.Native -eq 'FAIL') "Mutation accepted: $mutation"
+        }
+    }
+    Check 'real dispatch static gate has no side effects' {
+        function Assert-PinnedEngine { throw 'Static gate reached identity checks' }
+        function New-InputStage { throw 'Static gate created stage' }
+        function Invoke-BoundedProcess { throw 'Static gate launched process' }
+        foreach ($status in @('FAIL', 'NOT RUN')) {
+            $r = Invoke-RestrictedNativeDispatch $source $inertEngine $inertHash $status
+            Require ($r.Import -eq 'NOT RUN' -and $r.Native -eq 'NOT RUN' -and $r.Commands.Count -eq 0) 'Static gate failed'
+        }
+    }
+    Check 'evidence requires ignored plain path and preserves existing owner file' {
+        $ownerFile = "$source/artifacts/logs/owner.txt"
+        [IO.File]::WriteAllText($ownerFile, 'preserve me')
+        function Invoke-BoundedProcess { NativeResult '' '' NONZERO_EXIT 1 }
+        $r = (Invoke-DispatchFixture @((NativeResult '' 'ERROR: failure'))).Summary
+        Reject { Save-NativeFailureEvidence $source $r } 'not confirmed ignored'
+        Require ((Get-Content -Raw $ownerFile) -ceq 'preserve me') 'Owner evidence changed'
+    }
+    Check 'dispatcher reports source-identity and evidence failures without continuing' {
+        function Get-NativeSourceIdentity { throw 'synthetic source failure' }
+        function Save-NativeFailureEvidence { throw 'synthetic disk failure' }
+        $r = Invoke-RestrictedNativeDispatch $source $inertEngine $inertHash PASS
+        Require ($r.Import -eq 'FAIL' -and $r.Native -eq 'NOT RUN' -and $r.EvidenceError -ne '') 'Infrastructure failure lost'
+    }
+    Check 'production public call graph has no dormant dispatch caller' {
+        $tokens = $null; $errors = $null
+        $ast = [Management.Automation.Language.Parser]::ParseFile("$PSScriptRoot/../tools/run-local-tests.ps1", [ref]$tokens, [ref]$errors)
+        Require ($errors.Count -eq 0) 'Runner syntax errors'
+        $calls = @($ast.FindAll({ param($node)
+            $node -is [Management.Automation.Language.CommandAst] -and
+            $node.GetCommandName() -eq 'Invoke-RestrictedNativeDispatch'
+        }, $true))
+        Require ($calls.Count -eq 0) 'Dormant dispatcher reachable from production commands'
+        Reject { Invoke-RestrictedNativeDispatch $source $inertEngine $inertHash PASS -Executor {} } 'parameter'
     }
     Check 'stage mutations and unexpected hidden directories refused' {
         [IO.File]::WriteAllText("$($nativeStage.Directory)/project.godot", 'changed stage')

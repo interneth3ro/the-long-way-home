@@ -62,7 +62,7 @@ retain only meaningful failure evidence under `artifacts/logs/` or
 `artifacts/evidence/` following [repository preservation rules](../AGENTS.md).
 The fixture test removes only its freshly created synthetic temporary tree.
 
-## Restricted native dispatcher (synthetic only, pending merge)
+## Restricted native dispatcher (Stage A code only, pending merge)
 
 The dry-run prints this sequential plan using only the explicitly pinned binary:
 
@@ -78,8 +78,46 @@ sequence without retries. It returns separate static/import/native outcomes,
 command/identity/stage data, a failure reason and a diagnostic decoded from at most
 4096 raw bytes. The command arguments print as unambiguous JSON arrays. These
 are **synthetic outcomes**, never evidence of engine execution.
-Neither helper launches processes or accepts an executor callback. The public
-`Native` mode still fails unconditionally, before prerequisites or staging.
+Neither of those helpers launches processes or accepts an executor callback.
+Stage A adds `Invoke-RestrictedNativeDispatch`, an internal real-execution
+implementation with **no caller in any public mode**. It is tested only through
+scoped named helper doubles. Do not invoke it directly: dot-sourcing helpers is
+for non-Godot fixtures, not owner authorization to run the engine. There is no
+executor callback, bypass flag, environment variable, hidden token, extra command,
+script or limit parameter. The public `Native` mode still fails unconditionally,
+before prerequisites, staging or dispatch. Static and NativePlan never call it.
+
+The dormant implementation creates its own fresh external stage from approved
+tracked working files. It records HEAD, full porcelain working status, input
+hashes, executable path/hash, stage path, attempted command arrays and limits,
+separate static/import/native status, reason and bounded diagnostic. A non-PASS
+static status returns without any identity lookup, staging or process call.
+Before each prospective launch it rechecks revision, working status, index,
+approved source inventory and source/stage hashes, stage identity and separation,
+inventory and filesystem links. It rehashes the absolute pinned executable last,
+immediately before the fixed synchronous bounded call. There are two calls at
+most, one at a time, with no retry path. Static PASS is an internal precondition;
+the later activation PR must connect it to the actual static-suite outcome.
+
+Only after successful import may the copy contain a generated `.godot/` tree;
+its descendants are inspected without traversing links. Original inputs remain
+immutable and unexpected additions elsewhere fail closed. If a real engine
+rewrites an input sidecar, validation will stop; Stage A has not established
+compatibility with actual engine import behavior. Revision/status/hash checks
+detect observed changes, not a transactional snapshot or protection from hostile
+concurrent filesystem modification. Avoid editing during any later approved run.
+
+Failures retain a unique, exclusively created `artifacts/logs/native-failure-<GUID>.json`
+in the source checkout, only after Git confirms the destination is ignored and
+path checks reject links. Evidence is capped at 64 KiB, contains phase results,
+revision, executable/stage identity, attempted arguments/limits, failure reason
+and diagnostics decoded from at most 4096 bytes. Working status is represented
+in evidence by SHA-256, along with a digest of the input path/hash inventory;
+the returned summary has the full status and input list.
+Evidence save errors are reported separately and never turn a failure into PASS.
+Existing evidence is never overwritten or deleted. Success creates no permanent
+log; disposable stages remain retained. Synthetic evidence lives only in the
+fixture-owned temporary source and is removed with that fixture tree.
 
 The shared bounded process helper is exercised using PowerShell subprocesses only.
 It enforces 1 MiB **combined raw stdout/stderr bytes** with asynchronous reads,
@@ -107,6 +145,12 @@ The fixture suite checks the existing staging/preservation behavior plus fixed
 arguments and deadlines, sequential stop conditions, output classification,
 completion requirements, errors beyond the excerpt, Unicode byte accounting,
 timeout/overflow, changed identities/stages and the unconditional public gate.
+Stage A also exercises the real dispatcher with mocked launch results: command
+order/limits, import/native failures, source/index/stage/engine mutation between
+phases, allowed generated cache, unique bounded evidence, ignored-path refusal,
+owner-file preservation and evidence failures. An AST check proves the production
+script has no call to the dormant dispatcher; gate spies prove Native touches no
+prerequisite, stage or process helper even with a putative environment override.
 Only inert fixtures and harmless PowerShell child processes run. The unchanged
 Python suite retains all 43 test methods and historical Git preservation checks.
 Actual Godot parsing, import, test assertions, engine process-tree behavior and
@@ -138,8 +182,33 @@ staging paths, deadlines/output limits, and all stop conditions above. The propo
 exception must first be explicitly authorized and applied to AGENTS.md in a later
 reviewed change. A policy edit alone does not enable this implementation: that
 later change must replace the unconditional gate with a narrowly reviewed approval
-check, wire the fixed commands to the bounded helper, recheck identity immediately
-before each launch, report all phases, and retain bounded meaningful failure
-evidence in an approved ignored artifact location without deleting owner material.
+check and connect static success to the dormant fixed dispatcher. Stage A already
+implements the prospective bounded calls, per-launch validation, phase reporting
+and ignored failure evidence, but supplies no public activation route.
 No flag, environment variable or fixture record can enable real execution today.
 This PR changes neither AGENTS.md nor execution policy and adds no VM or CI integration.
+
+### First-run authorization checklist (future separate approval)
+
+- Apply the approved narrow policy exception and review activation in a separate PR.
+- Record the exact reviewed runner commit and tested source revision, full working
+  status and every approved input path/SHA-256. Preserve the 43 existing Python
+  assertions and historical Git baselines; require static PASS first.
+- Select an exact absolute Godot executable path and compute its SHA-256 without
+  executing it. No Godot identity is selected or approved by Stage A fixtures;
+  their text identity and PowerShell child executable are not Godot candidates.
+- Approve a fresh absolute external `tlwh-native-plan-<GUID>` stage path and its
+  input inventory, and the ignored source `artifacts/logs/` evidence destination.
+  A later run must create a fresh copy; do not approve a stale committed snapshot.
+- Record both complete argument arrays with that exact path substituted:
+  `["--headless","--editor","--path","<approved-stage>","--quit"]` (60 seconds),
+  then `["--headless","--path","<approved-stage>","--script","res://tests/fabricator_recipe_switching_test.gd"]`
+  (30 seconds), only after clean import.
+- Approve 1,048,576 combined raw output bytes per process, 4096-byte diagnostic
+  excerpts, at most two seconds for best-effort termination, sequential execution,
+  no retries, and all failure/uncertain-termination stop conditions above.
+- Obtain explicit owner authorization for that exact first run. No engine path,
+  hash, native stage or first-run approval can be inferred from this code-only PR.
+
+Without engine execution, actual import compatibility, GDScript/runtime behavior,
+native completion output, process-tree recovery and host stability remain unverified.
