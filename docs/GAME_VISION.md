@@ -269,8 +269,8 @@ durable save/load. See the [implementation notes](../README.md#first-ferrite---d
 The approved B1 inventory follow-up keeps this shared aggregate storage and
 uses 24 material positions (three rows of eight) plus eight machine/equipment
 positions, with all empty positions visible. This compact follow-up is implemented
-on `codex/compact-20-slot-inventory`, pending merge and owner acceptance. These are presentation positions,
-not capacity limits; extra types retain access in a small overflow list. Tab
+on `codex/compact-20-slot-inventory`, pending merge. The owner approved the layout
+and validation results on 2026-10-29. These are presentation positions, not capacity limits; extra types retain access in a small overflow list. Tab
 replaces I; machine slots continue to request deployment on a single click.
 Inventory implementation merged in PR #78; owner graphical acceptance remains
 separate. The approved hybrid hotbar follow-up adds ten bottom-centered type
@@ -289,12 +289,17 @@ The original implementation and the owner-approved refinement both passed
 the restricted Native runner (static suite, cold import and existing recipe
 regression). Hotbar graphical/interaction acceptance remains separate; the
 feature is pending merge. The hotbar refinement required no preservation-assertion changes. The separate
-compact inventory eight-column experiment sets the panel width to 380 units
+owner-approved compact inventory eight-column layout sets the panel width to 380 units
 (from 242 in the five-column candidate), with unchanged 42-unit slots,
 four-unit gaps and reduced local padding. It preserves overflow access and B1
 styling; the hint is `Tab / Esc to close`, with deployment/assignment guidance
-in tooltips. Its exact-file preservation amendment requires owner review before
-Native execution; graphical acceptance remains separate.
+in tooltips. The owner approved its two exact-file preservation hashes before
+one restricted Native run at `f4bc6e8`: all 46 static tests, cold import and the
+existing recipe regression passed, with zero recipe failures and all identity
+and infrastructure checks passing. The owner inspected the layout in Godot and
+approved layout and validation results; no agent graphical execution occurred.
+Specific resolution/readability and broader interaction coverage remain separate
+from those headless checks.
 See the [implementation and acceptance checklist](../README.md#b1-hybrid-hotbar-feature-branch-pending-merge).
 No movable stacks, final artwork, new tools or disk persistence are added.
 

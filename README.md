@@ -189,8 +189,9 @@ stack records, pagination, rearrangement or transaction changes.
 Both grids use eight-column GridContainers, 42-unit slots and four-unit gaps.
 The panel keeps its left/top placement (24, 100); its width is 380 units
 (364-unit grid plus eight-unit padding on each side), increased from the
-five-column candidate's 242 to fit the approved eight-column experiment. A private copy of the shared panel
-style changes only padding: eight horizontally, six vertically. B1 colors,
+five-column candidate's 242 to fit the owner-approved eight-column layout.
+A private copy of the shared panel style changes only padding: eight horizontally,
+six vertically. B1 colors,
 transparency, borders and corners remain unchanged; the hotbar and shared theme
 are untouched. Section spacing is four units; the title is 18-point, section
 headings/hint are 14-point, and the hint reads `Tab / Esc to close`. Deployment
@@ -203,8 +204,10 @@ are layout estimates, not measured Godot output. At 1024 x 576 the existing
 17.6-pixel icons, 11.2-pixel symbols/headings and 9.6-pixel quantities. The panel
 bounds fit both supported canvases by static inspection. IBM Plex Sans Regular
 advance metrics put the widest quantity at about 36.5 of 38 available logical
-units; its 15.6-unit line height fits the 18-unit quantity region. Rasterization,
-minimum-resolution readability and actual container sizing need owner testing.
+units; its 15.6-unit line height fits the 18-unit quantity region. The owner
+inspected the eight-column layout in Godot and approved it. Specific resolution
+coverage and long-quantity readability were not separately recorded; these remain
+useful acceptance checks rather than claims established by the static metrics.
 No display settings or player UI-scale control changes are included.
 
 Tab replaces I in the inventory InputMap action. Inventory consumes Tab presses
@@ -258,18 +261,28 @@ Owner acceptance, when the owner chooses to launch graphically:
    and objectives continue normally. Overflow is a future-catalog safeguard;
    current gameplay cannot populate it without additional item definitions.
 
-Compact inventory follow-up validation (pending merge): all 46 Python static
-checks PASS; Native execution awaits owner review of the eight-column preservation
-amendment. The two normalized inventory file hashes pin the complete final scene
-and script. The earlier compact-candidate reversal mapping is removed; all other
+Compact inventory follow-up (pending merge): the owner approved the eight-column
+layout and both exact-file preservation hash updates on 2026-10-29. The two
+normalized hashes pin the complete final inventory scene and script; all other
 preservation comparisons remain unchanged. No runner policy, hotbar code or native
-assertions change. No graphical acceptance is claimed. The current catalog cannot
-populate overflow; code inspection confirms the same scroll rows start at material
-index 24/equipment index 8, with deployment and assignment connections preserved.
-Owner acceptance should check quantities including three digits and Qa suffixes
-at both display sizes, tooltips, all empty slots, Tab/Esc, machine left/right-click
-and the unchanged hotbar. When future catalog types populate overflow, also check
-scrolling both sections and deploying/assigning overflow equipment.
+assertions changed.
+
+The single owner-authorized restricted Native run at `f4bc6e8` passed all 46 Python
+static tests, cold headless import and the recipe-switching regression (zero
+failures), plus infrastructure, authorization, executable and input identity
+checks. The fresh retained stage is
+`tlwh-native-plan-a2b1150e878749bfa8b672b6da8915c8`. No retries or agent graphical
+execution occurred. The owner subsequently approved both layout and validation
+results. These headless results establish import and existing recipe-test success;
+they do not independently verify inventory/hotbar input or visual behavior.
+
+The current catalog cannot populate overflow; code inspection confirms the same
+scroll rows start at material index 24/equipment index 8, with deployment and
+assignment connections preserved. The acceptance checklist above remains useful
+for quantities including three digits and Qa suffixes at both display sizes,
+tooltips, all empty slots, Tab/Esc, machine left/right-click and the unchanged
+hotbar. When future catalog types populate overflow, also check scrolling both
+sections and deploying/assigning overflow equipment.
 
 ## B1 hybrid hotbar (feature branch, pending merge)
 
