@@ -192,6 +192,20 @@ toggles. Tab, Esc and the Inventory (Tab) button close the panel. Existing openi
 signals still close machine inspection and cancel construction, and deployment
 still closes inventory. Other keybindings remain unchanged.
 
+Validation at `4f8195c`: 43 Python static checks PASS; resource wiring, icon
+coverage, ordering/refresh/deployment/input paths and layout bounds inspected
+statically; local Markdown file links and `git diff --check` PASS. The single
+restricted Native attempt stopped after cold import: Godot rewrote the staged
+IBM Plex Sans sidecars from CRLF to LF, violating required byte identity. The
+runner reported Import FAIL / Infrastructure FAIL; recipe regression NOT RUN.
+No retry or runner/sidecar amendment was made. The retained stage is
+`tlwh-native-plan-b404eeab0c76478aae7378363e2e37fa`; bounded evidence is
+`artifacts/logs/native-failure-5049f4c070854f8196e19e5e0dade7ce.json` (ignored).
+Graphical layout, actual Tab events and deployment interaction remain unverified.
+The static preservation update was separately owner-approved: it pins the exact
+replacement inventory scene/script hashes and normalizes only inventory I to Tab.
+Runner commands, tests, boundaries and executable identity remain unchanged.
+
 Owner acceptance, when the owner chooses to launch graphically:
 
 1. Open/close using Tab and the button in all three environments; verify I has
