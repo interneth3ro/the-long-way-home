@@ -74,11 +74,6 @@ B1_REPLACEMENTS = {'project.godot': [('window/size/viewport_width=1280\n'
                     '\n'
                     '[input]\n'
                     '\n'
-                    'toggle_fullscreen={\n'
-                    '"deadzone": 0.2,\n'
-                    '"events": '
-                    '[Object(InputEventKey,"alt_pressed":true,"physical_keycode":4194309)]\n'
-                    '}\n'
                     'inventory={\n'
                     '"deadzone": 0.2,\n',
                     'window/size/viewport_width=1280\n'
@@ -204,6 +199,15 @@ B1_REPLACEMENTS = {'project.godot': [('window/size/viewport_width=1280\n'
 
 
 def without_approved_b1_changes(path, text):
+    if path == "project.godot":
+        # The editor omits default-valued window flags on save. Accept their
+        # omission, but still reject nondefault values or unrelated changes.
+        anchor = "window/size/viewport_height=720\n"
+        for setting in reversed(["window/size/mode=0", "window/size/resizable=true",
+                                 "window/size/borderless=false"]):
+            key = setting.split("=", 1)[0]
+            if not re.search(rf"^{re.escape(key)}=", text, re.M):
+                text = text.replace(anchor, anchor + setting + "\n", 1)
     for approved, historical in B1_REPLACEMENTS.get(path, []):
         if text.count(approved) != 1:
             raise AssertionError(f"Missing or modified approved B1 edit: {path}")

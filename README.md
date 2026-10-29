@@ -112,6 +112,19 @@ the exact three sidecars were tracked/allowlisted and one fresh-stage rerun pass
 The initial failure evidence remains in ignored artifacts/logs; both stages remain
 preserved. No graphical Godot, window-mode acceptance or performance test was run.
 
+Owner acceptance follow-up (PR #77): the owner reported six of seven tests
+PASS: Smelter appearance/functionality, other machines, resizing, expanded world
+view and basic regression. Alt+Enter produced no visible response. Source review
+found the persistent display node enabled, no competing gameplay handler for this
+chord, and a valid main Enter binding; actual event delivery/window behavior was
+not observed. The shortcut now checks InputEventKey directly for Alt plus main
+or keypad Enter, using logical or physical codes, ignoring release/echo and extra
+Ctrl/Shift/Meta modifiers. The obsolete InputMap action is removed. Fullscreen
+mode selection, geometry restoration, maximize handling and resize/aspect rules
+are unchanged. This correction still requires owner graphical retesting in a
+separate native game window; editor/OS interception cannot be excluded by static
+inspection. No new graphical execution is authorized by this note.
+
 Owner acceptance checks, when the owner chooses to launch graphically:
 
 1. Inspect a deployed Smelter: typography, panel transparency/border, button normal,

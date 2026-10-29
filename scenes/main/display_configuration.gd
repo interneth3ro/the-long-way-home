@@ -23,7 +23,16 @@ func _remember_windowed_geometry() -> void:
 
 
 func _input(event: InputEvent) -> void:
-	if event.is_echo() or not event.is_action_pressed("toggle_fullscreen"):
+	# Desktop shortcut: accept either Enter key without depending on InputMap
+	# serialization or whether the event supplies logical or physical key codes.
+	if not event is InputEventKey:
+		return
+	if not event.pressed or event.echo or not event.alt_pressed:
+		return
+	if event.ctrl_pressed or event.meta_pressed or event.shift_pressed:
+		return
+	if event.keycode not in [KEY_ENTER, KEY_KP_ENTER] \
+			and event.physical_keycode not in [KEY_ENTER, KEY_KP_ENTER]:
 		return
 	get_viewport().set_input_as_handled()
 	if not _switching:
