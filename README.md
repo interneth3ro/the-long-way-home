@@ -75,12 +75,13 @@ presenter. The right-edge panel is vertically centered between a 24-unit top
 clearance and the bottom hotbar/hint region. Its normal logical size is 640 x 510;
 width is capped at 48% of the logical HUD, and logical heights below 740 use a
 480-unit panel, tighter spacing and a smaller gauge. The owner has accepted the
-overall layout, artwork, gauge, styling and proportions. The targeted divider/grid
-refinements below remain pending graphical acceptance.
+overall layout, artwork, gauge, styling and proportions, including the divider/grid
+refinements. The Option A portrait-filtering experiment remains pending owner
+comparison.
 
 The unchanged [Extractor artwork](assets/environment/maintenance_bay_v2/machines/extractor_stationary.png)
 uses aspect-preserving fit with native texture size excluded from layout minimums.
-No portrait border, crop, new artwork or import-setting change is added. Output
+No portrait border, crop or new artwork is added. Output
 identity, exact stored/capacity quantities and a utilization bar sit above Collect
 All. The right column shows status, actual cycle percentage and definition-derived
 nominal rate, duration and yield (currently 60.0 ore/min, 1.0 s and 1 Ferrite Ore).
@@ -90,6 +91,32 @@ vertical line style; both remain separate from the B2 frame. Production details
 use compact label/value rows with right-aligned, wrapping values and a muted rule
 beneath each row. Secondary details alone may scroll; Close and Collect All stay
 outside that region.
+
+Option A portrait minification changes only `mipmaps/generate=false` to `true` in
+[the shared import sidecar](assets/environment/maintenance_bay_v2/machines/extractor_stationary.png.import)
+and the UI Portrait's `texture_filter` from 2 (Linear) to 4 (Linear with Mipmaps).
+Compression remains lossless (`compress/mode=0`); source size, alpha channel,
+alpha-border fixing and premultiplication settings are unchanged. The original
+PNG remains byte-identical. Godot will generate the mip chain on its next import;
+no reimport or Godot launch was performed by the agent.
+
+The same texture's stationary maintenance-bay sprite retains its explicit Linear
+filter, which does not sample mipmaps; its shader, transform and original-resolution
+sampling stay unchanged. The shared imported texture does gain roughly 33% memory
+for the mip chain. UI minification should reduce edge aliasing, but may soften fine
+mechanical detail or alpha fringes; visual benefit is unverified. Anisotropic
+filtering is not added for this flat, aspect-preserving portrait.
+
+The 1319 x 1186 source fits the existing portrait rectangle proportionally. Its
+physical source-to-screen scale is `min(rect_width / 1319, rect_height / 1186) *
+P * sqrt(S)`, using logical rectangle dimensions and the unchanged hybrid formula.
+At the 640-unit normal panel width, the nominal left-column width bounds local
+scale to about 0.236, or 0.201 physical scale at 1280 x 720 / 85%; height fitting
+can reduce this further. These are static bounds, not measured engine output.
+Compare edges, bolts, pipes and alpha fringes at 75/85/100% and supported window
+sizes; also compare the stationary machine at unchanged camera zoom. Reverting the
+two settings restores the previous sampling configuration. No derivative artwork,
+custom processing or new shader is introduced.
 
 The reusable [cycle gauge](scenes/ui/cycle_gauge.gd) draws a subtle bezel, ticks,
 track, status-colored arc and numeric percentage with CanvasItem drawing. It has
@@ -107,8 +134,10 @@ unchanged. The 85% default and UIScaleRoot/hybrid formula are unchanged.
 
 All 51 Python static checks pass. Agent validation remains static only; engine
 parsing and input delivery are unverified by the agent. The owner reviewed the
-overall graphical appearance; the divider/grid refinement needs owner comparison. Proposed exact-file preservation allowances in
-`tests/static_v2_production_host_test.py` require owner review before Native use.
+overall graphical appearance, including the divider/grid refinement. Option A
+portrait filtering needs owner comparison. Proposed exact-file preservation allowances in
+`tests/static_v2_production_host_test.py` require owner review before Native use,
+including the additional exact import-sidecar hash for Option A.
 No Native or graphical Godot execution is authorized by this pilot's test changes.
 
 Owner graphical acceptance, performed separately under the execution policy:
