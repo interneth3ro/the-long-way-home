@@ -270,9 +270,11 @@ The owner-approved UI scaling foundation on `codex/hybrid-ui-scaling` (pending
 merge) uses a shared HUD-root behavior with the provisional balanced hybrid
 formula `U = P / sqrt(S)`, where `S = min(client_width / 1280, client_height / 720)`.
 It preserves B1/B2 artwork, existing presenter ownership, world scale and camera
-zoom. An editor-only temporary selector compares 75%, 85% and 100%, starting at
-100% with no persistence. A final default is unresolved until owner graphical
-acceptance. Tooltip sizing, small-window readability and existing panel-overlap
+zoom. The owner reported all six PR #84 functional acceptance tests PASS and
+approved **85% as the default UI preference** on 2026-10-29. An editor-only
+temporary selector compares 75%, 85% and 100%, starting with 85% selected and no
+persistence; 75% remains a valid personal preference. Tooltip sizing,
+small-window readability and existing panel-overlap
 limits remain explicit in the
 [implementation and owner checklist](../README.md#hybrid-ui-scaling-foundation-feature-branch-pending-merge).
 This is a scaling foundation, not the Machine Interface Redesign or new narrative

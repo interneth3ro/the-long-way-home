@@ -6,7 +6,7 @@ signal scale_changed
 
 const REFERENCE_SIZE := Vector2(1280, 720)
 const ROOT_GROUP := &"ui_scale_roots"
-static var _preference: float = 1.0
+static var _preference: float = 0.85
 
 
 static func get_preference() -> float:

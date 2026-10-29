@@ -89,14 +89,17 @@ Godot rounds expanded logical viewport dimensions, so non-reference aspect ratio
 can have subpixel differences from the nominal arithmetic.
 
 The isolated [temporary selector](scenes/ui/ui_scale_preview.gd) offers
-**75%, 85% and 100%**, with **100% as the neutral startup preference**. It appears
+**75%, 85% and 100%**, with **85% as the owner-approved default**. The selector
+reads the shared preference and shows 85% selected on startup. It appears
 only when running the editor executable (`OS.has_feature("editor")`), including
 the normal editor-launched game; exported games create no selector controls.
 It stays outside the scaled roots at top center, uses default styling rather
 than B1/B2 resources, consumes pointer/scroll input and adds no keybinding or disk
-persistence. Restarting the game resets the preference. This is a comparison
-foundation, not approval of a final default. At `S != 1`, even 100% uses the hybrid
-formula and therefore differs from the old globally stretched presentation.
+persistence. Restarting the game resets the preference to 85%. The owner reported
+all six PR #84 functional acceptance tests PASS and approved 85% as the
+general-purpose balance on 2026-10-29; 75% remains a valid personal preference.
+At `S != 1`, even 100% uses the hybrid formula and therefore differs from the
+old globally stretched presentation.
 
 Inventory assignment and hotbar clearing menus remain children of their scaled
 HUDs. Godot 4.7.2's
@@ -122,8 +125,8 @@ and the smallest preference can produce very small quantities/key labels.
 Machine panels remain content-driven with no new whole-panel scroll region;
 the expanded objective tracker and machine inspection retain their existing
 potential overlap at upper right. Percentage-width musings retain their
-screen-relative width while text/padding scale. These are graphical acceptance
-items, not evidence that a compact default is ready to ship.
+screen-relative width while text/padding scale. These remain useful review
+considerations when changing window size or personal preference.
 
 Validation: the original 46-test static suite initially rejected the intended
 presentation edits through its preservation checks. The owner approved the exact
@@ -142,14 +145,15 @@ After separate owner authorization for one fresh attempt, validation at
 switching regression (zero failures)**, with infrastructure/authorization checks
 PASS. No automatic retry was performed. Failure evidence remains in ignored
 `artifacts/logs/native-failure-f71e06401208402a83fea6aec24accd7.json`; both external
-stages are preserved. No graphical execution or graphical acceptance is claimed.
+stages are preserved. No agent graphical execution occurred; the subsequent
+six-test owner acceptance and 85% default decision are recorded above.
 Runner, allowlists, execution policy and native test assertions are unchanged.
 
-Owner graphical acceptance (separate authorization required):
+Owner graphical checklist (further agent execution requires separate authorization):
 
-1. In a separate game window at the normal maximized resolution, compare 75%,
-   85% and 100% immediately; record the preferred candidate without treating it
-   as the production default. Repeat in fullscreen if authorized.
+1. In a separate game window at the normal maximized resolution, confirm 85%
+   is selected on startup and compare the retained 75%, 85% and 100% options.
+   Repeat in fullscreen if authorized.
 2. Check inventory, ten hotbar slots and each machine/recipe state for alignment,
    click targets, clipping, font sharpness, icon clarity and B2 corners/edges.
 3. Assign each hotbar destination, clear assignments and inspect tooltips near
@@ -165,7 +169,7 @@ Owner graphical acceptance (separate authorization required):
    hover regions after scale changes, including before moving the mouse.
 7. Change UI preference at fixed camera zoom and verify unchanged world framing
    and mouse targeting. Check travel/fade coverage and retained UI preference.
-   Select the final default only after readability and interaction acceptance.
+   The owner-approved default remains 85%; comparisons do not persist.
 
 ## B1 UI foundation and desktop display (PR #77 merged)
 
