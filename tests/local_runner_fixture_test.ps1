@@ -40,6 +40,10 @@ $tracked += @('tools/run-local-tests.ps1', 'AGENTS.md')
 $inertEngine = Join-Path $fixture 'pinned-engine.txt'
 [IO.File]::WriteAllText($inertEngine, 'inert identity fixture')
 $inertHash = (Get-FileHash -LiteralPath $inertEngine).Hash
+$engineIdentityFunction = (Get-Command Get-StandardGodotIdentity).ScriptBlock
+function Get-StandardGodotIdentity {
+    [pscustomobject]@{ Path = $inertEngine; Sha256 = $inertHash }
+}
 $completion = 'Fabricator recipe switching regression failures: 0'
 function NativeResult([string]$Stdout = '', [string]$Stderr = '',
                       [string]$Status = 'PASS', $ExitCode = 0, [bool]$Certain = $true) {
@@ -52,13 +56,11 @@ function Invoke-DispatchFixture([object[]]$Results, [string]$Mutation = '') {
     $calls = [Collections.Generic.List[object]]::new()
     $state = @{ IdentityReads = 0; Stage = $null; ApprovalChecks = 0 }
     $stageFunction = (Get-Command New-InputStage).ScriptBlock
-    $authorizationFunction = (Get-Command Assert-NativeExecutionAuthorization).ScriptBlock
-    $contextFunction = (Get-Command Get-ApprovedFirstRunContext).ScriptBlock
     function Assert-ReviewedNativeRunner { }
+    function Get-NativeStageParent { $fixture }
     function Assert-NativeExecutionAuthorization {
-        if ($Mutation -in @('withdrawal-record', 'scope-record')) { & $authorizationFunction; return }
         $state.ApprovalChecks++
-        if ($Mutation -eq 'revoked' -and $state.ApprovalChecks -eq 4) { throw 'Synthetic revoked owner approval' }
+        if ($Mutation -eq 'revoked' -and $state.ApprovalChecks -eq 3) { throw 'Synthetic disabled policy' }
     }
     function Get-NativeSourceIdentity {
         param($Source)
@@ -76,7 +78,6 @@ function Invoke-DispatchFixture([object[]]$Results, [string]$Mutation = '') {
         param($Executable, $Arguments, $Directory, $Seconds, $MaxBytes, $ExcerptBytes)
         if ($Arguments[0] -eq 'check-ignore') { return NativeResult }
         Require ($Executable -ceq $inertEngine -and $Arguments[0] -ceq '--headless') 'Unexpected process'
-        Require (Test-Path -LiteralPath $reviewScope.ReceiptPath -PathType Leaf) 'Engine reached before consumption'
         Require ($MaxBytes -eq 1048576 -and $ExcerptBytes -eq 4096) 'Wrong dispatch limits'
         $calls.Add([pscustomobject]@{ Arguments = $Arguments; Seconds = $Seconds })
         if ($calls.Count -eq 1) {
@@ -85,41 +86,19 @@ function Invoke-DispatchFixture([object[]]$Results, [string]$Mutation = '') {
                 stage { [IO.File]::WriteAllText("$Directory/project.godot", 'tampered') }
                 extra { [IO.File]::WriteAllText("$Directory/unexpected.txt", 'tampered') }
                 engine { [IO.File]::WriteAllText($inertEngine, 'tampered') }
-                withdrawal-record { [IO.File]::WriteAllText((Join-Path $receiptDirectory 'first-run-withdrawn'), 'owner withdrew synthetic approval') }
-                scope-record { $reviewScope.Working = 'changed reviewed scope' }
             }
+        }
+        if ($Mutation -eq 'final-stage' -and $calls.Count -eq 2) {
+            [IO.File]::WriteAllText("$Directory/project.godot", 'tampered during final test')
         }
         if ($calls.Count -gt $Results.Count) { throw 'Unexpected retry' }
         return $Results[$calls.Count - 1]
     }
     $preparedStage = New-InputStage $source $fixture $tracked
     $snapshot = [pscustomobject]@{ Identity = (Get-NativeSourceIdentity $source); Inputs = $preparedStage.Inputs }
-    $reviewScope = New-FirstRunReviewScope $inertEngine $inertHash $preparedStage $snapshot
-    # Receipt is real, in a fresh synthetic source evidence directory; each helper
-    # invocation represents an independently approved fixture-only scope.
-    $receiptDirectory = Join-Path $fixture ([Guid]::NewGuid().ToString('N'))
-    $null = New-Item -ItemType Directory -Path $receiptDirectory
-    $reviewScope.ReceiptPath = Join-Path $receiptDirectory 'first-run-attempt.receipt'
-    $reviewScope.EvidenceDirectory = $receiptDirectory
-    function Get-ReviewedFirstRunApproval {
-        [pscustomobject]@{ Decision = 'APPROVED_FIRST_RUN'; Revoked = $false; Scope = $reviewScope }
-    }
-    function Get-ApprovedFirstRunContext {
-        if ($Mutation -in @('withdrawal-record', 'scope-record')) { & $contextFunction; return }
-        [pscustomobject]@{ Stage = $preparedStage; Scope = $reviewScope }
-    }
-    # Bind using the actual review builder; only redirect fixture evidence paths.
-    $scopeBuilder = (Get-Command New-FirstRunReviewScope).ScriptBlock
-    function New-FirstRunReviewScope {
-        param($Engine, $EngineHash, $Stage, $StaticSnapshot, [switch]$Imported)
-        $scope = & $scopeBuilder $Engine $EngineHash $Stage $StaticSnapshot -Imported:$Imported
-        $scope.EvidenceDirectory = $receiptDirectory
-        $scope.ReceiptPath = Join-Path $receiptDirectory 'first-run-attempt.receipt'
-        $scope
-    }
     try {
         $r = Invoke-RestrictedNativeDispatch $source $inertEngine $inertHash PASS $snapshot
-        [pscustomobject]@{ Summary = $r; Calls = $calls; Reads = $state.IdentityReads; ApprovalChecks = $state.ApprovalChecks; Receipt = $reviewScope.ReceiptPath; Scope = $reviewScope }
+        [pscustomobject]@{ Summary = $r; Calls = $calls; Reads = $state.IdentityReads; ApprovalChecks = $state.ApprovalChecks; PreparedDirectory = $preparedStage.Directory }
     } finally { [IO.File]::WriteAllText($inertEngine, 'inert identity fixture') }
 }
 try {
@@ -144,7 +123,7 @@ try {
             [pscustomobject]@{ Status = $(if ($Arguments[0] -eq '-B') { 'NONZERO_EXIT' } else { 'PASS' });
                 ExitCode = $(if ($Arguments[0] -eq '-B') { 1 } else { 0 }); Bytes = $value.Length; Excerpt = $value; TerminationCertain = $true }
         }
-        Require ((Invoke-LocalTests $source 'Static' '' '') -eq 1) 'Static failure accepted'
+        Require ((Invoke-LocalTests $source 'Static') -eq 1) 'Static failure accepted'
     }
     Check 'missing executable' {
         Reject { Invoke-BoundedProcess "$fixture/missing.exe" @() $fixture } 'cannot find|No such|specified'
@@ -187,13 +166,13 @@ try {
         Reject { New-InputStage $source $fixture ($tracked + 'assets/missing.png') } 'Missing tracked input'
     }
     Check 'prohibited native invocation fails before prerequisites' {
-        Require ((Invoke-LocalTests "$fixture/nonexistent" 'Native' $hostExe ('0' * 64)) -eq 1) 'Native execution gate bypassed'
+        Require ((Invoke-LocalTests "$fixture/nonexistent" 'Native') -eq 1) 'Native execution gate bypassed'
     }
-    Check 'missing native configuration fails closed' {
-        Require ((Invoke-LocalTests (Split-Path $PSScriptRoot -Parent) 'NativePlan' '' '') -eq 1) 'Missing configuration accepted'
-    }
-    Check 'mismatched native identity fails closed without invocation' {
-        Require ((Invoke-LocalTests (Split-Path $PSScriptRoot -Parent) 'NativePlan' $hostExe ('0' * 64)) -eq 1) 'Identity mismatch accepted'
+    Check 'production identity is fixed and executable overrides are rejected' {
+        $pinned = & $engineIdentityFunction
+        Require ($pinned.Path -ceq 'D:\GameDev\Godot\Standard\Godot_v4.7.2-stable_win64.exe' -and
+            $pinned.Sha256 -ceq 'AB1824F85BFD8E0E4128182C000C4003A3E042245B2967848D089B2A04B22424') 'Production pin changed'
+        Reject { Assert-PinnedEngine $hostExe (Get-FileHash $hostExe).Hash } 'overrides prohibited'
     }
     Check 'full synthetic NativePlan succeeds without invoking pinned binary' {
         $stageFunction = (Get-Command New-InputStage).ScriptBlock
@@ -208,7 +187,7 @@ try {
         }
         function Invoke-BoundedProcess {
             param($Executable, $Arguments, $Directory, $ExcerptBytes)
-            Require ($Executable -ne $hostExe) 'Pinned binary was invoked'
+            Require ($Executable -cne $inertEngine) 'Pinned binary was invoked'
             $value = switch ($Arguments[0]) {
                 'rev-parse' { if ($Arguments[1] -eq '--show-toplevel') { $Directory } else { 'synthetic-revision' } }
                 'status' { ' M project.godot' }
@@ -218,18 +197,18 @@ try {
             }
             [pscustomobject]@{ Status = 'PASS'; ExitCode = 0; Bytes = $value.Length; Excerpt = $value; TerminationCertain = $true }
         }
-        Require ((Invoke-LocalTests $source 'NativePlan' $hostExe (Get-FileHash $hostExe).Hash) -eq 0) 'Plan failed'
+        Require ((Invoke-LocalTests $source 'NativePlan') -eq 0) 'Plan failed'
     }
     $nativeStage = New-InputStage $source $fixture $tracked
-    Check 'first-run review scope binds identities without authorizing execution' {
+    Check 'native plan reports identities without authorizing execution' {
         function Get-NativeSourceIdentity {
             [pscustomobject]@{ Revision = ('a' * 40); Working = ' M project.godot';
                 Index = 'inert-index'; Tracked = $tracked }
         }
         function Invoke-BoundedProcess { throw 'Review scope attempted a process' }
         $snapshot = [pscustomobject]@{ Identity = (Get-NativeSourceIdentity); Inputs = $nativeStage.Inputs }
-        $scope = New-FirstRunReviewScope $inertEngine $inertHash $nativeStage $snapshot
-        Require ($scope.Authorization -ceq 'INACTIVE' -and $scope.Routine -ceq 'INACTIVE') 'Scope grants permission'
+        $scope = New-NativePlanSummary $inertEngine $inertHash $nativeStage $snapshot
+        Require ($scope.Authorization -ceq 'INACTIVE' -and $scope.Purpose -ceq 'NONEXECUTING_PLAN') 'Scope grants permission'
         Require ($scope.Revision -ceq ('a' * 40) -and $scope.Source -ceq $source -and
             $scope.StageDirectory -ceq $nativeStage.Directory -and $scope.Inputs.Count -eq 5) 'Source/stage identity missing'
         Require ($scope.RunnerPath -ceq (Join-Path $source 'tools/run-local-tests.ps1') -and
@@ -240,35 +219,35 @@ try {
             $scope.MaxConcurrentProcesses -eq 1 -and $scope.EvidenceDirectory -ceq (Join-Path $source 'artifacts/logs')) 'Review limits missing'
         Reject { Assert-NativeExecutionAuthorization } 'inactive'
         # Repeated successful planning cannot consume or unlock permission.
-        $null = New-FirstRunReviewScope $inertEngine $inertHash $nativeStage $snapshot
+        $null = New-NativePlanSummary $inertEngine $inertHash $nativeStage $snapshot
         Reject { Assert-NativeExecutionAuthorization } 'inactive'
         Reject { Assert-NativeExecutionAuthorization -Scope $scope } 'parameter'
     }
-    Check 'first-run review rejects changed static snapshot identity and bytes' {
+    Check 'native plan rejects changed static snapshot identity and bytes' {
         $reviewIdentity = [pscustomobject]@{ Revision = ('a' * 40); Working = ''; Index = 'inert-index'; Tracked = $tracked }
         function Get-NativeSourceIdentity { return $reviewIdentity }
         function Invoke-BoundedProcess { throw 'Review scope attempted a process' }
-        Reject { New-FirstRunReviewScope $inertEngine $inertHash $nativeStage $null } 'snapshot required'
+        Reject { New-NativePlanSummary $inertEngine $inertHash $nativeStage $null } 'snapshot required'
         foreach ($key in @('Revision', 'Working', 'Index')) {
             $old = $reviewIdentity.PSObject.Copy(); $old.$key = 'changed'
             $snapshot = [pscustomobject]@{ Identity = $old; Inputs = $nativeStage.Inputs }
-            Reject { New-FirstRunReviewScope $inertEngine $inertHash $nativeStage $snapshot } 'Source changed'
+            Reject { New-NativePlanSummary $inertEngine $inertHash $nativeStage $snapshot } 'Source changed'
         }
         $snapshot = [pscustomobject]@{ Identity = $reviewIdentity; Inputs = @() }
-        Reject { New-FirstRunReviewScope $inertEngine $inertHash $nativeStage $snapshot } 'Working inputs changed'
+        Reject { New-NativePlanSummary $inertEngine $inertHash $nativeStage $snapshot } 'Working inputs changed'
     }
-    Check 'first-run review rejects tampered stage engine and missing control identity' {
+    Check 'native plan rejects tampered stage engine and missing control identity' {
         $identity = [pscustomobject]@{ Revision = ('a' * 40); Working = ''; Index = 'inert-index'; Tracked = $tracked }
         function Get-NativeSourceIdentity { return $identity }
         function Invoke-BoundedProcess { throw 'Review scope attempted a process' }
         $stage = New-InputStage $source $fixture $tracked
         $snapshot = [pscustomobject]@{ Identity = $identity; Inputs = $stage.Inputs }
-        Reject { New-FirstRunReviewScope $inertEngine ('0' * 64) $stage $snapshot } 'mismatch'
+        Reject { New-NativePlanSummary $inertEngine ('0' * 64) $stage $snapshot } 'mismatch'
         [IO.File]::WriteAllText("$($stage.Directory)/project.godot", 'tampered')
-        Reject { New-FirstRunReviewScope $inertEngine $inertHash $stage $snapshot } 'input changed'
+        Reject { New-NativePlanSummary $inertEngine $inertHash $stage $snapshot } 'input changed'
         [IO.File]::Copy("$source/project.godot", "$($stage.Directory)/project.godot", $true)
         $identity.Tracked = @($tracked | Where-Object { $_ -cne 'AGENTS.md' })
-        Reject { New-FirstRunReviewScope $inertEngine $inertHash $stage $snapshot } 'review identity missing'
+        Reject { New-NativePlanSummary $inertEngine $inertHash $stage $snapshot } 'review identity missing'
     }
     Check 'fixed command allowlist, limits and no arbitrary flags' {
         $commands = @(New-NativeCommandPlan $inertEngine $inertHash $nativeStage)
@@ -362,8 +341,9 @@ try {
     Check 'real dispatch wiring uses only fixed sequential commands, no retries' {
         $r = Invoke-DispatchFixture @((NativeResult), (NativeResult $completion)) cache
         Require ($r.Summary.Import -eq 'PASS' -and $r.Summary.Native -eq 'PASS') 'Dispatch failed'
+        Require ($r.Summary.StageDirectory -cne $r.PreparedDirectory) 'Reused prior plan stage'
         Require ($r.Calls.Count -eq 2 -and $r.Reads -ge 5) 'Missing per-phase validation or wrong launch count'
-        Require ($r.ApprovalChecks -eq 4) 'Missing per-launch approval validation'
+        Require ($r.ApprovalChecks -eq 3) 'Missing per-launch approval validation'
         Require ($r.Calls[0].Seconds -eq 60 -and $r.Calls[1].Seconds -eq 30) 'Wrong launch deadlines'
         Require (($r.Calls[0].Arguments -join '|') -ceq "--headless|--editor|--path|$($r.Summary.StageDirectory)|--quit") 'Wrong import'
         Require (($r.Calls[1].Arguments -join '|') -ceq "--headless|--path|$($r.Summary.StageDirectory)|--script|res://tests/fabricator_recipe_switching_test.gd") 'Wrong script'
@@ -403,8 +383,6 @@ try {
             $r = Invoke-DispatchFixture @($bad)
             Require ($r.Calls.Count -eq 1 -and $r.Summary.Import -eq 'FAIL' -and $r.Summary.Native -eq 'NOT RUN') 'Continued after import failure'
             Require ((Get-Item -LiteralPath $r.Summary.Evidence).Length -le 65536) 'Unbounded or missing evidence'
-            Require (Test-Path -LiteralPath $r.Receipt) 'Failed attempt receipt lost'
-            Reject { New-FirstRunAttemptReceipt $r.Scope } 'exists'
             $saved = Get-Content -Raw -LiteralPath $r.Summary.Evidence | ConvertFrom-Json
             Require ($saved.Revision -ceq ('a' * 40) -and $saved.Commands.Count -eq 1) 'Evidence missing provenance'
         }
@@ -414,12 +392,18 @@ try {
         $r = Invoke-DispatchFixture @((NativeResult), (NativeResult 'Fabricator recipe switching regression failures: 2'))
         Require ($r.Summary.Import -eq 'PASS' -and $r.Summary.Native -eq 'FAIL' -and $r.Calls.Count -eq 2) 'Wrong native failure'
     }
-    Check 'source stage inventory and engine changes between phases stop dispatch' {
+    Check 'source stage inventory engine and policy changes stop dispatch' {
         foreach ($mutation in @('source', 'stage', 'extra', 'engine', 'revoked')) {
             $r = Invoke-DispatchFixture @((NativeResult), (NativeResult $completion)) $mutation
-            Require ($r.Calls.Count -eq 1 -and $r.Summary.Import -eq 'PASS' -and $r.Summary.Native -eq 'FAIL') "Mutation accepted: $mutation"
-            if ($mutation -eq 'revoked') { Require ($r.Summary.Authorization -eq 'FAIL') 'Revocation outcome missing' }
+            Require ($r.Calls.Count -eq 1 -and $r.Summary.Native -eq 'NOT RUN' -and
+                $r.Summary.Infrastructure -eq 'FAIL') "Mutation accepted: $mutation"
+            if ($mutation -eq 'revoked') { Require ($r.Summary.Authorization -eq 'FAIL') 'Policy outcome missing' }
         }
+    }
+    Check 'mutation during final test fails after both attempts without retry' {
+        $r = Invoke-DispatchFixture @((NativeResult), (NativeResult $completion)) 'final-stage'
+        Require ($r.Calls.Count -eq 2 -and $r.Summary.Import -eq 'PASS' -and
+            $r.Summary.Native -eq 'FAIL' -and $r.Summary.Infrastructure -eq 'FAIL') 'Final mutation accepted'
     }
     Check 'real dispatch static gate has no side effects' {
         function Assert-PinnedEngine { throw 'Static gate reached identity checks' }
@@ -479,8 +463,8 @@ try {
         Require ($r.Commands.Count -eq 0 -and $r.Import -eq 'NOT RUN' -and $r.Native -eq 'NOT RUN' -and
             $r.Authorization -eq 'FAIL' -and $r.Infrastructure -eq 'FAIL') 'Inactive dispatch gate failed'
     }
-    Check 'first-run approval and routine policy remain separate inactive stages' {
-        Reject { Assert-NativeExecutionAuthorization } 'exact first run.*successful first-run validation.*separately owner-approved repository execution policy'
+    Check 'code-only policy gate remains disabled without activation inputs' {
+        Reject { Assert-NativeExecutionAuthorization } 'inactive.*first controlled run'
         foreach ($attempt in @(
             { Assert-NativeExecutionAuthorization -FirstRunApproved },
             { Assert-NativeExecutionAuthorization -Routine },
@@ -490,11 +474,11 @@ try {
     }
     Check 'runner has no online approval, expiration or approval-file input' {
         $text = Get-Content -Raw -LiteralPath "$PSScriptRoot/../tools/run-local-tests.ps1"
-        Require ($text -notmatch 'Get-NativeApprovalApi|Get-Command gh|issuecomment|Read-Host|DateTimeOffset|approval\.json') 'Removed authorization machinery remains'
+        Require ($text -notmatch 'Get-ReviewedFirstRunApproval|FirstRunAttemptReceipt|FirstRunBinding|first-run-withdrawn|Get-Command gh|Read-Host|approval\.json') 'Removed authorization machinery remains'
         $tokens = $null; $errors = $null
         $ast = [Management.Automation.Language.Parser]::ParseInput($text, [ref]$tokens, [ref]$errors)
         Require ($errors.Count -eq 0) 'Runner parse failed'
-        Require (($ast.ParamBlock.Parameters.Name.VariablePath.UserPath -join ',') -ceq 'Mode,GodotPath,GodotSha256') 'Unexpected activation parameter'
+        Require (($ast.ParamBlock.Parameters.Name.VariablePath.UserPath -join ',') -ceq 'Mode') 'Unexpected activation parameter'
     }
     Check 'offline reviewed-runner checks retain source and control-file protection' {
         $review = @{ ChangedRevision = $false; Dirty = $false }
@@ -503,7 +487,7 @@ try {
             if ($Arguments[0] -ceq 'rev-parse') {
                 return NativeResult $(if ($review.ChangedRevision) { 'b' * 40 } else { 'a' * 40 })
             }
-            Require (($Arguments -join '|') -ceq "diff|--quiet|$('a' * 40)|--|tools|AGENTS.md|tests/static_*test.py") 'Reviewed controls changed'
+            Require (($Arguments -join '|') -ceq "diff|--quiet|$('a' * 40)|--|tools|AGENTS.md|docs/LOCAL_TESTING.md|tests/local_runner_fixture_test.ps1|tests/static_*test.py|tests/fabricator_recipe_switching_test.gd|tests/fabricator_recipe_switching_test.gd.uid") 'Reviewed controls changed'
             NativeResult '' '' $(if ($review.Dirty) { 'NONZERO_EXIT' } else { 'PASS' }) $(if ($review.Dirty) { 1 } else { 0 })
         }
         $root = Split-Path $PSScriptRoot -Parent
@@ -517,19 +501,20 @@ try {
     }
     $approvalIdentity = [pscustomobject]@{ Revision = ('a' * 40); Working = ''; Index = 'fixture'; Tracked = $tracked }
     $approvalStage = New-InputStage $source $fixture $tracked
-    Check 'source changes since static-suite start deny even before approval' {
-        function Get-ApprovedFirstRunContext { [pscustomobject]@{ Stage = $approvalStage } }
+    Check 'source and working inputs changed since static-suite start deny dispatch' {
+        function Assert-ReviewedNativeRunner { }
+        function Get-NativeStageParent { $fixture }
         function Get-NativeSourceIdentity { return $approvalIdentity }
         function New-InputStage { return $approvalStage }
         function Assert-NativeExecutionAuthorization { }
         function Save-NativeFailureEvidence { return 'synthetic evidence destination' }
-        $oldIdentity = [pscustomobject]@{ Revision = ('b' * 40); Working = ''; Index = 'old' }
-        $r = Invoke-RestrictedNativeDispatch $source $inertEngine $inertHash PASS ([pscustomobject]@{ Identity = $oldIdentity; Inputs = @() })
-        Require ($r.Commands.Count -eq 0 -and $r.Reason -eq 'DISPATCH_VALIDATION_OR_PROCESS_FAILURE' -and $r.Diagnostic -match 'since static-suite') 'Static source mutation accepted'
+        $oldIdentity = [pscustomobject]@{ Revision = ('b' * 40); Working = ''; Index = 'old'; Tracked = $tracked }
+        $r = Invoke-RestrictedNativeDispatch $source $inertEngine $inertHash PASS ([pscustomobject]@{ Identity = $oldIdentity; Inputs = $approvalStage.Inputs })
+        Require ($r.Commands.Count -eq 0 -and $r.Reason -eq 'DISPATCH_VALIDATION_OR_PROCESS_FAILURE' -and $r.Diagnostic -match 'Source changed') 'Static source mutation accepted'
         $r = Invoke-RestrictedNativeDispatch $source $inertEngine $inertHash PASS ([pscustomobject]@{ Identity = $approvalIdentity; Inputs = @() })
         Require ($r.Commands.Count -eq 0 -and $r.Diagnostic -match 'Working inputs changed since static-suite') 'Static working-byte mutation accepted'
     }
-    Check 'public Native static failure prevents dispatch and approval' {
+    Check 'public Native static failure prevents dispatch and staging' {
         function Assert-NativeExecutionAuthorization { }
         function Assert-PinnedEngine { }
         function Get-NativeSourceIdentity { return $approvalIdentity }
@@ -540,7 +525,7 @@ try {
             [pscustomobject]@{ Status = $(if ($Arguments[0] -eq '-B') { 'NONZERO_EXIT' } else { 'PASS' });
                 ExitCode = $(if ($Arguments[0] -eq '-B') { 1 } else { 0 }); Bytes = 0; Excerpt = $value; TerminationCertain = $true }
         }
-        Require ((Invoke-LocalTests $source Native $inertEngine $inertHash) -eq 1) 'Static failure accepted'
+        Require ((Invoke-LocalTests $source Native) -eq 1) 'Static failure accepted'
     }
     Check 'public Native passes actual static PASS and captured source snapshot to dispatch' {
         $state = @{ Dispatched = $false }
@@ -556,9 +541,9 @@ try {
             param($Source, $Engine, $EngineHash, $StaticStatus, $StaticSnapshot)
             Require ($StaticStatus -ceq 'PASS' -and $StaticSnapshot.Identity.Revision -ceq $approvalIdentity.Revision -and $StaticSnapshot.Inputs.Count -eq 5) 'Static proof omitted'
             $state.Dispatched = $true
-            [pscustomobject]@{ Import = 'PASS'; Native = 'PASS'; Reason = 'OK'; Evidence = ''; EvidenceError = '' }
+            [pscustomobject]@{ Import = 'PASS'; Native = 'PASS'; Infrastructure = 'PASS'; Authorization = 'PASS'; Reason = 'OK'; Evidence = ''; EvidenceError = '' }
         }
-        Require ((Invoke-LocalTests $source Native $inertEngine $inertHash) -eq 0 -and $state.Dispatched) 'Static PASS not connected'
+        Require ((Invoke-LocalTests $source Native) -eq 0 -and $state.Dispatched) 'Static PASS not connected'
     }
     Check 'public Native mode cannot reach prerequisites, staging or execution' {
         $gateCalls = [Collections.Generic.List[string]]::new()
@@ -568,46 +553,9 @@ try {
         $previous = [Environment]::GetEnvironmentVariable('TLWH_ALLOW_NATIVE')
         $env:TLWH_ALLOW_NATIVE = '1'
         try {
-            Require ((Invoke-LocalTests $source Native $inertEngine $inertHash) -eq 1) 'Native gate bypassed'
+            Require ((Invoke-LocalTests $source Native) -eq 1) 'Native gate bypassed'
             Require ($gateCalls.Count -eq 0) 'Gate had prohibited side effects'
         } finally { [Environment]::SetEnvironmentVariable('TLWH_ALLOW_NATIVE', $previous) }
-    }
-    Check 'context provider denies direct use and cannot load approval data' {
-        Reject { Get-ApprovedFirstRunContext } 'inactive'
-        Reject { Get-ApprovedFirstRunContext -ApprovalFile 'anything' } 'parameter'
-        function Assert-NativeExecutionAuthorization { }
-        function Assert-PinnedEngine { throw 'Inactive provider reached engine identity' }
-        function Save-NativeFailureEvidence { 'synthetic evidence' }
-        $r = Invoke-RestrictedNativeDispatch $source $inertEngine $inertHash PASS
-        Require ($r.Diagnostic -match 'context inactive' -and $r.Commands.Count -eq 0 -and
-            $r.Import -eq 'NOT RUN' -and $r.Native -eq 'NOT RUN') 'Provider bypassed'
-    }
-    Check 'exact scope binding rejects substitutions and changed controls' {
-        $stage = New-InputStage $source $fixture $tracked
-        $identity = [pscustomobject]@{ Revision = ('a' * 40); Working = ''; Index = 'fixture'; Tracked = $tracked }
-        function Get-NativeSourceIdentity { $identity }
-        $snapshot = [pscustomobject]@{ Identity = $identity; Inputs = $stage.Inputs }
-        $scope = New-FirstRunReviewScope $inertEngine $inertHash $stage $snapshot
-        $context = [pscustomobject]@{ Scope = $scope; Stage = $stage }
-        Assert-FirstRunBinding $context $inertEngine $inertHash $stage $snapshot
-        foreach ($field in @('Revision', 'Working', 'IndexSha256', 'RunnerPath', 'Source',
-            'StageDirectory', 'EvidenceDirectory', 'ReceiptPath', 'StopConditions', 'RoutineAfterPass')) {
-            $context.Scope = $scope | ConvertTo-Json -Depth 12 | ConvertFrom-Json
-            $context.Scope.$field = 'substitution'
-            Reject { Assert-FirstRunBinding $context $inertEngine $inertHash $stage $snapshot } 'scope changed'
-        }
-        $context.Scope = $scope | ConvertTo-Json -Depth 12 | ConvertFrom-Json
-        $context.Scope.Commands[0].Seconds = 61
-        Reject { Assert-FirstRunBinding $context $inertEngine $inertHash $stage $snapshot } 'scope changed'
-        $context.Scope = $scope
-        $otherStage = New-InputStage $source $fixture $tracked
-        Reject { Assert-FirstRunBinding $context $inertEngine $inertHash $otherStage $snapshot } 'scope changed'
-        $control = "$source/AGENTS.md"
-        $original = [IO.File]::ReadAllBytes($control)
-        try {
-            [IO.File]::WriteAllText($control, 'changed control')
-            Reject { Assert-FirstRunBinding $context $inertEngine $inertHash $stage $snapshot } 'scope changed'
-        } finally { [IO.File]::WriteAllBytes($control, $original) }
     }
     Check 'stable stage parent has no temp or environment selection' {
         $selection = @{ Source = ''; Parent = '' }
@@ -648,81 +596,6 @@ try {
         $encoded = [Convert]::ToBase64String([Text.Encoding]::Unicode.GetBytes($code))
         $r = Invoke-BoundedProcess $hostExe @('-NoProfile', '-EncodedCommand', $encoded) $fixture -Seconds 15
         Require ($r.Status -eq 'PASS' -and $r.ExitCode -eq 0 -and $r.TerminationCertain) 'Stage inaccessible or changed'
-    }
-    Check 'reviewed provider requires exact decision and returns independent scope snapshots' {
-        $stage = New-InputStage $source $fixture $tracked
-        $identity = [pscustomobject]@{ Revision = ('a' * 40); Working = ''; Index = 'fixture'; Tracked = $tracked }
-        function Get-NativeSourceIdentity { $identity }
-        $scope = New-FirstRunReviewScope $inertEngine $inertHash $stage ([pscustomobject]@{ Identity = $identity; Inputs = $stage.Inputs })
-        $record = [pscustomobject]@{ Decision = 'APPROVED_FIRST_RUN'; Revoked = $false; Scope = $scope }
-        function Get-ReviewedFirstRunApproval { $record }
-        $context = Get-ApprovedFirstRunContext
-        Require ($context.Stage.Directory -ceq $stage.Directory -and $context.Stage.Inputs.Count -eq 5) 'Approved stage substituted'
-        $context.Scope.Revision = 'changed'
-        Require ($record.Scope.Revision -ceq ('a' * 40)) 'Approved scope mutated'
-        $record.Decision = 'PENDING'
-        Reject { Get-ApprovedFirstRunContext } 'absent or withdrawn'
-        $record.Decision = 'APPROVED_FIRST_RUN'; $record.Revoked = $true
-        Reject { Get-ApprovedFirstRunContext } 'withdrawn'
-        $record.Revoked = 'false'
-        Reject { Get-ApprovedFirstRunContext } 'withdrawn'
-        $record.Revoked = $false; $record.Scope.Routine = 'ACTIVE'
-        Reject { Get-ApprovedFirstRunContext } 'Invalid reviewed'
-    }
-    Check 'real withdrawal check stops between mock import and test and consumes the attempt' {
-        $r = Invoke-DispatchFixture @((NativeResult), (NativeResult $completion)) 'withdrawal-record'
-        Require ($r.Calls.Count -eq 1 -and $r.Summary.Authorization -ceq 'FAIL' -and
-            $r.Summary.Import -ceq 'PASS' -and $r.Summary.Native -ceq 'FAIL') 'Withdrawal ignored'
-        Require (Test-Path -LiteralPath $r.Receipt) 'Consumed attempt lost'
-        Reject { New-FirstRunAttemptReceipt $r.Scope } 'exists'
-    }
-    Check 'replacement approved scope stops before the next mock launch' {
-        $r = Invoke-DispatchFixture @((NativeResult), (NativeResult $completion)) 'scope-record'
-        Require ($r.Calls.Count -eq 1 -and $r.Summary.Authorization -ceq 'FAIL' -and
-            $r.Summary.Diagnostic -match 'approval changed during the attempt') 'Approved scope replacement accepted'
-    }
-    Check 'exclusive consumption survives restart and preserves incomplete owner receipt' {
-        $directory = Join-Path $fixture 'receipt-restart'
-        $null = New-Item -ItemType Directory -Path $directory
-        $scope = [pscustomobject]@{ EvidenceDirectory = $directory; ReceiptPath = (Join-Path $directory 'first-run-attempt.receipt') }
-        New-FirstRunAttemptReceipt $scope
-        $original = [IO.File]::ReadAllText($scope.ReceiptPath)
-        Reject { New-FirstRunAttemptReceipt $scope } 'exists'
-        $runner = (Resolve-Path "$PSScriptRoot/../tools/run-local-tests.ps1").Path.Replace("'", "''")
-        $json = ($scope | ConvertTo-Json -Compress).Replace("'", "''")
-        $code = ". '$runner'; try { New-FirstRunAttemptReceipt (ConvertFrom-Json '$json'); exit 7 } catch { exit 0 }"
-        $encoded = [Convert]::ToBase64String([Text.Encoding]::Unicode.GetBytes($code))
-        $r = Invoke-BoundedProcess $hostExe @('-NoProfile', '-EncodedCommand', $encoded) $fixture -Seconds 15
-        Require ($r.Status -eq 'PASS' -and $r.ExitCode -eq 0) 'Restart replay accepted'
-        Require ([IO.File]::ReadAllText($scope.ReceiptPath) -ceq $original) 'Receipt overwritten'
-        $partial = Join-Path $fixture 'receipt-partial'
-        $null = New-Item -ItemType Directory -Path $partial
-        $scope.EvidenceDirectory = $partial; $scope.ReceiptPath = Join-Path $partial 'first-run-attempt.receipt'
-        [IO.File]::WriteAllText($scope.ReceiptPath, '')
-        Reject { New-FirstRunAttemptReceipt $scope } 'exists'
-        Require ((Get-Item $scope.ReceiptPath).Length -eq 0) 'Uncertain receipt replaced'
-        $scope.ReceiptPath = Join-Path $partial 'replacement.receipt'
-        Reject { New-FirstRunAttemptReceipt $scope } 'Invalid'
-    }
-    Check 'concurrent separate processes consume exactly once' {
-        $directory = Join-Path $fixture 'receipt-concurrent'
-        $null = New-Item -ItemType Directory -Path $directory
-        $scope = [pscustomobject]@{ EvidenceDirectory = $directory; ReceiptPath = (Join-Path $directory 'first-run-attempt.receipt') }
-        $runner = (Resolve-Path "$PSScriptRoot/../tools/run-local-tests.ps1").Path
-        $jobs = @(1..3 | ForEach-Object {
-            Start-Job -ScriptBlock {
-                param($Runner, $Scope)
-                . $Runner
-                try { New-FirstRunAttemptReceipt $Scope; 'CONSUMED' } catch { 'DENIED' }
-            } -ArgumentList $runner, $scope
-        })
-        try {
-            $done = @($jobs | Wait-Job -Timeout 20)
-            Require ($done.Count -eq 3) 'Concurrent fixture did not terminate'
-            $results = @($jobs | Receive-Job -ErrorAction Stop)
-            Require (@($results | Where-Object { $_ -ceq 'CONSUMED' }).Count -eq 1 -and
-                @($results | Where-Object { $_ -ceq 'DENIED' }).Count -eq 2) 'Concurrent replay permitted'
-        } finally { $jobs | Stop-Job; $jobs | Remove-Job }
     }
 } finally {
     # Only this freshly created, inert fixture tree. No project files or prior temp files.

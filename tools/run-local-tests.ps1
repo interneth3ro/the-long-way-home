@@ -1,9 +1,7 @@
 #requires -Version 7.0
 [CmdletBinding()]
 param(
-    [ValidateSet('Static', 'NativePlan', 'Native')][string]$Mode = 'Static',
-    [string]$GodotPath,
-    [string]$GodotSha256
+    [ValidateSet('Static', 'NativePlan', 'Native')][string]$Mode = 'Static'
 )
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
@@ -83,11 +81,23 @@ function Invoke-BoundedProcess {
         Stdout = $stdout; Stderr = $stderr; TerminationCertain = $terminationCertain }
 }
 
+# Fixed identity only; no CLI/environment discovery or executable overrides.
+function Get-StandardGodotIdentity {
+    [pscustomobject]@{
+        Path = 'D:\GameDev\Godot\Standard\Godot_v4.7.2-stable_win64.exe'
+        Sha256 = 'AB1824F85BFD8E0E4128182C000C4003A3E042245B2967848D089B2A04B22424'
+    }
+}
+
 function Assert-PinnedEngine {
     param([string]$Engine, [string]$EngineHash)
     if (-not $Engine -or -not [IO.Path]::IsPathFullyQualified($Engine) -or
         $EngineHash -notmatch '^[0-9a-fA-F]{64}$') {
-        throw 'NativePlan requires absolute GodotPath and exact GodotSha256.'
+        throw 'Native modes require an absolute executable path and exact SHA256.'
+    }
+    $pinned = Get-StandardGodotIdentity
+    if ($Engine -cne $pinned.Path -or $EngineHash -cne $pinned.Sha256) {
+        throw 'Pinned executable path or SHA-256 mismatch; overrides prohibited.'
     }
     Assert-PlainPath $Engine
     if (-not (Test-Path -LiteralPath $Engine -PathType Leaf) -or
@@ -283,58 +293,38 @@ function Invoke-RestrictedNativeDispatch {
     try {
         $summary.Authorization = 'FAIL'
         Assert-NativeExecutionAuthorization
-        # The reviewed approval record is empty until separate owner activation.
-        # Context comes only from that record, never a caller/local-file token.
-        $approved = Get-ApprovedFirstRunContext
+        $summary.Authorization = 'PASS'
         Assert-PinnedEngine $Engine $EngineHash
-        $identity = Get-NativeSourceIdentity $Source
-        $summary.Revision = $identity.Revision; $summary.Working = $identity.Working
-        $stage = $approved.Stage
-        if ($stage.Source -cne $Source) { throw 'Approved source checkout changed.' }
-        $summary.StageDirectory = $stage.Directory; $summary.Inputs = $stage.Inputs
         if ($null -eq $StaticSnapshot) { throw 'Actual static snapshot required.' }
-        if ($null -ne $StaticSnapshot) {
-            foreach ($key in @('Revision', 'Working', 'Index')) {
-                if ($identity.$key -cne $StaticSnapshot.Identity.$key) { throw 'Source changed since static-suite start.' }
-            }
-            if (($stage.Inputs | ConvertTo-Json -Compress) -cne ($StaticSnapshot.Inputs | ConvertTo-Json -Compress)) {
-                throw 'Working inputs changed since static-suite start.'
-            }
+        $identity = $StaticSnapshot.Identity
+        $summary.Revision = $identity.Revision; $summary.Working = $identity.Working
+        Assert-ReviewedNativeRunner $Source $identity.Revision
+        # Always create a fresh copy after actual static PASS. Never reuse a plan.
+        $stage = New-InputStage $Source (Get-NativeStageParent $Source) $identity.Tracked
+        $summary.StageDirectory = $stage.Directory; $summary.Inputs = $stage.Inputs
+        if ((ConvertTo-Json -InputObject @($stage.Inputs) -Compress) -cne
+            (ConvertTo-Json -InputObject @($StaticSnapshot.Inputs) -Compress)) {
+            throw 'Working inputs changed since static-suite start.'
         }
+        Assert-NativeDispatchInputs $stage $identity $false
         $commands = @(New-NativeCommandPlan $Engine $EngineHash $stage)
         Assert-PlainPath (Join-Path $Source 'artifacts/logs')
         $git = @(Get-Command git -CommandType Application -ErrorAction Stop)[0].Source
         $ignored = Invoke-BoundedProcess $git @('check-ignore', '--quiet', '--',
-            (Join-Path $Source 'artifacts/logs/native-failure-approval-check.json')) $Source
+            (Join-Path $Source 'artifacts/logs/native-failure-policy-check.json')) $Source
         if ($ignored.Status -ne 'PASS' -or $ignored.ExitCode -ne 0 -or -not $ignored.TerminationCertain) {
             throw 'Failure evidence destination is not confirmed ignored.'
         }
-        $summary.Authorization = 'FAIL'
-        Assert-NativeExecutionAuthorization
-        Assert-ReviewedNativeRunner $Source $identity.Revision
-        Assert-FirstRunBinding $approved $Engine $EngineHash $stage $StaticSnapshot
-        # CreateNew is the sole consumption operation. Never remove this receipt,
-        # including on write/flush failure or an interrupted/failed engine attempt.
-        New-FirstRunAttemptReceipt $approved.Scope
-        $summary.Authorization = 'PASS'
         foreach ($command in $commands) {
             $phase = $command.Phase
-            $summary.Commands += $command
-            $summary.$phase = 'FAIL'
             try { Assert-NativeExecutionAuthorization }
             catch { $summary.Authorization = 'FAIL'; throw }
             Assert-ReviewedNativeRunner $Source $identity.Revision
             Assert-NativeDispatchInputs $stage $identity ($phase -eq 'Native')
-            Assert-FirstRunBinding $approved $Engine $EngineHash $stage $StaticSnapshot -Imported:($phase -eq 'Native')
             # Last check before the one synchronous bounded launch. No retries.
             Assert-PinnedEngine $Engine $EngineHash
-            try { $currentApproval = Get-ApprovedFirstRunContext }
-            catch { $summary.Authorization = 'FAIL'; throw }
-            if ((ConvertTo-Json $currentApproval.Scope -Depth 12 -Compress) -cne
-                (ConvertTo-Json $approved.Scope -Depth 12 -Compress)) {
-                $summary.Authorization = 'FAIL'
-                throw 'Reviewed first-run approval changed during the attempt.'
-            }
+            $summary.Commands += $command
+            $summary.$phase = 'FAIL'
             $result = Invoke-BoundedProcess $command.Executable $command.Arguments $command.Directory `
                 -Seconds $command.Seconds -MaxBytes $command.MaxBytes -ExcerptBytes 4096
             $outcome = Get-NativeOutcome $phase $result
@@ -342,9 +332,12 @@ function Invoke-RestrictedNativeDispatch {
             $summary.Diagnostic = $outcome.Diagnostic
             if ($result.Status -ne 'PASS' -or -not $result.TerminationCertain) { $summary.Infrastructure = 'FAIL' }
             if ($outcome.Status -ne 'PASS') { break }
+            # Detect edits during either process too, including the final test.
+            Assert-NativeDispatchInputs $stage $identity $true
+            Assert-ReviewedNativeRunner $Source $identity.Revision
         }
     } catch {
-        if ($summary.Authorization -eq 'PASS') { $summary.$phase = 'FAIL' }
+        if (@($summary.Commands | Where-Object { $_.Phase -ceq $phase }).Count) { $summary.$phase = 'FAIL' }
         $summary.Infrastructure = 'FAIL'; $summary.Reason = 'DISPATCH_VALIDATION_OR_PROCESS_FAILURE'
         $message = [Text.Encoding]::UTF8.GetBytes([string]$_)
         $summary.Diagnostic = [Text.Encoding]::UTF8.GetString($message, 0, [Math]::Min(4096, $message.Length))
@@ -356,100 +349,24 @@ function Invoke-RestrictedNativeDispatch {
     return $summary
 }
 
-# Code-only revision: neither first-run approval nor a routine policy is active.
-# A later owner-authorized activation change must implement the exact reviewed
-# first-run scope. Successful validation alone must not enable routine execution;
-# that requires a separate, narrowly scoped repository execution policy.
+# Disabled for this code-only PR. After owner review and explicit first-run
+# permission, a reviewed change may remove this unconditional denial under the
+# narrow policy in AGENTS.md. No token, receipt, self-hash or local-file approval.
 function Assert-NativeExecutionAuthorization {
     [CmdletBinding()]
     param()
-    if ($null -eq (Get-ReviewedFirstRunApproval)) {
-        throw 'Native execution inactive: separate explicit owner approval of the exact first run is required. Routine testing additionally requires successful first-run validation and a separately owner-approved repository execution policy. Use NativePlan for nonexecuting inspection.'
-    }
-    $approved = Get-ApprovedFirstRunContext
-    Assert-ReviewedNativeRunner $approved.Stage.Source $approved.Scope.Revision
-}
-
-function Get-ReviewedFirstRunApproval {
-    [CmdletBinding()]
-    param()
-    # Deliberately empty in this implementation-only PR. Only a separately
-    # reviewed owner-authorized code change may supply the exact scope/decision.
-    # No caller, environment variable or local file can grant approval.
-    return $null
-}
-
-function Get-ApprovedFirstRunContext {
-    [CmdletBinding()]
-    param()
-    $record = Get-ReviewedFirstRunApproval
-    if ($null -eq $record) {
-        throw 'First-run context inactive: exact activation revision and scope require separate owner approval.'
-    }
-    if ($record.Decision -cne 'APPROVED_FIRST_RUN' -or $record.Revoked -isnot [bool] -or $record.Revoked) {
-        throw 'First-run approval absent or withdrawn.'
-    }
-    # Return an independent snapshot; never expose mutable approved scope data.
-    $scope = ConvertFrom-Json (ConvertTo-Json $record.Scope -Depth 12 -Compress)
-    if ($scope.Purpose -cne 'FIRST_RUN_REVIEW_ONLY' -or $scope.Routine -cne 'INACTIVE' -or
-        $scope.RoutineAfterPass -cne 'INACTIVE' -or $scope.Revision -cnotmatch '^([0-9a-f]{40}|[0-9a-f]{64})$' -or
-        $scope.ReceiptPath -cne (Join-Path $scope.EvidenceDirectory 'first-run-attempt.receipt')) {
-        throw 'Invalid reviewed first-run approval scope.'
-    }
-    foreach ($path in @($scope.Source, $scope.StageDirectory, $scope.EvidenceDirectory)) {
-        if (-not [IO.Path]::IsPathFullyQualified($path)) { throw 'Approved paths must be absolute.' }
-        Assert-PlainPath $path
-        if (-not (Test-Path -LiteralPath $path -PathType Container)) { throw 'Approved directory unavailable.' }
-    }
-    # This file can only withdraw permission, never grant it. Check before
-    # consumption and each phase through the existing authorization call sites.
-    $withdrawal = Join-Path $scope.EvidenceDirectory 'first-run-withdrawn'
-    Assert-PlainPath $withdrawal
-    if (Test-Path -LiteralPath $withdrawal) { throw 'First-run authorization withdrawn.' }
-    [pscustomobject]@{ Scope = $scope; Stage = [pscustomobject]@{
-        Source = $scope.Source; Directory = $scope.StageDirectory; Inputs = @($scope.Inputs)
-    } }
-}
-
-# Pure comparison of current review data with future owner-approved data. This
-# does not establish permission; both production authorization gates still deny.
-function Assert-FirstRunBinding {
-    param($Approved, [string]$Engine, [string]$EngineHash, $Stage, $Snapshot, [switch]$Imported)
-    $current = New-FirstRunReviewScope $Engine $EngineHash $Stage $Snapshot -Imported:$Imported
-    if ((ConvertTo-Json $current -Depth 12 -Compress) -cne
-        (ConvertTo-Json $Approved.Scope -Depth 12 -Compress)) { throw 'Approved first-run scope changed.' }
-}
-
-function New-FirstRunAttemptReceipt {
-    [CmdletBinding()]
-    param($Scope)
-    # Only the fixed receipt in the exact approved evidence directory is eligible.
-    # No directory creation, replacement, deletion, or recovery from uncertainty.
-    $path = $Scope.ReceiptPath
-    if (-not [IO.Path]::IsPathFullyQualified($path) -or
-        $path -cne (Join-Path $Scope.EvidenceDirectory 'first-run-attempt.receipt') -or
-        -not (Test-Path -LiteralPath $Scope.EvidenceDirectory -PathType Container)) {
-        throw 'Invalid or unavailable approved receipt destination.'
-    }
-    Assert-PlainPath $path
-    $bytes = [Text.Encoding]::UTF8.GetBytes((ConvertTo-Json $Scope -Depth 12 -Compress))
-    $digest = [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($bytes))
-    $record = [Text.Encoding]::UTF8.GetBytes("CONSUMED FIRST RUN`nScope SHA256: $digest`n")
-    $stream = [IO.FileStream]::new($path, [IO.FileMode]::CreateNew,
-        [IO.FileAccess]::Write, [IO.FileShare]::None, 4096, [IO.FileOptions]::WriteThrough)
-    try { $stream.Write($record, 0, $record.Length); $stream.Flush($true) }
-    finally { $stream.Dispose() }
+    throw 'Native execution inactive: owner review and separate explicit first controlled run permission are required. Use NativePlan for nonexecuting inspection.'
 }
 
 function Assert-ReviewedNativeRunner {
     param([string]$Source, [string]$Revision)
-    # Local checks only. The future owner-authorized gate must bind the reviewed
-    # commit; an arbitrary local HEAD or a policy paragraph is not authorization.
+    # Controls must match this run's captured revision; working resource edits
+    # are allowed, but tools, policy, documentation and static tests require review.
     $git = @(Get-Command git -CommandType Application -ErrorAction Stop)[0].Source
     $head = Invoke-BoundedProcess $git @('rev-parse', 'HEAD') $Source
     if ($head.Status -ne 'PASS' -or $head.ExitCode -ne 0 -or -not $head.TerminationCertain -or
         $head.Stdout.Trim() -cne $Revision) { throw 'Reviewed runner source revision changed.' }
-    $r = Invoke-BoundedProcess $git @('diff', '--quiet', $Revision, '--', 'tools', 'AGENTS.md', 'tests/static_*test.py') $Source
+    $r = Invoke-BoundedProcess $git @('diff', '--quiet', $Revision, '--', 'tools', 'AGENTS.md', 'docs/LOCAL_TESTING.md', 'tests/local_runner_fixture_test.ps1', 'tests/static_*test.py', 'tests/fabricator_recipe_switching_test.gd', 'tests/fabricator_recipe_switching_test.gd.uid') $Source
     if ($r.Status -ne 'PASS' -or $r.ExitCode -ne 0 -or -not $r.TerminationCertain) {
         throw 'Reviewed runner, policy or static suite has working changes.'
     }
@@ -613,12 +530,11 @@ function Assert-ExternalStageParent {
     $null = Get-ChildItem -Force -LiteralPath $Parent -ErrorAction Stop
 }
 
-# Review data only. This object is never consumed by the authorization gate.
-# A matching scope, even after static PASS, grants no permission to execute.
-function New-FirstRunReviewScope {
+# Console provenance only, never an approval record or execution input.
+function New-NativePlanSummary {
     [CmdletBinding()]
     param([string]$Engine, [string]$EngineHash, $Stage, $StaticSnapshot, [switch]$Imported)
-    if ($null -eq $StaticSnapshot) { throw 'Static snapshot required for first-run review.' }
+    if ($null -eq $StaticSnapshot) { throw 'Static snapshot required for native planning.' }
     $identity = $StaticSnapshot.Identity
     Assert-NativeDispatchInputs $Stage $identity ([bool]$Imported)
     if ((ConvertTo-Json -InputObject @($Stage.Inputs) -Compress) -cne
@@ -642,21 +558,20 @@ function New-FirstRunReviewScope {
             [Text.Encoding]::UTF8.GetBytes($identity.Index))).Replace('-', '')
     } finally { $hasher.Dispose() }
     [pscustomobject][ordered]@{
-        Purpose = 'FIRST_RUN_REVIEW_ONLY'; Authorization = 'INACTIVE'; Routine = 'INACTIVE'
+        Purpose = 'NONEXECUTING_PLAN'; Authorization = 'INACTIVE'
         RunnerPath = (Join-Path $Stage.Source 'tools/run-local-tests.ps1')
         Source = $Stage.Source; Revision = $identity.Revision; Working = $identity.Working
         IndexSha256 = $indexHash
         Controls = $controls; Inputs = @($Stage.Inputs); StageDirectory = $Stage.Directory
         Commands = $commands; EvidenceDirectory = (Join-Path $Stage.Source 'artifacts/logs')
-        ReceiptPath = (Join-Path $Stage.Source 'artifacts/logs/first-run-attempt.receipt')
-        ExcerptBytes = 4096; StaticRequired = 'ACTUAL_PYTHON_PASS'; RoutineAfterPass = 'INACTIVE'
-        StopConditions = 'ERROR;ASSERTION;COMPLETION;ABNORMAL_EXIT;TIMEOUT;OUTPUT_LIMIT;UNCERTAIN_TERMINATION;IDENTITY_CHANGE;WITHDRAWN_APPROVAL'
+        ExcerptBytes = 4096; StaticRequired = 'ACTUAL_PYTHON_PASS'
+        StopConditions = 'ERROR;ASSERTION;COMPLETION;ABNORMAL_EXIT;TIMEOUT;OUTPUT_LIMIT;UNCERTAIN_TERMINATION;IDENTITY_CHANGE'
         MaxAttemptsPerPhase = 1; MaxConcurrentProcesses = 1
     }
 }
 
 function Invoke-LocalTests {
-    param([string]$Root, [string]$RequestedMode, [string]$Engine, [string]$EngineHash)
+    param([string]$Root, [string]$RequestedMode)
     $static = 'NOT RUN'; $plan = 'NOT RUN'; $exitCode = 1
     try {
         if ($RequestedMode -eq 'Native') { Assert-NativeExecutionAuthorization }
@@ -677,9 +592,11 @@ function Invoke-LocalTests {
         Write-Host "Working status (untracked files are excluded from staging):`n$($changes.Excerpt.Trim())"
         # Configuration is checked without invoking the pinned binary, even for --version.
         if ($RequestedMode -in @('NativePlan', 'Native')) {
+            $pinned = Get-StandardGodotIdentity
+            $Engine = $pinned.Path; $EngineHash = $pinned.Sha256
             Assert-PinnedEngine $Engine $EngineHash
             Write-Host "Pinned executable (not invoked): $Engine SHA256=$EngineHash"
-        } elseif ($Engine -or $EngineHash) { throw 'Engine configuration requires NativePlan or Native.' }
+        }
         $suite = @(Get-ChildItem -LiteralPath (Join-Path $Root 'tests') -Filter 'static_*test.py' -File)
         if ($suite.Count -eq 0) { throw 'Static suite is missing.' }
         foreach ($file in $suite) { Assert-PlainPath $file.FullName }
@@ -705,16 +622,17 @@ function Invoke-LocalTests {
             $native = Invoke-RestrictedNativeDispatch $Root $Engine $EngineHash $static $snapshot
             Write-Host ($native | ConvertTo-Json -Depth 10)
             Write-Host "Summary: static=$static; native import=$($native.Import); recipe test=$($native.Native); reason=$($native.Reason); evidence=$($native.Evidence); evidence error=$($native.EvidenceError)"
-            return $(if ($native.Import -eq 'PASS' -and $native.Native -eq 'PASS') { 0 } else { 1 })
+            return $(if ($native.Import -eq 'PASS' -and $native.Native -eq 'PASS' -and
+                $native.Infrastructure -eq 'PASS' -and $native.Authorization -eq 'PASS' -and -not $native.EvidenceError) { 0 } else { 1 })
         }
         if ($RequestedMode -eq 'NativePlan') {
             $plan = 'FAIL'
             $stage = New-InputStage $Root (Get-NativeStageParent $Root) $snapshot.Identity.Tracked
-            $scope = New-FirstRunReviewScope $Engine $EngineHash $stage $snapshot
+            $planSummary = New-NativePlanSummary $Engine $EngineHash $stage $snapshot
             $plan = 'PASS'
             Write-Host "Retained dry-run stage: $($stage.Directory)"
-            Write-Host 'PROPOSED ONLY: first-run review scope; not authorization or a loadable approval file.'
-            Write-Host ($scope | ConvertTo-Json -Depth 10)
+            Write-Host 'NONEXECUTING PLAN: provenance only; Native always creates its own fresh stage.'
+            Write-Host ($planSummary | ConvertTo-Json -Depth 10)
         }
         $exitCode = 0
     } catch { Write-Host "FAIL (configuration/infrastructure or earlier phase): $_" }
@@ -724,5 +642,5 @@ function Invoke-LocalTests {
 
 # Dot-sourcing is used by non-Godot fixtures; it does not authorize dispatch.
 if ($MyInvocation.InvocationName -ne '.') {
-    exit (Invoke-LocalTests (Split-Path $PSScriptRoot -Parent) $Mode $GodotPath $GodotSha256)
+    exit (Invoke-LocalTests (Split-Path $PSScriptRoot -Parent) $Mode)
 }
