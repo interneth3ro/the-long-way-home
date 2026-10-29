@@ -15,6 +15,17 @@ from static_automatic_transitions_test import ROOT, PRIMARY, MAINTENANCE, EXTERI
 # Live post-P6 / pre-P8 main verified for cutover; never follow a moving ref.
 P8_BASE = "e14703e64aef961f18feba8a616acec00c4f069e"
 
+# Proposed Extractor pilot allowance: owner review required before Native use.
+# Pin complete LF-normalized candidate files, then restore immutable main bytes
+# for every existing historical comparison. No file or directory is exempted.
+EXTRACTOR_PILOT_BASE = "17c67d8c4bbab3a799686c30f341b1f602231640"
+EXTRACTOR_PILOT_SHA256 = {
+    "scenes/main/main.tscn": "3f703899f344f969df442886a0ccd4292968aea9d1c0dc4007606fbc210b8f73",
+    "scenes/ui/machine_ui.gd": "2ea3075fb8f3dade02ed2c226a96536d6510c7e3004e97d48cf6943784085faf",
+    "scenes/ui/machine_ui.tscn": "6a2a86d358a4ce0c7dca7bc4c15ba32ca2b1ed33df6efc767fe9fd7b31b67911",
+    "scenes/ui/objective_tracker.gd": "19424588dde32237a9dd078414d39355516128844889598dae9aabe7b81312c3",
+}
+
 # Proposed UI scaling presentation bytes, pending owner review before Native.
 # Normalize these exact files to the immutable pre-scaling main, then run all
 # existing B1/hotbar/P8 preservation comparisons unchanged. No path exemption.
@@ -441,7 +452,17 @@ B1_REPLACEMENTS = {'project.godot': [('window/size/viewport_width=1280\n'
                                 '\n')]}
 
 
+def without_extractor_pilot_changes(path, text):
+    if path not in EXTRACTOR_PILOT_SHA256:
+        return text
+    if hashlib.sha256(text.encode("utf-8")).hexdigest() != EXTRACTOR_PILOT_SHA256[path]:
+        raise AssertionError(f"Missing or modified Extractor pilot bytes pending review: {path}")
+    return subprocess.check_output(["git", "show", f"{EXTRACTOR_PILOT_BASE}:{path}"],
+                                   cwd=ROOT).decode("utf-8").replace("\r\n", "\n")
+
+
 def without_approved_ui_scaling_changes(path, text):
+    text = without_extractor_pilot_changes(path, text)
     if path not in UI_SCALING_SHA256:
         return text
     if hashlib.sha256(text.encode("utf-8")).hexdigest() != UI_SCALING_SHA256[path]:
@@ -497,6 +518,18 @@ def tracked_non_dev_files(pattern):
 
 
 class V2ProductionHostStaticTest(unittest.TestCase):
+    def test_extractor_pilot_allowance_restores_main_and_rejects_tampering(self):
+        for path in EXTRACTOR_PILOT_SHA256:
+            original = read(path)
+            with self.subTest(path=path):
+                before = subprocess.check_output(["git", "show", f"{EXTRACTOR_PILOT_BASE}:{path}"],
+                                                 cwd=ROOT).decode("utf-8").replace("\r\n", "\n")
+                self.assertEqual(without_extractor_pilot_changes(path, original), before)
+                for changed in (original.replace("\n", "\nCHANGED\n", 1),
+                                original + original, original + "UNRELATED\n"):
+                    with self.assertRaises(AssertionError):
+                        without_extractor_pilot_changes(path, changed)
+
     def test_f5_v2_host_and_independent_legacy_f6_scene(self):
         project = read("project.godot")
         self.assertEqual(re.findall(r'^[ \t]*run/main_scene[ \t]*=(.*)$', project, re.M),
@@ -879,6 +912,8 @@ class V2ProductionHostStaticTest(unittest.TestCase):
                     actual = without_approved_b1_changes(path, actual.decode("utf-8").replace("\r\n", "\n")).encode("utf-8")
                 elif path in UI_SCALING_SHA256:
                     actual = without_approved_ui_scaling_changes(path, actual.decode("utf-8").replace("\r\n", "\n")).encode("utf-8")
+                elif path in EXTRACTOR_PILOT_SHA256:
+                    actual = without_extractor_pilot_changes(path, actual.decode("utf-8").replace("\r\n", "\n")).encode("utf-8")
                 if path == "project.godot":
                     actual = actual.replace(b"\r\n", b"\n")
                     expected = expected.replace(b"\r\n", b"\n")

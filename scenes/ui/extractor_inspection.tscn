@@ -1,0 +1,160 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://scenes/ui/extractor_inspection.gd" id="1_view"]
+[ext_resource type="Texture2D" path="res://assets/environment/maintenance_bay_v2/machines/extractor_stationary.png" id="2_portrait"]
+[ext_resource type="Script" path="res://scenes/ui/cycle_gauge.gd" id="3_gauge"]
+[ext_resource type="Theme" path="res://assets/ui/machine_actions.tres" id="4_actions"]
+
+[sub_resource type="StyleBoxFlat" id="StorageCard"]
+bg_color = Color(0.045, 0.075, 0.09, 0.8)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.22, 0.32, 0.34, 1)
+content_margin_left = 12.0
+content_margin_top = 10.0
+content_margin_right = 12.0
+content_margin_bottom = 10.0
+
+[sub_resource type="StyleBoxLine" id="Divider"]
+color = Color(0.52, 0.40, 0.27, 0.5)
+thickness = 1
+
+[node name="ExtractorInspection" type="VBoxContainer"]
+mouse_filter = 2
+theme_override_constants/separation = 16
+script = ExtResource("1_view")
+
+[node name="Header" type="HBoxContainer" parent="."]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Title" type="Label" parent="Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+theme_type_variation = &"B1Title"
+text = "Extractor"
+
+[node name="Close" type="Button" parent="Header"]
+custom_minimum_size = Vector2(46, 46)
+layout_mode = 2
+tooltip_text = "Close inspection (Esc)"
+focus_mode = 0
+theme = ExtResource("4_actions")
+theme_type_variation = &"B1MachineClose"
+text = "×"
+
+[node name="Columns" type="HBoxContainer" parent="."]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+theme_override_constants/separation = 20
+
+[node name="Storage" type="VBoxContainer" parent="Columns"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 1.2222222
+mouse_filter = 2
+theme_override_constants/separation = 10
+
+[node name="Portrait" type="TextureRect" parent="Columns/Storage"]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+texture_filter = 2
+texture = ExtResource("2_portrait")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Output" type="PanelContainer" parent="Columns/Storage"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StorageCard")
+
+[node name="Rows" type="VBoxContainer" parent="Columns/Storage/Output"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 4
+
+[node name="Heading" type="Label" parent="Columns/Storage/Output/Rows"]
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"B1MutedLabel"
+text = "OUTPUT STORAGE"
+
+[node name="Material" type="Label" parent="Columns/Storage/Output/Rows"]
+layout_mode = 2
+mouse_filter = 2
+autowrap_mode = 2
+text = "Ferrite Ore"
+
+[node name="Quantity" type="Label" parent="Columns/Storage/Output/Rows"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 22
+text = "0 / 20"
+
+[node name="Capacity" type="ProgressBar" parent="Columns/Storage/Output/Rows"]
+custom_minimum_size = Vector2(0, 7)
+layout_mode = 2
+mouse_filter = 2
+show_percentage = false
+step = 0.1
+
+[node name="Collect" type="Button" parent="Columns/Storage"]
+custom_minimum_size = Vector2(0, 46)
+layout_mode = 2
+focus_mode = 0
+theme = ExtResource("4_actions")
+theme_type_variation = &"B1MachinePrimary"
+text = "Collect All"
+
+[node name="Divider" type="VSeparator" parent="Columns"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_styles/separator = SubResource("Divider")
+
+[node name="Production" type="VBoxContainer" parent="Columns"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+theme_override_constants/separation = 10
+
+[node name="Heading" type="Label" parent="Columns/Production"]
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"B1MutedLabel"
+text = "PRODUCTION"
+
+[node name="Status" type="Label" parent="Columns/Production"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 22
+text = "Inactive"
+
+[node name="GaugeCenter" type="CenterContainer" parent="Columns/Production"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Gauge" type="Control" parent="Columns/Production/GaugeCenter"]
+custom_minimum_size = Vector2(164, 164)
+layout_mode = 2
+mouse_filter = 2
+tooltip_text = "Current production cycle"
+script = ExtResource("3_gauge")
+
+[node name="DetailsScroll" type="ScrollContainer" parent="Columns/Production"]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+vertical_scroll_mode = 1
+
+[node name="Details" type="Label" parent="Columns/Production/DetailsScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+theme_override_font_sizes/font_size = 16
+autowrap_mode = 2

@@ -93,3 +93,5 @@ player = NodePath("../Dave")
 [node name="UIScalePreview" type="CanvasLayer" parent="."]
 layer = 90
 script = ExtResource("17_scale_preview")
+
+[connection signal="inspection_visibility_changed" from="MachineUI" to="ObjectiveTracker" method="set_machine_inspection_open"]

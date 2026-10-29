@@ -12,6 +12,13 @@ enum Presentation { CONTEXTUAL, PINNED, HIDDEN }
 var _presentation: Presentation = Presentation.CONTEXTUAL
 var _has_objective: bool = false
 var _expanded: bool = false
+var _machine_inspection_open: bool = false
+
+
+func set_machine_inspection_open(open: bool) -> void:
+	# A temporary visibility override, never a change to the player's preference.
+	_machine_inspection_open = open
+	_refresh_visibility()
 
 
 func show_objective(definition: ObjectiveDefinition) -> void:
@@ -42,6 +49,10 @@ func _restore_tracker() -> void:
 
 
 func _refresh_visibility() -> void:
+	if _machine_inspection_open:
+		_panel.hide()
+		_restore.hide()
+		return
 	_panel.visible = _has_objective and (_presentation == Presentation.PINNED \
 		or (_presentation == Presentation.CONTEXTUAL and _expanded))
 	_restore.visible = _has_objective and not _panel.visible

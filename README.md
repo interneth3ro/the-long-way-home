@@ -67,6 +67,59 @@ Headless checks do not verify graphical appearance. While execution is restricte
 use only nonexecuting checks under the policy above and report them as static
 validation; runtime and engine verification remain unperformed.
 
+## Extractor inspection visual pilot (feature branch, pending merge)
+
+`codex/extractor-inspection-pilot` introduces an Extractor-only two-column
+[inspection view](scenes/ui/extractor_inspection.tscn) inside the existing machine
+presenter. The right-edge panel is vertically centered between a 24-unit top
+clearance and the bottom hotbar/hint region. Its normal logical size is 640 x 510;
+width is capped at 48% of the logical HUD, and logical heights below 740 use a
+480-unit panel, tighter spacing and a smaller gauge. These are pilot choices
+pending owner graphical acceptance, not constraints for later machine panels.
+
+The unchanged [Extractor artwork](assets/environment/maintenance_bay_v2/machines/extractor_stationary.png)
+uses aspect-preserving fit with native texture size excluded from layout minimums.
+No portrait border, crop, new artwork or import-setting change is added. Output
+identity, exact stored/capacity quantities and a utilization bar sit above Collect
+All. The right column shows status, actual cycle percentage and definition-derived
+nominal rate, duration and yield (currently 60.0 ore/min, 1.0 s and 1 Ferrite Ore).
+The rate is nominal capacity, not measured throughput. Secondary details alone may
+scroll; Close and Collect All stay outside that region.
+
+The reusable [cycle gauge](scenes/ui/cycle_gauge.gd) draws a subtle bezel, ticks,
+track, status-colored arc and numeric percentage with CanvasItem drawing. It has
+no independent animation or simulation. Producing is teal, Output Full amber and
+Inactive gray. The opt-in [machine action theme](assets/ui/machine_actions.tres)
+supplies primary/compact-close variations without changing global B1 styles.
+
+All machine inspections temporarily suppress the objective tracker's expanded
+panel and compact restore control, giving inspection priority. The tracker's
+presentation preference and expanded flag are not modified by this override;
+closing inspection removes it, including on transitions and teardown. Objective
+progression continues. Smelter/Fabricator content layouts, recipe configuration,
+pause leases, range guards, stored-output identity and transaction methods remain
+unchanged. The 85% default and UIScaleRoot/hybrid formula are unchanged.
+
+All 51 Python static checks pass. Engine parsing, graphical appearance and input delivery
+remain unverified. Proposed exact-file preservation allowances in
+`tests/static_v2_production_host_test.py` require owner review before Native use.
+No Native or graphical Godot execution is authorized by this pilot's test changes.
+
+Owner graphical acceptance, performed separately under the execution policy:
+
+1. Inspect a deployed Extractor at 1280 x 720, 1024 x 576 and maximized, comparing
+   75%, 85% and 100%. Check portrait fit, B2 edges, column proportions, gauge/text
+   clarity and Close/Collect hit targets; confirm the 85% startup default.
+2. Watch real production progress; check teal Producing, amber Output Full and
+   gray Inactive where reachable. Confirm definition values and storage/bar agree.
+3. Collect empty, partial and full output; verify disabled empty state and exact
+   inventory transfer. Leave range, reopen and close by both header and Esc.
+4. Open/close inspection with the objective expanded, pinned, collapsed and hidden;
+   verify the prior presentation returns, including after inventory/transition
+   interruptions. Confirm the compact tracker never overlaps the panel.
+5. Check unchanged Smelter inspection and Fabricator initial selection, switching,
+   Back/errors, pause release, post-placement range feedback and old-product output.
+
 ## Hybrid UI scaling foundation (feature branch, pending merge)
 
 `codex/hybrid-ui-scaling` adds a shared
@@ -122,9 +175,10 @@ Actual readability, pointer attachment and edge behavior require owner checks.
 Known limits: rasterized IBM Plex fonts may soften under fractional Control
 scaling; no MSDF/import changes are included. The provisional 1024 x 576 minimum
 and the smallest preference can produce very small quantities/key labels.
-Machine panels remain content-driven with no new whole-panel scroll region;
-the expanded objective tracker and machine inspection retain their existing
-potential overlap at upper right. Percentage-width musings retain their
+At the scaling foundation milestone, machine panels remained content-driven with
+no new whole-panel scroll region, and expanded objective/machine panels could
+overlap at upper right. The Extractor pilot above adds bounded presentation and a
+temporary tracker override. Percentage-width musings retain their
 screen-relative width while text/padding scale. These remain useful review
 considerations when changing window size or personal preference.
 
