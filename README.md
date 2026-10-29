@@ -283,6 +283,22 @@ right/top placement and content-driven sizing remain. All content node paths,
 signals, recipe controls, transfers, collection and production logic are unchanged.
 Inventory, hotbar, shared theme and display scaling are unchanged.
 
+On `codex/fabricator-range-hotbar-hover` (pending merge), post-placement
+Fabricator inspection remains available outside interaction range. Change Recipe
+and Collect are disabled there with `Move closer to interact` tooltips. Returning
+within range restores availability subject to the existing recipe/output checks.
+The existing visible-panel refresh updates distance feedback without rebuilding
+controls; Transfer reuses the same range result. Action guards and transactions
+are unchanged. Extractor/Smelter behavior is unchanged; opening either clears any
+Fabricator-only Collect tooltip from the shared control.
+
+Owner graphical acceptance for this refinement: with a selected Fabricator recipe
+and stored output, move outside and back inside range during post-placement
+inspection; check disabled buttons, tooltips, re-enabled actions, and empty-output
+Collect remaining disabled. Compare active hotbar hover with normal and pressed
+states, inactive teal hover, empty/depleted slots and right-click clearing at
+1280 x 720 and 1024 x 576. Graphical checks require separate authorization.
+
 The owner approved the two exact normalized-byte machine preservation hashes;
 only those entries were added to the existing preservation table in `d65d32e`.
 Runner controls and native test assertions are unchanged. On 2026-10-29, one
@@ -395,7 +411,11 @@ and eight equipment positions without changing this hotbar.
 Temporary machine symbols and integer-safe quantities share
 `scenes/ui/item_presentation.gd` with inventory. Empty slots are subdued;
 assigned zero-quantity slots retain their type, show zero and remain clearable.
-The deploying type uses a steady copper-amber border; hover stays teal.
+The deploying type uses a steady copper-amber border. On
+`codex/fabricator-range-hotbar-hover` (pending merge), active hover subtly brightens
+the copper border and dark fill; inactive hover remains teal. A cached private
+copy of the existing pressed StyleBox supplies active hover without changing
+normal or pressed styles, dimensions, assignments or shortcuts.
 Tooltips give machine identity, exact quantity and physical shortcut.
 
 `Main/PlaythroughState` owns ten type references, per-slot customization flags

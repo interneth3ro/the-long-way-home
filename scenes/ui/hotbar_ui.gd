@@ -19,9 +19,14 @@ var _clear_menu: PopupMenu
 var _clear_slot: int = -1
 var _active_item: StringName = &""
 var _feedback_seconds: float = 0.0
+var _active_hover: StyleBoxFlat
 
 
 func _ready() -> void:
+	# Keep active hover copper; make one private copy without changing pressed styling.
+	_active_hover = B1_THEME.get_stylebox("pressed", "Button").duplicate() as StyleBoxFlat
+	_active_hover.bg_color = Color(0.095, 0.15, 0.17, 1)
+	_active_hover.border_color = Color(0.85, 0.62, 0.39, 1)
 	# Customize a private copy so inventory and machine panels retain their style.
 	var backing := B1_THEME.get_stylebox("panel", "PanelContainer").duplicate() as StyleBoxFlat
 	backing.content_margin_left = 4.0
@@ -143,7 +148,7 @@ func _refresh() -> void:
 		var hover := B1_THEME.get_stylebox("hover", "B1InventorySlot")
 		var selected := B1_THEME.get_stylebox("pressed", "Button")
 		slot.add_theme_stylebox_override("normal", selected if active else normal)
-		slot.add_theme_stylebox_override("hover", selected if active else hover)
+		slot.add_theme_stylebox_override("hover", _active_hover if active else hover)
 		var icon := slot.get_node("Icon") as TextureRect
 		var symbol := slot.get_node("Symbol") as Label
 		var total := slot.get_node("Quantity") as Label
