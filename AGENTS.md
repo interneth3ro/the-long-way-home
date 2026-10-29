@@ -28,21 +28,26 @@
   freezes or severe performance failures. Never reproduce a reported system
   lockup without explicit owner authorization.
 - **Headless restriction following PR #5 remains active.** On 2026-10-29 the
-  owner explicitly authorized minimal Native activation after PR #75 and exactly
-  one controlled invocation of `pwsh -NoProfile -File tools/run-local-tests.ps1 -Mode Native`,
-  covering only its fixed import and recipe-switching phases. This feature branch
-  removes the unconditional denial in `Assert-NativeExecutionAuthorization`,
-  pending merge. No embedded approval scope, self-hash, receipt, environment
-  switch or local approval file is required. Stop after that invocation and await
-  owner review. Further Native use, including routine use or a retry, requires
-  separate owner authorization.
-- This first-run exception permits execution only through
+  owner approved standing routine use of
+  `pwsh -NoProfile -File tools/run-local-tests.ps1 -Mode Native`, superseding the
+  earlier one-invocation permission after PR #75. Only its fixed import and
+  recipe-switching phases are authorized. No embedded approval scope, self-hash,
+  receipt, environment switch or local approval file is required. Stop on failure;
+  standing authorization does not permit automatic retries or unattended runs.
+- This restricted exception permits execution only through
   the reviewed `tools/run-local-tests.ps1 -Mode Native`, with the exact standard
   Windows executable `D:\GameDev\Godot\Standard\Godot_v4.7.2-stable_win64.exe`,
   SHA-256 `AB1824F85BFD8E0E4128182C000C4003A3E042245B2967848D089B2A04B22424`.
   No executable, script, scene or argument overrides are permitted. Only the
   reviewed allowlisted recipe-switching test may run; review changes to runner,
   policy, static tests, native test assertions and inventory/command scope before use.
+- For the B1 UI implementation the owner separately authorized a minimal font
+  staging amendment: only the required IBM Plex Sans Regular, Medium and SemiBold
+  `.ttf` assets under `assets/fonts/ibm-plex-sans/`, plus their three matching
+  `.ttf.import` metadata sidecars (separately approved after the first B1 run
+  rejected generated sidecars, together with one controlled rerun). This authorizes no additional
+  executable types, engine commands, tests or runner capabilities. All existing
+  staging, identity, limit, failure and preservation checks remain required.
 - Each authorized run requires actual Python static-suite PASS, unchanged reviewed
   controls, and a fresh unique copy of approved tracked working inputs under
   `D:\GameDev\Godot\TLWH-NativeStages`, outside the checkout. Working resource

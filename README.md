@@ -43,10 +43,12 @@ Alternatively, import `project.godot` through Godot's Project Manager.
 
 The [local PowerShell test runner](docs/LOCAL_TESTING.md) runs the existing Python
 static suite in this checkout. `-Mode NativePlan` copies tracked working inputs
-for nonexecuting inspection using the fixed executable identity. Following PR #75,
-the owner authorized minimal Native activation and one controlled invocation on
-2026-10-29. This feature branch enables that path, pending merge; further Native
-use requires separate owner authorization after reviewing the first result.
+for nonexecuting inspection using the fixed executable identity. On 2026-10-29,
+the owner approved standing routine use of the restricted Native runner, replacing
+the earlier one-invocation permission. Only the fixed import and recipe-switching
+phases are covered; no automatic retries or unattended execution. The B1 change
+adds only the three required IBM Plex Sans `.ttf` paths and their matching
+`.ttf.import` metadata sidecars to asset staging.
 See the guide for the fixed scope, limits and verification requirements.
 
 **F5** starts production V2 (P8 merged in PR #65). F6 with
@@ -64,6 +66,88 @@ The last two commands validate editor import and a bounded main-scene launch.
 Headless checks do not verify graphical appearance. While execution is restricted,
 use only nonexecuting checks under the policy above and report them as static
 validation; runtime and engine verification remain unperformed.
+
+## B1 UI foundation and desktop display (feature branch, pending merge)
+
+The shared [B1 theme](assets/ui/b1_theme.tres) and
+[panel StyleBox](assets/ui/b1_panel.tres) establish dark translucent panels,
+muted teal progress/hover states, copper-amber titles/focus states and ivory text.
+IBM Plex Sans Regular, Medium and SemiBold are bundled unmodified with their
+[upstream source and SIL OFL 1.1 license](assets/fonts/ibm-plex-sans/README.md).
+The machine HUD root alone receives this theme; dynamically generated recipe
+buttons inherit it. Extractor, Smelter and Fabricator keep the same nodes, layout,
+transactions, recipes and opening/closing behavior. Other HUDs retain their styles.
+
+Reuse by assigning the theme to a Control root. PanelContainer, Button,
+ProgressBar, Label, VBox/HBox defaults and B1Title, B1MutedLabel,
+B1WarningLabel label variations are available. Body/buttons use 18-unit text,
+titles 22, supporting text 16; containers use 10-unit gaps, panels 16 horizontal /
+12 vertical padding, and buttons 12 horizontal / 7 vertical padding. Button normal,
+hover, pressed, disabled and focus styles are defined; existing focus behavior is
+unchanged. No slot controls or UI framework are introduced.
+
+The project explicitly starts as a decorated resizable 1280 x 720 window, with
+native maximize/restore available. The persistent
+[display script](scenes/main/display_configuration.gd) sets the provisional
+1024 x 576 client minimum through Window.min_size. canvas_items plus expand
+uses available aspect-ratio area with automatic proportional scaling. Alt+Enter
+toggles nonexclusive borderless fullscreen, restores session window geometry
+(clamped to the current display work area), and returns maximized windows to
+maximized mode. Window preferences are not saved. Use a separate native game
+window for owner display testing; editor-embedded game behavior can differ.
+The [Godot Window modes](https://docs.godotengine.org/en/stable/classes/class_window.html#enum-window-mode)
+and [stretch settings](https://docs.godotengine.org/en/stable/classes/class_projectsettings.html#class-projectsettings-property-display-window-stretch-aspect)
+define these APIs.
+
+Camera zoom remains 0.75-1.5 and V2 room scale remains 1.25. Wider/taller views may
+expose finite room-art boundaries; no camera clamping, artwork change, HUD
+relocation, inventory redesign, Tab remapping, hotbar, settings or UI-scale option
+is included. Headless checks cannot accept the appearance or native window behavior.
+
+Validation at `0f7070a`: 43 Python static checks PASS, 54 inert runner fixtures
+PASS, and restricted Native cold import plus recipe-switching regression PASS.
+The first B1 run at `4d741f1` stopped after import because generated font sidecars
+were unexpected; the recipe test was NOT RUN. After separate owner authorization,
+the exact three sidecars were tracked/allowlisted and one fresh-stage rerun passed.
+The initial failure evidence remains in ignored artifacts/logs; both stages remain
+preserved. No graphical Godot, window-mode acceptance or performance test was run.
+
+Owner acceptance follow-up (PR #77): the owner reported six of seven tests
+PASS: Smelter appearance/functionality, other machines, resizing, expanded world
+view and basic regression. Alt+Enter produced no visible response. Source review
+found the persistent display node enabled, no competing gameplay handler for this
+chord, and a valid main Enter binding; actual event delivery/window behavior was
+not observed. The shortcut now checks InputEventKey directly for Alt plus main
+or keypad Enter, using logical or physical codes, ignoring release/echo and extra
+Ctrl/Shift/Meta modifiers. The obsolete InputMap action is removed. Fullscreen
+mode selection, geometry restoration, maximize handling and resize/aspect rules
+are unchanged. This correction still requires owner graphical retesting in a
+separate native game window; editor/OS interception cannot be excluded by static
+inspection. No new graphical execution is authorized by this note.
+
+Correction validation at `dee6050`: existing Python static suite 43 PASS;
+restricted Native cold import and recipe-switching regression PASS after explicit
+owner renewal of one invocation. Static inspection confirms press/echo/modifier
+checks and unchanged window restoration/maximize code. These checks do not inject
+real key events or verify fullscreen visually. The existing static preservation
+helper now accepts editor omission of the three default-valued window flags while
+rejecting nondefault changes. Owner-authored local omissions remain uncommitted.
+
+Owner acceptance checks, when the owner chooses to launch graphically:
+
+1. Inspect a deployed Smelter: typography, panel transparency/border, button normal,
+   hover, pressed and disabled states, progress and input/output counts. Verify
+   Transfer All, Collect All and Close/Esc retain their behavior.
+2. Inspect Extractor and Fabricator; verify recipe cards inherit the theme, recipe
+   switching/pause/Back/errors and existing panel lifecycle remain intact.
+3. Resize to the provisional minimum, maximize/restore, and inspect 16:9, 16:10 and
+   ultrawide windows. Check readability, panel bounds and newly visible room edges.
+4. Alt+Enter from a moved/resized window and from maximized mode; check return
+   geometry, title-bar controls, Alt-Tab and multi-monitor/DPI behavior. Holding
+   the shortcut should not repeatedly toggle.
+5. Check wheel zoom extremes, unchanged world/player scale, original inventory I,
+   dialogue, prompts, musings and construction hints. Their broader responsive
+   modernization remains future work.
 
 ## V2 production integration (P1-P6 merged, P7 approved, P8 pending merge)
 
