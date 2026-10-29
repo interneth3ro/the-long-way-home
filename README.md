@@ -76,8 +76,8 @@ clearance and the bottom hotbar/hint region. Its normal logical size is 640 x 51
 width is capped at 48% of the logical HUD, and logical heights below 740 use a
 480-unit panel, tighter spacing and a smaller gauge. The owner has accepted the
 overall layout, artwork, gauge, styling and proportions, including the divider/grid
-refinements and portrait smoothing. The padding/header refinement below remains
-pending owner screenshot review.
+refinements, portrait smoothing and padding. The final header/statistics alignment
+refinement below remains pending owner graphical review.
 
 Extractor content now has 24-unit left/right and bottom padding, with 20 units at
 the top. The private panel StyleBox changes only when switching presentation mode;
@@ -85,9 +85,19 @@ Smelter/Fabricator restore their original 16-unit sides and 14-unit top/bottom.
 B2 offsets compensate for the active content margins, preserving its outer frame
 rectangle and existing 24-unit nine-patch margins. Panel dimensions are unchanged.
 The header displays `EXTRACTOR`, inheriting B1Title's IBM Plex Sans SemiBold and
-copper-amber color, with a local 26-unit size override and Label vertical centering
-within the existing container row. Close, its tooltip and Esc are unchanged.
+copper-amber color, with a local 26-unit size override. The row and divider now
+share one header band, 64 units normally and 58 in compact mode. This incorporates
+the former 16/10-unit row-to-divider gap without changing the total header/body
+footprint. The row fills that band above the divider; the title is vertically
+centered, with the inherited B1Title four-unit bottom spacing removed locally.
+Close retains its 46-unit minimum target, centered in the row, tooltip and Esc.
 The portrait remains flexible and production values wrap/scroll as before.
+
+Font inspection found 1000 units/em, a 698-unit cap height and hhea ascent/descent
+of 1025/-275 in the approved SemiBold font. These line metrics differ from the
+visible uppercase outlines. The fix removes asymmetric style spacing and centers
+the complete band using containers; it adds no manual label offset or font change.
+Actual optical centering at 75/85/100% remains subject to owner graphical review.
 
 The unchanged [Extractor artwork](assets/environment/maintenance_bay_v2/machines/extractor_stationary.png)
 uses aspect-preserving fit with native texture size excluded from layout minimums.
@@ -99,8 +109,11 @@ The rate is nominal capacity, not measured throughput. A subdued header divider
 spans the inner content width. The existing column separator uses an explicitly
 vertical line style; both remain separate from the B2 frame. Production details
 use compact label/value rows with right-aligned, wrapping values and a muted rule
-beneath each row. Secondary details alone may scroll; Close and Collect All stay
-outside that region.
+beneath each row. The statistics' VBox fills the remaining scroll viewport and
+aligns its contents to the end, placing the last row rule at the column bottom,
+approximately level with Collect All. If rows exceed that viewport, the existing
+vertical scrollbar keeps them accessible. Production heading/status/gauge remain
+above; Close and Collect All stay outside the scroll region.
 
 Option A portrait minification changes only `mipmaps/generate=false` to `true` in
 [the shared import sidecar](assets/environment/maintenance_bay_v2/machines/extractor_stationary.png.import)
@@ -146,7 +159,8 @@ unchanged. The 85% default and UIScaleRoot/hybrid formula are unchanged.
 All 51 Python static checks pass. Agent validation remains static only; engine
 parsing and input delivery are unverified by the agent. The owner reviewed the
 overall graphical appearance, including the divider/grid refinement and portrait
-smoothing. Padding/header changes need owner screenshot review. Proposed exact-file
+smoothing and padding. Final header/statistics alignment needs owner graphical
+review. Proposed exact-file
 preservation allowances in
 `tests/static_v2_production_host_test.py` require owner review before Native use,
 including the Option A import sidecar and updated machine presenter padding hash.
@@ -161,6 +175,9 @@ Owner graphical acceptance, performed separately under the execution policy:
    including wrapped Cycle Yield text and scrolling at compact sizes. For the new
    refinement, check side/bottom content clearance, unchanged outer B2 alignment,
    centered uppercase 26-unit title, and gauge/value/button fit without enlargement.
+   For final alignment, compare the title against the full band above the divider,
+   Close centering, and the statistics' bottom edge against Collect All. Resize and
+   switch all three preferences; check short and wrapped statistics plus scrolling.
 2. Watch real production progress; check teal Producing, amber Output Full and
    gray Inactive where reachable. Confirm definition values and storage/bar agree.
 3. Collect empty, partial and full output; verify disabled empty state and exact

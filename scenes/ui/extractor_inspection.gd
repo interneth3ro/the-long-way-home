@@ -22,7 +22,7 @@ var _compact: bool = false
 
 
 func _ready() -> void:
-	$Header/Close.pressed.connect(func() -> void: close_requested.emit())
+	$Header/Row/Close.pressed.connect(func() -> void: close_requested.emit())
 	_collect.pressed.connect(func() -> void: collect_requested.emit())
 
 
@@ -31,13 +31,16 @@ func set_compact(compact: bool) -> void:
 		return
 	_compact = compact
 	add_theme_constant_override("separation", 10 if compact else 16)
+	# Include the former row-to-divider gap in the centered band, keeping the
+	# same total header/body footprint in both responsive modes.
+	$Header.custom_minimum_size.y = 58.0 if compact else 64.0
 	$Columns.add_theme_constant_override("separation", 12 if compact else 20)
 	_gauge.custom_minimum_size = Vector2.ONE * (144.0 if compact else 164.0)
 
 
 func refresh(machine: Dictionary, status: PlanetWorldState.OperatingStatus, in_range: bool) -> void:
 	var definition: MachineDefinition = machine.definition
-	$Header/Title.text = definition.display_name.to_upper()
+	$Header/Row/Title.text = definition.display_name.to_upper()
 	var accent := INACTIVE
 	_status.text = "Inactive"
 	if status == PlanetWorldState.OperatingStatus.PRODUCING:

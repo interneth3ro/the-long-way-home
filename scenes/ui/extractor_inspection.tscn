@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=9 format=3]
 
 [ext_resource type="Script" path="res://scenes/ui/extractor_inspection.gd" id="1_view"]
 [ext_resource type="Texture2D" path="res://assets/environment/maintenance_bay_v2/machines/extractor_stationary.png" id="2_portrait"]
@@ -26,34 +26,45 @@ vertical = true
 color = Color(0.52, 0.40, 0.27, 0.5)
 thickness = 1
 
+[sub_resource type="StyleBoxEmpty" id="HeaderTitleSpacing"]
+
 [node name="ExtractorInspection" type="VBoxContainer"]
 mouse_filter = 2
 theme_override_constants/separation = 16
 script = ExtResource("1_view")
 
-[node name="Header" type="HBoxContainer" parent="."]
+[node name="Header" type="VBoxContainer" parent="."]
+custom_minimum_size = Vector2(0, 64)
 layout_mode = 2
 mouse_filter = 2
+theme_override_constants/separation = 0
 
-[node name="Title" type="Label" parent="Header"]
+[node name="Row" type="HBoxContainer" parent="Header"]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="Title" type="Label" parent="Header/Row"]
 layout_mode = 2
 size_flags_horizontal = 3
 mouse_filter = 2
 theme_type_variation = &"B1Title"
 theme_override_font_sizes/font_size = 26
+theme_override_styles/normal = SubResource("HeaderTitleSpacing")
 text = "EXTRACTOR"
 vertical_alignment = 1
 
-[node name="Close" type="Button" parent="Header"]
+[node name="Close" type="Button" parent="Header/Row"]
 custom_minimum_size = Vector2(46, 46)
 layout_mode = 2
+size_flags_vertical = 4
 tooltip_text = "Close inspection (Esc)"
 focus_mode = 0
 theme = ExtResource("4_actions")
 theme_type_variation = &"B1MachineClose"
 text = "×"
 
-[node name="HeaderDivider" type="HSeparator" parent="."]
+[node name="HeaderDivider" type="HSeparator" parent="Header"]
 layout_mode = 2
 mouse_filter = 2
 theme_override_constants/separation = 2
@@ -170,8 +181,10 @@ vertical_scroll_mode = 1
 [node name="Details" type="VBoxContainer" parent="Columns/Production/DetailsScroll"]
 layout_mode = 2
 size_flags_horizontal = 3
+size_flags_vertical = 3
 mouse_filter = 2
 theme_override_constants/separation = 6
+alignment = 2
 
 [node name="Rows" type="VBoxContainer" parent="Columns/Production/DetailsScroll/Details"]
 layout_mode = 2
