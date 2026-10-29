@@ -159,8 +159,8 @@ Owner acceptance checks, when the owner chooses to launch graphically:
 ## B1 inventory modernization (PR #78 merged)
 
 The persistent left-side inventory uses the shared B1 theme and panel with a
-30-position Materials grid (three rows of ten) and a ten-position Machines /
-Equipment row. All empty positions remain visible and subdued; they have no
+15-position Materials grid (three rows of five) and a five-position Machines /
+Equipment row (compact follow-up on `codex/compact-20-slot-inventory`, pending merge). All empty positions remain visible and subdued; they have no
 action or tooltip. Occupied positions show a 36-unit icon/symbol and quantity.
 Hover shows the full name and exact total. Materials have no click action;
 one left-click on a packaged machine requests deployment through the unchanged
@@ -185,10 +185,13 @@ the equipment row with section, name and exact total; overflow machines retain
 direct deployment. This is a presentation fallback, with no storage capacity,
 stack records, pagination, rearrangement or transaction changes.
 
-Both grids use ten-column GridContainers, 64-unit slots and six-unit gaps. The
-panel keeps its left/top placement (24, 100); its 726-unit width includes shared
-panel padding. Vertical containers keep the four rows and optional overflow
-within the 1280 x 720 reference canvas. Automatic project scaling gives roughly
+Both grids use five-column GridContainers, 64-unit slots and six-unit gaps. The
+panel keeps its left/top placement (24, 100); its width shrinks from 726 to 376
+units (344-unit grid plus 16-unit padding on each side). The hint wraps to the
+new width. Height remains content-driven: the slot rows still occupy 268 units
+plus section spacing, headings, hint and padding. Overflow adds its existing
+bounded 64-unit scroll area and container gap. Vertical containers retain the
+four rows and optional overflow within the 1280 x 720 reference canvas. Automatic project scaling gives roughly
 51-pixel slots at the 1024 x 576 minimum; appearance/readability need owner
 acceptance. No display settings or player UI-scale control changes are included.
 
@@ -231,7 +234,7 @@ Owner acceptance, when the owner chooses to launch graphically:
 
 1. Open/close using Tab and the button in all three environments; verify I has
    no effect, held Tab toggles once, Esc closes, and Tab does not move GUI focus.
-2. Inspect all 40 positions, section divider, icons, exact hover totals and empty,
+2. Inspect all 20 positions (15 Materials, five Machines / Equipment), section divider, icons, exact hover totals and empty,
    occupied, hovered and disabled states at 1280 x 720 and 1024 x 576. Check the
    rightmost column, bottom hint and quantities for clipping at both zoom extremes.
 3. Acquire materials, collect output, recover machines and spend quantities;
@@ -243,6 +246,17 @@ Owner acceptance, when the owner chooses to launch graphically:
    and objectives continue normally. Overflow is a future-catalog safeguard;
    current gameplay cannot populate it without additional item definitions.
 
+Compact inventory follow-up validation (pending merge): all 46 Python static
+checks PASS; Native execution awaits owner review of the preservation amendment.
+That assertion reverses only the two slot counts, panel right edge, two column
+properties and hint wrapping before checking the original normalized SHA-256
+hashes. No hash baseline, runner policy, hotbar code or native assertions change.
+No graphical acceptance is claimed. The current catalog cannot populate overflow;
+code inspection confirms the same scroll rows start at material index 15/equipment
+index 5, with deployment and assignment connections preserved. When future catalog
+types populate it, owner acceptance should include scrolling both sections and
+deploying/assigning overflow equipment.
+
 ## B1 hybrid hotbar (feature branch, pending merge)
 
 `codex/b1-hybrid-hotbar` adds ten persistent 52-unit B1 slots centered at the
@@ -251,8 +265,9 @@ the original 64-unit hotbar slots. One dark backing panel surrounds the row,
 reusing a private copy of the B1 panel style with 90% background opacity,
 a thin border and four-unit padding. Its overall size is 582 x 60 units with
 a 16-unit bottom margin. Icons/symbols, quantities and key labels fit the smaller
-slots. Shared theme resources and the current 40-slot inventory are unchanged;
-the separately approved 15-material/5-equipment inventory belongs to a later PR.
+slots. Shared theme resources are unchanged. The separate compact inventory
+follow-up on `codex/compact-20-slot-inventory` reduces the inventory to 15 material
+and five equipment positions without changing this hotbar.
 Temporary machine symbols and integer-safe quantities share
 `scenes/ui/item_presentation.gd` with inventory. Empty slots are subdued;
 assigned zero-quantity slots retain their type, show zero and remain clearable.

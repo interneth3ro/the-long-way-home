@@ -267,8 +267,9 @@ durable save/load. See the [implementation notes](../README.md#first-ferrite---d
   in this milestone.
 
 The approved B1 inventory follow-up keeps this shared aggregate storage and
-uses 30 material positions (three rows of ten) plus ten machine/equipment
-positions, with all empty positions visible. These are presentation positions,
+uses 15 material positions (three rows of five) plus five machine/equipment
+positions, with all empty positions visible. This compact follow-up is implemented
+on `codex/compact-20-slot-inventory`, pending merge and owner acceptance. These are presentation positions,
 not capacity limits; extra types retain access in a small overflow list. Tab
 replaces I; machine slots continue to request deployment on a single click.
 Inventory implementation merged in PR #78; owner graphical acceptance remains
@@ -287,8 +288,11 @@ border/four-unit padding, and the same copper-amber placement highlight.
 The original implementation and the owner-approved refinement both passed
 the restricted Native runner (static suite, cold import and existing recipe
 regression). Hotbar graphical/interaction acceptance remains separate; the
-feature is pending merge. The refinement requires no preservation-assertion changes. The approved future 15-material/5-equipment
-inventory is reserved for a separate PR; this branch keeps the 40-slot layout.
+feature is pending merge. The hotbar refinement required no preservation-assertion changes. The separate
+compact inventory follow-up narrows the panel from 726 to 376 units, preserves
+64-unit slots and overflow access, and wraps the hint. Its exact-change
+preservation amendment requires owner review before Native execution; graphical
+acceptance remains separate.
 See the [implementation and acceptance checklist](../README.md#b1-hybrid-hotbar-feature-branch-pending-merge).
 No movable stacks, final artwork, new tools or disk persistence are added.
 

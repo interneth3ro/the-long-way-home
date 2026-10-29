@@ -23,6 +23,22 @@ B1_INVENTORY_SHA256 = {
     "scenes/ui/inventory_ui.tscn": "21050cdb0976b6c4893f48a8e9ccf51a1ca4864f5ab2ec4f77d391467178c944",
 }
 
+# Compact inventory candidates: reverse only these exact presentation edits
+# before checking the existing reviewed hashes. Owner review required before Native.
+COMPACT_INVENTORY_REPLACEMENTS = {
+    "scenes/ui/inventory_ui.gd": [
+        ("const MATERIAL_SLOTS := 15\nconst EQUIPMENT_SLOTS := 5\n",
+         "const MATERIAL_SLOTS := 30\nconst EQUIPMENT_SLOTS := 10\n", 1),
+    ],
+    "scenes/ui/inventory_ui.tscn": [
+        ("offset_right = 400.0\n", "offset_right = 750.0\n", 1),
+        ("columns = 5\n", "columns = 10\n", 2),
+        ('text = "Hover totals · Left-click deploy · Right-click assign · Tab / Esc close"\n'
+         'autowrap_mode = 3\n',
+         'text = "Hover totals · Left-click deploy · Right-click assign · Tab / Esc close"\n', 1),
+    ],
+}
+
 # The inventory hash now delegates artwork/quantity formatting to this exact
 # shared helper; retain full normalized-byte protection for the moved code.
 HOTBAR_ITEM_PRESENTATION_SHA256 = "90e58359dd26d202848461ddd212dbfc5a37e7d50f5cf1c997f56e4138f47862"
@@ -829,6 +845,9 @@ class V2ProductionHostStaticTest(unittest.TestCase):
                 actual = (ROOT / path).read_bytes()
                 if path in B1_INVENTORY_SHA256:
                     actual = actual.replace(b"\r\n", b"\n")
+                    for candidate, historical, count in COMPACT_INVENTORY_REPLACEMENTS[path]:
+                        self.assertEqual(actual.count(candidate.encode("utf-8")), count, path)
+                        actual = actual.replace(candidate.encode("utf-8"), historical.encode("utf-8"))
                     self.assertEqual(hashlib.sha256(actual).hexdigest(), B1_INVENTORY_SHA256[path], path)
                     continue
                 if path in B1_REPLACEMENTS or path in HOTBAR_REPLACEMENTS:
