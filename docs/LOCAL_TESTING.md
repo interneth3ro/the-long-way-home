@@ -1,4 +1,4 @@
-# Local testing runner (simplification, pending merge)
+# Local testing runner (Native activation, pending merge)
 
 Use PowerShell **7+** on Windows, with trusted Git and Python applications on PATH,
 from the actual checkout. No new testing framework or engine discovery is used.
@@ -24,28 +24,24 @@ PASS; a plan stage is never reused. Do not edit files during a plan or run.
 
 ## Authorization and standing scope
 
-**Godot was NOT RUN during this code-only implementation. No first real run has
-been authorized.** The owner approved the narrow standing scope in principle;
-this feature branch leaves `Assert-NativeExecutionAuthorization` as an
-unconditional denial. Public Native fails before prerequisites, static validation,
-staging or process calls. The internal dispatcher also checks the gate before
-staging and each prospective engine launch. Flags, environment, local files,
-merge and test PASS cannot enable it.
+On **2026-10-29**, following PR #75 at
+`5f0fc13347ae1ebabb7e75e279a7a00bb74e666f`, the owner explicitly authorized
+minimal Native activation and **one controlled invocation**, covering only the
+fixed cold import and recipe-switching phases below. This feature branch removes
+the unconditional denial in `Assert-NativeExecutionAuthorization`, pending merge.
+The dispatcher retains its checks before staging and each prospective launch.
+The [execution policy](../AGENTS.md#godot-execution-safety) requires stopping after
+that invocation and awaiting owner review; routine use and retries require separate
+owner authorization. A PASS or merge does not grant further execution permission.
 
-After reviewing this PR, the owner must separately explicitly approve the first
-controlled real run and activation of the standing scope in
-[AGENTS.md](../AGENTS.md#godot-execution-safety). The minimal later reviewed code
-change removes that function's unconditional denial. There is no frozen scope
-embedded in its own hashed runner, approval provider, receipt, withdrawal marker,
-GitHub-comment flow, token, external service or expiration machinery. This PR
-neither makes that change nor grants permission. Preserve any historical receipts,
-withdrawal files and evidence; the simplified runner does not read or delete them.
+There is no embedded approval scope, self-hash, receipt, environment switch or
+local approval file. Authorization is supplied by the owner and repository workflow.
+Preserve historical receipts, withdrawal files and evidence; the runner does not
+read or delete them.
 
-Once expressly activated, the standing scope permits repeated local use of the
-reviewed runner during feature development, without per-run approval records:
+The single authorized invocation, only after preconditions and verification pass:
 
 ```powershell
-# Future use only, after explicit owner permission and reviewed gate removal:
 pwsh -NoProfile -File tools/run-local-tests.ps1 -Mode Native
 ```
 
@@ -123,13 +119,11 @@ Exit 0 means the requested operations passed; exit 1 means failure. The JSON
 summary distinguishes Static, Import, Native, Infrastructure and Authorization
 outcomes, provenance, actual attempted commands, bounded diagnostic, evidence path
 and evidence-save error. A process not attempted remains NOT RUN; an attempted
-phase whose final checks fail is FAIL. Example future outcomes:
+phase whose final checks fail is FAIL. Example outcomes:
 
 - Success: `Static=PASS; Import=PASS; Native=PASS; Infrastructure=PASS` (exit 0).
 - Import error: `Static=PASS; Import=FAIL; Native=NOT RUN` (exit 1).
 - Recipe failure: `Static=PASS; Import=PASS; Native=FAIL` (exit 1).
-- Current disabled gate: `static=NOT RUN; native import=NOT RUN; recipe test=NOT RUN;
-  overall=FAIL` (exit 1).
 
 Failure evidence uses ignored `artifacts/logs/native-failure-<GUID>.json` only
 after Git confirms the ignored plain destination. Files are exclusively created,
@@ -145,7 +139,7 @@ Synthetic fixtures cover static propagation, fresh stage selection, fixed comman
 arrays/deadlines/byte limits, pinned identity and source/index/input protection,
 unsafe paths/links/unexpected files, output/completion/error classification,
 sequential failure stops, no retries, bounded unique evidence, owner-file
-preservation and the disabled public gate. They do not execute Godot or establish
+preservation and authorization-withdrawal stops. They do not execute Godot or establish
 native compatibility, GDScript parsing, runtime assertions or graphical behavior.
 The Python baseline assertions and GDScript assertions remain unchanged.
 
@@ -158,6 +152,6 @@ checks do not defend against hostile concurrent changes. Never start concurrent
 runner invocations or retry an uncertain termination without owner direction.
 
 Actual import compatibility, Godot parsing/completion output, process containment,
-first-run host stability and graphical behavior remain **unverified**. A Godot
+first-run host stability and graphical behavior require actual verification. A Godot
 import that rewrites tracked sidecars will correctly fail these preservation checks
-and needs review; this assignment does not authorize trying it.
+and needs review. A failed first invocation must not be retried automatically.
