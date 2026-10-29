@@ -17,10 +17,10 @@ P8_BASE = "e14703e64aef961f18feba8a616acec00c4f069e"
 
 # B1 inventory and hotbar context-menu integration replace exactly these UI files.
 # Freeze normalized candidate bytes rather than exempting them from preservation.
-# Updated compact inventory candidates require owner review before Native execution.
+# B2 nine-patch inventory scene candidate requires owner review before Native execution.
 B1_INVENTORY_SHA256 = {
-    "scenes/ui/inventory_ui.gd": "5a5273e46ebd4d0f8817f2f0c4d7bab615d5c054de6faeb8f44f043eba307a48",
-    "scenes/ui/inventory_ui.tscn": "26ae07dd7adfe55f3af1d895e44ce2ac235ecca68c1d90a71068a2b34576503b",
+    "scenes/ui/inventory_ui.gd": "9a9e68709e46ca84bddfc0f0e552e2218d1b2417f3be3e76057094b28d1d6817",
+    "scenes/ui/inventory_ui.tscn": "ffa02b016227dab6cc54a709af3ccf671c94ea28d8b675274f191be2f22ce601",
 }
 
 # The inventory hash now delegates artwork/quantity formatting to this exact

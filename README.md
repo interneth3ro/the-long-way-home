@@ -160,7 +160,7 @@ Owner acceptance checks, when the owner chooses to launch graphically:
 
 The persistent left-side inventory uses the shared B1 theme and panel with a
 24-position Materials grid (three rows of eight) and an eight-position Machines /
-Equipment row (compact follow-up on `codex/compact-20-slot-inventory`, pending merge). All empty positions remain visible and subdued; they have no
+Equipment row (compact follow-up merged in PR #80). All empty positions remain visible and subdued; they have no
 action or tooltip. Occupied positions show a 22-unit icon or 14-point symbol
 and a 12-point quantity.
 Hover shows the full name and exact total. Materials have no click action;
@@ -187,20 +187,19 @@ direct deployment. This is a presentation fallback, with no storage capacity,
 stack records, pagination, rearrangement or transaction changes.
 
 Both grids use eight-column GridContainers, 42-unit slots and four-unit gaps.
-The panel keeps its left/top placement (24, 100); its width is 380 units
-(364-unit grid plus eight-unit padding on each side), increased from the
-five-column candidate's 242 to fit the owner-approved eight-column layout.
-A private copy of the shared panel style changes only padding: eight horizontally,
-six vertically. B1 colors,
+The panel keeps its left/top placement (24, 100); B2 padding refinement makes
+its width 396 units (364-unit grid plus 16-unit padding on each side), up from
+PR #80's 380. A private copy of the shared panel style changes only padding:
+16 horizontally and 14 vertically. B1 colors,
 transparency, borders and corners remain unchanged; the hotbar and shared theme
 are untouched. Section spacing is four units; the title is 18-point, section
 headings/hint are 14-point, and the hint reads `Tab / Esc to close`. Deployment
 and hotbar-assignment guidance remains in machine and overflow tooltips.
 
 Height remains content-driven. Static font/spacing arithmetic estimates about
-301 units without overflow, 369 with its existing 64-unit scroll area. These
+317 units without overflow, 385 with its existing 64-unit scroll area. These
 are layout estimates, not measured Godot output. At 1024 x 576 the existing
-0.8 scaling gives a 304-pixel-wide panel, 33.6-pixel slots,
+0.8 scaling gives a 316.8-pixel-wide panel, 33.6-pixel slots,
 17.6-pixel icons, 11.2-pixel symbols/headings and 9.6-pixel quantities. The panel
 bounds fit both supported canvases by static inspection. IBM Plex Sans Regular
 advance metrics put the widest quantity at about 36.5 of 38 available logical
@@ -209,6 +208,58 @@ inspected the eight-column layout in Godot and approved it. Specific resolution
 coverage and long-quantity readability were not separately recorded; these remain
 useful acceptance checks rather than claims established by the static metrics.
 No display settings or player UI-scale control changes are included.
+
+B2 Balanced frame on `codex/b1-refined-industrial-inventory` (pending merge):
+[the reusable NinePatchRect scene](scenes/ui/b2_panel_frame.tscn) uses the
+[owner-supplied 96 x 96 RGBA texture](assets/ui/TLWH_B2_ninepatch_96.png), unchanged.
+All four patch margins are 24; horizontal and vertical edges use TILE, with fixed
+corners, linear filtering and center drawing disabled. The transparent center
+preserves the existing B1 background. The procedural experiment has been removed.
+The accompanying standard texture-import metadata uses lossless compression and
+no mipmaps; no engine cache is tracked.
+
+Inventory alone instances this frame in a mouse-transparent Control wrapper.
+PanelContainer fits the wrapper to its padded content rectangle with explicit
+FILL size flags. Both the reusable frame and its inventory instance explicitly
+use anchor layout mode and full-rect anchors. Instance offsets (-16, -14, +16, +14)
+undo only the private 16/14 content padding: the resulting frame rectangle equals the
+panel rectangle at every size, starting at (24, 100). No outward overhang or
+texture-sized rectangle determines the frame size. The panel grows only to fit
+the unchanged grid and new padding; content structure and placement stay unchanged. Both decorative nodes ignore mouse
+input and inherit panel visibility. No additional script or input handler is
+required; the shared theme and hotbar remain unchanged. To reuse later, instance the scene under a similar
+wrapper and adjust its offsets for the host's padding. Other panels are unchanged.
+
+Owner testing found the first integration rendered a small upper-left decoration.
+Its instance used position layout mode (0), which resets inherited anchors to
+top-left. The earlier 46-test static PASS did not verify that layout behavior.
+The correction explicitly uses anchor mode (1) before setting full-rect anchors.
+The owner subsequently confirmed that the corrected frame surrounds the panel;
+its placement and nine-patch scale are accepted. The final padding refinement
+addresses the owner's heading/grid/hint clearance feedback: 16 horizontal and
+14 vertical units. The 364-unit grid stays unchanged. Pixel inspection of the
+unchanged asset finds faint corner alpha (up to 5/255) inside a 16/12 inset;
+a 16/14 inset is fully transparent, including the corner and tiled-edge regions.
+No individual labels or slots are offset. Vertical content spacing stays four.
+The frame offsets change only to compensate for the new padding, keeping its
+rectangle equal to the actual panel at normal and overflow heights.
+
+Static padding/slot geometry, frame-to-panel rectangle equality, supported-canvas
+bounds, asset clearance, documentation links and `git diff --check` PASS.
+The owner approved the two exact inventory scene/script preservation hashes;
+only those entries changed, in commit `dd9cbc3`. Historical comparisons,
+runner controls and Native test assertions remain unchanged. One authorized
+`pwsh -NoProfile -File tools/run-local-tests.ps1 -Mode Native` run at that revision
+with the working framing/padding inputs passed: 46 Python static tests, cold
+headless import and recipe-switching regression (zero failures). Infrastructure
+and authorization checks PASS. The retained fresh stage is
+`tlwh-native-plan-95889136ca83441083e6a0802db95d54`. No retry or graphical Godot
+launch occurred. On 2026-10-29, after the padding correction and successful Native
+run, the owner reported visual tests PASS and accepted the B2 inventory framing
+and padding. Specific resolution/overflow coverage was not separately recorded.
+Height estimates use font-table metrics and spacing arithmetic; the owner's
+visual acceptance is separate from the agent's static and headless checks.
+
 
 Tab replaces I in the inventory InputMap action. Inventory consumes Tab presses
 and repeats in `_input`, before GUI focus navigation; only the initial press
