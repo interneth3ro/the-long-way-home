@@ -187,6 +187,8 @@ func _refresh(machine: Dictionary) -> void:
 	if definition.has_recipes():
 		_refresh_fabricator(machine, definition)
 		return
+	# The shared Collect control may retain a Fabricator range tooltip.
+	_collect_button.tooltip_text = ""
 	_status.remove_theme_color_override("font_color")
 	_explanation.text = "No production configured."
 	match progression.planet.machine_status(machine):
@@ -290,6 +292,11 @@ func _recipe_change_error(result: PlanetWorldState.RecipeChangeResult) -> String
 
 func _refresh_fabricator(machine: Dictionary, definition: MachineDefinition) -> void:
 	var recipe := definition.get_recipe(machine.get("recipe_id", &""))
+	# Reuse the existing visible-panel refresh so distance changes need no UI rebuild.
+	var in_range := _in_range(machine)
+	_change_button.disabled = not in_range or recipe == null or _recipe_cards.visible
+	_change_button.tooltip_text = "" if in_range else "Move closer to interact"
+	_collect_button.tooltip_text = "" if in_range else "Move closer to interact"
 	# Assign the desired state once: hiding a visible ancestor cancels button presses.
 	_input_section.visible = not _recipe_cards.visible and recipe != null
 	_progress.visible = not _recipe_cards.visible and recipe != null
@@ -318,7 +325,7 @@ func _refresh_fabricator(machine: Dictionary, definition: MachineDefinition) -> 
 	if machine.output > 0 and product != null:
 		heading += " — %s" % product.display_name
 	_output.text = "%s\n%d / %d" % [heading, machine.output, definition.output_capacity]
-	_collect_button.disabled = machine.output <= 0 or product == null
+	_collect_button.disabled = machine.output <= 0 or product == null or not in_range
 	_recipe_summary.text = "Selected Recipe: %s\nRecipe: %s → %s" % [
 		recipe.display_name, recipe.input_summary(), recipe.output_summary()]
 	var rows := PackedStringArray()
@@ -332,7 +339,7 @@ func _refresh_fabricator(machine: Dictionary, definition: MachineDefinition) -> 
 				and progression.inventory.get_quantity(ingredient.item.item_id) > 0:
 			can_transfer = true
 	_input_storage.text = "\n".join(rows)
-	_transfer_button.disabled = not can_transfer or not _in_range(machine)
+	_transfer_button.disabled = not can_transfer or not in_range
 
 
 func _collect() -> void:
