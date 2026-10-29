@@ -27,17 +27,16 @@
   benchmarks, prolonged runtime tests, or attempts to reproduce system-level
   freezes or severe performance failures. Never reproduce a reported system
   lockup without explicit owner authorization.
-- **Headless restriction following PR #5 remains active.** The narrow standing
-  local-runner exception below is approved in principle but disabled in this
-  code-only simplification PR. This assignment and merge do not authorize Codex
-  to execute Godot, including version/help, imports or GDScript tests.
-- After owner review, the owner must separately approve the first controlled real
-  run and activation of this standing exception. The minimal later code change
-  removes the unconditional denial in `Assert-NativeExecutionAuthorization` in
-  `tools/run-local-tests.ps1`; no embedded approval scope, self-hash, receipt,
-  environment switch or local approval file is required. Until both explicit
-  permission and that reviewed change exist, use only Static and NativePlan.
-- Once explicitly activated, the standing exception permits local runs only through
+- **Headless restriction following PR #5 remains active.** On 2026-10-29 the
+  owner explicitly authorized minimal Native activation after PR #75 and exactly
+  one controlled invocation of `pwsh -NoProfile -File tools/run-local-tests.ps1 -Mode Native`,
+  covering only its fixed import and recipe-switching phases. This feature branch
+  removes the unconditional denial in `Assert-NativeExecutionAuthorization`,
+  pending merge. No embedded approval scope, self-hash, receipt, environment
+  switch or local approval file is required. Stop after that invocation and await
+  owner review. Further Native use, including routine use or a retry, requires
+  separate owner authorization.
+- This first-run exception permits execution only through
   the reviewed `tools/run-local-tests.ps1 -Mode Native`, with the exact standard
   Windows executable `D:\GameDev\Godot\Standard\Godot_v4.7.2-stable_win64.exe`,
   SHA-256 `AB1824F85BFD8E0E4128182C000C4003A3E042245B2967848D089B2A04B22424`.

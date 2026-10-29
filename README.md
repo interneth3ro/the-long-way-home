@@ -43,11 +43,11 @@ Alternatively, import `project.godot` through Godot's Project Manager.
 
 The [local PowerShell test runner](docs/LOCAL_TESTING.md) runs the existing Python
 static suite in this checkout. `-Mode NativePlan` copies tracked working inputs
-for nonexecuting inspection using the fixed executable identity. The simplification
-PR prepares a narrow standing local-runner policy, pending merge and activation.
-`-Mode Native` remains disabled until owner review, separate explicit first-run
-permission and the reviewed gate-removal change. No Godot execution is authorized
-by this code-only PR. See the guide for scope, limits and synthetic verification.
+for nonexecuting inspection using the fixed executable identity. Following PR #75,
+the owner authorized minimal Native activation and one controlled invocation on
+2026-10-29. This feature branch enables that path, pending merge; further Native
+use requires separate owner authorization after reviewing the first result.
+See the guide for the fixed scope, limits and verification requirements.
 
 **F5** starts production V2 (P8 merged in PR #65). F6 with
 `scenes/main/main_v2.tscn` open also starts V2. For the legacy fallback, stop,

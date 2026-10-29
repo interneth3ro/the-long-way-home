@@ -166,7 +166,7 @@ function New-NativeCommandPlan {
     }
 }
 
-# Restricted dispatcher. Authorization is inactive and checked before each launch.
+# Restricted dispatcher. Authorization is checked before each launch.
 # Tests replace named helpers in child scope; no executable/callback injection API.
 function Get-NativeSourceIdentity {
     param([string]$Source)
@@ -349,13 +349,11 @@ function Invoke-RestrictedNativeDispatch {
     return $summary
 }
 
-# Disabled for this code-only PR. After owner review and explicit first-run
-# permission, a reviewed change may remove this unconditional denial under the
-# narrow policy in AGENTS.md. No token, receipt, self-hash or local-file approval.
+# Owner authorized activation and one controlled Native invocation on 2026-10-29.
+# Further use awaits owner review under AGENTS.md; no local approval machinery.
 function Assert-NativeExecutionAuthorization {
     [CmdletBinding()]
     param()
-    throw 'Native execution inactive: owner review and separate explicit first controlled run permission are required. Use NativePlan for nonexecuting inspection.'
 }
 
 function Assert-ReviewedNativeRunner {

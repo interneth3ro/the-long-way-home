@@ -165,8 +165,8 @@ try {
     Check 'missing tracked input rejected' {
         Reject { New-InputStage $source $fixture ($tracked + 'assets/missing.png') } 'Missing tracked input'
     }
-    Check 'prohibited native invocation fails before prerequisites' {
-        Require ((Invoke-LocalTests "$fixture/nonexistent" 'Native') -eq 1) 'Native execution gate bypassed'
+    Check 'Native rejects a nonexistent checkout' {
+        Require ((Invoke-LocalTests "$fixture/nonexistent" 'Native') -eq 1) 'Missing checkout accepted'
     }
     Check 'production identity is fixed and executable overrides are rejected' {
         $pinned = & $engineIdentityFunction
@@ -217,10 +217,8 @@ try {
         Require ($scope.Commands.Count -eq 2 -and $scope.Commands[0].Executable -ceq $inertEngine -and
             $scope.Commands[1].Sha256 -ceq $inertHash -and $scope.MaxAttemptsPerPhase -eq 1 -and
             $scope.MaxConcurrentProcesses -eq 1 -and $scope.EvidenceDirectory -ceq (Join-Path $source 'artifacts/logs')) 'Review limits missing'
-        Reject { Assert-NativeExecutionAuthorization } 'inactive'
-        # Repeated successful planning cannot consume or unlock permission.
+        # Repeated successful planning remains nonexecuting provenance only.
         $null = New-NativePlanSummary $inertEngine $inertHash $nativeStage $snapshot
-        Reject { Assert-NativeExecutionAuthorization } 'inactive'
         Reject { Assert-NativeExecutionAuthorization -Scope $scope } 'parameter'
     }
     Check 'native plan rejects changed static snapshot identity and bytes' {
@@ -447,7 +445,8 @@ try {
         $null = New-Item -ItemType Directory -Path "$($nativeStage.Directory)/.godot"
         Reject { New-NativeCommandPlan $inertEngine $inertHash $nativeStage } 'Unexpected staged directory'
     }
-    Check 'inactive authorization gate rejects direct dispatch without engine execution' {
+    Check 'authorization withdrawal rejects direct dispatch without engine execution' {
+        function Assert-NativeExecutionAuthorization { throw 'Synthetic owner withdrawal' }
         $stage = New-InputStage $source $fixture $tracked
         function Get-NativeSourceIdentity {
             [pscustomobject]@{ Revision = ('a' * 40); Working = ''; Index = 'fixture'; Tracked = $tracked }
@@ -463,8 +462,8 @@ try {
         Require ($r.Commands.Count -eq 0 -and $r.Import -eq 'NOT RUN' -and $r.Native -eq 'NOT RUN' -and
             $r.Authorization -eq 'FAIL' -and $r.Infrastructure -eq 'FAIL') 'Inactive dispatch gate failed'
     }
-    Check 'code-only policy gate remains disabled without activation inputs' {
-        Reject { Assert-NativeExecutionAuthorization } 'inactive.*first controlled run'
+    Check 'activated policy gate accepts no activation inputs' {
+        Assert-NativeExecutionAuthorization
         foreach ($attempt in @(
             { Assert-NativeExecutionAuthorization -FirstRunApproved },
             { Assert-NativeExecutionAuthorization -Routine },
@@ -545,7 +544,8 @@ try {
         }
         Require ((Invoke-LocalTests $source Native) -eq 0 -and $state.Dispatched) 'Static PASS not connected'
     }
-    Check 'public Native mode cannot reach prerequisites, staging or execution' {
+    Check 'public Native authorization withdrawal prevents prerequisites, staging or execution' {
+        function Assert-NativeExecutionAuthorization { throw 'Synthetic owner withdrawal' }
         $gateCalls = [Collections.Generic.List[string]]::new()
         function Assert-PlainPath { $gateCalls.Add('prerequisite'); throw 'Gate reached prerequisites' }
         function New-InputStage { $gateCalls.Add('stage'); throw 'Gate created a stage' }
