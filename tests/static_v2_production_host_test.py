@@ -21,7 +21,7 @@ P8_BASE = "e14703e64aef961f18feba8a616acec00c4f069e"
 B1_INVENTORY_SHA256 = {
     "scenes/ui/inventory_ui.gd": "9a9e68709e46ca84bddfc0f0e552e2218d1b2417f3be3e76057094b28d1d6817",
     "scenes/ui/inventory_ui.tscn": "ffa02b016227dab6cc54a709af3ccf671c94ea28d8b675274f191be2f22ce601",
-    "scenes/ui/machine_ui.gd": "5ef8ca2767092fab9d86e444614eb2fc38bc8bbc7dfb83caed81fe8e158705f3",
+    "scenes/ui/machine_ui.gd": "7ba1d9386cc84891c947647077f6836dd940933c74bbdd782bbef3b3c6a8ce2a",
     "scenes/ui/machine_ui.tscn": "fd1673368a5dfc184d7b19d2eabfe04a8e1c9843f0064edb45f0fe62707c6739",
 }
 
