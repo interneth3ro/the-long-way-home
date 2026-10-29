@@ -67,16 +67,17 @@ Headless checks do not verify graphical appearance. While execution is restricte
 use only nonexecuting checks under the policy above and report them as static
 validation; runtime and engine verification remain unperformed.
 
-## B1 UI foundation and desktop display (feature branch, pending merge)
+## B1 UI foundation and desktop display (PR #77 merged)
 
 The shared [B1 theme](assets/ui/b1_theme.tres) and
 [panel StyleBox](assets/ui/b1_panel.tres) establish dark translucent panels,
 muted teal progress/hover states, copper-amber titles/focus states and ivory text.
 IBM Plex Sans Regular, Medium and SemiBold are bundled unmodified with their
 [upstream source and SIL OFL 1.1 license](assets/fonts/ibm-plex-sans/README.md).
-The machine HUD root alone receives this theme; dynamically generated recipe
-buttons inherit it. Extractor, Smelter and Fabricator keep the same nodes, layout,
-transactions, recipes and opening/closing behavior. Other HUDs retain their styles.
+The machine HUD receives this theme; dynamically generated recipe buttons inherit
+it. The inventory modernization below extends it to the inventory HUD. Extractor,
+Smelter and Fabricator keep the same nodes, layout, transactions, recipes and
+opening/closing behavior. Other HUDs retain their styles.
 
 Reuse by assigning the theme to a Control root. PanelContainer, Button,
 ProgressBar, Label, VBox/HBox defaults and B1Title, B1MutedLabel,
@@ -84,7 +85,7 @@ B1WarningLabel label variations are available. Body/buttons use 18-unit text,
 titles 22, supporting text 16; containers use 10-unit gaps, panels 16 horizontal /
 12 vertical padding, and buttons 12 horizontal / 7 vertical padding. Button normal,
 hover, pressed, disabled and focus styles are defined; existing focus behavior is
-unchanged. No slot controls or UI framework are introduced.
+unchanged. Inventory adds B1InventorySlot and B1InventoryDivider variations.
 
 The project explicitly starts as a decorated resizable 1280 x 720 window, with
 native maximize/restore available. The persistent
@@ -100,9 +101,10 @@ and [stretch settings](https://docs.godotengine.org/en/stable/classes/class_proj
 define these APIs.
 
 Camera zoom remains 0.75-1.5 and V2 room scale remains 1.25. Wider/taller views may
-expose finite room-art boundaries; no camera clamping, artwork change, HUD
-relocation, inventory redesign, Tab remapping, hotbar, settings or UI-scale option
-is included. Headless checks cannot accept the appearance or native window behavior.
+expose finite room-art boundaries. The foundation did not change camera clamping,
+artwork or HUD placement, and did not add hotbar, settings or UI-scale options.
+The inventory/Tab follow-up is described below. Headless checks cannot accept
+the appearance or native window behavior. The known Alt+Enter issue is deferred.
 
 Validation at `0f7070a`: 43 Python static checks PASS, 54 inert runner fixtures
 PASS, and restricted Native cold import plus recipe-switching regression PASS.
@@ -131,7 +133,12 @@ owner renewal of one invocation. Static inspection confirms press/echo/modifier
 checks and unchanged window restoration/maximize code. These checks do not inject
 real key events or verify fullscreen visually. The existing static preservation
 helper now accepts editor omission of the three default-valued window flags while
-rejecting nondefault changes. Owner-authored local omissions remain uncommitted.
+rejecting nondefault changes. Those omissions were initially left uncommitted.
+PR #78 now tracks Godot's normalized form: mode, resizable and borderless use the
+engine defaults (0, true, false) without redundant entries. This prevents recurring
+editor-save diffs while keeping all other project configuration changes visible.
+The normalization passed the existing 43 static tests; no further Native run was
+performed after the separately recorded successful attempt.
 
 Owner acceptance checks, when the owner chooses to launch graphically:
 
@@ -145,9 +152,95 @@ Owner acceptance checks, when the owner chooses to launch graphically:
 4. Alt+Enter from a moved/resized window and from maximized mode; check return
    geometry, title-bar controls, Alt-Tab and multi-monitor/DPI behavior. Holding
    the shortcut should not repeatedly toggle.
-5. Check wheel zoom extremes, unchanged world/player scale, original inventory I,
+5. Check wheel zoom extremes, unchanged world/player scale, inventory Tab,
    dialogue, prompts, musings and construction hints. Their broader responsive
    modernization remains future work.
+
+## B1 inventory modernization (feature branch, pending merge)
+
+The persistent left-side inventory uses the shared B1 theme and panel with a
+30-position Materials grid (three rows of ten) and a ten-position Machines /
+Equipment row. All empty positions remain visible and subdued; they have no
+action or tooltip. Occupied positions show a 36-unit icon/symbol and quantity.
+Hover shows the full name and exact total. Materials have no click action;
+one left-click on a packaged machine requests deployment through the unchanged
+construction controller. Unavailable/non-machine equipment is disabled and marked
+not deployable in its tooltip. Context-dependent deployment rejection remains
+with the controller. There is no selection step or Deploy button.
+
+`InventoryUI.ITEM_ICONS` is a presentation-only lookup: Plate/Rod reuse existing
+recipe textures; ORE, BAR, EX, SM and FB are temporary distinguishing symbols for
+Ore, Ingot, Extractor, Smelter and Fabricator. Each can be replaced by a Texture2D
+in the lookup without changing storage or layout. Unknown future types use `?`
+with their full identity in the tooltip. Quantities below 1,000 are exact on the
+slot; larger values truncate to K/M/B/T/Qa/Qi, with exact int64 totals on hover.
+
+Items sort by stable `item_id` within each section, independent of acquisition
+order. Quantity-only updates do not reorder slots. New/removing types can shift
+later IDs. Slots are built once; `InventoryState.changed` refreshes their contents.
+The current catalog has four material and three machine types, but the aggregate
+storage accepts more. Extra types appear in a bounded 64-unit scroll list below
+the equipment row with section, name and exact total; overflow machines retain
+direct deployment. This is a presentation fallback, with no storage capacity,
+stack records, pagination, rearrangement or transaction changes.
+
+Both grids use ten-column GridContainers, 64-unit slots and six-unit gaps. The
+panel keeps its left/top placement (24, 100); its 726-unit width includes shared
+panel padding. Vertical containers keep the four rows and optional overflow
+within the 1280 x 720 reference canvas. Automatic project scaling gives roughly
+51-pixel slots at the 1024 x 576 minimum; appearance/readability need owner
+acceptance. No display settings or player UI-scale control changes are included.
+
+Tab replaces I in the inventory InputMap action. Inventory consumes Tab presses
+and repeats in `_input`, before GUI focus navigation; only the initial press
+toggles. Tab, Esc and the Inventory (Tab) button close the panel. Existing opening
+signals still close machine inspection and cancel construction, and deployment
+still closes inventory. Other keybindings remain unchanged.
+
+Validation at `4f8195c`: 43 Python static checks PASS; resource wiring, icon
+coverage, ordering/refresh/deployment/input paths and layout bounds inspected
+statically; local Markdown file links and `git diff --check` PASS. The single
+restricted Native attempt stopped after cold import: Godot rewrote the staged
+IBM Plex Sans sidecars from CRLF to LF, violating required byte identity. The
+runner reported Import FAIL / Infrastructure FAIL; recipe regression NOT RUN.
+No retry or runner/sidecar amendment was made. The retained stage is
+`tlwh-native-plan-b404eeab0c76478aae7378363e2e37fa`; bounded evidence is
+`artifacts/logs/native-failure-5049f4c070854f8196e19e5e0dade7ce.json` (ignored).
+Graphical layout, actual Tab events and deployment interaction remain unverified.
+The static preservation update was separately owner-approved: it pins the exact
+replacement inventory scene/script hashes and normalizes only inventory I to Tab.
+Runner commands, tests, boundaries and executable identity remain unchanged.
+
+PR #78 font metadata follow-up: all three tracked IBM Plex Sans sidecars
+(Regular, Medium, SemiBold) had 36 CRLF endings in the checkout because Git's
+`core.autocrlf=true` expanded their already-LF repository blobs. In the preserved
+failed stage Godot changed only these line endings; every resulting byte matched
+its committed blob. The checkout is now normalized to LF, with exact-path
+`text eol=lf` attributes to prevent recurrence. No metadata fields, font binaries,
+runner controls or inventory implementation changed. After explicit owner
+approval for one fresh attempt, the unchanged restricted runner at `9fd87ef`
+passed all 43 static tests, cold import and the recipe-switching regression
+(zero failures), including infrastructure, authorization and byte-integrity checks.
+The new retained stage is `tlwh-native-plan-1058befc971f4506b9abcd7a882f2e5e`.
+The previous failed stage and evidence remain intact. Exactly one fresh attempt
+was made; no further retry or graphical execution occurred. This confirms the
+font staging correction, while graphical inventory acceptance remains pending.
+
+Owner acceptance, when the owner chooses to launch graphically:
+
+1. Open/close using Tab and the button in all three environments; verify I has
+   no effect, held Tab toggles once, Esc closes, and Tab does not move GUI focus.
+2. Inspect all 40 positions, section divider, icons, exact hover totals and empty,
+   occupied, hovered and disabled states at 1280 x 720 and 1024 x 576. Check the
+   rightmost column, bottom hint and quantities for clipping at both zoom extremes.
+3. Acquire materials, collect output, recover machines and spend quantities;
+   verify totals refresh and quantity-only updates keep item ordering.
+4. Single-click each recovered machine: verify immediate ghost entry, no placement
+   from the slot click, R rotation, invalid placement feedback and right-click/Esc
+   cancellation. Verify inventory cancels construction and closes inspection.
+5. Travel between rooms/exterior and verify inventory quantities, machine panels
+   and objectives continue normally. Overflow is a future-catalog safeguard;
+   current gameplay cannot populate it without additional item definitions.
 
 ## V2 production integration (P1-P6 merged, P7 approved, P8 pending merge)
 
@@ -1209,8 +1302,8 @@ milestone below extends only the Smelter; Fabricator remains noninteractive.
 Extractor is visible but unavailable before Ferrite discovery. After discovery,
 approach its rack and press **E - Recover Extractor** (in-game em dash).
 
-**I** (physical key) or **Inventory (I)** toggles one nonmodal panel showing
-**Materials** and **Equipment** together, both initially **Empty**. **I**,
+**Tab** (physical key) or **Inventory (Tab)** toggles one nonmodal panel showing
+**Materials** and **Machines / Equipment** together, initially empty slots. **Tab**,
 **Esc**, or the button closes it. Movement and E interactions continue while it
 is open; Esc closes inventory first when it is visible. It is available in all
 three environments. Recovery displays Extractor with quantity 1 under Equipment.
@@ -1265,7 +1358,7 @@ checklist to conduct one item at a time.
 
 ## Deploy the Extractor (PR #32, merged)
 
-Open inventory with **I**, then click **Extractor** in Equipment to enter
+Open inventory with **Tab**, then click the **Extractor** slot in Equipment to enter
 construction immediately. There is no selected-equipment state or separate
 Deploy button. Clicking a deployable packaged machine calls the existing public
 construction entry point, closes inventory and starts a neutral translucent
@@ -1405,7 +1498,7 @@ starting a scene transition closes it automatically. While the panel is open,
 **B** cannot activate recovery and leaves the panel open; close it first. **R**
 does not rotate a preview and **E** cannot trigger another world interaction.
 Recovery activation checks `MachineUI.is_open()` before changing tool mode or
-emitting `mode_started`, using the detector's existing panel reference. **I**
+emitting `mode_started`, using the detector's existing panel reference. **Tab**
 opens inventory and closes the panel. GUI clicks cannot also confirm
 construction/recovery; dialogue, responses and tools keep input ownership.
 

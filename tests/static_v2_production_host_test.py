@@ -15,6 +15,13 @@ from static_automatic_transitions_test import ROOT, PRIMARY, MAINTENANCE, EXTERI
 # Live post-P6 / pre-P8 main verified for cutover; never follow a moving ref.
 P8_BASE = "e14703e64aef961f18feba8a616acec00c4f069e"
 
+# B1 inventory presentation replaces exactly these two historical UI files.
+# Freeze normalized reviewed bytes rather than exempting them from preservation.
+B1_INVENTORY_SHA256 = {
+    "scenes/ui/inventory_ui.gd": "3d36552878a3dfb58b1e1d43255b822248180afc0a324a578cf5932f217ea424",
+    "scenes/ui/inventory_ui.tscn": "4799a048eafee18a51ca07d7a85e80fcc44cd16b1c72e687ac7e64b78f6ab91b",
+}
+
 # Owner-approved Option A: only these baseline files may retire in separate PR B.
 # Their contents/existence are deliberately not test inputs. This is not a glob
 # exemption for other current/future development files or production resources.
@@ -200,6 +207,14 @@ B1_REPLACEMENTS = {'project.godot': [('window/size/viewport_width=1280\n'
 
 def without_approved_b1_changes(path, text):
     if path == "project.godot":
+        # Normalize only the inventory action's owner-approved I -> Tab binding.
+        start = text.index('inventory={\n')
+        end = text.index('\n}', start)
+        action = text[start:end]
+        if action.count('"physical_keycode":4194306,') != 1:
+            raise AssertionError("Inventory must have exactly one physical Tab binding")
+        text = text[:start] + action.replace('"physical_keycode":4194306,',
+                                             '"physical_keycode":73,', 1) + text[end:]
         # The editor omits default-valued window flags on save. Accept their
         # omission, but still reject nondefault values or unrelated changes.
         anchor = "window/size/viewport_height=720\n"
@@ -559,6 +574,10 @@ class V2ProductionHostStaticTest(unittest.TestCase):
                 expected = proc.stdout.read(int(header[2]))
                 self.assertEqual(proc.stdout.read(1), b"\n")
                 actual = (ROOT / path).read_bytes()
+                if path in B1_INVENTORY_SHA256:
+                    actual = actual.replace(b"\r\n", b"\n")
+                    self.assertEqual(hashlib.sha256(actual).hexdigest(), B1_INVENTORY_SHA256[path], path)
+                    continue
                 if path in B1_REPLACEMENTS:
                     actual = without_approved_b1_changes(path, actual.decode("utf-8").replace("\r\n", "\n")).encode("utf-8")
                 if path == "project.godot":

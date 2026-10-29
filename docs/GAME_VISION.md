@@ -266,6 +266,14 @@ durable save/load. See the [implementation notes](../README.md#first-ferrite---d
   supports quantities greater than one. There is no capacity or weight system
   in this milestone.
 
+The approved B1 inventory follow-up keeps this shared aggregate storage and
+uses 30 material positions (three rows of ten) plus ten machine/equipment
+positions, with all empty positions visible. These are presentation positions,
+not capacity limits; extra types retain access in a small overflow list. Tab
+replaces I; machine slots continue to request deployment on a single click.
+Implementation is on the inventory feature branch, pending merge and owner
+graphical acceptance. No hotbar or movable stacks are included.
+
 Recover the Extractor implementation is merged in PR #30; agent validation was
 static only. It adds the bay, inventory and first recovery step. Deployment and
 deployed-machine recovery are merged in PR #32; production is added by the

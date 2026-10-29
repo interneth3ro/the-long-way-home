@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=14 format=3]
+[gd_resource type="Theme" load_steps=18 format=3]
 
 [ext_resource type="FontFile" path="res://assets/fonts/ibm-plex-sans/IBMPlexSans-Regular.ttf" id="1_regular"]
 [ext_resource type="FontFile" path="res://assets/fonts/ibm-plex-sans/IBMPlexSans-Medium.ttf" id="2_medium"]
@@ -94,6 +94,52 @@ bg_color = Color(0.282, 0.663, 0.682, 1)
 [sub_resource type="StyleBoxEmpty" id="TitleSpacing"]
 content_margin_bottom = 4.0
 
+[sub_resource type="StyleBoxFlat" id="SlotNormal"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.10, 0.145, 0.165, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.29, 0.40, 0.43, 1)
+corner_radius_top_left = 2
+corner_radius_bottom_right = 2
+
+[sub_resource type="StyleBoxFlat" id="SlotHover"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.15, 0.23, 0.25, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.282, 0.663, 0.682, 1)
+corner_radius_top_left = 2
+corner_radius_bottom_right = 2
+
+[sub_resource type="StyleBoxFlat" id="SlotEmpty"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.06, 0.09, 0.11, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.20, 0.26, 0.28, 1)
+
+[sub_resource type="StyleBoxLine" id="InventoryDivider"]
+color = Color(0.52, 0.40, 0.27, 0.65)
+thickness = 1
+grow_begin = 0.0
+grow_end = 0.0
+
 [resource]
 resource_name = "B1 - Refined Industrial"
 default_font = ExtResource("1_regular")
@@ -133,3 +179,10 @@ ProgressBar/styles/background = SubResource("ProgressBackground")
 ProgressBar/styles/fill = SubResource("ProgressFill")
 VBoxContainer/constants/separation = 10
 HBoxContainer/constants/separation = 10
+B1InventorySlot/base_type = &"Button"
+B1InventorySlot/styles/normal = SubResource("SlotNormal")
+B1InventorySlot/styles/hover = SubResource("SlotHover")
+B1InventorySlot/styles/disabled = SubResource("SlotEmpty")
+B1InventoryDivider/base_type = &"HSeparator"
+B1InventoryDivider/styles/separator = SubResource("InventoryDivider")
+B1InventoryDivider/constants/separation = 4

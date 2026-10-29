@@ -1,18 +1,7 @@
 [gd_scene load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://scenes/ui/inventory_ui.gd" id="1_inventory"]
-
-[sub_resource type="StyleBoxFlat" id="InventoryStyle"]
-bg_color = Color(0.045, 0.075, 0.10, 0.97)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.47, 0.61, 0.60, 1)
-content_margin_left = 16.0
-content_margin_top = 12.0
-content_margin_right = 16.0
-content_margin_bottom = 12.0
+[ext_resource type="Theme" path="res://assets/ui/b1_theme.tres" id="2_b1"]
 
 [node name="InventoryUI" type="CanvasLayer"]
 layer = 2
@@ -26,74 +15,83 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+theme = ExtResource("2_b1")
 
 [node name="Toggle" type="Button" parent="HUD"]
 mouse_filter = 0
 offset_left = 24.0
 offset_top = 56.0
-offset_right = 192.0
+offset_right = 220.0
 offset_bottom = 90.0
 focus_mode = 0
-text = "Inventory (I)"
+text = "Inventory (Tab)"
 
 [node name="Panel" type="PanelContainer" parent="HUD"]
 visible = false
 offset_left = 24.0
 offset_top = 100.0
-offset_right = 360.0
+offset_right = 750.0
 mouse_filter = 0
-theme_override_styles/panel = SubResource("InventoryStyle")
 
 [node name="Content" type="VBoxContainer" parent="HUD/Panel"]
 layout_mode = 2
 mouse_filter = 2
-theme_override_constants/separation = 10
+theme_override_constants/separation = 6
 
 [node name="Title" type="Label" parent="HUD/Panel/Content"]
 layout_mode = 2
 mouse_filter = 2
-theme_override_font_sizes/font_size = 22
+theme_type_variation = &"B1Title"
 text = "Inventory"
-autowrap_mode = 3
 
 [node name="MaterialsTitle" type="Label" parent="HUD/Panel/Content"]
 layout_mode = 2
 mouse_filter = 2
-theme_override_font_sizes/font_size = 20
+theme_type_variation = &"B1MutedLabel"
 text = "Materials"
-autowrap_mode = 3
 
-[node name="Materials" type="Label" parent="HUD/Panel/Content"]
+[node name="Materials" type="GridContainer" parent="HUD/Panel/Content"]
 layout_mode = 2
 mouse_filter = 2
-theme_override_font_sizes/font_size = 18
-text = "Empty"
-autowrap_mode = 3
+theme_override_constants/h_separation = 6
+theme_override_constants/v_separation = 6
+columns = 10
+
+[node name="Divider" type="HSeparator" parent="HUD/Panel/Content"]
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"B1InventoryDivider"
 
 [node name="EquipmentTitle" type="Label" parent="HUD/Panel/Content"]
 layout_mode = 2
 mouse_filter = 2
-theme_override_font_sizes/font_size = 20
-text = "Equipment"
-autowrap_mode = 3
+theme_type_variation = &"B1MutedLabel"
+text = "Machines / Equipment"
 
-[node name="Equipment" type="Label" parent="HUD/Panel/Content"]
+[node name="Equipment" type="GridContainer" parent="HUD/Panel/Content"]
 layout_mode = 2
 mouse_filter = 2
-theme_override_font_sizes/font_size = 18
-text = "Empty"
-autowrap_mode = 3
+theme_override_constants/h_separation = 6
+theme_override_constants/v_separation = 6
+columns = 10
 
-[node name="EquipmentActions" type="VBoxContainer" parent="HUD/Panel/Content"]
+[node name="Overflow" type="ScrollContainer" parent="HUD/Panel/Content"]
+visible = false
+custom_minimum_size = Vector2(0, 64)
 layout_mode = 2
+mouse_filter = 0
+horizontal_scroll_mode = 0
+
+[node name="Items" type="VBoxContainer" parent="HUD/Panel/Content/Overflow"]
+layout_mode = 2
+size_flags_horizontal = 3
 mouse_filter = 2
-theme_override_constants/separation = 8
+theme_override_constants/separation = 4
 
 [node name="Hint" type="Label" parent="HUD/Panel/Content"]
 layout_mode = 2
 mouse_filter = 2
-theme_override_font_sizes/font_size = 16
-text = "I / Esc to close"
-autowrap_mode = 3
+theme_type_variation = &"B1MutedLabel"
+text = "Hover for totals · Click a machine to deploy · Tab / Esc close"
 
 [connection signal="pressed" from="HUD/Toggle" to="." method="_toggle"]
