@@ -76,8 +76,18 @@ clearance and the bottom hotbar/hint region. Its normal logical size is 640 x 51
 width is capped at 48% of the logical HUD, and logical heights below 740 use a
 480-unit panel, tighter spacing and a smaller gauge. The owner has accepted the
 overall layout, artwork, gauge, styling and proportions, including the divider/grid
-refinements. The Option A portrait-filtering experiment remains pending owner
-comparison.
+refinements and portrait smoothing. The padding/header refinement below remains
+pending owner screenshot review.
+
+Extractor content now has 24-unit left/right and bottom padding, with 20 units at
+the top. The private panel StyleBox changes only when switching presentation mode;
+Smelter/Fabricator restore their original 16-unit sides and 14-unit top/bottom.
+B2 offsets compensate for the active content margins, preserving its outer frame
+rectangle and existing 24-unit nine-patch margins. Panel dimensions are unchanged.
+The header displays `EXTRACTOR`, inheriting B1Title's IBM Plex Sans SemiBold and
+copper-amber color, with a local 26-unit size override and Label vertical centering
+within the existing container row. Close, its tooltip and Esc are unchanged.
+The portrait remains flexible and production values wrap/scroll as before.
 
 The unchanged [Extractor artwork](assets/environment/maintenance_bay_v2/machines/extractor_stationary.png)
 uses aspect-preserving fit with native texture size excluded from layout minimums.
@@ -104,14 +114,15 @@ The same texture's stationary maintenance-bay sprite retains its explicit Linear
 filter, which does not sample mipmaps; its shader, transform and original-resolution
 sampling stay unchanged. The shared imported texture does gain roughly 33% memory
 for the mip chain. UI minification should reduce edge aliasing, but may soften fine
-mechanical detail or alpha fringes; visual benefit is unverified. Anisotropic
+mechanical detail or alpha fringes. The owner has accepted the smoothing; the agent
+has not performed graphical validation. Anisotropic
 filtering is not added for this flat, aspect-preserving portrait.
 
 The 1319 x 1186 source fits the existing portrait rectangle proportionally. Its
 physical source-to-screen scale is `min(rect_width / 1319, rect_height / 1186) *
 P * sqrt(S)`, using logical rectangle dimensions and the unchanged hybrid formula.
 At the 640-unit normal panel width, the nominal left-column width bounds local
-scale to about 0.236, or 0.201 physical scale at 1280 x 720 / 85%; height fitting
+scale to about 0.229, or 0.195 physical scale at 1280 x 720 / 85%; height fitting
 can reduce this further. These are static bounds, not measured engine output.
 Compare edges, bolts, pipes and alpha fringes at 75/85/100% and supported window
 sizes; also compare the stationary machine at unchanged camera zoom. Reverting the
@@ -134,10 +145,11 @@ unchanged. The 85% default and UIScaleRoot/hybrid formula are unchanged.
 
 All 51 Python static checks pass. Agent validation remains static only; engine
 parsing and input delivery are unverified by the agent. The owner reviewed the
-overall graphical appearance, including the divider/grid refinement. Option A
-portrait filtering needs owner comparison. Proposed exact-file preservation allowances in
+overall graphical appearance, including the divider/grid refinement and portrait
+smoothing. Padding/header changes need owner screenshot review. Proposed exact-file
+preservation allowances in
 `tests/static_v2_production_host_test.py` require owner review before Native use,
-including the additional exact import-sidecar hash for Option A.
+including the Option A import sidecar and updated machine presenter padding hash.
 No Native or graphical Godot execution is authorized by this pilot's test changes.
 
 Owner graphical acceptance, performed separately under the execution policy:
@@ -146,7 +158,9 @@ Owner graphical acceptance, performed separately under the execution policy:
    75%, 85% and 100%. Check portrait fit, B2 edges, column proportions, gauge/text
    clarity and Close/Collect hit targets; confirm the 85% startup default. Check
    the header rule, vertical column rule, aligned production values and row rules,
-   including wrapped Cycle Yield text and scrolling at compact sizes.
+   including wrapped Cycle Yield text and scrolling at compact sizes. For the new
+   refinement, check side/bottom content clearance, unchanged outer B2 alignment,
+   centered uppercase 26-unit title, and gauge/value/button fit without enlargement.
 2. Watch real production progress; check teal Producing, amber Output Full and
    gray Inactive where reachable. Confirm definition values and storage/bar agree.
 3. Collect empty, partial and full output; verify disabled empty state and exact

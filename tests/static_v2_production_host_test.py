@@ -23,7 +23,7 @@ EXTRACTOR_PILOT_SHA256 = {
     # Option A: only mipmaps/generate false -> true; source PNG stays protected.
     "assets/environment/maintenance_bay_v2/machines/extractor_stationary.png.import": "0ff7f4f219cafef7aba8a63a801838fcfdb1a6ffa12765fcb806c4c8b414d6d1",
     "scenes/main/main.tscn": "3f703899f344f969df442886a0ccd4292968aea9d1c0dc4007606fbc210b8f73",
-    "scenes/ui/machine_ui.gd": "2ea3075fb8f3dade02ed2c226a96536d6510c7e3004e97d48cf6943784085faf",
+    "scenes/ui/machine_ui.gd": "6e35233d5a959caacbc03a1df9f17c104f2895675a5af3db6ce4c613ffa34d6c",
     "scenes/ui/machine_ui.tscn": "6a2a86d358a4ce0c7dca7bc4c15ba32ca2b1ed33df6efc767fe9fd7b31b67911",
     "scenes/ui/objective_tracker.gd": "19424588dde32237a9dd078414d39355516128844889598dae9aabe7b81312c3",
 }

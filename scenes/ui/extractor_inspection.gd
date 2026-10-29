@@ -37,7 +37,7 @@ func set_compact(compact: bool) -> void:
 
 func refresh(machine: Dictionary, status: PlanetWorldState.OperatingStatus, in_range: bool) -> void:
 	var definition: MachineDefinition = machine.definition
-	$Header/Title.text = definition.display_name
+	$Header/Title.text = definition.display_name.to_upper()
 	var accent := INACTIVE
 	_status.text = "Inactive"
 	if status == PlanetWorldState.OperatingStatus.PRODUCING:

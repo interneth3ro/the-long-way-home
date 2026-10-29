@@ -40,7 +40,9 @@ layout_mode = 2
 size_flags_horizontal = 3
 mouse_filter = 2
 theme_type_variation = &"B1Title"
-text = "Extractor"
+theme_override_font_sizes/font_size = 26
+text = "EXTRACTOR"
+vertical_alignment = 1
 
 [node name="Close" type="Button" parent="Header"]
 custom_minimum_size = Vector2(46, 46)

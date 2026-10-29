@@ -284,9 +284,11 @@ The separately approved Extractor visual pilot is implemented on
 `codex/extractor-inspection-pilot`, pending merge. The owner accepted its overall
 layout, artwork, gauge, styling and proportions, including the header/column
 dividers and aligned production-detail rows. Option A portrait minification uses
-built-in mipmap import and UI-only Linear with Mipmaps filtering, pending owner
-graphical comparison. The source PNG and stationary machine's Linear sampler are
-unchanged.
+built-in mipmap import and UI-only Linear with Mipmaps filtering, accepted by the
+owner. The source PNG and stationary machine's Linear sampler are unchanged.
+Extractor-only padding (24-unit sides/bottom, 20-unit top) and a vertically centered
+26-unit uppercase SemiBold header are implemented, pending owner screenshot review.
+The outer panel size and B2 nine-patch margins remain unchanged.
 It uses existing artwork, B1/B2 styling, two columns, actual cycle progress and
 definition-derived nominal production details. Smelter/Fabricator layouts and
 production semantics remain unchanged. Machine inspection temporarily suppresses

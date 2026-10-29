@@ -190,6 +190,7 @@ func _refresh(machine: Dictionary) -> void:
 		_extractor_layout_extent = Vector2.ZERO
 		_legacy_content.visible = not extractor
 		_extractor_view.visible = extractor
+		_set_panel_padding(extractor)
 		if not extractor:
 			_panel.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
 			_panel.position = Vector2($HUD.size.x - 440.0, 100.0)
@@ -244,6 +245,22 @@ func _refresh(machine: Dictionary) -> void:
 	if extractor:
 		_extractor_view.refresh(machine, progression.planet.machine_status(machine), _in_range(machine))
 		_layout_extractor()
+
+
+func _set_panel_padding(extractor: bool) -> void:
+	# _ready() gives this panel a private StyleBox. Compensate FrameBounds'
+	# content inset so B2 still follows the same outer rectangle in both modes.
+	var padding := Vector4(24, 20, 24, 24) if extractor else Vector4(16, 14, 16, 14)
+	var style := _panel.get_theme_stylebox("panel") as StyleBoxFlat
+	style.content_margin_left = padding.x
+	style.content_margin_top = padding.y
+	style.content_margin_right = padding.z
+	style.content_margin_bottom = padding.w
+	var frame: NinePatchRect = $HUD/Panel/FrameBounds/B2PanelFrame
+	frame.offset_left = -padding.x
+	frame.offset_top = -padding.y
+	frame.offset_right = padding.z
+	frame.offset_bottom = padding.w
 
 
 func _layout_extractor() -> void:
