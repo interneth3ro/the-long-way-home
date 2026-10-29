@@ -137,12 +137,13 @@ Native attempt at `edaf334` passed static checks but stopped at cold import with
 contains startup output, so it does not identify the engine error. Static API
 review found and corrected a call to engine-internal `Window.get_usable_parent_rect()`;
 the helper now uses public viewport bounds / DisplayServer screen bounds.
-That correction has not been engine-verified. No automatic retry was performed;
-a fresh restricted run requires explicit owner renewal. Failure evidence remains
-in ignored `artifacts/logs/native-failure-f71e06401208402a83fea6aec24accd7.json` and
-the external stage is preserved. No graphical execution or graphical acceptance
-is claimed. Runner, allowlists, execution policy and native test assertions are
-unchanged.
+After separate owner authorization for one fresh attempt, validation at
+`d95c7f1` passed: **47 static tests, cold headless import and the existing recipe
+switching regression (zero failures)**, with infrastructure/authorization checks
+PASS. No automatic retry was performed. Failure evidence remains in ignored
+`artifacts/logs/native-failure-f71e06401208402a83fea6aec24accd7.json`; both external
+stages are preserved. No graphical execution or graphical acceptance is claimed.
+Runner, allowlists, execution policy and native test assertions are unchanged.
 
 Owner graphical acceptance (separate authorization required):
 
