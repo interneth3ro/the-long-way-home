@@ -218,7 +218,7 @@ preserves the existing B1 background. The procedural experiment has been removed
 The accompanying standard texture-import metadata uses lossless compression and
 no mipmaps; no engine cache is tracked.
 
-Inventory alone instances this frame in a mouse-transparent Control wrapper.
+The accepted inventory integration instances this frame in a mouse-transparent Control wrapper.
 PanelContainer fits the wrapper to its padded content rectangle with explicit
 FILL size flags. Both the reusable frame and its inventory instance explicitly
 use anchor layout mode and full-rect anchors. Instance offsets (-16, -14, +16, +14)
@@ -228,7 +228,8 @@ texture-sized rectangle determines the frame size. The panel grows only to fit
 the unchanged grid and new padding; content structure and placement stay unchanged. Both decorative nodes ignore mouse
 input and inherit panel visibility. No additional script or input handler is
 required; the shared theme and hotbar remain unchanged. To reuse later, instance the scene under a similar
-wrapper and adjust its offsets for the host's padding. Other panels are unchanged.
+wrapper and adjust its offsets for the host's padding. The machine follow-up below
+uses that pattern; other panels are unchanged.
 
 Owner testing found the first integration rendered a small upper-left decoration.
 Its instance used position layout mode (0), which resets inherited anchors to
@@ -259,6 +260,51 @@ run, the owner reported visual tests PASS and accepted the B2 inventory framing
 and padding. Specific resolution/overflow coverage was not separately recorded.
 Height estimates use font-table metrics and spacing arithmetic; the owner's
 visual acceptance is separate from the agent's static and headless checks.
+
+
+### B2 shared machine inspection framing (feature branch, pending merge)
+
+On `codex/b2-machine-inspection-frame`, the shared
+[machine scene](scenes/ui/machine_ui.tscn) instances the existing
+[B2 frame](scenes/ui/b2_panel_frame.tscn) for Extractor, Smelter and Fabricator.
+The artwork, 24-unit patch margins and shared frame scene are unchanged.
+A mouse-transparent bounds Control is required because PanelContainer lays out
+its direct Control children inside the content margins. As in inventory, FILL
+flags, full-rect anchor layout and offsets (-16, -14, +16, +14) compensate for
+those margins so the frame follows the actual outer panel at every content size.
+The decoration precedes Content in sibling order, keeping controls above it.
+
+The [machine presenter](scenes/ui/machine_ui.gd) duplicates the B1 panel StyleBox
+locally, removes its four border widths and retains its translucent fill and
+corner radii. Horizontal padding stays 16; top/bottom padding increases from 12
+to 14 to match the accepted inventory clearance. This adds four units to the
+content minimum height without imposing a fixed height or width. Existing
+right/top placement and content-driven sizing remain. All content node paths,
+signals, recipe controls, transfers, collection and production logic are unchanged.
+Inventory, hotbar, shared theme and display scaling are unchanged.
+
+The owner approved the two exact normalized-byte machine preservation hashes;
+only those entries were added to the existing preservation table in `d65d32e`.
+Runner controls and native test assertions are unchanged. On 2026-10-29, one
+restricted `pwsh -NoProfile -File tools/run-local-tests.ps1 -Mode Native` run at
+that revision with the working machine framing inputs passed all 46 Python static
+tests, cold headless import and the existing recipe-switching regression (zero
+failures). Infrastructure and authorization checks passed. The fresh retained
+stage is `tlwh-native-plan-9d51301be6194c01b3cc8ed24624d587`.
+Static inspection also verified original machine content nodes/signals and script
+logic are unchanged, frame ordering/input/rectangle arithmetic, and local links;
+`git diff --check` passed. No retry or graphical launch occurred. These checks do
+not establish visual clearance, mouse interaction or owner graphical acceptance.
+
+Owner graphical acceptance, after separately authorizing graphical execution:
+
+- Inspect Extractor status/progress, output storage, Collect and Close clearance.
+- Inspect Smelter input/output sections, Transfer, progress, Collect and Close.
+- Inspect Fabricator initial recipe selection, selected recipe, multiple inputs,
+  Change Recipe, paused/error/Back states, progress, Transfer and Collect.
+- Across those content heights, confirm full-panel corners/edges, retained B1
+  transparency, no doubled outer border, readable content and clickable controls.
+  Check the supported 1280 x 720 and 1024 x 576 client sizes for clipping.
 
 
 Tab replaces I in the inventory InputMap action. Inventory consumes Tab presses

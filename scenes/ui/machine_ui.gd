@@ -39,6 +39,14 @@ var _pause_lease: RefCounted
 
 
 func _ready() -> void:
+	# Keep the shared B1 fill; B2 owns the outer border. Match inventory clearance.
+	var panel_style := _panel.get_theme_stylebox("panel").duplicate() as StyleBoxFlat
+	panel_style.set_border_width_all(0)
+	panel_style.content_margin_left = 16
+	panel_style.content_margin_right = 16
+	panel_style.content_margin_top = 14
+	panel_style.content_margin_bottom = 14
+	_panel.add_theme_stylebox_override("panel", panel_style)
 	_detector.machine_panel = self
 	inventory_ui.opened.connect(close)
 	construction.mode_started.connect(close)
