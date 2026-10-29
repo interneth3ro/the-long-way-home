@@ -65,6 +65,27 @@ func begin_deployment(definition: MachineDefinition) -> bool:
 	return true
 
 
+func get_deployment_item_id() -> StringName:
+	return _definition.item_id if _mode == Mode.CONSTRUCTION and _definition != null else &""
+
+
+# Empty string means accepted. Reject before cancel() so a failed switch keeps
+# the current ghost, orientation and pending confirmation intact.
+func activate_hotbar(definition: MachineDefinition) -> String:
+	if _context_blocked() or _mode == Mode.RECOVERY:
+		return "Close the current interaction or recovery mode before deploying."
+	if definition == null or not definition.is_valid():
+		return "Machine unavailable."
+	if get_deployment_item_id() == definition.item_id:
+		cancel()
+		return ""
+	if progression.inventory.get_quantity(definition.item_id) < 1:
+		return "No %s in inventory." % definition.display_name
+	if not begin_deployment(definition):
+		return "Cannot deploy %s here." % definition.display_name
+	return ""
+
+
 func cancel() -> void:
 	if is_instance_valid(_world) and _world is PlanetExterior:
 		_world.set_construction_definition(null)
@@ -118,8 +139,7 @@ func _input(event: InputEvent) -> void:
 	if _context_blocked():
 		cancel()
 		return
-	if event.is_action_pressed("ui_cancel") or (event is InputEventMouseButton \
-			and event.pressed and event.button_index == MOUSE_BUTTON_RIGHT):
+	if event.is_action_pressed("ui_cancel"):
 		cancel()
 	elif event.is_action_pressed("construction_rotate") and _mode == Mode.CONSTRUCTION:
 		_turns = posmod(_turns + 1, 4)
@@ -132,6 +152,13 @@ func _input(event: InputEvent) -> void:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_echo() or _context_blocked():
+		return
+	# GUI gets first refusal for cancellation too: hotbar context clicks must
+	# never cancel a placement before their slot receives gui_input.
+	if _mode != Mode.NONE and event is InputEventMouseButton \
+			and event.pressed and event.button_index == MOUSE_BUTTON_RIGHT:
+		cancel()
+		get_viewport().set_input_as_handled()
 		return
 	var world := transitions.get_current_world()
 	if world == null:

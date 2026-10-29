@@ -92,6 +92,6 @@ theme_override_constants/separation = 4
 layout_mode = 2
 mouse_filter = 2
 theme_type_variation = &"B1MutedLabel"
-text = "Hover for totals · Click a machine to deploy · Tab / Esc close"
+text = "Hover totals · Left-click deploy · Right-click assign · Tab / Esc close"
 
 [connection signal="pressed" from="HUD/Toggle" to="." method="_toggle"]

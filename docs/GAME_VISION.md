@@ -271,8 +271,26 @@ uses 30 material positions (three rows of ten) plus ten machine/equipment
 positions, with all empty positions visible. These are presentation positions,
 not capacity limits; extra types retain access in a small overflow list. Tab
 replaces I; machine slots continue to request deployment on a single click.
-Implementation is on the inventory feature branch, pending merge and owner
-graphical acceptance. No hotbar or movable stacks are included.
+Inventory implementation merged in PR #78; owner graphical acceptance remains
+separate. The approved hybrid hotbar follow-up adds ten bottom-centered type
+assignments for physical 1-9/0, with Extractor/Smelter/Fabricator defaults on first
+packaged availability. Session-owned assignments survive depletion and travel;
+custom/cleared slots are never automatically overwritten or restored. Inventory
+right-click chooses a destination; hotbar right-click clears. Number keys toggle
+the same placement or switch through existing construction guards, with no item
+consumption until successful placement. Modal interactions and recovery retain
+input ownership. Prompts/hints sit above the bar; conversations/responses and
+transitions can hide it while ambient musings retain it. The implementation on
+`codex/b1-hybrid-hotbar` now includes the owner-approved visual refinement:
+52-unit slots (18.75% smaller), one subtly translucent B1 backing panel with thin
+border/four-unit padding, and the same copper-amber placement highlight.
+The original implementation and the owner-approved refinement both passed
+the restricted Native runner (static suite, cold import and existing recipe
+regression). Hotbar graphical/interaction acceptance remains separate; the
+feature is pending merge. The refinement requires no preservation-assertion changes. The approved future 15-material/5-equipment
+inventory is reserved for a separate PR; this branch keeps the 40-slot layout.
+See the [implementation and acceptance checklist](../README.md#b1-hybrid-hotbar-feature-branch-pending-merge).
+No movable stacks, final artwork, new tools or disk persistence are added.
 
 Recover the Extractor implementation is merged in PR #30; agent validation was
 static only. It adds the bay, inventory and first recovery step. Deployment and

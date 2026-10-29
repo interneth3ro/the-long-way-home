@@ -1,0 +1,50 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scenes/ui/hotbar_ui.gd" id="1_hotbar"]
+[ext_resource type="Theme" path="res://assets/ui/b1_theme.tres" id="2_b1"]
+
+[node name="HotbarUI" type="CanvasLayer"]
+layer = 2
+script = ExtResource("1_hotbar")
+
+[node name="HUD" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme = ExtResource("2_b1")
+
+[node name="Backing" type="PanelContainer" parent="HUD"]
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -291.0
+offset_top = -76.0
+offset_right = 291.0
+offset_bottom = -16.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 0
+
+[node name="Slots" type="HBoxContainer" parent="HUD/Backing"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 6
+
+[node name="Feedback" type="Label" parent="HUD"]
+visible = false
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -390.0
+offset_top = -176.0
+offset_right = 390.0
+offset_bottom = -148.0
+mouse_filter = 2
+theme_type_variation = &"B1WarningLabel"
+horizontal_alignment = 1

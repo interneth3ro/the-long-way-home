@@ -6,20 +6,16 @@ signal opened
 @export var progression: PlaythroughState
 # Node reference keeps storage/item definitions independent of the tool presenter.
 @export var construction: Node
+@export var transitions: SceneTransitionController
 
 const MATERIAL_SLOTS := 30
 const EQUIPMENT_SLOTS := 10
 const SLOT_SIZE := Vector2(64, 64)
-# Presentation-only lookup: replace a symbol with a Texture2D here when art arrives.
-const ITEM_ICONS := {
-	&"ferrite_ore": "ORE",
-	&"ferrite_ingot": "BAR",
-	&"ferrite_plate": preload("res://assets/items/ferrite_plate.svg"),
-	&"ferrite_rod": preload("res://assets/items/ferrite_rod.svg"),
-	&"extractor": "EX",
-	&"smelter": "SM",
-	&"fabricator": "FB",
-}
+# Shared presentation lookup; storage remains independent of UI.
+const ITEM_ICONS := ItemPresentation.ICONS
+
+var _assignment_menu: PopupMenu
+var _assignment_machine: MachineDefinition
 
 @onready var _panel: PanelContainer = $HUD/Panel
 @onready var _materials: GridContainer = $HUD/Panel/Content/Materials
@@ -29,6 +25,13 @@ const ITEM_ICONS := {
 
 
 func _ready() -> void:
+	_assignment_menu = PopupMenu.new()
+	_assignment_menu.name = "AssignToHotbar"
+	_assignment_menu.force_native = false
+	$HUD.add_child(_assignment_menu)
+	_assignment_menu.id_pressed.connect(_assign_to_hotbar)
+	_assignment_menu.window_input.connect(_assignment_menu_input)
+	transitions.transition_started.connect(_assignment_menu.hide)
 	_create_slots(_materials, MATERIAL_SLOTS)
 	_create_slots(_equipment, EQUIPMENT_SLOTS)
 	progression.inventory.changed.connect(_refresh)
@@ -36,6 +39,9 @@ func _ready() -> void:
 
 
 func _input(event: InputEvent) -> void:
+	# Popup owns Esc/navigation while open; closing it must not close inventory.
+	if _assignment_menu.visible:
+		return
 	if event.is_action_pressed("inventory", true):
 		# Consume repeats too, before GUI focus navigation can see Tab.
 		get_viewport().set_input_as_handled()
@@ -45,11 +51,12 @@ func _input(event: InputEvent) -> void:
 	if event.is_echo():
 		return
 	if _panel.visible and event.is_action_pressed("ui_cancel"):
-		_panel.hide()
+		close()
 		get_viewport().set_input_as_handled()
 
 
 func _toggle() -> void:
+	_assignment_menu.hide()
 	_panel.visible = not _panel.visible
 	if _panel.visible:
 		opened.emit()
@@ -60,6 +67,7 @@ func is_open() -> bool:
 
 
 func close() -> void:
+	_assignment_menu.hide()
 	_panel.hide()
 
 
@@ -137,6 +145,8 @@ func _refresh_slots(grid: GridContainer, items: Array[ItemDefinition]) -> void:
 		var slot := grid.get_child(index) as Button
 		for connection in slot.pressed.get_connections():
 			slot.pressed.disconnect(connection.callable)
+		for connection in slot.gui_input.get_connections():
+			slot.gui_input.disconnect(connection.callable)
 		var item: ItemDefinition = items[index] if index < items.size() else null
 		var icon := slot.get_node("Icon") as TextureRect
 		var symbol := slot.get_node("Symbol") as Label
@@ -160,19 +170,15 @@ func _refresh_slots(grid: GridContainer, items: Array[ItemDefinition]) -> void:
 		if item.section == ItemDefinition.Section.EQUIPMENT:
 			if item is MachineDefinition and item.is_valid():
 				slot.pressed.connect(_deploy_machine.bind(item))
-				slot.tooltip_text += "\nLeft-click to deploy"
+				slot.gui_input.connect(_machine_context_input.bind(item, slot))
+				slot.tooltip_text += "\nLeft-click to deploy · Right-click to assign hotbar"
 			else:
 				slot.disabled = true
 				slot.tooltip_text += "\nNot deployable"
 
 
 func _quantity_text(quantity: int) -> String:
-	# Avoid float rounding/overflow, including the largest supported int64 value.
-	var digits := str(quantity)
-	if digits.length() <= 3:
-		return digits
-	var group := int((digits.length() - 1) / 3.0)
-	return digits.left(digits.length() - group * 3) + ["", "K", "M", "B", "T", "Qa", "Qi"][group]
+	return ItemPresentation.quantity_text(quantity)
 
 
 func _add_overflow(items: Array[ItemDefinition], capacity: int, section: String) -> void:
@@ -188,8 +194,43 @@ func _add_overflow(items: Array[ItemDefinition], capacity: int, section: String)
 		if item.section == ItemDefinition.Section.EQUIPMENT:
 			if item is MachineDefinition and item.is_valid():
 				row.pressed.connect(_deploy_machine.bind(item))
-				row.tooltip_text += "\nLeft-click to deploy"
+				row.gui_input.connect(_machine_context_input.bind(item, row))
+				row.tooltip_text += "\nLeft-click to deploy · Right-click to assign hotbar"
 			else:
 				row.disabled = true
 				row.tooltip_text += "\nNot deployable"
 		_overflow_items.add_child(row)
+
+
+func _machine_context_input(event: InputEvent, definition: MachineDefinition, slot: Control) -> void:
+	if not event is InputEventMouseButton or not event.pressed \
+			or event.button_index != MOUSE_BUTTON_RIGHT:
+		return
+	slot.accept_event()
+	_assignment_machine = definition
+	_assignment_menu.clear()
+	_assignment_menu.add_separator("Assign to Hotbar · " + definition.display_name)
+	for index in PlaythroughState.HOTBAR_SIZE:
+		var assigned := progression.get_hotbar_assignment(index)
+		var key := str(index + 1) if index < 9 else "0"
+		var label := "Slot %d [%s] · %s" % [index + 1, key,
+			assigned.display_name if assigned != null else "Unassigned"]
+		if assigned != null and assigned.item_id == definition.item_id:
+			label += " (Current)"
+		_assignment_menu.add_item(label, index)
+	_assignment_menu.position = Vector2i(slot.get_screen_position() + Vector2(0, slot.size.y))
+	_assignment_menu.reset_size()
+	_assignment_menu.popup()
+
+
+func _assign_to_hotbar(slot: int) -> void:
+	# Revalidate quantity if inventory changed while the menu was open.
+	progression.assign_hotbar(slot, _assignment_machine)
+
+
+func _assignment_menu_input(event: InputEvent) -> void:
+	# Keep Tab's close behavior even while the popup owns keyboard input.
+	if event.is_action_pressed("inventory", true):
+		_assignment_menu.set_input_as_handled()
+		if not event.is_echo():
+			close()

@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3]
+[gd_scene load_steps=17 format=3]
 
 [ext_resource type="Script" path="res://scenes/main/main.gd" id="1_main"]
 [ext_resource type="PackedScene" path="res://scenes/world/ship_interior.tscn" id="2_interior"]
@@ -16,6 +16,8 @@
 [ext_resource type="PackedScene" path="res://construction/construction_controller.tscn" id="13_construction"]
 [ext_resource type="PackedScene" path="res://scenes/ui/machine_ui.tscn" id="14_machine"]
 [ext_resource type="Script" path="res://scenes/main/display_configuration.gd" id="15_display"]
+
+[ext_resource type="PackedScene" path="res://scenes/ui/hotbar_ui.tscn" id="16_hotbar"]
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_main")
@@ -59,9 +61,10 @@ grow_vertical = 2
 mouse_filter = 0
 color = Color(0, 0, 0, 0)
 
-[node name="InventoryUI" parent="." node_paths=PackedStringArray("progression", "construction") instance=ExtResource("12_inventory")]
+[node name="InventoryUI" parent="." node_paths=PackedStringArray("progression", "construction", "transitions") instance=ExtResource("12_inventory")]
 progression = NodePath("../PlaythroughState")
 construction = NodePath("../Construction")
+transitions = NodePath("../SceneTransitions")
 
 [node name="DisplayConfiguration" type="Node" parent="."]
 script = ExtResource("15_display")
@@ -78,3 +81,9 @@ progression = NodePath("../PlaythroughState")
 transitions = NodePath("../SceneTransitions")
 inventory_ui = NodePath("../InventoryUI")
 construction = NodePath("../Construction")
+
+[node name="HotbarUI" parent="." node_paths=PackedStringArray("progression", "construction", "transitions", "player") instance=ExtResource("16_hotbar")]
+progression = NodePath("../PlaythroughState")
+construction = NodePath("../Construction")
+transitions = NodePath("../SceneTransitions")
+player = NodePath("../Dave")
