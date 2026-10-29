@@ -43,7 +43,9 @@
   policy, static tests, native test assertions and inventory/command scope before use.
 - For the B1 UI implementation the owner separately authorized a minimal font
   staging amendment: only the required IBM Plex Sans Regular, Medium and SemiBold
-  `.ttf` assets under `assets/fonts/ibm-plex-sans/`. This authorizes no additional
+  `.ttf` assets under `assets/fonts/ibm-plex-sans/`, plus their three matching
+  `.ttf.import` metadata sidecars (separately approved after the first B1 run
+  rejected generated sidecars, together with one controlled rerun). This authorizes no additional
   executable types, engine commands, tests or runner capabilities. All existing
   staging, identity, limit, failure and preservation checks remain required.
 - Each authorized run requires actual Python static-suite PASS, unchanged reviewed

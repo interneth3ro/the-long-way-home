@@ -34,7 +34,8 @@ or merge does not broaden this scope. See the
 
 For B1 font compatibility the owner separately authorized staging only the IBM
 Plex Sans Regular, Medium and SemiBold `.ttf` files under
-`assets/fonts/ibm-plex-sans/`. No executable type, command, test or engine limit is
+`assets/fonts/ibm-plex-sans/` and, after the first B1 run, their three matching
+`.ttf.import` sidecars plus one controlled rerun. No executable type, command, test or engine limit is
 added. The existing inert fixture checks font byte preservation and rejected
 paths/types; this is not a new test framework or Godot test.
 
@@ -91,7 +92,8 @@ points fail closed. Preserve paths, bytes, UIDs and import sidecars.
 The resource allowlist includes `project.godot`, only
 `tests/fabricator_recipe_switching_test.gd` and its UID, and reviewed resource
 extensions under assets, construction, dialogue, inventory, objectives, scenes and
-shaders, plus the three exact font paths above. Other tests, tools, docs, hidden paths, .git, .godot, artifacts, saves,
+shaders, plus the three exact font paths and their three metadata sidecars above.
+Other tests, tools, docs, hidden paths, .git, .godot, artifacts, saves,
 settings and credential/secret names are excluded. Filename filters cannot detect
 secrets embedded in approved content. No owner save/settings/artwork is deleted.
 

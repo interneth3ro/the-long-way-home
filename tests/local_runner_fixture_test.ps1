@@ -109,6 +109,8 @@ try {
             $relative = "assets/fonts/ibm-plex-sans/IBMPlexSans-$_.ttf"
             [IO.File]::WriteAllBytes((Join-Path $source $relative), [byte[]]@(0, 1, 0, 0))
             $relative
+            [IO.File]::WriteAllText((Join-Path $source "$relative.import"), 'inert font metadata')
+            "$relative.import"
         }
         $stage = New-InputStage $source $fixture ($tracked + $fontPaths)
         foreach ($path in $fontPaths) {
@@ -120,6 +122,8 @@ try {
                 'assets/fonts/ibm-plex-sans/IBMPlexSans-Bold.ttf',
                 'assets/fonts/ibm-plex-sans/IBMPlexSans-Regular.otf',
                 'assets/fonts/ibm-plex-sans/IBMPlexSans-Regular.ttf.exe',
+                'assets/fonts/ibm-plex-sans/IBMPlexSans-Regular.ttf.import.exe',
+                'assets/fonts/ibm-plex-sans/IBMPlexSans-Bold.ttf.import',
                 'assets/fonts/ibm-plex-sans/IBMPlexSans-Regular.dll',
                 'assets/fonts/ibm-plex-sans/IBMPlexSans-Regular.ps1')) {
             Require (-not (Test-ApprovedInput $path)) 'Unexpected font or executable allowed'

@@ -458,7 +458,7 @@ function Test-ApprovedInput {
     if ($Relative -ceq 'project.godot') { return $true }
     if ($Relative -cmatch '^tests/fabricator_recipe_switching_test\.gd(\.uid)?$') { return $true }
     # Owner-approved font compatibility only; no additional commands or file types.
-    if ($Relative -cmatch '^assets/fonts/ibm-plex-sans/IBMPlexSans-(Regular|Medium|SemiBold)\.ttf$') { return $true }
+    if ($Relative -cmatch '^assets/fonts/ibm-plex-sans/IBMPlexSans-(Regular|Medium|SemiBold)\.ttf(\.import)?$') { return $true }
     # Narrow tracked resource inventory; expanding this list requires review.
     return $Relative -cmatch '^(assets|construction|dialogue|inventory|objectives|scenes|shaders)/.+\.(gd|gd\.uid|tscn|tres|gdshader|gdshader\.uid|png|svg|png\.import|svg\.import|json)$'
 }

@@ -47,7 +47,8 @@ for nonexecuting inspection using the fixed executable identity. On 2026-10-29,
 the owner approved standing routine use of the restricted Native runner, replacing
 the earlier one-invocation permission. Only the fixed import and recipe-switching
 phases are covered; no automatic retries or unattended execution. The B1 change
-adds only the three required IBM Plex Sans `.ttf` paths to asset staging.
+adds only the three required IBM Plex Sans `.ttf` paths and their matching
+`.ttf.import` metadata sidecars to asset staging.
 See the guide for the fixed scope, limits and verification requirements.
 
 **F5** starts production V2 (P8 merged in PR #65). F6 with
