@@ -23,5 +23,7 @@ as Git. The root `.gitattributes` pins `text eol=lf` for their exact paths, over
 (36 line endings per file); the resulting bytes exactly matched the committed
 blobs, including all UIDs, paths and import parameters. Normalizing the checkout
 therefore changes no metadata or semantics and preserves the runner's byte checks.
-The previous failed stage/evidence remain preserved. A fresh Native attempt still
-requires explicit owner authorization; normalization alone is not runtime PASS.
+The previous failed stage/evidence remain preserved. With explicit owner approval
+for one fresh attempt at `9fd87ef`, the unchanged restricted Native runner passed
+43 static tests, cold import, recipe-switching regression (zero failures) and
+byte-integrity checks. Both stages remain retained. No graphical check was run.

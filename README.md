@@ -212,10 +212,14 @@ PR #78 font metadata follow-up: all three tracked IBM Plex Sans sidecars
 failed stage Godot changed only these line endings; every resulting byte matched
 its committed blob. The checkout is now normalized to LF, with exact-path
 `text eol=lf` attributes to prevent recurrence. No metadata fields, font binaries,
-runner controls or inventory implementation changed. This resolves the observed
-source/stage byte discrepancy by comparison, but no fresh Native attempt has run.
-The previous failure evidence/stage remain intact; explicit owner authorization
-for a fresh attempt is required under the no-retry policy.
+runner controls or inventory implementation changed. After explicit owner
+approval for one fresh attempt, the unchanged restricted runner at `9fd87ef`
+passed all 43 static tests, cold import and the recipe-switching regression
+(zero failures), including infrastructure, authorization and byte-integrity checks.
+The new retained stage is `tlwh-native-plan-1058befc971f4506b9abcd7a882f2e5e`.
+The previous failed stage and evidence remain intact. Exactly one fresh attempt
+was made; no further retry or graphical execution occurred. This confirms the
+font staging correction, while graphical inventory acceptance remains pending.
 
 Owner acceptance, when the owner chooses to launch graphically:
 
