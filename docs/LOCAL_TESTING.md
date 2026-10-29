@@ -1,4 +1,4 @@
-# Local testing runner (first-run review preparation, pending merge)
+# Local testing runner (dormant one-time first-run mechanism, pending merge)
 
 Use PowerShell **7+** on Windows, Git and Python on PATH, from the actual checkout:
 
@@ -31,7 +31,8 @@ After static PASS, planning prints executable identity, source revision/status,
 stage path, every approved input/hash, and both fixed command arrays and limits.
 The proposed first-run review scope also includes the absolute runner path,
 tracked runner/policy/static-suite/documentation/fixture control hashes, index
-digest, evidence directory, one attempt per phase and one concurrent process.
+digest, evidence directory and fixed receipt path, diagnostic limit, static requirement,
+stop conditions, one attempt per phase and one concurrent process.
 NativePlan now captures source identity/input hashes before the static suite and
 rejects changes against that snapshot before producing the scope. Its JSON is
 console review data only: no gate reads it, and neither a matching scope nor
@@ -50,7 +51,7 @@ import sidecars and bytes are preserved. Other tests, tools, docs, hidden paths,
 Filename filters cannot detect secrets embedded in approved content. Inventory
 expansion requires review.
 
-Each plan/run creates a new `tlwh-native-plan-<GUID>` under OS temp, outside the
+Each NativePlan creates a new `tlwh-native-plan-<GUID>` under OS temp, outside the
 checkout. Source and copy hashes are compared. Stages (including partial failures)
 remain for inspection; the runner never deletes owner files or stages. These are
 observational checks, not an atomic snapshot: avoid editing during a plan/run.
@@ -88,8 +89,10 @@ The workflow has two distinct owner decisions:
 **Current implementation:** `Assert-NativeExecutionAuthorization` fails closed
 unconditionally. Public `-Mode Native` exits 1 before prerequisites, staging or
 process calls, regardless of console type, flags, environment or local files.
-The internal dispatcher checks the same gate before its sequence and each
-prospective launch. It remains available for non-Godot scoped mocks only.
+The internal dispatcher checks the same gate before identity reads or staging,
+before consumption and before each prospective launch. Its separate
+`Get-ApprovedFirstRunContext` provider also throws unconditionally; neither
+function accepts approval inputs. It remains available for non-Godot scoped mocks only.
 There is deliberately no approval-record loader, online identity check,
 expiration timer, interactive authorization prompt or self-activation switch.
 Neither stage can be enabled by editing prose or by merging this PR. A separate
@@ -98,42 +101,56 @@ permissions have not been granted by this workflow simplification request.
 
 ### First-run checklist and separate activation patch
 
-This preparation patch leaves the gate unchanged. The minimal second patch must
-be reviewed and separately authorized before any engine invocation. It must:
+This code-only feature leaves both authorization functions unconditionally inactive.
+It prepares exact scope comparison and durable attempt consumption. The smallest
+future activation change must implement the owner-reviewed scope provider and
+explicit authorization/revocation checks, then be separately reviewed. Replacing
+only the public denial cannot activate execution: the provider still refuses.
+No current invocation can supply a scope, token, callback or approval file.
 
-1. Bind the exact reviewed runner commit and control hashes, source checkout and
-   revision, working status/index digest and complete tracked input hashes.
-   Replan after committing/reviewing changes; a precommit plan is not that scope.
-2. Bind the owner-verified absolute **Windows Godot 4.7.2** executable path and
-   SHA-256. Both are **pending owner verification**; this implementation does not
-   search for an installation or invoke version/help to infer them.
-3. Bind one fresh, external, pristine stage and its input hashes, the two complete
-   argument arrays in the table below, 60/30-second deadlines and 1,048,576-byte
-   per-process output caps. Current Native dispatch generates another random
-   stage; the later patch must validate/use the exact reviewed stage rather than
-   silently substitute a different one. Revalidate source, stage, controls and
-   executable immediately before each launch, after actual static PASS.
-4. Bind the absolute evidence directory and failure stops below. Preserve all
-   source/stage/owner files. Stop if authorization is withdrawn or any identity
-   changes. No arbitrary flags, scripts, scenes, retries or parallel launches.
-5. Consume the single authorized attempt **before** import, including failed or
-   interrupted attempts. The later reviewed patch must specify an exclusively
-   created, fail-closed attempt receipt at an owner-approved destination and
-   refuse reuse or uncertain receipt state across process restarts. A receipt
-   records consumption; it must never serve as a loadable approval or bypass.
-   Do not implement activation as merely replacing the unconditional throw with
-   an identity comparison: that would permit repeated runs. Review any receipt
-   failure/race handling and authorization revocation before activation.
-6. Record explicit owner authorization of that exact activation revision and
-   scope in the owner conversation/review record, then permit only that one
-   attempt. Do not interpret merging either patch as execution permission.
-   Keep routine/unattended execution inactive after PASS or failure; a later
-   routine policy remains a separate decision.
+Before that future change can run, the owner must explicitly approve:
 
-The current code emits review data and tests its identity checks only. No attempt
-receipt, approval loader, activation parameter or live authorization path is
-implemented here. The second patch and exact first-run owner decision remain
-outstanding; no GitHub-comment gate or online approval service is proposed.
+1. The exact final activation commit, absolute checkout/runner path, control hashes,
+   source revision, full working status, index digest and complete input hashes.
+   Replan after final commit/review; a precommit plan is not that identity.
+2. The absolute **Windows Godot 4.7.2** executable path and SHA-256, both pending
+   owner verification. No discovery or version/help invocation is performed.
+3. One fresh external pristine stage with complete input hashes and the exact two
+   command arrays/deadlines/output limits below, 4096-byte excerpts and stop
+   conditions. Dormant dispatch uses that approved stage directly and never
+   creates a replacement. A `.godot/` tree is allowed only after import PASS.
+4. The absolute evidence directory and its fixed `first-run-attempt.receipt` path.
+   The owner must provision and approve this plain existing directory and reliable
+   local filesystem before activation. No new receipt filename may be selected to
+   bypass a consumed attempt. An existing receipt requires an explicit owner
+   decision and new reviewed authorization; the runner never resets it.
+5. Explicit permission for that single attempt, with a concrete withdrawal check
+   supplied in the activation patch. This assignment, merge and fixture PASS are
+   never approval. Routine/unattended permission remains a separate later decision.
+
+`Assert-FirstRunBinding` rebuilds and compares the entire ordered review scope,
+including controls, input hashes, commands, stage, evidence/receipt paths and limits,
+before consumption and again before each prospective engine call. The approved
+snapshot is also compared with the pre-static snapshot. These are identity checks,
+not an authorization verifier. The future provider must bind the exact reviewed
+activation revision and retain stable approved data throughout the attempt.
+
+`New-FirstRunAttemptReceipt` exclusively creates the fixed path using `CreateNew`,
+`FileShare.None`, `WriteThrough` and `Flush(true)`, before import. It writes only
+consumption evidence and a scope SHA-256, never an approval token. Concurrent
+processes sharing the approved path have at most one successful creation. A failed
+write/flush, interruption, failed import/test or process restart leaves the file
+consumed; even an empty/malformed existing receipt denies reuse. There is no retry,
+overwrite, deletion, directory creation or automatic recovery. Failure evidence and
+stages remain retained. Receipt creation errors stop before any engine call.
+
+The fixtures prove local exclusive creation, replay denial after a separate
+PowerShell process restart, concurrent denial, empty-receipt preservation and
+consumption before mocked import, including failed imports. They do not prove
+power-loss durability, filesystem rollback resistance, hostile deletion/replacement,
+network-filesystem semantics or revocation delivery. Preserve the receipt and its
+parent directory; do not edit inputs or controls during a run. Activation still
+requires owner review of the actual local destination and these limits.
 
 The dormant static-to-dispatch wiring still requires actual Python static-suite
 PASS (normal exit, zero exit code and certain termination). It captures source
@@ -196,7 +213,7 @@ termination with at most a two-second wait, always reporting uncertainty. Normal
 exit plus EOF certifies only observed process/pipes, not escaped descendants.
 A stage is not a security sandbox; host-wide freeze recovery is not guaranteed.
 Local path/hash checks do not defend against hostile concurrent filesystem
-changes. Future first-run activation and routine-policy enforcement remain
+changes. Live first-run authorization and routine-policy enforcement remain
 unimplemented until separately authorized and reviewed; no unattended scheduling
 or automatic promotion from first-run success is present.
 

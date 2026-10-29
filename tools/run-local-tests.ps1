@@ -99,7 +99,7 @@ function Assert-PinnedEngine {
 # Data only: callers cannot supply flags, scripts, scenes, deadlines or extra arguments.
 function New-NativeCommandPlan {
     [CmdletBinding()]
-    param([string]$Engine, [string]$EngineHash, $Stage)
+    param([string]$Engine, [string]$EngineHash, $Stage, [switch]$Imported)
     Assert-PinnedEngine $Engine $EngineHash
     Assert-PlainPath $Stage.Directory
     $directory = [IO.Path]::GetFullPath($Stage.Directory)
@@ -128,6 +128,10 @@ function New-NativeCommandPlan {
         foreach ($item in Get-ChildItem -Force -LiteralPath $pendingDirectories.Dequeue()) {
             Assert-PlainPath $item.FullName
             $relative = [IO.Path]::GetRelativePath($directory, $item.FullName).Replace('\', '/')
+            if ($Imported -and ($relative -ceq '.godot' -or $relative.StartsWith('.godot/', [StringComparison]::Ordinal))) {
+                if ($item.PSIsContainer) { $pendingDirectories.Enqueue($item.FullName) }
+                continue
+            }
             if ($item.PSIsContainer) {
                 if (-not @($expected | Where-Object { $_.StartsWith($relative + '/', [StringComparison]::Ordinal) }).Count) {
                     throw 'Unexpected staged directory.'
@@ -277,11 +281,18 @@ function Invoke-RestrictedNativeDispatch {
     if ($StaticStatus -ne 'PASS') { return $summary }
     $phase = 'Import'
     try {
+        $summary.Authorization = 'FAIL'
+        Assert-NativeExecutionAuthorization
+        # No public provider exists. A separately reviewed activation must supply
+        # owner-approved immutable scope data, never a caller/local-file token.
+        $approved = Get-ApprovedFirstRunContext
         Assert-PinnedEngine $Engine $EngineHash
         $identity = Get-NativeSourceIdentity $Source
         $summary.Revision = $identity.Revision; $summary.Working = $identity.Working
-        $stage = New-InputStage $Source ([IO.Path]::GetTempPath()) $identity.Tracked
+        $stage = $approved.Stage
+        if ($stage.Source -cne $Source) { throw 'Approved source checkout changed.' }
         $summary.StageDirectory = $stage.Directory; $summary.Inputs = $stage.Inputs
+        if ($null -eq $StaticSnapshot) { throw 'Actual static snapshot required.' }
         if ($null -ne $StaticSnapshot) {
             foreach ($key in @('Revision', 'Working', 'Index')) {
                 if ($identity.$key -cne $StaticSnapshot.Identity.$key) { throw 'Source changed since static-suite start.' }
@@ -301,6 +312,10 @@ function Invoke-RestrictedNativeDispatch {
         $summary.Authorization = 'FAIL'
         Assert-NativeExecutionAuthorization
         Assert-ReviewedNativeRunner $Source $identity.Revision
+        Assert-FirstRunBinding $approved $Engine $EngineHash $stage $StaticSnapshot
+        # CreateNew is the sole consumption operation. Never remove this receipt,
+        # including on write/flush failure or an interrupted/failed engine attempt.
+        New-FirstRunAttemptReceipt $approved.Scope
         $summary.Authorization = 'PASS'
         foreach ($command in $commands) {
             $phase = $command.Phase
@@ -310,6 +325,7 @@ function Invoke-RestrictedNativeDispatch {
             catch { $summary.Authorization = 'FAIL'; throw }
             Assert-ReviewedNativeRunner $Source $identity.Revision
             Assert-NativeDispatchInputs $stage $identity ($phase -eq 'Native')
+            Assert-FirstRunBinding $approved $Engine $EngineHash $stage $StaticSnapshot -Imported:($phase -eq 'Native')
             # Last check before the one synchronous bounded launch. No retries.
             Assert-PinnedEngine $Engine $EngineHash
             $result = Invoke-BoundedProcess $command.Executable $command.Arguments $command.Directory `
@@ -341,6 +357,42 @@ function Assert-NativeExecutionAuthorization {
     [CmdletBinding()]
     param()
     throw 'Native execution inactive: separate explicit owner approval of the exact first run is required. Routine testing additionally requires successful first-run validation and a separately owner-approved repository execution policy. Use NativePlan for nonexecuting inspection.'
+}
+
+function Get-ApprovedFirstRunContext {
+    [CmdletBinding()]
+    param()
+    throw 'First-run context inactive: exact activation revision and scope require separate owner approval.'
+}
+
+# Pure comparison of current review data with future owner-approved data. This
+# does not establish permission; both production authorization gates still deny.
+function Assert-FirstRunBinding {
+    param($Approved, [string]$Engine, [string]$EngineHash, $Stage, $Snapshot, [switch]$Imported)
+    $current = New-FirstRunReviewScope $Engine $EngineHash $Stage $Snapshot -Imported:$Imported
+    if ((ConvertTo-Json $current -Depth 12 -Compress) -cne
+        (ConvertTo-Json $Approved.Scope -Depth 12 -Compress)) { throw 'Approved first-run scope changed.' }
+}
+
+function New-FirstRunAttemptReceipt {
+    [CmdletBinding()]
+    param($Scope)
+    # Only the fixed receipt in the exact approved evidence directory is eligible.
+    # No directory creation, replacement, deletion, or recovery from uncertainty.
+    $path = $Scope.ReceiptPath
+    if (-not [IO.Path]::IsPathFullyQualified($path) -or
+        $path -cne (Join-Path $Scope.EvidenceDirectory 'first-run-attempt.receipt') -or
+        -not (Test-Path -LiteralPath $Scope.EvidenceDirectory -PathType Container)) {
+        throw 'Invalid or unavailable approved receipt destination.'
+    }
+    Assert-PlainPath $path
+    $bytes = [Text.Encoding]::UTF8.GetBytes((ConvertTo-Json $Scope -Depth 12 -Compress))
+    $digest = [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($bytes))
+    $record = [Text.Encoding]::UTF8.GetBytes("CONSUMED FIRST RUN`nScope SHA256: $digest`n")
+    $stream = [IO.FileStream]::new($path, [IO.FileMode]::CreateNew,
+        [IO.FileAccess]::Write, [IO.FileShare]::None, 4096, [IO.FileOptions]::WriteThrough)
+    try { $stream.Write($record, 0, $record.Length); $stream.Flush($true) }
+    finally { $stream.Dispose() }
 }
 
 function Assert-ReviewedNativeRunner {
@@ -491,15 +543,15 @@ function New-InputStage {
 # A matching scope, even after static PASS, grants no permission to execute.
 function New-FirstRunReviewScope {
     [CmdletBinding()]
-    param([string]$Engine, [string]$EngineHash, $Stage, $StaticSnapshot)
+    param([string]$Engine, [string]$EngineHash, $Stage, $StaticSnapshot, [switch]$Imported)
     if ($null -eq $StaticSnapshot) { throw 'Static snapshot required for first-run review.' }
     $identity = $StaticSnapshot.Identity
-    Assert-NativeDispatchInputs $Stage $identity $false
+    Assert-NativeDispatchInputs $Stage $identity ([bool]$Imported)
     if ((ConvertTo-Json -InputObject @($Stage.Inputs) -Compress) -cne
         (ConvertTo-Json -InputObject @($StaticSnapshot.Inputs) -Compress)) {
         throw 'Working inputs changed since static-suite start.'
     }
-    $commands = @(New-NativeCommandPlan $Engine $EngineHash $Stage)
+    $commands = @(New-NativeCommandPlan $Engine $EngineHash $Stage -Imported:$Imported)
     $controls = @(foreach ($relative in $identity.Tracked) {
         if ($relative -cmatch '^(tools/|AGENTS\.md$|docs/LOCAL_TESTING\.md$|tests/local_runner_fixture_test\.ps1$|tests/static_[^/]*test\.py$)') {
             $path = Join-Path $Stage.Source $relative
@@ -522,6 +574,9 @@ function New-FirstRunReviewScope {
         IndexSha256 = $indexHash
         Controls = $controls; Inputs = @($Stage.Inputs); StageDirectory = $Stage.Directory
         Commands = $commands; EvidenceDirectory = (Join-Path $Stage.Source 'artifacts/logs')
+        ReceiptPath = (Join-Path $Stage.Source 'artifacts/logs/first-run-attempt.receipt')
+        ExcerptBytes = 4096; StaticRequired = 'ACTUAL_PYTHON_PASS'; RoutineAfterPass = 'INACTIVE'
+        StopConditions = 'ERROR;ASSERTION;COMPLETION;ABNORMAL_EXIT;TIMEOUT;OUTPUT_LIMIT;UNCERTAIN_TERMINATION;IDENTITY_CHANGE;WITHDRAWN_APPROVAL'
         MaxAttemptsPerPhase = 1; MaxConcurrentProcesses = 1
     }
 }
