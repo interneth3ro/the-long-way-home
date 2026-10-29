@@ -281,8 +281,15 @@ the same placement or switch through existing construction guards, with no item
 consumption until successful placement. Modal interactions and recovery retain
 input ownership. Prompts/hints sit above the bar; conversations/responses and
 transitions can hide it while ambient musings retain it. The implementation on
-`codex/b1-hybrid-hotbar` is pending preservation-assertion review and has only
-static validation. See the [implementation and acceptance checklist](../README.md#b1-hybrid-hotbar-feature-branch-pending-preservation-review).
+`codex/b1-hybrid-hotbar` now includes the owner-approved visual refinement:
+52-unit slots (18.75% smaller), one subtly translucent B1 backing panel with thin
+border/four-unit padding, and the same copper-amber placement highlight.
+The original implementation and the owner-approved refinement both passed
+the restricted Native runner (static suite, cold import and existing recipe
+regression). Hotbar graphical/interaction acceptance remains separate; the
+feature is pending merge. The refinement requires no preservation-assertion changes. The approved future 15-material/5-equipment
+inventory is reserved for a separate PR; this branch keeps the 40-slot layout.
+See the [implementation and acceptance checklist](../README.md#b1-hybrid-hotbar-feature-branch-pending-merge).
 No movable stacks, final artwork, new tools or disk persistence are added.
 
 Recover the Extractor implementation is merged in PR #30; agent validation was

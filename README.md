@@ -243,10 +243,16 @@ Owner acceptance, when the owner chooses to launch graphically:
    and objectives continue normally. Overflow is a future-catalog safeguard;
    current gameplay cannot populate it without additional item definitions.
 
-## B1 hybrid hotbar (feature branch, pending preservation review)
+## B1 hybrid hotbar (feature branch, pending merge)
 
-`codex/b1-hybrid-hotbar` adds ten persistent 64-unit B1 slots centered at the
-bottom, labeled **1-9, 0**, with six-unit gaps and a 16-unit bottom margin.
+`codex/b1-hybrid-hotbar` adds ten persistent 52-unit B1 slots centered at the
+bottom, labeled **1-9, 0**, with six-unit gaps. This is an 18.75% reduction from
+the original 64-unit hotbar slots. One dark backing panel surrounds the row,
+reusing a private copy of the B1 panel style with 90% background opacity,
+a thin border and four-unit padding. Its overall size is 582 x 60 units with
+a 16-unit bottom margin. Icons/symbols, quantities and key labels fit the smaller
+slots. Shared theme resources and the current 40-slot inventory are unchanged;
+the separately approved 15-material/5-equipment inventory belongs to a later PR.
 Temporary machine symbols and integer-safe quantities share
 `scenes/ui/item_presentation.gd` with inventory. Empty slots are subdued;
 assigned zero-quantity slots retain their type, show zero and remain clearable.
@@ -285,8 +291,9 @@ and musings up 64 units to -296/-160. Narrative content and completion/dismissal
 semantics remain unchanged. The bar stays visible with inventory, inspection and
 ambient musings; conversation/response panels and transitions temporarily hide it.
 
-Preservation candidates in `tests/static_v2_production_host_test.py` update the
-two inventory normalized hashes and pin the extracted presentation helper.
+Previously owner-approved preservation assertions in
+`tests/static_v2_production_host_test.py` pin the two inventory normalized hashes
+and the extracted presentation helper.
 Fourteen exact literal edits across six files are reversed before the unchanged
 historical comparisons: session state, construction script/scene, Main and
 interaction/musing scenes. Three added checks cover the shared helper hash,
@@ -295,11 +302,25 @@ restoration of entire pre-feature files at immutable
 allowances while unrelated changes remain detectable. The connection suite reuses
 the same normalizer. No runner, execution policy or native test is changed.
 
-Validation: 46 Python static checks PASS, including resource graph/UID/load-step
-checks and the three added preservation checks. Changed Markdown links and
-`git diff --check` PASS. These are text/static checks only. Native execution is
-paused for owner assertion review; no Godot parsing, hotbar interaction correctness,
-graphical acceptance or PR is claimed.
+The visual refinement requires **no preservation-test edits**. Its hotbar
+script/scene were introduced after the immutable P8 historical baseline and are
+not in its frozen-file inventory. Inventory/helper hashes, all fourteen exact
+normalizations, historical comparisons and negative checks remain unchanged.
+The existing static resource graph still follows and checks the refined scene.
+
+Validation: the original implementation at `f7da479` passed all 46 static
+checks, cold headless import and the allowlisted recipe-switching regression.
+After owner approval, the refined working resources passed the same restricted
+Native runner in one attempt: 46 static checks, cold import, recipe regression
+(zero failures), infrastructure and authorization all PASS. The retained stage
+is `tlwh-native-plan-44a633bb166e41e999277cbaafe23122`. No retry or graphical
+execution occurred. Changed Markdown links and `git diff --check` PASS.
+Text inspection confirms unchanged behavior methods, key mapping, assignment
+state, construction and inventory files. Native success covers import and the
+existing recipe regression; it does not establish hotbar interaction correctness
+or visual acceptance. The owner approved the compact/backing-panel direction;
+final in-game layout and interaction acceptance remain separate. The feature
+is pending merge.
 
 Owner acceptance, after the owner chooses to launch graphically:
 

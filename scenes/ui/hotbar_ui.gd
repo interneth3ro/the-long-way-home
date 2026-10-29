@@ -10,7 +10,7 @@ const PHYSICAL_KEYS := [KEY_1, KEY_2, KEY_3, KEY_4, KEY_5, KEY_6, KEY_7, KEY_8, 
 const B1_THEME: Theme = preload("res://assets/ui/b1_theme.tres")
 
 @onready var _root: Control = $HUD
-@onready var _slots: HBoxContainer = $HUD/Slots
+@onready var _slots: HBoxContainer = $HUD/Backing/Slots
 @onready var _feedback: Label = $HUD/Feedback
 @onready var _dialogue: DialogueUI = player.get_node("DialogueUI")
 @onready var _interaction: InteractionUI = player.get_node("InteractionUI")
@@ -22,6 +22,14 @@ var _feedback_seconds: float = 0.0
 
 
 func _ready() -> void:
+	# Customize a private copy so inventory and machine panels retain their style.
+	var backing := B1_THEME.get_stylebox("panel", "PanelContainer").duplicate() as StyleBoxFlat
+	backing.content_margin_left = 4.0
+	backing.content_margin_top = 4.0
+	backing.content_margin_right = 4.0
+	backing.content_margin_bottom = 4.0
+	backing.bg_color = Color(0.075, 0.105, 0.125, 0.90)
+	$HUD/Backing.add_theme_stylebox_override("panel", backing)
 	_clear_menu = PopupMenu.new()
 	_clear_menu.force_native = false
 	_root.add_child(_clear_menu)
@@ -30,7 +38,7 @@ func _ready() -> void:
 	transitions.transition_started.connect(_clear_menu.hide)
 	for index in PlaythroughState.HOTBAR_SIZE:
 		var slot := Button.new()
-		slot.custom_minimum_size = Vector2(64, 64)
+		slot.custom_minimum_size = Vector2(52, 52)
 		slot.theme_type_variation = &"B1InventorySlot"
 		slot.focus_mode = Control.FOCUS_NONE
 		slot.mouse_filter = Control.MOUSE_FILTER_STOP
@@ -39,16 +47,18 @@ func _ready() -> void:
 		slot.gui_input.connect(_slot_input.bind(index, slot))
 		var icon := TextureRect.new()
 		icon.name = "Icon"
-		icon.position = Vector2(17, 12)
-		icon.size = Vector2(30, 30)
+		icon.position = Vector2(14, 11)
+		icon.size = Vector2(24, 24)
 		icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 		icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		slot.add_child(icon)
-		_add_label(slot, "Key", str(index + 1) if index < 9 else "0", Vector2(5, 1), 14)
-		_add_label(slot, "Symbol", "", Vector2(20, 16), 18)
-		var quantity := _add_label(slot, "Quantity", "", Vector2(4, 42), 16)
-		quantity.size.x = 56
+		_add_label(slot, "Key", str(index + 1) if index < 9 else "0", Vector2(4, 0), 13)
+		var symbol := _add_label(slot, "Symbol", "", Vector2(4, 11), 16)
+		symbol.size.x = 44
+		symbol.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		var quantity := _add_label(slot, "Quantity", "", Vector2(4, 32), 14)
+		quantity.size.x = 44
 		quantity.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	progression.hotbar_changed.connect(_refresh)
 	progression.inventory.changed.connect(_refresh)
