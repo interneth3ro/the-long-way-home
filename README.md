@@ -149,6 +149,12 @@ stages are preserved. No agent graphical execution occurred; the subsequent
 six-test owner acceptance and 85% default decision are recorded above.
 Runner, allowlists, execution policy and native test assertions are unchanged.
 
+The approved 85% default follow-up at `18dcc40` also passed **47 static tests,
+cold headless import and recipe switching (zero failures)** in one fresh
+restricted Native run. No protected hash/assertion changes or retry were needed.
+Static inspection confirms the unchanged selector derives its selected startup
+button from the shared preference and retains all three comparison options.
+
 Owner graphical checklist (further agent execution requires separate authorization):
 
 1. In a separate game window at the normal maximized resolution, confirm 85%
