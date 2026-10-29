@@ -250,7 +250,7 @@ func _refresh(machine: Dictionary) -> void:
 func _set_panel_padding(extractor: bool) -> void:
 	# _ready() gives this panel a private StyleBox. Compensate FrameBounds'
 	# content inset so B2 still follows the same outer rectangle in both modes.
-	var padding := Vector4(24, 20, 24, 24) if extractor else Vector4(16, 14, 16, 14)
+	var padding := Vector4(24, 12, 24, 24) if extractor else Vector4(16, 14, 16, 14)
 	var style := _panel.get_theme_stylebox("panel") as StyleBoxFlat
 	style.content_margin_left = padding.x
 	style.content_margin_top = padding.y

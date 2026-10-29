@@ -286,10 +286,11 @@ layout, artwork, gauge, styling and proportions, including the header/column
 dividers and aligned production-detail rows. Option A portrait minification uses
 built-in mipmap import and UI-only Linear with Mipmaps filtering, accepted by the
 owner. The source PNG and stationary machine's Linear sampler are unchanged.
-The owner accepted Extractor-only padding (24-unit sides/bottom, 20-unit top).
-Final alignment groups the unchanged 26-unit uppercase SemiBold title and divider
-into one centered header band and bottom-aligns statistics within their scroll
-viewport, pending owner graphical review.
+The compact header removes forced height/row expansion and uses 12-unit top
+clearance with a 10-unit gap before the divider; sides/bottom remain 24 units.
+The 26-unit uppercase SemiBold title, Close node/styles and bottom-aligned
+statistics remain unchanged. Only Collect All's opt-in primary style gains richer
+teal states, a defined edge and subtle depth, pending owner screenshot review.
 The outer panel size and B2 nine-patch margins remain unchanged.
 It uses existing artwork, B1/B2 styling, two columns, actual cycle progress and
 definition-derived nominal production details. Smelter/Fabricator layouts and

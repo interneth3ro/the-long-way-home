@@ -34,14 +34,12 @@ theme_override_constants/separation = 16
 script = ExtResource("1_view")
 
 [node name="Header" type="VBoxContainer" parent="."]
-custom_minimum_size = Vector2(0, 64)
 layout_mode = 2
 mouse_filter = 2
-theme_override_constants/separation = 0
+theme_override_constants/separation = 10
 
 [node name="Row" type="HBoxContainer" parent="Header"]
 layout_mode = 2
-size_flags_vertical = 3
 mouse_filter = 2
 
 [node name="Title" type="Label" parent="Header/Row"]
