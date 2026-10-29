@@ -26,10 +26,10 @@ var _assignment_machine: MachineDefinition
 
 func _ready() -> void:
 	var panel_style := _panel.get_theme_stylebox("panel").duplicate() as StyleBox
-	panel_style.content_margin_left = 8
-	panel_style.content_margin_right = 8
-	panel_style.content_margin_top = 6
-	panel_style.content_margin_bottom = 6
+	panel_style.content_margin_left = 16
+	panel_style.content_margin_right = 16
+	panel_style.content_margin_top = 14
+	panel_style.content_margin_bottom = 14
 	_panel.add_theme_stylebox_override("panel", panel_style)
 	_assignment_menu = PopupMenu.new()
 	_assignment_menu.name = "AssignToHotbar"

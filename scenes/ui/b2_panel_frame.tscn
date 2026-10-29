@@ -3,9 +3,16 @@
 [ext_resource type="Texture2D" path="res://assets/ui/TLWH_B2_ninepatch_96.png" id="1_frame"]
 
 [node name="B2PanelFrame" type="NinePatchRect"]
+layout_mode = 1
 anchors_preset = 15
+anchor_left = 0.0
+anchor_top = 0.0
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
