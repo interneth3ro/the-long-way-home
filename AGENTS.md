@@ -27,35 +27,43 @@
   benchmarks, prolonged runtime tests, or attempts to reproduce system-level
   freezes or severe performance failures. Never reproduce a reported system
   lockup without explicit owner authorization.
-- **Temporary headless restriction following the PR #5 incident:** all Godot
-  headless execution is suspended, including editor imports, headless scene
-  launches, and GDScript tests executed through Godot. This restriction remains
-  active until the owner explicitly lifts it.
-- Local-runner authorization has two separate stages; neither is active in this
-  code-only PR. First-run execution requires separate explicit owner approval of
-  the exact reviewed runner commit, absolute executable path/SHA-256, source and
-  working-input identity, external stage, fixed commands, limits, evidence
-  destination and stop conditions. Merge or this policy text is not that approval.
-- After successful first-run validation, routine local native testing additionally
-  requires a separately owner-approved, narrowly scoped repository execution
-  policy. First-run approval and a successful test do not grant routine permission.
-  That later policy must define the approved runner/executable identities, allowed
-  source/working-input variation, invocation scope, revocation and reapproval when
-  scope or identities change. It may allow repeated local runs within that scope
-  without a new GitHub comment for each run. This PR enables neither routine nor
-  unattended execution; its public Native gate remains unconditionally inactive.
-  Activation requires a separate reviewed owner-authorized change, not a switch,
-  environment variable, local approval file or automatic reaction to test PASS.
-- Any later authorized runner execution retains actual static-suite PASS, a fresh
-  external project copy, source/executable hash verification, and precisely one
-  cold headless import (60 seconds) followed only on PASS by the recipe-switching
-  test (30 seconds). Each process has a 1,048,576-byte combined output limit;
-  commands run sequentially without retries. Stop on engine/script errors,
-  assertion failure, missing/malformed completion, abnormal exit/crash, timeout,
-  overflow, uncertain termination, or changed source/executable identity.
-  Preserve bounded failure evidence and all owner files. See the two-stage
-  [authorization process](docs/LOCAL_TESTING.md#controlled-native-activation-stage-b-pending-merge).
-  All other headless, graphical, performance and preservation restrictions remain.
+- **Headless restriction following PR #5 remains active.** The narrow standing
+  local-runner exception below is approved in principle but disabled in this
+  code-only simplification PR. This assignment and merge do not authorize Codex
+  to execute Godot, including version/help, imports or GDScript tests.
+- After owner review, the owner must separately approve the first controlled real
+  run and activation of this standing exception. The minimal later code change
+  removes the unconditional denial in `Assert-NativeExecutionAuthorization` in
+  `tools/run-local-tests.ps1`; no embedded approval scope, self-hash, receipt,
+  environment switch or local approval file is required. Until both explicit
+  permission and that reviewed change exist, use only Static and NativePlan.
+- Once explicitly activated, the standing exception permits local runs only through
+  the reviewed `tools/run-local-tests.ps1 -Mode Native`, with the exact standard
+  Windows executable `D:\GameDev\Godot\Standard\Godot_v4.7.2-stable_win64.exe`,
+  SHA-256 `AB1824F85BFD8E0E4128182C000C4003A3E042245B2967848D089B2A04B22424`.
+  No executable, script, scene or argument overrides are permitted. Only the
+  reviewed allowlisted recipe-switching test may run; review changes to runner,
+  policy, static tests, native test assertions and inventory/command scope before use.
+- Each authorized run requires actual Python static-suite PASS, unchanged reviewed
+  controls, and a fresh unique copy of approved tracked working inputs under
+  `D:\GameDev\Godot\TLWH-NativeStages`, outside the checkout. Working resource
+  edits within the allowlist are permitted; capture revision/status/index and
+  input hashes before static validation, then reject changes throughout the run.
+  Never run Godot in the source checkout or reuse a previous stage.
+- The only engine commands are one cold headless import (60 seconds), then only
+  after clean PASS the recipe-switching test (30 seconds). Run sequentially, one
+  engine process at a time, with no automatic retries; rehash the pinned executable
+  before each launch. Each process has a 1,048,576-byte combined output limit and
+  4,096-byte diagnostic excerpts. Stop on engine/script/parse errors, assertion
+  failure, missing/malformed completion, abnormal exit/crash, timeout, overflow,
+  uncertain termination or changed source/stage/executable identity. Preserve
+  bounded failure evidence in ignored `artifacts/logs/` and all owner files/stages.
+- This scope allows no arbitrary headless tests, graphical launch, performance
+  probe, benchmark, stress test or freeze reproduction. Owner withdrawal suspends
+  the exception immediately; stop using Native until renewed explicit permission.
+  Engine identity, command, limit or inventory expansion requires owner review and
+  renewed authorization. A test PASS never expands permissions or schedules runs.
+  See the [local-runner policy](docs/LOCAL_TESTING.md#authorization-and-standing-scope).
 - While execution is restricted, use static code inspection, scene and resource
   text inspection, Git diff validation, Markdown and documentation checks, and
   other nonexecuting checks that invoke neither Godot nor project code.
