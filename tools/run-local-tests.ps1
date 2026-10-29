@@ -283,8 +283,8 @@ function Invoke-RestrictedNativeDispatch {
     try {
         $summary.Authorization = 'FAIL'
         Assert-NativeExecutionAuthorization
-        # No public provider exists. A separately reviewed activation must supply
-        # owner-approved immutable scope data, never a caller/local-file token.
+        # The reviewed approval record is empty until separate owner activation.
+        # Context comes only from that record, never a caller/local-file token.
         $approved = Get-ApprovedFirstRunContext
         Assert-PinnedEngine $Engine $EngineHash
         $identity = Get-NativeSourceIdentity $Source
@@ -328,6 +328,13 @@ function Invoke-RestrictedNativeDispatch {
             Assert-FirstRunBinding $approved $Engine $EngineHash $stage $StaticSnapshot -Imported:($phase -eq 'Native')
             # Last check before the one synchronous bounded launch. No retries.
             Assert-PinnedEngine $Engine $EngineHash
+            try { $currentApproval = Get-ApprovedFirstRunContext }
+            catch { $summary.Authorization = 'FAIL'; throw }
+            if ((ConvertTo-Json $currentApproval.Scope -Depth 12 -Compress) -cne
+                (ConvertTo-Json $approved.Scope -Depth 12 -Compress)) {
+                $summary.Authorization = 'FAIL'
+                throw 'Reviewed first-run approval changed during the attempt.'
+            }
             $result = Invoke-BoundedProcess $command.Executable $command.Arguments $command.Directory `
                 -Seconds $command.Seconds -MaxBytes $command.MaxBytes -ExcerptBytes 4096
             $outcome = Get-NativeOutcome $phase $result
@@ -356,13 +363,52 @@ function Invoke-RestrictedNativeDispatch {
 function Assert-NativeExecutionAuthorization {
     [CmdletBinding()]
     param()
-    throw 'Native execution inactive: separate explicit owner approval of the exact first run is required. Routine testing additionally requires successful first-run validation and a separately owner-approved repository execution policy. Use NativePlan for nonexecuting inspection.'
+    if ($null -eq (Get-ReviewedFirstRunApproval)) {
+        throw 'Native execution inactive: separate explicit owner approval of the exact first run is required. Routine testing additionally requires successful first-run validation and a separately owner-approved repository execution policy. Use NativePlan for nonexecuting inspection.'
+    }
+    $approved = Get-ApprovedFirstRunContext
+    Assert-ReviewedNativeRunner $approved.Stage.Source $approved.Scope.Revision
+}
+
+function Get-ReviewedFirstRunApproval {
+    [CmdletBinding()]
+    param()
+    # Deliberately empty in this implementation-only PR. Only a separately
+    # reviewed owner-authorized code change may supply the exact scope/decision.
+    # No caller, environment variable or local file can grant approval.
+    return $null
 }
 
 function Get-ApprovedFirstRunContext {
     [CmdletBinding()]
     param()
-    throw 'First-run context inactive: exact activation revision and scope require separate owner approval.'
+    $record = Get-ReviewedFirstRunApproval
+    if ($null -eq $record) {
+        throw 'First-run context inactive: exact activation revision and scope require separate owner approval.'
+    }
+    if ($record.Decision -cne 'APPROVED_FIRST_RUN' -or $record.Revoked -isnot [bool] -or $record.Revoked) {
+        throw 'First-run approval absent or withdrawn.'
+    }
+    # Return an independent snapshot; never expose mutable approved scope data.
+    $scope = ConvertFrom-Json (ConvertTo-Json $record.Scope -Depth 12 -Compress)
+    if ($scope.Purpose -cne 'FIRST_RUN_REVIEW_ONLY' -or $scope.Routine -cne 'INACTIVE' -or
+        $scope.RoutineAfterPass -cne 'INACTIVE' -or $scope.Revision -cnotmatch '^([0-9a-f]{40}|[0-9a-f]{64})$' -or
+        $scope.ReceiptPath -cne (Join-Path $scope.EvidenceDirectory 'first-run-attempt.receipt')) {
+        throw 'Invalid reviewed first-run approval scope.'
+    }
+    foreach ($path in @($scope.Source, $scope.StageDirectory, $scope.EvidenceDirectory)) {
+        if (-not [IO.Path]::IsPathFullyQualified($path)) { throw 'Approved paths must be absolute.' }
+        Assert-PlainPath $path
+        if (-not (Test-Path -LiteralPath $path -PathType Container)) { throw 'Approved directory unavailable.' }
+    }
+    # This file can only withdraw permission, never grant it. Check before
+    # consumption and each phase through the existing authorization call sites.
+    $withdrawal = Join-Path $scope.EvidenceDirectory 'first-run-withdrawn'
+    Assert-PlainPath $withdrawal
+    if (Test-Path -LiteralPath $withdrawal) { throw 'First-run authorization withdrawn.' }
+    [pscustomobject]@{ Scope = $scope; Stage = [pscustomobject]@{
+        Source = $scope.Source; Directory = $scope.StageDirectory; Inputs = @($scope.Inputs)
+    } }
 }
 
 # Pure comparison of current review data with future owner-approved data. This
@@ -539,6 +585,34 @@ function New-InputStage {
     [pscustomobject]@{ Directory = $stage; Source = $Source; Inputs = @($inputs) }
 }
 
+function Get-NativeStageParent {
+    [CmdletBinding()]
+    param([string]$Source)
+    # Stable owner-visible Windows location, independent of sandbox/OS temp.
+    # Provisioning is an owner action; never create or fall back to another root.
+    $parent = 'D:\GameDev\Godot\TLWH-NativeStages'
+    Assert-ExternalStageParent $Source $parent
+    return $parent
+}
+
+function Assert-ExternalStageParent {
+    param([string]$Source, [string]$Parent)
+    if (-not [IO.Path]::IsPathFullyQualified($Source) -or
+        -not [IO.Path]::IsPathFullyQualified($Parent)) { throw 'Stage source/parent must be absolute.' }
+    Assert-PlainPath $Source
+    Assert-PlainPath $Parent
+    $sourcePath = [IO.Path]::GetFullPath($Source).TrimEnd('\', '/')
+    $parentPath = [IO.Path]::GetFullPath($Parent).TrimEnd('\', '/')
+    if ($parentPath.Equals($sourcePath, [StringComparison]::OrdinalIgnoreCase) -or
+        $parentPath.StartsWith($sourcePath + [IO.Path]::DirectorySeparatorChar, [StringComparison]::OrdinalIgnoreCase) -or
+        $sourcePath.StartsWith($parentPath + [IO.Path]::DirectorySeparatorChar, [StringComparison]::OrdinalIgnoreCase)) {
+        throw 'Stage parent must be separate from the source checkout.'
+    }
+    if (-not (Test-Path -LiteralPath $Parent -PathType Container)) { throw 'Owner stage parent unavailable; no temporary fallback.' }
+    # Reading the directory must succeed before creating a fresh unique stage.
+    $null = Get-ChildItem -Force -LiteralPath $Parent -ErrorAction Stop
+}
+
 # Review data only. This object is never consumed by the authorization gate.
 # A matching scope, even after static PASS, grants no permission to execute.
 function New-FirstRunReviewScope {
@@ -635,7 +709,7 @@ function Invoke-LocalTests {
         }
         if ($RequestedMode -eq 'NativePlan') {
             $plan = 'FAIL'
-            $stage = New-InputStage $Root ([IO.Path]::GetTempPath()) $snapshot.Identity.Tracked
+            $stage = New-InputStage $Root (Get-NativeStageParent $Root) $snapshot.Identity.Tracked
             $scope = New-FirstRunReviewScope $Engine $EngineHash $stage $snapshot
             $plan = 'PASS'
             Write-Host "Retained dry-run stage: $($stage.Directory)"
