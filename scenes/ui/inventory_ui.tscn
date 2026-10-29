@@ -1,7 +1,9 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://scenes/ui/inventory_ui.gd" id="1_inventory"]
 [ext_resource type="Theme" path="res://assets/ui/b1_theme.tres" id="2_b1"]
+[ext_resource type="Script" path="res://scenes/ui/refined_industrial_panel.gd" id="3_frame"]
+[ext_resource type="StyleBox" path="res://assets/ui/b1_refined_panel.tres" id="4_surface"]
 
 [node name="InventoryUI" type="CanvasLayer"]
 layer = 2
@@ -32,6 +34,8 @@ offset_left = 24.0
 offset_top = 100.0
 offset_right = 404.0
 mouse_filter = 0
+theme_override_styles/panel = ExtResource("4_surface")
+script = ExtResource("3_frame")
 
 [node name="Content" type="VBoxContainer" parent="HUD/Panel"]
 layout_mode = 2
