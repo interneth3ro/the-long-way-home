@@ -8,7 +8,7 @@ param(
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
-# Generic bounded subprocess helper. Public modes never dispatch Godot.
+# Generic bounded subprocess helper. Native dispatch requires separate owner approval.
 function Invoke-BoundedProcess {
     param([string]$Executable, [string[]]$Arguments, [string]$Directory,
           [int]$Seconds = 60, [int]$MaxBytes = 1048576, [int]$ExcerptBytes = 4096)
@@ -152,7 +152,7 @@ function New-NativeCommandPlan {
     }
 }
 
-# Internal Stage A implementation: deliberately has NO public entry-point caller.
+# Restricted dispatcher. Authorization is inactive and checked before each launch.
 # Tests replace named helpers in child scope; no executable/callback injection API.
 function Get-NativeSourceIdentity {
     param([string]$Source)
@@ -248,7 +248,7 @@ function Save-NativeFailureEvidence {
     # Inventory is reported to the caller; evidence retains bounded diagnostics
     # and provenance, never an unbounded copy of the complete working-status text.
     $record = [ordered]@{}
-    foreach ($key in @('Static', 'Import', 'Native', 'Reason', 'Revision', 'Executable', 'Sha256',
+    foreach ($key in @('Static', 'Import', 'Native', 'Infrastructure', 'Authorization', 'Reason', 'Revision', 'Executable', 'Sha256',
         'StageDirectory', 'Commands', 'Diagnostic')) { $record[$key] = $Summary.$key }
     $hasher = [Security.Cryptography.SHA256]::Create()
     try {
@@ -269,10 +269,11 @@ function Save-NativeFailureEvidence {
 function Invoke-RestrictedNativeDispatch {
     [CmdletBinding()]
     param([string]$Source, [string]$Engine, [string]$EngineHash,
-          [ValidateSet('PASS', 'FAIL', 'NOT RUN')][string]$StaticStatus)
+          [ValidateSet('PASS', 'FAIL', 'NOT RUN')][string]$StaticStatus, $StaticSnapshot = $null)
     $summary = [pscustomobject]@{ Static = $StaticStatus; Import = 'NOT RUN'; Native = 'NOT RUN';
         Reason = 'STATIC_NOT_PASS'; Revision = ''; Working = ''; Executable = $Engine; Sha256 = $EngineHash;
-        StageDirectory = ''; Inputs = @(); Commands = @(); Diagnostic = ''; Evidence = ''; EvidenceError = '' }
+        StageDirectory = ''; Inputs = @(); Commands = @(); Diagnostic = ''; Evidence = ''; EvidenceError = '';
+        Infrastructure = 'PASS'; Authorization = 'NOT RUN' }
     if ($StaticStatus -ne 'PASS') { return $summary }
     $phase = 'Import'
     try {
@@ -281,11 +282,33 @@ function Invoke-RestrictedNativeDispatch {
         $summary.Revision = $identity.Revision; $summary.Working = $identity.Working
         $stage = New-InputStage $Source ([IO.Path]::GetTempPath()) $identity.Tracked
         $summary.StageDirectory = $stage.Directory; $summary.Inputs = $stage.Inputs
+        if ($null -ne $StaticSnapshot) {
+            foreach ($key in @('Revision', 'Working', 'Index')) {
+                if ($identity.$key -cne $StaticSnapshot.Identity.$key) { throw 'Source changed since static-suite start.' }
+            }
+            if (($stage.Inputs | ConvertTo-Json -Compress) -cne ($StaticSnapshot.Inputs | ConvertTo-Json -Compress)) {
+                throw 'Working inputs changed since static-suite start.'
+            }
+        }
         $commands = @(New-NativeCommandPlan $Engine $EngineHash $stage)
+        Assert-PlainPath (Join-Path $Source 'artifacts/logs')
+        $git = @(Get-Command git -CommandType Application -ErrorAction Stop)[0].Source
+        $ignored = Invoke-BoundedProcess $git @('check-ignore', '--quiet', '--',
+            (Join-Path $Source 'artifacts/logs/native-failure-approval-check.json')) $Source
+        if ($ignored.Status -ne 'PASS' -or $ignored.ExitCode -ne 0 -or -not $ignored.TerminationCertain) {
+            throw 'Failure evidence destination is not confirmed ignored.'
+        }
+        $summary.Authorization = 'FAIL'
+        Assert-NativeExecutionAuthorization
+        Assert-ReviewedNativeRunner $Source $identity.Revision
+        $summary.Authorization = 'PASS'
         foreach ($command in $commands) {
             $phase = $command.Phase
             $summary.Commands += $command
             $summary.$phase = 'FAIL'
+            try { Assert-NativeExecutionAuthorization }
+            catch { $summary.Authorization = 'FAIL'; throw }
+            Assert-ReviewedNativeRunner $Source $identity.Revision
             Assert-NativeDispatchInputs $stage $identity ($phase -eq 'Native')
             # Last check before the one synchronous bounded launch. No retries.
             Assert-PinnedEngine $Engine $EngineHash
@@ -294,18 +317,48 @@ function Invoke-RestrictedNativeDispatch {
             $outcome = Get-NativeOutcome $phase $result
             $summary.$phase = $outcome.Status; $summary.Reason = $outcome.Reason
             $summary.Diagnostic = $outcome.Diagnostic
+            if ($result.Status -ne 'PASS' -or -not $result.TerminationCertain) { $summary.Infrastructure = 'FAIL' }
             if ($outcome.Status -ne 'PASS') { break }
         }
     } catch {
-        $summary.$phase = 'FAIL'; $summary.Reason = 'DISPATCH_VALIDATION_OR_PROCESS_FAILURE'
+        if ($summary.Authorization -eq 'PASS') { $summary.$phase = 'FAIL' }
+        $summary.Infrastructure = 'FAIL'; $summary.Reason = 'DISPATCH_VALIDATION_OR_PROCESS_FAILURE'
         $message = [Text.Encoding]::UTF8.GetBytes([string]$_)
         $summary.Diagnostic = [Text.Encoding]::UTF8.GetString($message, 0, [Math]::Min(4096, $message.Length))
     }
-    if ($summary.Import -eq 'FAIL' -or $summary.Native -eq 'FAIL') {
+    if ($summary.Import -eq 'FAIL' -or $summary.Native -eq 'FAIL' -or $summary.Infrastructure -eq 'FAIL') {
         try { $summary.Evidence = Save-NativeFailureEvidence $Source $summary }
         catch { $summary.EvidenceError = 'Failure evidence could not be saved; inspect returned bounded diagnostic.' }
     }
     return $summary
+}
+
+# Code-only revision: neither first-run approval nor a routine policy is active.
+# A later owner-authorized activation change must implement the exact reviewed
+# first-run scope. Successful validation alone must not enable routine execution;
+# that requires a separate, narrowly scoped repository execution policy.
+function Assert-NativeExecutionAuthorization {
+    [CmdletBinding()]
+    param()
+    throw 'Native execution inactive: separate explicit owner approval of the exact first run is required. Routine testing additionally requires successful first-run validation and a separately owner-approved repository execution policy. Use NativePlan for nonexecuting inspection.'
+}
+
+function Assert-ReviewedNativeRunner {
+    param([string]$Source, [string]$Revision)
+    # Local checks only. The future owner-authorized gate must bind the reviewed
+    # commit; an arbitrary local HEAD or a policy paragraph is not authorization.
+    $git = @(Get-Command git -CommandType Application -ErrorAction Stop)[0].Source
+    $head = Invoke-BoundedProcess $git @('rev-parse', 'HEAD') $Source
+    if ($head.Status -ne 'PASS' -or $head.ExitCode -ne 0 -or -not $head.TerminationCertain -or
+        $head.Stdout.Trim() -cne $Revision) { throw 'Reviewed runner source revision changed.' }
+    $r = Invoke-BoundedProcess $git @('diff', '--quiet', $Revision, '--', 'tools', 'AGENTS.md', 'tests/static_*test.py') $Source
+    if ($r.Status -ne 'PASS' -or $r.ExitCode -ne 0 -or -not $r.TerminationCertain) {
+        throw 'Reviewed runner, policy or static suite has working changes.'
+    }
+    if (-not ([IO.Path]::GetFullPath($PSCommandPath)).Equals(
+        (Join-Path $Source 'tools/run-local-tests.ps1'), [StringComparison]::OrdinalIgnoreCase)) {
+        throw 'Native must use the reviewed checkout runner.'
+    }
 }
 
 function Get-NativeOutcome {
@@ -438,8 +491,7 @@ function Invoke-LocalTests {
     param([string]$Root, [string]$RequestedMode, [string]$Engine, [string]$EngineHash)
     $static = 'NOT RUN'; $plan = 'NOT RUN'; $exitCode = 1
     try {
-        # Deliberately unconditional: no environment variable, token or switch unlocks execution.
-        if ($RequestedMode -eq 'Native') { throw 'Native execution prohibited by current policy; use NativePlan.' }
+        if ($RequestedMode -eq 'Native') { Assert-NativeExecutionAuthorization }
         if (-not $IsWindows) { throw 'This entry point supports Windows PowerShell 7 only.' }
         Assert-PlainPath $Root
         $git = @(Get-Command git -CommandType Application -ErrorAction Stop)[0].Source
@@ -456,19 +508,37 @@ function Invoke-LocalTests {
         Write-Host "Source revision: $($revision.Excerpt.Trim())"
         Write-Host "Working status (untracked files are excluded from staging):`n$($changes.Excerpt.Trim())"
         # Configuration is checked without invoking the pinned binary, even for --version.
-        if ($RequestedMode -eq 'NativePlan') {
+        if ($RequestedMode -in @('NativePlan', 'Native')) {
             Assert-PinnedEngine $Engine $EngineHash
             Write-Host "Pinned executable (not invoked): $Engine SHA256=$EngineHash"
-        } elseif ($Engine -or $EngineHash) { throw 'Engine configuration requires NativePlan.' }
+        } elseif ($Engine -or $EngineHash) { throw 'Engine configuration requires NativePlan or Native.' }
         $suite = @(Get-ChildItem -LiteralPath (Join-Path $Root 'tests') -Filter 'static_*test.py' -File)
         if ($suite.Count -eq 0) { throw 'Static suite is missing.' }
         foreach ($file in $suite) { Assert-PlainPath $file.FullName }
+        $snapshot = $null
+        if ($RequestedMode -eq 'Native') {
+            $identity = Get-NativeSourceIdentity $Root
+            $inputs = @(foreach ($relative in $identity.Tracked) {
+                if (Test-ApprovedInput $relative) {
+                    $inputPath = Join-Path $Root $relative
+                    Assert-PlainPath $inputPath
+                    [pscustomobject]@{ Path = $relative; Sha256 = (Get-FileHash -LiteralPath $inputPath).Hash }
+                }
+            })
+            $snapshot = [pscustomobject]@{ Identity = $identity; Inputs = $inputs }
+        }
         $static = 'FAIL'
         $result = Invoke-BoundedProcess $python @('-B', '-m', 'unittest', 'discover', '-s', 'tests', '-p', 'static_*test.py') $Root
-        $static = if ($result.Status -eq 'PASS') { 'PASS' } else { 'FAIL' }
+        $static = if ($result.Status -eq 'PASS' -and $result.ExitCode -eq 0 -and $result.TerminationCertain) { 'PASS' } else { 'FAIL' }
         Write-Host "Static: $static ($($result.Status), exit=$($result.ExitCode), bytes=$($result.Bytes))"
         Write-Host $result.Excerpt.Trim()
         if ($static -ne 'PASS') { throw 'Static suite failed; no subsequent phase permitted.' }
+        if ($RequestedMode -eq 'Native') {
+            $native = Invoke-RestrictedNativeDispatch $Root $Engine $EngineHash $static $snapshot
+            Write-Host ($native | ConvertTo-Json -Depth 10)
+            Write-Host "Summary: static=$static; native import=$($native.Import); recipe test=$($native.Native); reason=$($native.Reason); evidence=$($native.Evidence); evidence error=$($native.EvidenceError)"
+            return $(if ($native.Import -eq 'PASS' -and $native.Native -eq 'PASS') { 0 } else { 1 })
+        }
         if ($RequestedMode -eq 'NativePlan') {
             $plan = 'FAIL'
             $listing = Invoke-BoundedProcess $git @('ls-files', '--stage', '-z') $Root -ExcerptBytes 1048576

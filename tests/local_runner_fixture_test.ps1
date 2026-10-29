@@ -46,8 +46,13 @@ function NativeResult([string]$Stdout = '', [string]$Stderr = '',
 # The production API has no injection parameters. Unexpected process calls throw.
 function Invoke-DispatchFixture([object[]]$Results, [string]$Mutation = '') {
     $calls = [Collections.Generic.List[object]]::new()
-    $state = @{ IdentityReads = 0; Stage = $null }
+    $state = @{ IdentityReads = 0; Stage = $null; ApprovalChecks = 0 }
     $stageFunction = (Get-Command New-InputStage).ScriptBlock
+    function Assert-ReviewedNativeRunner { }
+    function Assert-NativeExecutionAuthorization {
+        $state.ApprovalChecks++
+        if ($Mutation -eq 'revoked' -and $state.ApprovalChecks -eq 3) { throw 'Synthetic revoked owner approval' }
+    }
     function Get-NativeSourceIdentity {
         param($Source)
         $state.IdentityReads++
@@ -79,7 +84,7 @@ function Invoke-DispatchFixture([object[]]$Results, [string]$Mutation = '') {
     }
     try {
         $r = Invoke-RestrictedNativeDispatch $source $inertEngine $inertHash PASS
-        [pscustomobject]@{ Summary = $r; Calls = $calls; Reads = $state.IdentityReads }
+        [pscustomobject]@{ Summary = $r; Calls = $calls; Reads = $state.IdentityReads; ApprovalChecks = $state.ApprovalChecks }
     } finally { [IO.File]::WriteAllText($inertEngine, 'inert identity fixture') }
 }
 try {
@@ -102,7 +107,7 @@ try {
                 default { throw 'Unexpected later phase' }
             }
             [pscustomobject]@{ Status = $(if ($Arguments[0] -eq '-B') { 'NONZERO_EXIT' } else { 'PASS' });
-                ExitCode = $(if ($Arguments[0] -eq '-B') { 1 } else { 0 }); Bytes = $value.Length; Excerpt = $value }
+                ExitCode = $(if ($Arguments[0] -eq '-B') { 1 } else { 0 }); Bytes = $value.Length; Excerpt = $value; TerminationCertain = $true }
         }
         Require ((Invoke-LocalTests $source 'Static' '' '') -eq 1) 'Static failure accepted'
     }
@@ -171,7 +176,7 @@ try {
                 'ls-files' { ($tracked | ForEach-Object { "100644 $('a' * 40) 0`t$_" }) -join [char]0 }
                 default { throw 'Unexpected subprocess' }
             }
-            [pscustomobject]@{ Status = 'PASS'; ExitCode = 0; Bytes = $value.Length; Excerpt = $value }
+            [pscustomobject]@{ Status = 'PASS'; ExitCode = 0; Bytes = $value.Length; Excerpt = $value; TerminationCertain = $true }
         }
         Require ((Invoke-LocalTests $source 'NativePlan' $hostExe (Get-FileHash $hostExe).Hash) -eq 0) 'Plan failed'
     }
@@ -269,6 +274,7 @@ try {
         $r = Invoke-DispatchFixture @((NativeResult), (NativeResult $completion)) cache
         Require ($r.Summary.Import -eq 'PASS' -and $r.Summary.Native -eq 'PASS') 'Dispatch failed'
         Require ($r.Calls.Count -eq 2 -and $r.Reads -eq 3) 'Missing per-phase validation or wrong launch count'
+        Require ($r.ApprovalChecks -eq 3) 'Missing per-launch approval validation'
         Require ($r.Calls[0].Seconds -eq 60 -and $r.Calls[1].Seconds -eq 30) 'Wrong launch deadlines'
         Require (($r.Calls[0].Arguments -join '|') -ceq "--headless|--editor|--path|$($r.Summary.StageDirectory)|--quit") 'Wrong import'
         Require (($r.Calls[1].Arguments -join '|') -ceq "--headless|--path|$($r.Summary.StageDirectory)|--script|res://tests/fabricator_recipe_switching_test.gd") 'Wrong script'
@@ -318,9 +324,10 @@ try {
         Require ($r.Summary.Import -eq 'PASS' -and $r.Summary.Native -eq 'FAIL' -and $r.Calls.Count -eq 2) 'Wrong native failure'
     }
     Check 'source stage inventory and engine changes between phases stop dispatch' {
-        foreach ($mutation in @('source', 'stage', 'extra', 'engine')) {
+        foreach ($mutation in @('source', 'stage', 'extra', 'engine', 'revoked')) {
             $r = Invoke-DispatchFixture @((NativeResult), (NativeResult $completion)) $mutation
             Require ($r.Calls.Count -eq 1 -and $r.Summary.Import -eq 'PASS' -and $r.Summary.Native -eq 'FAIL') "Mutation accepted: $mutation"
+            if ($mutation -eq 'revoked') { Require ($r.Summary.Authorization -eq 'FAIL') 'Revocation outcome missing' }
         }
     }
     Check 'real dispatch static gate has no side effects' {
@@ -344,9 +351,9 @@ try {
         function Get-NativeSourceIdentity { throw 'synthetic source failure' }
         function Save-NativeFailureEvidence { throw 'synthetic disk failure' }
         $r = Invoke-RestrictedNativeDispatch $source $inertEngine $inertHash PASS
-        Require ($r.Import -eq 'FAIL' -and $r.Native -eq 'NOT RUN' -and $r.EvidenceError -ne '') 'Infrastructure failure lost'
+        Require ($r.Import -eq 'NOT RUN' -and $r.Native -eq 'NOT RUN' -and $r.Infrastructure -eq 'FAIL' -and $r.EvidenceError -ne '') 'Infrastructure failure lost'
     }
-    Check 'production public call graph has no dormant dispatch caller' {
+    Check 'production public call graph has exactly one guarded dispatch caller' {
         $tokens = $null; $errors = $null
         $ast = [Management.Automation.Language.Parser]::ParseFile("$PSScriptRoot/../tools/run-local-tests.ps1", [ref]$tokens, [ref]$errors)
         Require ($errors.Count -eq 0) 'Runner syntax errors'
@@ -354,7 +361,8 @@ try {
             $node -is [Management.Automation.Language.CommandAst] -and
             $node.GetCommandName() -eq 'Invoke-RestrictedNativeDispatch'
         }, $true))
-        Require ($calls.Count -eq 0) 'Dormant dispatcher reachable from production commands'
+        Require ($calls.Count -eq 1) 'Unexpected dispatcher call paths'
+        Require ($calls[0].Extent.Text -match '\$static \$snapshot') 'Actual static outcome/snapshot omitted'
         Reject { Invoke-RestrictedNativeDispatch $source $inertEngine $inertHash PASS -Executor {} } 'parameter'
     }
     Check 'stage mutations and unexpected hidden directories refused' {
@@ -363,6 +371,102 @@ try {
         [IO.File]::Copy("$source/project.godot", "$($nativeStage.Directory)/project.godot", $true)
         $null = New-Item -ItemType Directory -Path "$($nativeStage.Directory)/.godot"
         Reject { New-NativeCommandPlan $inertEngine $inertHash $nativeStage } 'Unexpected staged directory'
+    }
+    Check 'inactive authorization gate rejects direct dispatch without engine execution' {
+        $stage = New-InputStage $source $fixture $tracked
+        function Get-NativeSourceIdentity {
+            [pscustomobject]@{ Revision = ('a' * 40); Working = ''; Index = 'fixture'; Tracked = $tracked }
+        }
+        function New-InputStage { return $stage }
+        function Invoke-BoundedProcess {
+            param($Executable, $Arguments)
+            Require ($Arguments[0] -eq 'check-ignore') 'Inactive gate reached engine'
+            NativeResult
+        }
+        function Save-NativeFailureEvidence { return 'synthetic evidence destination' }
+        $r = Invoke-RestrictedNativeDispatch $source $inertEngine $inertHash PASS
+        Require ($r.Commands.Count -eq 0 -and $r.Import -eq 'NOT RUN' -and $r.Native -eq 'NOT RUN' -and
+            $r.Authorization -eq 'FAIL' -and $r.Infrastructure -eq 'FAIL') 'Inactive dispatch gate failed'
+    }
+    Check 'first-run approval and routine policy remain separate inactive stages' {
+        Reject { Assert-NativeExecutionAuthorization } 'exact first run.*successful first-run validation.*separately owner-approved repository execution policy'
+        foreach ($attempt in @(
+            { Assert-NativeExecutionAuthorization -FirstRunApproved },
+            { Assert-NativeExecutionAuthorization -Routine },
+            { Assert-NativeExecutionAuthorization -ApprovalFile 'anything.json' })) {
+            Reject $attempt 'parameter'
+        }
+    }
+    Check 'runner has no online approval, expiration or approval-file input' {
+        $text = Get-Content -Raw -LiteralPath "$PSScriptRoot/../tools/run-local-tests.ps1"
+        Require ($text -notmatch 'Get-NativeApprovalApi|Get-Command gh|issuecomment|Read-Host|DateTimeOffset|approval\.json') 'Removed authorization machinery remains'
+        $tokens = $null; $errors = $null
+        $ast = [Management.Automation.Language.Parser]::ParseInput($text, [ref]$tokens, [ref]$errors)
+        Require ($errors.Count -eq 0) 'Runner parse failed'
+        Require (($ast.ParamBlock.Parameters.Name.VariablePath.UserPath -join ',') -ceq 'Mode,GodotPath,GodotSha256') 'Unexpected activation parameter'
+    }
+    Check 'offline reviewed-runner checks retain source and control-file protection' {
+        $review = @{ ChangedRevision = $false; Dirty = $false }
+        function Invoke-BoundedProcess {
+            param($Executable, $Arguments)
+            if ($Arguments[0] -ceq 'rev-parse') {
+                return NativeResult $(if ($review.ChangedRevision) { 'b' * 40 } else { 'a' * 40 })
+            }
+            Require (($Arguments -join '|') -ceq "diff|--quiet|$('a' * 40)|--|tools|AGENTS.md|tests/static_*test.py") 'Reviewed controls changed'
+            NativeResult '' '' $(if ($review.Dirty) { 'NONZERO_EXIT' } else { 'PASS' }) $(if ($review.Dirty) { 1 } else { 0 })
+        }
+        $root = Split-Path $PSScriptRoot -Parent
+        Assert-ReviewedNativeRunner $root ('a' * 40)
+        $review.ChangedRevision = $true
+        Reject { Assert-ReviewedNativeRunner $root ('a' * 40) } 'revision changed'
+        $review.ChangedRevision = $false; $review.Dirty = $true
+        Reject { Assert-ReviewedNativeRunner $root ('a' * 40) } 'working changes'
+        $review.Dirty = $false
+        Reject { Assert-ReviewedNativeRunner $source ('a' * 40) } 'reviewed checkout runner'
+    }
+    $approvalIdentity = [pscustomobject]@{ Revision = ('a' * 40); Working = ''; Index = 'fixture'; Tracked = $tracked }
+    $approvalStage = New-InputStage $source $fixture $tracked
+    Check 'source changes since static-suite start deny even before approval' {
+        function Get-NativeSourceIdentity { return $approvalIdentity }
+        function New-InputStage { return $approvalStage }
+        function Assert-NativeExecutionAuthorization { throw 'Changed source reached approval' }
+        function Save-NativeFailureEvidence { return 'synthetic evidence destination' }
+        $oldIdentity = [pscustomobject]@{ Revision = ('b' * 40); Working = ''; Index = 'old' }
+        $r = Invoke-RestrictedNativeDispatch $source $inertEngine $inertHash PASS ([pscustomobject]@{ Identity = $oldIdentity; Inputs = @() })
+        Require ($r.Commands.Count -eq 0 -and $r.Reason -eq 'DISPATCH_VALIDATION_OR_PROCESS_FAILURE' -and $r.Diagnostic -match 'since static-suite') 'Static source mutation accepted'
+        $r = Invoke-RestrictedNativeDispatch $source $inertEngine $inertHash PASS ([pscustomobject]@{ Identity = $approvalIdentity; Inputs = @() })
+        Require ($r.Commands.Count -eq 0 -and $r.Diagnostic -match 'Working inputs changed since static-suite') 'Static working-byte mutation accepted'
+    }
+    Check 'public Native static failure prevents dispatch and approval' {
+        function Assert-NativeExecutionAuthorization { }
+        function Assert-PinnedEngine { }
+        function Get-NativeSourceIdentity { return $approvalIdentity }
+        function Invoke-RestrictedNativeDispatch { throw 'Failed static suite reached dispatch' }
+        function Invoke-BoundedProcess {
+            param($Executable, $Arguments, $Directory)
+            $value = if ($Arguments[0] -eq 'rev-parse' -and $Arguments[1] -eq '--show-toplevel') { $Directory } else { '' }
+            [pscustomobject]@{ Status = $(if ($Arguments[0] -eq '-B') { 'NONZERO_EXIT' } else { 'PASS' });
+                ExitCode = $(if ($Arguments[0] -eq '-B') { 1 } else { 0 }); Bytes = 0; Excerpt = $value; TerminationCertain = $true }
+        }
+        Require ((Invoke-LocalTests $source Native $inertEngine $inertHash) -eq 1) 'Static failure accepted'
+    }
+    Check 'public Native passes actual static PASS and captured source snapshot to dispatch' {
+        $state = @{ Dispatched = $false }
+        function Assert-NativeExecutionAuthorization { }
+        function Assert-PinnedEngine { }
+        function Get-NativeSourceIdentity { return $approvalIdentity }
+        function Invoke-BoundedProcess {
+            param($Executable, $Arguments, $Directory)
+            $value = if ($Arguments[0] -eq 'rev-parse' -and $Arguments[1] -eq '--show-toplevel') { $Directory } else { '' }
+            [pscustomobject]@{ Status = 'PASS'; ExitCode = 0; Bytes = 0; Excerpt = $value; TerminationCertain = $true }
+        }
+        function Invoke-RestrictedNativeDispatch {
+            param($Source, $Engine, $EngineHash, $StaticStatus, $StaticSnapshot)
+            Require ($StaticStatus -ceq 'PASS' -and $StaticSnapshot.Identity.Revision -ceq $approvalIdentity.Revision -and $StaticSnapshot.Inputs.Count -eq 5) 'Static proof omitted'
+            $state.Dispatched = $true
+            [pscustomobject]@{ Import = 'PASS'; Native = 'PASS'; Reason = 'OK'; Evidence = ''; EvidenceError = '' }
+        }
+        Require ((Invoke-LocalTests $source Native $inertEngine $inertHash) -eq 0 -and $state.Dispatched) 'Static PASS not connected'
     }
     Check 'public Native mode cannot reach prerequisites, staging or execution' {
         $gateCalls = [Collections.Generic.List[string]]::new()

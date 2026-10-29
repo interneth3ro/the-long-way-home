@@ -31,6 +31,31 @@
   headless execution is suspended, including editor imports, headless scene
   launches, and GDScript tests executed through Godot. This restriction remains
   active until the owner explicitly lifts it.
+- Local-runner authorization has two separate stages; neither is active in this
+  code-only PR. First-run execution requires separate explicit owner approval of
+  the exact reviewed runner commit, absolute executable path/SHA-256, source and
+  working-input identity, external stage, fixed commands, limits, evidence
+  destination and stop conditions. Merge or this policy text is not that approval.
+- After successful first-run validation, routine local native testing additionally
+  requires a separately owner-approved, narrowly scoped repository execution
+  policy. First-run approval and a successful test do not grant routine permission.
+  That later policy must define the approved runner/executable identities, allowed
+  source/working-input variation, invocation scope, revocation and reapproval when
+  scope or identities change. It may allow repeated local runs within that scope
+  without a new GitHub comment for each run. This PR enables neither routine nor
+  unattended execution; its public Native gate remains unconditionally inactive.
+  Activation requires a separate reviewed owner-authorized change, not a switch,
+  environment variable, local approval file or automatic reaction to test PASS.
+- Any later authorized runner execution retains actual static-suite PASS, a fresh
+  external project copy, source/executable hash verification, and precisely one
+  cold headless import (60 seconds) followed only on PASS by the recipe-switching
+  test (30 seconds). Each process has a 1,048,576-byte combined output limit;
+  commands run sequentially without retries. Stop on engine/script errors,
+  assertion failure, missing/malformed completion, abnormal exit/crash, timeout,
+  overflow, uncertain termination, or changed source/executable identity.
+  Preserve bounded failure evidence and all owner files. See the two-stage
+  [authorization process](docs/LOCAL_TESTING.md#controlled-native-activation-stage-b-pending-merge).
+  All other headless, graphical, performance and preservation restrictions remain.
 - While execution is restricted, use static code inspection, scene and resource
   text inspection, Git diff validation, Markdown and documentation checks, and
   other nonexecuting checks that invoke neither Godot nor project code.
