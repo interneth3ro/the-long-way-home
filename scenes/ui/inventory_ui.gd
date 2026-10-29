@@ -35,6 +35,7 @@ func _ready() -> void:
 	_assignment_menu.name = "AssignToHotbar"
 	_assignment_menu.force_native = false
 	$HUD.add_child(_assignment_menu)
+	$HUD.scale_changed.connect(_assignment_menu.hide)
 	_assignment_menu.id_pressed.connect(_assign_to_hotbar)
 	_assignment_menu.window_input.connect(_assignment_menu_input)
 	transitions.transition_started.connect(_assignment_menu.hide)
@@ -224,9 +225,7 @@ func _machine_context_input(event: InputEvent, definition: MachineDefinition, sl
 		if assigned != null and assigned.item_id == definition.item_id:
 			label += " (Current)"
 		_assignment_menu.add_item(label, index)
-	_assignment_menu.position = Vector2i(slot.get_screen_position() + Vector2(0, slot.size.y))
-	_assignment_menu.reset_size()
-	_assignment_menu.popup()
+	UIScaleRoot.popup_at_slot(_assignment_menu, slot)
 
 
 func _assign_to_hotbar(slot: int) -> void:

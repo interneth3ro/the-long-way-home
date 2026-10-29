@@ -266,6 +266,18 @@ durable save/load. See the [implementation notes](../README.md#first-ferrite---d
   supports quantities greater than one. There is no capacity or weight system
   in this milestone.
 
+The owner-approved UI scaling foundation on `codex/hybrid-ui-scaling` (pending
+merge) uses a shared HUD-root behavior with the provisional balanced hybrid
+formula `U = P / sqrt(S)`, where `S = min(client_width / 1280, client_height / 720)`.
+It preserves B1/B2 artwork, existing presenter ownership, world scale and camera
+zoom. An editor-only temporary selector compares 75%, 85% and 100%, starting at
+100% with no persistence. A final default is unresolved until owner graphical
+acceptance. Tooltip sizing, small-window readability and existing panel-overlap
+limits remain explicit in the
+[implementation and owner checklist](../README.md#hybrid-ui-scaling-foundation-feature-branch-pending-merge).
+This is a scaling foundation, not the Machine Interface Redesign or new narrative
+behavior.
+
 The approved B1 inventory follow-up keeps this shared aggregate storage and
 uses 24 material positions (three rows of eight) plus eight machine/equipment
 positions, with all empty positions visible. This compact follow-up is implemented

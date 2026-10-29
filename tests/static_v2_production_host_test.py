@@ -15,6 +15,24 @@ from static_automatic_transitions_test import ROOT, PRIMARY, MAINTENANCE, EXTERI
 # Live post-P6 / pre-P8 main verified for cutover; never follow a moving ref.
 P8_BASE = "e14703e64aef961f18feba8a616acec00c4f069e"
 
+# Proposed UI scaling presentation bytes, pending owner review before Native.
+# Normalize these exact files to the immutable pre-scaling main, then run all
+# existing B1/hotbar/P8 preservation comparisons unchanged. No path exemption.
+UI_SCALING_BASE = "2906ba9b0409658ba4b28b397a3190cd2c69c524"
+UI_SCALING_SHA256 = {
+    "construction/construction_controller.tscn": "4b731249cded15efada5dd5795d6c35812f106f0bac57b2cecc492edce151e5d",
+    "scenes/main/main.tscn": "4133bbc7342d8c34b476cf2b17e4a742883f0b0af6a052d11a3c35b1363f89cd",
+    "scenes/ui/dialogue_ui.tscn": "d9fd226b7069a507a2f132141acaff427329dc21a3022d523ae60e16f90f285e",
+    "scenes/ui/hotbar_ui.gd": "645f79c12953582bdcc38ca3ea1603304e6454286be62362a7ea4f17970a32e4",
+    "scenes/ui/hotbar_ui.tscn": "058642f05f0193145c09b23d84e59c5f42a251dbf3a136e63dfc29ac61f0910a",
+    "scenes/ui/interaction_ui.tscn": "ed23b1986121186658cc31819616c6fb4cf9d9a4b30c12a65caa836707cb6550",
+    "scenes/ui/inventory_ui.gd": "90f7a122a28d14668eaea6e5243566e6b609ddffea5b9ad8a958509777fd76cf",
+    "scenes/ui/inventory_ui.tscn": "2160388cf6c87ed2ce6226ae5d10a66c87face09ab851b855e9951b176adfad4",
+    "scenes/ui/machine_ui.tscn": "348f46ce3a42076bfc676b55605c728e3f66cd6782241cfdd819be9bffaae630",
+    "scenes/ui/musing_ui.tscn": "655671aa5e032ba9472cda1e41b7b477fc56a71c42095643f98b9e1c598d31ec",
+    "scenes/ui/objective_tracker.tscn": "17c648701073002421aeaaf0c67c72fa0cd59ab55231f99dd1c186e88b567123",
+}
+
 # B1 inventory and hotbar context-menu integration replace exactly these UI files.
 # Freeze normalized candidate bytes rather than exempting them from preservation.
 # B2 nine-patch inventory scene candidate requires owner review before Native execution.
@@ -423,6 +441,15 @@ B1_REPLACEMENTS = {'project.godot': [('window/size/viewport_width=1280\n'
                                 '\n')]}
 
 
+def without_approved_ui_scaling_changes(path, text):
+    if path not in UI_SCALING_SHA256:
+        return text
+    if hashlib.sha256(text.encode("utf-8")).hexdigest() != UI_SCALING_SHA256[path]:
+        raise AssertionError(f"Missing or modified UI scaling bytes pending review: {path}")
+    return subprocess.check_output(["git", "show", f"{UI_SCALING_BASE}:{path}"],
+                                   cwd=ROOT).decode("utf-8").replace("\r\n", "\n")
+
+
 def without_approved_hotbar_changes(path, text):
     for approved, historical in HOTBAR_REPLACEMENTS.get(path, []):
         if text.count(approved) != 1:
@@ -432,6 +459,7 @@ def without_approved_hotbar_changes(path, text):
 
 
 def without_approved_b1_changes(path, text):
+    text = without_approved_ui_scaling_changes(path, text)
     text = without_approved_hotbar_changes(path, text)
     if path == "project.godot":
         # Normalize only the inventory action's owner-approved I -> Tab binding.
@@ -790,11 +818,12 @@ class V2ProductionHostStaticTest(unittest.TestCase):
             with self.subTest(path=path):
                 before = subprocess.check_output(["git", "show", f"{HOTBAR_BASE}:{path}"],
                                                  cwd=ROOT).decode("utf-8").replace("\r\n", "\n")
-                self.assertEqual(without_approved_hotbar_changes(path, read(path)), before)
+                original = without_approved_ui_scaling_changes(path, read(path))
+                self.assertEqual(without_approved_hotbar_changes(path, original), before)
 
     def test_hotbar_allowance_rejects_changed_duplicate_and_unrelated_edits(self):
         for path, changes in HOTBAR_REPLACEMENTS.items():
-            original = read(path)
+            original = without_approved_ui_scaling_changes(path, read(path))
             for approved, _historical in changes:
                 with self.subTest(path=path, edit=approved[:60]):
                     with self.assertRaises(AssertionError):
@@ -805,6 +834,18 @@ class V2ProductionHostStaticTest(unittest.TestCase):
             # full-file comparison; they cannot be hidden by the allowance.
             self.assertNotEqual(without_approved_hotbar_changes(path, original + "UNRELATED\n"),
                                 without_approved_hotbar_changes(path, original))
+
+    def test_ui_scaling_allowance_rejects_changed_duplicate_and_unrelated_bytes(self):
+        for path in UI_SCALING_SHA256:
+            original = read(path)
+            with self.subTest(path=path):
+                before = subprocess.check_output(["git", "show", f"{UI_SCALING_BASE}:{path}"],
+                                                 cwd=ROOT).decode("utf-8").replace("\r\n", "\n")
+                self.assertEqual(without_approved_ui_scaling_changes(path, original), before)
+                for changed in (original.replace("\n", "\nCHANGED\n", 1),
+                                original + original, original + "UNRELATED\n"):
+                    with self.assertRaises(AssertionError):
+                        without_approved_ui_scaling_changes(path, changed)
 
     def test_protected_existing_code_art_and_sidecars_unchanged(self):
         # Existing code, project settings, assets and sidecars are protected
@@ -831,10 +872,13 @@ class V2ProductionHostStaticTest(unittest.TestCase):
                 actual = (ROOT / path).read_bytes()
                 if path in B1_INVENTORY_SHA256:
                     actual = actual.replace(b"\r\n", b"\n")
+                    actual = without_approved_ui_scaling_changes(path, actual.decode("utf-8")).encode("utf-8")
                     self.assertEqual(hashlib.sha256(actual).hexdigest(), B1_INVENTORY_SHA256[path], path)
                     continue
                 if path in B1_REPLACEMENTS or path in HOTBAR_REPLACEMENTS:
                     actual = without_approved_b1_changes(path, actual.decode("utf-8").replace("\r\n", "\n")).encode("utf-8")
+                elif path in UI_SCALING_SHA256:
+                    actual = without_approved_ui_scaling_changes(path, actual.decode("utf-8").replace("\r\n", "\n")).encode("utf-8")
                 if path == "project.godot":
                     actual = actual.replace(b"\r\n", b"\n")
                     expected = expected.replace(b"\r\n", b"\n")

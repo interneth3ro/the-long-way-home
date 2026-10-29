@@ -38,6 +38,7 @@ func _ready() -> void:
 	_clear_menu = PopupMenu.new()
 	_clear_menu.force_native = false
 	_root.add_child(_clear_menu)
+	$HUD.scale_changed.connect(_clear_menu.hide)
 	_clear_menu.add_item("Clear Assignment", 0)
 	_clear_menu.id_pressed.connect(_clear_assignment)
 	transitions.transition_started.connect(_clear_menu.hide)
@@ -126,9 +127,7 @@ func _slot_input(event: InputEvent, index: int, slot: Control) -> void:
 	if progression.get_hotbar_assignment(index) == null:
 		return
 	_clear_slot = index
-	_clear_menu.position = Vector2i(slot.get_screen_position() - Vector2(0, 44))
-	_clear_menu.reset_size()
-	_clear_menu.popup()
+	UIScaleRoot.popup_at_slot(_clear_menu, slot, true)
 
 
 func _clear_assignment(_id: int) -> void:

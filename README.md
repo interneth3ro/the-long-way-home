@@ -67,6 +67,97 @@ Headless checks do not verify graphical appearance. While execution is restricte
 use only nonexecuting checks under the policy above and report them as static
 validation; runtime and engine verification remain unperformed.
 
+## Hybrid UI scaling foundation (feature branch, pending merge)
+
+`codex/hybrid-ui-scaling` adds a shared
+[HUD-root behavior](scenes/ui/ui_scale_root.gd) to inventory, hotbar, machine
+inspection (including its recipe chooser), objective tracker, dialogue,
+interaction prompts/responses, musings and construction hints. Existing presenters,
+CanvasLayers, node paths, child anchors, content sizes and visibility rules stay
+in place. The transition curtain, world-space construction preview, world scale
+and camera zoom are excluded. B1/B2 resources, fonts and artwork are unchanged.
+
+For client size `W x H`, the existing 1280 x 720 reference and
+`canvas_items` / `expand` stretch supply `S = min(W / 1280, H / 720)`.
+The provisional balanced hybrid formula applies root multiplier
+`U = P / sqrt(S)`, giving nominal physical UI multiplier `S * U = P * sqrt(S)`.
+Each root uses the current logical viewport extent divided by `U`, with top-left
+anchors/pivot, so bottom/right child anchors still reach the screen edges.
+Viewport resizing recalculates the roots; a shared session preference updates
+them immediately. No root Window content scale or camera compensation is added.
+Godot rounds expanded logical viewport dimensions, so non-reference aspect ratios
+can have subpixel differences from the nominal arithmetic.
+
+The isolated [temporary selector](scenes/ui/ui_scale_preview.gd) offers
+**75%, 85% and 100%**, with **100% as the neutral startup preference**. It appears
+only when running the editor executable (`OS.has_feature("editor")`), including
+the normal editor-launched game; exported games create no selector controls.
+It stays outside the scaled roots at top center, uses default styling rather
+than B1/B2 resources, consumes pointer/scroll input and adds no keybinding or disk
+persistence. Restarting the game resets the preference. This is a comparison
+foundation, not approval of a final default. At `S != 1`, even 100% uses the hybrid
+formula and therefore differs from the old globally stretched presentation.
+
+Inventory assignment and hotbar clearing menus remain children of their scaled
+HUDs. Godot 4.7.2's
+[PopupMenu setup](https://github.com/godotengine/godot/blob/4.7.2-stable/scene/gui/popup_menu.cpp)
+explicitly derives Window content scale from the parent CanvasItem transform;
+the helper does not apply a second multiplier. Attachment points use viewport
+coordinates for embedded menus and screen coordinates for native windows.
+Menus are bounded to their usable parent area; hotbar menus use the measured
+popup height rather than a fixed offset. Resize/preference changes dismiss open
+menus so they can reopen with fresh scale, bounds and attachment positions.
+
+Built-in tooltips retain Godot's viewport-based text sizing and screen-edge
+placement rather than being reduced with the HUD. This preserves the existing
+tooltip presentation for comparison; tooltip/HUD size differences are a known
+limitation of this foundation. Hover is re-evaluated after layout changes.
+The [4.7.2 tooltip implementation](https://github.com/godotengine/godot/blob/4.7.2-stable/scene/main/viewport.cpp)
+uses the tooltip Window's viewport scale, not the HUD Control transform.
+Actual readability, pointer attachment and edge behavior require owner checks.
+
+Known limits: rasterized IBM Plex fonts may soften under fractional Control
+scaling; no MSDF/import changes are included. The provisional 1024 x 576 minimum
+and the smallest preference can produce very small quantities/key labels.
+Machine panels remain content-driven with no new whole-panel scroll region;
+the expanded objective tracker and machine inspection retain their existing
+potential overlap at upper right. Percentage-width musings retain their
+screen-relative width while text/padding scale. These are graphical acceptance
+items, not evidence that a compact default is ready to ship.
+
+Validation: the original 46-test static suite initially rejected the intended
+presentation edits through its preservation checks. The owner approved the exact
+eleven-file normalized-byte allowance and rejection assertions in
+`tests/static_v2_production_host_test.py` (file SHA-256
+`115D9B737322606C1C5B232BDCDE5199130A68794DF027862AD3DB1079D74B33`).
+The proposed suite passes **47 Python static tests**. Existing B1/hotbar/P8
+historical comparisons remain behind those exact byte checks. Restricted Native
+verification is pending one authorized attempt; no graphical execution or
+graphical acceptance is claimed. Runner, allowlists, execution policy and native
+test assertions are unchanged.
+
+Owner graphical acceptance (separate authorization required):
+
+1. In a separate game window at the normal maximized resolution, compare 75%,
+   85% and 100% immediately; record the preferred candidate without treating it
+   as the production default. Repeat in fullscreen if authorized.
+2. Check inventory, ten hotbar slots and each machine/recipe state for alignment,
+   click targets, clipping, font sharpness, icon clarity and B2 corners/edges.
+3. Assign each hotbar destination, clear assignments and inspect tooltips near
+   screen edges. Resize with a menu/tooltip open, then reopen it; verify scale,
+   position, dismissal and complete access to all ten destinations.
+4. Check expanded/restored objectives alongside machine inspection, dialogue,
+   responses, prompts, musings and construction hints. Confirm existing hotbar
+   visibility rules and identify any overlap that needs a separate layout change.
+5. Resize through 1280 x 720 and 1024 x 576 and a wider/taller aspect ratio.
+   Confirm the selector remains reachable and anchored panels stay on screen.
+6. While placing/recovering, click selector buttons, inventory/hotbar controls and
+   menus; none may place, recover or cancel a machine through UI input. Check
+   hover regions after scale changes, including before moving the mouse.
+7. Change UI preference at fixed camera zoom and verify unchanged world framing
+   and mouse targeting. Check travel/fade coverage and retained UI preference.
+   Select the final default only after readability and interaction acceptance.
+
 ## B1 UI foundation and desktop display (PR #77 merged)
 
 The shared [B1 theme](assets/ui/b1_theme.tres) and
