@@ -1,6 +1,8 @@
 class_name MachineUI
 extends CanvasLayer
 
+signal inspection_visibility_changed(open: bool)
+
 @export var player: CharacterBody2D
 @export var progression: PlaythroughState
 @export var transitions: SceneTransitionController
@@ -11,6 +13,8 @@ extends CanvasLayer
 @onready var _dialogue: DialogueUI = player.get_node("DialogueUI")
 @onready var _interaction: InteractionUI = player.get_node("InteractionUI")
 @onready var _panel: PanelContainer = $HUD/Panel
+@onready var _legacy_content: VBoxContainer = $HUD/Panel/Content
+@onready var _extractor_view = $HUD/Panel/ExtractorInspection
 @onready var _title: Label = $HUD/Panel/Content/Title
 @onready var _status: Label = $HUD/Panel/Content/Status
 @onready var _explanation: Label = $HUD/Panel/Content/Explanation
@@ -36,6 +40,7 @@ var _placement_session: bool = false
 var _changing_recipe: bool = false
 var _pause_world: PlanetWorldState
 var _pause_lease: RefCounted
+var _extractor_layout_extent := Vector2.ZERO
 
 
 func _ready() -> void:
@@ -52,6 +57,9 @@ func _ready() -> void:
 	construction.mode_started.connect(close)
 	construction.deployment_completed.connect(_open_placed_machine)
 	transitions.transition_started.connect(close)
+	_extractor_view.collect_requested.connect(_collect)
+	_extractor_view.close_requested.connect(close)
+	$HUD.scale_changed.connect(_layout_extractor)
 
 
 func is_open() -> bool:
@@ -98,6 +106,7 @@ func _show_machine(machine_id: int, machine: Dictionary, placement_session: bool
 	_placement_session = placement_session
 	_build_recipe_cards(machine)
 	_panel.show()
+	inspection_visibility_changed.emit(true)
 	_interaction.set_prompt("")
 	_refresh(machine)
 
@@ -107,10 +116,12 @@ func close() -> void:
 	_machine_id = 0
 	_placement_session = false
 	_panel.hide()
+	inspection_visibility_changed.emit(false)
 
 
 func _exit_tree() -> void:
 	_release_recipe_pause()
+	inspection_visibility_changed.emit(false)
 
 
 func _release_recipe_pause() -> void:
@@ -174,6 +185,16 @@ func _process(_delta: float) -> void:
 
 func _refresh(machine: Dictionary) -> void:
 	var definition: MachineDefinition = machine.definition
+	var extractor := definition.item_id == &"extractor" and not definition.has_recipes()
+	if _extractor_view.visible != extractor:
+		_extractor_layout_extent = Vector2.ZERO
+		_legacy_content.visible = not extractor
+		_extractor_view.visible = extractor
+		_set_panel_padding(extractor)
+		if not extractor:
+			_panel.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
+			_panel.position = Vector2($HUD.size.x - 440.0, 100.0)
+			_panel.size = Vector2(416.0, 0.0)
 	_title.text = definition.display_name
 	_recipe_cards.visible = definition.has_recipes() \
 		and (_changing_recipe or machine.get("recipe_id", &"") == &"")
@@ -221,6 +242,44 @@ func _refresh(machine: Dictionary) -> void:
 		output_heading += " — %s" % definition.output_item.display_name
 	_output.text = "%s\n%d / %d" % [output_heading, machine.output, definition.output_capacity]
 	_collect_button.disabled = machine.output == 0
+	if extractor:
+		_extractor_view.refresh(machine, progression.planet.machine_status(machine), _in_range(machine))
+		_layout_extractor()
+
+
+func _set_panel_padding(extractor: bool) -> void:
+	# _ready() gives this panel a private StyleBox. Compensate FrameBounds'
+	# content inset so B2 still follows the same outer rectangle in both modes.
+	var padding := Vector4(24, 12, 24, 24) if extractor else Vector4(16, 14, 16, 14)
+	var style := _panel.get_theme_stylebox("panel") as StyleBoxFlat
+	style.content_margin_left = padding.x
+	style.content_margin_top = padding.y
+	style.content_margin_right = padding.z
+	style.content_margin_bottom = padding.w
+	var frame: NinePatchRect = $HUD/Panel/FrameBounds/B2PanelFrame
+	frame.offset_left = -padding.x
+	frame.offset_top = -padding.y
+	frame.offset_right = padding.z
+	frame.offset_bottom = padding.w
+
+
+func _layout_extractor() -> void:
+	if not _panel.visible or not _extractor_view.visible:
+		return
+	# Reserve the top clearance and bottom hotbar/hint region in logical HUD units.
+	# The existing UIScaleRoot remains the sole owner of the screen transform.
+	var extent: Vector2 = $HUD.size
+	if extent == _extractor_layout_extent:
+		return
+	_extractor_layout_extent = extent
+	var compact := extent.y < 740.0
+	_extractor_view.set_compact(compact)
+	var panel_size := Vector2(minf(640.0, extent.x * 0.48),
+		minf(480.0 if compact else 510.0, extent.y - 128.0))
+	_panel.set_anchors_and_offsets_preset(Control.PRESET_TOP_LEFT)
+	_panel.size = panel_size
+	_panel.position = Vector2(extent.x - _panel.size.x - 24.0,
+		24.0 + (extent.y - 128.0 - _panel.size.y) * 0.5)
 
 
 func _build_recipe_cards(machine: Dictionary) -> void:

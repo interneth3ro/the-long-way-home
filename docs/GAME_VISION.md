@@ -280,6 +280,25 @@ limits remain explicit in the
 This is a scaling foundation, not the Machine Interface Redesign or new narrative
 behavior.
 
+The separately approved Extractor visual pilot is implemented on
+`codex/extractor-inspection-pilot`, pending merge. The owner accepted its overall
+layout, artwork, gauge, styling and proportions, including the header/column
+dividers and aligned production-detail rows. Option A portrait minification uses
+built-in mipmap import and UI-only Linear with Mipmaps filtering, accepted by the
+owner. The source PNG and stationary machine's Linear sampler are unchanged.
+The compact header removes forced height/row expansion and uses 12-unit top
+clearance with a 10-unit gap before the divider; sides/bottom remain 24 units.
+The 26-unit uppercase SemiBold title, Close node/styles and bottom-aligned
+statistics remain unchanged. Only Collect All's opt-in primary style gains richer
+teal states, a defined edge and subtle depth, pending owner screenshot review.
+The outer panel size and B2 nine-patch margins remain unchanged.
+It uses existing artwork, B1/B2 styling, two columns, actual cycle progress and
+definition-derived nominal production details. Smelter/Fabricator layouts and
+production semantics remain unchanged. Machine inspection temporarily suppresses
+the objective tracker without changing the player's presentation preference.
+The 85% default and hybrid scaling remain intact. See the
+[pilot implementation and acceptance steps](../README.md#extractor-inspection-visual-pilot-feature-branch-pending-merge).
+
 The approved B1 inventory follow-up keeps this shared aggregate storage and
 uses 24 material positions (three rows of eight) plus eight machine/equipment
 positions, with all empty positions visible. This compact follow-up is implemented
