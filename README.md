@@ -206,6 +206,17 @@ The static preservation update was separately owner-approved: it pins the exact
 replacement inventory scene/script hashes and normalizes only inventory I to Tab.
 Runner commands, tests, boundaries and executable identity remain unchanged.
 
+PR #78 font metadata follow-up: all three tracked IBM Plex Sans sidecars
+(Regular, Medium, SemiBold) had 36 CRLF endings in the checkout because Git's
+`core.autocrlf=true` expanded their already-LF repository blobs. In the preserved
+failed stage Godot changed only these line endings; every resulting byte matched
+its committed blob. The checkout is now normalized to LF, with exact-path
+`text eol=lf` attributes to prevent recurrence. No metadata fields, font binaries,
+runner controls or inventory implementation changed. This resolves the observed
+source/stage byte discrepancy by comparison, but no fresh Native attempt has run.
+The previous failure evidence/stage remain intact; explicit owner authorization
+for a fresh attempt is required under the no-retry policy.
+
 Owner acceptance, when the owner chooses to launch graphically:
 
 1. Open/close using Tab and the button in all three environments; verify I has
