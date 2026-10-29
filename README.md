@@ -190,8 +190,10 @@ Both grids use eight-column GridContainers, 42-unit slots and four-unit gaps.
 The panel keeps its left/top placement (24, 100); its width is 380 units
 (364-unit grid plus eight-unit padding on each side), increased from the
 five-column candidate's 242 to fit the owner-approved eight-column layout.
-A private copy of the panel style preserves padding: eight horizontally,
-six vertically. The Treatment B framing below changes only its surface and edges. Section spacing is four units; the title is 18-point, section
+A private copy of the shared panel style changes only padding: eight horizontally,
+six vertically. B1 colors,
+transparency, borders and corners remain unchanged; the hotbar and shared theme
+are untouched. Section spacing is four units; the title is 18-point, section
 headings/hint are 14-point, and the hint reads `Tab / Esc to close`. Deployment
 and hotbar-assignment guidance remains in machine and overflow tooltips.
 
@@ -207,31 +209,6 @@ inspected the eight-column layout in Godot and approved it. Specific resolution
 coverage and long-quantity readability were not separately recorded; these remain
 useful acceptance checks rather than claims established by the static metrics.
 No display settings or player UI-scale control changes are included.
-
-Treatment B fidelity on `codex/b1-refined-industrial-inventory` (pending merge):
-the inventory alone pairs [a chamfered B1 surface](assets/ui/b1_refined_panel.tres)
-with [a reusable PanelContainer drawing script](scenes/ui/refined_industrial_panel.gd).
-Three thin inset outlines, a delicate top highlight and short muted copper corner
-inlays suggest metallic depth. The blue-black fill retains B1's 0.96 alpha;
-there are no textures, shaders, animation or added controls. To reuse after owner
-acceptance, pair the script and surface on another PanelContainer, preserving that
-panel's own content margins. The frame draws from actual local size and redraws on
-resize, within the existing padding. It adds no minimum size or mouse event target;
-the inventory panel retains its existing input filter and every content node.
-The shared theme, machine panels, hotbar and inventory logic remain unchanged.
-
-Validation for this framing change: 46 Python static tests PASS; exact scene
-delta, resource links, unchanged logic/theme/configuration, padding/bounds and
-changed Markdown links checked; `git diff --check` PASS. No graphical appearance
-or engine parsing is established. The preservation suite changes only the exact
-inventory scene hash and its review comment; the inventory script hash and all
-historical comparisons remain intact. Owner review of that assertion change is
-required before Native execution. For visual acceptance, open inventory over
-bright and dark environments, inspect the restrained corners and readable content,
-then resize through 1280 x 720, 1024 x 576 and expanded aspect ratios. Confirm
-frame alignment and no clipping, 24 material/eight equipment slots, tooltips,
-Tab/Esc close, right-click assignment and single-click deployment; compare a
-machine inspection panel to confirm its shared B1 framing is unchanged.
 
 Tab replaces I in the inventory InputMap action. Inventory consumes Tab presses
 and repeats in `_input`, before GUI focus navigation; only the initial press
