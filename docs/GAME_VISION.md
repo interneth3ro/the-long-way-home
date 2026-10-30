@@ -365,11 +365,17 @@ The focused `codex/machine-icons-equipment-sizing` feature (pending merge) adds
 owner-supplied Extractor, Smelter and Fabricator icons to the canonical mapping,
 replacing EX/SM/FB. Equipment retains eight positions and ID ordering in six
 columns, with 70-unit slots/56-unit icons; materials stay at eight columns and
-50/34 units. The panel widens from 460 to 472 units and moves upward only as needed
-to leave 16 units above the hotbar, including its bounded overflow list. Ten
-hotbar positions use 60-unit slots/46-unit icons, a separate key header and
-bottom-right quantities. The centered 662 x 86 backing reserves 102 units above
-the bottom; conversation/musing clearances remain 104/112. Artwork bytes,
+50/34 units. The panel widens from 460 to 472 units. Owner Decision 19 makes
+its height follow the current content minimum explicitly, with deferred refits
+when that minimum changes; it moves upward only as needed to leave 16 units above
+the hotbar. Hidden overflow reserves no space, while visible overflow retains its
+bounded list. Decision 20 implements Option C: ten 60-unit slots/46-unit icons,
+centered subtle key hints immediately below each button, outside the backing,
+and unchanged lower-right quantities. There is no header, footer, toggle or
+Option B implementation. The centered 662 x 68 backing and external hints reserve
+101 units above the bottom; conversation/musing clearances remain 104/112.
+The owner approved the machine icons and rendering quality; refined layout
+acceptance remains pending. Artwork bytes,
 Ferrite icons, capacity, ownership, deployment/recovery, assignment mechanics,
 active/hover/unavailable states and the 85% default remain intact. Validation is
 static only; visuals and interactions await owner acceptance. No Godot or Native

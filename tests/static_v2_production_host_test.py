@@ -576,7 +576,28 @@ MACHINE_ICONS_SHA256 = {
 }
 
 
+# Owner Decisions 19/20: review these three exact layout candidates before Native.
+# Restore the initial PR #92 files before its existing five pins and every older
+# comparison. No earlier digest/assertion or unrelated path allowance changes.
+MACHINE_LAYOUT_BASE = "6eb83eaae51850b1954ba20eef21a02ab695f6f0"
+MACHINE_LAYOUT_SHA256 = {
+    "scenes/ui/inventory_ui.gd": "24fa2621893126623693185d79fb96c364b3a139ca0ab599dbdff51d55433480",
+    "scenes/ui/hotbar_ui.gd": "b0515998b57f11a89e6feed4771883943d83c64083a3d4f5eac52e94b982a0b3",
+    "scenes/ui/hotbar_ui.tscn": "6848bb90a248b7b748e4c527b0d1255269de369ea7685790428eb8c18c882331",
+}
+
+
+def without_machine_layout_changes(path, text):
+    if path not in MACHINE_LAYOUT_SHA256:
+        return text
+    if hashlib.sha256(text.encode("utf-8")).hexdigest() != MACHINE_LAYOUT_SHA256[path]:
+        raise AssertionError(f"Missing or modified machine layout candidate bytes: {path}")
+    return subprocess.check_output(["git", "show", f"{MACHINE_LAYOUT_BASE}:{path}"],
+                                   cwd=ROOT).decode("utf-8").replace("\r\n", "\n")
+
+
 def without_machine_icon_changes(path, text):
+    text = without_machine_layout_changes(path, text)
     if path not in MACHINE_ICONS_SHA256:
         return text
     if hashlib.sha256(text.encode("utf-8")).hexdigest() != MACHINE_ICONS_SHA256[path]:

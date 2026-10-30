@@ -83,7 +83,7 @@ Width follows the longest authored line up to 540 logical units, bounded by
 24-unit viewport edge clearances. Wrapped content determines height up to 300
 units or available viewport height. The panel sits at the lower left, 24 units
 from the left and 112 units above the bottom, independently of hotbar position
-or visibility. The machine-icon feature reserves the bottom 102 logical units for the hotbar,
+or visibility. The machine-icon feature reserves the bottom 101 logical units for the hotbar,
 below this unchanged 112-unit musing clearance. UIScaleRoot and
 the 85% default remain unchanged. Future oversized text scrolls automatically
 through the bounded body during its authored interval, with initial/final holds;
@@ -967,8 +967,8 @@ transparency, borders/corners and shared theme are unchanged. Section spacing
 stays four units, with 18-point title, 14-point headings/hint and the existing
 `Tab / Esc to close` text. Deployment/assignment guidance remains in tooltips.
 
-Height remains content-driven, including the existing bounded 64-unit overflow
-list. Eight equipment positions occupy two rows; extra types still overflow after
+The panel explicitly resets to its current content minimum, including the existing
+bounded 64-unit overflow list only when that list is visible. Eight equipment positions occupy two rows; extra types still overflow after
 the eighth position. Material icons retain their PR #91 geometry: attached to
 the slot before centered-top anchors, with offsets (-17,3,17,37),
 a shared 34-unit canvas centered horizontally and inset three units downward.
@@ -1004,18 +1004,31 @@ Equipment retains eight positions in six columns, at 70/56 units for slots/icons
 Materials retain 24 positions in eight columns, at 50/34 units. Hotbar retains ten
 positions, at 60/46 units. The default stays 85%; 75/100% settings are unchanged.
 Nonexecuting bounds arithmetic covers 1024 x 576, 1280 x 720 and 1920 x 1080 at
-all three preferences. A conservative 511-unit inventory height, using rounded
-Plex line metrics and the full overflow strip, fits above the hotbar with a
-16-unit gap by moving upward when needed. Real container sizing, optical balance,
-filtering and input behavior still require owner Godot acceptance.
+all three preferences. Decisions 19/20 refine height and key placement after owner
+review; the owner approved the machine icons and their rendering quality.
 
-Static preservation proposes five complete LF-normalized UI candidate hashes,
-restoring immutable merged PR #91 before every historical comparison. Older
-pins/assertions stay intact; new tests reject changed, duplicated and appended
-bytes and inspect current assets/layout separately. Every action/refresh method
-is compared to PR #91. Review this amendment before any future separately
-authorized Native run. Runner, staging policy, executable identity, commands and
-Native assertions are unchanged. Validation: **88 Python static tests PASS** via
+Inventory sizing correction: the old `_fit_panel` only repositioned the current
+rectangle from the panel's own resize signal. It never requested a smaller
+content minimum, so an oversized rectangle could persist as unused space. The
+panel now calls `reset_size()` before placement, using its actual combined
+minimum rather than any fixed height or viewport fill. Content minimum changes
+schedule a deferred refit; viewport scale changes also refit. Removing the direct
+resize callback avoids resizing from within a resize notification. Hidden overflow
+contributes no strip or extra gap; visible overflow retains its bounded 64-unit
+scroll region. Rounded font/style arithmetic estimates 443 units normally and
+511 with overflow; these are static estimates, not runtime height assignments.
+Both fit above the hotbar with a 16-unit gap by moving upward only when needed.
+The Tab/Esc hint remains the last content row. Real shrink/grow behavior still
+requires owner graphical review; no engine reproduction was performed.
+
+Static preservation retains the original five complete LF-normalized UI hashes
+restoring immutable PR #91, and adds three exact refinement pins restoring initial
+PR #92 commit `6eb83ea` before that existing layer. No earlier hash or assertion is
+replaced. New tests reject changed, duplicated and appended bytes, compare all
+action/refresh methods and approved rendering sections, and verify compact sizing,
+external key placement and unchanged artwork/imports/mapping. Review the additional
+amendment before any future separately authorized Native run. Runner, staging policy, executable identity, commands and
+Native assertions are unchanged. Validation: **90 Python static tests PASS** via
 `pwsh -NoProfile -File tools/run-local-tests.ps1 -Mode Static`.
 Godot import, Native, graphical and gameplay verification were not run.
 
@@ -1024,6 +1037,9 @@ Check maximized desktop, 1280 x 720 and 1024 x 576 at 75%, 85% and 100%.
 
 | Check | PASS / FAIL | Optional observations |
 | --- | --- | --- |
+| Inventory: compact content height; no excessive blank area below equipment | | |
+| Inventory: hint near content bottom; no clipping or hidden positions | | |
+| Inventory: overflow grows only when present and shrinks back when absent | | |
 | Equipment: correct Extractor icon | | |
 | Equipment: correct Smelter icon | | |
 | Equipment: correct Fabricator icon | | |
@@ -1031,7 +1047,9 @@ Check maximized desktop, 1280 x 720 and 1024 x 576 at 75%, 85% and 100%.
 | Equipment: readable quantities/tooltips; no clipping or alignment issues | | |
 | Materials: icons, eight columns and 50-unit slots unchanged | | |
 | Hotbar: three icons recognizable; 60-unit slots and 46-unit icons | | |
-| Hotbar: key labels and quantities readable, separated from artwork | | |
+| Hotbar: keys 1-9,0 centered immediately beneath corresponding slots | | |
+| Hotbar: key hints subtle/readable, quantities unobtrusive at lower right | | |
+| Hotbar: no header/footer or excessive vertical space | | |
 | Hotbar: copper active highlight, hover/inactive/unavailable states correct | | |
 | HUD: no overlap with conversation, musings or inventory/overflow | | |
 | Regression: inventory clicks, Tab/Escape and right-click assign/clear | | |
@@ -1042,8 +1060,9 @@ Check maximized desktop, 1280 x 720 and 1024 x 576 at 75%, 85% and 100%.
 Capacity/overflow checks need an owner-controlled temporary fixture; the current
 catalog has three equipment types. Preserve approved narrative/production files.
 Optional observations: window, scale, machine/state, issue and screenshot reference.
-Drag-and-drop, assignment redesign, portraits/world artwork, recipes/production
-and broader UI work remain deferred. Await owner review and graphical acceptance;
+Option C is the sole implementation; Option B remains a possible later owner
+amendment, with no toggle or alternate layout. Drag-and-drop, assignment redesign,
+portraits/world artwork, recipes/production and broader UI work remain deferred. Await owner review and graphical acceptance;
 do not merge or perform cleanup.
 
 B2 Balanced frame on `codex/b1-refined-industrial-inventory` (pending merge):
@@ -1238,16 +1257,18 @@ sections and deploying/assigning overflow equipment.
 
 The machine-icon feature (`codex/machine-icons-equipment-sizing`, pending merge)
 enlarges ten persistent B1 slots from 52 to 60 logical units, with centered
-46-unit machine icons. Keys **1-9, 0** sit above their buttons in a separate header.
-Quantities use 12-point text at y=44 in the 16-unit bottom band, matching inventory
-quantity typography. Source alpha ends above this band; filtered edges await
-owner review. Six-unit gaps, the 16-unit bottom margin and private B1 style remain.
-Top padding grows to 22 units for keys; side/bottom padding stays four units.
-The centered backing measures 662 x 86, extending 102 units above the bottom.
-Unchanged conversation/musing reservations (104/112) clear it by 2/10 units.
-Shared theme/global scaling are unchanged. Canonical artwork and integer-safe
-quantities share `scenes/ui/item_presentation.gd` with inventory. Empty slots are
-subdued; assigned zero-quantity slots retain their type, show zero and remain clearable.
+46-unit machine icons. Owner Decision 20 implements Option C only: subtle
+13-point keys **1-9, 0** are centered across each 60-unit slot at local y=64,
+four units below the button and outside the backing. Key labels ignore mouse input
+and inherit slot availability. Quantities stay at 12 points in the lower-right
+16-unit band beginning at y=44; approved icon rendering remains unchanged.
+Six-unit gaps and private B1 colors/borders remain. All backing padding is four
+units; there is no key header or decorative footer. The centered backing shrinks
+from 662 x 86 to 662 x 68. Its bottom sits 33 units above the viewport edge,
+leaving 16 units below the 17-unit key lines. The full footprint starts 101 units
+above the bottom, clearing unchanged conversation/musing reservations (104/112)
+by 3/11 units. Global scaling is unchanged. Empty slots are subdued;
+assigned zero-quantity slots retain their type, show zero and remain clearable.
 The deploying type uses a steady copper-amber border. On
 `codex/fabricator-range-hotbar-hover` (pending merge), active hover subtly brightens
 the copper border and dark fill; inactive hover remains teal. A cached private

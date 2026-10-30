@@ -30,7 +30,7 @@ func _ready() -> void:
 	# Customize a private copy so inventory and machine panels retain their style.
 	var backing := B1_THEME.get_stylebox("panel", "PanelContainer").duplicate() as StyleBoxFlat
 	backing.content_margin_left = 4.0
-	backing.content_margin_top = 22.0
+	backing.content_margin_top = 4.0
 	backing.content_margin_right = 4.0
 	backing.content_margin_bottom = 4.0
 	backing.bg_color = Color(0.075, 0.105, 0.125, 0.90)
@@ -60,7 +60,11 @@ func _ready() -> void:
 		icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 		icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		slot.add_child(icon)
-		_add_label(slot, "Key", str(index + 1) if index < 9 else "0", Vector2(4, -18), 13)
+		# External hints follow each slot; no header or footer inside the backing.
+		var key := _add_label(slot, "Key", str(index + 1) if index < 9 else "0", Vector2(0, 64), 13)
+		key.size.x = 60
+		key.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		key.theme_type_variation = &"B1MutedLabel"
 		var symbol := _add_label(slot, "Symbol", "", Vector2(4, 11), 16)
 		symbol.size.x = 52
 		symbol.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER

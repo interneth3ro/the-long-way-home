@@ -10,6 +10,7 @@ from static_automatic_transitions_test import ROOT, read
 from static_extractor_inspection_test import functions
 from static_v2_production_host_test import (
     MACHINE_ICONS_BASE, MACHINE_ICONS_SHA256, without_machine_icon_changes,
+    MACHINE_LAYOUT_BASE, MACHINE_LAYOUT_SHA256, without_machine_layout_changes,
 )
 
 ART = {
@@ -172,20 +173,26 @@ class MachineIconsStaticTest(unittest.TestCase):
         hotbar = read("scenes/ui/hotbar_ui.gd")
         self.assertIn("icon.position = Vector2(7, 0)", hotbar)
         self.assertIn("icon.size = Vector2(46, 46)", hotbar)
-        self.assertIn('Vector2(4, -18), 13)', hotbar)
+        self.assertIn('Vector2(0, 64), 13)', hotbar)
+        self.assertIn('key.size.x = 60', hotbar)
+        self.assertIn('key.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER', hotbar)
+        self.assertIn('key.theme_type_variation = &"B1MutedLabel"', hotbar)
         self.assertIn('Vector2(4, 44), 12)', hotbar)
         self.assertIn("quantity.size.x = 52", hotbar)
-        self.assertIn("backing.content_margin_top = 22.0", hotbar)
+        self.assertIn("backing.content_margin_top = 4.0", hotbar)
 
     def test_supported_window_scale_bounds_and_adjacent_hud_clearance(self):
         scene = read("scenes/ui/hotbar_ui.tscn")
         backing = node(scene, "Backing")
-        for line in ("offset_left = -331.0", "offset_right = 331.0", "offset_top = -102.0", "offset_bottom = -16.0"):
+        for line in ("offset_left = -331.0", "offset_right = 331.0", "offset_top = -101.0", "offset_bottom = -33.0"):
             self.assertIn(line, backing)
         self.assertEqual(10 * 60 + 9 * 6 + 8, 662)
-        self.assertEqual(22 + 60 + 4, 102 - 16)
-        # 13pt key line is ceil(13*1.3)=17 units, wholly above artwork.
-        self.assertLessEqual(-18 + math.ceil(13 * 1.3), 0)
+        self.assertEqual(4 + 60 + 4, 101 - 33)
+        # External key hints start four units below each 60-unit button, outside
+        # the backing. A 17-unit key line ends 16 units above the viewport edge.
+        self.assertGreater(64, 60)
+        self.assertEqual(-101 + 4 + 64 + math.ceil(13 * 1.3), -16)
+        self.assertEqual(-101 + 4 + 64, -33)
         # 12pt quantities fit the 16-unit bottom band.
         self.assertLessEqual(math.ceil(12 * 1.3), 16)
         # Inventory upper bound: real Plex hhea ratio 1.3, rounded line heights;
@@ -204,22 +211,86 @@ class MachineIconsStaticTest(unittest.TestCase):
         panel_height = 28 + 3 * 19 + 158 + 4 + 144 + 64 + 7 * 4 + 28
         self.assertEqual(panel_height, 511)
         inventory = read("scenes/ui/inventory_ui.gd")
-        self.assertIn("_panel.resized.connect(_fit_panel)", inventory)
+        self.assertIn("_panel.minimum_size_changed.connect(_fit_panel, CONNECT_DEFERRED)", inventory)
         self.assertIn("$HUD.scale_changed.connect(_fit_panel)", inventory)
-        self.assertIn("minf(100.0, maxf(12.0, $HUD.size.y - _panel.size.y - 118.0))", inventory)
+        self.assertIn("minf(100.0, maxf(12.0, $HUD.size.y - _panel.size.y - 117.0))", inventory)
         for width, height in ((1024, 576), (1280, 720), (1920, 1080)):
             for preference in (.75, .85, 1.0):
                 scale = preference * math.sqrt(min(width / 1280, height / 720))
                 logical_width, logical_height = width / scale, height / scale
                 self.assertLess(662 + 32, logical_width)
                 self.assertLess(496 + 16, logical_width)
-                panel_y = min(100, max(12, logical_height - panel_height - 118))
-                self.assertLessEqual(panel_y + panel_height + 118, logical_height)
+                panel_y = min(100, max(12, logical_height - panel_height - 117))
+                self.assertLessEqual(panel_y + panel_height + 117, logical_height)
         # Existing conversation/musing reservations stay intact, above backing.
         self.assertIn("104", read("scenes/ui/dialogue_ui.gd"))
         self.assertIn("112", read("scenes/ui/musing_ui.gd"))
-        self.assertLess(102, 104)
-        self.assertLess(102, 112)
+        self.assertLess(101, 104)
+        self.assertLess(101, 112)
+
+    def test_layout_refinement_pins_preserve_initial_pr_and_approved_rendering(self):
+        for path in MACHINE_LAYOUT_SHA256:
+            text = read(path)
+            original = subprocess.check_output(["git", "show", f"{MACHINE_LAYOUT_BASE}:{path}"], cwd=ROOT).decode().replace("\r\n", "\n")
+            self.assertEqual(without_machine_layout_changes(path, text), original)
+            for changed in (text.replace("\n", "\nCHANGED\n", 1), text + text, text + "UNRELATED\n"):
+                with self.subTest(path=path), self.assertRaises(AssertionError):
+                    without_machine_layout_changes(path, changed)
+            if path.endswith(".gd"):
+                before, after = functions(original), functions(text)
+                self.assertEqual(before.keys(), after.keys())
+                changed_methods = {"_ready", "_fit_panel"} if "inventory" in path else {"_ready"}
+                for method in before.keys() - changed_methods:
+                    self.assertEqual(after[method], before[method], (path, method))
+                if "hotbar" in path:
+                    # Only padding and key hints change; icons, quantities,
+                    # symbols and button callbacks keep the approved rendering.
+                    for first, last in (("\t\tvar icon :=", "\t\t# External hints"),
+                                        ("\t\tvar symbol :=", "\tprogression.hotbar_changed")):
+                        current = text.split(first, 1)[1].split(last, 1)[0]
+                        original_last = '\t\t_add_label(slot, "Key"' if "icon" in first else last
+                        previous = original.split(first, 1)[1].split(original_last, 1)[0]
+                        self.assertEqual(current, previous)
+        self.assertEqual(without_machine_layout_changes("unrelated.gd", "sentinel"), "sentinel")
+        # Every approved icon, import and canonical mapping is unchanged by
+        # this owner refinement, including owner-local sidecar bytes.
+        for item in (*ART, "ferrite_ore", "ferrite_ingot", "ferrite_plate", "ferrite_rod"):
+            for suffix in (".png", ".png.import"):
+                path = f"assets/items/{item}{suffix}"
+                original = subprocess.check_output(["git", "show", f"{MACHINE_LAYOUT_BASE}:{path}"], cwd=ROOT)
+                actual = (ROOT / path).read_bytes()
+                if suffix.endswith(".import"):
+                    original, actual = original.replace(b"\r\n", b"\n"), actual.replace(b"\r\n", b"\n")
+                self.assertEqual(actual, original, path)
+        self.assertEqual(read("scenes/ui/item_presentation.gd"), subprocess.check_output(
+            ["git", "show", f"{MACHINE_LAYOUT_BASE}:scenes/ui/item_presentation.gd"], cwd=ROOT).decode().replace("\r\n", "\n"))
+
+    def test_inventory_shrinks_to_content_without_resize_feedback_or_fixed_height(self):
+        text = read("scenes/ui/inventory_ui.gd")
+        fitting = functions(text)["_fit_panel"]
+        self.assertLess(fitting.index("_panel.reset_size()"), fitting.index("_panel.position.y"))
+        self.assertNotIn("_panel.resized.connect", text)
+        self.assertIn("minimum_size_changed.connect(_fit_panel, CONNECT_DEFERRED)", text)
+        self.assertIn("_fit_panel.call_deferred()", text)
+        self.assertNotIn("_panel.size =", fitting)
+        scene = read("scenes/ui/inventory_ui.tscn")
+        panel = node(scene, "Panel")
+        self.assertNotIn("anchor_bottom = 1", panel)
+        self.assertNotIn("custom_minimum_size", panel)
+        self.assertIn("custom_minimum_size = Vector2(0, 64)", node(scene, "Overflow"))
+        self.assertIn("visible = false", node(scene, "Overflow"))
+        # Content-driven normal height omits the hidden overflow's 64-unit
+        # strip and its one four-unit separation. It can grow then shrink back.
+        full_height = 511
+        normal_height = full_height - 64 - 4
+        self.assertEqual(normal_height, 443)
+        self.assertLess(normal_height, full_height)
+        for height in (normal_height, full_height, normal_height):
+            for width, window_height in ((1024, 576), (1280, 720), (1920, 1080)):
+                for preference in (.75, .85, 1.0):
+                    logical_height = window_height / (preference * math.sqrt(min(width / 1280, window_height / 720)))
+                    y = min(100, max(12, logical_height - height - 117))
+                    self.assertLessEqual(y + height + 117, logical_height)
 
     def test_protected_assets_gameplay_and_execution_controls_match_pr91(self):
         changed = subprocess.check_output([

@@ -45,14 +45,18 @@ func _ready() -> void:
 	_create_slots(_equipment, EQUIPMENT_SLOTS, EQUIPMENT_SLOT_SIZE)
 	progression.inventory.changed.connect(_refresh)
 	_refresh()
-	_panel.resized.connect(_fit_panel)
+	# Refit after content changes, outside container layout/resize callbacks.
+	_panel.minimum_size_changed.connect(_fit_panel, CONNECT_DEFERRED)
 	$HUD.scale_changed.connect(_fit_panel)
 	_fit_panel.call_deferred()
 
 
 func _fit_panel() -> void:
-	# Reserve the 102-unit hotbar footprint plus a 16-unit gap at small windows.
-	_panel.position.y = minf(100.0, maxf(12.0, $HUD.size.y - _panel.size.y - 118.0))
+	# A top-level container grows to its minimum but retains an oversized rect.
+	# Reset to current content requirements, including only visible overflow.
+	_panel.reset_size()
+	# Reserve the 101-unit hotbar footprint plus a 16-unit gap at small windows.
+	_panel.position.y = minf(100.0, maxf(12.0, $HUD.size.y - _panel.size.y - 117.0))
 
 
 func _input(event: InputEvent) -> void:
