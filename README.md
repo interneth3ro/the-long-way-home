@@ -124,7 +124,13 @@ Extractor-component preservation comparisons; standalone gdtoolkit 4.5 grammar
 parsing of the changed scripts PASS. Static checks do not establish engine parsing,
 runtime input delivery or graphical fit. The owner approved the exact-byte preservation amendments
 in the two existing Python suites and one restricted Native run on 2026-10-29;
-that run remains pending. No runner, allowlist, policy or Godot-native assertion changes are made.
+the run at `bc0b46e` passed Static but cold import failed with `NONZERO_EXIT`.
+The recipe test was NOT RUN and no retry was attempted. The retained 4096-byte
+diagnostic contains initialization progress without a specific failure cause.
+Failure evidence is preserved in ignored
+`artifacts/logs/native-failure-4c3ba3f176ff465ebbae954712940f19.json`;
+the fresh external stage `tlwh-native-plan-e19ee3e4bfbd4a779039472b6887229a`
+is also retained. Engine parsing and runtime compatibility remain unverified. No runner, allowlist, policy or Godot-native assertion changes are made.
 Graphical acceptance remains with the owner; no agent graphical launch is authorized.
 
 Owner graphical acceptance (one check at a time; stop on failure):
@@ -155,8 +161,9 @@ clearance and the bottom hotbar/hint region. Its normal logical size is 640 x 51
 width is capped at 48% of the logical HUD, and logical heights below 740 use a
 480-unit panel, tighter spacing and a smaller gauge. The owner has accepted the
 overall layout, artwork, gauge, styling and proportions, including the divider/grid
-refinements, portrait smoothing and overall proportions. PR #85 supplies the approved compact-header and Collect All styling benchmark
-for the Smelter pilot above.
+refinements, portrait smoothing and overall proportions. PR #85 supplies the
+approved compact-header and Collect All styling benchmark for the Smelter pilot
+above.
 
 Extractor content retains 24-unit left/right and bottom padding; the compact
 header reduces top clearance from 20 to 12 units. The private panel StyleBox changes only when switching presentation mode;
