@@ -20,6 +20,8 @@ P8_BASE = "e14703e64aef961f18feba8a616acec00c4f069e"
 # No preservation path is exempted and all historical hashes remain unchanged.
 SMELTER_PILOT_BASE = "cb6304f4fa81c2510d056c63c21e6a8ce72bf6b6"
 SMELTER_PILOT_SHA256 = {
+    # Provisional serial-import candidate; owner review required before Native.
+    "project.godot": "993aa7cf7ec6403720094f43f5b3522f9ee3a8e4557bf81e95b93a1fd70e4b96",
     "assets/environment/maintenance_bay_v2/machines/smelter_stationary.png.import": "56281b1985e2f862b229695b7a713780419ca32d2f7550239065c1b07cc0d225",
     # Width refinement candidate; renewed owner review before Native use.
     "scenes/ui/machine_ui.gd": "e7f86dc75e5d3b7f1ab9fd65e966872bf5a1d70f89b76c2a9b699452f0ac9a68",
@@ -552,6 +554,17 @@ class V2ProductionHostStaticTest(unittest.TestCase):
                                 original + original, original + "UNRELATED\n"):
                     with self.assertRaises(AssertionError):
                         without_smelter_pilot_changes(path, changed)
+
+    def test_serial_import_candidate_rejects_setting_tampering(self):
+        original = read("project.godot")
+        setting = "import/use_multiple_threads=false\n"
+        self.assertEqual(original.count(setting), 1)
+        for changed in (original.replace(setting, "", 1),
+                        original.replace(setting, "import/use_multiple_threads=true\n", 1),
+                        original.replace(setting, setting * 2, 1),
+                        original.replace("[editor]\n", "[wrong_section]\n", 1)):
+            with self.assertRaises(AssertionError):
+                without_smelter_pilot_changes("project.godot", changed)
 
     def test_extractor_pilot_allowance_restores_main_and_rejects_tampering(self):
         for path in EXTRACTOR_PILOT_SHA256:

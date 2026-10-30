@@ -148,7 +148,7 @@ tracker temporarily and restore its preference on close. Extractor resources,
 layout code and data, Fabricator refresh/chooser, pause leases, status calculations,
 transactions and input guards are unchanged.
 
-Validation: 54 Python static checks PASS, including merged-header geometry,
+Validation: 55 Python static checks PASS, including merged-header geometry,
 exact existing-method and
 Extractor-component preservation comparisons; standalone gdtoolkit 4.5 grammar
 parsing of the changed scripts PASS. Static checks do not establish engine parsing,
@@ -167,6 +167,14 @@ Godot launch. Its updated exact-byte MachineUI preservation hash is a review
 candidate, not renewed Native authorization; the new header-preservation assertion
 also requires control review before any future Native execution. Original failure
 evidence and the external stage remain untouched.
+
+Provisional cold-import workaround: `editor/import/use_multiple_threads=false`
+serializes resource imports to avoid the suspected Godot 4.7.2 parallel font-import
+race. See the [upstream fix](https://github.com/godotengine/godot/pull/123546).
+This workaround is unverified and may slow cold imports. It changes no gameplay
+threading or approved Smelter UI. The original failure evidence and external stage
+remain preserved. A fresh Native attempt requires separate owner authorization;
+failures must not be retried automatically.
 
 Owner graphical acceptance (one check at a time; stop on failure):
 
