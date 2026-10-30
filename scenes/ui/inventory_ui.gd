@@ -96,14 +96,18 @@ func _create_slots(grid: GridContainer, count: int) -> void:
 		grid.add_child(slot)
 		var icon := TextureRect.new()
 		icon.name = "Icon"
+		# Resolve centered anchors against the slot, not an unattached control.
+		slot.add_child(icon)
 		icon.set_anchors_and_offsets_preset(Control.PRESET_CENTER_TOP)
-		icon.position = Vector2(-17, 0)
-		icon.size = Vector2(34, 34)
+		# One shared inset balances the artwork; source alpha stays above quantities.
+		icon.offset_left = -17
+		icon.offset_top = 3
+		icon.offset_right = 17
+		icon.offset_bottom = 37
 		icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 		icon.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 		icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		slot.add_child(icon)
 		var symbol := Label.new()
 		symbol.name = "Symbol"
 		symbol.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)

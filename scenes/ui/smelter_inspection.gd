@@ -70,9 +70,9 @@ func refresh(machine: Dictionary, status: PlanetWorldState.OperatingStatus,
 	_gauge.set_progress(fraction, accent)
 	ItemPresentation.set_material_icon(_input_icon, definition.input_item, machine.input)
 	ItemPresentation.set_material_icon(_output_icon, definition.output_item, machine.output)
-	_input_material.text = definition.input_item.display_name \
+	_input_material.text = (definition.input_item.display_name if machine.input > 0 else "Input") \
 		if definition.has_input() else "No input configured."
-	_output_material.text = definition.output_item.display_name \
+	_output_material.text = (definition.output_item.display_name if machine.output > 0 else "Output") \
 		if definition.output_item != null else "No output configured."
 	_input_quantity.text = "%d / %d" % [machine.input, definition.input_capacity]
 	_output_quantity.text = "%d / %d" % [machine.output, definition.output_capacity]

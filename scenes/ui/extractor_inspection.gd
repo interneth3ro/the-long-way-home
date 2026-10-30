@@ -54,7 +54,8 @@ func refresh(machine: Dictionary, status: PlanetWorldState.OperatingStatus, in_r
 	_gauge.set_progress(fraction, accent)
 	var product := definition.output_item
 	ItemPresentation.set_material_icon(_material_icon, product, machine.output)
-	_material.text = product.display_name if product != null else "No production configured."
+	_material.text = (product.display_name if machine.output > 0 else "Output") \
+		if product != null else "No production configured."
 	_quantity.text = "%d / %d" % [machine.output, definition.output_capacity]
 	_capacity.value = 100.0 * machine.output / definition.output_capacity if definition.output_capacity > 0 else 0.0
 	_collect.disabled = not configured or machine.output <= 0 or not in_range

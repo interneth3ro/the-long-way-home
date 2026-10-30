@@ -116,6 +116,7 @@ func refresh(machine: Dictionary, status: PlanetWorldState.OperatingStatus,
 	for row in _ingredient_rows:
 		var stored: int = machine.inputs.get(row.item_id, 0)
 		ItemPresentation.set_material_icon(row.icon, row.item, stored)
+		row.label.text = row.item.display_name if stored > 0 else "Input"
 		row.quantity.text = "%d / %d" % [stored, definition.input_capacity]
 		row.bar.value = 100.0 * stored / definition.input_capacity if definition.input_capacity > 0 else 0.0
 	# Nonempty output always uses its independently stored identity.
@@ -164,7 +165,7 @@ func _build_ingredients(recipe: RecipeDefinition) -> void:
 		var row := VBoxContainer.new()
 		var stock := HBoxContainer.new()
 		var ingredient_label := Label.new()
-		ingredient_label.text = ingredient.item.display_name
+		ingredient_label.text = "Input"
 		ingredient_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		ingredient_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		var quantity := Label.new()
@@ -180,4 +181,4 @@ func _build_ingredients(recipe: RecipeDefinition) -> void:
 		row.add_child(bar)
 		_ingredients.add_child(row)
 		_ingredient_rows.append({"item_id": ingredient.item.item_id, "item": ingredient.item,
-			"icon": icon, "quantity": quantity, "bar": bar})
+			"icon": icon, "label": ingredient_label, "quantity": quantity, "bar": bar})

@@ -900,15 +900,20 @@ Inventory, chooser, selected-recipe and storage icons explicitly use linear
 filtering with mipmaps, matching the established portrait minification approach.
 Lossless import, alpha-border fixing and non-premultiplied alpha stay unchanged.
 Source PNG bytes, aspect-preserving rendering, B1/B2 styling and the default 85%
-scale are preserved. Actual edge smoothness/softness still requires owner review.
+scale are preserved. The owner approved enlargement, artwork, filtering and
+populated storage; the final alignment and empty-state corrections await review.
 
 The existing `ItemPresentation` helper adds unframed 24-unit icons with six-unit
 name spacing to Extractor output, Smelter input/output and Fabricator input/output
 storage. Names, quantities and capacity bars remain visible. Zero-quantity,
 unknown or missing material textures hide the icon; Fabricator keeps its generic
 "No stored output" label and uses the actual stored product for nonempty output,
-including previous-recipe output. Configured input/output names stay available
-when empty. Portraits, status/gauges, controls and hotbar behavior are unchanged.
+including previous-recipe output. Empty Extractor/Smelter output shows "Output";
+empty Smelter/Fabricator input shows "Input". Fabricator empty output retains
+"No stored output". Every refresh updates names from current quantities, so
+consumption/collection clears material identity immediately without stale labels.
+The hidden icon reserves no width or six-unit gap in its HBox; generic names
+align with the row edge. Portraits, status/gauges, controls and hotbar are unchanged.
 Machine icon replacements and inventory/hotbar drag-and-drop remain deferred.
 
 The static preservation suite retains the initial PR's hashes and all older
@@ -918,18 +923,23 @@ those hashes. Import tests reconstruct the original LF-normalized sidecars by
 reversing only the mipmap flag and verify the original metadata hashes. Three
 focused checks cover amendment tampering, import/filter consistency and storage
 identity/slot geometry. This expanded amendment requires review before Native.
+The final four-script correction adds another exact-byte layer restoring
+`5788c67` before those existing comparisons. Earlier hashes remain unchanged;
+additional tests protect parent-first icon geometry, empty/populated label rules
+and amendment tampering. Review this amendment before any Native execution.
 No runner, policy, command, staging allowlist or native assertion changes occur.
 
 Owner acceptance (record PASS/FAIL and optional observations for each):
 
-- Inventory: all four enlarged icons, legible quantities/tooltips, balanced panel,
-  empty slots and no overlap at 75%, 85% and 100% in 1024 x 576, 1280 x 720 and
+- Inventory: all four icons visually centered, legible quantities/tooltips,
+  approved enlarged layout/empty slots preserved and no clipping or overlap at 75%, 85% and 100% in 1024 x 576, 1280 x 720 and
   maximized windows; compare the unchanged hotbar.
 - Recipes: Plate/Rod chooser and selected icons have smoother edges without blur
   or halos; CURRENT, selection and pause behavior remain correct.
 - Storage: Extractor Ore, Smelter Ore/Ingot and Fabricator actual input/output
-  icons appear beside names; previous-recipe output stays correct; empty buffers
-  hide artwork; no clipping or crowded controls in compact/normal layouts.
+  icons appear beside names; previous-recipe output stays correct. Empty buffers
+  use generic labels without icons or residual gaps; consumption/collection and
+  recipe switching clear identities correctly. No crowded controls or clipping.
 - Regression: quantities, inventory clicks/right-click assignment, transfers,
   collection, recipe switching, production and hotbar behavior remain correct.
 Capture actual Godot screenshots for owner review. Agent Godot/Native execution
@@ -956,9 +966,15 @@ and hotbar-assignment guidance remains in machine and overflow tooltips.
 
 Height remains content-driven, including the existing 64-unit overflow scroll
 area. Four 50-unit slot rows add 32 units of height over the preceding layout;
-section spacing, fonts and outer padding stay unchanged. The 34-unit icon ends
-where the 16-unit quantity band starts, with 46 units available horizontally for
-quantity text. Prior font metrics estimated a 15.6-unit line height at size 12;
+section spacing, fonts and outer padding stay unchanged. Icons are attached to
+the slot before centered-top anchors are set, with explicit offsets (-17,3,17,37):
+a shared 34-unit canvas centered horizontally and inset three units downward.
+All four sources have symmetric horizontal alpha bounds (23..232 of 256); their
+lowest painted source pixel is y=228. At this inset, nonzero source alpha ends
+below y=33.42, above the unchanged quantity band starting at y=34. Only transparent
+canvas padding enters that band; no source crop or per-item offsets are used.
+Actual filtered edges and optical balance remain graphical acceptance checks.
+Quantity text retains 46 units horizontally and the 16-unit bottom band. Prior font metrics estimated a 15.6-unit line height at size 12;
 actual long-quantity fit remains an owner acceptance check. At 1280 x 720 / 85%,
 the 460-unit panel, 50-unit slots and 34-unit icons become approximately 391,
 42.5 and 28.9 physical pixels. Other windows retain the established hybrid scale

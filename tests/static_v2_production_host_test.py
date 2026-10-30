@@ -552,7 +552,28 @@ FERRITE_IMPORT_ORIGINAL_SHA256 = {
 }
 
 
+# Final owner corrections: preserve all previous candidate hashes by restoring
+# the exact second PR revision before its assertions. Review before Native.
+FERRITE_FINAL_BASE = "5788c67dc46a2f2eb925045ceae81e0f9f457d6a"
+FERRITE_FINAL_SHA256 = {
+    "scenes/ui/inventory_ui.gd": "0f1ad645bc5bdcce2a067c58610db061d2af47f50734826ea8e5875dc17d35f8",
+    "scenes/ui/extractor_inspection.gd": "edbc8815730e719aee991689b78b8915ad7b80acbbaaaba3ac0ea24774fd7567",
+    "scenes/ui/smelter_inspection.gd": "822b7c77bcc4a6f390e59d227dd4ec269307d1e4e1860594aa3691db1d2f49d6",
+    "scenes/ui/fabricator_inspection.gd": "d530aaac53804c5a6693ce3da3e67aaf1f86c988612cd85491b4fbd291fc9f1e",
+}
+
+
+def without_ferrite_final_changes(path, text):
+    if path not in FERRITE_FINAL_SHA256:
+        return text
+    if hashlib.sha256(text.encode("utf-8")).hexdigest() != FERRITE_FINAL_SHA256[path]:
+        raise AssertionError(f"Missing or modified final Ferrite candidate bytes: {path}")
+    return subprocess.check_output(["git", "show", f"{FERRITE_FINAL_BASE}:{path}"],
+                                   cwd=ROOT).decode("utf-8").replace("\r\n", "\n")
+
+
 def without_ferrite_refinement_changes(path, text):
+    text = without_ferrite_final_changes(path, text)
     if path not in FERRITE_REFINEMENT_SHA256:
         return text
     if hashlib.sha256(text.encode("utf-8")).hexdigest() != FERRITE_REFINEMENT_SHA256[path]:
@@ -1113,7 +1134,8 @@ class V2ProductionHostStaticTest(unittest.TestCase):
         self.assertIn("texture_filter = 4", icon)
 
     def test_ferrite_inventory_geometry_and_storage_identity_boundaries(self):
-        inventory = raw_read("scenes/ui/inventory_ui.gd")
+        path = "scenes/ui/inventory_ui.gd"
+        inventory = without_ferrite_final_changes(path, raw_read(path))
         self.assertIn("const SLOT_SIZE := Vector2(50, 50)", inventory)
         self.assertIn("icon.size = Vector2(34, 34)", inventory)
         self.assertIn("icon.position = Vector2(-17, 0)", inventory)
@@ -1136,6 +1158,49 @@ class V2ProductionHostStaticTest(unittest.TestCase):
         self.assertIn("set_material_icon(_output_icon, product, machine.output)", fabricator)
         self.assertNotIn("set_material_icon(_output_icon, recipe.output_item", fabricator)
         self.assertIn('else "No stored output"', fabricator)
+
+    def test_final_ferrite_correction_preserves_prior_revision_and_rejects_tampering(self):
+        for path in FERRITE_FINAL_SHA256:
+            text = raw_read(path)
+            with self.subTest(path=path):
+                before = subprocess.check_output(["git", "show", f"{FERRITE_FINAL_BASE}:{path}"],
+                                                 cwd=ROOT).decode("utf-8").replace("\r\n", "\n")
+                self.assertEqual(without_ferrite_final_changes(path, text), before)
+                for changed in (text.replace("\n", "\nCHANGED\n", 1), text + text, text + "UNRELATED\n"):
+                    with self.assertRaises(AssertionError):
+                        without_ferrite_final_changes(path, changed)
+        self.assertEqual(without_ferrite_final_changes("unrelated.gd", "sentinel"), "sentinel")
+
+    def test_final_ferrite_alignment_and_empty_storage_labels(self):
+        inventory = raw_read("scenes/ui/inventory_ui.gd")
+        self.assertLess(inventory.index("slot.add_child(icon)"),
+                        inventory.index("icon.set_anchors_and_offsets_preset(Control.PRESET_CENTER_TOP)"))
+        for line in ("icon.offset_left = -17", "icon.offset_right = 17",
+                     "icon.offset_top = 3", "icon.offset_bottom = 37",
+                     "const SLOT_SIZE := Vector2(50, 50)",
+                     "quantity.offset_top = -16", "quantity.offset_bottom = 0"):
+            self.assertIn(line, inventory)
+        # Approved PNG hashes above freeze these measured nonzero-alpha bounds.
+        # Shared 34-unit canvas is horizontally centered; even the lowest source
+        # alpha stays above y=34, where the unchanged quantity band starts.
+        for bottom in (227, 221, 210, 228):
+            self.assertLess(3 + (bottom + 1) * 34 / 256, 50 - 16)
+        self.assertEqual(50 / 2 - 17 + (23 + 233) / 2 * 34 / 256, 25)
+        extractor = raw_read("scenes/ui/extractor_inspection.gd")
+        self.assertIn('(product.display_name if machine.output > 0 else "Output")', extractor)
+        smelter = raw_read("scenes/ui/smelter_inspection.gd")
+        self.assertIn('(definition.input_item.display_name if machine.input > 0 else "Input")', smelter)
+        self.assertIn('(definition.output_item.display_name if machine.output > 0 else "Output")', smelter)
+        fabricator = raw_read("scenes/ui/fabricator_inspection.gd")
+        self.assertIn('row.label.text = row.item.display_name if stored > 0 else "Input"', fabricator)
+        self.assertIn('"label": ingredient_label', fabricator)
+        self.assertIn('ingredient_label.text = "Input"', fabricator)
+        self.assertIn('product.display_name if machine.output > 0 and product != null else "No stored output"', fabricator)
+        self.assertIn("set_material_icon(_output_icon, product, machine.output)", fabricator)
+        helper = raw_read("scenes/ui/item_presentation.gd")
+        self.assertIn("item != null and quantity > 0 else null", helper)
+        self.assertIn("icon.visible = icon.texture != null", helper)
+        self.assertNotIn("identity.custom_minimum_size", helper)
 
     def test_hotbar_allowance_restores_exact_pre_feature_bytes(self):
         # Prove each allowance recovers the entire pre-feature file, including

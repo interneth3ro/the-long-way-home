@@ -351,8 +351,11 @@ No movable stacks, new tools or disk persistence are added. The separate
 `codex/ferrite-material-icons` implementation (pending merge) integrates the
 owner-approved Ore, Ingot, Plate and Rod PNGs into inventory and existing recipe
 icons. Its owner-review refinement uses 50-unit inventory slots/34-unit icons,
-linear mipmap filtering and unframed 24-unit material storage icons. Empty buffers
-hide artwork, and Fabricator output follows the actual stored item, including
+linear mipmap filtering and unframed 24-unit material storage icons. The owner
+approved those sizes, artwork, filtering and populated storage. The final
+correction parents inventory icons before centered anchoring and applies one
+shared three-unit downward inset. Empty buffers use generic text without icons,
+and Fabricator output follows the actual stored item, including
 previous-recipe output. Names, quantities, capacity bars, machine symbols,
 portraits, production controls and global scale remain intact. Graphical
 acceptance and Native authorization remain separate from static checks. See the
