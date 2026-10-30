@@ -374,12 +374,17 @@ centered subtle key hints immediately below each button, outside the backing,
 and unchanged lower-right quantities. There is no header, footer, toggle or
 Option B implementation. The centered 662 x 68 backing and external hints reserve
 101 units above the bottom; conversation/musing clearances remain 104/112.
-The owner approved the machine icons and rendering quality; refined layout
-acceptance remains pending. Artwork bytes,
+The owner approved the machine icons/rendering and visually approved the refined
+layout on 2026-10-30. Artwork bytes,
 Ferrite icons, capacity, ownership, deployment/recovery, assignment mechanics,
-active/hover/unavailable states and the 85% default remain intact. Validation is
-static only; visuals and interactions await owner acceptance. No Godot or Native
-execution, merge or cleanup is part of this work. See the
+active/hover/unavailable states and the 85% default remain intact. The owner then
+authorized restricted testing: at `967b27c`, 90 static tests, cold headless import
+and the allowlisted recipe-switching regression passed, with zero failures and
+all infrastructure/authorization checks passing. Final documentation changes do
+not alter tested runtime inputs or controls. No agent graphical, interactive UI
+or performance test, merge or cleanup was performed. Exhaustive functional and
+overflow/window coverage remains distinct from visual approval and that narrow
+headless test. The branch is ready for owner merge review. See the
 [focused acceptance checklist](../README.md#machine-icons-and-equipment-sizing-feature-branch-pending-merge).
 
 Recover the Extractor implementation is merged in PR #30; agent validation was

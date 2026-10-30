@@ -983,8 +983,8 @@ the 472-unit panel, 50-unit material slots and 34-unit material icons become
 approximately 401.2, 42.5 and 28.9 physical pixels. Equipment slots/icons become
 59.5/47.6 physical pixels. Other windows retain the established hybrid scale
 P * sqrt(S), not a fixed 0.8 multiplier. No display or global-scale changes occur.
-The enlarged layout is pending graphical acceptance, including minimum-window
-bounds and future overflow access; older layout acceptance does not verify it.
+The owner visually approved the refined PR #92 layout on 2026-10-30. The
+focused matrix below remains available for separate window/overflow regression checks.
 
 ### Machine icons and equipment sizing (feature branch, pending merge)
 
@@ -1018,21 +1018,37 @@ contributes no strip or extra gap; visible overflow retains its bounded 64-unit
 scroll region. Rounded font/style arithmetic estimates 443 units normally and
 511 with overflow; these are static estimates, not runtime height assignments.
 Both fit above the hotbar with a 16-unit gap by moving upward only when needed.
-The Tab/Esc hint remains the last content row. Real shrink/grow behavior still
-requires owner graphical review; no engine reproduction was performed.
+The Tab/Esc hint remains the last content row. The owner visually approved the
+refined layout on 2026-10-30. No agent graphical reproduction was performed; the
+full overflow/window interaction matrix was not separately attested.
 
 Static preservation retains the original five complete LF-normalized UI hashes
 restoring immutable PR #91, and adds three exact refinement pins restoring initial
 PR #92 commit `6eb83ea` before that existing layer. No earlier hash or assertion is
 replaced. New tests reject changed, duplicated and appended bytes, compare all
 action/refresh methods and approved rendering sections, and verify compact sizing,
-external key placement and unchanged artwork/imports/mapping. Review the additional
-amendment before any future separately authorized Native run. Runner, staging policy, executable identity, commands and
-Native assertions are unchanged. Validation: **90 Python static tests PASS** via
-`pwsh -NoProfile -File tools/run-local-tests.ps1 -Mode Static`.
-Godot import, Native, graphical and gameplay verification were not run.
+external key placement and unchanged artwork/imports/mapping. After visual
+approval, the owner authorized testing and branch finalization on 2026-10-30.
+Runner, staging policy, executable identity, commands and Native assertions are
+unchanged; future control or input-scope changes still require owner review.
 
-Owner acceptance: record **PASS / FAIL** and optional observations for each row.
+Restricted validation at `967b27cbdf824b9feb9efab316b66f845698ccc7`:
+`pwsh -NoProfile -File tools/run-local-tests.ps1 -Mode Native` ran once, with
+**90 Python static tests PASS** (31.157 seconds), **cold headless import PASS** and
+**recipe-switching regression PASS**, zero failures. Infrastructure and
+authorization checks passed, reason `OK`, with no failure evidence or retries.
+The pinned executable matched the policy SHA-256 before each launch. The retained
+fresh stage is
+`D:\GameDev\Godot\TLWH-NativeStages\tlwh-native-plan-f3c87e9900ce486bbb983e0102856b0f`.
+Source/stage identities and imported inputs remained intact. This record adds only
+documentation; runtime inputs and reviewed controls are unchanged from the run.
+No agent graphical launch, interactive UI test, performance test, merge or cleanup
+was performed. Headless success covers import and the allowlisted recipe test;
+it does not establish exhaustive inventory/hotbar interaction coverage.
+
+Owner visual acceptance is approved. The reference checklist below remains for
+optional detailed PASS/FAIL observations; visual approval does not assert that
+every functional/overflow case or window/scale combination was exercised.
 Check maximized desktop, 1280 x 720 and 1024 x 576 at 75%, 85% and 100%.
 
 | Check | PASS / FAIL | Optional observations |
@@ -1062,8 +1078,9 @@ catalog has three equipment types. Preserve approved narrative/production files.
 Optional observations: window, scale, machine/state, issue and screenshot reference.
 Option C is the sole implementation; Option B remains a possible later owner
 amendment, with no toggle or alternate layout. Drag-and-drop, assignment redesign,
-portraits/world artwork, recipes/production and broader UI work remain deferred. Await owner review and graphical acceptance;
-do not merge or perform cleanup.
+portraits/world artwork, recipes/production and broader UI work remain deferred.
+Visual approval and restricted validation are complete; the branch is ready for
+owner merge review. No merge or cleanup was performed.
 
 B2 Balanced frame on `codex/b1-refined-industrial-inventory` (pending merge):
 [the reusable NinePatchRect scene](scenes/ui/b2_panel_frame.tscn) uses the
