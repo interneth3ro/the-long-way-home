@@ -83,11 +83,10 @@ func _add_label(slot: Control, label_name: String, text: String, point: Vector2,
 
 
 func _process(delta: float) -> void:
-	# Narrative panels extend into the bottom band. Hide only for these modal
-	# presentations/transitions; inventory, inspection and musings retain the bar.
-	_root.visible = not transitions.is_transitioning() and not _dialogue.is_conversation_open() \
-		and not _interaction.is_response_open()
-	if not _root.visible:
+	# Conversations reserve space above the bar and block actions without dimming.
+	# Responses/transitions still hide it; inventory, inspection and musings retain it.
+	_root.visible = not transitions.is_transitioning() and not _interaction.is_response_open()
+	if not _root.visible or _dialogue.is_conversation_open():
 		_clear_menu.hide()
 	var active := construction.get_deployment_item_id()
 	if active != _active_item:
@@ -109,6 +108,8 @@ func _unhandled_key_input(event: InputEvent) -> void:
 
 
 func _activate(slot: int) -> void:
+	if _dialogue.is_conversation_open():
+		return
 	var definition := progression.get_hotbar_assignment(slot)
 	if definition == null:
 		return
@@ -124,6 +125,8 @@ func _slot_input(event: InputEvent, index: int, slot: Control) -> void:
 			or event.button_index != MOUSE_BUTTON_RIGHT:
 		return
 	slot.accept_event()
+	if _dialogue.is_conversation_open():
+		return
 	if progression.get_hotbar_assignment(index) == null:
 		return
 	_clear_slot = index
@@ -131,6 +134,8 @@ func _slot_input(event: InputEvent, index: int, slot: Control) -> void:
 
 
 func _clear_assignment(_id: int) -> void:
+	if _dialogue.is_conversation_open():
+		return
 	progression.clear_hotbar(_clear_slot)
 
 

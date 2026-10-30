@@ -477,12 +477,15 @@ FABRICATOR_SHA256 = {'scenes/ui/cycle_gauge.gd': '20b7cc41c5922c0d798b15b5974e8a
  'assets/environment/maintenance_bay_v2/machines/fabricator_stationary.png.import': 'e76f75e09b9dc98dc7348f321b7f0bc2665da73c45588e8e76c2dacfcc16f4f8'}
 
 
-# Owner approved these exact UTF-8/LF candidates on 2026-10-30. Restore the
+# Owner approved these exact UTF-8/LF candidates, including the compact footer
+# and visible/noninteractive hotbar refinement, on 2026-10-30. Restore the
 # immutable PR #88 bytes before older comparisons; no historical hash changes.
 CONVERSATION_BASE = "8ec5e6ca8ba424b6c4ba2973ebbab9882e202422"
 CONVERSATION_SHA256 = {
-    "scenes/ui/dialogue_ui.gd": "0a90f75d16d678097bdfbca22176155e5afb4020f6b24916a63f5800af18ab73",
+    "scenes/ui/dialogue_ui.gd": "ab7db168b7c5aa225305614e8fa974d73dd031abdf525f3ec1a00e7f780107e2",
     "scenes/ui/dialogue_ui.tscn": "bddaefb4e36ed220e7fc018915c6518605b5dc3a109c81a660eede6b56499390",
+    "scenes/ui/hotbar_ui.gd": "08a2c44c4dd68836001eff43acbddd44a4bdcbd2aef252d55f9d5d6855674583",
+    "scenes/ui/inventory_ui.gd": "45c56d972b694137a2df57f38ed806d56e3f13bced38e755b52ef8f6cfde4b30",
 }
 
 

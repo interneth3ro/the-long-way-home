@@ -318,8 +318,10 @@ custom/cleared slots are never automatically overwritten or restored. Inventory
 right-click chooses a destination; hotbar right-click clears. Number keys toggle
 the same placement or switch through existing construction guards, with no item
 consumption until successful placement. Modal interactions and recovery retain
-input ownership. Prompts/hints sit above the bar; conversations/responses and
-transitions can hide it while ambient musings retain it. The implementation on
+input ownership. Prompts/hints sit above the bar; responses and transitions
+can hide it while ambient musings retain it. The owner-approved PR #89 revision
+keeps the bar visible without new dimming during ordinary conversations;
+activation, context menus and assignment edits remain blocked until closure. The implementation on
 `codex/b1-hybrid-hotbar` now includes the owner-approved visual refinement:
 52-unit slots (18.75% smaller), one subtly translucent B1 backing panel with thin
 border/four-unit padding, and the same copper-amber placement highlight.

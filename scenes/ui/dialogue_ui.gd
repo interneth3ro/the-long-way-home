@@ -10,7 +10,7 @@ const PORTRAITS := {
 	&"marvin": preload("res://assets/dialogue/portraits/marvin_dialogue_portrait.png"),
 }
 const PANEL_WIDTH := 640.0
-# Reserve the normal hotbar band even while the bar is hidden.
+# Reserve the normal hotbar band independently of its visibility.
 const BOTTOM_CLEARANCE := 104.0
 const EDGE_CLEARANCE := 24.0
 
@@ -31,6 +31,17 @@ var _layout_queued: bool = false
 
 
 func _ready() -> void:
+	# Private overrides keep shared B1 machine/inventory controls unchanged.
+	for button: Button in [_next, $HUD/Conversation/Content/Actions/Dismiss]:
+		button.custom_minimum_size = Vector2(76, 32)
+		button.add_theme_font_size_override("font_size", 16)
+		for state: StringName in [&"normal", &"hover", &"pressed", &"disabled"]:
+			var style := button.get_theme_stylebox(state).duplicate() as StyleBox
+			style.content_margin_left = 10.0
+			style.content_margin_right = 10.0
+			style.content_margin_top = 4.0
+			style.content_margin_bottom = 4.0
+			button.add_theme_stylebox_override(state, style)
 	$HUD.scale_changed.connect(_queue_layout)
 	_text.minimum_size_changed.connect(_queue_layout)
 	_speaker.minimum_size_changed.connect(_queue_layout)

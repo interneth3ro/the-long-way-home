@@ -36,6 +36,7 @@ class ConversationUIStaticTest(unittest.TestCase):
             "scenes/player/dave.tscn", "scenes/main/main.gd", "scenes/main/main.tscn",
             "scenes/main/main_v2.gd", "scenes/main/playthrough_state.gd",
             "scenes/main/scene_transition_controller.gd",
+            "construction/construction_controller.gd",
             "scenes/interaction/automatic_doorway.gd",
             "scenes/ui/ui_scale_root.gd", "scenes/ui/inventory_ui.gd",
             "scenes/ui/hotbar_ui.gd", "scenes/ui/machine_ui.gd",
@@ -47,7 +48,7 @@ class ConversationUIStaticTest(unittest.TestCase):
         ]
         for path in paths:
             with self.subTest(path=path):
-                self.assertEqual(read(path), baseline(path))
+                self.assertEqual(without_conversation_changes(path, read(path)), baseline(path))
         before = functions(baseline("scenes/ui/dialogue_ui.gd"))
         after = functions(read("scenes/ui/dialogue_ui.gd"))
         for method in ("is_conversation_open", "advance", "dismiss"):
@@ -56,6 +57,58 @@ class ConversationUIStaticTest(unittest.TestCase):
         self.assertEqual(after["show_conversation"].split("\t_show_entry()", 1)[0],
                          before["show_conversation"].split("\t_show_entry()", 1)[0])
         self.assertNotIn("await ", read("scenes/ui/dialogue_ui.gd"))
+
+    def test_visible_hotbar_guards_actions_without_changing_other_inputs(self):
+        path = "scenes/ui/hotbar_ui.gd"
+        before, after = functions(baseline(path)), functions(read(path))
+        changed = {"_process", "_activate", "_slot_input", "_clear_assignment"}
+        self.assertEqual(before.keys(), after.keys())
+        for name in before.keys() - changed:
+            self.assertEqual(after[name], before[name], name)
+        guard = '\tif _dialogue.is_conversation_open():\n\t\treturn\n'
+        for name in changed - {"_process"}:
+            # Every mutation/activation callback is guarded, including queued
+            # menu signals; its original non-dialogue behavior stays identical.
+            self.assertEqual(after[name].count(guard), 1)
+            self.assertEqual(after[name].replace(guard, "", 1), before[name], name)
+        self.assertIn('not transitions.is_transitioning() and not _interaction.is_response_open()', after["_process"])
+        self.assertIn('if not _root.visible or _dialogue.is_conversation_open():\n\t\t_clear_menu.hide()', after["_process"])
+        # Number-key dispatch still consumes recognized input, then reaches the
+        # same guarded _activate callback as mouse activation. No disabled/dim style.
+        self.assertIn('_activate(slot)', after["_unhandled_key_input"])
+        self.assertNotIn('disabled =', after["_process"])
+        self.assertNotIn('modulate', after["_process"])
+
+    def test_inventory_assignment_guard_preserves_inventory_escape_priority(self):
+        path = "scenes/ui/inventory_ui.gd"
+        before, after = functions(baseline(path)), functions(read(path))
+        changed = {"_input", "_machine_context_input", "_assign_to_hotbar"}
+        self.assertEqual(before.keys(), after.keys())
+        for name in before.keys() - changed:
+            self.assertEqual(after[name], before[name], name)
+        guard = '\tif _dialogue.is_conversation_open():\n\t\treturn\n'
+        for name in changed - {"_input"}:
+            self.assertEqual(after[name].count(guard), 1)
+            self.assertEqual(after[name].replace(guard, "", 1), before[name], name)
+        hide = '\tif _dialogue.is_conversation_open():\n\t\t_assignment_menu.hide()\n'
+        self.assertEqual(after["_input"].replace(hide, "", 1), before["_input"])
+
+    def test_compact_controls_leave_layout_text_and_shared_styles_unchanged(self):
+        first_pr_commit = "2103384365702a1ae3cd42488bd6f0a6537b3566"
+        for path in ("scenes/ui/dialogue_ui.tscn", "assets/ui/b1_theme.tres",
+                     "assets/ui/machine_actions.tres", "scenes/ui/hotbar_ui.tscn"):
+            original = subprocess.check_output(
+                ["git", "show", f"{first_pr_commit}:{path}"], cwd=ROOT
+            ).decode("utf-8").replace("\r\n", "\n")
+            self.assertEqual(read(path), original)
+        original = functions(subprocess.check_output(
+            ["git", "show", f"{first_pr_commit}:scenes/ui/dialogue_ui.gd"], cwd=ROOT
+        ).decode("utf-8").replace("\r\n", "\n"))
+        current = functions(read("scenes/ui/dialogue_ui.gd"))
+        for name in original.keys() - {"_ready"}:
+            self.assertEqual(current[name], original[name], name)
+        self.assertIn('.duplicate() as StyleBox', current["_ready"])
+        self.assertIn('custom_minimum_size = Vector2(76, 32)', current["_ready"])
 
     def test_scene_references_and_mouse_callbacks_resolve(self):
         scene = read("scenes/ui/dialogue_ui.tscn")

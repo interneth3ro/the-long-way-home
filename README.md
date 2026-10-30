@@ -73,6 +73,9 @@ validation; runtime and engine verification remain unperformed.
 [conversation presenter](scenes/ui/dialogue_ui.gd) and
 [scene](scenes/ui/dialogue_ui.tscn). It uses B1 typography, a translucent
 blue-charcoal fill, restrained B2 framing and a compact action footer.
+Conversation-only private button styles use 16-unit text, 10-unit horizontal
+and 4-unit vertical padding, and 76 x 32 minimum hit areas. Shared button
+styles, keyboard hints, speaker/body typography and portraits remain unchanged.
 The panel is centered on the full scaled HUD, normally 640 logical units wide,
 with 24-unit edge clearance and a fixed 104-unit bottom reservation independent
 of hotbar visibility. Height follows wrapped content up to 360 units or the
@@ -95,13 +98,20 @@ and clears state immediately. Next/Finish and Dismiss keep their distinct
 callbacks: only genuine completion emits the existing completion signal.
 
 Movement, simulation, E/Escape handling, inventory/Escape priority, starting
-range checks, hotbar suppression, objective ownership and persistent
-conversation state across automatic doorways remain unchanged. Musings,
+range checks, objective ownership and persistent conversation state across
+automatic doorways remain unchanged. Owner revision on 2026-10-30 keeps the
+hotbar visible in its normal position during ordinary conversations, without
+new dimming. Number-key/mouse activation, assignment clearing, right-click
+menus and inventory hotbar assignment are blocked until Finish or Dismiss.
+Responses/transitions still hide the bar; inventory, inspection and musings
+retain their previous behavior. Construction restrictions are unchanged. Musings,
 inspection responses, choices, ambient exchanges and cinematics are outside
 this change.
 
-The owner approved the exact two-file static preservation amendment on
-2026-10-30: candidate hashes restore immutable PR #88 bytes before the existing
+The owner approved the exact static preservation amendment and the final
+footer/visible-hotbar refinement hashes on 2026-10-30. The allowance pins the
+conversation script/scene plus hotbar and inventory scripts; candidate hashes
+restore immutable PR #88 bytes before the existing
 historical comparisons; changed, duplicated and appended bytes are rejected.
 Runner policy, safeguards and Native assertions are unchanged. Validation here
 is nonexecuting only; no Godot import, Native or graphical PASS is claimed.
@@ -119,9 +129,16 @@ Owner graphical acceptance, with explicit authorization before agent execution:
   full-text access, and scroll reset after advance and reopen.
 - Advance/dismiss rapidly during fades using E, Escape and mouse buttons.
   Finish activates the objective; early/final-entry dismissal does not.
-- Verify movement and continuing production, inventory/Escape priority, hidden
-  hotbar restoration, blocked interaction/construction, and active conversation
-  ownership when walking away or crossing automatic doorways.
+- Verify movement and continuing production, inventory/Escape priority, blocked
+  interaction/construction, and active conversation ownership when walking away
+  or crossing automatic doorways.
+- Confirm the hotbar stays visible and undimmed in its normal position beneath
+  the conversation. Number keys, left/right clicks, pending clear-menu callbacks
+  and inventory assignment must do nothing until Finish or Dismiss; then verify
+  normal deployment/assignment resumes. Recheck response/transition hiding and
+  inventory, inspection and musing behavior.
+- Review the smaller primary Next/Finish and secondary Dismiss controls for
+  mouse comfort, legibility and compact content-driven panel height.
 
 ## Fabricator Recipe Chooser modernization (feature branch, pending merge)
 
@@ -1066,7 +1083,9 @@ Esc retains its existing input priority.
 Interaction prompts move to offsets -128/-96, construction hints to -144/-92,
 and musings up 64 units to -296/-160. Narrative content and completion/dismissal
 semantics remain unchanged. The bar stays visible with inventory, inspection and
-ambient musings; conversation/response panels and transitions temporarily hide it.
+ambient musings; response panels and transitions temporarily hide it. The
+owner-approved PR #89 refinement keeps it visible but noninteractive during
+ordinary conversations; see the [conversation acceptance checklist](#conversation-ui-modernization-feature-branch-pending-merge).
 
 Previously owner-approved preservation assertions in
 `tests/static_v2_production_host_test.py` pin the two inventory normalized hashes
