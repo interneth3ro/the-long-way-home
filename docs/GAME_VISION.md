@@ -347,7 +347,19 @@ approved layout and validation results; no agent graphical execution occurred.
 Specific resolution/readability and broader interaction coverage remain separate
 from those headless checks.
 See the [implementation and acceptance checklist](../README.md#b1-hybrid-hotbar-feature-branch-pending-merge).
-No movable stacks, final artwork, new tools or disk persistence are added.
+No movable stacks, new tools or disk persistence are added. The separate
+`codex/ferrite-material-icons` implementation (pending merge) integrates the
+owner-approved Ore, Ingot, Plate and Rod PNGs into inventory and existing recipe
+icons. Its owner-review refinement uses 50-unit inventory slots/34-unit icons,
+linear mipmap filtering and unframed 24-unit material storage icons. The owner
+approved those sizes, artwork, filtering and populated storage. The final
+correction parents inventory icons before centered anchoring and applies one
+shared three-unit downward inset. Empty buffers use generic text without icons,
+and Fabricator output follows the actual stored item, including
+previous-recipe output. Names, quantities, capacity bars, machine symbols,
+portraits, production controls and global scale remain intact. Graphical
+acceptance and Native authorization remain separate from static checks. See the
+[inventory artwork and owner acceptance notes](../README.md#b1-inventory-modernization-pr-78-merged).
 
 Recover the Extractor implementation is merged in PR #30; agent validation was
 static only. It adds the bay, inventory and first recovery step. Deployment and

@@ -5,12 +5,12 @@ import subprocess
 import unittest
 
 from static_automatic_transitions_test import ROOT, read as raw_read
-from static_v2_production_host_test import without_fabricator_changes
+from static_v2_production_host_test import without_fabricator_changes, without_ferrite_refinement_changes
 
 
 def read(path):
     # Proposed exact-byte allowance, retaining the historical pilot assertions.
-    return without_fabricator_changes(path, raw_read(path))
+    return without_fabricator_changes(path, without_ferrite_refinement_changes(path, raw_read(path)))
 
 
 BASE = "17c67d8c4bbab3a799686c30f341b1f602231640"

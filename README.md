@@ -873,8 +873,8 @@ Owner acceptance checks, when the owner chooses to launch graphically:
 The persistent left-side inventory uses the shared B1 theme and panel with a
 24-position Materials grid (three rows of eight) and an eight-position Machines /
 Equipment row (compact follow-up merged in PR #80). All empty positions remain visible and subdued; they have no
-action or tooltip. Occupied positions show a 22-unit icon or 14-point symbol
-and a 12-point quantity.
+action or tooltip. On pending PR #91, occupied positions show a 34-unit icon or 14-point symbol
+and a 12-point quantity in a separate 16-unit bottom band.
 Hover shows the full name and exact total. Materials have no click action;
 one left-click on a packaged machine requests deployment through the unchanged
 construction controller. Unavailable/non-machine equipment is disabled and marked
@@ -882,12 +882,68 @@ not deployable in its tooltip. Context-dependent deployment rejection remains
 with the controller. There is no selection step or Deploy button.
 
 `ItemPresentation.ICONS`, also exposed as `InventoryUI.ITEM_ICONS`, is the shared
-presentation-only lookup for inventory and hotbar: Plate/Rod reuse existing
-recipe textures; ORE, BAR, EX, SM and FB are temporary distinguishing symbols for
-Ore, Ingot, Extractor, Smelter and Fabricator. Each can be replaced by a Texture2D
-in the lookup without changing storage or layout. Unknown future types use `?`
+presentation-only lookup for inventory and hotbar. On
+`codex/ferrite-material-icons` (pending merge), Ore, Ingot, Plate and Rod use the
+four owner-approved 256 x 256 transparent PNGs in `assets/items/`, copied unchanged
+from `tlwh_ferrite_icons.zip`. Plate/Rod recipe resources reference the same PNGs
+for the Recipe Chooser and selected recipe. The old SVGs remain preserved but
+are no longer active item/recipe artwork. EX, SM and FB remain provisional
+machine symbols. Unknown future types use `?`
 with their full identity in the tooltip. Quantities below 1,000 are exact on the
 slot; larger values truncate to K/M/B/T/Qa/Qi, with exact int64 totals on hover.
+
+PR #91 owner-review refinements enlarge only the inventory slots/icons to 50/34
+units; chooser icons remain 32 units and compact selected-recipe icons 24 units.
+The four existing owner-local PNG import sidecars are now tracked, preserving
+their generated UIDs and paths and changing only `mipmaps/generate` to `true`.
+Inventory, chooser, selected-recipe and storage icons explicitly use linear
+filtering with mipmaps, matching the established portrait minification approach.
+Lossless import, alpha-border fixing and non-premultiplied alpha stay unchanged.
+Source PNG bytes, aspect-preserving rendering, B1/B2 styling and the default 85%
+scale are preserved. The owner approved enlargement, artwork, filtering and
+populated storage; the final alignment and empty-state corrections await review.
+
+The existing `ItemPresentation` helper adds unframed 24-unit icons with six-unit
+name spacing to Extractor output, Smelter input/output and Fabricator input/output
+storage. Names, quantities and capacity bars remain visible. Zero-quantity,
+unknown or missing material textures hide the icon; Fabricator keeps its generic
+"No stored output" label and uses the actual stored product for nonempty output,
+including previous-recipe output. Empty Extractor/Smelter output shows "Output";
+empty Smelter/Fabricator input shows "Input". Fabricator empty output retains
+"No stored output". Every refresh updates names from current quantities, so
+consumption/collection clears material identity immediately without stale labels.
+The hidden icon reserves no width or six-unit gap in its HBox; generic names
+align with the row edge. Portraits, status/gauges, controls and hotbar are unchanged.
+Machine icon replacements and inventory/hotbar drag-and-drop remain deferred.
+
+The static preservation suite retains the initial PR's hashes and all older
+comparisons. Eight refined presentation files have complete candidate hashes;
+historical checks restore immutable initial PR #91 bytes only after verifying
+those hashes. Import tests reconstruct the original LF-normalized sidecars by
+reversing only the mipmap flag and verify the original metadata hashes. Three
+focused checks cover amendment tampering, import/filter consistency and storage
+identity/slot geometry. This expanded amendment requires review before Native.
+The final four-script correction adds another exact-byte layer restoring
+`5788c67` before those existing comparisons. Earlier hashes remain unchanged;
+additional tests protect parent-first icon geometry, empty/populated label rules
+and amendment tampering. Review this amendment before any Native execution.
+No runner, policy, command, staging allowlist or native assertion changes occur.
+
+Owner acceptance (record PASS/FAIL and optional observations for each):
+
+- Inventory: all four icons visually centered, legible quantities/tooltips,
+  approved enlarged layout/empty slots preserved and no clipping or overlap at 75%, 85% and 100% in 1024 x 576, 1280 x 720 and
+  maximized windows; compare the unchanged hotbar.
+- Recipes: Plate/Rod chooser and selected icons have smoother edges without blur
+  or halos; CURRENT, selection and pause behavior remain correct.
+- Storage: Extractor Ore, Smelter Ore/Ingot and Fabricator actual input/output
+  icons appear beside names; previous-recipe output stays correct. Empty buffers
+  use generic labels without icons or residual gaps; consumption/collection and
+  recipe switching clear identities correctly. No crowded controls or clipping.
+- Regression: quantities, inventory clicks/right-click assignment, transfers,
+  collection, recipe switching, production and hotbar behavior remain correct.
+Capture actual Godot screenshots for owner review. Agent Godot/Native execution
+is not authorized by this assignment; static checks do not establish rendering.
 
 Items sort by stable `item_id` within each section, independent of acquisition
 order. Quantity-only updates do not reorder slots. New/removing types can shift
@@ -898,28 +954,33 @@ the equipment row with section, name and exact total; overflow machines retain
 direct deployment. This is a presentation fallback, with no storage capacity,
 stack records, pagination, rearrangement or transaction changes.
 
-Both grids use eight-column GridContainers, 42-unit slots and four-unit gaps.
-The panel keeps its left/top placement (24, 100); B2 padding refinement makes
-its width 396 units (364-unit grid plus 16-unit padding on each side), up from
-PR #80's 380. A private copy of the shared panel style changes only padding:
+Both grids retain eight-column GridContainers and four-unit gaps. Pending PR #91
+uses 50-unit slots and a 460-unit panel (428-unit grid plus 16-unit padding on
+each side), enlarged from the earlier 42-unit slots/396-unit panel. The panel
+keeps its left/top placement (24, 100). Its private shared-panel style keeps padding:
 16 horizontally and 14 vertically. B1 colors,
 transparency, borders and corners remain unchanged; the hotbar and shared theme
 are untouched. Section spacing is four units; the title is 18-point, section
 headings/hint are 14-point, and the hint reads `Tab / Esc to close`. Deployment
 and hotbar-assignment guidance remains in machine and overflow tooltips.
 
-Height remains content-driven. Static font/spacing arithmetic estimates about
-317 units without overflow, 385 with its existing 64-unit scroll area. These
-are layout estimates, not measured Godot output. At 1024 x 576 the existing
-0.8 scaling gives a 316.8-pixel-wide panel, 33.6-pixel slots,
-17.6-pixel icons, 11.2-pixel symbols/headings and 9.6-pixel quantities. The panel
-bounds fit both supported canvases by static inspection. IBM Plex Sans Regular
-advance metrics put the widest quantity at about 36.5 of 38 available logical
-units; its 15.6-unit line height fits the 18-unit quantity region. The owner
-inspected the eight-column layout in Godot and approved it. Specific resolution
-coverage and long-quantity readability were not separately recorded; these remain
-useful acceptance checks rather than claims established by the static metrics.
-No display settings or player UI-scale control changes are included.
+Height remains content-driven, including the existing 64-unit overflow scroll
+area. Four 50-unit slot rows add 32 units of height over the preceding layout;
+section spacing, fonts and outer padding stay unchanged. Icons are attached to
+the slot before centered-top anchors are set, with explicit offsets (-17,3,17,37):
+a shared 34-unit canvas centered horizontally and inset three units downward.
+All four sources have symmetric horizontal alpha bounds (23..232 of 256); their
+lowest painted source pixel is y=228. At this inset, nonzero source alpha ends
+below y=33.42, above the unchanged quantity band starting at y=34. Only transparent
+canvas padding enters that band; no source crop or per-item offsets are used.
+Actual filtered edges and optical balance remain graphical acceptance checks.
+Quantity text retains 46 units horizontally and the 16-unit bottom band. Prior font metrics estimated a 15.6-unit line height at size 12;
+actual long-quantity fit remains an owner acceptance check. At 1280 x 720 / 85%,
+the 460-unit panel, 50-unit slots and 34-unit icons become approximately 391,
+42.5 and 28.9 physical pixels. Other windows retain the established hybrid scale
+P * sqrt(S), not a fixed 0.8 multiplier. No display or global-scale changes occur.
+The enlarged layout is pending graphical acceptance, including minimum-window
+bounds and future overflow access; older layout acceptance does not verify it.
 
 B2 Balanced frame on `codex/b1-refined-industrial-inventory` (pending merge):
 [the reusable NinePatchRect scene](scenes/ui/b2_panel_frame.tscn) uses the

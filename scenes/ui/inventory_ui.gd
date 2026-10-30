@@ -10,7 +10,7 @@ signal opened
 
 const MATERIAL_SLOTS := 24
 const EQUIPMENT_SLOTS := 8
-const SLOT_SIZE := Vector2(42, 42)
+const SLOT_SIZE := Vector2(50, 50)
 # Shared presentation lookup; storage remains independent of UI.
 const ITEM_ICONS := ItemPresentation.ICONS
 
@@ -96,18 +96,23 @@ func _create_slots(grid: GridContainer, count: int) -> void:
 		grid.add_child(slot)
 		var icon := TextureRect.new()
 		icon.name = "Icon"
+		# Resolve centered anchors against the slot, not an unattached control.
+		slot.add_child(icon)
 		icon.set_anchors_and_offsets_preset(Control.PRESET_CENTER_TOP)
-		icon.position = Vector2(-11, 1)
-		icon.size = Vector2(22, 22)
+		# One shared inset balances the artwork; source alpha stays above quantities.
+		icon.offset_left = -17
+		icon.offset_top = 3
+		icon.offset_right = 17
+		icon.offset_bottom = 37
 		icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		icon.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 		icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		slot.add_child(icon)
 		var symbol := Label.new()
 		symbol.name = "Symbol"
 		symbol.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
 		symbol.offset_top = 1
-		symbol.offset_bottom = 23
+		symbol.offset_bottom = 34
 		symbol.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		symbol.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		symbol.add_theme_font_size_override("font_size", 14)
@@ -119,8 +124,8 @@ func _create_slots(grid: GridContainer, count: int) -> void:
 		quantity.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
 		quantity.offset_left = 2
 		quantity.offset_right = -2
-		quantity.offset_top = -19
-		quantity.offset_bottom = -1
+		quantity.offset_top = -16
+		quantity.offset_bottom = 0
 		quantity.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 		quantity.add_theme_font_size_override("font_size", 12)
 		quantity.mouse_filter = Control.MOUSE_FILTER_IGNORE
