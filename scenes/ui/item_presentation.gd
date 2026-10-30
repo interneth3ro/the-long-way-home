@@ -1,15 +1,15 @@
 class_name ItemPresentation
 extends RefCounted
 
-# Shared item artwork for inventory and hotbar; machine symbols remain provisional.
+# Shared canonical item artwork for inventory and hotbar.
 const ICONS := {
 	&"ferrite_ore": preload("res://assets/items/ferrite_ore.png"),
 	&"ferrite_ingot": preload("res://assets/items/ferrite_ingot.png"),
 	&"ferrite_plate": preload("res://assets/items/ferrite_plate.png"),
 	&"ferrite_rod": preload("res://assets/items/ferrite_rod.png"),
-	&"extractor": "EX",
-	&"smelter": "SM",
-	&"fabricator": "FB",
+	&"extractor": preload("res://assets/items/extractor.png"),
+	&"smelter": preload("res://assets/items/smelter.png"),
+	&"fabricator": preload("res://assets/items/fabricator.png"),
 }
 
 

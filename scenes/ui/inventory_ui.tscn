@@ -33,7 +33,7 @@ text = "Inventory (Tab)"
 visible = false
 offset_left = 24.0
 offset_top = 100.0
-offset_right = 484.0
+offset_right = 496.0
 mouse_filter = 0
 
 [node name="Content" type="VBoxContainer" parent="HUD/Panel"]
@@ -76,10 +76,11 @@ text = "Machines / Equipment"
 
 [node name="Equipment" type="GridContainer" parent="HUD/Panel/Content"]
 layout_mode = 2
+size_flags_horizontal = 0
 mouse_filter = 2
 theme_override_constants/h_separation = 4
 theme_override_constants/v_separation = 4
-columns = 8
+columns = 6
 
 [node name="Overflow" type="ScrollContainer" parent="HUD/Panel/Content"]
 visible = false

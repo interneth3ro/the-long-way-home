@@ -348,7 +348,7 @@ Specific resolution/readability and broader interaction coverage remain separate
 from those headless checks.
 See the [implementation and acceptance checklist](../README.md#b1-hybrid-hotbar-feature-branch-pending-merge).
 No movable stacks, new tools or disk persistence are added. The separate
-`codex/ferrite-material-icons` implementation (pending merge) integrates the
+Ferrite implementation (merged PR #91) integrates the
 owner-approved Ore, Ingot, Plate and Rod PNGs into inventory and existing recipe
 icons. Its owner-review refinement uses 50-unit inventory slots/34-unit icons,
 linear mipmap filtering and unframed 24-unit material storage icons. The owner
@@ -356,10 +356,36 @@ approved those sizes, artwork, filtering and populated storage. The final
 correction parents inventory icons before centered anchoring and applies one
 shared three-unit downward inset. Empty buffers use generic text without icons,
 and Fabricator output follows the actual stored item, including
-previous-recipe output. Names, quantities, capacity bars, machine symbols,
-portraits, production controls and global scale remain intact. Graphical
+previous-recipe output. Names, quantities, capacity bars, portraits, production
+controls and global scale remain intact. Graphical
 acceptance and Native authorization remain separate from static checks. See the
 [inventory artwork and owner acceptance notes](../README.md#b1-inventory-modernization-pr-78-merged).
+
+The focused `codex/machine-icons-equipment-sizing` feature (pending merge) adds
+owner-supplied Extractor, Smelter and Fabricator icons to the canonical mapping,
+replacing EX/SM/FB. Equipment retains eight positions and ID ordering in six
+columns, with 70-unit slots/56-unit icons; materials stay at eight columns and
+50/34 units. The panel widens from 460 to 472 units. Owner Decision 19 makes
+its height follow the current content minimum explicitly, with deferred refits
+when that minimum changes; it moves upward only as needed to leave 16 units above
+the hotbar. Hidden overflow reserves no space, while visible overflow retains its
+bounded list. Decision 20 implements Option C: ten 60-unit slots/46-unit icons,
+centered subtle key hints immediately below each button, outside the backing,
+and unchanged lower-right quantities. There is no header, footer, toggle or
+Option B implementation. The centered 662 x 68 backing and external hints reserve
+101 units above the bottom; conversation/musing clearances remain 104/112.
+The owner approved the machine icons/rendering and visually approved the refined
+layout on 2026-10-30. Artwork bytes,
+Ferrite icons, capacity, ownership, deployment/recovery, assignment mechanics,
+active/hover/unavailable states and the 85% default remain intact. The owner then
+authorized restricted testing: at `967b27c`, 90 static tests, cold headless import
+and the allowlisted recipe-switching regression passed, with zero failures and
+all infrastructure/authorization checks passing. Final documentation changes do
+not alter tested runtime inputs or controls. No agent graphical, interactive UI
+or performance test, merge or cleanup was performed. Exhaustive functional and
+overflow/window coverage remains distinct from visual approval and that narrow
+headless test. The branch is ready for owner merge review. See the
+[focused acceptance checklist](../README.md#machine-icons-and-equipment-sizing-feature-branch-pending-merge).
 
 Recover the Extractor implementation is merged in PR #30; agent validation was
 static only. It adds the bay, inventory and first recovery step. Deployment and

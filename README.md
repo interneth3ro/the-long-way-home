@@ -83,7 +83,8 @@ Width follows the longest authored line up to 540 logical units, bounded by
 24-unit viewport edge clearances. Wrapped content determines height up to 300
 units or available viewport height. The panel sits at the lower left, 24 units
 from the left and 112 units above the bottom, independently of hotbar position
-or visibility. The normal hotbar occupies the bottom 76 units. UIScaleRoot and
+or visibility. The machine-icon feature reserves the bottom 101 logical units for the hotbar,
+below this unchanged 112-unit musing clearance. UIScaleRoot and
 the 85% default remain unchanged. Future oversized text scrolls automatically
 through the bounded body during its authored interval, with initial/final holds;
 identity stays fixed, with no input, paging, truncation or font shrinking. Future
@@ -872,9 +873,10 @@ Owner acceptance checks, when the owner chooses to launch graphically:
 
 The persistent left-side inventory uses the shared B1 theme and panel with a
 24-position Materials grid (three rows of eight) and an eight-position Machines /
-Equipment row (compact follow-up merged in PR #80). All empty positions remain visible and subdued; they have no
-action or tooltip. On pending PR #91, occupied positions show a 34-unit icon or 14-point symbol
-and a 12-point quantity in a separate 16-unit bottom band.
+Equipment grid (eight positions retained). The machine-icon feature below uses
+six equipment columns/two rows. All empty positions remain visible and subdued;
+they have no action or tooltip. Materials/equipment show 34/56-unit icons or a
+14-point fallback symbol and a 12-point quantity in a separate 16-unit bottom band.
 Hover shows the full name and exact total. Materials have no click action;
 one left-click on a packaged machine requests deployment through the unchanged
 construction controller. Unavailable/non-machine equipment is disabled and marked
@@ -882,17 +884,17 @@ not deployable in its tooltip. Context-dependent deployment rejection remains
 with the controller. There is no selection step or Deploy button.
 
 `ItemPresentation.ICONS`, also exposed as `InventoryUI.ITEM_ICONS`, is the shared
-presentation-only lookup for inventory and hotbar. On
-`codex/ferrite-material-icons` (pending merge), Ore, Ingot, Plate and Rod use the
+presentation-only lookup for inventory and hotbar. Since
+merged PR #91, Ore, Ingot, Plate and Rod use the
 four owner-approved 256 x 256 transparent PNGs in `assets/items/`, copied unchanged
 from `tlwh_ferrite_icons.zip`. Plate/Rod recipe resources reference the same PNGs
 for the Recipe Chooser and selected recipe. The old SVGs remain preserved but
-are no longer active item/recipe artwork. EX, SM and FB remain provisional
-machine symbols. Unknown future types use `?`
+are no longer active item/recipe artwork. The machine-icon feature below replaces
+EX, SM and FB with matching PNGs. Unknown future types use `?`
 with their full identity in the tooltip. Quantities below 1,000 are exact on the
 slot; larger values truncate to K/M/B/T/Qa/Qi, with exact int64 totals on hover.
 
-PR #91 owner-review refinements enlarge only the inventory slots/icons to 50/34
+PR #91 owner-review refinements enlarged the inventory slots/icons to 50/34
 units; chooser icons remain 32 units and compact selected-recipe icons 24 units.
 The four existing owner-local PNG import sidecars are now tracked, preserving
 their generated UIDs and paths and changing only `mipmaps/generate` to `true`.
@@ -950,37 +952,135 @@ order. Quantity-only updates do not reorder slots. New/removing types can shift
 later IDs. Slots are built once; `InventoryState.changed` refreshes their contents.
 The current catalog has four material and three machine types, but the aggregate
 storage accepts more. Extra types appear in a bounded 64-unit scroll list below
-the equipment row with section, name and exact total; overflow machines retain
+the equipment grid with section, name and exact total; overflow machines retain
 direct deployment. This is a presentation fallback, with no storage capacity,
 stack records, pagination, rearrangement or transaction changes.
 
-Both grids retain eight-column GridContainers and four-unit gaps. Pending PR #91
-uses 50-unit slots and a 460-unit panel (428-unit grid plus 16-unit padding on
-each side), enlarged from the earlier 42-unit slots/396-unit panel. The panel
-keeps its left/top placement (24, 100). Its private shared-panel style keeps padding:
-16 horizontally and 14 vertically. B1 colors,
-transparency, borders and corners remain unchanged; the hotbar and shared theme
-are untouched. Section spacing is four units; the title is 18-point, section
-headings/hint are 14-point, and the hint reads `Tab / Esc to close`. Deployment
-and hotbar-assignment guidance remains in machine and overflow tooltips.
+Merged PR #91 established 50-unit slots, 34-unit icons and a 460-unit panel.
+The machine-icon feature below retains the eight-column material grid and changes
+equipment to six columns of 70-unit slots, with 56-unit icons. The panel becomes
+472 units wide (440-unit equipment grid plus 16-unit side padding). Both grids
+keep four-unit gaps; equipment is left-aligned. Preferred placement remains
+(24, 100); the panel moves upward only as needed to clear the larger hotbar by
+16 units. Private padding stays 16 horizontally and 14 vertically. B1/B2 colors,
+transparency, borders/corners and shared theme are unchanged. Section spacing
+stays four units, with 18-point title, 14-point headings/hint and the existing
+`Tab / Esc to close` text. Deployment/assignment guidance remains in tooltips.
 
-Height remains content-driven, including the existing 64-unit overflow scroll
-area. Four 50-unit slot rows add 32 units of height over the preceding layout;
-section spacing, fonts and outer padding stay unchanged. Icons are attached to
-the slot before centered-top anchors are set, with explicit offsets (-17,3,17,37):
+The panel explicitly resets to its current content minimum, including the existing
+bounded 64-unit overflow list only when that list is visible. Eight equipment positions occupy two rows; extra types still overflow after
+the eighth position. Material icons retain their PR #91 geometry: attached to
+the slot before centered-top anchors, with offsets (-17,3,17,37),
 a shared 34-unit canvas centered horizontally and inset three units downward.
 All four sources have symmetric horizontal alpha bounds (23..232 of 256); their
 lowest painted source pixel is y=228. At this inset, nonzero source alpha ends
 below y=33.42, above the unchanged quantity band starting at y=34. Only transparent
 canvas padding enters that band; no source crop or per-item offsets are used.
 Actual filtered edges and optical balance remain graphical acceptance checks.
-Quantity text retains 46 units horizontally and the 16-unit bottom band. Prior font metrics estimated a 15.6-unit line height at size 12;
+Material quantity text retains 46 units horizontally and the 16-unit bottom band. Prior font metrics estimated a 15.6-unit line height at size 12;
 actual long-quantity fit remains an owner acceptance check. At 1280 x 720 / 85%,
-the 460-unit panel, 50-unit slots and 34-unit icons become approximately 391,
-42.5 and 28.9 physical pixels. Other windows retain the established hybrid scale
+the 472-unit panel, 50-unit material slots and 34-unit material icons become
+approximately 401.2, 42.5 and 28.9 physical pixels. Equipment slots/icons become
+59.5/47.6 physical pixels. Other windows retain the established hybrid scale
 P * sqrt(S), not a fixed 0.8 multiplier. No display or global-scale changes occur.
-The enlarged layout is pending graphical acceptance, including minimum-window
-bounds and future overflow access; older layout acceptance does not verify it.
+The owner visually approved the refined PR #92 layout on 2026-10-30. The
+focused matrix below remains available for separate window/overflow regression checks.
+
+### Machine icons and equipment sizing (feature branch, pending merge)
+
+`codex/machine-icons-equipment-sizing` installs the supplied 256 x 256 RGBA
+Extractor, Smelter and Fabricator PNGs under `assets/items/`, byte-for-byte from
+`tlwh_machine_icons.zip`. Archive inventory/safe paths, ZIP CRC and PNG chunk CRC
+checks pass. All three have transparent margins; inspection of the supplied files
+shows full visible machines with no obvious clipping. No cropping, re-encoding,
+UI frames or per-machine offsets are added. The existing `ItemPresentation.ICONS`
+maps the three canonical IDs directly to their textures. Ferrite artwork and
+unknown-item fallback remain intact. Authored imports use Ferrite lossless,
+mipmap, alpha-border-fixing and non-premultiplied-alpha settings. New metadata
+includes unique stable UIDs in [Godot's canonical base-34 representation](https://github.com/godotengine/godot/blob/master/core/io/resource_uid.cpp)
+and direct resource paths. No Godot import was run.
+
+Equipment retains eight positions in six columns, at 70/56 units for slots/icons.
+Materials retain 24 positions in eight columns, at 50/34 units. Hotbar retains ten
+positions, at 60/46 units. The default stays 85%; 75/100% settings are unchanged.
+Nonexecuting bounds arithmetic covers 1024 x 576, 1280 x 720 and 1920 x 1080 at
+all three preferences. Decisions 19/20 refine height and key placement after owner
+review; the owner approved the machine icons and their rendering quality.
+
+Inventory sizing correction: the old `_fit_panel` only repositioned the current
+rectangle from the panel's own resize signal. It never requested a smaller
+content minimum, so an oversized rectangle could persist as unused space. The
+panel now calls `reset_size()` before placement, using its actual combined
+minimum rather than any fixed height or viewport fill. Content minimum changes
+schedule a deferred refit; viewport scale changes also refit. Removing the direct
+resize callback avoids resizing from within a resize notification. Hidden overflow
+contributes no strip or extra gap; visible overflow retains its bounded 64-unit
+scroll region. Rounded font/style arithmetic estimates 443 units normally and
+511 with overflow; these are static estimates, not runtime height assignments.
+Both fit above the hotbar with a 16-unit gap by moving upward only when needed.
+The Tab/Esc hint remains the last content row. The owner visually approved the
+refined layout on 2026-10-30. No agent graphical reproduction was performed; the
+full overflow/window interaction matrix was not separately attested.
+
+Static preservation retains the original five complete LF-normalized UI hashes
+restoring immutable PR #91, and adds three exact refinement pins restoring initial
+PR #92 commit `6eb83ea` before that existing layer. No earlier hash or assertion is
+replaced. New tests reject changed, duplicated and appended bytes, compare all
+action/refresh methods and approved rendering sections, and verify compact sizing,
+external key placement and unchanged artwork/imports/mapping. After visual
+approval, the owner authorized testing and branch finalization on 2026-10-30.
+Runner, staging policy, executable identity, commands and Native assertions are
+unchanged; future control or input-scope changes still require owner review.
+
+Restricted validation at `967b27cbdf824b9feb9efab316b66f845698ccc7`:
+`pwsh -NoProfile -File tools/run-local-tests.ps1 -Mode Native` ran once, with
+**90 Python static tests PASS** (31.157 seconds), **cold headless import PASS** and
+**recipe-switching regression PASS**, zero failures. Infrastructure and
+authorization checks passed, reason `OK`, with no failure evidence or retries.
+The pinned executable matched the policy SHA-256 before each launch. The retained
+fresh stage is
+`D:\GameDev\Godot\TLWH-NativeStages\tlwh-native-plan-f3c87e9900ce486bbb983e0102856b0f`.
+Source/stage identities and imported inputs remained intact. This record adds only
+documentation; runtime inputs and reviewed controls are unchanged from the run.
+No agent graphical launch, interactive UI test, performance test, merge or cleanup
+was performed. Headless success covers import and the allowlisted recipe test;
+it does not establish exhaustive inventory/hotbar interaction coverage.
+
+Owner visual acceptance is approved. The reference checklist below remains for
+optional detailed PASS/FAIL observations; visual approval does not assert that
+every functional/overflow case or window/scale combination was exercised.
+Check maximized desktop, 1280 x 720 and 1024 x 576 at 75%, 85% and 100%.
+
+| Check | PASS / FAIL | Optional observations |
+| --- | --- | --- |
+| Inventory: compact content height; no excessive blank area below equipment | | |
+| Inventory: hint near content bottom; no clipping or hidden positions | | |
+| Inventory: overflow grows only when present and shrinks back when absent | | |
+| Equipment: correct Extractor icon | | |
+| Equipment: correct Smelter icon | | |
+| Equipment: correct Fabricator icon | | |
+| Equipment: six columns, eight positions and stable ordering | | |
+| Equipment: readable quantities/tooltips; no clipping or alignment issues | | |
+| Materials: icons, eight columns and 50-unit slots unchanged | | |
+| Hotbar: three icons recognizable; 60-unit slots and 46-unit icons | | |
+| Hotbar: keys 1-9,0 centered immediately beneath corresponding slots | | |
+| Hotbar: key hints subtle/readable, quantities unobtrusive at lower right | | |
+| Hotbar: no header/footer or excessive vertical space | | |
+| Hotbar: copper active highlight, hover/inactive/unavailable states correct | | |
+| HUD: no overlap with conversation, musings or inventory/overflow | | |
+| Regression: inventory clicks, Tab/Escape and right-click assign/clear | | |
+| Regression: ten assignments/keys; deployment and recovery | | |
+| Regression: capacity and future overflow remain accessible | | |
+| Scaling: all listed windows/preferences remain usable | | |
+
+Capacity/overflow checks need an owner-controlled temporary fixture; the current
+catalog has three equipment types. Preserve approved narrative/production files.
+Optional observations: window, scale, machine/state, issue and screenshot reference.
+Option C is the sole implementation; Option B remains a possible later owner
+amendment, with no toggle or alternate layout. Drag-and-drop, assignment redesign,
+portraits/world artwork, recipes/production and broader UI work remain deferred.
+Visual approval and restricted validation are complete; the branch is ready for
+owner merge review. No merge or cleanup was performed.
 
 B2 Balanced frame on `codex/b1-refined-industrial-inventory` (pending merge):
 [the reusable NinePatchRect scene](scenes/ui/b2_panel_frame.tscn) uses the
@@ -1172,17 +1272,19 @@ sections and deploying/assigning overflow equipment.
 
 ## B1 hybrid hotbar (feature branch, pending merge)
 
-`codex/b1-hybrid-hotbar` adds ten persistent 52-unit B1 slots centered at the
-bottom, labeled **1-9, 0**, with six-unit gaps. This is an 18.75% reduction from
-the original 64-unit hotbar slots. One dark backing panel surrounds the row,
-reusing a private copy of the B1 panel style with 90% background opacity,
-a thin border and four-unit padding. Its overall size is 582 x 60 units with
-a 16-unit bottom margin. Icons/symbols, quantities and key labels fit the smaller
-slots. Shared theme resources are unchanged. The separate compact inventory
-follow-up on `codex/compact-20-slot-inventory` uses 24 material
-and eight equipment positions without changing this hotbar.
-Temporary machine symbols and integer-safe quantities share
-`scenes/ui/item_presentation.gd` with inventory. Empty slots are subdued;
+The machine-icon feature (`codex/machine-icons-equipment-sizing`, pending merge)
+enlarges ten persistent B1 slots from 52 to 60 logical units, with centered
+46-unit machine icons. Owner Decision 20 implements Option C only: subtle
+13-point keys **1-9, 0** are centered across each 60-unit slot at local y=64,
+four units below the button and outside the backing. Key labels ignore mouse input
+and inherit slot availability. Quantities stay at 12 points in the lower-right
+16-unit band beginning at y=44; approved icon rendering remains unchanged.
+Six-unit gaps and private B1 colors/borders remain. All backing padding is four
+units; there is no key header or decorative footer. The centered backing shrinks
+from 662 x 86 to 662 x 68. Its bottom sits 33 units above the viewport edge,
+leaving 16 units below the 17-unit key lines. The full footprint starts 101 units
+above the bottom, clearing unchanged conversation/musing reservations (104/112)
+by 3/11 units. Global scaling is unchanged. Empty slots are subdued;
 assigned zero-quantity slots retain their type, show zero and remain clearable.
 The deploying type uses a steady copper-amber border. On
 `codex/fabricator-range-hotbar-hover` (pending merge), active hover subtly brightens

@@ -44,7 +44,7 @@ func _ready() -> void:
 	transitions.transition_started.connect(_clear_menu.hide)
 	for index in PlaythroughState.HOTBAR_SIZE:
 		var slot := Button.new()
-		slot.custom_minimum_size = Vector2(52, 52)
+		slot.custom_minimum_size = Vector2(60, 60)
 		slot.theme_type_variation = &"B1InventorySlot"
 		slot.focus_mode = Control.FOCUS_NONE
 		slot.mouse_filter = Control.MOUSE_FILTER_STOP
@@ -53,18 +53,23 @@ func _ready() -> void:
 		slot.gui_input.connect(_slot_input.bind(index, slot))
 		var icon := TextureRect.new()
 		icon.name = "Icon"
-		icon.position = Vector2(14, 11)
-		icon.size = Vector2(24, 24)
+		icon.position = Vector2(7, 0)
+		icon.size = Vector2(46, 46)
+		icon.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 		icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 		icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		slot.add_child(icon)
-		_add_label(slot, "Key", str(index + 1) if index < 9 else "0", Vector2(4, 0), 13)
+		# External hints follow each slot; no header or footer inside the backing.
+		var key := _add_label(slot, "Key", str(index + 1) if index < 9 else "0", Vector2(0, 64), 13)
+		key.size.x = 60
+		key.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		key.theme_type_variation = &"B1MutedLabel"
 		var symbol := _add_label(slot, "Symbol", "", Vector2(4, 11), 16)
-		symbol.size.x = 44
+		symbol.size.x = 52
 		symbol.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		var quantity := _add_label(slot, "Quantity", "", Vector2(4, 32), 14)
-		quantity.size.x = 44
+		var quantity := _add_label(slot, "Quantity", "", Vector2(4, 44), 12)
+		quantity.size.x = 52
 		quantity.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	progression.hotbar_changed.connect(_refresh)
 	progression.inventory.changed.connect(_refresh)
