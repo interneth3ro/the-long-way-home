@@ -16,6 +16,7 @@ signal inspection_visibility_changed(open: bool)
 @onready var _legacy_content: VBoxContainer = $HUD/Panel/Content
 @onready var _extractor_view = $HUD/Panel/ExtractorInspection
 @onready var _smelter_view = $HUD/Panel/SmelterInspection
+@onready var _fabricator_view = $HUD/Panel/FabricatorInspection
 @onready var _title: Label = $HUD/Panel/Content/Title
 @onready var _status: Label = $HUD/Panel/Content/Status
 @onready var _explanation: Label = $HUD/Panel/Content/Explanation
@@ -43,6 +44,7 @@ var _pause_world: PlanetWorldState
 var _pause_lease: RefCounted
 var _extractor_layout_extent := Vector2.ZERO
 var _smelter_layout_extent := Vector2.ZERO
+var _fabricator_layout_extent := Vector2.ZERO
 
 
 func _ready() -> void:
@@ -66,6 +68,12 @@ func _ready() -> void:
 	_smelter_view.collect_requested.connect(_collect)
 	_smelter_view.close_requested.connect(close)
 	$HUD.scale_changed.connect(_layout_smelter)
+	_fabricator_view.mount_chooser(_recipe_cards, _pause_label, _recipe_error, _back_button)
+	_fabricator_view.transfer_requested.connect(_transfer)
+	_fabricator_view.collect_requested.connect(_collect)
+	_fabricator_view.change_requested.connect(_change_recipe)
+	_fabricator_view.close_requested.connect(close)
+	$HUD.scale_changed.connect(_layout_fabricator)
 
 
 func is_open() -> bool:
@@ -191,6 +199,8 @@ func _process(_delta: float) -> void:
 
 func _refresh(machine: Dictionary) -> void:
 	var definition: MachineDefinition = machine.definition
+	if _refresh_fabricator_shell(machine, definition):
+		return
 	if _refresh_smelter(machine, definition):
 		return
 	var extractor := definition.item_id == &"extractor" and not definition.has_recipes()
@@ -480,3 +490,48 @@ func _transfer() -> void:
 		close()
 	else:
 		_refresh(updated)
+
+
+func _refresh_fabricator_shell(machine: Dictionary, definition: MachineDefinition) -> bool:
+	var fabricator := definition.item_id == &"fabricator" and definition.has_recipes()
+	_fabricator_view.visible = fabricator
+	if not fabricator:
+		_fabricator_layout_extent = Vector2.ZERO
+		return false
+	_legacy_content.hide()
+	_extractor_view.hide()
+	_smelter_view.hide()
+	_extractor_layout_extent = Vector2.ZERO
+	_smelter_layout_extent = Vector2.ZERO
+	var recipe := definition.get_recipe(machine.get("recipe_id", &""))
+	_recipe_cards.visible = _changing_recipe or recipe == null
+	_back_button.visible = _changing_recipe
+	_pause_label.visible = _changing_recipe
+	_recipe_error.visible = _changing_recipe and not _recipe_error.text.is_empty()
+	var can_transfer := false
+	if recipe != null:
+		for ingredient in recipe.ingredients:
+			if machine.inputs.get(ingredient.item.item_id, 0) < definition.input_capacity \
+					and progression.inventory.get_quantity(ingredient.item.item_id) > 0:
+				can_transfer = true
+	_fabricator_view.refresh(machine, progression.planet.machine_status(machine),
+		_in_range(machine), progression.planet.stored_output_item(machine), can_transfer, _changing_recipe)
+	_layout_fabricator()
+	return true
+
+
+func _layout_fabricator() -> void:
+	if not _panel.visible or not _fabricator_view.visible:
+		return
+	var extent: Vector2 = $HUD.size
+	if extent == _fabricator_layout_extent:
+		return
+	_fabricator_layout_extent = extent
+	_set_panel_padding(true)
+	var compact := extent.y < 800.0
+	_fabricator_view.set_compact(compact)
+	var panel_size := Vector2(minf(860.0, extent.x - 48.0), minf(620.0, extent.y - 128.0))
+	_panel.set_anchors_and_offsets_preset(Control.PRESET_TOP_LEFT)
+	_panel.size = panel_size
+	_panel.position = Vector2(extent.x - _panel.size.x - 24.0,
+		24.0 + (extent.y - 128.0 - _panel.size.y) * 0.5)
