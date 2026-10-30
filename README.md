@@ -72,7 +72,7 @@ validation; runtime and engine verification remain unperformed.
 `codex/musing-ui-modernization` updates the existing
 [musing presenter](scenes/ui/musing_ui.gd) and [scene](scenes/ui/musing_ui.tscn).
 The passive B1 observation panel has a translucent blue-charcoal surface, thin
-1-unit muted teal-gray border at 50% opacity, small copper accent and upright
+1-unit brighter muted teal-gray border at 88% opacity, small copper accent and upright
 DAVE label. Body text
 uses 16-unit official real IBM Plex Sans Italic from the existing pinned
 [font source and license](assets/fonts/ibm-plex-sans/README.md).
@@ -106,8 +106,9 @@ mouse transparency and actual italic font metadata. The owner approved the exact
 initial musing hashes and narrow static preservation amendment on 2026-10-30.
 The owner approved the 540-unit maximum width and 16-unit italic body. The final
 border refinement preserves 2-unit corners and all four 1-unit inset border sides;
-only border alpha changes from 0.8 to 0.5 in the existing StyleBoxFlat. The updated
-exact scene preservation hash remains proposed for owner review. Rendered border
+only border RGBA changes to (0.46, 0.60, 0.62, 0.88) in the existing StyleBoxFlat.
+The owner approved the exact updated scene hash and preservation amendment on
+2026-10-30. Rendered border
 visibility, including against lighter backgrounds, awaits owner graphical review.
 Agent validation remains static only. The unchanged Native runner
 excludes the italic font/import sidecar; a separately reviewed staging expansion

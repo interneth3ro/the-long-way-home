@@ -38,7 +38,7 @@ class MusingUIStaticTest(unittest.TestCase):
         def before_border_refinement(path):
             current = read(path)
             if path.endswith(".tscn"):
-                current = current.replace("border_color = Color(0.29, 0.40, 0.43, 0.5)",
+                current = current.replace("border_color = Color(0.46, 0.60, 0.62, 0.88)",
                                           "border_color = Color(0.29, 0.40, 0.43, 0.8)", 1)
             return current
 
@@ -71,9 +71,18 @@ class MusingUIStaticTest(unittest.TestCase):
         self.assertEqual(hashlib.sha256(previous.encode()).hexdigest(),
                          "04a4c060faccd3a4b8eba7daa4c04c150c3962ec29676a7d1efbe51de7eae839")
         old = "border_color = Color(0.29, 0.40, 0.43, 0.8)"
-        new = "border_color = Color(0.29, 0.40, 0.43, 0.5)"
+        new = "border_color = Color(0.46, 0.60, 0.62, 0.88)"
         self.assertEqual(previous.count(old), 1)
         self.assertEqual(read(path), previous.replace(old, new, 1))
+        # Preserve the preceding 50%-opacity refinement as immutable history.
+        previous_border = subprocess.check_output(
+            ["git", "show", f"6f121f0:{path}"], cwd=ROOT
+        ).decode().replace("\r\n", "\n")
+        self.assertEqual(hashlib.sha256(previous_border.encode()).hexdigest(),
+                         "3fe7d11b1339d3a5520c72540ac5f143b72b82d7fc7dd71f84c489f6d5a168fe")
+        old_border = "border_color = Color(0.29, 0.40, 0.43, 0.5)"
+        self.assertEqual(previous_border.count(old_border), 1)
+        self.assertEqual(read(path), previous_border.replace(old_border, new, 1))
         style = read(path).split('[sub_resource type="StyleBoxFlat" id="MusingStyle"]', 1)[1].split("[node", 1)[0]
         for side in ("left", "top", "right", "bottom"):
             self.assertIn(f"border_width_{side} = 1\n", style)
