@@ -78,7 +78,7 @@ Close control, Esc and column/header dividers. No new global theme is introduced
 
 Owner review accepts the overall composition, header spacing, portrait, framing,
 storage cards, contextual actions, gauge and bottom-aligned details grid. The
-latest provisional refinement increases only panel width and rebalances columns;
+accepted width refinement increases only panel width and rebalances columns;
 height, vertical centering and portrait/gauge sizing remain unchanged. The header hierarchy,
 content-sized row, centered title and 10-unit divider gap already match final
 merged PR #85 exactly. Smelter sizing now explicitly reapplies that same
@@ -86,7 +86,7 @@ merged PR #85 exactly. Smelter sizing now explicitly reapplies that same
 opening; no header-height minimum or manual control offset is added. The owner
 has accepted the latest screenshot header spacing.
 
-The provisional normal logical panel is 770 x 560, capped at 61% of HUD width
+The accepted normal logical panel is 770 x 560, capped at 61% of HUD width
 (previously 700 and 53%). This lets 770 take effect even at 1280 x 720 / 100%,
 while retaining proportional fitting at smaller logical extents. Below a
 740-unit logical HUD height it uses 520 units, tighter spacing and a 124-unit
@@ -105,7 +105,8 @@ sidecar enables mip generation, following PR #85. Lossless compression, alpha
 handling, source pixels and stationary-world filtering are unchanged. The owner
 has accepted the portrait; the width refinement leaves its settings and vertical
 space unchanged. Static bounds indicate it remains height-limited at the requested
-window sizes/scales, preserving its displayed size; confirm in the next screenshot.
+window sizes/scales, preserving its displayed size. The owner accepted the current
+Smelter visual design; this does not imply graphical verification at every size/scale.
 No derivative artwork is generated.
 
 An expanding portrait sits above one nonexpanding storage/actions VBox. Input
@@ -130,8 +131,8 @@ existing bottom-aligned details container and automatic vertical scrolling remai
 no scrollbar is forcibly hidden. The owner accepted the previous grid screenshot;
 the wider production column now gives Recipe more room for a single line without
 changing its font-measured wrapping logic. Static fitting checks cover 1024 x 576
-and 1280 x 720 at 75/85/100%; actual widened layout remains pending screenshot
-review. Normal 770-unit width allocates approximately 354 units to storage and
+and 1280 x 720 at 75/85/100%; the owner subsequently accepted the current widened
+visual design. Normal 770-unit width allocates approximately 354 units to storage and
 326 to production, compared with 336/275 before widening.
 
 The deployed [MachineVisual](construction/machine_visual.gd) indicates status with
@@ -148,42 +149,58 @@ tracker temporarily and restore its preference on close. Extractor resources,
 layout code and data, Fabricator refresh/chooser, pause leases, status calculations,
 transactions and input guards are unchanged.
 
-Validation: 55 Python static checks PASS, including merged-header geometry,
-exact existing-method and
-Extractor-component preservation comparisons; standalone gdtoolkit 4.5 grammar
-parsing of the changed scripts PASS. Static checks do not establish engine parsing,
-runtime input delivery or graphical fit. The owner approved the exact-byte preservation amendments
-in the two existing Python suites and one restricted Native run on 2026-10-29;
-the run at `bc0b46e` passed Static but cold import failed with `NONZERO_EXIT`.
-The recipe test was NOT RUN and no retry was attempted. The retained 4096-byte
-diagnostic contains initialization progress without a specific failure cause.
-Failure evidence is preserved in ignored
-`artifacts/logs/native-failure-4c3ba3f176ff465ebbae954712940f19.json`;
-the fresh external stage `tlwh-native-plan-e19ee3e4bfbd4a779039472b6887229a`
-is also retained. Engine parsing and runtime compatibility remain unverified. No runner, allowlist, policy or Godot-native assertion changes are made.
-Graphical acceptance remains with the owner; no agent graphical launch is authorized.
-The screenshot and width refinement passes ran nonexecuting checks only: no Native retry or
-Godot launch. Its updated exact-byte MachineUI preservation hash is a review
-candidate, not renewed Native authorization; the new header-preservation assertion
-also requires control review before any future Native execution. Original failure
-evidence and the external stage remain untouched.
+Validation at `743613139039ddd8efa550457ca6b2eefd29c2ca`: the owner reviewed the
+serial-import setting and exact-file preservation amendments, then separately
+authorized one fresh invocation of
+`pwsh -NoProfile -File tools/run-local-tests.ps1 -Mode Native`. Before execution,
+the clean checkout and live PR #86 head both matched that approved revision;
+runner, allowlists, policies and Godot-native assertions were unchanged.
+
+| Restricted validation phase | Actual result |
+| --- | --- |
+| Static | PASS - 55 Python tests |
+| Import | PASS - cold headless import |
+| Native | PASS - Fabricator recipe-switching regression, 0 failures |
+| Infrastructure | PASS |
+| Authorization | PASS |
+
+The runner exited 0 with reason `OK`, using the pinned standard Godot 4.7.2
+executable and a fresh external stage:
+`D:\GameDev\Godot\TLWH-NativeStages\tlwh-native-plan-288c07e35ff849b789d3b00d268c0d04`.
+The completion record was `Fabricator recipe switching regression failures: 0`.
+The source revision and clean working state remained unchanged after execution.
+Both stages remain retained; no routine success log was added. This documentation
+update does not change the validated project inputs or imply another engine run.
+
+The earlier attempt at `bc0b46e` remains recorded as Static PASS, Import FAIL
+(`NONZERO_EXIT`), Native NOT RUN. It stopped without an automatic retry. Preserve
+its ignored evidence
+`artifacts/logs/native-failure-4c3ba3f176ff465ebbae954712940f19.json`
+(SHA-256 `3307cc0251e11de532cc1bfd41215cdb2b4b83b2940d02e771009a6d1fc1baf0`)
+and its external stage `tlwh-native-plan-e19ee3e4bfbd4a779039472b6887229a`.
+The original evidence hash remains unchanged.
 
 Provisional cold-import workaround: `editor/import/use_multiple_threads=false`
 serializes resource imports to avoid the suspected Godot 4.7.2 parallel font-import
 race. See the [upstream fix](https://github.com/godotengine/godot/pull/123546).
-This workaround is unverified and may slow cold imports. It changes no gameplay
-threading or approved Smelter UI. The original failure evidence and external stage
-remain preserved. A fresh Native attempt requires separate owner authorization;
-failures must not be retried automatically.
+The single authorized fresh attempt passed with this setting; that result supports
+the workaround but does not conclusively prove the original crash's upstream cause.
+Cold imports may be slower. The setting changes no gameplay threading or approved
+Smelter UI. No automatic retry, graphical Godot launch, stress/performance test,
+merge or cleanup was performed. Success does not authorize additional engine runs.
+
+Standalone gdtoolkit 4.5 grammar parsing, scene/resource wiring, documentation
+links and Git whitespace checks also passed during implementation. The actual
+headless run validates cold import and the allowlisted recipe regression only;
+it does not establish full Smelter gameplay/input or graphical coverage. Current
+Smelter visual design is owner-accepted; no agent graphical validation is claimed.
 
 Owner graphical acceptance (one check at a time; stop on failure):
 
-For this width refinement, review maximized at 85% first: confirm the moderately
-wider 770-unit target and 52/48 columns, a single-line Recipe where it fits, unchanged
-portrait/gauge size and accepted header/grid alignment. At 1024 x 576 and 1280 x 720,
-compare 75/85/100%, check frame/edge/hotbar clearance, full text/actions and wrapping
-or fallback scrolling. Width remains provisional; report a new layout problem before
-unrelated adjustments. Panel height and all previously accepted details are retained.
+The owner has accepted the current 770-unit, 52/48 Smelter visual design. Retain
+the following checklist for broader regression coverage; visual acceptance and the
+recipe-switching PASS do not mark every gameplay or window/scale combination tested.
+Any further agent graphical execution requires separate owner authorization.
 
 1. At 1280 x 720, 1024 x 576 and maximized, compare 75%, 85% and 100% UI scale.
    Check header/Close, frame/hotbar clearance, portrait detail and transparent glow,
