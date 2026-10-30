@@ -1,7 +1,7 @@
 class_name MusingUI
 extends CanvasLayer
 
-const MAX_WIDTH := 440.0
+const MAX_WIDTH := 540.0
 const MAX_HEIGHT := 300.0
 const EDGE_CLEARANCE := 24.0
 const BOTTOM_CLEARANCE := 112.0

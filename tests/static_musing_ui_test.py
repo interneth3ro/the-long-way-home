@@ -29,7 +29,7 @@ class MusingUIStaticTest(unittest.TestCase):
         candidates = {
             "scenes/ui/musing_ui.gd": (
                 "bd8284da6e4155a404e425d279e099ab8532afc0284a094ad2ef60f2eb60d143",
-                "const MAX_WIDTH := 360.0", "const MAX_WIDTH := 440.0"),
+                "const MAX_WIDTH := 360.0", "const MAX_WIDTH := 540.0"),
             "scenes/ui/musing_ui.tscn": (
                 "f1d8df0de4aa78d52aec1d9f74def8a9094cb24491f2443a08e1726cd5b971d4",
                 "theme_override_font_sizes/font_size = 18",
@@ -43,6 +43,18 @@ class MusingUIStaticTest(unittest.TestCase):
                 self.assertEqual(hashlib.sha256(initial.encode()).hexdigest(), digest)
                 self.assertEqual(initial.count(old), 1)
                 self.assertEqual(read(path), initial.replace(old, new, 1))
+
+        # Retain the first refinement as well: this follow-up changes one value.
+        previous_commit = "97fe4a5"
+        for path in candidates:
+            previous = subprocess.check_output(
+                ["git", "show", f"{previous_commit}:{path}"], cwd=ROOT
+            ).decode().replace("\r\n", "\n")
+            if path.endswith(".gd"):
+                self.assertEqual(hashlib.sha256(previous.encode()).hexdigest(),
+                                 "cec8d2db14c9d6076ab27813b4d9780bc0376f3b606d94686010f3a0509803a6")
+                previous = previous.replace("const MAX_WIDTH := 440.0", "const MAX_WIDTH := 540.0", 1)
+            self.assertEqual(read(path), previous)
 
     def test_narrative_progression_and_adjacent_ui_preserved(self):
         paths = [

@@ -78,7 +78,7 @@ uses 16-unit official real IBM Plex Sans Italic from the existing pinned
 Authored text and reading intervals remain exactly 5/5/5/7 seconds; sine fades
 are 0.30 seconds in and 0.40 seconds out.
 
-Width follows the longest authored line up to 440 logical units, bounded by
+Width follows the longest authored line up to 540 logical units, bounded by
 24-unit viewport edge clearances. Wrapped content determines height up to 300
 units or available viewport height. The panel sits at the lower left, 24 units
 from the left and 112 units above the bottom, independently of hotbar position
@@ -103,9 +103,9 @@ Validation: **71 Python static tests PASS**, including exact historical
 comparisons, altered/duplicated/appended-byte rejection, scene node references,
 mouse transparency and actual italic font metadata. The owner approved the exact
 initial musing hashes and narrow static preservation amendment on 2026-10-30.
-The owner requested 440-unit maximum width and 16-unit body text after first
-screenshot review; the updated exact preservation hashes remain proposed for
-owner review. Agent validation remains static only. The unchanged Native runner
+After screenshot review, the owner approved the 16-unit italic body and requested
+a 540-unit maximum width. The updated exact preservation hashes remain proposed
+for owner review. Agent validation remains static only. The unchanged Native runner
 excludes the italic font/import sidecar; a separately reviewed staging expansion
 and renewed authorization are required before Native. Runner commands, policy,
 Native assertions and the serial-import workaround are unchanged.
