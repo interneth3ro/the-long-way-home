@@ -19,9 +19,11 @@ const INACTIVE := Color(0.53, 0.59, 0.60)
 @onready var _yield: Label = $Columns/Production/DetailsScroll/Details/Rows/Yield/Value
 @onready var _unavailable: Label = $Columns/Production/DetailsScroll/Details/Unavailable
 var _compact: bool = false
+var _material_icon: TextureRect
 
 
 func _ready() -> void:
+	_material_icon = ItemPresentation.add_material_icon(_material)
 	$Header/Row/Close.pressed.connect(func() -> void: close_requested.emit())
 	_collect.pressed.connect(func() -> void: collect_requested.emit())
 
@@ -51,6 +53,7 @@ func refresh(machine: Dictionary, status: PlanetWorldState.OperatingStatus, in_r
 	var fraction := float(machine.cycle_progress) / definition.cycle_seconds if configured else 0.0
 	_gauge.set_progress(fraction, accent)
 	var product := definition.output_item
+	ItemPresentation.set_material_icon(_material_icon, product, machine.output)
 	_material.text = product.display_name if product != null else "No production configured."
 	_quantity.text = "%d / %d" % [machine.output, definition.output_capacity]
 	_capacity.value = 100.0 * machine.output / definition.output_capacity if definition.output_capacity > 0 else 0.0

@@ -5,11 +5,16 @@ import struct
 import subprocess
 import unittest
 
-from static_automatic_transitions_test import ROOT, read
+from static_automatic_transitions_test import ROOT, read as raw_read
 from static_v2_production_host_test import (
     MUSING_BASE, MUSING_SHA256, without_musing_changes,
     ITALIC_STAGING_BASE, ITALIC_STAGING_SHA256, without_italic_staging_changes,
+    without_ferrite_refinement_changes,
 )
+
+
+def read(path):
+    return without_ferrite_refinement_changes(path, raw_read(path))
 
 
 class MusingUIStaticTest(unittest.TestCase):

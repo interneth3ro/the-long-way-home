@@ -27,9 +27,13 @@ const INACTIVE := Color(0.55, 0.58, 0.59)
 @onready var _yield: Label = $Columns/Production/DetailsScroll/Details/Rows/Yield/Value
 @onready var _unavailable: Label = $Columns/Production/DetailsScroll/Details/Unavailable
 var _compact: bool = false
+var _input_icon: TextureRect
+var _output_icon: TextureRect
 
 
 func _ready() -> void:
+	_input_icon = ItemPresentation.add_material_icon(_input_material)
+	_output_icon = ItemPresentation.add_material_icon(_output_material)
 	$Header/Row/Close.pressed.connect(func() -> void: close_requested.emit())
 	_transfer.pressed.connect(func() -> void: transfer_requested.emit())
 	_collect.pressed.connect(func() -> void: collect_requested.emit())
@@ -64,6 +68,8 @@ func refresh(machine: Dictionary, status: PlanetWorldState.OperatingStatus,
 	var configured := definition.has_production() and definition.has_input()
 	var fraction := float(machine.cycle_progress) / definition.cycle_seconds if configured else 0.0
 	_gauge.set_progress(fraction, accent)
+	ItemPresentation.set_material_icon(_input_icon, definition.input_item, machine.input)
+	ItemPresentation.set_material_icon(_output_icon, definition.output_item, machine.output)
 	_input_material.text = definition.input_item.display_name \
 		if definition.has_input() else "No input configured."
 	_output_material.text = definition.output_item.display_name \

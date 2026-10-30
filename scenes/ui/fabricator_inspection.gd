@@ -33,9 +33,11 @@ var _compact_mode: int = -1
 var _displayed_recipe: RecipeDefinition
 var _ingredient_rows: Array[Dictionary] = []
 var _chooser_cards: VBoxContainer
+var _output_icon: TextureRect
 
 
 func _ready() -> void:
+	_output_icon = ItemPresentation.add_material_icon(_output_material)
 	$Header/Row/Close.pressed.connect(func() -> void: close_requested.emit())
 	_transfer.pressed.connect(func() -> void: transfer_requested.emit())
 	_collect.pressed.connect(func() -> void: collect_requested.emit())
@@ -113,9 +115,11 @@ func refresh(machine: Dictionary, status: PlanetWorldState.OperatingStatus,
 		_build_ingredients(recipe)
 	for row in _ingredient_rows:
 		var stored: int = machine.inputs.get(row.item_id, 0)
+		ItemPresentation.set_material_icon(row.icon, row.item, stored)
 		row.quantity.text = "%d / %d" % [stored, definition.input_capacity]
 		row.bar.value = 100.0 * stored / definition.input_capacity if definition.input_capacity > 0 else 0.0
 	# Nonempty output always uses its independently stored identity.
+	ItemPresentation.set_material_icon(_output_icon, product, machine.output)
 	_output_material.text = product.display_name if machine.output > 0 and product != null else "No stored output"
 	_output_quantity.text = "%d / %d" % [machine.output, definition.output_capacity]
 	_output_capacity.value = 100.0 * machine.output / definition.output_capacity if definition.output_capacity > 0 else 0.0
@@ -165,6 +169,7 @@ func _build_ingredients(recipe: RecipeDefinition) -> void:
 		ingredient_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		var quantity := Label.new()
 		stock.add_child(ingredient_label)
+		var icon := ItemPresentation.add_material_icon(ingredient_label)
 		stock.add_child(quantity)
 		var bar := ProgressBar.new()
 		bar.custom_minimum_size.y = 7
@@ -174,4 +179,5 @@ func _build_ingredients(recipe: RecipeDefinition) -> void:
 		row.add_child(stock)
 		row.add_child(bar)
 		_ingredients.add_child(row)
-		_ingredient_rows.append({"item_id": ingredient.item.item_id, "quantity": quantity, "bar": bar})
+		_ingredient_rows.append({"item_id": ingredient.item.item_id, "item": ingredient.item,
+			"icon": icon, "quantity": quantity, "bar": bar})

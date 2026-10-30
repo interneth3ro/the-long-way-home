@@ -9,7 +9,7 @@ import unittest
 from unittest.mock import patch
 
 import static_automatic_transitions_test as geometry
-from static_automatic_transitions_test import ROOT, PRIMARY, MAINTENANCE, EXTERIOR, read, merged_nodes
+from static_automatic_transitions_test import ROOT, PRIMARY, MAINTENANCE, EXTERIOR, read as raw_read, merged_nodes
 
 
 # Live post-P6 / pre-P8 main verified for cutover; never follow a moving ref.
@@ -528,6 +528,45 @@ FERRITE_ART_SHA256 = {
 }
 
 
+# PR #91 owner-review candidate. Restore the initial PR's exact files before
+# historical assertions; no earlier hash or comparison is replaced or skipped.
+# This expanded preservation amendment requires review before any Native run.
+FERRITE_REFINEMENT_BASE = "6cb185b916ddb7fe90f67a6c59ad68c5c1e6892b"
+FERRITE_REFINEMENT_SHA256 = {
+    "scenes/ui/item_presentation.gd": "89e1c205a3c3b284a49b6f6df293cf700c0fc5b875083edb8e0ea58df4eb8f10",
+    "scenes/ui/inventory_ui.gd": "2accafdaf65fea53aac39af748a62a8efeab2a67ff953af8f2bd56c3e1816622",
+    "scenes/ui/inventory_ui.tscn": "7861c43c68fa62ad24337552dbceef81acee4a7e36ef4367991a495a0dff0fa6",
+    "scenes/ui/recipe_card_content.gd": "b4acf50fc32dd07c3bafe119bb0960faafc1abd344d2f138745dc15c01ce0f56",
+    "scenes/ui/extractor_inspection.gd": "9efc079d16ff444cdefa6883ccaffa04c5d13463c92eac671c915d140c45ce7f",
+    "scenes/ui/smelter_inspection.gd": "b76db5279ee3491d274431a98c340930b891bed6f3ae40bd0172b137d838b05a",
+    "scenes/ui/fabricator_inspection.gd": "a3100624a8a63adb9fe9eb779ad650e959a92a9a554898347d398cb130b36a32",
+    "scenes/ui/fabricator_inspection.tscn": "346b47d833bd29b5a0b3ced08d60f2ad16aebc5b6ceecbec017b03401083308b",
+}
+# Existing untracked sidecars supplied by the owner's local import. Only the
+# mipmap parameter changes; LF-normalized hashes protect original UIDs/metadata.
+FERRITE_IMPORT_ORIGINAL_SHA256 = {
+    "ferrite_ore": "7a54f0f00e02d69c1ea98271f0125eb64623bfac4b1565f26faa30488368df75",
+    "ferrite_ingot": "96a9c6442d273112cf74e501ca1b2d78c32d04487281f6c8d0e9f7ab568facb1",
+    "ferrite_plate": "b401d8eb1ed3a97f7405d3ab968152ecac6f7d1c8c1e4e18eeb19453aaf7e786",
+    "ferrite_rod": "1b5a69a51b530e3ad5a6fda86f2619d3d381e09fb0a37aba8dbd6efa1e0181e0",
+}
+
+
+def without_ferrite_refinement_changes(path, text):
+    if path not in FERRITE_REFINEMENT_SHA256:
+        return text
+    if hashlib.sha256(text.encode("utf-8")).hexdigest() != FERRITE_REFINEMENT_SHA256[path]:
+        raise AssertionError(f"Missing or modified Ferrite refinement candidate bytes: {path}")
+    return subprocess.check_output(["git", "show", f"{FERRITE_REFINEMENT_BASE}:{path}"],
+                                   cwd=ROOT).decode("utf-8").replace("\r\n", "\n")
+
+
+def read(path):
+    # Historical tests retain their original view only after full-file pinning.
+    # New refinement assertions below explicitly use raw_read for working bytes.
+    return without_ferrite_refinement_changes(path, raw_read(path))
+
+
 def without_ferrite_icon_changes(path, text):
     if path not in FERRITE_ICONS_SHA256:
         return text
@@ -1044,6 +1083,60 @@ class V2ProductionHostStaticTest(unittest.TestCase):
                     self.assertNotIn(f"{item_id}.svg", recipe)
         self.assertNotIn(".svg", helper)
 
+    def test_ferrite_refinement_restores_initial_pr_and_rejects_tampering(self):
+        for path in FERRITE_REFINEMENT_SHA256:
+            original = raw_read(path)
+            with self.subTest(path=path):
+                before = subprocess.check_output(["git", "show", f"{FERRITE_REFINEMENT_BASE}:{path}"],
+                                                 cwd=ROOT).decode("utf-8").replace("\r\n", "\n")
+                self.assertEqual(without_ferrite_refinement_changes(path, original), before)
+                for changed in (original.replace("\n", "\nCHANGED\n", 1),
+                                original + original, original + "UNRELATED\n"):
+                    with self.assertRaises(AssertionError):
+                        without_ferrite_refinement_changes(path, changed)
+        self.assertEqual(without_ferrite_refinement_changes("unrelated.gd", "sentinel"), "sentinel")
+
+    def test_ferrite_imports_preserve_local_metadata_except_mipmaps(self):
+        for item_id, digest in FERRITE_IMPORT_ORIGINAL_SHA256.items():
+            with self.subTest(item_id=item_id):
+                raw = (ROOT / "assets/items" / f"{item_id}.png.import").read_bytes().replace(b"\r\n", b"\n")
+                self.assertEqual(raw.count(b"mipmaps/generate=true"), 1)
+                original = raw.replace(b"mipmaps/generate=true", b"mipmaps/generate=false", 1)
+                self.assertEqual(hashlib.sha256(original).hexdigest(), digest)
+                self.assertIn(b"process/fix_alpha_border=true", raw)
+                self.assertIn(b"process/premult_alpha=false", raw)
+        for path in ("scenes/ui/inventory_ui.gd", "scenes/ui/recipe_card_content.gd",
+                     "scenes/ui/item_presentation.gd"):
+            self.assertIn("CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS", raw_read(path))
+        scene = raw_read("scenes/ui/fabricator_inspection.tscn")
+        icon = scene.split('[node name="Icon"', 1)[1].split('[node ', 1)[0]
+        self.assertIn("texture_filter = 4", icon)
+
+    def test_ferrite_inventory_geometry_and_storage_identity_boundaries(self):
+        inventory = raw_read("scenes/ui/inventory_ui.gd")
+        self.assertIn("const SLOT_SIZE := Vector2(50, 50)", inventory)
+        self.assertIn("icon.size = Vector2(34, 34)", inventory)
+        self.assertIn("icon.position = Vector2(-17, 0)", inventory)
+        self.assertIn("quantity.offset_top = -16", inventory)
+        self.assertEqual(34, 50 - 16)  # Separate icon and quantity rectangles.
+        self.assertIn("offset_right = 484.0", raw_read("scenes/ui/inventory_ui.tscn"))
+        self.assertEqual(8 * 50 + 7 * 4 + 2 * 16, 484 - 24)
+        helper = raw_read("scenes/ui/item_presentation.gd")
+        self.assertIn("item != null and quantity > 0 else null", helper)
+        self.assertIn("icon.visible = icon.texture != null", helper)
+        self.assertIn("Vector2(24, 24)", helper)
+        self.assertIn("label.reparent(identity, false)", helper)
+        extractor = raw_read("scenes/ui/extractor_inspection.gd")
+        self.assertIn("set_material_icon(_material_icon, product, machine.output)", extractor)
+        smelter = raw_read("scenes/ui/smelter_inspection.gd")
+        self.assertIn("set_material_icon(_input_icon, definition.input_item, machine.input)", smelter)
+        self.assertIn("set_material_icon(_output_icon, definition.output_item, machine.output)", smelter)
+        fabricator = raw_read("scenes/ui/fabricator_inspection.gd")
+        self.assertIn("set_material_icon(row.icon, row.item, stored)", fabricator)
+        self.assertIn("set_material_icon(_output_icon, product, machine.output)", fabricator)
+        self.assertNotIn("set_material_icon(_output_icon, recipe.output_item", fabricator)
+        self.assertIn('else "No stored output"', fabricator)
+
     def test_hotbar_allowance_restores_exact_pre_feature_bytes(self):
         # Prove each allowance recovers the entire pre-feature file, including
         # gameplay not touched by this feature. The old P8 checks still run too.
@@ -1103,6 +1196,8 @@ class V2ProductionHostStaticTest(unittest.TestCase):
                 expected = proc.stdout.read(int(header[2]))
                 self.assertEqual(proc.stdout.read(1), b"\n")
                 actual = (ROOT / path).read_bytes()
+                if path in FERRITE_REFINEMENT_SHA256:
+                    actual = without_ferrite_refinement_changes(path, actual.decode("utf-8").replace("\r\n", "\n")).encode("utf-8")
                 if path in FERRITE_ICONS_SHA256:
                     actual = without_ferrite_icon_changes(path, actual.decode("utf-8").replace("\r\n", "\n")).encode("utf-8")
                 if path == "scenes/ui/musing_ui.gd":

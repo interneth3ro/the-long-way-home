@@ -350,7 +350,12 @@ See the [implementation and acceptance checklist](../README.md#b1-hybrid-hotbar-
 No movable stacks, new tools or disk persistence are added. The separate
 `codex/ferrite-material-icons` implementation (pending merge) integrates the
 owner-approved Ore, Ingot, Plate and Rod PNGs into inventory and existing recipe
-icons; machine symbols and storage layouts remain unchanged. See the
+icons. Its owner-review refinement uses 50-unit inventory slots/34-unit icons,
+linear mipmap filtering and unframed 24-unit material storage icons. Empty buffers
+hide artwork, and Fabricator output follows the actual stored item, including
+previous-recipe output. Names, quantities, capacity bars, machine symbols,
+portraits, production controls and global scale remain intact. Graphical
+acceptance and Native authorization remain separate from static checks. See the
 [inventory artwork and owner acceptance notes](../README.md#b1-inventory-modernization-pr-78-merged).
 
 Recover the Extractor implementation is merged in PR #30; agent validation was
