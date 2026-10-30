@@ -159,12 +159,12 @@ func _build_ingredients(recipe: RecipeDefinition) -> void:
 	for ingredient in recipe.ingredients:
 		var row := VBoxContainer.new()
 		var stock := HBoxContainer.new()
-		var material := Label.new()
-		material.text = ingredient.item.display_name
-		material.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		material.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		var ingredient_label := Label.new()
+		ingredient_label.text = ingredient.item.display_name
+		ingredient_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		ingredient_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		var quantity := Label.new()
-		stock.add_child(material)
+		stock.add_child(ingredient_label)
 		stock.add_child(quantity)
 		var bar := ProgressBar.new()
 		bar.custom_minimum_size.y = 7

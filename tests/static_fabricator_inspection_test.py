@@ -5,18 +5,35 @@ import subprocess
 import unittest
 from static_automatic_transitions_test import ROOT, read
 from static_extractor_inspection_test import functions
-from static_v2_production_host_test import FABRICATOR_BASE, without_fabricator_changes
+from static_v2_production_host_test import (
+    FABRICATOR_BASE, without_fabricator_changes, without_italic_staging_changes,
+)
 
 
 # Proposed chooser presentation bytes; owner approval required before Native use.
 # Pin the complete candidate, then retain the original immutable comparison.
 CHOOSER_SHA256 = {
-    "scenes/ui/fabricator_inspection.gd": "f0f62807cead67222bfa1f8a8efaea57cd4f7a32c0e26e874dbca79a04497378",
+    "scenes/ui/fabricator_inspection.gd": "b047fa391ec9ea994e9399baba09e21da2aea479b16e9a777c864897b7b5b512",
     "scenes/ui/fabricator_inspection.tscn": "5a6d8d0d41cbd0d030b9286509ae4803ba5e1759d962fe9b02baf6d7b1ac83c5",
     "scenes/ui/recipe_card_content.gd": "ef90f303b30247315b90bc5456388e1be5c302ece19431ef5ad27087140f1e5b",
     "scenes/ui/recipe_card_content.gd.uid": "97619be08f17930fbf4e87d683b8f0f46d7a5c8272ed7f1af44c87b4707b88cd",
     "assets/ui/recipe_chooser.tres": "0be69e2cf39d05b123874b1ddd829b3ddb76c2497f3e8e07fff49ee69e994be9",
 }
+
+
+# Owner approved this exact local rename and preservation amendment on 2026-10-30.
+# Keep the original chooser hash and historical method comparisons unchanged.
+INGREDIENT_LABEL_ORIGINAL_SHA256 = "f0f62807cead67222bfa1f8a8efaea57cd4f7a32c0e26e874dbca79a04497378"
+
+
+def without_ingredient_label_rename(text):
+    path = "scenes/ui/fabricator_inspection.gd"
+    if hashlib.sha256(text.encode()).hexdigest() != CHOOSER_SHA256[path]:
+        raise AssertionError("Missing or modified approved ingredient-label rename")
+    original, count = re.subn(r"\bingredient_label\b", "material", text)
+    if count != 5 or hashlib.sha256(original.encode()).hexdigest() != INGREDIENT_LABEL_ORIGINAL_SHA256:
+        raise AssertionError("Ingredient-label rename changed protected source")
+    return original
 
 
 class FabricatorInspectionStaticTest(unittest.TestCase):
@@ -40,7 +57,8 @@ class FabricatorInspectionStaticTest(unittest.TestCase):
             expected = subprocess.check_output(["git", "show", f"{FABRICATOR_BASE}:{path}"], cwd=ROOT)
             actual = (ROOT / path).read_bytes()
             if not path.endswith(".png"):
-                actual = without_fabricator_changes(path, actual.decode("utf-8").replace("\r\n", "\n")).encode("utf-8")
+                actual = without_fabricator_changes(path, without_italic_staging_changes(
+                    path, actual.decode("utf-8").replace("\r\n", "\n"))).encode("utf-8")
                 expected = expected.replace(b"\r\n", b"\n")
             self.assertEqual(actual, expected, path)
 
@@ -69,7 +87,7 @@ class FabricatorInspectionStaticTest(unittest.TestCase):
         controller = subprocess.check_output(["git", "show", f"{base}:scenes/ui/machine_ui.gd"], cwd=ROOT)
         self.assertEqual(read("scenes/ui/machine_ui.gd"), controller.decode().replace("\r\n", "\n"))
         before = functions(subprocess.check_output(["git", "show", f"{base}:scenes/ui/fabricator_inspection.gd"], cwd=ROOT).decode().replace("\r\n", "\n"))
-        after = functions(read("scenes/ui/fabricator_inspection.gd"))
+        after = functions(without_ingredient_label_rename(read("scenes/ui/fabricator_inspection.gd")))
         for name in ("_ready", "set_compact", "_build_ingredients"):
             self.assertEqual(before[name], after[name])
         self.assertEqual(before["refresh"].split("\tvar accent :=", 1)[1],
@@ -81,6 +99,18 @@ class FabricatorInspectionStaticTest(unittest.TestCase):
         end = '[node name="Chooser"'
         self.assertEqual(scene_before.split(start, 1)[1].split(end, 1)[0],
                          scene_after.split(start, 1)[1].split(end, 1)[0])
+
+    def test_ingredient_label_rename_retains_original_bytes_and_rejects_tampering(self):
+        path = "scenes/ui/fabricator_inspection.gd"
+        candidate = read(path)
+        original = subprocess.check_output(
+            ["git", "show", f"2a6e1a92474a4c07662d7bc3c2f13134e39c7d7f:{path}"], cwd=ROOT
+        ).decode().replace("\r\n", "\n")
+        self.assertEqual(without_ingredient_label_rename(candidate), original)
+        for changed in (candidate.replace("ingredient_label", "material", 1),
+                        candidate + candidate, candidate + "UNRELATED\n"):
+            with self.assertRaises(AssertionError):
+                without_ingredient_label_rename(changed)
 
     def test_scene_paths_and_shared_components(self):
         scene = read("scenes/ui/fabricator_inspection.tscn")

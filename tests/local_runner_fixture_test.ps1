@@ -105,7 +105,7 @@ try {
     Check 'B1 font staging allows only required fonts and rejects executable types' {
         $fontDirectory = "$source/assets/fonts/ibm-plex-sans"
         $null = New-Item -ItemType Directory -Path $fontDirectory
-        $fontPaths = @('Regular', 'Medium', 'SemiBold') | ForEach-Object {
+        $fontPaths = @('Regular', 'Medium', 'SemiBold', 'Italic') | ForEach-Object {
             $relative = "assets/fonts/ibm-plex-sans/IBMPlexSans-$_.ttf"
             [IO.File]::WriteAllBytes((Join-Path $source $relative), [byte[]]@(0, 1, 0, 0))
             $relative
@@ -121,6 +121,9 @@ try {
         foreach ($path in @('assets/fonts/other.ttf',
                 'assets/fonts/ibm-plex-sans/IBMPlexSans-Bold.ttf',
                 'assets/fonts/ibm-plex-sans/IBMPlexSans-Regular.otf',
+                'assets/fonts/ibm-plex-sans/IBMPlexSans-Italic.otf',
+                'assets/fonts/ibm-plex-sans/IBMPlexSans-Italic.ttf.exe',
+                'assets/fonts/ibm-plex-sans/IBMPlexSans-Italic.ttf.import.exe',
                 'assets/fonts/ibm-plex-sans/IBMPlexSans-Regular.ttf.exe',
                 'assets/fonts/ibm-plex-sans/IBMPlexSans-Regular.ttf.import.exe',
                 'assets/fonts/ibm-plex-sans/IBMPlexSans-Bold.ttf.import',

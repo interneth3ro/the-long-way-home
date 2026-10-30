@@ -489,7 +489,48 @@ CONVERSATION_SHA256 = {
 }
 
 
+# Owner approved the initial musing bytes/amendment on 2026-10-30. The
+# owner-approved layout uses maximum width 540 and body size 16. The border
+# color (0.46, 0.60, 0.62, 0.88), exact scene hash and preservation amendment
+# were separately approved by the owner on 2026-10-30.
+# Retain PR #89 and all older comparisons.
+# Native remains blocked by the unchanged font staging scope.
+MUSING_BASE = "a03057408cbee6301b42e00a2a26c01e25d3c8ac"
+MUSING_SHA256 = {
+    "scenes/ui/musing_ui.gd": "6eb048c21b625ba9d945492ca38f9357b2ba5393f0c7fdf39222c706930bf4f7",
+    "scenes/ui/musing_ui.tscn": "3ee90563975f5e0d161059e0d041b74cd1e302c18eb1442ca7da8afc4bfac887",
+}
+
+
+# Owner approved only the Italic font/sidecar staging expansion on 2026-10-30.
+# Pin the complete reviewed controls, then retain all prior comparisons.
+ITALIC_STAGING_BASE = "081630c07938a5a71e0b47976324d2cdbac7ea0c"
+ITALIC_STAGING_SHA256 = {
+    "tools/run-local-tests.ps1": "6fbb3fd6b4a9478775d15f01cb33628a29e0629eef0146acebdd32c3898114c5",
+    "docs/LOCAL_TESTING.md": "7ff3eb595b2a8528051ec798e1755ab302a34d3ae36ed458be2e46cf77921afc",
+}
+
+
+def without_italic_staging_changes(path, text):
+    if path not in ITALIC_STAGING_SHA256:
+        return text
+    if hashlib.sha256(text.encode()).hexdigest() != ITALIC_STAGING_SHA256[path]:
+        raise AssertionError(f"Missing or modified approved italic staging bytes: {path}")
+    return subprocess.check_output(["git", "show", f"{ITALIC_STAGING_BASE}:{path}"],
+                                   cwd=ROOT).decode("utf-8").replace("\r\n", "\n")
+
+
+def without_musing_changes(path, text):
+    if path not in MUSING_SHA256:
+        return text
+    if hashlib.sha256(text.encode("utf-8")).hexdigest() != MUSING_SHA256[path]:
+        raise AssertionError(f"Missing or modified candidate musing bytes: {path}")
+    return subprocess.check_output(["git", "show", f"{MUSING_BASE}:{path}"],
+                                   cwd=ROOT).decode("utf-8").replace("\r\n", "\n")
+
+
 def without_conversation_changes(path, text):
+    text = without_musing_changes(path, text)
     if path not in CONVERSATION_SHA256:
         return text
     if hashlib.sha256(text.encode("utf-8")).hexdigest() != CONVERSATION_SHA256[path]:
@@ -1005,6 +1046,8 @@ class V2ProductionHostStaticTest(unittest.TestCase):
                 expected = proc.stdout.read(int(header[2]))
                 self.assertEqual(proc.stdout.read(1), b"\n")
                 actual = (ROOT / path).read_bytes()
+                if path == "scenes/ui/musing_ui.gd":
+                    actual = without_musing_changes(path, actual.decode("utf-8").replace("\r\n", "\n")).encode("utf-8")
                 if path == "scenes/ui/dialogue_ui.gd":
                     actual = without_conversation_changes(path, actual.decode("utf-8").replace("\r\n", "\n")).encode("utf-8")
                 if path in B1_INVENTORY_SHA256:
