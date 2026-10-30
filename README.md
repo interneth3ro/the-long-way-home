@@ -76,6 +76,16 @@ charcoal surfaces, IBM Plex Sans and the B2 frame, reuses the unchanged circular
 gauge and opt-in machine action theme, and keeps the compact uppercase header,
 Close control, Esc and column/header dividers. No new global theme is introduced.
 
+Owner review provisionally accepts the portrait, framing, storage cards, contextual
+actions and gauge. The follow-up refinement keeps the panel dimensions, column
+allocation and portrait sizing unchanged. The checked-in header hierarchy,
+content-sized row, centered title and 10-unit divider gap already match final
+merged PR #85 exactly. Smelter sizing now explicitly reapplies that same
+24/12/24/24 content inset and compensating B2 offsets together, including direct
+opening; no header-height minimum or manual control offset is added. The reported
+visual discrepancy is not reproduced by nonexecuting checks and still needs owner
+screenshot comparison.
+
 The initial logical panel is 700 x 560, capped at 53% of HUD width. Below a
 740-unit logical HUD height it uses 520 units, tighter spacing and a 124-unit
 gauge instead of 144. Height is also capped at HUD height minus 128, retaining
@@ -105,6 +115,19 @@ currently 1 Ferrite Ore to 1 Ferrite Ingot, 30.0 ingots/min, 2.0 s and 1 Ferrite
 Ingot. Rate is theoretical capacity, not measured throughput; both capacities are
 read from the definition (currently 20 each).
 
+The Recipe label now uses its content width instead of a forced 94-unit minimum;
+the other labels reserve 110 units for the longest heading. Values retain the
+full material names, right alignment and ordinary wrapping. Recipe stays on one
+line when font measurement fits its actual value width; otherwise it deliberately
+breaks before the arrow, rather than splitting the conversion arbitrarily. The
+three single-line rows use 32-unit minima instead of 44; Recipe retains 44 and can
+grow with text. This recovers 36 logical vertical units before wrapping. The
+existing bottom-aligned details container and automatic vertical scrolling remain;
+no scrollbar is forcibly hidden. Static font-metric estimates give the usual
+700 x 560 layout roughly 30 units of spare details height with a two-line Recipe.
+Actual Godot font shaping, container allocation and normal/maximized 85% fit are
+pending owner screenshot review.
+
 The deployed [MachineVisual](construction/machine_visual.gd) indicates status with
 a dot: green Producing, amber Output Full, blue Input Empty, gray Inactive. It has
 no cycle-progress rendering. The Smelter gauge uses those exact status colors and
@@ -119,7 +142,8 @@ tracker temporarily and restore its preference on close. Extractor resources,
 layout code and data, Fabricator refresh/chooser, pause leases, status calculations,
 transactions and input guards are unchanged.
 
-Validation: 53 Python static checks PASS, including exact existing-method and
+Validation: 54 Python static checks PASS, including merged-header geometry,
+exact existing-method and
 Extractor-component preservation comparisons; standalone gdtoolkit 4.5 grammar
 parsing of the changed scripts PASS. Static checks do not establish engine parsing,
 runtime input delivery or graphical fit. The owner approved the exact-byte preservation amendments
@@ -132,8 +156,19 @@ Failure evidence is preserved in ignored
 the fresh external stage `tlwh-native-plan-e19ee3e4bfbd4a779039472b6887229a`
 is also retained. Engine parsing and runtime compatibility remain unverified. No runner, allowlist, policy or Godot-native assertion changes are made.
 Graphical acceptance remains with the owner; no agent graphical launch is authorized.
+The screenshot-refinement pass ran nonexecuting checks only: no Native retry or
+Godot launch. Its updated exact-byte MachineUI preservation hash is a review
+candidate, not renewed Native authorization; the new header-preservation assertion
+also requires control review before any future Native execution. Original failure
+evidence and the external stage remain untouched.
 
 Owner graphical acceptance (one check at a time; stop on failure):
+
+For this refinement, first compare a direct-open Smelter header with the approved
+Extractor at the same scale, then confirm all four production rows fit maximized
+at 85% without scrolling. Check clean Recipe line breaks and the final rule level
+with Collect All; shrink the window to confirm fallback scrolling. The earlier
+portrait/action/gauge acceptance remains provisional and no taller panel is added.
 
 1. At 1280 x 720, 1024 x 576 and maximized, compare 75%, 85% and 100% UI scale.
    Check header/Close, frame/hotbar clearance, portrait detail and transparent glow,

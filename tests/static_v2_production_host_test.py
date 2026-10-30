@@ -21,7 +21,8 @@ P8_BASE = "e14703e64aef961f18feba8a616acec00c4f069e"
 SMELTER_PILOT_BASE = "cb6304f4fa81c2510d056c63c21e6a8ce72bf6b6"
 SMELTER_PILOT_SHA256 = {
     "assets/environment/maintenance_bay_v2/machines/smelter_stationary.png.import": "56281b1985e2f862b229695b7a713780419ca32d2f7550239065c1b07cc0d225",
-    "scenes/ui/machine_ui.gd": "08773b3774b9ca8fcf9ddf74e572eb10f661a5de59a7935f78c84899bf4b16cd",
+    # Layout-inset refinement candidate; renewed owner review before Native use.
+    "scenes/ui/machine_ui.gd": "c6fa1029e5aa8b6f2120e11ed9beba85d014f0ac785f5a92e8e49e28338a6eeb",
     "scenes/ui/machine_ui.tscn": "8664835ab0acf506adaebe758db36af013fbd13d48506222d5dcb32a3bf8e486",
 }
 

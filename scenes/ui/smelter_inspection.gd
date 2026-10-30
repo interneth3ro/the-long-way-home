@@ -83,8 +83,16 @@ func refresh(machine: Dictionary, status: PlanetWorldState.OperatingStatus,
 	_details.visible = configured
 	_unavailable.visible = not configured
 	if configured:
-		_recipe.text = "%d %s → %d %s" % [definition.input_per_cycle,
-			definition.input_item.display_name, definition.output_per_cycle, definition.output_item.display_name]
+		var ingredient := "%d %s" % [definition.input_per_cycle, definition.input_item.display_name]
+		var product := "%d %s" % [definition.output_per_cycle, definition.output_item.display_name]
+		var conversion := "%s → %s" % [ingredient, product]
+		var font := _recipe.get_theme_font("font")
+		var font_size := _recipe.get_theme_font_size("font_size")
+		var text_width := font.get_string_size(conversion, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size).x
+		# Prefer a complete conversion line; otherwise keep each material phrase
+		# together on its own line. Ordinary wrapping remains for narrower windows.
+		_recipe.text = conversion if text_width <= _recipe.size.x \
+			else "%s\n→ %s" % [ingredient, product]
 		var rate := 60.0 * definition.output_per_cycle / definition.cycle_seconds
 		_rate.text = "%.1f ingots/min" % rate
 		_duration.text = "%.1f s" % definition.cycle_seconds

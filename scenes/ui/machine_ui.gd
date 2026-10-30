@@ -285,6 +285,9 @@ func _layout_smelter() -> void:
 	if extent == _smelter_layout_extent:
 		return
 	_smelter_layout_extent = extent
+	# Reapply the approved Extractor inset and matching B2 offsets together when
+	# sizing this view, including its first direct-open layout.
+	_set_panel_padding(true)
 	var compact := extent.y < 740.0
 	_smelter_view.set_compact(compact)
 	var panel_size := Vector2(minf(700.0, extent.x * 0.53),

@@ -258,7 +258,6 @@ mouse_filter = 2
 theme_override_constants/separation = 8
 
 [node name="Heading" type="Label" parent="Columns/Production/DetailsScroll/Details/Rows/Recipe"]
-custom_minimum_size = Vector2(94, 0)
 layout_mode = 2
 mouse_filter = 2
 theme_type_variation = &"B1MutedLabel"
@@ -281,13 +280,13 @@ theme_override_constants/separation = 2
 theme_override_styles/separator = SubResource("HorizontalDivider")
 
 [node name="Rate" type="HBoxContainer" parent="Columns/Production/DetailsScroll/Details/Rows"]
-custom_minimum_size = Vector2(0, 44)
+custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 mouse_filter = 2
 theme_override_constants/separation = 8
 
 [node name="Heading" type="Label" parent="Columns/Production/DetailsScroll/Details/Rows/Rate"]
-custom_minimum_size = Vector2(94, 0)
+custom_minimum_size = Vector2(110, 0)
 layout_mode = 2
 mouse_filter = 2
 theme_type_variation = &"B1MutedLabel"
@@ -311,13 +310,13 @@ theme_override_constants/separation = 2
 theme_override_styles/separator = SubResource("HorizontalDivider")
 
 [node name="Duration" type="HBoxContainer" parent="Columns/Production/DetailsScroll/Details/Rows"]
-custom_minimum_size = Vector2(0, 44)
+custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 mouse_filter = 2
 theme_override_constants/separation = 8
 
 [node name="Heading" type="Label" parent="Columns/Production/DetailsScroll/Details/Rows/Duration"]
-custom_minimum_size = Vector2(94, 0)
+custom_minimum_size = Vector2(110, 0)
 layout_mode = 2
 mouse_filter = 2
 theme_type_variation = &"B1MutedLabel"
@@ -340,13 +339,13 @@ theme_override_constants/separation = 2
 theme_override_styles/separator = SubResource("HorizontalDivider")
 
 [node name="Yield" type="HBoxContainer" parent="Columns/Production/DetailsScroll/Details/Rows"]
-custom_minimum_size = Vector2(0, 44)
+custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 mouse_filter = 2
 theme_override_constants/separation = 8
 
 [node name="Heading" type="Label" parent="Columns/Production/DetailsScroll/Details/Rows/Yield"]
-custom_minimum_size = Vector2(94, 0)
+custom_minimum_size = Vector2(110, 0)
 layout_mode = 2
 mouse_filter = 2
 theme_type_variation = &"B1MutedLabel"
