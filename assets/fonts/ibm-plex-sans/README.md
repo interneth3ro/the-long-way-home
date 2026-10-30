@@ -1,6 +1,6 @@
 # IBM Plex Sans
 
-Unmodified Regular, Medium and SemiBold TrueType fonts from the official
+Unmodified Regular, Medium, SemiBold and Italic TrueType fonts from the official
 [IBM Plex repository](https://github.com/IBM/plex), revision
 `71f558992315a12ca1f06a2215d57962a1992162`.
 
@@ -27,3 +27,13 @@ The previous failed stage/evidence remain preserved. With explicit owner approva
 for one fresh attempt at `9fd87ef`, the unchanged restricted Native runner passed
 43 static tests, cold import, recipe-switching regression (zero failures) and
 byte-integrity checks. Both stages remain retained. No graphical check was run.
+
+The owner approved adding the real `IBMPlexSans-Italic.ttf` face on 2026-10-30
+for the musing presentation. It comes unmodified from the same revision and
+source directory above, under the existing upstream license. SHA-256:
+`a9c6ef9942c49e49d11e11a6dacc0b3a087978757e9b22a06b8ac22a6400fb15`.
+Only musing body text uses Italic; the DAVE label uses upright Medium.
+The restricted Native runner's existing three-font allowlist is unchanged and
+excludes this fourth font and its eventual import sidecar. Native must wait for
+separate owner review of that staging expansion; no sidecar or cache was
+produced by an agent Godot launch for this change.

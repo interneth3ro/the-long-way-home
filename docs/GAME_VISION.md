@@ -184,6 +184,12 @@ remains under development.
   See the [implementation and acceptance checklist](../README.md#conversation-ui-modernization-feature-branch-pending-merge).
 - Dave's internal musings use a separate small, portrait-free, nonpausing
   presentation with automatic dismissal, rather than the conversation panel.
+  The approved musing modernization uses a subtle B1 lower-left observation panel,
+  upright DAVE label, real italic body text and content-driven sizing. Conversations
+  take priority: only the newest pending observation waits, restarts on closure,
+  and clears on scene transition. Milestones remain independent of presentation.
+  Implementation on `codex/musing-ui-modernization` is pending merge and owner
+  graphical acceptance; see the [scope and checklist](../README.md#musing-ui-modernization-feature-branch-pending-merge).
 - Dave has an established personality; player choices influence his development.
 - Contextual, pinnable objective tracking.
 - Starter machine recovery is sequential: Extractor, then Smelter, then

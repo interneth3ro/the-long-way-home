@@ -489,7 +489,27 @@ CONVERSATION_SHA256 = {
 }
 
 
+# Owner approved these exact LF-normalized musing bytes and this preservation
+# amendment on 2026-10-30. Retain PR #89 and all older historical comparisons.
+# Native remains blocked by the unchanged font staging scope.
+MUSING_BASE = "a03057408cbee6301b42e00a2a26c01e25d3c8ac"
+MUSING_SHA256 = {
+    "scenes/ui/musing_ui.gd": "bd8284da6e4155a404e425d279e099ab8532afc0284a094ad2ef60f2eb60d143",
+    "scenes/ui/musing_ui.tscn": "f1d8df0de4aa78d52aec1d9f74def8a9094cb24491f2443a08e1726cd5b971d4",
+}
+
+
+def without_musing_changes(path, text):
+    if path not in MUSING_SHA256:
+        return text
+    if hashlib.sha256(text.encode("utf-8")).hexdigest() != MUSING_SHA256[path]:
+        raise AssertionError(f"Missing or modified approved musing bytes: {path}")
+    return subprocess.check_output(["git", "show", f"{MUSING_BASE}:{path}"],
+                                   cwd=ROOT).decode("utf-8").replace("\r\n", "\n")
+
+
 def without_conversation_changes(path, text):
+    text = without_musing_changes(path, text)
     if path not in CONVERSATION_SHA256:
         return text
     if hashlib.sha256(text.encode("utf-8")).hexdigest() != CONVERSATION_SHA256[path]:
@@ -1005,6 +1025,8 @@ class V2ProductionHostStaticTest(unittest.TestCase):
                 expected = proc.stdout.read(int(header[2]))
                 self.assertEqual(proc.stdout.read(1), b"\n")
                 actual = (ROOT / path).read_bytes()
+                if path == "scenes/ui/musing_ui.gd":
+                    actual = without_musing_changes(path, actual.decode("utf-8").replace("\r\n", "\n")).encode("utf-8")
                 if path == "scenes/ui/dialogue_ui.gd":
                     actual = without_conversation_changes(path, actual.decode("utf-8").replace("\r\n", "\n")).encode("utf-8")
                 if path in B1_INVENTORY_SHA256:

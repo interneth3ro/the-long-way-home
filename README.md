@@ -67,6 +67,66 @@ Headless checks do not verify graphical appearance. While execution is restricte
 use only nonexecuting checks under the policy above and report them as static
 validation; runtime and engine verification remain unperformed.
 
+## Musing UI modernization (feature branch, pending merge)
+
+`codex/musing-ui-modernization` updates the existing
+[musing presenter](scenes/ui/musing_ui.gd) and [scene](scenes/ui/musing_ui.tscn).
+The passive B1 observation panel has a translucent blue-charcoal surface, thin
+muted teal-gray border, small copper accent and upright DAVE label. Body text
+uses the official real IBM Plex Sans Italic face from the existing pinned
+[font source and license](assets/fonts/ibm-plex-sans/README.md).
+Authored text and reading intervals remain exactly 5/5/5/7 seconds; sine fades
+are 0.30 seconds in and 0.40 seconds out.
+
+Width follows the longest authored line up to 360 logical units, bounded by
+24-unit viewport edge clearances. Wrapped content determines height up to 300
+units or available viewport height. The panel sits at the lower left, 24 units
+from the left and 112 units above the bottom, independently of hotbar position
+or visibility. The normal hotbar occupies the bottom 76 units. UIScaleRoot and
+the 85% default remain unchanged. Future oversized text scrolls automatically
+through the bounded body during its authored interval, with initial/final holds;
+identity stays fixed, with no input, paging, truncation or font shrinking. Future
+content still needs an authored duration appropriate for its length.
+
+The presenter checks the existing conversation/transition state before drawing.
+While a conversation is open, one pending observation holds the newest trigger.
+Opening a conversation while a musing displays hides it and retains its resource;
+a newer trigger replaces it. Completion or dismissal permits one fresh full
+presentation on the next frame. Transition state takes precedence over release;
+the existing transition-start dismissal clears active and pending observations.
+No gameplay/narrative callbacks are replayed. All four milestone triggers and
+flags, conversation presentation/controls, objective activation, inventory,
+inspection, construction and hotbar behavior remain unchanged. Other panels
+receive no new suppression rule.
+
+Validation: **70 Python static tests PASS**, including exact historical
+comparisons, altered/duplicated/appended-byte rejection, scene node references,
+mouse transparency and actual italic font metadata. The owner approved the exact
+musing candidate hashes and narrow static preservation amendment on 2026-10-30.
+No engine, runtime or graphical validation has run. The unchanged Native runner
+excludes the italic font/import sidecar; a separately reviewed staging expansion
+and renewed authorization are required before Native. Runner commands, policy,
+Native assertions and the serial-import workaround are unchanged.
+
+Focused owner graphical/functional acceptance (agent launch requires explicit
+authorization):
+
+- Check maximized desktop, 1280 x 720 and 1024 x 576 at 75%, 85% and 100% scales:
+  provisional lower-left placement, hotbar clearance, pale italic body, upright
+  DAVE/accent alignment, natural sizing/wrapping and stable resizes/fades.
+- Check all four original observations and 5/5/5/7-second reading intervals,
+  0.30/0.40-second fades, no clipped text or unnecessary empty height; use a
+  temporary owner fixture for short and oversized future text/automatic overflow.
+- Trigger while talking, replace pending several times, then Finish and separately
+  Escape-dismiss: only the newest observation displays, once, from the beginning.
+  Open a conversation during each fade/reading phase and check the same restart.
+- Cross a doorway with visible or pending text, including conversation closure
+  near transition start: no stale observation appears during or after travel.
+- Confirm one-time milestone flags, rewards and objectives do not replay; no
+  Smelter/Fabricator recovery musings. Recheck E/Escape, portraits, movement,
+  production, visible guarded hotbar, inventory, machine inspection, construction,
+  click-through behavior and objective-tracker preferences.
+
 ## Conversation UI modernization (feature branch, pending merge)
 
 `codex/conversation-ui-modernization` updates only the existing
