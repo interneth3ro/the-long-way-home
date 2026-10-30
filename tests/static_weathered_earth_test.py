@@ -13,8 +13,7 @@ BASE = "c3b0460a6b52437b1961b5d0936f6ec279371d55"
 # Exact candidate allowance; owner review required before any future Native use.
 # Restore the unchanged main bytes for older preservation checks, never exempt a file.
 TERRAIN_SHA256 = {
-    "scenes/world/planet_generator.gd": "c926e53c8ea29274c0a925a3f1f1b3271ff5b54f2e3da1f72115e4913cd34651",
-    "scenes/world/terrain_chunk.gd": "617d5b184fc4fcb3cb0c5560b64e5830f489e042b0996fda356c230744d8eac1",
+    "scenes/world/terrain_chunk.gd": "d6bd7a98aa39e75d77d6950b900df48367351c73010ae2bf8b32c54697ad89ab",
 }
 INPUT_SHA256 = {
     **TERRAIN_SHA256,
@@ -74,13 +73,76 @@ def noise(x, y, seed, channel):
     return (a + (b - a) * fx) * (1 - fy) + (c + (d - c) * fx) * fy
 
 
+def earth_tint(color):
+    """Arithmetic model only; the source contract below binds these equations."""
+    r, g, b, a = color
+    mean = (r + g + b) / 3
+    green_bias = max(0, g - (r + b) * 0.5)
+    brightness = min(0.99, max(0.84, 0.94 + (mean - 0.30) * 0.4 - green_bias))
+    warmth = min(0.015, max(-0.015, (r - b) * 0.15))
+    return (brightness + warmth, brightness, brightness - warmth, a)
+
+
 class WeatheredEarthStaticTest(unittest.TestCase):
     def test_uv_array_uses_shared_runtime_initializer(self):
         source = (ROOT / "scenes/world/terrain_chunk.gd").read_text()
         self.assertIn("static var _texture_uvs := PackedVector2Array(", source)
         self.assertNotIn("const TEXTURE_UVS", source)
         self.assertEqual(source.count("_texture_uvs :="), 1)
-        self.assertEqual(source.count("draw_polygon(vertices, colors, _texture_uvs,"), 2)
+        self.assertEqual(source.count("draw_polygon(vertices, colors, _texture_uvs,"), 1)
+
+    def test_single_ground_pass_and_operation_bounds(self):
+        chunk = (ROOT / "scenes/world/terrain_chunk.gd").read_text()
+        generator = (ROOT / "scenes/world/planet_generator.gd").read_text()
+        self.assertEqual(chunk.count("preload("), 1)
+        self.assertIn('a_base_soil.png")', chunk)
+        drawing = chunk.split("func _draw() -> void:", 1)[1].split("# Low ground details", 1)[0]
+        self.assertEqual(drawing.count("draw_polygon("), 1)
+        self.assertEqual(drawing.count("range(WorldCoordinates.CHUNK_TILES)"), 2)
+        self.assertIn("draw_polygon(vertices, colors, _texture_uvs, BASE_SOIL)", drawing)
+        self.assertNotIn("PackedInt32Array", drawing)
+        for removed in ("weathered_earth_weights", "_weights", "EARTH_TEXTURES", "for treatment"):
+            self.assertNotIn(removed, chunk + generator)
+        for inactive in ("b_compacted_soil", "c_dusty_patches", "d_subtle_gravel"):
+            self.assertNotIn(inactive, chunk)
+        self.assertIn("WorldCoordinates.CHUNK_TILES + 2", chunk)
+        self.assertIn("samples.resize(SAMPLE_WIDTH * SAMPLE_WIDTH)", chunk)
+        self.assertIn("generator.sample_color(origin + Vector2i(x - 1, y - 1), state)", chunk)
+        self.assertEqual(generator.count("_noise(point /"), 2)
+        self.assertEqual((32 + 2) ** 2 * 2, 2312)
+        self.assertEqual(32 ** 2, 1024)
+
+    def test_warm_tint_bounds_and_authored_variation(self):
+        source = (ROOT / "scenes/world/terrain_chunk.gd").read_text()
+        for equation in (
+            "var mean := (color.r + color.g + color.b) / 3.0",
+            "var green_bias := maxf(0.0, color.g - (color.r + color.b) * 0.5)",
+            "var brightness := clampf(0.94 + (mean - 0.30) * 0.4 - green_bias, 0.84, 0.99)",
+            "var warmth := clampf((color.r - color.b) * 0.15, -0.015, 0.015)",
+            "return Color(brightness + warmth, brightness, brightness - warmth, color.a)",
+            "_colors[index] = _earth_tint(color)",
+        ):
+            self.assertIn(equation, source)
+        self.assertNotIn("255.0 /", source)
+        # Sweep includes extreme stored RGB edits. Hue must remain warm even
+        # when the legacy input is neutral gray, pure green or pure blue.
+        for r in (0, 0.25, 0.5, 0.75, 1):
+            for g in (0, 0.25, 0.5, 0.75, 1):
+                for b in (0, 0.25, 0.5, 0.75, 1):
+                    tint = earth_tint((r, g, b, 0.7))
+                    output = [v * t / 255 for v, t in zip((156, 141, 121), tint)]
+                    self.assertTrue(output[0] > output[1] > output[2])
+                    self.assertTrue(all(0.825 - 1e-12 <= t <= 1.005 for t in tint[:3]))
+                    self.assertEqual(tint[3], 0.7)
+        weathered = earth_tint((0.27, 0.30, 0.29, 1))
+        clearing = earth_tint((0.32, 0.34, 0.29, 1))
+        scar = earth_tint((0.21, 0.22, 0.22, 1))
+        self.assertLess(scar[1], clearing[1])
+        self.assertLess(clearing[1], weathered[1])
+        # Continuous arithmetic, including near the green-bias branch.
+        a = earth_tint((0.30, 0.30 - 1e-7, 0.30, 1))
+        b = earth_tint((0.30, 0.30 + 1e-7, 0.30, 1))
+        self.assertLess(max(abs(x - y) for x, y in zip(a, b)), 1e-6)
 
     def test_provisional_textures_reproduce_and_decode(self):
         recipe = runpy.run_path(str(ROOT / "tools/generate-weathered-earth.py"))
@@ -103,34 +165,34 @@ class WeatheredEarthStaticTest(unittest.TestCase):
                 self.assertEqual(family[0][y][-24:], other[y][-24:])
 
     def test_absolute_sampling_and_negative_boundary_model(self):
-        source = (ROOT / "scenes/world/planet_generator.gd").read_text()
-        self.assertIn("Vector2(vertex) * WorldCoordinates.TERRAIN_SIZE / 1024.0", source)
-        self.assertIn("_noise(point, 8)", source)
-        self.assertIn("_noise(point, 9)", source)
-        self.assertIn("_noise(point, 10)", source)
         chunk = (ROOT / "scenes/world/terrain_chunk.gd").read_text()
-        self.assertIn("generator.weathered_earth_weights(origin + Vector2i(x, y))", chunk)
         self.assertIn("generator.sample_color(origin + Vector2i(x - 1, y - 1), state)", chunk)
+        self.assertIn("samples[(y + 1) * SAMPLE_WIDTH + x + 1]) / 4.0", chunk)
+        # Build each full chunk independently, using a synthetic deterministic
+        # legacy field plus a stored edit at a boundary. No GDScript execution.
+        def colors(cx, cy, seed):
+            samples = {}
+            for y in range(34):
+                for x in range(34):
+                    tx, ty = cx * 32 + x - 1, cy * 32 + y - 1
+                    a = noise((tx + 0.5) / 12, (ty + 0.5) / 12, seed, 1)
+                    b = noise((tx + 0.5) / 8, (ty + 0.5) / 8, seed, 2)
+                    samples[x, y] = ((0.8, 0.2, 0.1, 1) if (tx, ty) == (-1, -1)
+                                     else (0.25 + a * 0.1, 0.28 + b * 0.06, 0.24 + a * 0.08, 1))
+            return {(x, y): earth_tint(tuple(sum(samples[x + dx, y + dy][c]
+                    for dx, dy in ((0, 0), (1, 0), (0, 1), (1, 1))) / 4 for c in range(4)))
+                    for y in range(33) for x in range(33)}
+
         for seed in (26026, 1, -42):
             for cx, cy in ((0, 0), (-1, -1), (-2, 1), (3, -4)):
+                center = colors(cx, cy, seed)
+                east = colors(cx + 1, cy, seed)
+                south = colors(cx, cy + 1, seed)
                 for offset in range(33):
-                    # Both chunks compute identical boundary vertices and the
-                    # identical four-sample tint halo, even across world zero.
-                    left = (cx * 32 + 32, cy * 32 + offset)
-                    right = ((cx + 1) * 32, cy * 32 + offset)
-                    self.assertEqual(left, right)
-                    for channel in (8, 9, 10):
-                        a = noise(left[0] / 16, left[1] / 16, seed, channel)
-                        b = noise(right[0] / 16, right[1] / 16, seed, channel)
-                        self.assertEqual(a, b)
-                        self.assertTrue(0 <= a <= 1)
-                    halo = lambda p: {(p[0] + x, p[1] + y) for x in (-1, 0) for y in (-1, 0)}
-                    self.assertEqual(halo(left), halo(right))
-        # Absolute sampling is independent of generation order or chunk residency.
-        points = [(x, y) for x in (-65, -33, -32, -1, 0, 31, 32, 64) for y in (-33, 0, 32)]
-        sample = lambda p: noise(p[0] / 16, p[1] / 16, 26026, 8)
-        self.assertEqual(dict((p, sample(p)) for p in points), dict((p, sample(p)) for p in reversed(points)))
-        self.assertTrue(any(sample(p) != noise(p[0] / 16, p[1] / 16, 7, 8) for p in points))
+                    self.assertEqual(center[32, offset], east[0, offset])
+                    self.assertEqual(center[offset, 32], south[offset, 0])
+                self.assertEqual(center, colors(cx, cy, seed))  # Regeneration.
+        self.assertNotEqual(colors(-1, -1, 26026), colors(-1, -1, 7))
 
     def test_unchanged_gameplay_lifecycle_and_generator_methods(self):
         paths = ["scenes/world/planet_exterior.gd", "scenes/world/planet_exterior.tscn",
@@ -144,13 +206,11 @@ class WeatheredEarthStaticTest(unittest.TestCase):
         path = "scenes/world/planet_generator.gd"
         actual = (ROOT / path).read_text()
         baseline = subprocess.check_output(["git", "show", f"{BASE}:{path}"], cwd=ROOT, text=True)
-        start = actual.index("# Presentation-only treatment weights")
-        end = actual.index("# World-space samples", start)
-        self.assertEqual(actual[:start] + actual[end:], baseline)
+        self.assertEqual(actual, baseline)
         chunk = (ROOT / "scenes/world/terrain_chunk.gd").read_text()
         before = subprocess.check_output(["git", "show", f"{BASE}:scenes/world/terrain_chunk.gd"], cwd=ROOT, text=True)
         self.assertEqual(chunk.split("# Low ground details", 1)[1], before.split("# Low ground details", 1)[1])
-        self.assertEqual(chunk.count("preload("), 4)
+        self.assertEqual(chunk.count("preload("), 1)
         for forbidden in ("Sprite2D", "TileMapLayer", "Image.new", "ImageTexture", "func _process", "add_child"):
             self.assertNotIn(forbidden, chunk)
 
