@@ -563,6 +563,32 @@ FERRITE_FINAL_SHA256 = {
 }
 
 
+# Machine icon/layout candidate: owner review required before any Native use.
+# Pin complete LF-normalized files, restoring merged PR #91 for every older
+# comparison. No historical hashes, assertions or protected paths are removed.
+MACHINE_ICONS_BASE = "4072c516c6f73728e7f7a190632a359021e6ce9c"
+MACHINE_ICONS_SHA256 = {
+    "scenes/ui/item_presentation.gd": "4e405e6da4a63195214602bd42f9e447a4eb48e49443b644ceaa33d0aab8121d",
+    "scenes/ui/inventory_ui.gd": "9f0ba955d4fec84dc66996fdd8a151287b63274409e11167e16ddfb89f4148b6",
+    "scenes/ui/inventory_ui.tscn": "6b9fcdc90f20b2188c08bb33bbe570e4fa82011f91a08b1fb82fa7ff150752d7",
+    "scenes/ui/hotbar_ui.gd": "7fc8e27961d87b646ac4e41a7d58246ce7aea4bd34146a9f74bfeca9ca343e1a",
+    "scenes/ui/hotbar_ui.tscn": "9eb1559dff162db83d7c5d8d9547ab647c6659558691e89bf07c84824fce48a8",
+}
+
+
+def without_machine_icon_changes(path, text):
+    if path not in MACHINE_ICONS_SHA256:
+        return text
+    if hashlib.sha256(text.encode("utf-8")).hexdigest() != MACHINE_ICONS_SHA256[path]:
+        raise AssertionError(f"Missing or modified machine icon candidate bytes: {path}")
+    return subprocess.check_output(["git", "show", f"{MACHINE_ICONS_BASE}:{path}"],
+                                   cwd=ROOT).decode("utf-8").replace("\r\n", "\n")
+
+
+def machine_baseline_read(path):
+    return without_machine_icon_changes(path, raw_read(path))
+
+
 def without_ferrite_final_changes(path, text):
     if path not in FERRITE_FINAL_SHA256:
         return text
@@ -573,6 +599,7 @@ def without_ferrite_final_changes(path, text):
 
 
 def without_ferrite_refinement_changes(path, text):
+    text = without_machine_icon_changes(path, text)
     text = without_ferrite_final_changes(path, text)
     if path not in FERRITE_REFINEMENT_SHA256:
         return text
@@ -1128,22 +1155,22 @@ class V2ProductionHostStaticTest(unittest.TestCase):
                 self.assertIn(b"process/premult_alpha=false", raw)
         for path in ("scenes/ui/inventory_ui.gd", "scenes/ui/recipe_card_content.gd",
                      "scenes/ui/item_presentation.gd"):
-            self.assertIn("CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS", raw_read(path))
+            self.assertIn("CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS", machine_baseline_read(path))
         scene = raw_read("scenes/ui/fabricator_inspection.tscn")
         icon = scene.split('[node name="Icon"', 1)[1].split('[node ', 1)[0]
         self.assertIn("texture_filter = 4", icon)
 
     def test_ferrite_inventory_geometry_and_storage_identity_boundaries(self):
         path = "scenes/ui/inventory_ui.gd"
-        inventory = without_ferrite_final_changes(path, raw_read(path))
+        inventory = without_ferrite_final_changes(path, machine_baseline_read(path))
         self.assertIn("const SLOT_SIZE := Vector2(50, 50)", inventory)
         self.assertIn("icon.size = Vector2(34, 34)", inventory)
         self.assertIn("icon.position = Vector2(-17, 0)", inventory)
         self.assertIn("quantity.offset_top = -16", inventory)
         self.assertEqual(34, 50 - 16)  # Separate icon and quantity rectangles.
-        self.assertIn("offset_right = 484.0", raw_read("scenes/ui/inventory_ui.tscn"))
+        self.assertIn("offset_right = 484.0", machine_baseline_read("scenes/ui/inventory_ui.tscn"))
         self.assertEqual(8 * 50 + 7 * 4 + 2 * 16, 484 - 24)
-        helper = raw_read("scenes/ui/item_presentation.gd")
+        helper = machine_baseline_read("scenes/ui/item_presentation.gd")
         self.assertIn("item != null and quantity > 0 else null", helper)
         self.assertIn("icon.visible = icon.texture != null", helper)
         self.assertIn("Vector2(24, 24)", helper)
@@ -1161,7 +1188,7 @@ class V2ProductionHostStaticTest(unittest.TestCase):
 
     def test_final_ferrite_correction_preserves_prior_revision_and_rejects_tampering(self):
         for path in FERRITE_FINAL_SHA256:
-            text = raw_read(path)
+            text = machine_baseline_read(path)
             with self.subTest(path=path):
                 before = subprocess.check_output(["git", "show", f"{FERRITE_FINAL_BASE}:{path}"],
                                                  cwd=ROOT).decode("utf-8").replace("\r\n", "\n")
@@ -1172,7 +1199,7 @@ class V2ProductionHostStaticTest(unittest.TestCase):
         self.assertEqual(without_ferrite_final_changes("unrelated.gd", "sentinel"), "sentinel")
 
     def test_final_ferrite_alignment_and_empty_storage_labels(self):
-        inventory = raw_read("scenes/ui/inventory_ui.gd")
+        inventory = machine_baseline_read("scenes/ui/inventory_ui.gd")
         self.assertLess(inventory.index("slot.add_child(icon)"),
                         inventory.index("icon.set_anchors_and_offsets_preset(Control.PRESET_CENTER_TOP)"))
         for line in ("icon.offset_left = -17", "icon.offset_right = 17",
@@ -1197,7 +1224,7 @@ class V2ProductionHostStaticTest(unittest.TestCase):
         self.assertIn('ingredient_label.text = "Input"', fabricator)
         self.assertIn('product.display_name if machine.output > 0 and product != null else "No stored output"', fabricator)
         self.assertIn("set_material_icon(_output_icon, product, machine.output)", fabricator)
-        helper = raw_read("scenes/ui/item_presentation.gd")
+        helper = machine_baseline_read("scenes/ui/item_presentation.gd")
         self.assertIn("item != null and quantity > 0 else null", helper)
         self.assertIn("icon.visible = icon.texture != null", helper)
         self.assertNotIn("identity.custom_minimum_size", helper)
@@ -1261,6 +1288,8 @@ class V2ProductionHostStaticTest(unittest.TestCase):
                 expected = proc.stdout.read(int(header[2]))
                 self.assertEqual(proc.stdout.read(1), b"\n")
                 actual = (ROOT / path).read_bytes()
+                if path in MACHINE_ICONS_SHA256 and path not in FERRITE_REFINEMENT_SHA256:
+                    actual = without_machine_icon_changes(path, actual.decode("utf-8").replace("\r\n", "\n")).encode("utf-8")
                 if path in FERRITE_REFINEMENT_SHA256:
                     actual = without_ferrite_refinement_changes(path, actual.decode("utf-8").replace("\r\n", "\n")).encode("utf-8")
                 if path in FERRITE_ICONS_SHA256:

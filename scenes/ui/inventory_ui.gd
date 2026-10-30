@@ -11,6 +11,7 @@ signal opened
 const MATERIAL_SLOTS := 24
 const EQUIPMENT_SLOTS := 8
 const SLOT_SIZE := Vector2(50, 50)
+const EQUIPMENT_SLOT_SIZE := Vector2(70, 70)
 # Shared presentation lookup; storage remains independent of UI.
 const ITEM_ICONS := ItemPresentation.ICONS
 
@@ -41,9 +42,17 @@ func _ready() -> void:
 	_assignment_menu.window_input.connect(_assignment_menu_input)
 	transitions.transition_started.connect(_assignment_menu.hide)
 	_create_slots(_materials, MATERIAL_SLOTS)
-	_create_slots(_equipment, EQUIPMENT_SLOTS)
+	_create_slots(_equipment, EQUIPMENT_SLOTS, EQUIPMENT_SLOT_SIZE)
 	progression.inventory.changed.connect(_refresh)
 	_refresh()
+	_panel.resized.connect(_fit_panel)
+	$HUD.scale_changed.connect(_fit_panel)
+	_fit_panel.call_deferred()
+
+
+func _fit_panel() -> void:
+	# Reserve the 102-unit hotbar footprint plus a 16-unit gap at small windows.
+	_panel.position.y = minf(100.0, maxf(12.0, $HUD.size.y - _panel.size.y - 118.0))
 
 
 func _input(event: InputEvent) -> void:
@@ -86,10 +95,13 @@ func _deploy_machine(definition: MachineDefinition) -> void:
 	construction.begin_deployment(definition)
 
 
-func _create_slots(grid: GridContainer, count: int) -> void:
+func _create_slots(grid: GridContainer, count: int, slot_size: Vector2 = SLOT_SIZE) -> void:
+	var equipment := grid == _equipment
+	var icon_half := 28 if equipment else 17
+	var icon_top := 0 if equipment else 3
 	for index in count:
 		var slot := Button.new()
-		slot.custom_minimum_size = SLOT_SIZE
+		slot.custom_minimum_size = slot_size
 		slot.theme_type_variation = &"B1InventorySlot"
 		slot.focus_mode = Control.FOCUS_NONE
 		slot.mouse_filter = Control.MOUSE_FILTER_STOP
@@ -99,11 +111,11 @@ func _create_slots(grid: GridContainer, count: int) -> void:
 		# Resolve centered anchors against the slot, not an unattached control.
 		slot.add_child(icon)
 		icon.set_anchors_and_offsets_preset(Control.PRESET_CENTER_TOP)
-		# One shared inset balances the artwork; source alpha stays above quantities.
-		icon.offset_left = -17
-		icon.offset_top = 3
-		icon.offset_right = 17
-		icon.offset_bottom = 37
+		# Shared section geometry; source alpha stays above the quantity band.
+		icon.offset_left = -icon_half
+		icon.offset_top = icon_top
+		icon.offset_right = icon_half
+		icon.offset_bottom = icon_top + icon_half * 2
 		icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 		icon.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
