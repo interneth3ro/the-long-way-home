@@ -1,0 +1,96 @@
+"""Nonexecuting conversation integration/preservation checks; no engine launch."""
+import hashlib
+import re
+import struct
+import subprocess
+import unittest
+
+from static_automatic_transitions_test import ROOT, read
+from static_extractor_inspection_test import functions
+from static_v2_production_host_test import (
+    CONVERSATION_BASE, CONVERSATION_SHA256, without_conversation_changes,
+)
+
+
+def baseline(path):
+    return subprocess.check_output(
+        ["git", "show", f"{CONVERSATION_BASE}:{path}"], cwd=ROOT
+    ).decode("utf-8").replace("\r\n", "\n")
+
+
+class ConversationUIStaticTest(unittest.TestCase):
+    def test_exact_allowance_retains_history_and_rejects_tampering(self):
+        for path in CONVERSATION_SHA256:
+            original = read(path)
+            self.assertEqual(without_conversation_changes(path, original), baseline(path))
+            for changed in (original.replace("\n", "\nCHANGED\n", 1),
+                            original + original, original + "UNRELATED\n"):
+                with self.subTest(path=path, changed=changed[-30:]):
+                    with self.assertRaises(AssertionError):
+                        without_conversation_changes(path, changed)
+        self.assertEqual(without_conversation_changes("unrelated.gd", "sentinel"), "sentinel")
+
+    def test_gameplay_ownership_and_narrative_unchanged(self):
+        paths = [
+            "scenes/player/interaction_detector.gd", "scenes/player/dave.gd",
+            "scenes/player/dave.tscn", "scenes/main/main.gd", "scenes/main/main.tscn",
+            "scenes/main/main_v2.gd", "scenes/main/playthrough_state.gd",
+            "scenes/main/scene_transition_controller.gd",
+            "scenes/interaction/automatic_doorway.gd",
+            "scenes/ui/ui_scale_root.gd", "scenes/ui/inventory_ui.gd",
+            "scenes/ui/hotbar_ui.gd", "scenes/ui/machine_ui.gd",
+            "scenes/ui/musing_ui.gd", "scenes/ui/musing_ui.tscn",
+            "objectives/objective_controller.gd", "project.godot",
+            "dialogue/dialogue_entry.gd", "dialogue/dialogue_conversation.gd",
+            "dialogue/computer_opening.tres", "tools/run-local-tests.ps1",
+            "tests/fabricator_recipe_switching_test.gd",
+        ]
+        for path in paths:
+            with self.subTest(path=path):
+                self.assertEqual(read(path), baseline(path))
+        before = functions(baseline("scenes/ui/dialogue_ui.gd"))
+        after = functions(read("scenes/ui/dialogue_ui.gd"))
+        for method in ("is_conversation_open", "advance", "dismiss"):
+            self.assertEqual(after[method], before[method])
+        # Opening retains the same rejection guard and initial state assignment.
+        self.assertEqual(after["show_conversation"].split("\t_show_entry()", 1)[0],
+                         before["show_conversation"].split("\t_show_entry()", 1)[0])
+        self.assertNotIn("await ", read("scenes/ui/dialogue_ui.gd"))
+
+    def test_scene_references_and_mouse_callbacks_resolve(self):
+        scene = read("scenes/ui/dialogue_ui.tscn")
+        script = read("scenes/ui/dialogue_ui.gd")
+        paths = set()
+        for name, parent in re.findall(r'\[node name="([^"]+)"(?: type="[^"]+")?(?: parent="([^"]+)")?', scene):
+            paths.add(name if not parent or parent == "." else parent + "/" + name)
+        for path in re.findall(r'\$([A-Za-z][A-Za-z0-9_/]*)', script):
+            self.assertIn(path, paths)
+        for source, method in re.findall(r'\[connection signal="pressed" from="([^"]+)" to="\." method="([^"]+)"\]', scene):
+            self.assertIn(source, paths)
+            self.assertIn(method, functions(script))
+        self.assertIn('horizontal_scroll_mode = 0', scene)
+        self.assertIn('vertical_scroll_mode = 3', scene)
+        # Only the body belongs to the scroll region; identity/footer stay outside.
+        self.assertIn('parent="HUD/Conversation/Content/Entry/Body/Scroll"', scene)
+        self.assertNotRegex(scene, r'name="(?:Portrait|Speaker|Actions)"[^\n]*parent="[^"]*/Scroll')
+
+    def test_owner_portraits_and_import_settings(self):
+        approved = {
+            "dave": "0233cabd720b47de79d57634e3796f9740e7ad2da185d0761c27e6608c12b6bc",
+            "computer": "fa16376edbb9003970f23a91017f8020b61c05146f193dfa248c7b019a100e72",
+            "marvin": "76e4ae9627a51bdd054bddfa17a4dc5cf1474be41b08d9bc33447570e4b4eb63",
+        }
+        for speaker, digest in approved.items():
+            path = f"assets/dialogue/portraits/{speaker}_dialogue_portrait.png"
+            data = (ROOT / path).read_bytes()
+            self.assertEqual(hashlib.sha256(data).hexdigest(), digest)
+            self.assertEqual(data[:8], b"\x89PNG\r\n\x1a\n")
+            self.assertEqual(struct.unpack(">IIBB", data[16:26]), (768, 768, 8, 6))
+            settings = read(path + ".import")
+            self.assertIn("mipmaps/generate=true", settings)
+            self.assertIn("process/size_limit=0", settings)
+            self.assertIn(f'source_file="res://{path}"', settings)
+
+
+if __name__ == "__main__":
+    unittest.main()

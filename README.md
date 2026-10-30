@@ -67,6 +67,62 @@ Headless checks do not verify graphical appearance. While execution is restricte
 use only nonexecuting checks under the policy above and report them as static
 validation; runtime and engine verification remain unperformed.
 
+## Conversation UI modernization (feature branch, pending merge)
+
+`codex/conversation-ui-modernization` updates only the existing
+[conversation presenter](scenes/ui/dialogue_ui.gd) and
+[scene](scenes/ui/dialogue_ui.tscn). It uses B1 typography, a translucent
+blue-charcoal fill, restrained B2 framing and a compact action footer.
+The panel is centered on the full scaled HUD, normally 640 logical units wide,
+with 24-unit edge clearance and a fixed 104-unit bottom reservation independent
+of hotbar visibility. Height follows wrapped content up to 360 units or the
+available viewport height; only the dialogue body scrolls beyond that limit.
+Identity, portrait and controls remain outside the scroll region, and each entry
+resets scrolling. Narrow layouts shorten the E/Escape hints.
+
+The three owner-supplied 768 x 768 RGBA portraits live in
+[`assets/dialogue/portraits/`](assets/dialogue/portraits/). Their original PNG
+bytes are preserved. Lossless texture imports enable mipmaps; the 76-unit,
+aspect-preserving portrait uses linear mipmap filtering. Existing speaker IDs
+`dave`, `computer` and `marvin` map directly to these assets; unknown IDs hide
+the portrait and retain the entry's actual display name and full text.
+Marvin has no new dialogue. No entry schema or narrative resource changes.
+
+Text appears in full immediately. Opening fades from readable 82% opacity over
+0.12 seconds; speaker portraits fade from 80% over 0.10 seconds. There are no
+input locks, typewriter effects or reading timers. Closing cancels animations
+and clears state immediately. Next/Finish and Dismiss keep their distinct
+callbacks: only genuine completion emits the existing completion signal.
+
+Movement, simulation, E/Escape handling, inventory/Escape priority, starting
+range checks, hotbar suppression, objective ownership and persistent
+conversation state across automatic doorways remain unchanged. Musings,
+inspection responses, choices, ambient exchanges and cinematics are outside
+this change.
+
+The owner approved the exact two-file static preservation amendment on
+2026-10-30: candidate hashes restore immutable PR #88 bytes before the existing
+historical comparisons; changed, duplicated and appended bytes are rejected.
+Runner policy, safeguards and Native assertions are unchanged. Validation here
+is nonexecuting only; no Godot import, Native or graphical PASS is claimed.
+Native use still requires review of the changed controls and imported resource
+scope under [the testing policy](docs/LOCAL_TESTING.md).
+
+Owner graphical acceptance, with explicit authorization before agent execution:
+
+- Check maximized desktop, 1280 x 720 and 1024 x 576 at 75%, 85% and 100% UI
+  scales. Confirm centered positioning, fixed bottom clearance, frame alignment,
+  portrait legibility and no clipped edges or footer controls.
+- Exercise Dave/Computer switching, text-only fallback and Marvin's mapping
+  using temporary owner fixtures without changing approved narrative resources.
+- Check short and long multiline entries: upward growth, body-only scrolling,
+  full-text access, and scroll reset after advance and reopen.
+- Advance/dismiss rapidly during fades using E, Escape and mouse buttons.
+  Finish activates the objective; early/final-entry dismissal does not.
+- Verify movement and continuing production, inventory/Escape priority, hidden
+  hotbar restoration, blocked interaction/construction, and active conversation
+  ownership when walking away or crossing automatic doorways.
+
 ## Fabricator Recipe Chooser modernization (feature branch, pending merge)
 
 `codex/recipe-chooser-modernization` retains PR #87's shell, portrait, panel

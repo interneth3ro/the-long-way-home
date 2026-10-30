@@ -177,6 +177,11 @@ remains under development.
   foundational.
 - Ambient conversations should generally allow gameplay to continue.
 - Cinematic conversations are rare, reserved for major emotional moments.
+- The conversation presentation update on `codex/conversation-ui-modernization`
+  (pending merge) uses B1 typography, restrained B2 framing and the approved
+  Dave/Computer/Marvin portraits. It preserves the provisional opening exchange
+  and nonpausing gameplay; it adds no Marvin dialogue, choices or cinematics.
+  See the [implementation and acceptance checklist](../README.md#conversation-ui-modernization-feature-branch-pending-merge).
 - Dave's internal musings use a separate small, portrait-free, nonpausing
   presentation with automatic dismissal, rather than the conversation panel.
 - Dave has an established personality; player choices influence his development.
