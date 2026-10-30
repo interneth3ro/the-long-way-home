@@ -290,7 +290,7 @@ func _layout_smelter() -> void:
 	_set_panel_padding(true)
 	var compact := extent.y < 740.0
 	_smelter_view.set_compact(compact)
-	var panel_size := Vector2(minf(700.0, extent.x * 0.53),
+	var panel_size := Vector2(minf(770.0, extent.x * 0.61),
 		minf(520.0 if compact else 560.0, extent.y - 128.0))
 	_panel.set_anchors_and_offsets_preset(Control.PRESET_TOP_LEFT)
 	_panel.size = panel_size

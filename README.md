@@ -76,22 +76,24 @@ charcoal surfaces, IBM Plex Sans and the B2 frame, reuses the unchanged circular
 gauge and opt-in machine action theme, and keeps the compact uppercase header,
 Close control, Esc and column/header dividers. No new global theme is introduced.
 
-Owner review provisionally accepts the portrait, framing, storage cards, contextual
-actions and gauge. The follow-up refinement keeps the panel dimensions, column
-allocation and portrait sizing unchanged. The checked-in header hierarchy,
+Owner review accepts the overall composition, header spacing, portrait, framing,
+storage cards, contextual actions, gauge and bottom-aligned details grid. The
+latest provisional refinement increases only panel width and rebalances columns;
+height, vertical centering and portrait/gauge sizing remain unchanged. The header hierarchy,
 content-sized row, centered title and 10-unit divider gap already match final
 merged PR #85 exactly. Smelter sizing now explicitly reapplies that same
 24/12/24/24 content inset and compensating B2 offsets together, including direct
-opening; no header-height minimum or manual control offset is added. The reported
-visual discrepancy is not reproduced by nonexecuting checks and still needs owner
-screenshot comparison.
+opening; no header-height minimum or manual control offset is added. The owner
+has accepted the latest screenshot header spacing.
 
-The initial logical panel is 700 x 560, capped at 53% of HUD width. Below a
+The provisional normal logical panel is 770 x 560, capped at 61% of HUD width
+(previously 700 and 53%). This lets 770 take effect even at 1280 x 720 / 100%,
+while retaining proportional fitting at smaller logical extents. Below a
 740-unit logical HUD height it uses 520 units, tighter spacing and a 124-unit
 gauge instead of 144. Height is also capped at HUD height minus 128, retaining
 24-unit right clearance and centering above the hotbar/hints. The shared hybrid
 scale, 85% default and 75/85/100% selector remain unchanged. Columns start at
-55% storage / 45% production, subject to control minimums. The flexible portrait
+52% storage / 48% production, subject to control minimums. The flexible portrait
 shrinks before essential controls; secondary production details wrap and scroll
 vertically when their viewport is too short.
 
@@ -100,9 +102,11 @@ is integrated without a border or crop, fitted proportionally with native textur
 dimensions excluded from layout minimums. Its broad warm transparent glow and
 horizontal margins remain intact. The UI uses Linear with Mipmaps and the import
 sidecar enables mip generation, following PR #85. Lossless compression, alpha
-handling, source pixels and stationary-world filtering are unchanged. Actual
-fringe/softness and reduced portrait legibility need owner graphical acceptance;
-no derivative artwork is generated.
+handling, source pixels and stationary-world filtering are unchanged. The owner
+has accepted the portrait; the width refinement leaves its settings and vertical
+space unchanged. Static bounds indicate it remains height-limited at the requested
+window sizes/scales, preserving its displayed size; confirm in the next screenshot.
+No derivative artwork is generated.
 
 An expanding portrait sits above one nonexpanding storage/actions VBox. Input
 Storage / Transfer All and Output Storage / Collect All stack in that group,
@@ -123,10 +127,12 @@ breaks before the arrow, rather than splitting the conversion arbitrarily. The
 three single-line rows use 32-unit minima instead of 44; Recipe retains 44 and can
 grow with text. This recovers 36 logical vertical units before wrapping. The
 existing bottom-aligned details container and automatic vertical scrolling remain;
-no scrollbar is forcibly hidden. Static font-metric estimates give the usual
-700 x 560 layout roughly 30 units of spare details height with a two-line Recipe.
-Actual Godot font shaping, container allocation and normal/maximized 85% fit are
-pending owner screenshot review.
+no scrollbar is forcibly hidden. The owner accepted the previous grid screenshot;
+the wider production column now gives Recipe more room for a single line without
+changing its font-measured wrapping logic. Static fitting checks cover 1024 x 576
+and 1280 x 720 at 75/85/100%; actual widened layout remains pending screenshot
+review. Normal 770-unit width allocates approximately 354 units to storage and
+326 to production, compared with 336/275 before widening.
 
 The deployed [MachineVisual](construction/machine_visual.gd) indicates status with
 a dot: green Producing, amber Output Full, blue Input Empty, gray Inactive. It has
@@ -156,7 +162,7 @@ Failure evidence is preserved in ignored
 the fresh external stage `tlwh-native-plan-e19ee3e4bfbd4a779039472b6887229a`
 is also retained. Engine parsing and runtime compatibility remain unverified. No runner, allowlist, policy or Godot-native assertion changes are made.
 Graphical acceptance remains with the owner; no agent graphical launch is authorized.
-The screenshot-refinement pass ran nonexecuting checks only: no Native retry or
+The screenshot and width refinement passes ran nonexecuting checks only: no Native retry or
 Godot launch. Its updated exact-byte MachineUI preservation hash is a review
 candidate, not renewed Native authorization; the new header-preservation assertion
 also requires control review before any future Native execution. Original failure
@@ -164,11 +170,12 @@ evidence and the external stage remain untouched.
 
 Owner graphical acceptance (one check at a time; stop on failure):
 
-For this refinement, first compare a direct-open Smelter header with the approved
-Extractor at the same scale, then confirm all four production rows fit maximized
-at 85% without scrolling. Check clean Recipe line breaks and the final rule level
-with Collect All; shrink the window to confirm fallback scrolling. The earlier
-portrait/action/gauge acceptance remains provisional and no taller panel is added.
+For this width refinement, review maximized at 85% first: confirm the moderately
+wider 770-unit target and 52/48 columns, a single-line Recipe where it fits, unchanged
+portrait/gauge size and accepted header/grid alignment. At 1024 x 576 and 1280 x 720,
+compare 75/85/100%, check frame/edge/hotbar clearance, full text/actions and wrapping
+or fallback scrolling. Width remains provisional; report a new layout problem before
+unrelated adjustments. Panel height and all previously accepted details are retained.
 
 1. At 1280 x 720, 1024 x 576 and maximized, compare 75%, 85% and 100% UI scale.
    Check header/Close, frame/hotbar clearance, portrait detail and transparent glow,
