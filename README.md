@@ -67,6 +67,118 @@ Headless checks do not verify graphical appearance. While execution is restricte
 use only nonexecuting checks under the policy above and report them as static
 validation; runtime and engine verification remain unperformed.
 
+## Fabricator inspection redesign (feature branch, pending merge)
+
+`codex/fabricator-inspection-redesign` adds a dedicated
+[Fabricator view](scenes/ui/fabricator_inspection.tscn), matching final merged
+Extractor #85 and Smelter #86 header geometry, dividers, B1 typography/action
+styles and B2 framing. Simulation, inventory transactions, recipe definitions
+and recipe/pause lifecycle methods remain unchanged.
+
+Provisional logical dimensions are **860 x 620**, versus Smelter's 770 x 560.
+Width fits within HUD width minus 48; height within HUD height minus 128. The
+panel stays 24 units from the right edge, centered above the hotbar/hints, with
+24/12/24/24 inner padding and matching B2 compensation. Columns start at 52/48,
+subject to control minimums. The hybrid HUD scale, 85% default and temporary
+75/85/100% selector remain unchanged. Below 800 logical HUD height, spacing
+tightens, the redundant Production heading hides and the gauge shrinks from
+112 to 64 units. The portrait flexes; ingredient rows and bottom-aligned
+statistics scroll independently, with action buttons outside their viewports.
+At 1024 x 576 / 100%, intended panel height is approximately 516 logical units.
+Container fitting and readability still require owner graphical acceptance.
+
+The original [Fabricator PNG](assets/environment/maintenance_bay_v2/machines/fabricator_stationary.png)
+remains unchanged. Its borderless portrait preserves aspect ratio, excludes native
+image dimensions from layout minimums and uses Linear with Mipmaps like Smelter.
+The only import-sidecar edit enables mip generation; compression and alpha
+handling remain unchanged. No replacement artwork is generated.
+
+Normal inspection bottom-anchors the input card, Transfer All, output card and
+Collect All below the portrait. Every recipe ingredient has its own quantity,
+independent definition capacity and utilization bar. Output names the actual
+stored product. A muted amber **Collect previous recipe output** notice appears
+only for nonempty output differing from the selected recipe product and hides
+when resolved. No conversion, discard or change to production blocking occurs.
+
+The right column reuses the shared gauge with real cycle progress and exact
+MachineVisual status colors: green Producing, amber Output Full, blue Input Empty,
+gray Inactive. The selected-recipe card uses its existing icon and data summaries,
+followed by Change Recipe. Three bottom-aligned underlined rows show theoretical
+Nominal Rate (items/min), Cycle Duration and Cycle Yield with right-aligned values.
+
+Initial selection keeps the portrait and existing recipe buttons while hiding
+empty storage and production. Change Recipe uses the same shell and retains Current,
+Production Paused, errors and Back. Existing chooser controls move once into
+bounded viewports; MachineUI keeps their references, signal connections and all
+transaction/lease ownership. Initial selection's placement-range exception,
+targeted pause, current-recipe progress preservation, failed-change behavior and
+pause cleanup on every exit remain unchanged. Transfer/Collect/Change connect to
+the existing guarded methods. The unchanged inspection-visibility signal hides
+the objective tracker and restores its preference while progression continues.
+
+Validation: **58 Python static tests PASS** with the proposed amendments. Checks
+cover unchanged protected methods, Extractor/Smelter resources, gauge, scaling,
+tracker, action theme, PNG, Native assertions and runner; scene node paths and
+merged header geometry; and rejection of modified, duplicated or unrelated bytes.
+Git whitespace checks pass. These checks do not establish Godot parsing, engine
+type checking, runtime behavior or graphical acceptance.
+
+**Native not run:** owner review is required for the exact proposed changes in
+[static preservation assertions](tests/static_v2_production_host_test.py),
+[historical pilot checks](tests/static_extractor_inspection_test.py) and the new
+[Fabricator static checks](tests/static_fabricator_inspection_test.py).
+Three existing presentation files receive pinned LF-normalized candidate hashes,
+restoring immutable PR #86 main before historical comparisons. No protected path
+is exempted; historical hashes remain unchanged. Runner commands, allowlists,
+policies, Godot-native assertions, pinned executable and serial-import setting
+are unchanged. No graphical launch, runtime probe, merge or cleanup occurred.
+
+Compact gauge readability follow-up: owner Test 3 reported four PASS results and
+one percentage-size FAIL. The shared gauge previously used a fixed 30-point font
+and an ascent-times-0.3 baseline. With owner approval, gauges below 124 units now
+scale internal ring/tick spacing using the original 144-unit proportions. Their
+percentage starts proportional to diameter and fits a stable envelope measured
+from 0%, 43% and 100% inside the progress stroke with 1.5 units of clearance;
+width and ascent/descent metrics center it. The bezel, ticks, progress arc and
+colors remain, as do real progress semantics. At approved Extractor/Smelter sizes
+124/144/164, geometry, 30-point typography and baseline remain unchanged. Fabricator
+64/112-unit dimensions and every machine layout remain unchanged.
+
+This follow-up passes 59 nonexecuting Python static tests. The previous one-run
+restricted validation at `32958a6142f0314440df9bb8eeb9a9d53e438a4c` passed all 58
+then-current static tests, cold import and recipe-switching regression (0 failures),
+with infrastructure/authorization PASS and reason OK. Its preserved stage is
+`D:\GameDev\Godot\TLWH-NativeStages\tlwh-native-plan-13a80c79e3914d2b82f2c8c9ae029c7d`.
+That result predates the gauge correction and does not validate this revision.
+No Godot, Native or graphical check was run for the follow-up; screenshot
+acceptance remains pending.
+
+The follow-up proposes one additional exact LF-normalized candidate pin for
+`scenes/ui/cycle_gauge.gd`:
+`20b7cc41c5922c0d798b15b5974e8af6875860aac43d48a76dbdfb363d80317d`.
+It restores the same immutable PR #86 baseline before historical comparisons.
+The three previously approved pins and every historical hash remain unchanged;
+the existing tampering test now also covers the gauge. The Fabricator resource
+comparison uses this exact-byte normalization, and a new static check preserves
+progress/state methods and all machine scenes/presenters. These amendments require
+owner review before any separately authorized Native execution. Runner, testing
+policy, Native assertions and serial imports remain unchanged.
+
+Owner acceptance checklist (separate graphical authorization required):
+
+- Inspect maximized desktop, 1280 x 720 and 1024 x 576 at each of 75/85/100%.
+  Check frame/hotbar clearance, header/Close, portrait alpha/filtering, readable
+  storage/actions and independent ingredient/statistics scrolling.
+- Exercise initial selection, normal inspection and Change Recipe; verify Current,
+  Production Paused, Back, errors and accessible recipe options.
+- Switch Plate/Rod with stored output: verify old identity, notice, collection,
+  blocked production, notice removal and updated rate/yield. Check every status.
+- Check Transfer/Collect/Change eligibility and range feedback, current-recipe
+  progress retention, targeted pause and release on Back, Close, range loss,
+  transitions and UI interruptions; initial selection keeps its range exception.
+- Check objective progression while the tracker is hidden and preference restoration
+  on close. Dedicated Recipe Chooser modernization remains deferred.
+
 ## Smelter inspection visual pilot (feature branch, pending merge)
 
 `codex/smelter-inspection-redesign` adds a dedicated

@@ -467,7 +467,27 @@ B1_REPLACEMENTS = {'project.godot': [('window/size/viewport_width=1280\n'
                                 '\n')]}
 
 
+# Proposed Fabricator presentation bytes; owner approval required before Native.
+# Exact LF-normalized files restore PR #86 main for all historical assertions.
+# Shared gauge amendment remains proposed pending renewed owner review before Native.
+FABRICATOR_BASE = 'cf4536eeef5c64b057b7951ad0ae554332d25df6'
+FABRICATOR_SHA256 = {'scenes/ui/cycle_gauge.gd': '20b7cc41c5922c0d798b15b5974e8af6875860aac43d48a76dbdfb363d80317d',
+ 'scenes/ui/machine_ui.gd': '581d7d11d7b1da02d7d9a4b7c4b48b65a183e6bd0c55e4825bdf64474b1baa56',
+ 'scenes/ui/machine_ui.tscn': '055bc45d1aaac64eaeb9d34f21c0a7aef1d1fa1f5b455cbd3f0b91fcd57110be',
+ 'assets/environment/maintenance_bay_v2/machines/fabricator_stationary.png.import': 'e76f75e09b9dc98dc7348f321b7f0bc2665da73c45588e8e76c2dacfcc16f4f8'}
+
+
+def without_fabricator_changes(path, text):
+    if path not in FABRICATOR_SHA256:
+        return text
+    if hashlib.sha256(text.encode("utf-8")).hexdigest() != FABRICATOR_SHA256[path]:
+        raise AssertionError(f"Missing or modified Fabricator presentation bytes pending review: {path}")
+    return subprocess.check_output(["git", "show", f"{FABRICATOR_BASE}:{path}"],
+                                   cwd=ROOT).decode("utf-8").replace("\r\n", "\n")
+
+
 def without_smelter_pilot_changes(path, text):
+    text = without_fabricator_changes(path, text)
     if path not in SMELTER_PILOT_SHA256:
         return text
     if hashlib.sha256(text.encode("utf-8")).hexdigest() != SMELTER_PILOT_SHA256[path]:
@@ -543,6 +563,18 @@ def tracked_non_dev_files(pattern):
 
 
 class V2ProductionHostStaticTest(unittest.TestCase):
+    def test_fabricator_allowance_restores_main_and_rejects_tampering(self):
+        for path in FABRICATOR_SHA256:
+            original = read(path)
+            before = subprocess.check_output(["git", "show", f"{FABRICATOR_BASE}:{path}"],
+                                             cwd=ROOT).decode("utf-8").replace("\r\n", "\n")
+            with self.subTest(path=path):
+                self.assertEqual(without_fabricator_changes(path, original), before)
+                for changed in (original.replace("\n", "\nCHANGED\n", 1),
+                                original + original, original + "UNRELATED\n"):
+                    with self.assertRaises(AssertionError):
+                        without_fabricator_changes(path, changed)
+
     def test_smelter_pilot_allowance_restores_main_and_rejects_tampering(self):
         for path in SMELTER_PILOT_SHA256:
             original = read(path)
@@ -960,7 +992,7 @@ class V2ProductionHostStaticTest(unittest.TestCase):
                     actual = without_approved_b1_changes(path, actual.decode("utf-8").replace("\r\n", "\n")).encode("utf-8")
                 elif path in UI_SCALING_SHA256:
                     actual = without_approved_ui_scaling_changes(path, actual.decode("utf-8").replace("\r\n", "\n")).encode("utf-8")
-                elif path in EXTRACTOR_PILOT_SHA256 or path in SMELTER_PILOT_SHA256:
+                elif path in EXTRACTOR_PILOT_SHA256 or path in SMELTER_PILOT_SHA256 or path in FABRICATOR_SHA256:
                     actual = without_extractor_pilot_changes(path, actual.decode("utf-8").replace("\r\n", "\n")).encode("utf-8")
                 if path == "project.godot":
                     actual = actual.replace(b"\r\n", b"\n")
