@@ -77,12 +77,25 @@ selection guards, pause ownership and inventory transactions remain unchanged;
 `machine_ui.gd` is byte-identical to merged PR #87.
 
 Cards use existing icons, wrapping recipe headings, separate amber CURRENT
-badges and full definition-derived quantities/material names. INPUT → OUTPUT
-uses two equal-width columns; below 340 logical card units it stacks with a
-down arrow. Multiple ingredients occupy separate lines. Content minimum height
-follows wrapping, and the existing vertical list scrolls without horizontal
-scrolling. Normal/hover/pressed states use restrained teal surfaces; Current
-retains amber identity through hover and press. No categories or new artwork.
+badges and full definition-derived quantities/material names. Owner-revised
+Decision 5 is Option B: permanently stacked INPUT and OUTPUT sections with a
+thin muted separator. Each ingredient has its own wrapping row. There is no
+flow arrow or width-dependent layout switch. Content minimum height follows
+wrapping, and the existing vertical list scrolls without horizontal scrolling.
+Normal/hover/pressed states use restrained teal surfaces; Current retains amber
+identity through hover and press. No categories or new artwork.
+
+The list now sits inside a MarginContainer with 2-unit left/top/bottom and
+6-unit right clearance, inside the scroll viewport. The vertical scrollbar
+reserves its width even while hidden, so overflow does not narrow the cards.
+Previously cards met the clipping boundary without a gutter; that edge contact
+and changing scrollbar allocation are likely contributors to the owner-reported
+right-border clipping, not a runtime-confirmed diagnosis. No excessive fixed
+card width or outward StyleBox border expansion was found. Card borders,
+clipping, panel dimensions and normal inspection remain unchanged. The inset
+and reserved scrollbar reduce usable width slightly; full-width stacked
+material sections wrap and grow vertically instead. Screenshot review must
+confirm the complete border at all requested sizes/scales in both chooser modes.
 
 Change Recipe keeps a dedicated amber Production Paused strip and wrapping
 Current identifier above the list. Initial selection hides both. Existing error
@@ -103,7 +116,7 @@ Owner acceptance:
 - Approve the exact presentation hashes and static assertion amendment before
   any restricted Native run; graphical launch requires separate authorization.
 - Check initial selection and Change Recipe at maximized desktop, 1280 × 720,
-  and 1024 × 576, at 75%, 85% and 100% UI scale. Check full names, card wrapping,
+  and 1024 × 576, at 75%, 85% and 100% UI scale. Check full names, stacked material sections, complete borders,
   list scrolling, portrait/frame, persistent context, pause strip, Back and errors.
 - Check current/hover/pressed feedback and mouse/keyboard behavior; Current
   selection must return without resetting cycle progress.

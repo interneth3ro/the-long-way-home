@@ -4,8 +4,6 @@ extends MarginContainer
 const CARD_THEME = preload("res://assets/ui/recipe_chooser.tres")
 const AMBER := Color(0.773, 0.545, 0.322)
 var _button: Button
-var _flow: BoxContainer
-var _arrow: Label
 
 
 func configure(button: Button, recipe: RecipeDefinition, current: bool) -> void:
@@ -44,25 +42,26 @@ func configure(button: Button, recipe: RecipeDefinition, current: bool) -> void:
 		badge.size_flags_horizontal = Control.SIZE_SHRINK_END
 		badge.add_theme_color_override("font_color", AMBER)
 		header.add_child(badge)
-	_flow = BoxContainer.new()
-	_flow.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_flow.add_theme_constant_override("separation", 8)
-	rows.add_child(_flow)
-	var inputs := PackedStringArray()
+	var inputs := _material_area("INPUT")
 	for ingredient in recipe.ingredients:
-		inputs.append("%d %s" % [ingredient.quantity, ingredient.item.display_name])
-	_flow.add_child(_material_area("INPUT", "\n".join(inputs)))
-	_arrow = _label("→", 18)
-	_arrow.autowrap_mode = TextServer.AUTOWRAP_OFF
-	_arrow.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	_arrow.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	_arrow.add_theme_color_override("font_color", AMBER)
-	_flow.add_child(_arrow)
-	_flow.add_child(_material_area("OUTPUT", "%d %s" % [recipe.output_quantity,
-		recipe.output_item.display_name]))
-	resized.connect(_layout_flow)
+		inputs.add_child(_label("%d %s" % [ingredient.quantity,
+			ingredient.item.display_name], 16))
+	rows.add_child(inputs)
+	var divider := HSeparator.new()
+	divider.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var line := StyleBoxLine.new()
+	line.color = Color(0.52, 0.40, 0.27, 0.5)
+	line.thickness = 1
+	divider.add_theme_stylebox_override("separator", line)
+	divider.add_theme_constant_override("separation", 2)
+	rows.add_child(divider)
+	var output := _material_area("OUTPUT")
+	output.add_child(_label("%d %s" % [recipe.output_quantity,
+		recipe.output_item.display_name], 16))
+	rows.add_child(output)
+	resized.connect(_fit_button)
 	minimum_size_changed.connect(_fit_button)
-	_layout_flow()
+	_fit_button()
 
 
 func _label(value: String, font_size: int) -> Label:
@@ -75,7 +74,7 @@ func _label(value: String, font_size: int) -> Label:
 	return label
 
 
-func _material_area(heading: String, material: String) -> VBoxContainer:
+func _material_area(heading: String) -> VBoxContainer:
 	var area := VBoxContainer.new()
 	area.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	area.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -83,16 +82,7 @@ func _material_area(heading: String, material: String) -> VBoxContainer:
 	var caption := _label(heading, 13)
 	caption.theme_type_variation = &"B1MutedLabel"
 	area.add_child(caption)
-	area.add_child(_label(material, 16))
 	return area
-
-
-func _layout_flow() -> void:
-	# Below two readable material columns, retain full names in a vertical flow.
-	var stacked := size.x < 340.0
-	_flow.vertical = stacked
-	_arrow.text = "↓" if stacked else "→"
-	_fit_button()
 
 
 func _fit_button() -> void:

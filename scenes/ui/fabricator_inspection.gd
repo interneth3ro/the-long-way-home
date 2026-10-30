@@ -45,7 +45,7 @@ func _ready() -> void:
 func mount_chooser(cards: VBoxContainer, pause: Label, error: Label, back: Button) -> void:
 	# Move existing controls once; MachineUI retains callbacks, errors and pause ownership.
 	_chooser_cards = cards
-	cards.reparent($Columns/Chooser/CardsScroll, false)
+	cards.reparent($Columns/Chooser/CardsScroll/CardsInset, false)
 	cards.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	pause.reparent($Columns/Chooser/PauseStrip, false)
 	pause.text = "Ⅱ  Production Paused"

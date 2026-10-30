@@ -11,9 +11,9 @@ from static_v2_production_host_test import FABRICATOR_BASE, without_fabricator_c
 # Proposed chooser presentation bytes; owner approval required before Native use.
 # Pin the complete candidate, then retain the original immutable comparison.
 CHOOSER_SHA256 = {
-    "scenes/ui/fabricator_inspection.gd": "71d64127565cc739cc94085455a80988ef7206c64a2966d0a5efe0edfb2318a4",
-    "scenes/ui/fabricator_inspection.tscn": "89fb92c1968ce7699031069f02f650fe0cbbb70a300a402792496596d9dd3335",
-    "scenes/ui/recipe_card_content.gd": "dfca9e010019397c4ad579cb9a4072d01808215f1430dda4f7a1c0ae14b33140",
+    "scenes/ui/fabricator_inspection.gd": "f0f62807cead67222bfa1f8a8efaea57cd4f7a32c0e26e874dbca79a04497378",
+    "scenes/ui/fabricator_inspection.tscn": "5a6d8d0d41cbd0d030b9286509ae4803ba5e1759d962fe9b02baf6d7b1ac83c5",
+    "scenes/ui/recipe_card_content.gd": "ef90f303b30247315b90bc5456388e1be5c302ece19431ef5ad27087140f1e5b",
     "scenes/ui/recipe_card_content.gd.uid": "97619be08f17930fbf4e87d683b8f0f46d7a5c8272ed7f1af44c87b4707b88cd",
     "assets/ui/recipe_chooser.tres": "0be69e2cf39d05b123874b1ddd829b3ddb76c2497f3e8e07fff49ee69e994be9",
 }
