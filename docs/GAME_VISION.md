@@ -177,6 +177,11 @@ remains under development.
   foundational.
 - Ambient conversations should generally allow gameplay to continue.
 - Cinematic conversations are rare, reserved for major emotional moments.
+- The conversation presentation update on `codex/conversation-ui-modernization`
+  (pending merge) uses B1 typography, restrained B2 framing and the approved
+  Dave/Computer/Marvin portraits. It preserves the provisional opening exchange
+  and nonpausing gameplay; it adds no Marvin dialogue, choices or cinematics.
+  See the [implementation and acceptance checklist](../README.md#conversation-ui-modernization-feature-branch-pending-merge).
 - Dave's internal musings use a separate small, portrait-free, nonpausing
   presentation with automatic dismissal, rather than the conversation panel.
 - Dave has an established personality; player choices influence his development.
@@ -313,8 +318,10 @@ custom/cleared slots are never automatically overwritten or restored. Inventory
 right-click chooses a destination; hotbar right-click clears. Number keys toggle
 the same placement or switch through existing construction guards, with no item
 consumption until successful placement. Modal interactions and recovery retain
-input ownership. Prompts/hints sit above the bar; conversations/responses and
-transitions can hide it while ambient musings retain it. The implementation on
+input ownership. Prompts/hints sit above the bar; responses and transitions
+can hide it while ambient musings retain it. The owner-approved PR #89 revision
+keeps the bar visible without new dimming during ordinary conversations;
+activation, context menus and assignment edits remain blocked until closure. The implementation on
 `codex/b1-hybrid-hotbar` now includes the owner-approved visual refinement:
 52-unit slots (18.75% smaller), one subtly translucent B1 backing panel with thin
 border/four-unit padding, and the same copper-amber placement highlight.

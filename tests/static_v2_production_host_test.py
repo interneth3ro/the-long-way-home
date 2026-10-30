@@ -477,6 +477,27 @@ FABRICATOR_SHA256 = {'scenes/ui/cycle_gauge.gd': '20b7cc41c5922c0d798b15b5974e8a
  'assets/environment/maintenance_bay_v2/machines/fabricator_stationary.png.import': 'e76f75e09b9dc98dc7348f321b7f0bc2665da73c45588e8e76c2dacfcc16f4f8'}
 
 
+# Owner approved these exact UTF-8/LF candidates, including the compact footer
+# and visible/noninteractive hotbar refinement, on 2026-10-30. Restore the
+# immutable PR #88 bytes before older comparisons; no historical hash changes.
+CONVERSATION_BASE = "8ec5e6ca8ba424b6c4ba2973ebbab9882e202422"
+CONVERSATION_SHA256 = {
+    "scenes/ui/dialogue_ui.gd": "ab7db168b7c5aa225305614e8fa974d73dd031abdf525f3ec1a00e7f780107e2",
+    "scenes/ui/dialogue_ui.tscn": "bddaefb4e36ed220e7fc018915c6518605b5dc3a109c81a660eede6b56499390",
+    "scenes/ui/hotbar_ui.gd": "08a2c44c4dd68836001eff43acbddd44a4bdcbd2aef252d55f9d5d6855674583",
+    "scenes/ui/inventory_ui.gd": "45c56d972b694137a2df57f38ed806d56e3f13bced38e755b52ef8f6cfde4b30",
+}
+
+
+def without_conversation_changes(path, text):
+    if path not in CONVERSATION_SHA256:
+        return text
+    if hashlib.sha256(text.encode("utf-8")).hexdigest() != CONVERSATION_SHA256[path]:
+        raise AssertionError(f"Missing or modified approved conversation bytes: {path}")
+    return subprocess.check_output(["git", "show", f"{CONVERSATION_BASE}:{path}"],
+                                   cwd=ROOT).decode("utf-8").replace("\r\n", "\n")
+
+
 def without_fabricator_changes(path, text):
     if path not in FABRICATOR_SHA256:
         return text
@@ -507,6 +528,7 @@ def without_extractor_pilot_changes(path, text):
 
 
 def without_approved_ui_scaling_changes(path, text):
+    text = without_conversation_changes(path, text)
     text = without_extractor_pilot_changes(path, text)
     if path not in UI_SCALING_SHA256:
         return text
@@ -983,6 +1005,8 @@ class V2ProductionHostStaticTest(unittest.TestCase):
                 expected = proc.stdout.read(int(header[2]))
                 self.assertEqual(proc.stdout.read(1), b"\n")
                 actual = (ROOT / path).read_bytes()
+                if path == "scenes/ui/dialogue_ui.gd":
+                    actual = without_conversation_changes(path, actual.decode("utf-8").replace("\r\n", "\n")).encode("utf-8")
                 if path in B1_INVENTORY_SHA256:
                     actual = actual.replace(b"\r\n", b"\n")
                     actual = without_approved_ui_scaling_changes(path, actual.decode("utf-8")).encode("utf-8")

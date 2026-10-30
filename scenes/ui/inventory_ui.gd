@@ -22,6 +22,7 @@ var _assignment_machine: MachineDefinition
 @onready var _equipment: GridContainer = $HUD/Panel/Content/Equipment
 @onready var _overflow: ScrollContainer = $HUD/Panel/Content/Overflow
 @onready var _overflow_items: VBoxContainer = $HUD/Panel/Content/Overflow/Items
+@onready var _dialogue: DialogueUI = (construction.get("player") as CharacterBody2D).get_node("DialogueUI")
 
 
 func _ready() -> void:
@@ -46,6 +47,8 @@ func _ready() -> void:
 
 
 func _input(event: InputEvent) -> void:
+	if _dialogue.is_conversation_open():
+		_assignment_menu.hide()
 	# Popup owns Esc/navigation while open; closing it must not close inventory.
 	if _assignment_menu.visible:
 		return
@@ -214,6 +217,8 @@ func _machine_context_input(event: InputEvent, definition: MachineDefinition, sl
 			or event.button_index != MOUSE_BUTTON_RIGHT:
 		return
 	slot.accept_event()
+	if _dialogue.is_conversation_open():
+		return
 	_assignment_machine = definition
 	_assignment_menu.clear()
 	_assignment_menu.add_separator("Assign to Hotbar · " + definition.display_name)
@@ -229,6 +234,8 @@ func _machine_context_input(event: InputEvent, definition: MachineDefinition, sl
 
 
 func _assign_to_hotbar(slot: int) -> void:
+	if _dialogue.is_conversation_open():
+		return
 	# Revalidate quantity if inventory changed while the menu was open.
 	progression.assign_hotbar(slot, _assignment_machine)
 
