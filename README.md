@@ -2224,6 +2224,113 @@ playtest items remain unverified. Static inspection covers references, named
 spawns, collision clearances, flag lifecycle, lock/failure paths, preserved player
 files, documentation links and Git patch integrity.
 
+## Weathered Earth Textured Terrain Foundation (pending merge)
+
+PR #94 remains **BLOCKED pending renewed owner graphical/functional acceptance**.
+The owner rejected the initial appearance and exterior movement smoothness and
+raised a transition-responsiveness concern. The focused correction implements
+Environment Decision 16, Option B: **Warm Earth with Subtle Legacy Variation**.
+Static validation does not establish that the reported symptoms are resolved.
+
+The custom `TerrainChunk` renderer now uses only
+`assets/environment/exterior/weathered_earth_provisional/a_base_soil.png`:
+one shared preload, one textured polygon per 64-unit terrain cell, no treatment
+loop or treatment weights. The provisional `b_compacted_soil.png`,
+`c_dusty_patches.png` and `d_subtle_gravel.png` remain byte-for-byte preserved for
+future evaluation but are inactive. No artwork was replaced or regenerated.
+
+These four 128 x 128 opaque RGB8 PNGs are **PROVISIONAL mathematical test textures,
+not approved final artwork**. They do not reproduce the illustrated richness of
+the approved concept. Provenance: the owner's handoff ZIP supplies concept sheets
+only: `references/01_weathered_earth_four_variants_v2.png`
+(SHA-256 `458e948d00b274f13bb6a35921b84f9f29cd469c030cd83d673ff0dc6b4a4b48`)
+and `references/02_refined_crash_site_terrain_direction.png`
+(`f6c25ef1368b9ee89a6217136a624b4c564745ca99bd35467af09cdc30be2c4a`).
+No concept pixels were cropped or redistributed. The dependency-free
+[small texture recipe](tools/generate-weathered-earth.py) uses fixed-seed periodic
+noise. `python -B tools/generate-weathered-earth.py --check` compares reproduced
+bytes without writing; creation mode refuses to overwrite differing files.
+
+The one-cell halo still samples 34 x 34 original terrain colors, including stored
+modifications and authored overlays in their original precedence. Each of the
+33 x 33 grid vertices averages its four adjacent tile-center colors. Both chunks
+therefore obtain identical shared-edge tints, including across negative coordinates.
+An isolated stored color edit influences surrounding vertices instead of a hard
+square; alpha is retained. Color data and the original generator are unchanged.
+
+For averaged legacy RGB `r,g,b`, the small deterministic tint adjustment is:
+
+```text
+mean = (r + g + b) / 3
+green_bias = max(0, g - (r + b) * 0.5)
+brightness = clamp(0.94 + (mean - 0.30) * 0.4 - green_bias, 0.84, 0.99)
+warmth = clamp((r - b) * 0.15, -0.015, 0.015)
+tint = (brightness + warmth, brightness, brightness - warmth, original_alpha)
+```
+
+The texture's warm-brown RGB is multiplied by this nearly neutral tint; it is no
+longer divided out. Legacy brightness supplies quiet local variation, legacy
+green bias becomes darker soil rather than green hue, and red/blue differences
+provide restrained warmth. At the authored palette values, clearing brightness
+is about 0.9117, weathered ground 0.9147 and impact scar 0.9017: a slightly compacted
+clearing and darker scar without large contrast. Halo averaging/interpolation
+remains continuous. Ferrite ground art and extraction geometry remain separate.
+Stored color edits retain their state/precedence but now affect restrained shading
+and warmth rather than prescribing the final surface RGB literally.
+
+Source-operation counts per chunk (excluding unchanged decorative work):
+
+| Operation | Pre-PR baseline | Initial PR #94 | Corrected PR #94 |
+| --- | ---: | ---: | ---: |
+| Color/treatment noise evaluations | 2,048 | 5,579 | 2,312 |
+| Treatment-weight vertices | 0 | 1,089 | 0 |
+| Ground primitives per redraw | 1,024 rectangles | 1,024-4,096 polygons | 1,024 polygons |
+| Explicit per-cell packed arrays | 0 | 3 | 2 |
+
+The generator is restored exactly to main `c3b0460`. The per-cell packed index
+array is removed. Each chunk retains 33 x 33 tints and existing details; the
+34 x 34 sample halo is temporary. Texture/UV resources are shared; no texture is
+generated in rendering/gameplay. UVs retain the shared runtime initializer that
+corrected the owner's earlier packed-array constant-expression parse failure.
+
+The 32 x 32 chunks, 64-unit cells, 32-unit construction grid, loading radius,
+retention, two-chunks-per-frame budget, retirement, transition timing, state
+ownership, ship/hatch/spawn, Ferrite, decorations, movement and factory gameplay
+are unchanged. No replacement renderer, vegetation, clearing, machine streaming,
+resource mechanic or persistence is introduced. Existing owner artwork/import
+sidecars remain untouched and excluded from the correction.
+
+Preservation amendment: remove the now-unneeded generator candidate allowance and
+update only the exact normalized `terrain_chunk.gd` digest. Historical baselines,
+old assertion coverage, asset/tool hashes and tamper rejection remain intact;
+there is no broad path exemption. The exact source/test amendment is reviewable
+in PR #94 and requires independent owner review before any future Native use.
+Runner policy, engine identity and Native assertions remain unchanged.
+
+Static checks cover one active texture/pass, absent treatment sampling, bounded
+counts, tint bounds/warm hue, authored variation, two-axis boundary/regeneration
+models, stored-edit influence, PNG integrity, preservation and unrelated changes.
+Models do not execute GDScript. No agent Godot, Native, graphical, profiling or
+benchmark execution was performed. Engine import/parsing and actual interaction,
+seams, draw calls, frame time and memory remain unverified. Source-operation
+reductions are not runtime speedup claims. Linear filtering and 64-unit repeated
+grain remain; richer final art, repetition improvement and mipmap tuning are deferred.
+
+Owner acceptance: record **PASS/FAIL**, with optional observations, for each:
+
+- Performance: initial exterior transition comparable to pre-PR baseline; smooth
+  movement near spawn; smooth farther exploration; no noticeable stutter across
+  new chunk boundaries; normal returns to previously explored areas.
+- Visuals: warm-brown identity; no predominant gray-green tint; no severe square
+  boundaries/chunk seams; recognizable authored clearing; distinct Ferrite;
+  readable construction grid.
+- Gameplay: ship/hatch transitions; normal Dave movement; machine deployment and
+  recovery; unchanged production.
+- Scope: one active terrain texture; no additional terrain systems; no unauthorized
+  Native execution.
+
+Await renewed owner graphical and functional acceptance. No merge or cleanup.
+
 ## World Generation Foundation (PR #27, merged)
 
 This feature extends PR #26 without changing Dave, camera, interior, narrative,
