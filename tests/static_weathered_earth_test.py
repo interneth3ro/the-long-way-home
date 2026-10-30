@@ -14,7 +14,7 @@ BASE = "c3b0460a6b52437b1961b5d0936f6ec279371d55"
 # Restore the unchanged main bytes for older preservation checks, never exempt a file.
 TERRAIN_SHA256 = {
     "scenes/world/planet_generator.gd": "c926e53c8ea29274c0a925a3f1f1b3271ff5b54f2e3da1f72115e4913cd34651",
-    "scenes/world/terrain_chunk.gd": "74c90d950f83fbdc4dea14f9327a9b22df4fa0b198e9007f96a7d7051dadb8a4",
+    "scenes/world/terrain_chunk.gd": "617d5b184fc4fcb3cb0c5560b64e5830f489e042b0996fda356c230744d8eac1",
 }
 INPUT_SHA256 = {
     **TERRAIN_SHA256,
@@ -75,6 +75,13 @@ def noise(x, y, seed, channel):
 
 
 class WeatheredEarthStaticTest(unittest.TestCase):
+    def test_uv_array_uses_shared_runtime_initializer(self):
+        source = (ROOT / "scenes/world/terrain_chunk.gd").read_text()
+        self.assertIn("static var _texture_uvs := PackedVector2Array(", source)
+        self.assertNotIn("const TEXTURE_UVS", source)
+        self.assertEqual(source.count("_texture_uvs :="), 1)
+        self.assertEqual(source.count("draw_polygon(vertices, colors, _texture_uvs,"), 2)
+
     def test_provisional_textures_reproduce_and_decode(self):
         recipe = runpy.run_path(str(ROOT / "tools/generate-weathered-earth.py"))
         family = []

@@ -2254,6 +2254,12 @@ vertical adjacencies. Pixel checks do not establish visual seamlessness. No
 engine-generated import sidecars/caches are included; owner import is required.
 Linear filtering is explicit in the renderer; no global import settings change.
 
+Owner project-open feedback exposed a Godot parse error in the original packed
+UV-array constant. The follow-up initializes that array once as a shared static
+variable; drawing still reuses it. The failed script-load message was a downstream
+error from the same parse failure. A static regression guards the initializer;
+engine confirmation of this fix remains pending owner verification.
+
 Four shared preloaded textures repeat once per 64-unit terrain cell, using
 textured polygons rather than per-tile nodes. Base Soil is opaque; Compacted Soil,
 Dusty Patches and Subtle Gravel composite in that order with quiet vertex alpha

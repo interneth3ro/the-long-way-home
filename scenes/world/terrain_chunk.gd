@@ -9,7 +9,9 @@ const EARTH_TEXTURES: Array[Texture2D] = [
 	preload("res://assets/environment/exterior/weathered_earth_provisional/d_subtle_gravel.png")]
 const VERTEX_WIDTH: int = WorldCoordinates.CHUNK_TILES + 1
 const SAMPLE_WIDTH: int = WorldCoordinates.CHUNK_TILES + 2
-const TEXTURE_UVS := PackedVector2Array([Vector2.ZERO, Vector2.RIGHT, Vector2.ONE, Vector2.DOWN])
+# Packed-array construction is a runtime initializer, not a constant expression.
+# Share one UV array across chunks rather than rebuilding it during drawing.
+static var _texture_uvs := PackedVector2Array([Vector2.ZERO, Vector2.RIGHT, Vector2.ONE, Vector2.DOWN])
 
 var _colors: PackedColorArray
 var _weights: PackedVector3Array
@@ -63,7 +65,7 @@ func _draw() -> void:
 			var indices := PackedInt32Array([index, index + 1, index + VERTEX_WIDTH + 1, index + VERTEX_WIDTH])
 			var colors := PackedColorArray([_colors[indices[0]], _colors[indices[1]],
 				_colors[indices[2]], _colors[indices[3]]])
-			draw_polygon(vertices, colors, TEXTURE_UVS, EARTH_TEXTURES[0])
+			draw_polygon(vertices, colors, _texture_uvs, EARTH_TEXTURES[0])
 			# Three quiet, broad treatments alpha-composite over opaque Base Soil.
 			# Shared vertex alphas interpolate continuously; no per-cell RNG choice.
 			for treatment in range(3):
@@ -74,7 +76,7 @@ func _draw() -> void:
 					colors[corner].a *= weight
 					visible_weight = maxf(visible_weight, weight)
 				if visible_weight > 0.0:
-					draw_polygon(vertices, colors, TEXTURE_UVS, EARTH_TEXTURES[treatment + 1])
+					draw_polygon(vertices, colors, _texture_uvs, EARTH_TEXTURES[treatment + 1])
 	# Low ground details render below all Y-sorted authored objects and Dave.
 	for detail in _details:
 		var point: Vector2 = detail.position
