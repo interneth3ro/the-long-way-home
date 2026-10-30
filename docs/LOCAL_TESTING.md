@@ -39,6 +39,17 @@ Plex Sans Regular, Medium and SemiBold `.ttf` files under
 added. The existing inert fixture checks font byte preservation and rejected
 paths/types; this is not a new test framework or Godot test.
 
+On **2026-10-30**, the owner approved tracking the exact IBM Plex Sans Italic
+import sidecar, its exact-path LF attribute, and staging only the additional
+`assets/fonts/ibm-plex-sans/IBMPlexSans-Italic.ttf` and matching `.ttf.import`.
+The sidecar SHA-256 is
+`59dcbab3fc80589bdb874f68bfb1cd93e6d979fd96ff56787094500a56d62c20`;
+its bytes, UID, import settings and paths are preserved. No other file types,
+commands, executable identities, limits or Native assertions are added.
+**PR #90 Native execution still requires separate owner authorization.** The
+owner's graphical/functional acceptance is 6/6 PASS; it does not authorize Native.
+
+
 There is no embedded approval scope, self-hash, receipt, environment switch or
 local approval file. Authorization is supplied by the owner and repository workflow.
 Preserve historical receipts, withdrawal files and evidence; the runner does not
@@ -92,7 +103,7 @@ points fail closed. Preserve paths, bytes, UIDs and import sidecars.
 The resource allowlist includes `project.godot`, only
 `tests/fabricator_recipe_switching_test.gd` and its UID, and reviewed resource
 extensions under assets, construction, dialogue, inventory, objectives, scenes and
-shaders, plus the three exact font paths and their three metadata sidecars above.
+shaders, plus the four exact font paths and their four metadata sidecars above.
 Other tests, tools, docs, hidden paths, .git, .godot, artifacts, saves,
 settings and credential/secret names are excluded. Filename filters cannot detect
 secrets embedded in approved content. No owner save/settings/artwork is deleted.

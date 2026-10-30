@@ -502,6 +502,24 @@ MUSING_SHA256 = {
 }
 
 
+# Owner approved only the Italic font/sidecar staging expansion on 2026-10-30.
+# Pin the complete reviewed controls, then retain all prior comparisons.
+ITALIC_STAGING_BASE = "081630c07938a5a71e0b47976324d2cdbac7ea0c"
+ITALIC_STAGING_SHA256 = {
+    "tools/run-local-tests.ps1": "6fbb3fd6b4a9478775d15f01cb33628a29e0629eef0146acebdd32c3898114c5",
+    "docs/LOCAL_TESTING.md": "7ff3eb595b2a8528051ec798e1755ab302a34d3ae36ed458be2e46cf77921afc",
+}
+
+
+def without_italic_staging_changes(path, text):
+    if path not in ITALIC_STAGING_SHA256:
+        return text
+    if hashlib.sha256(text.encode()).hexdigest() != ITALIC_STAGING_SHA256[path]:
+        raise AssertionError(f"Missing or modified approved italic staging bytes: {path}")
+    return subprocess.check_output(["git", "show", f"{ITALIC_STAGING_BASE}:{path}"],
+                                   cwd=ROOT).decode("utf-8").replace("\r\n", "\n")
+
+
 def without_musing_changes(path, text):
     if path not in MUSING_SHA256:
         return text

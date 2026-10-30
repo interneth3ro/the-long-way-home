@@ -6,7 +6,10 @@ import subprocess
 import unittest
 
 from static_automatic_transitions_test import ROOT, read
-from static_v2_production_host_test import MUSING_BASE, MUSING_SHA256, without_musing_changes
+from static_v2_production_host_test import (
+    MUSING_BASE, MUSING_SHA256, without_musing_changes,
+    ITALIC_STAGING_BASE, ITALIC_STAGING_SHA256, without_italic_staging_changes,
+)
 
 
 class MusingUIStaticTest(unittest.TestCase):
@@ -114,7 +117,43 @@ class MusingUIStaticTest(unittest.TestCase):
                 historical = subprocess.check_output(
                     ["git", "show", f"{MUSING_BASE}:{path}"], cwd=ROOT
                 ).decode().replace("\r\n", "\n")
-                self.assertEqual(read(path), historical)
+                self.assertEqual(without_italic_staging_changes(path, read(path)), historical)
+
+    def test_italic_staging_scope_metadata_and_historical_controls(self):
+        sidecar = "assets/fonts/ibm-plex-sans/IBMPlexSans-Italic.ttf.import"
+        data = (ROOT / sidecar).read_bytes()
+        self.assertEqual(hashlib.sha256(data).hexdigest(),
+                         "59dcbab3fc80589bdb874f68bfb1cd93e6d979fd96ff56787094500a56d62c20")
+        self.assertNotIn(b"\r", data)
+        self.assertIn(b'source_file="res://assets/fonts/ibm-plex-sans/IBMPlexSans-Italic.ttf"', data)
+        regular = (ROOT / "assets/fonts/ibm-plex-sans/IBMPlexSans-Regular.ttf.import").read_bytes()
+        self.assertEqual(data.split(b"[params]", 1)[1], regular.split(b"[params]", 1)[1])
+        def prior(path):
+            return subprocess.check_output(
+                ["git", "show", f"{ITALIC_STAGING_BASE}:{path}"], cwd=ROOT
+            ).decode().replace("\r\n", "\n")
+        self.assertEqual(read(".gitattributes"), prior(".gitattributes") + sidecar + " text eol=lf\n")
+        path = "tools/run-local-tests.ps1"
+        self.assertEqual(prior(path).count("(Regular|Medium|SemiBold)"), 1)
+        self.assertEqual(read(path), prior(path).replace(
+            "(Regular|Medium|SemiBold)", "(Regular|Medium|SemiBold|Italic)", 1))
+        fixture_path = "tests/local_runner_fixture_test.ps1"
+        expected = prior(fixture_path).replace(
+            "@('Regular', 'Medium', 'SemiBold')", "@('Regular', 'Medium', 'SemiBold', 'Italic')", 1)
+        line = "                'assets/fonts/ibm-plex-sans/IBMPlexSans-Regular.otf',"
+        expected = expected.replace(line, line + "\n"
+            "                'assets/fonts/ibm-plex-sans/IBMPlexSans-Italic.otf',\n"
+            "                'assets/fonts/ibm-plex-sans/IBMPlexSans-Italic.ttf.exe',\n"
+            "                'assets/fonts/ibm-plex-sans/IBMPlexSans-Italic.ttf.import.exe',", 1)
+        self.assertEqual(read(fixture_path), expected)
+        for path in ITALIC_STAGING_SHA256:
+            candidate = read(path)
+            self.assertEqual(without_italic_staging_changes(path, candidate), prior(path))
+            for changed in (candidate.replace("\n", "\nCHANGED\n", 1),
+                            candidate + candidate, candidate + "UNRELATED\n"):
+                with self.assertRaises(AssertionError):
+                    without_italic_staging_changes(path, changed)
+        self.assertEqual(without_italic_staging_changes("unrelated.gd", "sentinel"), "sentinel")
 
     def test_scene_paths_passivity_and_real_italic_face(self):
         scene, script = read("scenes/ui/musing_ui.tscn"), read("scenes/ui/musing_ui.gd")

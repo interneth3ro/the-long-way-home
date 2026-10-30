@@ -5,7 +5,9 @@ import subprocess
 import unittest
 from static_automatic_transitions_test import ROOT, read
 from static_extractor_inspection_test import functions
-from static_v2_production_host_test import FABRICATOR_BASE, without_fabricator_changes
+from static_v2_production_host_test import (
+    FABRICATOR_BASE, without_fabricator_changes, without_italic_staging_changes,
+)
 
 
 # Proposed chooser presentation bytes; owner approval required before Native use.
@@ -55,7 +57,8 @@ class FabricatorInspectionStaticTest(unittest.TestCase):
             expected = subprocess.check_output(["git", "show", f"{FABRICATOR_BASE}:{path}"], cwd=ROOT)
             actual = (ROOT / path).read_bytes()
             if not path.endswith(".png"):
-                actual = without_fabricator_changes(path, actual.decode("utf-8").replace("\r\n", "\n")).encode("utf-8")
+                actual = without_fabricator_changes(path, without_italic_staging_changes(
+                    path, actual.decode("utf-8").replace("\r\n", "\n"))).encode("utf-8")
                 expected = expected.replace(b"\r\n", b"\n")
             self.assertEqual(actual, expected, path)
 

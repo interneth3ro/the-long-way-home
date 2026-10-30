@@ -9,6 +9,7 @@ from static_automatic_transitions_test import ROOT, read
 from static_extractor_inspection_test import functions
 from static_v2_production_host_test import (
     CONVERSATION_BASE, CONVERSATION_SHA256, without_conversation_changes,
+    without_italic_staging_changes,
 )
 
 
@@ -48,7 +49,7 @@ class ConversationUIStaticTest(unittest.TestCase):
         ]
         for path in paths:
             with self.subTest(path=path):
-                self.assertEqual(without_conversation_changes(path, read(path)), baseline(path))
+                self.assertEqual(without_conversation_changes(path, without_italic_staging_changes(path, read(path))), baseline(path))
         before = functions(baseline("scenes/ui/dialogue_ui.gd"))
         after = functions(read("scenes/ui/dialogue_ui.gd"))
         for method in ("is_conversation_open", "advance", "dismiss"):

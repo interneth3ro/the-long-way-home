@@ -48,6 +48,14 @@
   rejected generated sidecars, together with one controlled rerun). This authorizes no additional
   executable types, engine commands, tests or runner capabilities. All existing
   staging, identity, limit, failure and preservation checks remain required.
+- On 2026-10-30 the owner separately approved tracking the exact IBM Plex Sans
+  Italic `.ttf.import` sidecar, its exact-path LF rule, and staging only the
+  additional `assets/fonts/ibm-plex-sans/IBMPlexSans-Italic.ttf` and its matching
+  `.ttf.import`. Preserve the sidecar SHA-256
+  `59dcbab3fc80589bdb874f68bfb1cd93e6d979fd96ff56787094500a56d62c20`.
+  This adds no commands, executable types, tests or runner capabilities beyond
+  those two input paths. PR #90 Native execution requires separate owner
+  authorization; the standing routine exception does not authorize that run.
 - Each authorized run requires actual Python static-suite PASS, unchanged reviewed
   controls, and a fresh unique copy of approved tracked working inputs under
   `D:\GameDev\Godot\TLWH-NativeStages`, outside the checkout. Working resource

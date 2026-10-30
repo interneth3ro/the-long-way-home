@@ -33,7 +33,10 @@ for the musing presentation. It comes unmodified from the same revision and
 source directory above, under the existing upstream license. SHA-256:
 `a9c6ef9942c49e49d11e11a6dacc0b3a087978757e9b22a06b8ac22a6400fb15`.
 Only musing body text uses Italic; the DAVE label uses upright Medium.
-The restricted Native runner's existing three-font allowlist is unchanged and
-excludes this fourth font and its eventual import sidecar. Native must wait for
-separate owner review of that staging expansion; no sidecar or cache was
-produced by an agent Godot launch for this change.
+On 2026-10-30 the owner separately approved tracking the exact owner-generated
+Italic import sidecar, its exact-path LF rule, and staging the Italic font and
+sidecar alongside the existing three fonts. Sidecar SHA-256:
+`59dcbab3fc80589bdb874f68bfb1cd93e6d979fd96ff56787094500a56d62c20`.
+Its existing UID, paths, settings and LF bytes are preserved; no cache is tracked.
+This staging approval does not authorize PR #90 Native execution, which still
+requires separate owner authorization. No agent Godot launch produced this file.

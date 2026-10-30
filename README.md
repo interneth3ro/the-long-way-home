@@ -100,7 +100,7 @@ flags, conversation presentation/controls, objective activation, inventory,
 inspection, construction and hotbar behavior remain unchanged. Other panels
 receive no new suppression rule.
 
-Validation: **73 Python static tests PASS**, including exact historical
+Validation: **74 Python static tests PASS**, including exact historical
 comparisons, altered/duplicated/appended-byte rejection, scene node references,
 mouse transparency and actual italic font metadata. The owner approved the exact
 initial musing hashes and narrow static preservation amendment on 2026-10-30.
@@ -110,10 +110,13 @@ only border RGBA changes to (0.46, 0.60, 0.62, 0.88) in the existing StyleBoxFla
 The owner approved the exact updated scene hash and preservation amendment on
 2026-10-30. Rendered border
 visibility, including against lighter backgrounds, awaits owner graphical review.
-Agent validation remains static only. The unchanged Native runner
-excludes the italic font/import sidecar; a separately reviewed staging expansion
-and renewed authorization are required before Native. Runner commands, policy,
-Native assertions and the serial-import workaround are unchanged.
+Owner graphical/functional acceptance is **6/6 PASS**: lifecycle, gameplay
+interaction, conversation priority, pending replacement, transition safety, and
+scaling/layout. Agent validation remains static only. On 2026-10-30 the owner
+approved tracking the exact Italic import sidecar, its LF rule, and adding only
+the Italic font/sidecar to staging. Runner commands, executable identity, limits,
+Native assertions and the serial-import workaround are unchanged. **Separate
+owner authorization is required before PR #90 Native execution.**
 
 PR #90 also fixes the owner-reported Fabricator inspector shadowing warning:
 its ingredient-name Label local is renamed from `material` (an inherited
