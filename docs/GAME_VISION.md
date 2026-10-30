@@ -234,15 +234,22 @@ remains under development.
 Implementation and coordinate conventions are recorded in the
 [README](../README.md#world-generation-foundation-pr-27-merged).
 
-The Weathered Earth foundation is pending merge in PR #94. Initial owner visual
-and movement-smoothness acceptance failed; renewed acceptance remains blocked.
+The Weathered Earth foundation merged in PR #94. Initial owner visual
+and movement-smoothness acceptance failed; merge alone does not establish renewed acceptance.
 Environment Decision 16, Option B approves warm earth with subtle legacy variation.
 The focused correction uses one shared provisional Base Soil texture/pass per
 terrain cell and bounded brightness/warmth from the existing color halo. The
 texture's brown hue dominates; legacy green becomes shading. Three inactive
 provisional variants are preserved. The generator, masks, streaming, construction
 and gameplay are unchanged. This is not final illustrated art or verified runtime
-performance. Other terrain families, vegetation and clearing remain deferred.
+performance. A focused Low Green Ground Cover prototype is pending merge:
+four owner-supplied candidate textures form deterministic presentation-only
+clusters beyond protected gameplay space and full authored mask feathers.
+The approved study defines art direction; final texture acceptance, in-game
+seams and performance remain unverified. One base polygon per terrain cell and
+warm-earth tint are retained; gameplay authority and streaming remain unchanged.
+Full organic Earth/Green transitions, new vegetation and clearing remain deferred.
+See the [prototype and owner checks](../README.md#low-green-ground-cover-prototype-feature-branch-pending-merge).
 See the [implementation, tint formula and owner checks](../README.md#weathered-earth-textured-terrain-foundation-pending-merge).
 
 ## Approved Ferrite discovery direction

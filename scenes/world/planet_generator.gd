@@ -111,3 +111,20 @@ func sample_detail(tile: Vector2i, state: PlanetWorldState) -> Dictionary:
 		return {}
 	var kind := mini(2, int(coordinate_random(tile, 6) * 3.0))
 	return {"position": point, "kind": kind}
+
+
+# Presentation only: 0 is Weathered Earth; 1..4 are candidate green textures.
+# No terrain validity, construction or simulation decisions consume this value.
+func sample_ground_material(tile: Vector2i) -> int:
+	var point := (Vector2(tile) + Vector2(0.5, 0.5)) * WorldCoordinates.TERRAIN_SIZE
+	if is_protected(point):
+		return 0
+	# Preserve every authored mask and its full recovery feather, including Ferrite.
+	for overlay in _overlays:
+		if _overlay_weight(point, overlay.polygon, float(overlay.feather)) > 0.0:
+			return 0
+	# Broad clusters with smaller contour variation, sampled once at configuration.
+	var cover := _noise(point / 768.0, 8) + _noise(point / 192.0, 9) * 0.18
+	if cover < 0.64:
+		return 0
+	return 1 + mini(3, int(coordinate_random(tile, 10) * 4.0))

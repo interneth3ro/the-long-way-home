@@ -2224,9 +2224,77 @@ playtest items remain unverified. Static inspection covers references, named
 spawns, collision clearances, flag lifecycle, lock/failure paths, preserved player
 files, documentation links and Git patch integrity.
 
+## Low Green Ground Cover prototype (feature branch, pending merge)
+
+`codex/low-green-ground-cover` adds four **candidate**, byte-preserved 128 x 128
+opaque RGB PNGs supplied in `TLWH_Low_Green_Ground_Cover_Codex_Handoff.zip`.
+The approved concept/study establish art direction; the standalone textures
+remain subject to owner in-game acceptance. No concept board was cropped.
+ZIP SHA-256: `8402d85739ecc4b219831472246289cc2b7ba425889a104e63d7eee1fa32ce32`.
+Production inputs live in `assets/environment/exterior/low_green_ground_cover_provisional/`:
+
+| File | Original SHA-256 |
+| --- | --- |
+| `a_balanced_cover.png` | `85043ba1079be6fa1577312bcd2d0884b66efa5f0b7592bd7ccaeb96baae978d` |
+| `b_moss_dominant.png` | `38048cb8d8ca542df4a7f247b4a0c917e306d7b9c949a3d08ed3b3ef26f31ad3` |
+| `c_exposed_earth.png` | `f5f81c6fcf6a906d96f6e8b7dfe9bdfad65deb83d327bcb2368f30c30032db5a` |
+| `d_fine_grass.png` | `dd50462374578046c3f6822f4e8f02d85f6d7e571dfee9a06fe43e0c7c090009` |
+
+`PlanetGenerator.sample_ground_material(tile)` is presentation-only: 0 selects
+existing Base Soil, 1..4 select green variants. It does not determine construction
+validity or alter terrain edits, state, Ferrite or factory simulation. The original
+generator methods are preserved verbatim. Protected gameplay space/object clearances
+and all authored polygons plus their full 256-unit recovery feathers select earth.
+Beyond these masks, world-space smooth noise at 768 and 192 units, channels 8/9,
+forms clusters using `broad + fine * 0.18 >= 0.64`. Coordinate hashing on channel 10
+selects the variant, without mutable RNG or visit-order dependence. Negative tile
+coordinates use the same floor-based world sampling.
+
+`TerrainChunk.configure` caches 1,024 material bytes. Redrawing uses exactly one
+textured polygon per 64-unit cell, selecting from five shared preloads; there are
+no added nodes, overlays, shaders or per-frame noise. Both materials use the
+existing near-neutral earth tint and shared UVs; Weathered Earth tint math,
+color-edit halo, details and alpha remain unchanged. Each 32 x 32 chunk still draws
+1,024 base polygons and allocates two packed arrays per drawn cell. Added work is
+at most 2,048 noise samples and 1,024 variant hashes per configuration, plus bounded
+protection/mask geometry checks against the existing authored inventory. Total
+color plus material noise calls are at most 4,360 (previously 2,312). Five textures
+can cause more texture switches; actual GPU batching, frame times and memory are
+unmeasured. Chunk radius, retention, two-chunk generation budget and transitions
+are untouched. These are source counts, not performance claims.
+
+Static checks decode PNGs with CRC/filter validation, verify original hashes,
+128 x 128 RGB8 metadata and all 16 ordered shared-edge combinations. Arithmetic
+models check positive/negative boundaries, regeneration, visit order, seed variation,
+cluster adjacency and authored clearing/mask exclusion. Exact candidate hashes
+adapt the historical Weathered Earth/preservation checks to immutable PR #94
+bytes; all historical assertions and tamper rejection remain. Changed controls
+and input scope require independent owner review before any future Native use.
+Runner, policy, engine commands, limits and Native assertions are unchanged.
+No Godot, Native, graphical, profiling or benchmark execution was performed.
+
+The supplied mixed preview has repeated motifs. Matching green edge pixels do
+not establish filtered/mipmapped appearance or Earth/Green compatibility. Square
+material boundaries may remain visible; full organic transitions and mipmap tuning
+are deferred. The art, engine parsing and gameplay/performance acceptance await
+owner review. Do not infer acceptance from static PASS or the PR #94 merge.
+
+Owner PASS/FAIL review (agent graphical launch requires separate authorization):
+
+- At spawn: clearing remains mostly warm earth, open and suitable for construction;
+  Weathered Earth remains recognizable and Ferrite/grid remain legible.
+- Farther outside: believable clusters, four useful variants, acceptable seams and
+  repetition. Compare screenshots at spawn, farther green terrain, and grid enabled.
+- Initial exit/movement, new chunk generation and return trips: no noticeable
+  regression; ship/hatch, deployment/recovery and production remain functional.
+
+Await owner graphical review. No merge or post-merge cleanup is requested.
+
 ## Weathered Earth Textured Terrain Foundation (pending merge)
 
-PR #94 remains **BLOCKED pending renewed owner graphical/functional acceptance**.
+Historical PR #94 implementation record (merged 2026-10-30). The recorded
+initial owner rejection and correction checks below are preserved; the merge
+alone does not establish renewed owner graphical/functional acceptance.
 The owner rejected the initial appearance and exterior movement smoothness and
 raised a transition-responsiveness concern. The focused correction implements
 Environment Decision 16, Option B: **Warm Earth with Subtle Legacy Variation**.
