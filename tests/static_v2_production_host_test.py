@@ -7,6 +7,7 @@ import re
 import subprocess
 import unittest
 from unittest.mock import patch
+from static_weathered_earth_test import TERRAIN_SHA256, preserved_terrain_bytes
 
 import static_automatic_transitions_test as geometry
 from static_automatic_transitions_test import ROOT, PRIMARY, MAINTENANCE, EXTERIOR, read as raw_read, merged_nodes
@@ -1309,6 +1310,8 @@ class V2ProductionHostStaticTest(unittest.TestCase):
                 expected = proc.stdout.read(int(header[2]))
                 self.assertEqual(proc.stdout.read(1), b"\n")
                 actual = (ROOT / path).read_bytes()
+                if path in TERRAIN_SHA256:
+                    actual = preserved_terrain_bytes(path, actual)
                 if path in MACHINE_ICONS_SHA256 and path not in FERRITE_REFINEMENT_SHA256:
                     actual = without_machine_icon_changes(path, actual.decode("utf-8").replace("\r\n", "\n")).encode("utf-8")
                 if path in FERRITE_REFINEMENT_SHA256:

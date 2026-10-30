@@ -2224,6 +2224,85 @@ playtest items remain unverified. Static inspection covers references, named
 spawns, collision clearances, flag lifecycle, lock/failure paths, preserved player
 files, documentation links and Git patch integrity.
 
+## Weathered Earth Textured Terrain Foundation (pending merge)
+
+This focused prototype extends the existing custom `TerrainChunk` renderer with
+four 128 x 128 opaque RGB8 PNGs under
+`assets/environment/exterior/weathered_earth_provisional/`:
+`a_base_soil.png`, `b_compacted_soil.png`, `c_dusty_patches.png` and
+`d_subtle_gravel.png`. They are **PROVISIONAL mathematical test textures, not
+approved final artwork**. Their understated detail does not reproduce the
+illustrated richness of the approved concept.
+
+Provenance: the owner's `TLWH_Weathered_Earth_Codex_Handoff.zip` supplies concept
+sheets only: `references/01_weathered_earth_four_variants_v2.png`
+(SHA-256 `458e948d00b274f13bb6a35921b84f9f29cd469c030cd83d673ff0dc6b4a4b48`)
+and `references/02_refined_crash_site_terrain_direction.png`
+(`f6c25ef1368b9ee89a6217136a624b4c564745ca99bd35467af09cdc30be2c4a`).
+No concept pixels were cropped, edited or redistributed. The four PNGs come from
+this dependency-free [small reproducible recipe](tools/generate-weathered-earth.py):
+periodic coordinate-hashed noise with fixed seed, common fine grain, darker
+compacted earth, lighter dust and fine gravel variation. No prominent rocks,
+plants, debris, directional shadows or gameplay objects are baked into them.
+`python -B tools/generate-weathered-earth.py --check` compares reproduced bytes
+without writing. Creation mode refuses to overwrite differing files.
+
+All four textures have identical opposing edges and common eight-pixel border
+strips; treatment differences fade into the interior. Static checks decode PNGs,
+verify CRCs, opacity/dimensions, reproducibility and all 16 ordered horizontal and
+vertical adjacencies. Pixel checks do not establish visual seamlessness. No
+engine-generated import sidecars/caches are included; owner import is required.
+Linear filtering is explicit in the renderer; no global import settings change.
+
+Four shared preloaded textures repeat once per 64-unit terrain cell, using
+textured polygons rather than per-tile nodes. Base Soil is opaque; Compacted Soil,
+Dusty Patches and Subtle Gravel composite in that order with quiet vertex alpha
+weights from existing seeded world-coordinate noise, reserved channels 8-10 and
+a 1,024-unit field scale. Interpolated shared weights span cells/chunks, including
+negative coordinates, without per-cell random choices or loaded-neighbor queries.
+Existing terrain/detail random channels and seed remain unchanged.
+
+A one-cell halo averages the same four original tile-center colors at each grid
+vertex. Tint is normalized to Base Soil RGB (156, 141, 121). Existing geology,
+scrub, stored colors and authored overlay precedence remain meaningful.
+Interpolation softens former 64-unit color steps: an isolated stored tile-color
+edit now affects surrounding vertices rather than a hard square. Authored mask
+edges are correspondingly softened locally. Ferrite artwork/geometry is untouched.
+
+Each chunk caches 33 x 33 tints/weights and existing details; the 34 x 34 halo is
+temporary during configuration. Textures are never generated during drawing or
+processing. Drawing records one base and up to three overlay polygons per cell,
+so ground commands can increase up to fourfold. Batching, draw calls, frame time
+and memory are unmeasured. Repeated grain, triangulated interpolation, common
+borders and fixed compositing order can still reveal patterns. Final artwork,
+full material transitions, mipmap tuning and optimization remain deferred.
+
+Chunk dimensions, loading/retention radii, generation budget, construction grid,
+ship/hatch/spawn, Ferrite, decorations/collision and world/factory state remain
+unchanged. No cover suppression, vegetation, resource mechanic or disk persistence
+is added. Exact-hash allowances for the two changed scripts restore original main
+bytes for older preservation tests and reject unrelated edits. This static-suite
+and preservation amendment requires owner review before future Native use; runner
+policy, pinned engine and native assertions are unchanged.
+
+Validation is static only. Sampling models check negative/world-zero boundaries
+and visit-order independence; they do not execute GDScript. Godot import/parsing,
+visual seam quality, runtime interaction and performance remain unverified. No
+Godot, Native, graphical or benchmark execution was performed for this feature.
+Owner acceptance is PASS/FAIL per item, with optional observations:
+
+1. Ground appearance at normal gameplay zoom and construction mode.
+2. No conspicuous repeated grid, checkerboard, hard tile seams or chunk seams.
+3. Authored crash clearing and Ferrite terrain remain recognizable.
+4. Ship/hatch movement and transitions work.
+5. Machine placement/recovery and production remain intact.
+6. Exploration, unloading, returning and negative-coordinate boundaries are consistent.
+7. No noticeable stalls during normal owner-controlled play.
+8. Compare immediate crash site, wider terrain and a construction-grid screenshot.
+
+Await owner screenshot review and separately authorized execution before claiming
+graphical or functional acceptance. Static success does not broaden permissions.
+
 ## World Generation Foundation (PR #27, merged)
 
 This feature extends PR #26 without changing Dave, camera, interior, narrative,

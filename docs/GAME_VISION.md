@@ -234,6 +234,15 @@ remains under development.
 Implementation and coordinate conventions are recorded in the
 [README](../README.md#world-generation-foundation-pr-27-merged).
 
+The Weathered Earth textured-terrain foundation is pending merge and owner visual
+acceptance. It adds four reproducible **provisional test textures**, broad
+deterministic treatment blending and interpolated legacy terrain tint to the
+existing chunk renderer. The supplied concept sheets approve art direction, not
+these generated textures as final artwork. Chunk dimensions, streaming, authored
+crash-site content and factory gameplay remain unchanged. Other terrain families,
+vegetation changes and decorative clearing are deferred. See the
+[implementation and acceptance notes](../README.md#weathered-earth-textured-terrain-foundation-pending-merge).
+
 ## Approved Ferrite discovery direction
 
 - Ferrite is the first structural metal resource: dark slate-gray mineral ground

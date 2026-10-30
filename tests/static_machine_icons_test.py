@@ -8,6 +8,7 @@ import zlib
 
 from static_automatic_transitions_test import ROOT, read
 from static_extractor_inspection_test import functions
+from static_weathered_earth_test import INPUT_SHA256, verify_input
 from static_v2_production_host_test import (
     MACHINE_ICONS_BASE, MACHINE_ICONS_SHA256, without_machine_icon_changes,
     MACHINE_LAYOUT_BASE, MACHINE_LAYOUT_SHA256, without_machine_layout_changes,
@@ -298,7 +299,11 @@ class MachineIconsStaticTest(unittest.TestCase):
             "inventory", "construction", "dialogue", "world", "objectives", "project.godot",
             "AGENTS.md", "tools", "docs/LOCAL_TESTING.md", "tests/fabricator_recipe_switching_test.gd",
         ], cwd=ROOT, text=True).splitlines()
-        allowed = set(MACHINE_ICONS_SHA256) | {
+        # Exact Weathered Earth candidates only; no path-wide exemption and no
+        # Native permission expansion. Review this amendment before Native use.
+        for path in set(changed) & set(INPUT_SHA256):
+            verify_input(path, (ROOT / path).read_bytes())
+        allowed = set(MACHINE_ICONS_SHA256) | set(INPUT_SHA256) | {
             f"assets/items/{item}.png{suffix}" for item in ART for suffix in ("", ".import")
         }
         self.assertFalse(set(changed) - allowed, set(changed) - allowed)

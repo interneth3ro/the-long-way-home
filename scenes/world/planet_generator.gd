@@ -43,6 +43,17 @@ func _noise(point: Vector2, channel: int) -> float:
 	return lerpf(north, south, blend.y)
 
 
+# Presentation-only treatment weights at absolute terrain-grid vertices.
+# Channels 8-10 leave existing terrain/detail randomness untouched. Broad fields
+# cross chunk boundaries without depending on neighbors being loaded.
+func weathered_earth_weights(vertex: Vector2i) -> Vector3:
+	var point := Vector2(vertex) * WorldCoordinates.TERRAIN_SIZE / 1024.0
+	return Vector3(
+		smoothstep(0.35, 0.75, _noise(point, 8)) * 0.65,
+		smoothstep(0.40, 0.80, _noise(point, 9)) * 0.65,
+		smoothstep(0.50, 0.85, _noise(point, 10)) * 0.55)
+
+
 # World-space samples are shared across chunk edges. Authored polygons, retained
 # in the scene as editable data, take precedence over baseline and modifications.
 func sample_color(tile: Vector2i, state: PlanetWorldState) -> Color:
