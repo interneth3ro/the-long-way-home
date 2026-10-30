@@ -133,6 +133,37 @@ is exempted; historical hashes remain unchanged. Runner commands, allowlists,
 policies, Godot-native assertions, pinned executable and serial-import setting
 are unchanged. No graphical launch, runtime probe, merge or cleanup occurred.
 
+Compact gauge readability follow-up: owner Test 3 reported four PASS results and
+one percentage-size FAIL. The shared gauge previously used a fixed 30-point font
+and an ascent-times-0.3 baseline. With owner approval, gauges below 124 units now
+scale internal ring/tick spacing using the original 144-unit proportions. Their
+percentage starts proportional to diameter and fits a stable envelope measured
+from 0%, 43% and 100% inside the progress stroke with 1.5 units of clearance;
+width and ascent/descent metrics center it. The bezel, ticks, progress arc and
+colors remain, as do real progress semantics. At approved Extractor/Smelter sizes
+124/144/164, geometry, 30-point typography and baseline remain unchanged. Fabricator
+64/112-unit dimensions and every machine layout remain unchanged.
+
+This follow-up passes 59 nonexecuting Python static tests. The previous one-run
+restricted validation at `32958a6142f0314440df9bb8eeb9a9d53e438a4c` passed all 58
+then-current static tests, cold import and recipe-switching regression (0 failures),
+with infrastructure/authorization PASS and reason OK. Its preserved stage is
+`D:\GameDev\Godot\TLWH-NativeStages\tlwh-native-plan-13a80c79e3914d2b82f2c8c9ae029c7d`.
+That result predates the gauge correction and does not validate this revision.
+No Godot, Native or graphical check was run for the follow-up; screenshot
+acceptance remains pending.
+
+The follow-up proposes one additional exact LF-normalized candidate pin for
+`scenes/ui/cycle_gauge.gd`:
+`20b7cc41c5922c0d798b15b5974e8af6875860aac43d48a76dbdfb363d80317d`.
+It restores the same immutable PR #86 baseline before historical comparisons.
+The three previously approved pins and every historical hash remain unchanged;
+the existing tampering test now also covers the gauge. The Fabricator resource
+comparison uses this exact-byte normalization, and a new static check preserves
+progress/state methods and all machine scenes/presenters. These amendments require
+owner review before any separately authorized Native execution. Runner, testing
+policy, Native assertions and serial imports remain unchanged.
+
 Owner acceptance checklist (separate graphical authorization required):
 
 - Inspect maximized desktop, 1280 x 720 and 1024 x 576 at each of 75/85/100%.
