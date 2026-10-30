@@ -882,12 +882,32 @@ not deployable in its tooltip. Context-dependent deployment rejection remains
 with the controller. There is no selection step or Deploy button.
 
 `ItemPresentation.ICONS`, also exposed as `InventoryUI.ITEM_ICONS`, is the shared
-presentation-only lookup for inventory and hotbar: Plate/Rod reuse existing
-recipe textures; ORE, BAR, EX, SM and FB are temporary distinguishing symbols for
-Ore, Ingot, Extractor, Smelter and Fabricator. Each can be replaced by a Texture2D
-in the lookup without changing storage or layout. Unknown future types use `?`
+presentation-only lookup for inventory and hotbar. On
+`codex/ferrite-material-icons` (pending merge), Ore, Ingot, Plate and Rod use the
+four owner-approved 256 x 256 transparent PNGs in `assets/items/`, copied unchanged
+from `tlwh_ferrite_icons.zip`. Plate/Rod recipe resources reference the same PNGs
+for the Recipe Chooser and selected recipe. The old SVGs remain preserved but
+are no longer active item/recipe artwork. EX, SM and FB remain provisional
+machine symbols. Unknown future types use `?`
 with their full identity in the tooltip. Quantities below 1,000 are exact on the
 slot; larger values truncate to K/M/B/T/Qa/Qi, with exact int64 totals on hover.
+
+This material-art integration preserves the 22-unit inventory and 32-unit chooser
+icons (24-unit compact selected-recipe icon), aspect-preserving rendering,
+quantity/tooltips, B1/B2 styling and 85% scale default. Machine storage icons,
+machine artwork and inventory/hotbar drag-and-drop are deferred. No import
+sidecars or UIDs are invented; Godot import and actual rendering remain unverified
+until separately authorized owner validation. The static preservation suite pins
+the exact candidate helper/recipe bytes and approved PNG hashes while retaining
+all prior historical comparisons; this amendment requires review before Native.
+
+Owner acceptance for this branch: inspect all four inventory icons, Plate/Rod
+chooser cards and both selected recipes at 75%, 85% and 100%; check quantity and
+tooltip correctness, transparent edges, legibility and no clipping/overlap. Switch
+recipes and confirm CURRENT/pause behavior, production quantities and storage
+labels remain correct. Capture actual Godot screenshots for owner review; note
+any icon that appears too small, soft or indistinct. No agent Godot/Native run is
+authorized by this implementation assignment.
 
 Items sort by stable `item_id` within each section, independent of acquisition
 order. Quantity-only updates do not reorder slots. New/removing types can shift

@@ -511,6 +511,32 @@ ITALIC_STAGING_SHA256 = {
 }
 
 
+# Ferrite artwork candidate: review this preservation amendment before Native.
+# Pin complete candidate files, restore immutable main for older comparisons,
+# and retain every historical hash. No runner/policy or command scope changes.
+FERRITE_ICONS_BASE = "74687ba6b1fa35af198e8fc3321a073935f65c1d"
+FERRITE_ICONS_SHA256 = {
+    "scenes/ui/item_presentation.gd": "7c695d80588d4c272f25a043c93231bf83757708267455b06be5af1a0bbfe068",
+    "construction/recipes/ferrite_plate.tres": "9122fee113937ab561101ddeb0624877a38b2289f7b7307b0ad8c6ff16209614",
+    "construction/recipes/ferrite_rod.tres": "0e530192ce484d485cd6a9fa2be79e51987d30173fd350793a60f38d4ec2aec4",
+}
+FERRITE_ART_SHA256 = {
+    "ferrite_ore": "8604e53c8a33d349c8335c35497aaaea7deaf083ef56724f41c2f6c7d87fdbd5",
+    "ferrite_ingot": "672e48eef6ac2ac8852fdaebd57bca3c7ffff119dad82def02bd08fec5b65335",
+    "ferrite_plate": "8bb7ed820b3f25d0cbe9ba8053311fc83f5e666611d82fdff9b1bc26151ebc64",
+    "ferrite_rod": "be51d5a195e4df6c0d83d618e79ea3c72e500faafa68cc47c40b8caaa8f3b767",
+}
+
+
+def without_ferrite_icon_changes(path, text):
+    if path not in FERRITE_ICONS_SHA256:
+        return text
+    if hashlib.sha256(text.encode("utf-8")).hexdigest() != FERRITE_ICONS_SHA256[path]:
+        raise AssertionError(f"Missing or modified Ferrite icon candidate bytes: {path}")
+    return subprocess.check_output(["git", "show", f"{FERRITE_ICONS_BASE}:{path}"],
+                                   cwd=ROOT).decode("utf-8").replace("\r\n", "\n")
+
+
 def without_italic_staging_changes(path, text):
     if path not in ITALIC_STAGING_SHA256:
         return text
@@ -984,8 +1010,39 @@ class V2ProductionHostStaticTest(unittest.TestCase):
 
     def test_shared_inventory_presentation_preserved(self):
         path = "scenes/ui/item_presentation.gd"
-        actual = (ROOT / path).read_bytes().replace(b"\r\n", b"\n")
+        actual = without_ferrite_icon_changes(path, read(path)).encode("utf-8")
         self.assertEqual(hashlib.sha256(actual).hexdigest(), HOTBAR_ITEM_PRESENTATION_SHA256)
+
+    def test_ferrite_icon_candidate_restores_main_and_rejects_tampering(self):
+        for path in FERRITE_ICONS_SHA256:
+            original = read(path)
+            with self.subTest(path=path):
+                before = subprocess.check_output(["git", "show", f"{FERRITE_ICONS_BASE}:{path}"],
+                                                 cwd=ROOT).decode("utf-8").replace("\r\n", "\n")
+                self.assertEqual(without_ferrite_icon_changes(path, original), before)
+                for changed in (original.replace(".png", ".svg", 1),
+                                original + original, original + "UNRELATED\n"):
+                    with self.assertRaises(AssertionError):
+                        without_ferrite_icon_changes(path, changed)
+
+    def test_ferrite_art_matches_owner_archive_and_active_references(self):
+        helper = read("scenes/ui/item_presentation.gd")
+        for item_id, expected in FERRITE_ART_SHA256.items():
+            with self.subTest(item_id=item_id):
+                resource = f"res://assets/items/{item_id}.png"
+                raw = (ROOT / "assets/items" / f"{item_id}.png").read_bytes()
+                self.assertEqual(hashlib.sha256(raw).hexdigest(), expected)
+                self.assertEqual(raw[:8], b"\x89PNG\r\n\x1a\n")
+                self.assertEqual(raw[12:16], b"IHDR")
+                self.assertEqual(int.from_bytes(raw[16:20], "big"), 256)
+                self.assertEqual(int.from_bytes(raw[20:24], "big"), 256)
+                self.assertEqual(raw[24:26], b"\x08\x06")  # 8-bit RGBA.
+                self.assertIn(f'&"{item_id}": preload("{resource}")', helper)
+                if item_id in ("ferrite_plate", "ferrite_rod"):
+                    recipe = read(f"construction/recipes/{item_id}.tres")
+                    self.assertIn(f'path="{resource}" id="5_icon"', recipe)
+                    self.assertNotIn(f"{item_id}.svg", recipe)
+        self.assertNotIn(".svg", helper)
 
     def test_hotbar_allowance_restores_exact_pre_feature_bytes(self):
         # Prove each allowance recovers the entire pre-feature file, including
@@ -1046,6 +1103,8 @@ class V2ProductionHostStaticTest(unittest.TestCase):
                 expected = proc.stdout.read(int(header[2]))
                 self.assertEqual(proc.stdout.read(1), b"\n")
                 actual = (ROOT / path).read_bytes()
+                if path in FERRITE_ICONS_SHA256:
+                    actual = without_ferrite_icon_changes(path, actual.decode("utf-8").replace("\r\n", "\n")).encode("utf-8")
                 if path == "scenes/ui/musing_ui.gd":
                     actual = without_musing_changes(path, actual.decode("utf-8").replace("\r\n", "\n")).encode("utf-8")
                 if path == "scenes/ui/dialogue_ui.gd":
