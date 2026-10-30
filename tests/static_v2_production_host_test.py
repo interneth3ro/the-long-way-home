@@ -489,13 +489,14 @@ CONVERSATION_SHA256 = {
 }
 
 
-# Owner approved these exact LF-normalized musing bytes and this preservation
-# amendment on 2026-10-30. Retain PR #89 and all older historical comparisons.
+# Owner approved the initial musing bytes/amendment on 2026-10-30. These new
+# candidates change only maximum width (440) and body size (16); exact hashes
+# remain proposed for owner review. Retain PR #89 and all older comparisons.
 # Native remains blocked by the unchanged font staging scope.
 MUSING_BASE = "a03057408cbee6301b42e00a2a26c01e25d3c8ac"
 MUSING_SHA256 = {
-    "scenes/ui/musing_ui.gd": "bd8284da6e4155a404e425d279e099ab8532afc0284a094ad2ef60f2eb60d143",
-    "scenes/ui/musing_ui.tscn": "f1d8df0de4aa78d52aec1d9f74def8a9094cb24491f2443a08e1726cd5b971d4",
+    "scenes/ui/musing_ui.gd": "cec8d2db14c9d6076ab27813b4d9780bc0376f3b606d94686010f3a0509803a6",
+    "scenes/ui/musing_ui.tscn": "04a4c060faccd3a4b8eba7daa4c04c150c3962ec29676a7d1efbe51de7eae839",
 }
 
 
@@ -503,7 +504,7 @@ def without_musing_changes(path, text):
     if path not in MUSING_SHA256:
         return text
     if hashlib.sha256(text.encode("utf-8")).hexdigest() != MUSING_SHA256[path]:
-        raise AssertionError(f"Missing or modified approved musing bytes: {path}")
+        raise AssertionError(f"Missing or modified candidate musing bytes: {path}")
     return subprocess.check_output(["git", "show", f"{MUSING_BASE}:{path}"],
                                    cwd=ROOT).decode("utf-8").replace("\r\n", "\n")
 

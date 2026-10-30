@@ -24,6 +24,26 @@ class MusingUIStaticTest(unittest.TestCase):
                         without_musing_changes(path, changed)
         self.assertEqual(without_musing_changes("unrelated.gd", "sentinel"), "sentinel")
 
+    def test_refinement_preserves_initial_presentation_except_two_values(self):
+        initial_commit = "f9f8968a9f153dc96ff1431b12eedddb5fba4b1b"
+        candidates = {
+            "scenes/ui/musing_ui.gd": (
+                "bd8284da6e4155a404e425d279e099ab8532afc0284a094ad2ef60f2eb60d143",
+                "const MAX_WIDTH := 360.0", "const MAX_WIDTH := 440.0"),
+            "scenes/ui/musing_ui.tscn": (
+                "f1d8df0de4aa78d52aec1d9f74def8a9094cb24491f2443a08e1726cd5b971d4",
+                "theme_override_font_sizes/font_size = 18",
+                "theme_override_font_sizes/font_size = 16"),
+        }
+        for path, (digest, old, new) in candidates.items():
+            with self.subTest(path=path):
+                initial = subprocess.check_output(
+                    ["git", "show", f"{initial_commit}:{path}"], cwd=ROOT
+                ).decode().replace("\r\n", "\n")
+                self.assertEqual(hashlib.sha256(initial.encode()).hexdigest(), digest)
+                self.assertEqual(initial.count(old), 1)
+                self.assertEqual(read(path), initial.replace(old, new, 1))
+
     def test_narrative_progression_and_adjacent_ui_preserved(self):
         paths = [
             "scenes/main/main.gd", "scenes/main/main.tscn", "scenes/main/main_v2.gd",
