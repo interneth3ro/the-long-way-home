@@ -1,10 +1,11 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene load_steps=7 format=3]
 
 [ext_resource type="Script" path="res://scenes/ui/machine_ui.gd" id="1_ui"]
 [ext_resource type="Script" path="res://scenes/ui/ui_scale_root.gd" id="99_scale"]
 [ext_resource type="Theme" path="res://assets/ui/b1_theme.tres" id="2_b1"]
 [ext_resource type="PackedScene" path="res://scenes/ui/b2_panel_frame.tscn" id="3_frame"]
 [ext_resource type="PackedScene" path="res://scenes/ui/extractor_inspection.tscn" id="4_extractor"]
+[ext_resource type="PackedScene" path="res://scenes/ui/smelter_inspection.tscn" id="5_smelter"]
 
 [node name="MachineUI" type="CanvasLayer"]
 layer = 2
@@ -51,6 +52,10 @@ offset_right = 16.0
 offset_bottom = 14.0
 
 [node name="ExtractorInspection" parent="HUD/Panel" instance=ExtResource("4_extractor")]
+visible = false
+layout_mode = 2
+
+[node name="SmelterInspection" parent="HUD/Panel" instance=ExtResource("5_smelter")]
 visible = false
 layout_mode = 2
 

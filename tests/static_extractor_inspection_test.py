@@ -38,10 +38,55 @@ class ExtractorInspectionStaticTest(unittest.TestCase):
 
     def test_legacy_scene_content_and_connections_preserved(self):
         path = "scenes/ui/machine_ui.tscn"
-        text = read(path).replace("load_steps=6", "load_steps=5", 1)
+        text = read(path).replace("load_steps=7", "load_steps=5", 1)
+        text = text.replace('[ext_resource type="PackedScene" path="res://scenes/ui/smelter_inspection.tscn" id="5_smelter"]\n', "", 1)
+        text = text.replace('[node name="SmelterInspection" parent="HUD/Panel" instance=ExtResource("5_smelter")]\nvisible = false\nlayout_mode = 2\n\n', "", 1)
         text = text.replace('[ext_resource type="PackedScene" path="res://scenes/ui/extractor_inspection.tscn" id="4_extractor"]\n', "", 1)
         text = text.replace('[node name="ExtractorInspection" parent="HUD/Panel" instance=ExtResource("4_extractor")]\nvisible = false\nlayout_mode = 2\n\n', "", 1)
         self.assertEqual(text, baseline(path))
+
+    def test_smelter_dispatch_preserves_approved_extractor_and_fabricator(self):
+        base = "cb6304f4fa81c2510d056c63c21e6a8ce72bf6b6"
+        path = "scenes/ui/machine_ui.gd"
+        before = functions(subprocess.check_output(["git", "show", f"{base}:{path}"],
+                                                  cwd=ROOT).decode("utf-8").replace("\r\n", "\n"))
+        after = functions(read(path))
+        for name in before.keys() - {"_ready", "_refresh"}:
+            with self.subTest(function=name):
+                self.assertEqual(before[name], after[name])
+        dispatch = '\tif _refresh_smelter(machine, definition):\n\t\treturn\n'
+        self.assertEqual(after["_refresh"].count(dispatch), 1)
+        self.assertEqual(before["_refresh"], after["_refresh"].replace(dispatch, "", 1))
+        wiring = ('\t_smelter_view.transfer_requested.connect(_transfer)\n'
+                  '\t_smelter_view.collect_requested.connect(_collect)\n'
+                  '\t_smelter_view.close_requested.connect(close)\n'
+                  '\t$HUD.scale_changed.connect(_layout_smelter)\n')
+        self.assertEqual(after["_ready"].count(wiring), 1)
+        self.assertEqual(before["_ready"], after["_ready"].replace(wiring, "", 1))
+        for path in ("scenes/ui/extractor_inspection.gd", "scenes/ui/extractor_inspection.tscn",
+                     "scenes/ui/cycle_gauge.gd", "assets/ui/machine_actions.tres",
+                     "scenes/ui/ui_scale_root.gd", "scenes/ui/objective_tracker.gd"):
+            with self.subTest(path=path):
+                expected = subprocess.check_output(["git", "show", f"{base}:{path}"], cwd=ROOT)
+                self.assertEqual(read(path), expected.decode("utf-8").replace("\r\n", "\n"))
+
+    def test_smelter_header_keeps_merged_extractor_geometry_and_frame_inset(self):
+        base = "cb6304f4fa81c2510d056c63c21e6a8ce72bf6b6"
+        extractor = subprocess.check_output(
+            ["git", "show", f"{base}:scenes/ui/extractor_inspection.tscn"],
+            cwd=ROOT).decode("utf-8").replace("\r\n", "\n")
+        smelter = read("scenes/ui/smelter_inspection.tscn")
+        start = '[sub_resource type="StyleBoxEmpty" id="HeaderTitleSpacing"]'
+        end = '[node name="Columns"'
+        approved = extractor.split(start, 1)[1].split(end, 1)[0]
+        candidate = smelter.split(start, 1)[1].split(end, 1)[0]
+        self.assertEqual(approved.replace("ExtractorInspection", "SmelterInspection")
+                         .replace('text = "EXTRACTOR"', 'text = "SMELTER"'), candidate)
+        machine = functions(read("scenes/ui/machine_ui.gd"))
+        self.assertIn("_set_panel_padding(true)", machine["_layout_smelter"])
+        # The existing inset helper is already compared byte-for-byte to main;
+        # it applies content margins and compensating frame offsets together.
+        self.assertIn("Vector4(24, 12, 24, 24)", machine["_set_panel_padding"])
 
     def test_tracker_override_does_not_mutate_player_preference(self):
         path = "scenes/ui/objective_tracker.gd"

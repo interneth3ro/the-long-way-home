@@ -67,21 +67,175 @@ Headless checks do not verify graphical appearance. While execution is restricte
 use only nonexecuting checks under the policy above and report them as static
 validation; runtime and engine verification remain unperformed.
 
-## Extractor inspection visual pilot (feature branch, pending merge)
+## Smelter inspection visual pilot (feature branch, pending merge)
 
-`codex/extractor-inspection-pilot` introduces an Extractor-only two-column
+`codex/smelter-inspection-redesign` adds a dedicated
+[Smelter view](scenes/ui/smelter_inspection.tscn) to the existing machine presenter,
+using the approved PR #85 Extractor presentation as its benchmark. It inherits B1
+charcoal surfaces, IBM Plex Sans and the B2 frame, reuses the unchanged circular
+gauge and opt-in machine action theme, and keeps the compact uppercase header,
+Close control, Esc and column/header dividers. No new global theme is introduced.
+
+Owner review accepts the overall composition, header spacing, portrait, framing,
+storage cards, contextual actions, gauge and bottom-aligned details grid. The
+accepted width refinement increases only panel width and rebalances columns;
+height, vertical centering and portrait/gauge sizing remain unchanged. The header hierarchy,
+content-sized row, centered title and 10-unit divider gap already match final
+merged PR #85 exactly. Smelter sizing now explicitly reapplies that same
+24/12/24/24 content inset and compensating B2 offsets together, including direct
+opening; no header-height minimum or manual control offset is added. The owner
+has accepted the latest screenshot header spacing.
+
+The accepted normal logical panel is 770 x 560, capped at 61% of HUD width
+(previously 700 and 53%). This lets 770 take effect even at 1280 x 720 / 100%,
+while retaining proportional fitting at smaller logical extents. Below a
+740-unit logical HUD height it uses 520 units, tighter spacing and a 124-unit
+gauge instead of 144. Height is also capped at HUD height minus 128, retaining
+24-unit right clearance and centering above the hotbar/hints. The shared hybrid
+scale, 85% default and 75/85/100% selector remain unchanged. Columns start at
+52% storage / 48% production, subject to control minimums. The flexible portrait
+shrinks before essential controls; secondary production details wrap and scroll
+vertically when their viewport is too short.
+
+The unchanged [Smelter PNG](assets/environment/maintenance_bay_v2/machines/smelter_stationary.png)
+is integrated without a border or crop, fitted proportionally with native texture
+dimensions excluded from layout minimums. Its broad warm transparent glow and
+horizontal margins remain intact. The UI uses Linear with Mipmaps and the import
+sidecar enables mip generation, following PR #85. Lossless compression, alpha
+handling, source pixels and stationary-world filtering are unchanged. The owner
+has accepted the portrait; the width refinement leaves its settings and vertical
+space unchanged. Static bounds indicate it remains height-limited at the requested
+window sizes/scales, preserving its displayed size. The owner accepted the current
+Smelter visual design; this does not imply graphical verification at every size/scale.
+No derivative artwork is generated.
+
+An expanding portrait sits above one nonexpanding storage/actions VBox. Input
+Storage / Transfer All and Output Storage / Collect All stack in that group,
+so its bottom follows the column bottom without manual offsets. Cards show
+material, exact quantity/capacity and a utilization bar. On the right, a scroll
+viewport expands below status/gauge; its details VBox aligns four underlined
+label/value rows to the bottom, level with Collect All when all rows fit. Recipe,
+Nominal Rate, Cycle Duration and Cycle Yield derive from `MachineDefinition`:
+currently 1 Ferrite Ore to 1 Ferrite Ingot, 30.0 ingots/min, 2.0 s and 1 Ferrite
+Ingot. Rate is theoretical capacity, not measured throughput; both capacities are
+read from the definition (currently 20 each).
+
+The Recipe label now uses its content width instead of a forced 94-unit minimum;
+the other labels reserve 110 units for the longest heading. Values retain the
+full material names, right alignment and ordinary wrapping. Recipe stays on one
+line when font measurement fits its actual value width; otherwise it deliberately
+breaks before the arrow, rather than splitting the conversion arbitrarily. The
+three single-line rows use 32-unit minima instead of 44; Recipe retains 44 and can
+grow with text. This recovers 36 logical vertical units before wrapping. The
+existing bottom-aligned details container and automatic vertical scrolling remain;
+no scrollbar is forcibly hidden. The owner accepted the previous grid screenshot;
+the wider production column now gives Recipe more room for a single line without
+changing its font-measured wrapping logic. Static fitting checks cover 1024 x 576
+and 1280 x 720 at 75/85/100%; the owner subsequently accepted the current widened
+visual design. Normal 770-unit width allocates approximately 354 units to storage and
+326 to production, compared with 336/275 before widening.
+
+The deployed [MachineVisual](construction/machine_visual.gd) indicates status with
+a dot: green Producing, amber Output Full, blue Input Empty, gray Inactive. It has
+no cycle-progress rendering. The Smelter gauge uses those exact status colors and
+real `cycle_progress / cycle_seconds`, including retained blocked progress, without
+an independent timer. Status remains explicitly labeled.
+
+Only Smelter presentation dispatch and signal connections are added to MachineUI.
+Transfer/Collect reuse the existing guarded methods and inventory transactions;
+the view disables unavailable actions using capacity, inventory, output and range.
+The existing inspection visibility signal continues to suppress the objective
+tracker temporarily and restore its preference on close. Extractor resources,
+layout code and data, Fabricator refresh/chooser, pause leases, status calculations,
+transactions and input guards are unchanged.
+
+Validation at `743613139039ddd8efa550457ca6b2eefd29c2ca`: the owner reviewed the
+serial-import setting and exact-file preservation amendments, then separately
+authorized one fresh invocation of
+`pwsh -NoProfile -File tools/run-local-tests.ps1 -Mode Native`. Before execution,
+the clean checkout and live PR #86 head both matched that approved revision;
+runner, allowlists, policies and Godot-native assertions were unchanged.
+
+| Restricted validation phase | Actual result |
+| --- | --- |
+| Static | PASS - 55 Python tests |
+| Import | PASS - cold headless import |
+| Native | PASS - Fabricator recipe-switching regression, 0 failures |
+| Infrastructure | PASS |
+| Authorization | PASS |
+
+The runner exited 0 with reason `OK`, using the pinned standard Godot 4.7.2
+executable and a fresh external stage:
+`D:\GameDev\Godot\TLWH-NativeStages\tlwh-native-plan-288c07e35ff849b789d3b00d268c0d04`.
+The completion record was `Fabricator recipe switching regression failures: 0`.
+The source revision and clean working state remained unchanged after execution.
+Both stages remain retained; no routine success log was added. This documentation
+update does not change the validated project inputs or imply another engine run.
+
+The earlier attempt at `bc0b46e` remains recorded as Static PASS, Import FAIL
+(`NONZERO_EXIT`), Native NOT RUN. It stopped without an automatic retry. Preserve
+its ignored evidence
+`artifacts/logs/native-failure-4c3ba3f176ff465ebbae954712940f19.json`
+(SHA-256 `3307cc0251e11de532cc1bfd41215cdb2b4b83b2940d02e771009a6d1fc1baf0`)
+and its external stage `tlwh-native-plan-e19ee3e4bfbd4a779039472b6887229a`.
+The original evidence hash remains unchanged.
+
+Provisional cold-import workaround: `editor/import/use_multiple_threads=false`
+serializes resource imports to avoid the suspected Godot 4.7.2 parallel font-import
+race. See the [upstream fix](https://github.com/godotengine/godot/pull/123546).
+The single authorized fresh attempt passed with this setting; that result supports
+the workaround but does not conclusively prove the original crash's upstream cause.
+Cold imports may be slower. The setting changes no gameplay threading or approved
+Smelter UI. No automatic retry, graphical Godot launch, stress/performance test,
+merge or cleanup was performed. Success does not authorize additional engine runs.
+
+Standalone gdtoolkit 4.5 grammar parsing, scene/resource wiring, documentation
+links and Git whitespace checks also passed during implementation. The actual
+headless run validates cold import and the allowlisted recipe regression only;
+it does not establish full Smelter gameplay/input or graphical coverage. Current
+Smelter visual design is owner-accepted; no agent graphical validation is claimed.
+
+Owner graphical acceptance (one check at a time; stop on failure):
+
+The owner has accepted the current 770-unit, 52/48 Smelter visual design. Retain
+the following checklist for broader regression coverage; visual acceptance and the
+recipe-switching PASS do not mark every gameplay or window/scale combination tested.
+Any further agent graphical execution requires separate owner authorization.
+
+1. At 1280 x 720, 1024 x 576 and maximized, compare 75%, 85% and 100% UI scale.
+   Check header/Close, frame/hotbar clearance, portrait detail and transparent glow,
+   material/quantity readability, storage bars, both action targets, bottom alignment,
+   wrapped recipe and scroll access. Report if the portrait needs the approved
+   taller-panel fallback before further layout changes.
+2. Observe real Producing/Input Empty/Output Full states and Inactive if reachable;
+   compare gauge colors to the deployed dot and progress to actual cycle completion.
+   Confirm definition-derived values and both 20-unit storage buffers.
+3. Transfer with empty inventory, partial/full input and excess ore; collect empty,
+   partial/full output. Verify exact inventory changes and disabled states. Leave
+   range, reopen, Close/Esc, resize and switch machine targets.
+4. Open/close with the tracker expanded, pinned, collapsed and hidden; confirm its
+   prior presentation returns after normal close and interruptions while objective
+   progression continues.
+5. Recheck approved Extractor appearance/collection and Fabricator initial selection,
+   recipe switching, Current/Back/Esc, pause release, range and stored-product collection.
+
+## Extractor inspection visual pilot (PR #85, merged)
+
+Merged PR #85 introduced an Extractor-only two-column
 [inspection view](scenes/ui/extractor_inspection.tscn) inside the existing machine
 presenter. The right-edge panel is vertically centered between a 24-unit top
 clearance and the bottom hotbar/hint region. Its normal logical size is 640 x 510;
 width is capped at 48% of the logical HUD, and logical heights below 740 use a
 480-unit panel, tighter spacing and a smaller gauge. The owner has accepted the
 overall layout, artwork, gauge, styling and proportions, including the divider/grid
-refinements, portrait smoothing and overall proportions. The compact-header and
-Collect All style refinements below remain pending owner screenshot review.
+refinements, portrait smoothing and overall proportions. PR #85 supplies the
+approved compact-header and Collect All styling benchmark for the Smelter pilot
+above.
 
 Extractor content retains 24-unit left/right and bottom padding; the compact
 header reduces top clearance from 20 to 12 units. The private panel StyleBox changes only when switching presentation mode;
-Smelter/Fabricator restore their original 16-unit sides and 14-unit top/bottom.
+Fabricator retains its original 16-unit sides and 14-unit top/bottom; the Smelter
+pilot above now opts into the same 24/12/24/24 inspection padding.
 B2 offsets compensate for the active content margins, preserving its outer frame
 rectangle and existing 24-unit nine-patch margins. Panel dimensions are unchanged.
 The header displays `EXTRACTOR`, inheriting B1Title's IBM Plex Sans SemiBold and
