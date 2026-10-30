@@ -489,14 +489,15 @@ CONVERSATION_SHA256 = {
 }
 
 
-# Owner approved the initial musing bytes/amendment on 2026-10-30. These new
-# candidates change only maximum width (540) and body size (16); exact hashes
-# remain proposed for owner review. Retain PR #89 and all older comparisons.
+# Owner approved the initial musing bytes/amendment on 2026-10-30. The
+# owner-approved layout uses maximum width 540 and body size 16. The border
+# opacity candidate (0.5) remains proposed for exact-byte owner review.
+# Retain PR #89 and all older comparisons.
 # Native remains blocked by the unchanged font staging scope.
 MUSING_BASE = "a03057408cbee6301b42e00a2a26c01e25d3c8ac"
 MUSING_SHA256 = {
     "scenes/ui/musing_ui.gd": "6eb048c21b625ba9d945492ca38f9357b2ba5393f0c7fdf39222c706930bf4f7",
-    "scenes/ui/musing_ui.tscn": "04a4c060faccd3a4b8eba7daa4c04c150c3962ec29676a7d1efbe51de7eae839",
+    "scenes/ui/musing_ui.tscn": "3fe7d11b1339d3a5520c72540ac5f143b72b82d7fc7dd71f84c489f6d5a168fe",
 }
 
 

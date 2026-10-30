@@ -24,7 +24,7 @@ class MusingUIStaticTest(unittest.TestCase):
                         without_musing_changes(path, changed)
         self.assertEqual(without_musing_changes("unrelated.gd", "sentinel"), "sentinel")
 
-    def test_refinement_preserves_initial_presentation_except_two_values(self):
+    def test_refinement_preserves_initial_presentation_except_scoped_values(self):
         initial_commit = "f9f8968a9f153dc96ff1431b12eedddb5fba4b1b"
         candidates = {
             "scenes/ui/musing_ui.gd": (
@@ -35,6 +35,13 @@ class MusingUIStaticTest(unittest.TestCase):
                 "theme_override_font_sizes/font_size = 18",
                 "theme_override_font_sizes/font_size = 16"),
         }
+        def before_border_refinement(path):
+            current = read(path)
+            if path.endswith(".tscn"):
+                current = current.replace("border_color = Color(0.29, 0.40, 0.43, 0.5)",
+                                          "border_color = Color(0.29, 0.40, 0.43, 0.8)", 1)
+            return current
+
         for path, (digest, old, new) in candidates.items():
             with self.subTest(path=path):
                 initial = subprocess.check_output(
@@ -42,7 +49,7 @@ class MusingUIStaticTest(unittest.TestCase):
                 ).decode().replace("\r\n", "\n")
                 self.assertEqual(hashlib.sha256(initial.encode()).hexdigest(), digest)
                 self.assertEqual(initial.count(old), 1)
-                self.assertEqual(read(path), initial.replace(old, new, 1))
+                self.assertEqual(before_border_refinement(path), initial.replace(old, new, 1))
 
         # Retain the first refinement as well: this follow-up changes one value.
         previous_commit = "97fe4a5"
@@ -54,7 +61,30 @@ class MusingUIStaticTest(unittest.TestCase):
                 self.assertEqual(hashlib.sha256(previous.encode()).hexdigest(),
                                  "cec8d2db14c9d6076ab27813b4d9780bc0376f3b606d94686010f3a0509803a6")
                 previous = previous.replace("const MAX_WIDTH := 440.0", "const MAX_WIDTH := 540.0", 1)
-            self.assertEqual(read(path), previous)
+            self.assertEqual(before_border_refinement(path), previous)
+
+    def test_border_refinement_preserves_layout_and_inset_frame_geometry(self):
+        path = "scenes/ui/musing_ui.tscn"
+        previous = subprocess.check_output(
+            ["git", "show", f"e2c203e:{path}"], cwd=ROOT
+        ).decode().replace("\r\n", "\n")
+        self.assertEqual(hashlib.sha256(previous.encode()).hexdigest(),
+                         "04a4c060faccd3a4b8eba7daa4c04c150c3962ec29676a7d1efbe51de7eae839")
+        old = "border_color = Color(0.29, 0.40, 0.43, 0.8)"
+        new = "border_color = Color(0.29, 0.40, 0.43, 0.5)"
+        self.assertEqual(previous.count(old), 1)
+        self.assertEqual(read(path), previous.replace(old, new, 1))
+        style = read(path).split('[sub_resource type="StyleBoxFlat" id="MusingStyle"]', 1)[1].split("[node", 1)[0]
+        for side in ("left", "top", "right", "bottom"):
+            self.assertIn(f"border_width_{side} = 1\n", style)
+        for corner in ("top_left", "top_right", "bottom_left", "bottom_right"):
+            self.assertIn(f"corner_radius_{corner} = 2\n", style)
+        # Default zero expansion/shadow keeps the StyleBox inside its panel rect.
+        self.assertNotIn("expand_margin_", style)
+        self.assertNotIn("shadow_", style)
+        panel = read(path).split('[node name="Panel"', 1)[1].split('[node name="Content"', 1)[0]
+        self.assertIn('theme_override_styles/panel = SubResource("MusingStyle")', panel)
+        self.assertNotIn("clip_contents = true", read(path))
 
     def test_narrative_progression_and_adjacent_ui_preserved(self):
         paths = [

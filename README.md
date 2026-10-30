@@ -72,7 +72,8 @@ validation; runtime and engine verification remain unperformed.
 `codex/musing-ui-modernization` updates the existing
 [musing presenter](scenes/ui/musing_ui.gd) and [scene](scenes/ui/musing_ui.tscn).
 The passive B1 observation panel has a translucent blue-charcoal surface, thin
-muted teal-gray border, small copper accent and upright DAVE label. Body text
+1-unit muted teal-gray border at 50% opacity, small copper accent and upright
+DAVE label. Body text
 uses 16-unit official real IBM Plex Sans Italic from the existing pinned
 [font source and license](assets/fonts/ibm-plex-sans/README.md).
 Authored text and reading intervals remain exactly 5/5/5/7 seconds; sine fades
@@ -99,13 +100,16 @@ flags, conversation presentation/controls, objective activation, inventory,
 inspection, construction and hotbar behavior remain unchanged. Other panels
 receive no new suppression rule.
 
-Validation: **71 Python static tests PASS**, including exact historical
+Validation: **72 Python static tests PASS**, including exact historical
 comparisons, altered/duplicated/appended-byte rejection, scene node references,
 mouse transparency and actual italic font metadata. The owner approved the exact
 initial musing hashes and narrow static preservation amendment on 2026-10-30.
-After screenshot review, the owner approved the 16-unit italic body and requested
-a 540-unit maximum width. The updated exact preservation hashes remain proposed
-for owner review. Agent validation remains static only. The unchanged Native runner
+The owner approved the 540-unit maximum width and 16-unit italic body. The final
+border refinement preserves 2-unit corners and all four 1-unit inset border sides;
+only border alpha changes from 0.8 to 0.5 in the existing StyleBoxFlat. The updated
+exact scene preservation hash remains proposed for owner review. Rendered border
+visibility, including against lighter backgrounds, awaits owner graphical review.
+Agent validation remains static only. The unchanged Native runner
 excludes the italic font/import sidecar; a separately reviewed staging expansion
 and renewed authorization are required before Native. Runner commands, policy,
 Native assertions and the serial-import workaround are unchanged.
