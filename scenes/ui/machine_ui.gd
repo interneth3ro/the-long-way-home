@@ -15,6 +15,7 @@ signal inspection_visibility_changed(open: bool)
 @onready var _panel: PanelContainer = $HUD/Panel
 @onready var _legacy_content: VBoxContainer = $HUD/Panel/Content
 @onready var _extractor_view = $HUD/Panel/ExtractorInspection
+@onready var _smelter_view = $HUD/Panel/SmelterInspection
 @onready var _title: Label = $HUD/Panel/Content/Title
 @onready var _status: Label = $HUD/Panel/Content/Status
 @onready var _explanation: Label = $HUD/Panel/Content/Explanation
@@ -41,6 +42,7 @@ var _changing_recipe: bool = false
 var _pause_world: PlanetWorldState
 var _pause_lease: RefCounted
 var _extractor_layout_extent := Vector2.ZERO
+var _smelter_layout_extent := Vector2.ZERO
 
 
 func _ready() -> void:
@@ -60,6 +62,10 @@ func _ready() -> void:
 	_extractor_view.collect_requested.connect(_collect)
 	_extractor_view.close_requested.connect(close)
 	$HUD.scale_changed.connect(_layout_extractor)
+	_smelter_view.transfer_requested.connect(_transfer)
+	_smelter_view.collect_requested.connect(_collect)
+	_smelter_view.close_requested.connect(close)
+	$HUD.scale_changed.connect(_layout_smelter)
 
 
 func is_open() -> bool:
@@ -185,6 +191,8 @@ func _process(_delta: float) -> void:
 
 func _refresh(machine: Dictionary) -> void:
 	var definition: MachineDefinition = machine.definition
+	if _refresh_smelter(machine, definition):
+		return
 	var extractor := definition.item_id == &"extractor" and not definition.has_recipes()
 	if _extractor_view.visible != extractor:
 		_extractor_layout_extent = Vector2.ZERO
@@ -245,6 +253,46 @@ func _refresh(machine: Dictionary) -> void:
 	if extractor:
 		_extractor_view.refresh(machine, progression.planet.machine_status(machine), _in_range(machine))
 		_layout_extractor()
+
+
+func _refresh_smelter(machine: Dictionary, definition: MachineDefinition) -> bool:
+	var smelter := definition.item_id == &"smelter" and not definition.has_recipes()
+	if _smelter_view.visible != smelter:
+		_smelter_layout_extent = Vector2.ZERO
+		_smelter_view.visible = smelter
+		_legacy_content.visible = not smelter
+		_set_panel_padding(smelter)
+		if not smelter:
+			_panel.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
+			_panel.position = Vector2($HUD.size.x - 440.0, 100.0)
+			_panel.size = Vector2(416.0, 0.0)
+	if not smelter:
+		return false
+	if _extractor_view.visible:
+		_extractor_view.hide()
+		_extractor_layout_extent = Vector2.ZERO
+	var available := progression.inventory.get_quantity(definition.input_item.item_id) if definition.has_input() else 0
+	_smelter_view.refresh(machine, progression.planet.machine_status(machine), _in_range(machine), available)
+	_layout_smelter()
+	return true
+
+
+func _layout_smelter() -> void:
+	if not _panel.visible or not _smelter_view.visible:
+		return
+	# Use the existing hybrid HUD transform and reserve the same hotbar clearance.
+	var extent: Vector2 = $HUD.size
+	if extent == _smelter_layout_extent:
+		return
+	_smelter_layout_extent = extent
+	var compact := extent.y < 740.0
+	_smelter_view.set_compact(compact)
+	var panel_size := Vector2(minf(700.0, extent.x * 0.53),
+		minf(520.0 if compact else 560.0, extent.y - 128.0))
+	_panel.set_anchors_and_offsets_preset(Control.PRESET_TOP_LEFT)
+	_panel.size = panel_size
+	_panel.position = Vector2(extent.x - _panel.size.x - 24.0,
+		24.0 + (extent.y - 128.0 - _panel.size.y) * 0.5)
 
 
 func _set_panel_padding(extractor: bool) -> void:

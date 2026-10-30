@@ -15,6 +15,16 @@ from static_automatic_transitions_test import ROOT, PRIMARY, MAINTENANCE, EXTERI
 # Live post-P6 / pre-P8 main verified for cutover; never follow a moving ref.
 P8_BASE = "e14703e64aef961f18feba8a616acec00c4f069e"
 
+# Proposed Smelter presentation allowance: owner review required before Native use.
+# Pin the exact candidate bytes and restore PR #85 main before older checks.
+# No preservation path is exempted and all historical hashes remain unchanged.
+SMELTER_PILOT_BASE = "cb6304f4fa81c2510d056c63c21e6a8ce72bf6b6"
+SMELTER_PILOT_SHA256 = {
+    "assets/environment/maintenance_bay_v2/machines/smelter_stationary.png.import": "56281b1985e2f862b229695b7a713780419ca32d2f7550239065c1b07cc0d225",
+    "scenes/ui/machine_ui.gd": "08773b3774b9ca8fcf9ddf74e572eb10f661a5de59a7935f78c84899bf4b16cd",
+    "scenes/ui/machine_ui.tscn": "8664835ab0acf506adaebe758db36af013fbd13d48506222d5dcb32a3bf8e486",
+}
+
 # Proposed Extractor pilot allowance: owner review required before Native use.
 # Pin complete LF-normalized candidate files, then restore immutable main bytes
 # for every existing historical comparison. No file or directory is exempted.
@@ -454,7 +464,17 @@ B1_REPLACEMENTS = {'project.godot': [('window/size/viewport_width=1280\n'
                                 '\n')]}
 
 
+def without_smelter_pilot_changes(path, text):
+    if path not in SMELTER_PILOT_SHA256:
+        return text
+    if hashlib.sha256(text.encode("utf-8")).hexdigest() != SMELTER_PILOT_SHA256[path]:
+        raise AssertionError(f"Missing or modified Smelter pilot bytes pending review: {path}")
+    return subprocess.check_output(["git", "show", f"{SMELTER_PILOT_BASE}:{path}"],
+                                   cwd=ROOT).decode("utf-8").replace("\r\n", "\n")
+
+
 def without_extractor_pilot_changes(path, text):
+    text = without_smelter_pilot_changes(path, text)
     if path not in EXTRACTOR_PILOT_SHA256:
         return text
     if hashlib.sha256(text.encode("utf-8")).hexdigest() != EXTRACTOR_PILOT_SHA256[path]:
@@ -520,6 +540,18 @@ def tracked_non_dev_files(pattern):
 
 
 class V2ProductionHostStaticTest(unittest.TestCase):
+    def test_smelter_pilot_allowance_restores_main_and_rejects_tampering(self):
+        for path in SMELTER_PILOT_SHA256:
+            original = read(path)
+            with self.subTest(path=path):
+                before = subprocess.check_output(["git", "show", f"{SMELTER_PILOT_BASE}:{path}"],
+                                                 cwd=ROOT).decode("utf-8").replace("\r\n", "\n")
+                self.assertEqual(without_smelter_pilot_changes(path, original), before)
+                for changed in (original.replace("\n", "\nCHANGED\n", 1),
+                                original + original, original + "UNRELATED\n"):
+                    with self.assertRaises(AssertionError):
+                        without_smelter_pilot_changes(path, changed)
+
     def test_extractor_pilot_allowance_restores_main_and_rejects_tampering(self):
         for path in EXTRACTOR_PILOT_SHA256:
             original = read(path)
@@ -914,7 +946,7 @@ class V2ProductionHostStaticTest(unittest.TestCase):
                     actual = without_approved_b1_changes(path, actual.decode("utf-8").replace("\r\n", "\n")).encode("utf-8")
                 elif path in UI_SCALING_SHA256:
                     actual = without_approved_ui_scaling_changes(path, actual.decode("utf-8").replace("\r\n", "\n")).encode("utf-8")
-                elif path in EXTRACTOR_PILOT_SHA256:
+                elif path in EXTRACTOR_PILOT_SHA256 or path in SMELTER_PILOT_SHA256:
                     actual = without_extractor_pilot_changes(path, actual.decode("utf-8").replace("\r\n", "\n")).encode("utf-8")
                 if path == "project.godot":
                     actual = actual.replace(b"\r\n", b"\n")

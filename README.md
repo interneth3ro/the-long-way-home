@@ -67,21 +67,101 @@ Headless checks do not verify graphical appearance. While execution is restricte
 use only nonexecuting checks under the policy above and report them as static
 validation; runtime and engine verification remain unperformed.
 
-## Extractor inspection visual pilot (feature branch, pending merge)
+## Smelter inspection visual pilot (feature branch, pending merge)
 
-`codex/extractor-inspection-pilot` introduces an Extractor-only two-column
+`codex/smelter-inspection-redesign` adds a dedicated
+[Smelter view](scenes/ui/smelter_inspection.tscn) to the existing machine presenter,
+using the approved PR #85 Extractor presentation as its benchmark. It inherits B1
+charcoal surfaces, IBM Plex Sans and the B2 frame, reuses the unchanged circular
+gauge and opt-in machine action theme, and keeps the compact uppercase header,
+Close control, Esc and column/header dividers. No new global theme is introduced.
+
+The initial logical panel is 700 x 560, capped at 53% of HUD width. Below a
+740-unit logical HUD height it uses 520 units, tighter spacing and a 124-unit
+gauge instead of 144. Height is also capped at HUD height minus 128, retaining
+24-unit right clearance and centering above the hotbar/hints. The shared hybrid
+scale, 85% default and 75/85/100% selector remain unchanged. Columns start at
+55% storage / 45% production, subject to control minimums. The flexible portrait
+shrinks before essential controls; secondary production details wrap and scroll
+vertically when their viewport is too short.
+
+The unchanged [Smelter PNG](assets/environment/maintenance_bay_v2/machines/smelter_stationary.png)
+is integrated without a border or crop, fitted proportionally with native texture
+dimensions excluded from layout minimums. Its broad warm transparent glow and
+horizontal margins remain intact. The UI uses Linear with Mipmaps and the import
+sidecar enables mip generation, following PR #85. Lossless compression, alpha
+handling, source pixels and stationary-world filtering are unchanged. Actual
+fringe/softness and reduced portrait legibility need owner graphical acceptance;
+no derivative artwork is generated.
+
+An expanding portrait sits above one nonexpanding storage/actions VBox. Input
+Storage / Transfer All and Output Storage / Collect All stack in that group,
+so its bottom follows the column bottom without manual offsets. Cards show
+material, exact quantity/capacity and a utilization bar. On the right, a scroll
+viewport expands below status/gauge; its details VBox aligns four underlined
+label/value rows to the bottom, level with Collect All when all rows fit. Recipe,
+Nominal Rate, Cycle Duration and Cycle Yield derive from `MachineDefinition`:
+currently 1 Ferrite Ore to 1 Ferrite Ingot, 30.0 ingots/min, 2.0 s and 1 Ferrite
+Ingot. Rate is theoretical capacity, not measured throughput; both capacities are
+read from the definition (currently 20 each).
+
+The deployed [MachineVisual](construction/machine_visual.gd) indicates status with
+a dot: green Producing, amber Output Full, blue Input Empty, gray Inactive. It has
+no cycle-progress rendering. The Smelter gauge uses those exact status colors and
+real `cycle_progress / cycle_seconds`, including retained blocked progress, without
+an independent timer. Status remains explicitly labeled.
+
+Only Smelter presentation dispatch and signal connections are added to MachineUI.
+Transfer/Collect reuse the existing guarded methods and inventory transactions;
+the view disables unavailable actions using capacity, inventory, output and range.
+The existing inspection visibility signal continues to suppress the objective
+tracker temporarily and restore its preference on close. Extractor resources,
+layout code and data, Fabricator refresh/chooser, pause leases, status calculations,
+transactions and input guards are unchanged.
+
+Validation: 53 Python static checks PASS, including exact existing-method and
+Extractor-component preservation comparisons; standalone gdtoolkit 4.5 grammar
+parsing of the changed scripts PASS. Static checks do not establish engine parsing,
+runtime input delivery or graphical fit. The owner approved the exact-byte preservation amendments
+in the two existing Python suites and one restricted Native run on 2026-10-29;
+that run remains pending. No runner, allowlist, policy or Godot-native assertion changes are made.
+Graphical acceptance remains with the owner; no agent graphical launch is authorized.
+
+Owner graphical acceptance (one check at a time; stop on failure):
+
+1. At 1280 x 720, 1024 x 576 and maximized, compare 75%, 85% and 100% UI scale.
+   Check header/Close, frame/hotbar clearance, portrait detail and transparent glow,
+   material/quantity readability, storage bars, both action targets, bottom alignment,
+   wrapped recipe and scroll access. Report if the portrait needs the approved
+   taller-panel fallback before further layout changes.
+2. Observe real Producing/Input Empty/Output Full states and Inactive if reachable;
+   compare gauge colors to the deployed dot and progress to actual cycle completion.
+   Confirm definition-derived values and both 20-unit storage buffers.
+3. Transfer with empty inventory, partial/full input and excess ore; collect empty,
+   partial/full output. Verify exact inventory changes and disabled states. Leave
+   range, reopen, Close/Esc, resize and switch machine targets.
+4. Open/close with the tracker expanded, pinned, collapsed and hidden; confirm its
+   prior presentation returns after normal close and interruptions while objective
+   progression continues.
+5. Recheck approved Extractor appearance/collection and Fabricator initial selection,
+   recipe switching, Current/Back/Esc, pause release, range and stored-product collection.
+
+## Extractor inspection visual pilot (PR #85, merged)
+
+Merged PR #85 introduced an Extractor-only two-column
 [inspection view](scenes/ui/extractor_inspection.tscn) inside the existing machine
 presenter. The right-edge panel is vertically centered between a 24-unit top
 clearance and the bottom hotbar/hint region. Its normal logical size is 640 x 510;
 width is capped at 48% of the logical HUD, and logical heights below 740 use a
 480-unit panel, tighter spacing and a smaller gauge. The owner has accepted the
 overall layout, artwork, gauge, styling and proportions, including the divider/grid
-refinements, portrait smoothing and overall proportions. The compact-header and
-Collect All style refinements below remain pending owner screenshot review.
+refinements, portrait smoothing and overall proportions. PR #85 supplies the approved compact-header and Collect All styling benchmark
+for the Smelter pilot above.
 
 Extractor content retains 24-unit left/right and bottom padding; the compact
 header reduces top clearance from 20 to 12 units. The private panel StyleBox changes only when switching presentation mode;
-Smelter/Fabricator restore their original 16-unit sides and 14-unit top/bottom.
+Fabricator retains its original 16-unit sides and 14-unit top/bottom; the Smelter
+pilot above now opts into the same 24/12/24/24 inspection padding.
 B2 offsets compensate for the active content margins, preserving its outer frame
 rectangle and existing 24-unit nine-patch margins. Panel dimensions are unchanged.
 The header displays `EXTRACTOR`, inheriting B1Title's IBM Plex Sans SemiBold and
