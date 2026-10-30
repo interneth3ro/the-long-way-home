@@ -1,10 +1,22 @@
 """Nonexecuting presentation integration; no Godot or gameplay execution."""
+import hashlib
 import re
 import subprocess
 import unittest
 from static_automatic_transitions_test import ROOT, read
 from static_extractor_inspection_test import functions
 from static_v2_production_host_test import FABRICATOR_BASE, without_fabricator_changes
+
+
+# Proposed chooser presentation bytes; owner approval required before Native use.
+# Pin the complete candidate, then retain the original immutable comparison.
+CHOOSER_SHA256 = {
+    "scenes/ui/fabricator_inspection.gd": "f0f62807cead67222bfa1f8a8efaea57cd4f7a32c0e26e874dbca79a04497378",
+    "scenes/ui/fabricator_inspection.tscn": "5a6d8d0d41cbd0d030b9286509ae4803ba5e1759d962fe9b02baf6d7b1ac83c5",
+    "scenes/ui/recipe_card_content.gd": "ef90f303b30247315b90bc5456388e1be5c302ece19431ef5ad27087140f1e5b",
+    "scenes/ui/recipe_card_content.gd.uid": "97619be08f17930fbf4e87d683b8f0f46d7a5c8272ed7f1af44c87b4707b88cd",
+    "assets/ui/recipe_chooser.tres": "0be69e2cf39d05b123874b1ddd829b3ddb76c2497f3e8e07fff49ee69e994be9",
+}
 
 
 class FabricatorInspectionStaticTest(unittest.TestCase):
@@ -43,8 +55,32 @@ class FabricatorInspectionStaticTest(unittest.TestCase):
                      "scenes/ui/smelter_inspection.gd", "scenes/ui/smelter_inspection.tscn",
                      "scenes/ui/machine_ui.gd", "scenes/ui/machine_ui.tscn"):
             approved = subprocess.check_output(["git", "show", f"{base}:{path}"], cwd=ROOT)
-            self.assertEqual((ROOT / path).read_bytes().replace(b"\r\n", b"\n"),
-                             approved.replace(b"\r\n", b"\n"), path)
+            actual = (ROOT / path).read_bytes().replace(b"\r\n", b"\n")
+            if path in CHOOSER_SHA256:
+                self.assertEqual(hashlib.sha256(actual).hexdigest(), CHOOSER_SHA256[path], path)
+                actual = approved.replace(b"\r\n", b"\n")
+            self.assertEqual(actual, approved.replace(b"\r\n", b"\n"), path)
+
+    def test_chooser_candidate_and_gameplay_boundary(self):
+        for path, digest in CHOOSER_SHA256.items():
+            self.assertEqual(hashlib.sha256(read(path).encode()).hexdigest(), digest, path)
+        base = "52792154be2bb3f1b1bb7cd3ef6eb9fdb6204b35"
+        # Entire controller stays frozen, including selection, pause and layout.
+        controller = subprocess.check_output(["git", "show", f"{base}:scenes/ui/machine_ui.gd"], cwd=ROOT)
+        self.assertEqual(read("scenes/ui/machine_ui.gd"), controller.decode().replace("\r\n", "\n"))
+        before = functions(subprocess.check_output(["git", "show", f"{base}:scenes/ui/fabricator_inspection.gd"], cwd=ROOT).decode().replace("\r\n", "\n"))
+        after = functions(read("scenes/ui/fabricator_inspection.gd"))
+        for name in ("_ready", "set_compact", "_build_ingredients"):
+            self.assertEqual(before[name], after[name])
+        self.assertEqual(before["refresh"].split("\tvar accent :=", 1)[1],
+                         after["refresh"].split("\tvar accent :=", 1)[1])
+        scene_before = subprocess.check_output(["git", "show", f"{base}:scenes/ui/fabricator_inspection.tscn"], cwd=ROOT).decode().replace("\r\n", "\n")
+        scene_after = read("scenes/ui/fabricator_inspection.tscn")
+        # Both normal inspection columns remain byte-identical.
+        start = '[node name="Columns"'
+        end = '[node name="Chooser"'
+        self.assertEqual(scene_before.split(start, 1)[1].split(end, 1)[0],
+                         scene_after.split(start, 1)[1].split(end, 1)[0])
 
     def test_scene_paths_and_shared_components(self):
         scene = read("scenes/ui/fabricator_inspection.tscn")

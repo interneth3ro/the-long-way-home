@@ -10,6 +10,8 @@ const PRODUCING := Color(0.35, 0.78, 0.46)
 const OUTPUT_FULL := Color(0.94, 0.69, 0.28)
 const INPUT_EMPTY := Color(0.35, 0.60, 0.90)
 const INACTIVE := Color(0.55, 0.58, 0.59)
+const RECIPE_CONTENT = preload("res://scenes/ui/recipe_card_content.gd")
+const CHOOSER_THEME = preload("res://assets/ui/recipe_chooser.tres")
 
 @onready var _gauge = $Columns/Production/GaugeCenter/Gauge
 @onready var _status: Label = $Columns/Production/Status
@@ -30,6 +32,7 @@ const INACTIVE := Color(0.55, 0.58, 0.59)
 var _compact_mode: int = -1
 var _displayed_recipe: RecipeDefinition
 var _ingredient_rows: Array[Dictionary] = []
+var _chooser_cards: VBoxContainer
 
 
 func _ready() -> void:
@@ -41,13 +44,16 @@ func _ready() -> void:
 
 func mount_chooser(cards: VBoxContainer, pause: Label, error: Label, back: Button) -> void:
 	# Move existing controls once; MachineUI retains callbacks, errors and pause ownership.
-	cards.reparent($Columns/Chooser/CardsScroll, false)
+	_chooser_cards = cards
+	cards.reparent($Columns/Chooser/CardsScroll/CardsInset, false)
 	cards.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	pause.reparent($Columns/Chooser/FeedbackScroll/Feedback, false)
+	pause.reparent($Columns/Chooser/PauseStrip, false)
+	pause.text = "Ⅱ  Production Paused"
+	pause.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	error.reparent($Columns/Chooser/FeedbackScroll/Feedback, false)
 	back.reparent($Columns/Chooser, false)
-	back.theme = _change.theme
-	back.theme_type_variation = &"B1MachinePrimary"
+	back.theme = CHOOSER_THEME
+	back.theme_type_variation = &"B1RecipeBack"
 	back.custom_minimum_size.y = 46
 
 
@@ -82,8 +88,12 @@ func refresh(machine: Dictionary, status: PlanetWorldState.OperatingStatus,
 	$Columns/Production.visible = not choosing
 	$Columns/Chooser.visible = choosing
 	$Columns/Chooser/Heading.text = "CHANGE RECIPE" if changing else "SELECT RECIPE"
-	$Columns/Chooser/FeedbackScroll.visible = changing
+	$Columns/Chooser/Current.visible = changing and recipe != null
+	$Columns/Chooser/Current.text = "Current: %s" % recipe.display_name if recipe != null else ""
+	$Columns/Chooser/PauseStrip.visible = changing
+	$Columns/Chooser/FeedbackScroll.visible = changing and not $Columns/Chooser/FeedbackScroll/Feedback.get_child(0).text.is_empty()
 	if choosing:
+		_present_recipe_cards(definition, recipe if changing else null)
 		return
 	var accent := INACTIVE
 	_status.text = "Inactive"
@@ -123,6 +133,21 @@ func refresh(machine: Dictionary, status: PlanetWorldState.OperatingStatus,
 	_rate.text = "%.1f items/min" % (60.0 * recipe.output_quantity / recipe.cycle_seconds)
 	_duration.text = "%.1f s" % recipe.cycle_seconds
 	_yield.text = recipe.output_summary()
+
+
+func _present_recipe_cards(definition: MachineDefinition, current: RecipeDefinition) -> void:
+	var index := 0
+	for recipe in definition.recipes:
+		if recipe == null or not recipe.is_valid():
+			continue
+		var card := _chooser_cards.get_child(index) as Button
+		index += 1
+		if card.has_node("RecipeContent"):
+			continue
+		var content := RECIPE_CONTENT.new()
+		content.name = "RecipeContent"
+		card.add_child(content)
+		content.configure(card, recipe, recipe == current)
 
 
 func _build_ingredients(recipe: RecipeDefinition) -> void:
