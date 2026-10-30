@@ -100,7 +100,7 @@ flags, conversation presentation/controls, objective activation, inventory,
 inspection, construction and hotbar behavior remain unchanged. Other panels
 receive no new suppression rule.
 
-Validation: **72 Python static tests PASS**, including exact historical
+Validation: **73 Python static tests PASS**, including exact historical
 comparisons, altered/duplicated/appended-byte rejection, scene node references,
 mouse transparency and actual italic font metadata. The owner approved the exact
 initial musing hashes and narrow static preservation amendment on 2026-10-30.
@@ -114,6 +114,13 @@ Agent validation remains static only. The unchanged Native runner
 excludes the italic font/import sidecar; a separately reviewed staging expansion
 and renewed authorization are required before Native. Runner commands, policy,
 Native assertions and the serial-import workaround are unchanged.
+
+PR #90 also fixes the owner-reported Fabricator inspector shadowing warning:
+its ingredient-name Label local is renamed from `material` (an inherited
+CanvasItem property) to `ingredient_label`. Only the identifier changes; exact
+source preservation and historical method comparisons remain enforced under
+the separately owner-approved candidate hash. Debugger clearance has not been
+verified by an agent engine launch.
 
 Focused owner graphical/functional acceptance (agent launch requires explicit
 authorization):
