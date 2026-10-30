@@ -1,0 +1,125 @@
+[gd_resource type="Theme" load_steps=10 format=3]
+
+[ext_resource type="FontFile" path="res://assets/fonts/ibm-plex-sans/IBMPlexSans-Medium.ttf" id="1_font"]
+
+[sub_resource type="StyleBoxFlat" id="Normal"]
+bg_color = Color(0.065, 0.105, 0.125, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.22, 0.32, 0.34, 1)
+content_margin_left = 12.0
+content_margin_top = 12.0
+content_margin_right = 12.0
+content_margin_bottom = 12.0
+
+[sub_resource type="StyleBoxFlat" id="Hover"]
+bg_color = Color(0.09, 0.19, 0.2, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.28, 0.57, 0.56, 1)
+content_margin_left = 12.0
+content_margin_top = 12.0
+content_margin_right = 12.0
+content_margin_bottom = 12.0
+
+[sub_resource type="StyleBoxFlat" id="Pressed"]
+bg_color = Color(0.035, 0.085, 0.1, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.35, 0.66, 0.63, 1)
+content_margin_left = 12.0
+content_margin_top = 12.0
+content_margin_right = 12.0
+content_margin_bottom = 12.0
+
+[sub_resource type="StyleBoxFlat" id="Current"]
+bg_color = Color(0.16, 0.13, 0.095, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.57, 0.41, 0.25, 1)
+content_margin_left = 12.0
+content_margin_top = 12.0
+content_margin_right = 12.0
+content_margin_bottom = 12.0
+
+[sub_resource type="StyleBoxFlat" id="CurrentHover"]
+bg_color = Color(0.18, 0.21, 0.18, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.73, 0.54, 0.33, 1)
+content_margin_left = 12.0
+content_margin_top = 12.0
+content_margin_right = 12.0
+content_margin_bottom = 12.0
+
+[sub_resource type="StyleBoxFlat" id="CurrentPressed"]
+bg_color = Color(0.105, 0.11, 0.085, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.82, 0.62, 0.38, 1)
+content_margin_left = 12.0
+content_margin_top = 12.0
+content_margin_right = 12.0
+content_margin_bottom = 12.0
+
+[sub_resource type="StyleBoxFlat" id="Disabled"]
+bg_color = Color(0.065, 0.085, 0.095, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.17, 0.22, 0.24, 1)
+content_margin_left = 12.0
+content_margin_top = 12.0
+content_margin_right = 12.0
+content_margin_bottom = 12.0
+
+[sub_resource type="StyleBoxFlat" id="Focus"]
+bg_color = Color(0, 0, 0, 0)
+draw_center = false
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.85, 0.65, 0.44, 1)
+
+[resource]
+B1RecipeCard/base_type = &"Button"
+B1RecipeCard/fonts/font = ExtResource("1_font")
+B1RecipeCard/font_sizes/font_size = 18
+B1RecipeCard/colors/font_color = Color(0.84, 0.88, 0.85, 1)
+B1RecipeCard/styles/normal = SubResource("Normal")
+B1RecipeCard/styles/hover = SubResource("Hover")
+B1RecipeCard/styles/pressed = SubResource("Pressed")
+B1RecipeCard/styles/disabled = SubResource("Disabled")
+B1RecipeCard/styles/focus = SubResource("Focus")
+B1RecipeCurrent/base_type = &"Button"
+B1RecipeCurrent/fonts/font = ExtResource("1_font")
+B1RecipeCurrent/font_sizes/font_size = 18
+B1RecipeCurrent/colors/font_color = Color(0.84, 0.88, 0.85, 1)
+B1RecipeCurrent/styles/normal = SubResource("Current")
+B1RecipeCurrent/styles/hover = SubResource("CurrentHover")
+B1RecipeCurrent/styles/pressed = SubResource("CurrentPressed")
+B1RecipeCurrent/styles/disabled = SubResource("Disabled")
+B1RecipeCurrent/styles/focus = SubResource("Focus")
+B1RecipeBack/base_type = &"Button"
+B1RecipeBack/fonts/font = ExtResource("1_font")
+B1RecipeBack/font_sizes/font_size = 18
+B1RecipeBack/colors/font_color = Color(0.84, 0.88, 0.85, 1)
+B1RecipeBack/styles/normal = SubResource("Normal")
+B1RecipeBack/styles/hover = SubResource("Hover")
+B1RecipeBack/styles/pressed = SubResource("Pressed")
+B1RecipeBack/styles/disabled = SubResource("Disabled")
+B1RecipeBack/styles/focus = SubResource("Focus")

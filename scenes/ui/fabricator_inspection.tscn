@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene load_steps=10 format=3]
 
 [ext_resource type="Script" path="res://scenes/ui/fabricator_inspection.gd" id="1_view"]
 [ext_resource type="Texture2D" path="res://assets/environment/maintenance_bay_v2/machines/fabricator_stationary.png" id="2_portrait"]
@@ -25,6 +25,18 @@ vertical = true
 [sub_resource type="StyleBoxLine" id="HorizontalDivider"]
 color = Color(0.52, 0.40, 0.27, 0.5)
 thickness = 1
+
+[sub_resource type="StyleBoxFlat" id="PauseStripStyle"]
+bg_color = Color(0.16, 0.13, 0.095, 1)
+border_width_left = 2
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.57, 0.41, 0.25, 1)
+content_margin_left = 10.0
+content_margin_top = 6.0
+content_margin_right = 10.0
+content_margin_bottom = 6.0
 
 [sub_resource type="StyleBoxEmpty" id="HeaderTitleSpacing"]
 
@@ -392,13 +404,27 @@ layout_mode = 2
 theme_type_variation = &"B1MutedLabel"
 text = "SELECT RECIPE"
 
+[node name="PauseStrip" type="PanelContainer" parent="Columns/Chooser"]
+visible = false
+layout_mode = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("PauseStripStyle")
+
+[node name="Current" type="Label" parent="Columns/Chooser"]
+visible = false
+layout_mode = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.773, 0.545, 0.322, 1)
+theme_override_font_sizes/font_size = 16
+autowrap_mode = 2
+
 [node name="CardsScroll" type="ScrollContainer" parent="Columns/Chooser"]
 layout_mode = 2
 size_flags_vertical = 3
 horizontal_scroll_mode = 0
 
 [node name="FeedbackScroll" type="ScrollContainer" parent="Columns/Chooser"]
-custom_minimum_size = Vector2(0, 72)
+custom_minimum_size = Vector2(0, 52)
 layout_mode = 2
 horizontal_scroll_mode = 0
 

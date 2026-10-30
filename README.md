@@ -67,6 +67,50 @@ Headless checks do not verify graphical appearance. While execution is restricte
 use only nonexecuting checks under the policy above and report them as static
 validation; runtime and engine verification remain unperformed.
 
+## Fabricator Recipe Chooser modernization (feature branch, pending merge)
+
+`codex/recipe-chooser-modernization` retains PR #87's shell, portrait, panel
+constraints and 85% default scale. The existing recipe buttons receive a
+[presentation child](scenes/ui/recipe_card_content.gd) and opt-in
+[chooser styles](assets/ui/recipe_chooser.tres). Recipe creation, callbacks,
+selection guards, pause ownership and inventory transactions remain unchanged;
+`machine_ui.gd` is byte-identical to merged PR #87.
+
+Cards use existing icons, wrapping recipe headings, separate amber CURRENT
+badges and full definition-derived quantities/material names. INPUT → OUTPUT
+uses two equal-width columns; below 340 logical card units it stacks with a
+down arrow. Multiple ingredients occupy separate lines. Content minimum height
+follows wrapping, and the existing vertical list scrolls without horizontal
+scrolling. Normal/hover/pressed states use restrained teal surfaces; Current
+retains amber identity through hover and press. No categories or new artwork.
+
+Change Recipe keeps a dedicated amber Production Paused strip and wrapping
+Current identifier above the list. Initial selection hides both. Existing error
+text occupies its own bounded scroll area below the list, above the secondary
+Back action. Error visibility and clearing follow the controller. Back is still
+absent for initial selection. The view changes no pause state.
+
+Validation: Python static checks and source/scene inspection only. The proposed
+preservation amendment in `tests/static_fabricator_inspection_test.py` pins the
+five complete chooser presentation files before retaining historical comparisons;
+it also checks the entire controller and normal inspection presentation against
+merged PR #87. Owner approval is required before restricted Native execution.
+Runner, policy, native assertions, command scope and serial imports are unchanged.
+Godot import, native recipe regression and graphical verification are unperformed.
+
+Owner acceptance:
+
+- Approve the exact presentation hashes and static assertion amendment before
+  any restricted Native run; graphical launch requires separate authorization.
+- Check initial selection and Change Recipe at maximized desktop, 1280 × 720,
+  and 1024 × 576, at 75%, 85% and 100% UI scale. Check full names, card wrapping,
+  list scrolling, portrait/frame, persistent context, pause strip, Back and errors.
+- Check current/hover/pressed feedback and mouse/keyboard behavior; Current
+  selection must return without resetting cycle progress.
+- Check selected-machine-only pause, Back/Close/range-loss/transition release,
+  failed changes retaining pause, placement-range exception and stored-output
+  identity/previous-output notices. Other machine interfaces remain unchanged.
+
 ## Fabricator inspection redesign (feature branch, pending merge)
 
 `codex/fabricator-inspection-redesign` adds a dedicated
