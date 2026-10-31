@@ -327,7 +327,12 @@ class MachineIconsStaticTest(unittest.TestCase):
         # Original diagnostic and first illustrated inputs retain their pins.
         for path in set(changed) & set(BAKED_INPUT_SHA256):
             verify_baked_input(path, (ROOT / path).read_bytes())
-        allowed = set(MACHINE_ICONS_SHA256) | set(INPUT_SHA256) | set(green_assets) | set(TERRAIN_INPUT_SHA256) | set(ILLUSTRATED_INPUT_SHA256) | set(BAKED_INPUT_SHA256) | {
+        # Two exact new resolver scripts; existing production files retain all
+        # historical comparisons. No directory or execution-scope exemption.
+        from static_terrain_resolver_test import RESOLVER_INPUT_SHA256, verify_resolver_input
+        for path in set(changed) & set(RESOLVER_INPUT_SHA256):
+            verify_resolver_input(path, (ROOT / path).read_bytes())
+        allowed = set(RESOLVER_INPUT_SHA256) | set(MACHINE_ICONS_SHA256) | set(INPUT_SHA256) | set(green_assets) | set(TERRAIN_INPUT_SHA256) | set(ILLUSTRATED_INPUT_SHA256) | set(BAKED_INPUT_SHA256) | {
             f"assets/items/{item}.png{suffix}" for item in ART for suffix in ("", ".import")
         }
         self.assertFalse(set(changed) - allowed, set(changed) - allowed)

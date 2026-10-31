@@ -1,5 +1,10 @@
 # The Long Way Home
 
+The [deterministic terrain resolver](docs/TERRAIN_RESOLVER.md) (feature branch,
+pending merge) adds isolated Green-over-Earth signature selection and seeded
+60/25/15 A/B/C interior lookup. Production rendering and world generation remain
+unchanged; validation for this milestone is static only.
+
 An isolated [illustrated terrain laboratory](docs/ILLUSTRATED_TERRAIN_LAB.md)
 (feature branch, pending merge) now provides baked artwork for all 94 original
 configurations at 128px, plus the approved A/B/C solid-interior treatment. Owner
