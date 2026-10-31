@@ -2,9 +2,10 @@
 
 An isolated [illustrated terrain laboratory](docs/ILLUSTRATED_TERRAIN_LAB.md)
 (feature branch, pending merge) now provides baked artwork for all 94 original
-configurations at 128px, plus the approved A/B/C solid-interior treatment. Stage 1
-visual direction is approved; Stage 2 native painting acceptance is pending.
-The earlier laboratories and production terrain remain unchanged.
+configurations at 128px, plus the approved A/B/C solid-interior treatment. Owner
+graphical acceptance is complete: 12/12 PASS at commit 2c7c392. The earlier
+laboratories and production terrain remain unchanged. Production chunk integration
+and runtime performance have not been tested or accepted.
 
 A story-driven science-fiction automation adventure. This fresh Godot project
 has a player movement prototype with camera follow and mouse-wheel zoom, plus a

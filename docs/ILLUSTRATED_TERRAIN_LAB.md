@@ -4,8 +4,11 @@ The owner approved Stage 1's offline visual method on 2026-10-31: broad painterl
 groundwork, soft transitions, common corners, endpoints, narrow links and isolated
 patches. Minor rounded stepping, occasional corner pockets and repetition with
 the three existing interior alternatives are accepted prototype limitations.
-This approves artwork direction; Godot import, native painting, production
-integration and performance remain unverified. PR #100 stays draft for owner testing.
+The owner subsequently accepted the baked Stage 2 laboratory: **12/12 graphical
+tests PASS** at `2c7c392cc580e56bcfc8a9fd0c5fd699726339b4`. This includes native
+painting and both vertical-boundary orientations with their endpoints in the
+tested laboratory. PR #100 remains draft for the owner's final review and merge.
+Production chunk integration and runtime performance have not been tested or accepted.
 
 ## Current acceptance path
 
@@ -28,8 +31,9 @@ There are **94 unique baseline signatures**, plus four deliberate solid-art
 alternatives: **98 paintable records and 784 explicit peers** in total. The extra
 records do not add configurations or change the original 752 baseline assignments.
 A is the baseline solid; B/C are the approved source-derived interior alternatives.
-Only solid interiors have alternatives; all transitions use A. Native variant
-selection/distribution needs owner verification. No new style or variation system.
+Only solid interiors have alternatives; all transitions use A. The owner accepted
+native A/B/C selection in the laboratory; no fixed statistical distribution is
+claimed. No new style or variation system.
 
 Baseline slots (10,1)/(10,5) remain unconfigured; their black pixels are unused
 atlas space, not paintable placeholders. Every configured tile has baked artwork.
@@ -115,32 +119,42 @@ hashes; `preservation_snapshot.json` captures working files and Stage 1 evidence
 Preview assignments are offline constraints, not Godot Connect or brush-order
 verification. Equal edge pixels do not establish smooth derivatives, imported
 filtering or visual seam acceptance. The 128-unit lab does not replace production's
-64-unit terrain scale. No numerical performance claim is made. **Godot, Native,
-graphical automation, profiling and benchmarks are NOT RUN.** Follow the
+64-unit terrain scale. No numerical performance claim is made. **Codex did not run
+Godot, Native, graphical automation, profiling or benchmarks.** Owner graphical
+acceptance below is separate from Codex's static validation. Production chunk
+integration and runtime performance have not been tested or accepted. Follow the
 [execution policy](../AGENTS.md#godot-execution-safety).
 
-## Owner graphical PASS/FAIL checklist
+## Owner graphical acceptance / 12 of 12 PASS
 
-Owner-only tests; Stage 2 results are **NOT RUN** until the owner records them.
-Open the baked v2 scene above. Keep checks modest; stop if editor/Windows
-responsiveness deteriorates. Record PASS/FAIL, optional observations, paint order
-and source/cell for defects. No profiling or stress test is requested.
+The owner completed all twelve Stage 2 graphical tests at
+**`2c7c392cc580e56bcfc8a9fd0c5fd699726339b4`: 12/12 PASS**.
+These are owner-reported results, not Codex graphical execution or a performance
+benchmark. The grouped coverage below summarizes the accepted laboratory scope.
 
-| Check | PASS criterion / observation |
+Owner observations:
+
+> Much, much stronger candidate. Could not produce any odd tiles that looked out of place, transitions are smooth, editor was very responsive. Very, very good.
+
+| Coverage | Owner result / accepted scope |
 | --- | --- |
-| Import/correct scene | Baked v2 scene, TileSet and PNGs load without errors; no edge shader or magenta cells. |
-| Broad Earth | Warm quiet groundwork; acceptable source repetition and A/B/C appearance at useful zoom. |
-| Broad Green | Readable natural cover; acceptable A/B/C appearance without conspicuous tile seams. |
-| Native A/B/C selection | Broad solid painting can use all three valid interior tiles. Record source 0 A versus source 1 B/C; expect no fixed distribution. |
-| Horizontal boundaries | Both directions and paint orders work without holes, placeholders or conspicuous joins. |
-| Vertical Earth-left / Green-right | Inspect full span and both endpoints, repeat reversed paint order; record protrusions and selected cells. |
-| Vertical Green-left / Earth-right | Repeat full-span/both-endpoint inspection in the other direction and both paint orders. |
-| Corners/endpoints/narrow links | All have art. Approved minor rounding/pockets are acceptable; conspicuous new spikes, holes or discontinuities need review. |
-| Isolated patches | Single-cell Green in Earth and Earth in Green remain readable and connected as intended. |
-| Irregular regions/repainting | Overlapping strokes/direction changes preserve broad appearance and correct native matching. |
-| Seams/readability | Inspect at 100% and useful zoom-out, briefly without editor grid/brush hover overlays. No cracks, repair rims or unexplained pale cells. |
+| Import/correct scene | **PASS**: baked v2 scene, TileSet and PNGs; shader-free acceptance path without magenta placeholders. |
+| Broad Earth | **PASS**: groundwork, source repetition and A/B/C appearance in the tested laboratory. |
+| Broad Green | **PASS**: cover readability, A/B/C appearance and tile joins. |
+| Native A/B/C selection | **PASS**: three valid solid-interior alternatives; no fixed distribution claim. |
+| Horizontal boundaries | **PASS**: both directions and paint orders. |
+| Vertical Earth-left / Green-right | **PASS**: full boundary and both endpoints, including reversed paint order, graphically accepted in the tested laboratory. |
+| Vertical Green-left / Earth-right | **PASS**: full boundary and both endpoints, including reversed paint order, graphically accepted in the tested laboratory. |
+| Corners/endpoints/narrow links | **PASS**: illustrated coverage; minor approved rounded stepping and corner pockets remain acceptable limitations. |
+| Isolated patches | **PASS**: Green in Earth and Earth in Green. |
+| Irregular regions/repainting | **PASS**: overlapping strokes, direction changes and native matching. |
+| Seams/readability | **PASS**: broad appearance and smooth transitions; owner reported no odd tiles out of place. |
 
-PR #98's original vertical endpoint failures remain unresolved as **Godot
-acceptance** until the owner supplies new evidence. Stage 1 offline approval does
-not turn those results into runtime PASS. Stop after owner graphical testing;
-merge authorization and post-merge cleanup remain separate decisions.
+The historical PR #98 diagnostic endpoint failures remain part of that record.
+The baked laboratory's corresponding vertical boundaries and endpoints are now
+graphically accepted by the owner at the commit above. This does not establish
+production chunk continuity, gameplay integration or runtime performance acceptance.
+The owner's editor-responsiveness observation is qualitative; no profiling or
+benchmark result is claimed. The tested implementation is unchanged by this
+documentation correction. The owner will merge personally after final review;
+no merge or post-merge cleanup is performed or authorized by this record.
