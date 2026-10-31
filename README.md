@@ -1,5 +1,11 @@
 # The Long Way Home
 
+An isolated [production-scale terrain fixture](docs/PRODUCTION_TERRAIN_FIXTURE.md)
+(PR #102 feature branch, pending merge) uses PR #101 with four bounded chunks,
+one shared half-scale TileMapLayer and experimental CPU tint shading. Production
+exterior remains unchanged. Validation is static only; its separate engine plan
+and owner graphical checklist require new authorization before execution.
+
 The [deterministic terrain resolver](docs/TERRAIN_RESOLVER.md) (feature branch,
 pending merge) adds isolated Green-over-Earth signature selection and seeded
 60/25/15 A/B/C interior lookup. Production rendering and world generation remain

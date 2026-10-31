@@ -88,8 +88,10 @@ pinned to exact normalized-content hashes and required to be absent from its
 historical baseline. Tampered content and other paths are explicitly rejected.
 Existing production/artwork preservation checks and runner controls are retained.
 
-Shared TileMapLayer insertion/removal, production renderer replacement, shared
-shader/tint textures, crash-site shading migration and the production-scale
-fixture are deferred. Future shading must retain the existing CPU tint data,
+The separate [production-scale fixture](PRODUCTION_TERRAIN_FIXTURE.md) (PR #102,
+feature branch pending merge) exercises shared TileMapLayer insertion/removal and
+experimental vertex-sampled CPU tint shading in isolation. Engine execution is
+not yet verified. Production renderer replacement and authored crash-site shading
+migration remain deferred. Future shading must retain the existing CPU tint data,
 authored masks, feathers, overrides and continuous gradients. This PR does not
 establish production integration, visual equivalence or performance acceptance.

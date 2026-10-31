@@ -248,6 +248,11 @@ class TerrainResolverStaticTest(unittest.TestCase):
         self.assertFalse(set(paths) & set(changed), 'Pre-existing production/asset/tool files changed')
         for path in ROOT.glob('scenes/**/*.gd'):
             if path.name not in ('terrain_resolver.gd', 'terrain_assignment_lookup.gd'):
+                from production_terrain_preservation import FIXTURE_INPUT_SHA256, verify_fixture_input
+                relative = path.relative_to(ROOT).as_posix()
+                if relative in FIXTURE_INPUT_SHA256:
+                    verify_fixture_input(relative, path.read_bytes())
+                    continue
                 self.assertNotIn('TerrainResolver', path.read_text())
                 self.assertNotIn('TerrainAssignmentLookup', path.read_text())
 
