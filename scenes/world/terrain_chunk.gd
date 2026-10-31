@@ -3,6 +3,11 @@ extends Node2D
 
 # Disposable presentation only. No authoritative simulation lives here.
 const BASE_SOIL: Texture2D = preload("res://assets/environment/exterior/weathered_earth_provisional/a_base_soil.png")
+const GROUND_TEXTURES: Array[Texture2D] = [BASE_SOIL,
+	preload("res://assets/environment/exterior/low_green_ground_cover_provisional/a_balanced_cover.png"),
+	preload("res://assets/environment/exterior/low_green_ground_cover_provisional/b_moss_dominant.png"),
+	preload("res://assets/environment/exterior/low_green_ground_cover_provisional/c_exposed_earth.png"),
+	preload("res://assets/environment/exterior/low_green_ground_cover_provisional/d_fine_grass.png")]
 const VERTEX_WIDTH: int = WorldCoordinates.CHUNK_TILES + 1
 const SAMPLE_WIDTH: int = WorldCoordinates.CHUNK_TILES + 2
 # Packed-array construction is a runtime initializer, not a constant expression.
@@ -10,6 +15,7 @@ const SAMPLE_WIDTH: int = WorldCoordinates.CHUNK_TILES + 2
 static var _texture_uvs := PackedVector2Array([Vector2.ZERO, Vector2.RIGHT, Vector2.ONE, Vector2.DOWN])
 
 var _colors: PackedColorArray
+var _ground_materials: PackedByteArray
 var _details: Array[Dictionary] = []
 var state_revision: int = -1
 
@@ -34,9 +40,11 @@ func configure(coordinate: Vector2i, generator: PlanetGenerator, state: PlanetWo
 				+ samples[(y + 1) * SAMPLE_WIDTH + x] + samples[(y + 1) * SAMPLE_WIDTH + x + 1]) / 4.0
 			_colors[index] = _earth_tint(color)
 	_details.clear()
+	_ground_materials.resize(WorldCoordinates.CHUNK_TILES * WorldCoordinates.CHUNK_TILES)
 	for y in range(WorldCoordinates.CHUNK_TILES):
 		for x in range(WorldCoordinates.CHUNK_TILES):
 			var tile := coordinate * WorldCoordinates.CHUNK_TILES + Vector2i(x, y)
+			_ground_materials[y * WorldCoordinates.CHUNK_TILES + x] = generator.sample_ground_material(tile)
 			var detail := generator.sample_detail(tile, state)
 			if not detail.is_empty():
 				detail.position -= position
@@ -64,7 +72,8 @@ func _draw() -> void:
 			var index := y * VERTEX_WIDTH + x
 			var colors := PackedColorArray([_colors[index], _colors[index + 1],
 				_colors[index + VERTEX_WIDTH + 1], _colors[index + VERTEX_WIDTH]])
-			draw_polygon(vertices, colors, _texture_uvs, BASE_SOIL)
+			var ground_material := int(_ground_materials[y * WorldCoordinates.CHUNK_TILES + x])
+			draw_polygon(vertices, colors, _texture_uvs, GROUND_TEXTURES[ground_material])
 	# Low ground details render below all Y-sorted authored objects and Dave.
 	for detail in _details:
 		var point: Vector2 = detail.position

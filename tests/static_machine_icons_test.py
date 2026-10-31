@@ -9,6 +9,7 @@ import zlib
 from static_automatic_transitions_test import ROOT, read
 from static_extractor_inspection_test import functions
 from static_weathered_earth_test import INPUT_SHA256, verify_input
+from static_low_green_ground_test import ASSETS as GREEN_ASSETS
 from static_v2_production_host_test import (
     MACHINE_ICONS_BASE, MACHINE_ICONS_SHA256, without_machine_icon_changes,
     MACHINE_LAYOUT_BASE, MACHINE_LAYOUT_SHA256, without_machine_layout_changes,
@@ -303,7 +304,15 @@ class MachineIconsStaticTest(unittest.TestCase):
         # Native permission expansion. Review this amendment before Native use.
         for path in set(changed) & set(INPUT_SHA256):
             verify_input(path, (ROOT / path).read_bytes())
-        allowed = set(MACHINE_ICONS_SHA256) | set(INPUT_SHA256) | {
+        # Original PR #95 introduced these four PNGs. Pin each candidate's
+        # bytes before permitting its exact path through this historical guard.
+        green_assets = {
+            f"assets/environment/exterior/low_green_ground_cover_provisional/{name}.png": digest
+            for name, digest in GREEN_ASSETS.items()
+        }
+        for path in set(changed) & set(green_assets):
+            self.assertEqual(hashlib.sha256((ROOT / path).read_bytes()).hexdigest(), green_assets[path], path)
+        allowed = set(MACHINE_ICONS_SHA256) | set(INPUT_SHA256) | set(green_assets) | {
             f"assets/items/{item}.png{suffix}" for item in ART for suffix in ("", ".import")
         }
         self.assertFalse(set(changed) - allowed, set(changed) - allowed)

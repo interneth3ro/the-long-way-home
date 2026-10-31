@@ -2224,9 +2224,157 @@ playtest items remain unverified. Static inspection covers references, named
 spawns, collision clearances, flag lifecycle, lock/failure paths, preserved player
 files, documentation links and Git patch integrity.
 
+## Low Green Ground Cover prototype (feature branch, pending merge)
+
+On 2026-10-31 the owner accepted corrected PR #95 runtime commit
+`68f8c9c3ff137b2ee6419eaee9dee30ab4507d35` for merge as a **technical terrain
+foundation**. This is owner acceptance, distinct from agent static validation:
+deterministic cover distribution, four provisional green variants, single-pass
+rendering and spatial rejection are accepted. The owner reports noticeably
+improved exterior movement, smooth stationary/near-spawn/loaded-return gameplay,
+and normal exterior transition and Windows responsiveness. Occasional minor
+new-chunk stutter remains accepted for this milestone. No numeric frame-time
+improvement is claimed. PR #95 remains pending merge; final environmental
+presentation is not accepted.
+
+`codex/low-green-ground-cover` adds four **candidate**, byte-preserved 128 x 128
+opaque RGB PNGs supplied in `TLWH_Low_Green_Ground_Cover_Codex_Handoff.zip`.
+The approved concept/study establish art direction; the standalone textures
+are accepted provisionally for this technical milestone, with final visual refinement
+deferred. No concept board was cropped.
+ZIP SHA-256: `8402d85739ecc4b219831472246289cc2b7ba425889a104e63d7eee1fa32ce32`.
+Production inputs live in `assets/environment/exterior/low_green_ground_cover_provisional/`:
+
+| File | Original SHA-256 |
+| --- | --- |
+| `a_balanced_cover.png` | `85043ba1079be6fa1577312bcd2d0884b66efa5f0b7592bd7ccaeb96baae978d` |
+| `b_moss_dominant.png` | `38048cb8d8ca542df4a7f247b4a0c917e306d7b9c949a3d08ed3b3ef26f31ad3` |
+| `c_exposed_earth.png` | `f5f81c6fcf6a906d96f6e8b7dfe9bdfad65deb83d327bcb2368f30c30032db5a` |
+| `d_fine_grass.png` | `dd50462374578046c3f6822f4e8f02d85f6d7e571dfee9a06fe43e0c7c090009` |
+
+`PlanetGenerator.sample_ground_material(tile)` is presentation-only: 0 selects
+existing Base Soil, 1..4 select green variants. It does not determine construction
+validity or alter terrain edits, state, Ferrite or factory simulation. The original
+precise geometry, color, detail and hash methods are preserved verbatim. Protected gameplay space/object clearances
+and all authored polygons plus their full 256-unit recovery feathers select earth.
+Beyond these masks, world-space smooth noise at 768 and 192 units, channels 8/9,
+forms clusters using `broad + fine * 0.18 >= 0.64`. Coordinate hashing on channel 10
+selects the variant, without mutable RNG or visit-order dependence. Negative tile
+coordinates use the same floor-based world sampling.
+
+`TerrainChunk.configure` caches 1,024 material bytes. Redrawing uses exactly one
+textured polygon per 64-unit cell, selecting from five shared preloads; there are
+no added nodes, overlays, shaders or per-frame noise. Both materials use the
+existing near-neutral earth tint and shared UVs; Weathered Earth tint math,
+color-edit halo, details and alpha remain unchanged. Each 32 x 32 chunk still draws
+1,024 base polygons and allocates two packed arrays per drawn cell. Added work is
+at most 2,048 noise samples and 1,024 variant hashes per configuration, plus bounded
+protection/mask geometry checks against the existing authored inventory. Total
+color plus material noise calls are at most 4,360 (previously 2,312). Five textures
+can cause more texture switches; actual GPU batching, frame times and memory are
+unmeasured. Chunk radius, retention, two-chunk generation budget and transitions
+are untouched. These are source counts, not performance claims.
+
+The focused material-selection correction caches one conservative rectangle per
+PlanetGenerator at initialization: the union of the protected polygon expanded
+by 48 units, each authored object expanded by 160 units, and each overlay expanded
+by max(48, its full feather). Each extent has one additional world unit so the
+right/bottom exclusion of Rect2.has_point cannot reject an influenced boundary.
+For the current authored inventory the union is (-1281, -1281) to (1281, 1281).
+Only sample_ground_material uses this filter; points inside still run the exact
+original precise predicates, in the original order. Points outside skip both
+protection/overlay loops and continue with identical noise and variant selection.
+Geometry is fixed for the generator lifetime by the existing exterior setup.
+There is no per-frame bound rebuild or new manager/cache beyond this rectangle.
+
+| Material-selection work per fully distant 32 x 32 chunk | Original PR #95 | Correction |
+| --- | ---: | ---: |
+| Rectangle containment tests | 0 | 1,024 |
+| Detailed point-in-polygon calls | 9,216 | 0 |
+| Polygon segment-distance evaluations | 61,440 | 0 |
+| Authored-object distance checks | 4,096 | 0 |
+| Material noise samples | 2,048 | 2,048 |
+
+Counts apply only to the material-selection path and the current four overlays,
+six-vertex protected polygon and four object anchors. Existing color/detail work
+remains. Inside the union (including empty gaps/concavities), all original precise
+checks can still be required, with one additional rectangle test. Bounds build
+once in linear time over authored vertices/anchors; per-cell work keeps its prior
+worst-case complexity. No measured frame-time or batching improvement is claimed.
+
+Static equivalence uses immutable original PR #95 commit f112f48 as the source-pinned
+reference for arithmetic models. It covers protected interiors/edges, full feather
+limits, corners, Ferrite, object clearances, negative/positive chunk boundaries,
+distant samples, multiple seeds, regeneration and reversed visit order. It also
+checks the exact unchanged renderer, streaming, construction/factory files and
+all other original tracked files outside the explicitly scoped correction and
+acceptance-documentation paths.
+These models do not execute GDScript or establish engine parsing/float behavior.
+The preservation amendment changes only the exact generator candidate SHA-256;
+the renderer digest and historical PR #94 baselines stay unchanged. Candidate
+validation now also exposes the immutable original PR #95 bytes to equivalence
+checks. The older machine-icon preservation guard now recognizes only the four
+already committed green PNG paths after checking their original SHA-256 values;
+its previous omission surfaced only once those PR #95 assets were tracked.
+No asset bytes or other protected scope change. Changed/appended/duplicated source
+candidates are still rejected. Independent
+owner review is required before any future Native use; runner scope is unchanged.
+The final documentation pass adds only docs/GAME_VISION.md to the historical
+preservation test's explicit documentation allowance. It changes no runtime path,
+source candidate digest, asset hash, command, limit or execution permission.
+
+Static checks decode PNGs with CRC/filter validation, verify original hashes,
+128 x 128 RGB8 metadata and all 16 ordered shared-edge combinations. Arithmetic
+models check positive/negative boundaries, regeneration, visit order, seed variation,
+cluster adjacency and authored clearing/mask exclusion. Exact candidate hashes
+adapt the historical Weathered Earth/preservation checks to immutable PR #94
+bytes; all historical assertions and tamper rejection remain. Changed controls
+and input scope require independent owner review before any future Native use.
+Runner, policy, engine commands, limits and Native assertions are unchanged.
+No agent Godot, Native, graphical, profiling or benchmark execution was performed
+for this correction. The owner reported smooth stationary/near-spawn/retained-return
+gameplay and minor stuttering on new terrain. A separate owner Script Profiler
+session caused system-wide sluggishness inside the ship; its cause remains
+unresolved and was not reproduced. These observations are not agent measurements.
+
+Known limitations accepted for the technical milestone are occasional minor
+new-chunk stutter, hard rectangular Earth/Green boundaries, recognizable texture
+repetition and provisional artwork. Matched green border pixels do not establish
+cross-material visual continuity. These limitations are not approval of final
+environmental presentation.
+
+The owner accepted the technical behavior listed above after the corrected
+isolated snapshot test. Source, renderer, assets, streaming and gameplay remain
+unchanged from the accepted runtime commit during this final documentation pass.
+Static preservation is not a claim that every deployment/recovery/production
+interaction was exercised in the short owner test. Agent validation remains
+nonexecuting; no new Godot, Native, graphical or profiling run is authorized.
+The earlier inside-ship Script Profiler slowdown remains a separate unresolved
+incident and was not reproduced. Existing snapshots, imports and evidence remain
+preserved; the original f112f48 snapshots and corrected 68f8c9c snapshot are distinct.
+
+### Deferred visual follow-up
+
+[Issue #96: refine Earth-to-Green transitions and reduce terrain repetition](https://github.com/interneth3ro/the-long-way-home/issues/96)
+tracks a separate focused PR from clean, updated main after PR #95 merges:
+
+- Organic Earth-to-Green transitions and removal of obvious 64-unit square edges.
+- Reduced recognizable repetition and evaluation of larger-scale visual variation.
+- Preserve the accepted one-pass foundation where practical and deterministic
+  continuity across chunks, negative coordinates, retirement and regeneration.
+- Avoid expensive overlapping full-cell texture passes; preserve clearing/Ferrite
+  readability, gameplay authority and accepted performance.
+
+No visual follow-up is implemented in PR #95. Final merge execution still awaits
+explicit owner authorization in this chat. No merge or post-merge cleanup has
+been performed; Native restrictions and independent preservation review before
+future Native use remain in force.
+
 ## Weathered Earth Textured Terrain Foundation (pending merge)
 
-PR #94 remains **BLOCKED pending renewed owner graphical/functional acceptance**.
+Historical PR #94 implementation record (merged 2026-10-30). The recorded
+initial owner rejection and correction checks below are preserved; the merge
+alone does not establish renewed owner graphical/functional acceptance.
 The owner rejected the initial appearance and exterior movement smoothness and
 raised a transition-responsiveness concern. The focused correction implements
 Environment Decision 16, Option B: **Warm Earth with Subtle Legacy Variation**.

@@ -12,7 +12,39 @@ ROOT = Path(__file__).resolve().parents[1]
 BASE = "c3b0460a6b52437b1961b5d0936f6ec279371d55"
 # Exact candidate allowance; owner review required before any future Native use.
 # Restore the unchanged main bytes for older preservation checks, never exempt a file.
+GREEN_BASE = "e1d71ccf9c04e237c5d77a7c17a4918d2f5bdb7b"
+GREEN_SHA256 = {
+    "scenes/world/terrain_chunk.gd": "def52c7b1db2cd2c5aa7b07bd716bc5ae543bead2e77e681bf0c0414c019df22",
+    "scenes/world/planet_generator.gd": "f586792777178e63515c781f8aebb73f65c43c313f14f5970ce74bed10ca9c49",
+}
+
+
+GREEN_ORIGINAL = "f112f48d1b2f874954af34f6a549a29a6c2c3d55"
+
+
+def original_green_bytes(path, actual):
+    """Pin current candidates before projecting immutable original PR #95 bytes."""
+    normalized = actual.replace(b"\r\n", b"\n")
+    assert hashlib.sha256(normalized).hexdigest() == GREEN_SHA256[path], path
+    return subprocess.check_output(["git", "show", f"{GREEN_ORIGINAL}:{path}"], cwd=ROOT).replace(b"\r\n", b"\n")
+
+
+def weathered_bytes(path, actual):
+    """Exact green candidate adapter; retain all historical Weathered assertions.
+
+    This does not authorize Native use. Owner review of changed controls and
+    input scope is still required. Arbitrary edits never receive an exemption.
+    """
+    original_green_bytes(path, actual)
+    return subprocess.check_output(["git", "show", f"{GREEN_BASE}:{path}"], cwd=ROOT).replace(b"\r\n", b"\n")
+
+
+def weathered_source(path):
+    return weathered_bytes(path, (ROOT / path).read_bytes()).decode()
+
+
 TERRAIN_SHA256 = {
+    "scenes/world/planet_generator.gd": "de3a8d677220e505963e7d975601499226b5637a287aa484303ebb1429ef95c7",
     "scenes/world/terrain_chunk.gd": "d6bd7a98aa39e75d77d6950b900df48367351c73010ae2bf8b32c54697ad89ab",
 }
 INPUT_SHA256 = {
@@ -26,12 +58,13 @@ INPUT_SHA256 = {
 
 
 def verify_input(path, actual):
-    normalized = actual if path.endswith(".png") else actual.replace(b"\r\n", b"\n")
+    normalized = (weathered_bytes(path, actual) if path in GREEN_SHA256
+                  else actual if path.endswith(".png") else actual.replace(b"\r\n", b"\n"))
     assert hashlib.sha256(normalized).hexdigest() == INPUT_SHA256[path], path
 
 
 def preserved_terrain_bytes(path, actual):
-    normalized = actual.replace(b"\r\n", b"\n")
+    normalized = weathered_bytes(path, actual)
     assert hashlib.sha256(normalized).hexdigest() == TERRAIN_SHA256[path], path
     return subprocess.check_output(["git", "show", f"{BASE}:{path}"], cwd=ROOT).replace(b"\r\n", b"\n")
 
@@ -85,15 +118,15 @@ def earth_tint(color):
 
 class WeatheredEarthStaticTest(unittest.TestCase):
     def test_uv_array_uses_shared_runtime_initializer(self):
-        source = (ROOT / "scenes/world/terrain_chunk.gd").read_text()
+        source = weathered_source("scenes/world/terrain_chunk.gd")
         self.assertIn("static var _texture_uvs := PackedVector2Array(", source)
         self.assertNotIn("const TEXTURE_UVS", source)
         self.assertEqual(source.count("_texture_uvs :="), 1)
         self.assertEqual(source.count("draw_polygon(vertices, colors, _texture_uvs,"), 1)
 
     def test_single_ground_pass_and_operation_bounds(self):
-        chunk = (ROOT / "scenes/world/terrain_chunk.gd").read_text()
-        generator = (ROOT / "scenes/world/planet_generator.gd").read_text()
+        chunk = weathered_source("scenes/world/terrain_chunk.gd")
+        generator = weathered_source("scenes/world/planet_generator.gd")
         self.assertEqual(chunk.count("preload("), 1)
         self.assertIn('a_base_soil.png")', chunk)
         drawing = chunk.split("func _draw() -> void:", 1)[1].split("# Low ground details", 1)[0]
@@ -113,7 +146,7 @@ class WeatheredEarthStaticTest(unittest.TestCase):
         self.assertEqual(32 ** 2, 1024)
 
     def test_warm_tint_bounds_and_authored_variation(self):
-        source = (ROOT / "scenes/world/terrain_chunk.gd").read_text()
+        source = weathered_source("scenes/world/terrain_chunk.gd")
         for equation in (
             "var mean := (color.r + color.g + color.b) / 3.0",
             "var green_bias := maxf(0.0, color.g - (color.r + color.b) * 0.5)",
@@ -165,7 +198,7 @@ class WeatheredEarthStaticTest(unittest.TestCase):
                 self.assertEqual(family[0][y][-24:], other[y][-24:])
 
     def test_absolute_sampling_and_negative_boundary_model(self):
-        chunk = (ROOT / "scenes/world/terrain_chunk.gd").read_text()
+        chunk = weathered_source("scenes/world/terrain_chunk.gd")
         self.assertIn("generator.sample_color(origin + Vector2i(x - 1, y - 1), state)", chunk)
         self.assertIn("samples[(y + 1) * SAMPLE_WIDTH + x + 1]) / 4.0", chunk)
         # Build each full chunk independently, using a synthetic deterministic
@@ -204,10 +237,10 @@ class WeatheredEarthStaticTest(unittest.TestCase):
             expected = subprocess.check_output(["git", "show", f"{BASE}:{path}"], cwd=ROOT)
             self.assertEqual((ROOT / path).read_bytes().replace(b"\r\n", b"\n"), expected.replace(b"\r\n", b"\n"), path)
         path = "scenes/world/planet_generator.gd"
-        actual = (ROOT / path).read_text()
+        actual = weathered_source(path)
         baseline = subprocess.check_output(["git", "show", f"{BASE}:{path}"], cwd=ROOT, text=True)
         self.assertEqual(actual, baseline)
-        chunk = (ROOT / "scenes/world/terrain_chunk.gd").read_text()
+        chunk = weathered_source("scenes/world/terrain_chunk.gd")
         before = subprocess.check_output(["git", "show", f"{BASE}:scenes/world/terrain_chunk.gd"], cwd=ROOT, text=True)
         self.assertEqual(chunk.split("# Low ground details", 1)[1], before.split("# Low ground details", 1)[1])
         self.assertEqual(chunk.count("preload("), 1)

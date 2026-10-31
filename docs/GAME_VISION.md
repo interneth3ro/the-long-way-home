@@ -234,15 +234,33 @@ remains under development.
 Implementation and coordinate conventions are recorded in the
 [README](../README.md#world-generation-foundation-pr-27-merged).
 
-The Weathered Earth foundation is pending merge in PR #94. Initial owner visual
-and movement-smoothness acceptance failed; renewed acceptance remains blocked.
+The Weathered Earth foundation merged in PR #94. Initial owner visual
+and movement-smoothness acceptance failed; merge alone does not establish renewed acceptance.
 Environment Decision 16, Option B approves warm earth with subtle legacy variation.
 The focused correction uses one shared provisional Base Soil texture/pass per
 terrain cell and bounded brightness/warmth from the existing color halo. The
 texture's brown hue dominates; legacy green becomes shading. Three inactive
 provisional variants are preserved. The generator, masks, streaming, construction
 and gameplay are unchanged. This is not final illustrated art or verified runtime
-performance. Other terrain families, vegetation and clearing remain deferred.
+performance. A focused Low Green Ground Cover prototype is pending merge:
+four owner-supplied candidate textures form deterministic presentation-only
+clusters beyond protected gameplay space and full authored mask feathers.
+The owner accepted corrected PR #95 commit 68f8c9c on 2026-10-31 as a technical
+terrain foundation: deterministic distribution, four provisional variants,
+single-pass rendering and spatial rejection. Owner-reported exterior movement
+is noticeably improved, with smooth stationary/near-spawn/loaded-return gameplay
+and normal transition/Windows responsiveness. Agent evidence remains static;
+no numeric frame-time improvement is claimed. Occasional minor new-chunk stutter,
+hard rectangular Earth/Green boundaries, repetition and provisional art are
+accepted limitations, not final environmental presentation.
+One base polygon per terrain cell and warm-earth tint are retained; gameplay
+authority and streaming remain unchanged. Organic transitions, removal of obvious
+64-unit squares, reduced repetition and larger-scale variation are deferred to
+[issue #96](https://github.com/interneth3ro/the-long-way-home/issues/96), implemented
+in a separate PR from updated main after PR #95 merges. Preserve one-pass
+rendering where practical, deterministic chunk continuity and avoid expensive
+overlapping full-cell passes. New vegetation and clearing remain deferred.
+See the [prototype and owner checks](../README.md#low-green-ground-cover-prototype-feature-branch-pending-merge).
 See the [implementation, tint formula and owner checks](../README.md#weathered-earth-textured-terrain-foundation-pending-merge).
 
 ## Approved Ferrite discovery direction

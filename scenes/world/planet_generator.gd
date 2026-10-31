@@ -11,6 +11,7 @@ var _seed: int
 var _overlays: Array[Dictionary] = []
 var _protected: PackedVector2Array
 var _authored_objects: PackedVector2Array
+var _ground_protection_bounds: Rect2
 
 
 func _init(world_seed: int, overlays: Array[Dictionary], protected: PackedVector2Array,
@@ -19,6 +20,24 @@ func _init(world_seed: int, overlays: Array[Dictionary], protected: PackedVector
 	_overlays = overlays
 	_protected = protected
 	_authored_objects = authored_objects
+	# Geometry is fixed for this generator's lifetime. One conservative union
+	# rejects distant material samples without changing any precise predicate.
+	# One extra unit includes Rect2's otherwise excluded right/bottom boundary.
+	_ground_protection_bounds = _polygon_bounds(_protected).grow(DETAIL_CLEARANCE + 1.0)
+	for anchor in _authored_objects:
+		_ground_protection_bounds = _ground_protection_bounds.merge(Rect2(anchor, Vector2.ZERO).grow(161.0))
+	for overlay in _overlays:
+		var reach := maxf(DETAIL_CLEARANCE, float(overlay.feather)) + 1.0
+		_ground_protection_bounds = _ground_protection_bounds.merge(_polygon_bounds(overlay.polygon).grow(reach))
+
+
+static func _polygon_bounds(polygon: PackedVector2Array) -> Rect2:
+	var bounds := Rect2()
+	if not polygon.is_empty():
+		bounds = Rect2(polygon[0], Vector2.ZERO)
+		for vertex in polygon:
+			bounds = bounds.expand(vertex)
+	return bounds
 
 
 # Integer arithmetic stays below int64 overflow, including negative coordinates.
@@ -111,3 +130,21 @@ func sample_detail(tile: Vector2i, state: PlanetWorldState) -> Dictionary:
 		return {}
 	var kind := mini(2, int(coordinate_random(tile, 6) * 3.0))
 	return {"position": point, "kind": kind}
+
+
+# Presentation only: 0 is Weathered Earth; 1..4 are candidate green textures.
+# No terrain validity, construction or simulation decisions consume this value.
+func sample_ground_material(tile: Vector2i) -> int:
+	var point := (Vector2(tile) + Vector2(0.5, 0.5)) * WorldCoordinates.TERRAIN_SIZE
+	if _ground_protection_bounds.has_point(point):
+		if is_protected(point):
+			return 0
+		# Preserve every authored mask and its full recovery feather, including Ferrite.
+		for overlay in _overlays:
+			if _overlay_weight(point, overlay.polygon, float(overlay.feather)) > 0.0:
+				return 0
+	# Broad clusters with smaller contour variation, sampled once at configuration.
+	var cover := _noise(point / 768.0, 8) + _noise(point / 192.0, 9) * 0.18
+	if cover < 0.64:
+		return 0
+	return 1 + mini(3, int(coordinate_random(tile, 10) * 4.0))
