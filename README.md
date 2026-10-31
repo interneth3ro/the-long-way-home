@@ -2370,6 +2370,28 @@ explicit owner authorization in this chat. No merge or post-merge cleanup has
 been performed; Native restrictions and independent preservation review before
 future Native use remain in force.
 
+## Native two-material terrain laboratory (feature branch, pending merge)
+
+The isolated [Issue #96 configuration experiment](docs/NATIVE_TERRAIN_47_PROTOTYPE.md)
+contains 47 reference-derived Earth-centered and 47 Green-centered configurations:
+94 tiles and 752 peering-bit assignments in one native Match Corners and Sides
+TileSet, with original diagnostic artwork and a script-free editor laboratory.
+
+The owner accepts this technical prototype with a documented limitation: initial
+horizontal boundaries passed both directions; initial vertical boundaries failed
+both directions; subsequent large irregular painting with overlapping rectangular
+strokes passed. The vertical failures remain FAIL and their precise cause remains
+unresolved. Revisit them before production integration.
+
+Clean isolated validation passes 119/119 static tests and 6/6 focused terrain tests.
+The owner-resource scope still has 12 failure records across 10 methods; strict
+guards remain active. Six explained local resource modifications are preserved
+unchanged outside the PR. See the [reconciliation](docs/PR98_STATIC_TEST_INVESTIGATION.md).
+Production terrain/gameplay remain unchanged. Issue #96 stays open for integration,
+final illustrated quality, reduced repetition, chunk determinism/continuity and
+production performance acceptance. PR #98 awaits explicit owner merge authorization.
+No Godot execution is authorized here. PR #97 remains untouched.
+
 ## Weathered Earth Textured Terrain Foundation (pending merge)
 
 Historical PR #94 implementation record (merged 2026-10-30). The recorded

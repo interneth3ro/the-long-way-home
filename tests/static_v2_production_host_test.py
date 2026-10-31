@@ -844,6 +844,17 @@ class V2ProductionHostStaticTest(unittest.TestCase):
                 uid = text.strip() if suffix == ".uid" else re.search(r'^uid="([^"]+)"', text, re.M)[1]
                 self.assertNotIn(uid, uids, uid)
                 uids[uid] = path[:-len(suffix)]
+        # Text scenes/resources declare their own UID in the file header.
+        # It is an identity declaration, not a dependency requiring a sidecar.
+        for pattern in ('*.tscn', '*.tres'):
+            for path in tracked_non_dev_files(pattern):
+                header = re.match(r'^\[(?:gd_scene|gd_resource)\b[^\n]*\]', read(path))
+                if header and re.search(r'\buid=', header[0]):
+                    match = re.search(r'\buid="(uid://[a-z0-9]+)"', header[0])
+                    self.assertIsNotNone(match, f'Malformed resource UID declaration: {path}')
+                    uid = match[1]
+                    self.assertNotIn(uid, uids, f'Duplicate resource UID: {uid}')
+                    uids[uid] = path
         pending = list(roots)
         visited = set()
         while pending:
@@ -858,6 +869,13 @@ class V2ProductionHostStaticTest(unittest.TestCase):
             text = read(path)
             references = re.findall(r'res://([^"\s)]+)', text)
             pending.extend(references)
+            for header, _ in geometry.blocks(text, 'ext_resource'):
+                uid = re.search(r'\buid="(uid://[a-z0-9]+)"', header)
+                target = re.search(r'\bpath="res://([^"]+)"', header)
+                if uid:
+                    self.assertIn(uid[1], uids, f'Unresolved tracked UID in {path}: {uid[1]}')
+                    if target:
+                        self.assertEqual(uids[uid[1]], target[1], f'UID/path mismatch in {path}')
             for uid in re.findall(r'uid://[a-z0-9]+', text):
                 self.assertIn(uid, uids, f"Unresolved tracked UID in {path}: {uid}")
                 pending.append(uids[uid])
@@ -898,6 +916,29 @@ class V2ProductionHostStaticTest(unittest.TestCase):
                 with self.assertRaisesRegex(AssertionError,
                         "Unresolved tracked UID" if edge.startswith("uid://") else "forbidden"):
                     self.assert_resource_graph(["scenes/main/main.tscn"])
+
+    def test_resource_graph_registers_text_uids_and_rejects_duplicates(self):
+        source_read = read
+        source = 'assets/ui/b1_theme.tres'
+        fixture = '[gd_resource type="Theme" format=3 uid="uid://testheader1"]\n\n[resource]\n'
+        with patch(__name__ + '.read', side_effect=lambda path: fixture if path == source else source_read(path)):
+            self.assert_resource_graph([source])
+        with patch(__name__ + '.read', side_effect=lambda path:
+                   fixture if path in (source, 'assets/ui/machine_actions.tres') else source_read(path)):
+            with self.assertRaisesRegex(AssertionError, 'Duplicate resource UID'):
+                self.assert_resource_graph([source])
+
+    def test_resource_graph_rejects_uid_path_mismatch_and_unknown_reference(self):
+        source_read = read
+        source = 'assets/ui/b1_theme.tres'
+        header = '[gd_resource type="Theme" format=3 uid="uid://testheader1"]\n\n'
+        medium_uid = re.search(r'^uid="([^"]+)"', source_read('assets/fonts/ibm-plex-sans/IBMPlexSans-Medium.ttf.import'), re.M)[1]
+        for uid, message in ((medium_uid, 'UID/path mismatch'), ('uid://unknownheader1', 'Unresolved tracked UID')):
+            fixture = header + f'[ext_resource type="FontFile" uid="{uid}" path="res://assets/fonts/ibm-plex-sans/IBMPlexSans-Regular.ttf" id="1_font"]\n\n[resource]\n'
+            with self.subTest(uid=uid), patch(__name__ + '.read', side_effect=lambda path:
+                                            fixture if path == source else source_read(path)):
+                with self.assertRaisesRegex(AssertionError, message):
+                    self.assert_resource_graph([source])
 
     def test_routes_resolve_to_real_wrapper_identity_and_markers(self):
         expected = [(PRIMARY, "Maintenance", MAINTENANCE, "FromInterior"),

@@ -1,0 +1,44 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="TileSet" path="res://assets/experiments/native_terrain_47_96/experimental_match_corners_and_sides.tres" id="1_tiles"]
+[ext_resource type="Texture2D" path="res://assets/experiments/native_terrain_47_96/experimental_47_patterns.png" id="2_atlas"]
+
+[node name="Experimental47PatternTerrainLab96" type="Node2D"]
+texture_filter = 1
+metadata/purpose = "Issue 96 configuration experiment; see docs/NATIVE_TERRAIN_47_PROTOTYPE.md. Editor painting only."
+
+[node name="Title" type="Label" parent="."]
+offset_left = 32.0
+offset_top = 16.0
+text = "EXPERIMENTAL #96 - 94 patterns / Match Corners and Sides"
+
+[node name="Instructions" type="Label" parent="."]
+offset_left = 32.0
+offset_top = 48.0
+text = "Select PaintingWorkspace > TileMap > Terrains > Connect. Choose Earth or Green.\n16-unit cells; zoom the editor. No F5/F6 needed. 47 Earth + 47 Green centers.\nFirst verify solid brown and solid green interiors, then test both transition directions.\nSee docs/NATIVE_TERRAIN_47_PROTOTYPE.md for the owner PASS/FAIL checklist."
+
+[node name="WorkspaceBackdrop" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(32, 160, 800, 160, 800, 672, 32, 672)
+color = Color(0.12, 0.14, 0.16, 1)
+
+[node name="PaintingWorkspace" type="TileMapLayer" parent="."]
+position = Vector2(32, 160)
+tile_set = ExtResource("1_tiles")
+collision_enabled = false
+navigation_enabled = false
+
+[node name="AtlasTitle" type="Label" parent="."]
+offset_left = 848.0
+offset_top = 128.0
+text = "EXPERIMENTAL TECHNICAL FIXTURE\nEarth family: rows 0..3; Green family: rows 4..7\nReference coordinates unchanged; (10,1)/(10,5) unused.\nBrown=Earth(0), bright green=Green(1)."
+
+[node name="AtlasReference" type="Sprite2D" parent="."]
+position = Vector2(848, 224)
+scale = Vector2(3, 3)
+texture = ExtResource("2_atlas")
+centered = false
+
+[node name="Limitations" type="Label" parent="."]
+offset_left = 848.0
+offset_top = 624.0
+text = "Two center families; edges/corners encode eight bits.\n94-pattern painting hypothesis awaits owner testing.\nRecord selected atlas coordinates and brush order."

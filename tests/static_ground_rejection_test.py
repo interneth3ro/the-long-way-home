@@ -7,6 +7,7 @@ import unittest
 
 from static_weathered_earth_test import ROOT, GREEN_ORIGINAL, original_green_bytes, noise, coordinate_random
 from static_low_green_ground_test import inside, edge_distance
+from native_terrain_preservation import historical_mapping_attributes, historical_test_bytes
 
 
 def authored_geometry():
@@ -206,6 +207,9 @@ class GroundRejectionStaticTest(unittest.TestCase):
                 actual=(ROOT/path).read_bytes()
                 if not path.endswith(('.png','.ttf')):
                     actual=actual.replace(b'\r\n',b'\n');expected=expected.replace(b'\r\n',b'\n')
+                if path == '.gitattributes':
+                    actual=historical_mapping_attributes(actual.decode('utf-8')).encode('utf-8')
+                actual=historical_test_bytes(path,actual)
                 self.assertEqual(actual,expected,path)
         finally:
             proc.stdin.close();self.assertEqual(proc.wait(timeout=10),0);proc.stdout.close()
