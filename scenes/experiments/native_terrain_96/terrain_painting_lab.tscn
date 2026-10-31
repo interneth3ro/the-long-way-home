@@ -1,0 +1,44 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="TileSet" path="res://assets/experiments/native_terrain_96/experimental_match_corners.tres" id="1_tiles"]
+[ext_resource type="Texture2D" path="res://assets/experiments/native_terrain_96/experimental_corner_masks_16.png" id="2_atlas"]
+
+[node name="ExperimentalTerrainPaintingLab96" type="Node2D"]
+texture_filter = 1
+metadata/purpose = "Configuration-only experiment. Native editor painting; see docs/NATIVE_TERRAIN_PROTOTYPE.md."
+
+[node name="Title" type="Label" parent="."]
+offset_left = 32.0
+offset_top = 16.0
+text = "EXPERIMENTAL #96 - Earth / Green Match Corners"
+
+[node name="Instructions" type="Label" parent="."]
+offset_left = 32.0
+offset_top = 48.0
+text = "Editor only: select PaintingWorkspace > TileMap > Terrains > Connect.\nPaint an Earth backing first, then Green. Repeat with materials reversed.\n32-unit experimental cells; no gameplay or production integration."
+
+[node name="WorkspaceBackdrop" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(32, 160, 800, 160, 800, 672, 32, 672)
+color = Color(0.12, 0.14, 0.16, 1)
+
+[node name="PaintingWorkspace" type="TileMapLayer" parent="."]
+position = Vector2(32, 160)
+tile_set = ExtResource("1_tiles")
+collision_enabled = false
+navigation_enabled = false
+
+[node name="AtlasTitle" type="Label" parent="."]
+offset_left = 848.0
+offset_top = 128.0
+text = "TEMPORARY ATLAS - NOT APPROVED ART\nMasks 0-15, row major; TL=1 TR=2 BL=4 BR=8"
+
+[node name="AtlasReference" type="Sprite2D" parent="."]
+position = Vector2(848, 192)
+scale = Vector2(3, 3)
+texture = ExtResource("2_atlas")
+centered = false
+
+[node name="Checklist" type="Label" parent="."]
+offset_left = 848.0
+offset_top = 592.0
+text = "Test regions, islands, boundaries, corners,\nstrips, diagonals and irregular patches.\nRecord PASS / FAIL and selected tile IDs.\nSee docs/NATIVE_TERRAIN_PROTOTYPE.md."

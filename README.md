@@ -2353,6 +2353,14 @@ The earlier inside-ship Script Profiler slowdown remains a separate unresolved
 incident and was not reproduced. Existing snapshots, imports and evidence remain
 preserved; the original f112f48 snapshots and corrected 68f8c9c snapshot are distinct.
 
+### Native terrain configuration laboratory (feature branch, pending merge)
+
+Issue #96 has an isolated, configuration-only [Match Corners laboratory](docs/NATIVE_TERRAIN_PROTOTYPE.md)
+with a temporary two-color 16-mask atlas, native TileSet, editor painting scene,
+center/corner inventory, known coverage gaps and owner PASS/FAIL checklist.
+Production terrain and gameplay remain unchanged. Validation is static only;
+Godot import and graphical testing require separate owner authorization.
+
 ### Deferred visual follow-up
 
 [Issue #96: refine Earth-to-Green transitions and reduce terrain repetition](https://github.com/interneth3ro/the-long-way-home/issues/96)
