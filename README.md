@@ -2226,10 +2226,22 @@ files, documentation links and Git patch integrity.
 
 ## Low Green Ground Cover prototype (feature branch, pending merge)
 
+On 2026-10-31 the owner accepted corrected PR #95 runtime commit
+`68f8c9c3ff137b2ee6419eaee9dee30ab4507d35` for merge as a **technical terrain
+foundation**. This is owner acceptance, distinct from agent static validation:
+deterministic cover distribution, four provisional green variants, single-pass
+rendering and spatial rejection are accepted. The owner reports noticeably
+improved exterior movement, smooth stationary/near-spawn/loaded-return gameplay,
+and normal exterior transition and Windows responsiveness. Occasional minor
+new-chunk stutter remains accepted for this milestone. No numeric frame-time
+improvement is claimed. PR #95 remains pending merge; final environmental
+presentation is not accepted.
+
 `codex/low-green-ground-cover` adds four **candidate**, byte-preserved 128 x 128
 opaque RGB PNGs supplied in `TLWH_Low_Green_Ground_Cover_Codex_Handoff.zip`.
 The approved concept/study establish art direction; the standalone textures
-remain subject to owner in-game acceptance. No concept board was cropped.
+are accepted provisionally for this technical milestone, with final visual refinement
+deferred. No concept board was cropped.
 ZIP SHA-256: `8402d85739ecc4b219831472246289cc2b7ba425889a104e63d7eee1fa32ce32`.
 Production inputs live in `assets/environment/exterior/low_green_ground_cover_provisional/`:
 
@@ -2295,7 +2307,8 @@ reference for arithmetic models. It covers protected interiors/edges, full feath
 limits, corners, Ferrite, object clearances, negative/positive chunk boundaries,
 distant samples, multiple seeds, regeneration and reversed visit order. It also
 checks the exact unchanged renderer, streaming, construction/factory files and
-all other original tracked files outside the five existing correction paths.
+all other original tracked files outside the explicitly scoped correction and
+acceptance-documentation paths.
 These models do not execute GDScript or establish engine parsing/float behavior.
 The preservation amendment changes only the exact generator candidate SHA-256;
 the renderer digest and historical PR #94 baselines stay unchanged. Candidate
@@ -2306,6 +2319,9 @@ its previous omission surfaced only once those PR #95 assets were tracked.
 No asset bytes or other protected scope change. Changed/appended/duplicated source
 candidates are still rejected. Independent
 owner review is required before any future Native use; runner scope is unchanged.
+The final documentation pass adds only docs/GAME_VISION.md to the historical
+preservation test's explicit documentation allowance. It changes no runtime path,
+source candidate digest, asset hash, command, limit or execution permission.
 
 Static checks decode PNGs with CRC/filter validation, verify original hashes,
 128 x 128 RGB8 metadata and all 16 ordered shared-edge combinations. Arithmetic
@@ -2321,33 +2337,38 @@ gameplay and minor stuttering on new terrain. A separate owner Script Profiler
 session caused system-wide sluggishness inside the ship; its cause remains
 unresolved and was not reproduced. These observations are not agent measurements.
 
-The supplied mixed preview has repeated motifs. Matching green edge pixels do
-not establish filtered/mipmapped appearance or Earth/Green compatibility. Square
-material boundaries may remain visible; full organic transitions and mipmap tuning
-are deferred. The art, engine parsing and gameplay/performance acceptance await
-owner review. Do not infer acceptance from static PASS or the PR #94 merge.
+Known limitations accepted for the technical milestone are occasional minor
+new-chunk stutter, hard rectangular Earth/Green boundaries, recognizable texture
+repetition and provisional artwork. Matched green border pixels do not establish
+cross-material visual continuity. These limitations are not approval of final
+environmental presentation.
 
-Owner PASS/FAIL review (agent graphical launch requires separate authorization):
+The owner accepted the technical behavior listed above after the corrected
+isolated snapshot test. Source, renderer, assets, streaming and gameplay remain
+unchanged from the accepted runtime commit during this final documentation pass.
+Static preservation is not a claim that every deployment/recovery/production
+interaction was exercised in the short owner test. Agent validation remains
+nonexecuting; no new Godot, Native, graphical or profiling run is authorized.
+The earlier inside-ship Script Profiler slowdown remains a separate unresolved
+incident and was not reproduced. Existing snapshots, imports and evidence remain
+preserved; the original f112f48 snapshots and corrected 68f8c9c snapshot are distinct.
 
-- At spawn: clearing remains mostly warm earth, open and suitable for construction;
-  Weathered Earth remains recognizable and Ferrite/grid remain legible.
-- Farther outside: believable clusters, four useful variants, acceptable seams and
-  repetition. Compare screenshots at spawn, farther green terrain, and grid enabled.
-- Performance PASS/FAIL: normal initial exit, smooth near-spawn movement, new-terrain
-  movement smoother or no worse, smooth retained returns, and no desktop sluggishness.
-- Preservation PASS/FAIL: identical green cluster locations at the same seed and
-  coordinates, unchanged clearing/Ferrite, and no new seams or visual artifacts.
-  The existing reported square Earth/Green boundaries are outside this correction.
-- Gameplay PASS/FAIL: ship/hatch and Dave movement, readable construction grid,
-  unchanged deployment/recovery and production. Optional observations for each.
+### Deferred visual follow-up
 
-Await separate owner authorization before graphical acceptance. Keep Script and
-Visual Profilers disabled for any proposed first review; preserve all established
-stop conditions, including immediate stop on desktop sluggishness. Earlier
-owner-operated sessions do not authorize testing this correction. Existing isolated
-snapshots still represent f112f48 and have not been refreshed or modified.
+[Issue #96: refine Earth-to-Green transitions and reduce terrain repetition](https://github.com/interneth3ro/the-long-way-home/issues/96)
+tracks a separate focused PR from clean, updated main after PR #95 merges:
 
-Await owner graphical review. No merge or post-merge cleanup is requested.
+- Organic Earth-to-Green transitions and removal of obvious 64-unit square edges.
+- Reduced recognizable repetition and evaluation of larger-scale visual variation.
+- Preserve the accepted one-pass foundation where practical and deterministic
+  continuity across chunks, negative coordinates, retirement and regeneration.
+- Avoid expensive overlapping full-cell texture passes; preserve clearing/Ferrite
+  readability, gameplay authority and accepted performance.
+
+No visual follow-up is implemented in PR #95. Final merge execution still awaits
+explicit owner authorization in this chat. No merge or post-merge cleanup has
+been performed; Native restrictions and independent preservation review before
+future Native use remain in force.
 
 ## Weathered Earth Textured Terrain Foundation (pending merge)
 

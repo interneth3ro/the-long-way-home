@@ -190,8 +190,10 @@ class GroundRejectionStaticTest(unittest.TestCase):
         self.assertEqual((len(protected)+2*sum(len(p) for p,f in overlays))*1024,61440)
         # Ensure every already tracked file outside the exact correction scope
         # remains byte-identical to original PR #95 (normalizing text newlines).
+        # Owner-requested final acceptance notes; no runtime preservation exemption.
         allowed={'scenes/world/planet_generator.gd','tests/static_weathered_earth_test.py',
-                 'tests/static_low_green_ground_test.py','tests/static_machine_icons_test.py','README.md'}
+                 'tests/static_low_green_ground_test.py','tests/static_machine_icons_test.py','README.md',
+                 'docs/GAME_VISION.md'}
         files=subprocess.check_output(['git','ls-tree','-r','--name-only',GREEN_ORIGINAL],cwd=ROOT,text=True).splitlines()
         proc=subprocess.Popen(['git','cat-file','--batch'],cwd=ROOT,stdin=subprocess.PIPE,stdout=subprocess.PIPE)
         try:
