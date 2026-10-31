@@ -1,0 +1,279 @@
+{
+  "baseline": "44d83bc46aebe5409d0c2e7ca0e388531ae1e3c3",
+  "zip_sha256": "75beb531dc5aaf238fc05cb46a4a671a73d5470be581ba990a69db9efede7b50",
+  "original_sha256": {
+    "outer_earth_corner.png": "24659abe457529d329b1c00e8a9e6ff1ef70449261af259d1a7c3b9d4278bfa3",
+    "vertical_green_left.png": "1ca2495f33aee5ff0fdac33764ea794956f64abc224274c5a55515290f8aacb0",
+    "earth_solid.png": "1e530bdcefa9ba29575b8bd2c61a15ec26c04567b928ffebfb4b460336d4ff3f",
+    "outer_green_corner.png": "866350b56a8a77a035065082cbd8739ad1998da6420efb755caefaef993851c5",
+    "narrow_earth_connection.png": "372ffaaeb61065dc01956300cf74021e0d1164368e4733077d17c76dadc0e628",
+    "README.txt": "ac3f2c34bf258ad64678c48ca70ba3d984b747000ccb4b2a573593fd2f376449",
+    "isolated_green.png": "e084699c8485ecf43884703c1485df740e833c22226ee85647684a0427241f40",
+    "inner_green_corner.png": "5e6193c5dd44095ac9b64714df8391d1520d5668ed6385cc81686475f8d7359f",
+    "vertical_earth_left.png": "fe64065972619e9abeea811e3c270bd45a34e4430164eb86b9f84bb0c6e9eebf",
+    "horizontal_green_above.png": "d0226700f3cbb872ec5e29b18ef2d47b7257453c98748f7c0134f5af7dddcfaf",
+    "isolated_earth.png": "5c543fe2e8d543b007db3cce5ca618379826ac3b3d41c7067dec833381351dbc",
+    "narrow_green_connection.png": "aad6e5f77cbf62861d191ea9bcd8cb2edf894dce39482c44eb514090300bc475",
+    "green_solid.png": "bc64176fde0d899dfd8c56d42a62fc81525e780c3b22687b982bde31244270e2",
+    "horizontal_earth_above.png": "2d0887c4d55456593cc66eca18c91b71af4eb51628e6c2b3de5b01ef6905b0ec",
+    "inner_earth_corner.png": "21c69334f8a1d3b5f99d0b6a95438dbc8dcfae12a06b9c35565643399fc57234"
+  },
+  "illustrated": [
+    {
+      "source": 1,
+      "original_atlas": [
+        9,
+        2
+      ],
+      "signature": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "art": "earth_solid.png",
+      "mirror": [
+        0,
+        0
+      ],
+      "role": "solid"
+    },
+    {
+      "source": 2,
+      "original_atlas": [
+        9,
+        6
+      ],
+      "signature": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "art": "green_solid.png",
+      "mirror": [
+        0,
+        0
+      ],
+      "role": "solid"
+    },
+    {
+      "source": 3,
+      "original_atlas": [
+        9,
+        3
+      ],
+      "signature": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1
+      ],
+      "art": "horizontal_earth_above.png",
+      "mirror": [
+        0,
+        0
+      ],
+      "role": "bottom_boundary"
+    },
+    {
+      "source": 4,
+      "original_atlas": [
+        10,
+        0
+      ],
+      "signature": [
+        0,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "art": "horizontal_earth_above.png",
+      "mirror": [
+        0,
+        1
+      ],
+      "role": "top_boundary"
+    },
+    {
+      "source": 5,
+      "original_atlas": [
+        11,
+        2
+      ],
+      "signature": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        1,
+        0,
+        0,
+        1
+      ],
+      "art": "vertical_earth_left.png",
+      "mirror": [
+        0,
+        0
+      ],
+      "role": "right_boundary"
+    },
+    {
+      "source": 6,
+      "original_atlas": [
+        8,
+        1
+      ],
+      "signature": [
+        0,
+        1,
+        0,
+        0,
+        1,
+        0,
+        1,
+        0,
+        0
+      ],
+      "art": "vertical_earth_left.png",
+      "mirror": [
+        1,
+        0
+      ],
+      "role": "left_boundary"
+    },
+    {
+      "source": 7,
+      "original_atlas": [
+        9,
+        7
+      ],
+      "signature": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0
+      ],
+      "art": "horizontal_green_above.png",
+      "mirror": [
+        0,
+        0
+      ],
+      "role": "bottom_boundary"
+    },
+    {
+      "source": 8,
+      "original_atlas": [
+        10,
+        4
+      ],
+      "signature": [
+        1,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "art": "horizontal_green_above.png",
+      "mirror": [
+        0,
+        1
+      ],
+      "role": "top_boundary"
+    },
+    {
+      "source": 9,
+      "original_atlas": [
+        11,
+        6
+      ],
+      "signature": [
+        1,
+        1,
+        1,
+        0,
+        1,
+        0,
+        1,
+        1,
+        0
+      ],
+      "art": "vertical_green_left.png",
+      "mirror": [
+        0,
+        0
+      ],
+      "role": "right_boundary"
+    },
+    {
+      "source": 10,
+      "original_atlas": [
+        8,
+        5
+      ],
+      "signature": [
+        1,
+        0,
+        1,
+        1,
+        0,
+        1,
+        0,
+        1,
+        1
+      ],
+      "art": "vertical_green_left.png",
+      "mirror": [
+        1,
+        0
+      ],
+      "role": "left_boundary"
+    }
+  ],
+  "protected_working_sha256": {
+    "assets/ui/b1_theme.tres": "81c693276e16c638bcaec37f5e3a4a4cf98256ed2408d990346570da81339729",
+    "assets/ui/machine_actions.tres": "529ed6147fda65208259ab03fb010536aee818acdf70648eec727e6b7e1e7f07",
+    "assets/ui/recipe_chooser.tres": "be4438a6264c61cae73e83359dec44b757ff0ea1d0b7f195a77bc601e4f0d721",
+    "dialogue/computer_opening.tres": "ef885982369654411d81b36122831caba5b8289cf7d1c5a0d183e958c2f7a8dc",
+    "construction/recipes/ferrite_plate.tres": "2f15ce345bd0ff5b6e2566731dd03266d352bbad526c94d2e24c1eab43bdd10d",
+    "construction/recipes/ferrite_rod.tres": "532bd52a4b1b88873898a06c29efa975f4bbdc43e995b4f3da009b8da34d3cae"
+  },
+  "preserved_owner_blob_sha256": {
+    "assets/ui/b1_theme.tres": "6d917bc7973141b9d67fee7165c042c6233d26147470bd9b81a44645dc51e7de",
+    "assets/ui/machine_actions.tres": "2c821aca22a4a04607d2a14a7aa7b2b9dea47d503e4cc39d89ef2f1b303a027e",
+    "assets/ui/recipe_chooser.tres": "2ea79ef841294dc7e935d5cc69cce84db6140c8531b466bc14d6e9940c9f1130",
+    "dialogue/computer_opening.tres": "daed226185e98955a0a21e4c8839f45d5f28ef36526a95881f3c3ea456a1bcea",
+    "construction/recipes/ferrite_plate.tres": "b7c9e7a34ace78f51c0a89ee19be23cab62ace2bf2e1f4a565d1643349852bd1",
+    "construction/recipes/ferrite_rod.tres": "7c687cd3a26b6bb8c471da418992994bf7b34738281a3e12ef42a813c2009631"
+  }
+}

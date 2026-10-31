@@ -1,5 +1,10 @@
 # The Long Way Home
 
+An isolated [illustrated terrain laboratory](docs/ILLUSTRATED_TERRAIN_LAB.md)
+(feature branch, pending merge) adds two illustrated interiors and eight straight
+boundary configurations at 128px, with 84 explicitly diagnostic configurations.
+The original diagnostic lab and production terrain remain unchanged.
+
 A story-driven science-fiction automation adventure. This fresh Godot project
 has a player movement prototype with camera follow and mouse-wheel zoom, plus a
 minimal ship-interior environment and collision foundation, plus data-driven

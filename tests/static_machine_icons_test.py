@@ -11,6 +11,7 @@ from static_extractor_inspection_test import functions
 from static_weathered_earth_test import INPUT_SHA256, verify_input
 from static_low_green_ground_test import ASSETS as GREEN_ASSETS
 from native_terrain_preservation import TERRAIN_INPUT_SHA256, verify_terrain_input
+from illustrated_terrain_preservation import INPUT_SHA256 as ILLUSTRATED_INPUT_SHA256, verify_input as verify_illustrated_input
 from static_v2_production_host_test import (
     MACHINE_ICONS_BASE, MACHINE_ICONS_SHA256, without_machine_icon_changes,
     MACHINE_LAYOUT_BASE, MACHINE_LAYOUT_SHA256, without_machine_layout_changes,
@@ -317,7 +318,11 @@ class MachineIconsStaticTest(unittest.TestCase):
         # Working production changes and unreviewed experimental bytes still fail.
         for path in set(changed) & set(TERRAIN_INPUT_SHA256):
             verify_terrain_input(path, (ROOT / path).read_bytes())
-        allowed = set(MACHINE_ICONS_SHA256) | set(INPUT_SHA256) | set(green_assets) | set(TERRAIN_INPUT_SHA256) | {
+        # Separate owner-authorized lab: exact new paths AND candidate hashes.
+        # No existing resource, original experiment, directory or Native exception.
+        for path in set(changed) & set(ILLUSTRATED_INPUT_SHA256):
+            verify_illustrated_input(path, (ROOT / path).read_bytes())
+        allowed = set(MACHINE_ICONS_SHA256) | set(INPUT_SHA256) | set(green_assets) | set(TERRAIN_INPUT_SHA256) | set(ILLUSTRATED_INPUT_SHA256) | {
             f"assets/items/{item}.png{suffix}" for item in ART for suffix in ("", ".import")
         }
         self.assertFalse(set(changed) - allowed, set(changed) - allowed)
