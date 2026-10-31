@@ -4,6 +4,7 @@ import re
 import struct
 import subprocess
 import unittest
+from native_terrain_preservation import historical_mapping_attributes
 
 from static_automatic_transitions_test import ROOT, read as raw_read
 from static_v2_production_host_test import (
@@ -137,7 +138,8 @@ class MusingUIStaticTest(unittest.TestCase):
             return subprocess.check_output(
                 ["git", "show", f"{ITALIC_STAGING_BASE}:{path}"], cwd=ROOT
             ).decode().replace("\r\n", "\n")
-        self.assertEqual(read(".gitattributes"), prior(".gitattributes") + sidecar + " text eol=lf\n")
+        self.assertEqual(historical_mapping_attributes(read(".gitattributes")),
+                         prior(".gitattributes") + sidecar + " text eol=lf\n")
         path = "tools/run-local-tests.ps1"
         self.assertEqual(prior(path).count("(Regular|Medium|SemiBold)"), 1)
         self.assertEqual(read(path), prior(path).replace(

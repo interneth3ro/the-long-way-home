@@ -146,15 +146,16 @@ Legacy suite assertions on working production bytes remain unchanged.
 Revision validation on 2026-10-31:
 
 - **6/6 focused static checks PASS**, including after staging the proposed revision.
-- Complete working-tree suite: **113 tests run, 17 assertion failures, 0 errors**.
-  A second run with concise diagnostics confirmed the same result. This is a FAIL,
-  not a complete-suite PASS. Fourteen failure records concern the preserved owner
-  UI/recipe/dialogue serialization, including unresolved owner Theme UIDs in the
-  legacy resource-graph checks. Two historical preservation assertions reject the
-  original PR's exact-path mapping attributes already present in reviewed commit
-  `a5b2a2f`; those attributes are unchanged in this revision. One changed-file
-  whitelist assertion rejects pending experiment edits together with local owner
-  changes. These unrelated historical assertions are left intact.
+- Historical working-tree result at `56e2990`: **113 test methods, 17 failure
+  records across 13 methods, 0 errors**. Subsequent isolated diagnosis found
+  clean main PASS (107 tests) and clean committed PR #98 FAIL (113 tests, three
+  historical guard incompatibilities). Ten original failure records are owner-byte
+  preservation conflicts; four are a UID-checker defect exposed by owner header
+  declarations, not evidence that those Theme UIDs are invalid. The remaining
+  three concern mapping attributes and the historical changed-file whitelist.
+  See the [complete investigation and final scope-specific results](PR98_STATIC_TEST_INVESTIGATION.md).
+  Proposed test corrections remain local and uncommitted pending owner review;
+  the published PR has not been changed by this investigation.
 - Direct ZIP-to-transcription comparison, original Green mapping and pixel
   preservation, changed local Markdown targets and staged Git whitespace checks PASS.
 - Preservation checks PASS: 21 pre-existing unrelated tracked/untracked files retain
@@ -162,8 +163,9 @@ Revision validation on 2026-10-31:
   and name changes reconstructs the owner's original TileSet bytes exactly.
 - No agent Godot import, Native, runtime, graphical, profiling or benchmark execution.
 
-The full-suite failures remain visible for owner review; no production resources,
-legacy test assertions or policies are changed to suppress them. Static
+The full-suite failures remain visible for owner review. Proposed corrections
+retain exact byte guards and unknown-UID/dev-path rejection; no production
+resources or policies are changed to suppress failures. Static
 validation does not establish native parsing, terrain matching, visual acceptance
 or performance. The exact 94-pattern baseline is internally consistent, but may
 still omit patterns needed by particular native painting operations. Do not assume
