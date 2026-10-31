@@ -1,12 +1,10 @@
 # Issue #96: native 94-pattern two-material terrain laboratory
 
-PR #98 remains a draft configuration experiment, pending owner testing. The
-47-pattern filenames and paths are retained for stable references and import UIDs.
-This revision tests whether complementary Earth-centered configurations resolve
-the Earth-brush limitation; correct painting is a hypothesis, not an established result.
-Production terrain and gameplay are not integrated or changed by this PR.
-[Issue #96](https://github.com/interneth3ro/the-long-way-home/issues/96) remains open;
-[PR #97](https://github.com/interneth3ro/the-long-way-home/pull/97) remains untouched.
+PR #98 is accepted by the owner as an isolated technical configuration prototype,
+pending explicit owner merge authorization. The 47-pattern filenames and paths
+remain stable for references and import UIDs. Production terrain and gameplay are
+not integrated or changed. [Issue #96](https://github.com/interneth3ro/the-long-way-home/issues/96)
+remains open; [PR #97](https://github.com/interneth3ro/the-long-way-home/pull/97) remains untouched.
 
 ## Reference extraction and exact inventory
 
@@ -58,8 +56,8 @@ across families only for all-zero and all-one peers:
 | All Earth (0) | (9,2): solid Earth | (0,7): isolated Green candidate |
 | All Green (1) | (0,3): isolated Earth candidate | (9,6): solid Green |
 
-These two peer-only overlaps are intentional, distinguished by center ID. Whether
-native Connect chooses the intended center and remains stable is still unverified.
+These two peer-only overlaps are intentional, distinguished by center ID. Owner observations below establish limited editor painting acceptance, not an
+exhaustive guarantee for every native Connect selection or brush order.
 
 ## TileSet, diagnostic PNG and lab
 
@@ -88,93 +86,100 @@ The existing [script-free TileMapLayer laboratory](../scenes/experiments/native_
 retains its neutral backdrop and native editor tools, with revised two-family labels.
 No production scene or project startup setting references this experiment.
 
-## Owner results and remaining acceptance
+## Owner graphical acceptance and accepted limitation
 
-For the **original 47-pattern commit** `a5b2a2f`, the owner reports:
-Godot 4.7.2 scene import PASS; basic Green painting PASS; basic Earth painting FAIL.
-Earth painting showed repeated Green centers surrounded by brown. These are
-owner graphical observations, not agent verification. They do not accept this
-94-pattern revision; all revised checks below are **NOT RUN**.
+The original 47-pattern commit `a5b2a2f` passed owner import/basic Green painting
+but failed basic Earth painting with repeated Green centers. Those historical
+results are separate from these owner-reported 94-pattern results in Godot 4.7.2;
+none is agent graphical verification.
 
-Follow the [execution policy](../AGENTS.md#godot-execution-safety) and
-[testing policy](LOCAL_TESTING.md). No Godot, Native, game, graphical automation,
-profiling or benchmarking was run by the agent. Separate explicit authorization
-is required for agent execution. No runner, execution or preservation policy changes
-are made. Stop on errors or abnormal responsiveness; do not retry automatically.
+| Check | Owner result |
+| --- | --- |
+| Scene import | PASS |
+| Solid Weathered Earth | PASS |
+| Solid Low Green Cover | PASS |
+| Single-cell Green island inside Earth | PASS |
+| Single-cell Earth island inside Green | PASS |
+| Initial horizontal boundary, both directions | PASS |
+| Initial vertical boundary, both directions | **FAIL**: visible endpoint artifacts |
+| Subsequent large-scale painting with overlapping rectangular strokes | PASS |
+| Large irregular regions, narrow connections, interior pockets and repainting | PASS; accepted by owner |
 
-Open the lab in your editor's 2D workspace, select `PaintingWorkspace`, then native
-TileMap > Terrains > **Connect**. No F5/F6 or game launch is needed. Inspect source
-0, mode 0 and both center families against the CSV. First test import, then solid
-Earth and solid Green regions. **Only after both interiors pass**, perform transition
-checks with a filled backing. Empty canvas or the backdrop does not count as Earth.
-Test both directions, rotations and reversed brush order using separate work areas.
-Direct atlas placement can inspect a candidate but does not verify terrain painting.
-Optional Path-mode observations need separate records.
+Two inspected neighboring atlas tiles, `(8,1)` and `(5,1)`, had compatible shared
+corner assignments. The diagnostic artwork produced abrupt narrowing at the
+boundary endpoint. This supports a possible artwork/painting-technique explanation,
+but the precise cause was **not conclusively established**. Later successful
+painting does not turn either initial vertical test into PASS.
 
-| Test | Expected result | Revised status |
+The owner accepts this limitation for the configuration-only technical prototype.
+It must be revisited before production terrain integration. Exhaustive rotations,
+diagonals/checkerboards, one-/two-cell variants and brush-order invariance are not
+established by the reported observations. Final illustrated quality, procedural
+chunk determinism, chunk-border continuity and production performance are not
+accepted by this prototype.
+
+Agent Godot, Native, game, graphical automation, profiling and benchmarking:
+**NOT RUN**. Follow the [execution policy](../AGENTS.md#godot-execution-safety)
+and [testing policy](LOCAL_TESTING.md); owner acceptance adds no execution permission.
+
+## Static validation and preservation reconciliation
+
+The independently reviewed corrections were published in
+`1e5b5ee2a92d75b384ae8c9aa74b8a23a099a898`. This documentation follow-up changes
+only README, this report and the [investigation](PR98_STATIC_TEST_INVESTIGATION.md).
+Tests, terrain assets, mappings and execution/preservation controls are unchanged.
+
+| Validation scope | Complete static suite | Focused terrain suite |
 | --- | --- | --- |
-| 1 Import | Scene and TileSet load without errors; 94 exact configurations | NOT RUN |
-| 2 Earth interior | Continuous brown, no repeated Green centers | NOT RUN |
-| 3 Green interior | Continuous green, no unexpected Earth centers | NOT RUN |
-| 4 Green islands in Earth | Single-cell and larger Green centers survive | NOT RUN |
-| 5 Earth islands in Green | Single-cell and larger Earth centers survive | NOT RUN |
-| 6 Straight transitions | Horizontal/vertical boundaries, both directions | NOT RUN |
-| 7 Corners | Convex L shapes and concave notches, all rotations/directions | NOT RUN |
-| 8 Narrow strips | One-/two-cell widths and bends, both materials | NOT RUN |
-| 9 Diagonals | Diagonal cells/checkerboards; record ambiguous selections | NOT RUN |
-| 10 Irregular patches | Tips, protrusions, notches and tile curves; reverse brush order | NOT RUN |
+| Clean isolated proposed PR including this documentation | 119/119 PASS; 0 failures/errors | 6/6 PASS |
+| Isolated corrected PR overlaid with six exact owner resources | 119 run; 12 failure records across 10 methods; 0 errors: **FAIL** | 6/6 PASS |
 
-Record PASS/FAIL and optional observations per material direction. Mark dependent
-tests BLOCKED if import or either interior fails. For every failure record expected
-and actual result, selected source/atlas/alternative (or no selection), center ID,
-terrain mode, exact backing and brush order, shape/rotation and observations.
-Do not automatically add configurations or change center IDs to fix failures.
+Commands are `python -B -m unittest discover -s tests -p 'static_*test.py'` and
+`python -B -m unittest discover -s tests -p 'static_native_terrain_47_test.py'`.
+The owner-resource representation contains the corrected PR plus exact copies of
+the six local production resources, with no cache/save/import overlays. It reproduces
+the preserved working-resource discrepancies while leaving the attached main
+checkout untouched; it is not the attached main branch's older suite.
+The strict working-resource assertions are neither waived nor reported as passing.
 
-## Static validation and preservation
+Focused checks establish supplied hashes/Markdown agreement; reference transcription
+and both remaps; exact 94/47/47 inventory and 752 peers; atlas/full-signature uniqueness;
+two intentional peer-only overlaps; PNG CRC/dimensions/every sector pixel/transparent
+gaps; lab references; and production isolation against main
+`48cd9150d7aa2e029c7328229e7865cf00e83723`. Changed local Markdown links and Git
+diff integrity checks pass. Static validation is not engine or runtime verification.
 
-Run `python -B -m unittest discover -s tests -p 'static_*test.py'` for the complete
-permitted suite; use `-p 'static_native_terrain_47_test.py'` for six focused checks.
-They verify original supplied hashes/Markdown agreement; technical source and both
-remaps; exact 94/47/47 inventory and 752 peers; atlas/signature uniqueness and two
-intentional peer-only overlaps; PNG CRC/dimensions/every sector pixel/transparent
-gaps; TileSet/lab references; and production isolation in committed and staged PR
-inputs against main baseline `48cd9150d7aa2e029c7328229e7865cf00e83723`.
-The focused production check now inspects committed/staged inputs, because the
-owner explicitly requested retaining unrelated manual-playtesting edits in place.
-Legacy suite assertions on working production bytes remain unchanged.
+### Six preserved local resources
 
-Revision validation on 2026-10-31:
+The owner approved preserving these resources in place, byte-for-byte, outside PR #98:
+`assets/ui/b1_theme.tres`, `assets/ui/machine_actions.tres`,
+`assets/ui/recipe_chooser.tres`, `dialogue/computer_opening.tres`,
+`construction/recipes/ferrite_plate.tres` and `construction/recipes/ferrite_rod.tres`.
+Their committed main and PR blobs are identical. Full hashes and the twelve-record
+reconciliation are in the [investigation](PR98_STATIC_TEST_INVESTIGATION.md).
 
-- **6/6 focused static checks PASS**, including after staging the proposed revision.
-- Historical working-tree result at `56e2990`: **113 test methods, 17 failure
-  records across 13 methods, 0 errors**. Subsequent isolated diagnosis found
-  clean main PASS (107 tests) and clean committed PR #98 FAIL (113 tests, three
-  historical guard incompatibilities). Ten original failure records are owner-byte
-  preservation conflicts; four are a UID-checker defect exposed by owner header
-  declarations, not evidence that those Theme UIDs are invalid. The remaining
-  three concern mapping attributes and the historical changed-file whitelist.
-  See the [complete investigation and final scope-specific results](PR98_STATIC_TEST_INVESTIGATION.md).
-  Proposed test corrections remain local and uncommitted pending owner review;
-  the published PR has not been changed by this investigation.
-- Direct ZIP-to-transcription comparison, original Green mapping and pixel
-  preservation, changed local Markdown targets and staged Git whitespace checks PASS.
-- Preservation checks PASS: 21 pre-existing unrelated tracked/untracked files retain
-  their exact starting SHA-256 values. Removing only this revision's Earth additions
-  and name changes reconstructs the owner's original TileSet bytes exactly.
-- No agent Godot import, Native, runtime, graphical, profiling or benchmark execution.
+The forensic review found all 104 stored chooser properties unchanged. Other
+resource differences match serialization/default omissions. All six resource
+modification timestamps fall within approximately 107 milliseconds, followed by
+matching editor-folding writes. Evidence strongly favors a shared Godot editor
+resource-save event; the initiating action and why resources were marked edited
+remain unknown. No meaningful resource-property defect was identified statically.
+These are explained local preservation discrepancies, not PR changes. Preserve
+associated evidence, imports, owner artwork, saves and ignored material unchanged.
+No normalization, restoration, cleanup or owner-resource commit is authorized.
 
-The full-suite failures remain visible for owner review. Proposed corrections
-retain exact byte guards and unknown-UID/dev-path rejection; no production
-resources or policies are changed to suppress failures. Static
-validation does not establish native parsing, terrain matching, visual acceptance
-or performance. The exact 94-pattern baseline is internally consistent, but may
-still omit patterns needed by particular native painting operations. Do not assume
-it solves both directions or is ready for final original artwork until owner tests.
-Procedural chunks, halos, generation order and performance remain outside scope.
+## Merge readiness and remaining Issue #96 work
 
-Existing owner artwork, imports, experimental assets, evidence and six unrelated
-modified production resources remain in place and excluded from this revision's
-commit. No generated sidecars/caches are staged. The original mapping inputs and
-existing exact-path Git attributes are unchanged. Revision files are the PNG,
-TileSet, lab, this report, README, focused static test and two new technical
-inventories. No merge, cleanup or PR #97 modification is performed.
+**CLEAN for owner-controlled merge as an isolated technical prototype**, following
+successful final static/preservation verification and explicit owner merge authorization.
+The accepted vertical-boundary limitation and explained local byte discrepancies
+do not block this limited acceptance. PR #98 remains draft until the owner chooses
+its next review/merge action. No merge or cleanup is performed by this update.
+
+Issue #96 is not completed or closed. Remaining work includes production-renderer
+integration, original illustrated terrain quality and organic transitions,
+reduced repetition, procedural chunk determinism/continuity across generation
+orders and coordinates, and separately authorized production performance acceptance.
+Revisit vertical endpoints and expanded transition/brush-order coverage before
+integration. No new terrain features, artwork, runtime behavior or policies are
+introduced by this documentation follow-up.

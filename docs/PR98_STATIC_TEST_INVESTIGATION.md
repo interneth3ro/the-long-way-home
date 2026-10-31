@@ -4,6 +4,60 @@ Repository: `interneth3ro/the-long-way-home`; branch `codex/96-native-47-pattern
 Reviewed HEAD: `56e2990fb8866b36f87d49d746e0cf7b9f9062e2`.
 Main: `48cd9150d7aa2e029c7328229e7865cf00e83723`.
 
+## Current disposition (2026-10-31)
+
+The corrections below were independently reviewed and committed in
+`1e5b5ee2a92d75b384ae8c9aa74b8a23a099a898`. Later sections retain the original
+pre-publication investigation and its historical HEAD/results. Statements about
+proposed or uncommitted corrections describe that earlier phase.
+
+The owner accepts the technical prototype, including the unresolved initial
+vertical-boundary limitation in the [prototype report](NATIVE_TERRAIN_47_PROTOTYPE.md#owner-graphical-acceptance-and-accepted-limitation).
+Both initial vertical tests remain FAIL. The six local resource modifications are
+explained preservation discrepancies with an approved preserve-in-place disposition.
+No byte allowances, normalization, test changes or policy exceptions are introduced.
+
+Final documentation validation: clean isolated proposed PR **119/119 PASS**, focused
+terrain **6/6 PASS**. A separate corrected-PR representation overlaid with the six
+exact owner resources reproduces **119 run, 12 failure records across 10 methods,
+0 errors: FAIL**, focused terrain **6/6 PASS**. The attached checkout remains on
+main and untouched; this overlay represents the PR with owner working resources,
+not main's older suite. All twelve records below remain enforced. Historical Git
+objects and exact hash pins introduced by the correction remain unchanged.
+
+### Forensic findings and approved preservation
+
+The chooser retains all 104 stored property values; its changes are UID/header
+metadata and ordering, with no numeric-value change or omitted property. Other
+resource differences match serialization/default omissions. Six writes occurred
+within approximately 107 milliseconds, each followed by an editor-folding write.
+This strongly favors a shared Godot resource-save event. The initiating action
+and edited-resource origin remain unknown; standalone lab loading was not proven
+to cause it. No meaningful resource-property defect was identified statically.
+
+The owner approved preserving all six resources and their evidence unchanged,
+excluded from PR #98. Their committed main and reviewed PR blobs are identical.
+These hashes are preserved byte-for-byte by this documentation task:
+
+| Owner resource | SHA-256 |
+| --- | --- |
+| `assets/ui/b1_theme.tres` | `6d917bc7973141b9d67fee7165c042c6233d26147470bd9b81a44645dc51e7de` |
+| `assets/ui/machine_actions.tres` | `2c821aca22a4a04607d2a14a7aa7b2b9dea47d503e4cc39d89ef2f1b303a027e` |
+| `assets/ui/recipe_chooser.tres` | `2ea79ef841294dc7e935d5cc69cce84db6140c8531b466bc14d6e9940c9f1130` |
+| `dialogue/computer_opening.tres` | `daed226185e98955a0a21e4c8839f45d5f28ef36526a95881f3c3ea456a1bcea` |
+| `construction/recipes/ferrite_plate.tres` | `b7c9e7a34ace78f51c0a89ee19be23cab62ace2bf2e1f4a565d1643349852bd1` |
+| `construction/recipes/ferrite_rod.tres` | `7c687cd3a26b6bb8c471da418992994bf7b34738281a3e12ef42a813c2009631` |
+
+The prior 2,231-file preservation inventory remains unchanged. This task also
+inventories current attached-checkout files and verifies them after publication.
+No owner file is moved, deleted or modified; its index, branch and HEAD remain
+unchanged. Production terrain/gameplay and all mapping records remain unchanged.
+PR #97 remains untouched. No Godot, Native, profiling, benchmarking, merge or cleanup.
+
+Readiness is **CLEAN for the limited technical prototype**, pending explicit owner
+merge authorization. Accepted limitations do not establish final artwork,
+production performance or procedural determinism; Issue #96 remains open.
+
 ## Initial read-only comparison
 
 | Scope | Test methods | Failure records | Errors | Failed methods |
