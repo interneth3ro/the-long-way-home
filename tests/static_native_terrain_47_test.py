@@ -199,6 +199,11 @@ class Native47StaticTest(unittest.TestCase):
             for path in changed:
                 protected = path == 'project.godot' or path.startswith(('assets/', 'scenes/', 'construction/', 'inventory/', 'dialogue/', 'objectives/', 'shaders/', 'tools/')) or path in ('AGENTS.md', 'docs/LOCAL_TESTING.md')
                 if protected:
+                    if path == 'tools/bake-illustrated-terrain.py':
+                        # Exact offline authoring recipe only; no engine/runner scope.
+                        from baked_terrain_preservation import verify_input
+                        verify_input(path, (ROOT / path).read_bytes())
+                        continue
                     self.assertTrue(path.startswith((ASSET, 'scenes/experiments/native_terrain_47_96/')), path)
         for path in paths:
             if path.endswith(('.gd', '.tscn', '.tres', '.godot')):

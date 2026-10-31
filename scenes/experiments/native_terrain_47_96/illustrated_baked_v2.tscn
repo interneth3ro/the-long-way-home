@@ -1,0 +1,44 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="TileSet" path="res://assets/experiments/native_terrain_47_96/baked_v2/baked_terrain.tres" id="1_tiles"]
+[ext_resource type="Texture2D" path="res://assets/experiments/native_terrain_47_96/baked_v2/baseline_94.png" id="2_atlas"]
+
+[node name="BakedIllustratedTerrainLaboratoryV2" type="Node2D"]
+texture_filter = 1
+metadata/purpose = "PR 100 Stage 2 baked acceptance lab. See docs/ILLUSTRATED_TERRAIN_LAB.md. Editor painting only."
+
+[node name="Title" type="Label" parent="."]
+offset_left = 32.0
+offset_top = 16.0
+text = "BAKED ILLUSTRATED TERRAIN - all 94 configurations / A-B-C solid interiors"
+
+[node name="Instructions" type="Label" parent="."]
+offset_left = 32.0
+offset_top = 52.0
+text = "Select PaintingWorkspace > TileMap > Terrains > Connect. Paint Earth or Green.\n128-unit cells; zoom out. Fill a broad background, then paint the other terrain over it.\nAll 94 configurations are illustrated. Four extra solid tiles supply approved B/C alternatives.\nCheck horizontal and vertical boundaries, both endpoints, corners, narrow links and islands.\nRepeat with reversed paint order. No F5/F6 needed. Record selected source/cell and brush order."
+
+[node name="WorkspaceBackdrop" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(32, 192, 6176, 192, 6176, 4288, 32, 4288)
+color = Color(0.12, 0.14, 0.16, 1)
+
+[node name="PaintingWorkspace" type="TileMapLayer" parent="."]
+position = Vector2(32, 192)
+tile_set = ExtResource("1_tiles")
+collision_enabled = false
+navigation_enabled = false
+
+[node name="AtlasTitle" type="Label" parent="."]
+offset_left = 6400.0
+offset_top = 144.0
+text = "BAKED BASELINE / 94 ORIGINAL SIGNATURES\nTwo unconfigured black slots at (10,1) and (10,5) are not paintable.\nSource 1 contains only B/C solid interiors; all other tiles use A."
+
+[node name="AtlasReference" type="Sprite2D" parent="."]
+position = Vector2(6400, 224)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("2_atlas")
+centered = false
+
+[node name="Limitations" type="Label" parent="."]
+offset_left = 32.0
+offset_top = 4320.0
+text = "Stage 1 visual method approved. Stage 2 Godot import and painting acceptance remain pending.\nMinor rounded stepping/corner pockets and source repetition are accepted prototype limits.\nNo runtime edge-repair material. No production chunk integration or performance acceptance."
