@@ -1,0 +1,2016 @@
+{
+  "method": "Approved Stage 1 v3 Coons / center bubble / periodic perturbation / linear-light blend",
+  "stage": 2,
+  "baseline_count": 94,
+  "baseline_peers": 752,
+  "interior_alternatives": 4,
+  "source_sha256": {
+    "earth_solid.png": "1e530bdcefa9ba29575b8bd2c61a15ec26c04567b928ffebfb4b460336d4ff3f",
+    "green_solid.png": "bc64176fde0d899dfd8c56d42a62fc81525e780c3b22687b982bde31244270e2"
+  },
+  "inventory_sha256": "678c107702c1b933510a36101f77f04e4f7277cfab7c86ced25a1ed086100e4c",
+  "approved_proof": {
+    "approved_date": "2026-10-31",
+    "proof_recipe_sha256": "d4c1ba5baa436dca7b96abd3920c06832f06d7df6385114b7108166fead10cd7",
+    "approved_image_sha256": {
+      "previews/meandering_boundary_varied.png": "1ca4eec259de89e40e8276920e03f5f7602f986ad26c255c0f4ed6a6761ae67c",
+      "previews/green_patch_varied.png": "006843cbc82aed0a982f3f49afe4ba539545d78704c7facaa9355823feb8156e",
+      "previews/earth_patch_varied.png": "812b05969d4b20ca02942f12e6da1efa93f89b7230b896ba92be369ce440849c",
+      "variations.png": "d4875b71660b8480e4c2ade8ee5a14e511e04df60d21494073e307767e543bbb",
+      "representatives.png": "656f3301712add48877ef13e22422c9cc4fd4f39f78641ee7edba86de5293f7d"
+    },
+    "representative_png_sha256": {
+      "earth_solid_9_2.png": "7ce29cc5a6c0753da600799fc88056c9875bcd465e356f956d328e357f5c1460",
+      "earth_convex_nw_8_0.png": "ac962ee22e5d41ce3c7b1b0f6efeb4a94ce22c306383b3c01b42c63d97988020",
+      "earth_concave_nw_5_1.png": "e87e4e5d3356d0ec2dfb9010f8322802bbeab07ed6249899b0a74066f0f75848",
+      "earth_endpoint_south_0_0.png": "df539662801112ed963538af78830503a00f19d60c99c0c9477d486af1c02d10",
+      "earth_narrow_ns_0_1.png": "7a0fc720e86396dee3d62590ddf9da0e48514f2aafc53a23814b757aaba53620",
+      "earth_isolated_0_3.png": "8e2485714688e3bd74eb670b934f3c750f6d0c8261cb08a6fe060f8b536aaad6",
+      "earth_north_10_0.png": "07ecf9acd5388f4172758edf29f93df430632772c8381a17fd67d76badf38fb0",
+      "earth_south_9_3.png": "3b6553124c60f25950ecfcd4aabe56fcb39d04efb4daec4eefc4e0e6283c043b",
+      "earth_west_8_1.png": "f3b45f7d3429482130748d06d8526758a340096337ffe0cb78f1ceb9513bb259",
+      "earth_east_11_2.png": "dc13b8ab4b1713faa570c0e9e0fef4e021317f1604e72de9ada4a54f6a0aaf15",
+      "green_solid_9_6.png": "8b0036d4ff7e90a2658667cf416daf2a1e7cd6e46e29ba2b67049ecf7a575158",
+      "green_convex_nw_8_4.png": "0b062cbbb3b801cea94cc95520b351474beaab253107bcb9d8b5292124b91888",
+      "green_concave_nw_5_5.png": "4efb1537e29df2269d148777603a1cf6705894f6ae3cce16669749cfe0576a21",
+      "green_endpoint_south_0_4.png": "ef0b7d889cb4f618bec5b0f6db9be2bd5edb6bdc595305e32b50357d0ba27823",
+      "green_narrow_ns_0_5.png": "835f9a1fdf1eef1705c9643b88a345520e4a6965ad8239171f08eea83aa6a632",
+      "green_isolated_0_7.png": "db6b7324c51256c24ca8e67ebd372cf581760b5682f8291a8e25ab50b1672693",
+      "green_north_10_4.png": "d1074892232f7dd332279fe202b8cab9ee6eabb0330b1c3295535ddcff03e00b",
+      "green_south_9_7.png": "47bd8181c5db95f1afe0690af06ff8feca50509b7d8da4b3dc73c8dcabbf3fdd",
+      "green_west_8_5.png": "52a1d6069ae1272acba8c597218bd8086f9e1261388e7622ddfda4223d3bf21b",
+      "green_east_11_6.png": "e779358dd65857a568de90f631d563c23cc5ec402852e3d807d396bbd1f5895b"
+    },
+    "variant_png_sha256": {
+      "earth_1.png": "e1951b82e85cb12b3b588b34573dc0814ce82ca3624b0db1ce2547f3a0eb6144",
+      "earth_2.png": "f9f48001f8fe0cda14516782feafba5f3b7fcadc7e59943fed257d5b70520c50",
+      "green_1.png": "e010ef9c4ce81bbbc053eb2aaf6bef65b7239f8539af0ef52ec5d2d6c7faa3a0",
+      "green_2.png": "36342ca6910ae89d85e5c50cf242dcadd3ba4b505508f391ce5159b5f8eb769b"
+    }
+  },
+  "baseline": [
+    {
+      "family": "earth",
+      "pattern": 1,
+      "atlas": [
+        0,
+        0
+      ],
+      "signature": [
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        1
+      ],
+      "pixel_sha256": "c32b6153f6096a4f8405b99e38785708490df94d6f8cce66d2f612123157512e"
+    },
+    {
+      "family": "earth",
+      "pattern": 2,
+      "atlas": [
+        1,
+        0
+      ],
+      "signature": [
+        0,
+        1,
+        1,
+        1,
+        1,
+        0,
+        1,
+        0,
+        1
+      ],
+      "pixel_sha256": "56b9a6026b227550efff11de9f28ae8174317ddd550a87962dde9fd394a0dbe6"
+    },
+    {
+      "family": "earth",
+      "pattern": 3,
+      "atlas": [
+        2,
+        0
+      ],
+      "signature": [
+        0,
+        1,
+        1,
+        1,
+        0,
+        0,
+        1,
+        0,
+        1
+      ],
+      "pixel_sha256": "ae8493e3ff36082f572119032dceab493e92912bbbac0f9037e922dd55b0b3f9"
+    },
+    {
+      "family": "earth",
+      "pattern": 4,
+      "atlas": [
+        3,
+        0
+      ],
+      "signature": [
+        0,
+        1,
+        1,
+        1,
+        0,
+        1,
+        1,
+        0,
+        1
+      ],
+      "pixel_sha256": "aa9db55be49fc9cf5cef6e5dd44e1ccf04bce3f059c5866818fb1c9768f756f0"
+    },
+    {
+      "family": "earth",
+      "pattern": 5,
+      "atlas": [
+        4,
+        0
+      ],
+      "signature": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        1,
+        0,
+        1
+      ],
+      "pixel_sha256": "e076ca064d9ca1907a3fe298a8f25135a01ea3e4998cbfc588978d0dee326ccb"
+    },
+    {
+      "family": "earth",
+      "pattern": 6,
+      "atlas": [
+        5,
+        0
+      ],
+      "signature": [
+        0,
+        1,
+        1,
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "pixel_sha256": "e1ce361dd67a5d760e0897e055796f228977a1cf25d4498e46256eda442c999b"
+    },
+    {
+      "family": "earth",
+      "pattern": 7,
+      "atlas": [
+        6,
+        0
+      ],
+      "signature": [
+        0,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1
+      ],
+      "pixel_sha256": "3fcaa70bd082ebb97191987c6ab6bad26d25d9638fa0a9d759f63eab5fe1e732"
+    },
+    {
+      "family": "earth",
+      "pattern": 8,
+      "atlas": [
+        7,
+        0
+      ],
+      "signature": [
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        1
+      ],
+      "pixel_sha256": "61ac84d6a8f0d515e948e82f1df11efde73ed470d95f6ee9794eb8a399557f16"
+    },
+    {
+      "family": "earth",
+      "pattern": 9,
+      "atlas": [
+        8,
+        0
+      ],
+      "signature": [
+        0,
+        1,
+        1,
+        1,
+        1,
+        0,
+        1,
+        0,
+        0
+      ],
+      "pixel_sha256": "9704015e7ab99b807a22e0dff48d78e7b138e7f516c19f5981bb6496c11eccd5"
+    },
+    {
+      "family": "earth",
+      "pattern": 10,
+      "atlas": [
+        9,
+        0
+      ],
+      "signature": [
+        0,
+        1,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "pixel_sha256": "938e7619e95364843c62cf15a77dcfe37023cb0748587f996d321a45b455fd9a"
+    },
+    {
+      "family": "earth",
+      "pattern": 11,
+      "atlas": [
+        10,
+        0
+      ],
+      "signature": [
+        0,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "pixel_sha256": "e13bc9454ae4f8203b137082fc192cf16adc36586a91d354e534b2e698d3bf1f"
+    },
+    {
+      "family": "earth",
+      "pattern": 12,
+      "atlas": [
+        11,
+        0
+      ],
+      "signature": [
+        0,
+        1,
+        1,
+        1,
+        0,
+        1,
+        0,
+        0,
+        1
+      ],
+      "pixel_sha256": "279f2c2333ff826de1b6937a40ace7ba1c3a1a5c01ec4c0242d1033d433f99a4"
+    },
+    {
+      "family": "earth",
+      "pattern": 13,
+      "atlas": [
+        0,
+        1
+      ],
+      "signature": [
+        0,
+        1,
+        0,
+        1,
+        1,
+        1,
+        1,
+        0,
+        1
+      ],
+      "pixel_sha256": "67359b6ea2344b45235e6eddd8641b93d6dc9867441727dd127787d78434bf30"
+    },
+    {
+      "family": "earth",
+      "pattern": 14,
+      "atlas": [
+        1,
+        1
+      ],
+      "signature": [
+        0,
+        1,
+        0,
+        1,
+        1,
+        0,
+        1,
+        0,
+        1
+      ],
+      "pixel_sha256": "fb4b39823cc0decd49fe1ebb88ac578df6f7fac5cce9b9c5be166678155773b2"
+    },
+    {
+      "family": "earth",
+      "pattern": 15,
+      "atlas": [
+        2,
+        1
+      ],
+      "signature": [
+        0,
+        1,
+        0,
+        1,
+        0,
+        0,
+        1,
+        0,
+        1
+      ],
+      "pixel_sha256": "2df011266149cb2e92d0513f6a99fc5075b437c405de90d1119ef81768898e9c"
+    },
+    {
+      "family": "earth",
+      "pattern": 16,
+      "atlas": [
+        3,
+        1
+      ],
+      "signature": [
+        0,
+        1,
+        0,
+        1,
+        0,
+        1,
+        1,
+        0,
+        1
+      ],
+      "pixel_sha256": "35a374ca2a950197dd5a9dcf55f555cad8a0d91e546bdb5930dccd477658384b"
+    },
+    {
+      "family": "earth",
+      "pattern": 17,
+      "atlas": [
+        4,
+        1
+      ],
+      "signature": [
+        0,
+        1,
+        0,
+        1,
+        1,
+        0,
+        1,
+        0,
+        0
+      ],
+      "pixel_sha256": "5c4a0309a4a3b1610f33b1c44ec87e378fbbbd84c30cdc1b5cd48908e1952e66"
+    },
+    {
+      "family": "earth",
+      "pattern": 18,
+      "atlas": [
+        5,
+        1
+      ],
+      "signature": [
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "pixel_sha256": "01638b6a2946a6b73577ad39d24c2ea1b12838a3267a261b47fffaa044218492"
+    },
+    {
+      "family": "earth",
+      "pattern": 19,
+      "atlas": [
+        6,
+        1
+      ],
+      "signature": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "pixel_sha256": "67af348ae8ddfd1875584373baf1e3d74c3667f021c9b7dc475df93b18be253c"
+    },
+    {
+      "family": "earth",
+      "pattern": 20,
+      "atlas": [
+        7,
+        1
+      ],
+      "signature": [
+        0,
+        1,
+        0,
+        1,
+        0,
+        1,
+        0,
+        0,
+        1
+      ],
+      "pixel_sha256": "a8d3b39144536eac515df0689a9ecd006f27978e04d728b60b4b508790c7f96b"
+    },
+    {
+      "family": "earth",
+      "pattern": 21,
+      "atlas": [
+        8,
+        1
+      ],
+      "signature": [
+        0,
+        1,
+        0,
+        0,
+        1,
+        0,
+        1,
+        0,
+        0
+      ],
+      "pixel_sha256": "f7852faf50bc45e6cacecfd2b44e58d625817021f31be7df6e39b9d6ea2690a1"
+    },
+    {
+      "family": "earth",
+      "pattern": 22,
+      "atlas": [
+        9,
+        1
+      ],
+      "signature": [
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1
+      ],
+      "pixel_sha256": "9c8a4bda3fadc1497820126ab374a26224dd74481f52d62367654ffad91342be"
+    },
+    {
+      "family": "earth",
+      "pattern": 23,
+      "atlas": [
+        11,
+        1
+      ],
+      "signature": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1
+      ],
+      "pixel_sha256": "6f60883b7acded40a5ebb6d9840ccb54b4ad7f44b51ac5b6d0abfc30cb2caf32"
+    },
+    {
+      "family": "earth",
+      "pattern": 24,
+      "atlas": [
+        0,
+        2
+      ],
+      "signature": [
+        0,
+        1,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "pixel_sha256": "9b79c2def7a3692037c1f3f149004cfda50f08714275dae804dc91f7524d9874"
+    },
+    {
+      "family": "earth",
+      "pattern": 25,
+      "atlas": [
+        1,
+        2
+      ],
+      "signature": [
+        0,
+        1,
+        0,
+        1,
+        1,
+        0,
+        1,
+        1,
+        1
+      ],
+      "pixel_sha256": "d34831bfb37090b17e9dd55a8aff1a385886a11a1411e5083ab598e482ceb41d"
+    },
+    {
+      "family": "earth",
+      "pattern": 26,
+      "atlas": [
+        2,
+        2
+      ],
+      "signature": [
+        0,
+        1,
+        0,
+        1,
+        0,
+        0,
+        1,
+        1,
+        1
+      ],
+      "pixel_sha256": "bdd41711fb8a5ce6bac95f0649f08dd48aed68dade2f48e589881d38fad78d54"
+    },
+    {
+      "family": "earth",
+      "pattern": 27,
+      "atlas": [
+        3,
+        2
+      ],
+      "signature": [
+        0,
+        1,
+        0,
+        1,
+        0,
+        1,
+        1,
+        1,
+        1
+      ],
+      "pixel_sha256": "461ab1604faac937d08f1ef8f901b277a28c7ea60bb0cd2fd6d43f48eaac9ee4"
+    },
+    {
+      "family": "earth",
+      "pattern": 28,
+      "atlas": [
+        4,
+        2
+      ],
+      "signature": [
+        0,
+        1,
+        0,
+        0,
+        1,
+        0,
+        1,
+        0,
+        1
+      ],
+      "pixel_sha256": "0cc086250a07c5b5805de46a165496a3d914d5b7ba074a139ba525ea7e167bb8"
+    },
+    {
+      "family": "earth",
+      "pattern": 29,
+      "atlas": [
+        5,
+        2
+      ],
+      "signature": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "pixel_sha256": "6ae5af637400dc19a0ea88b84105ddba09fdfb880d75ebf618ab2ec49c14dd03"
+    },
+    {
+      "family": "earth",
+      "pattern": 30,
+      "atlas": [
+        6,
+        2
+      ],
+      "signature": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1
+      ],
+      "pixel_sha256": "1c23342d2112313dead454c5b44ce2098ebfe5867d5069143f321d54cb10ebb7"
+    },
+    {
+      "family": "earth",
+      "pattern": 31,
+      "atlas": [
+        7,
+        2
+      ],
+      "signature": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        1,
+        1,
+        0,
+        1
+      ],
+      "pixel_sha256": "b6b1e0f9e8357fdd4edc6b90b66c0f7aa32b169bdb001ea594430caa49229287"
+    },
+    {
+      "family": "earth",
+      "pattern": 32,
+      "atlas": [
+        8,
+        2
+      ],
+      "signature": [
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "pixel_sha256": "49b8ca377929da1737d5a3b494cdeb3aabfef2cbe68b36fac698d687d187d295"
+    },
+    {
+      "family": "earth",
+      "pattern": 33,
+      "atlas": [
+        9,
+        2
+      ],
+      "signature": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "pixel_sha256": "500b39a235c88b636076cb0b97b0d3edad9de17366659fe636891027c4717580"
+    },
+    {
+      "family": "earth",
+      "pattern": 34,
+      "atlas": [
+        10,
+        2
+      ],
+      "signature": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "pixel_sha256": "e9a42adc6dce8272607a764f096ae7147145afbf5d7228300742d989a21c6aa4"
+    },
+    {
+      "family": "earth",
+      "pattern": 35,
+      "atlas": [
+        11,
+        2
+      ],
+      "signature": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        1,
+        0,
+        0,
+        1
+      ],
+      "pixel_sha256": "cf23348b8a106d3e6e93adcb60aae6d66ac23220d8270d39dc26bcc60d63efb4"
+    },
+    {
+      "family": "earth",
+      "pattern": 36,
+      "atlas": [
+        0,
+        3
+      ],
+      "signature": [
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "pixel_sha256": "5bb8ee9ed9b05b4922b98df3127f75a2a9bfddf4475f786a9533539e65aa6fbb"
+    },
+    {
+      "family": "earth",
+      "pattern": 37,
+      "atlas": [
+        1,
+        3
+      ],
+      "signature": [
+        0,
+        1,
+        1,
+        1,
+        1,
+        0,
+        1,
+        1,
+        1
+      ],
+      "pixel_sha256": "b28a5a9df16bf67b6e8025f4a724df8184d3105ccd06aae846645a58adf7e499"
+    },
+    {
+      "family": "earth",
+      "pattern": 38,
+      "atlas": [
+        2,
+        3
+      ],
+      "signature": [
+        0,
+        1,
+        1,
+        1,
+        0,
+        0,
+        1,
+        1,
+        1
+      ],
+      "pixel_sha256": "3eebe1e5081414c2455dd7e4fde9d67a494bc7034f6c46283352ac9a805f76e6"
+    },
+    {
+      "family": "earth",
+      "pattern": 39,
+      "atlas": [
+        3,
+        3
+      ],
+      "signature": [
+        0,
+        1,
+        1,
+        1,
+        0,
+        1,
+        1,
+        1,
+        1
+      ],
+      "pixel_sha256": "3021c85566b2e2df5f49e607a54f5e40b0722265f9d6d6b0fe52492e3afd6b6d"
+    },
+    {
+      "family": "earth",
+      "pattern": 40,
+      "atlas": [
+        4,
+        3
+      ],
+      "signature": [
+        0,
+        1,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1
+      ],
+      "pixel_sha256": "00ae7b78b5a5a2a8cb612b1f801c3eaf07dfd42fd42942715ee9cdaee74662cc"
+    },
+    {
+      "family": "earth",
+      "pattern": 41,
+      "atlas": [
+        5,
+        3
+      ],
+      "signature": [
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1
+      ],
+      "pixel_sha256": "58d7ff07c0b76bd4c085079b6611bdb034a6c33942e0187dc8661d1acd2785a3"
+    },
+    {
+      "family": "earth",
+      "pattern": 42,
+      "atlas": [
+        6,
+        3
+      ],
+      "signature": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        1,
+        1,
+        1
+      ],
+      "pixel_sha256": "37433bcdd42022d7d9fa0fb5cf5d9c84880ff446836e6a7d105f96b4ae578a38"
+    },
+    {
+      "family": "earth",
+      "pattern": 43,
+      "atlas": [
+        7,
+        3
+      ],
+      "signature": [
+        0,
+        1,
+        0,
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "pixel_sha256": "edddff796959c201773ad627cc9b96a30392669f954da467123e1fbdde177a35"
+    },
+    {
+      "family": "earth",
+      "pattern": 44,
+      "atlas": [
+        8,
+        3
+      ],
+      "signature": [
+        0,
+        1,
+        0,
+        0,
+        1,
+        0,
+        1,
+        1,
+        1
+      ],
+      "pixel_sha256": "41f864be9bcb8b564a85777b61f9077d495e35494f84881da98234ddc7bd454b"
+    },
+    {
+      "family": "earth",
+      "pattern": 45,
+      "atlas": [
+        9,
+        3
+      ],
+      "signature": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1
+      ],
+      "pixel_sha256": "0edca149220c1b6e39d5d416540791247d20ebdab550e3836f6e2cb4616f0cdf"
+    },
+    {
+      "family": "earth",
+      "pattern": 46,
+      "atlas": [
+        10,
+        3
+      ],
+      "signature": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        1
+      ],
+      "pixel_sha256": "3335c80eb1cd1c89dc66c7b3a297b1f6799e2397cc939e7ead71ad35ac3fe35a"
+    },
+    {
+      "family": "earth",
+      "pattern": 47,
+      "atlas": [
+        11,
+        3
+      ],
+      "signature": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        1,
+        1,
+        1,
+        1
+      ],
+      "pixel_sha256": "acf7509910fcea0030afd7d34c124d244dfa7b5e609ed5b5ea4360f898a1135f"
+    },
+    {
+      "family": "green",
+      "pattern": 1,
+      "atlas": [
+        0,
+        4
+      ],
+      "signature": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0
+      ],
+      "pixel_sha256": "2fed8cd339fcc191a2b46479a535dbbbd38954a596031824b15eda29c5b98ec3"
+    },
+    {
+      "family": "green",
+      "pattern": 2,
+      "atlas": [
+        1,
+        4
+      ],
+      "signature": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        1,
+        0
+      ],
+      "pixel_sha256": "a742097ee6370dbd74c70c43ce4023a76054177c898d4f7265ea80f325826180"
+    },
+    {
+      "family": "green",
+      "pattern": 3,
+      "atlas": [
+        2,
+        4
+      ],
+      "signature": [
+        1,
+        0,
+        0,
+        0,
+        1,
+        1,
+        0,
+        1,
+        0
+      ],
+      "pixel_sha256": "0ea575bd50898074ec6d770dd49b3530b24bb29eadf41c803413dd228a4dd2c2"
+    },
+    {
+      "family": "green",
+      "pattern": 4,
+      "atlas": [
+        3,
+        4
+      ],
+      "signature": [
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        1,
+        0
+      ],
+      "pixel_sha256": "378e985e752680f08debd193d2b004960e0be001784d0f5fda79392a522f391e"
+    },
+    {
+      "family": "green",
+      "pattern": 5,
+      "atlas": [
+        4,
+        4
+      ],
+      "signature": [
+        1,
+        1,
+        1,
+        0,
+        1,
+        1,
+        0,
+        1,
+        0
+      ],
+      "pixel_sha256": "d97c2507ff3288c42e67961c27073a104513c76b7797b50d218b59cdc85fd620"
+    },
+    {
+      "family": "green",
+      "pattern": 6,
+      "atlas": [
+        5,
+        4
+      ],
+      "signature": [
+        1,
+        0,
+        0,
+        0,
+        1,
+        1,
+        0,
+        1,
+        1
+      ],
+      "pixel_sha256": "306b03d7e7dac1e14615c161d7a78f4a6dd2e9c9e1ee9bff24f6fa86807a829f"
+    },
+    {
+      "family": "green",
+      "pattern": 7,
+      "atlas": [
+        6,
+        4
+      ],
+      "signature": [
+        1,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        0
+      ],
+      "pixel_sha256": "9278e038c4a4890c7f3f51aea82b04d936360b46d9c439f0ecd91cec67b60af8"
+    },
+    {
+      "family": "green",
+      "pattern": 8,
+      "atlas": [
+        7,
+        4
+      ],
+      "signature": [
+        1,
+        0,
+        1,
+        1,
+        1,
+        1,
+        0,
+        1,
+        0
+      ],
+      "pixel_sha256": "26407e70816ee235de017839f9b04d3d1f46b913424a83e18f6b2156acc64fd4"
+    },
+    {
+      "family": "green",
+      "pattern": 9,
+      "atlas": [
+        8,
+        4
+      ],
+      "signature": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        1,
+        1
+      ],
+      "pixel_sha256": "ae11e784584075a590dbdda00c9dc56eb7b55fbfdb592e54f81ece52f7f78627"
+    },
+    {
+      "family": "green",
+      "pattern": 10,
+      "atlas": [
+        9,
+        4
+      ],
+      "signature": [
+        1,
+        0,
+        1,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "pixel_sha256": "5ab49334088797fe992fc4d5f7aa8e1196aa887e443ede81d5d5cffbe1a41c43"
+    },
+    {
+      "family": "green",
+      "pattern": 11,
+      "atlas": [
+        10,
+        4
+      ],
+      "signature": [
+        1,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "pixel_sha256": "6d0f42f044a314c7477c3f48f948387d043a4a686f82f4d3f57931c82ca1e9ea"
+    },
+    {
+      "family": "green",
+      "pattern": 12,
+      "atlas": [
+        11,
+        4
+      ],
+      "signature": [
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        1,
+        1,
+        0
+      ],
+      "pixel_sha256": "5a0199562013d47577bde00186eb1695bec34957e86b759a865d99bf39b2a397"
+    },
+    {
+      "family": "green",
+      "pattern": 13,
+      "atlas": [
+        0,
+        5
+      ],
+      "signature": [
+        1,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0
+      ],
+      "pixel_sha256": "0de13f7f8288d064600d902fb73f7db26b2f334812e1c5873f3039998462eed9"
+    },
+    {
+      "family": "green",
+      "pattern": 14,
+      "atlas": [
+        1,
+        5
+      ],
+      "signature": [
+        1,
+        0,
+        1,
+        0,
+        0,
+        1,
+        0,
+        1,
+        0
+      ],
+      "pixel_sha256": "0080c8fea0d3fbb5316c7b874c58319c24b96730958ec59dec437378da581dbd"
+    },
+    {
+      "family": "green",
+      "pattern": 15,
+      "atlas": [
+        2,
+        5
+      ],
+      "signature": [
+        1,
+        0,
+        1,
+        0,
+        1,
+        1,
+        0,
+        1,
+        0
+      ],
+      "pixel_sha256": "193585d6225d04ad5ab1e5912492806d8ad51b4bf5b51181bd3928a40436e86f"
+    },
+    {
+      "family": "green",
+      "pattern": 16,
+      "atlas": [
+        3,
+        5
+      ],
+      "signature": [
+        1,
+        0,
+        1,
+        0,
+        1,
+        0,
+        0,
+        1,
+        0
+      ],
+      "pixel_sha256": "83078e6df82ffbf686e3c412d090cc991593fa4c1a6fb5af9973119a68d67956"
+    },
+    {
+      "family": "green",
+      "pattern": 17,
+      "atlas": [
+        4,
+        5
+      ],
+      "signature": [
+        1,
+        0,
+        1,
+        0,
+        0,
+        1,
+        0,
+        1,
+        1
+      ],
+      "pixel_sha256": "d6d01df857e7ecbd88243040920c479c04a408945d4c5baf562bcfe3f0f93f11"
+    },
+    {
+      "family": "green",
+      "pattern": 18,
+      "atlas": [
+        5,
+        5
+      ],
+      "signature": [
+        1,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "pixel_sha256": "122c9d80e7fd783e453958a1319b834496dd0c629ca64be0e9b7a9d07bc33107"
+    },
+    {
+      "family": "green",
+      "pattern": 19,
+      "atlas": [
+        6,
+        5
+      ],
+      "signature": [
+        1,
+        1,
+        1,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "pixel_sha256": "97d8a3bedd34933544f39615e933d0ed02c48d9614d17136d4a4a8de9e8d912d"
+    },
+    {
+      "family": "green",
+      "pattern": 20,
+      "atlas": [
+        7,
+        5
+      ],
+      "signature": [
+        1,
+        0,
+        1,
+        0,
+        1,
+        0,
+        1,
+        1,
+        0
+      ],
+      "pixel_sha256": "481e3dfad58d5147d34b84824dcfa462f8c743c32ed5773c58d5bbaef95a83ae"
+    },
+    {
+      "family": "green",
+      "pattern": 21,
+      "atlas": [
+        8,
+        5
+      ],
+      "signature": [
+        1,
+        0,
+        1,
+        1,
+        0,
+        1,
+        0,
+        1,
+        1
+      ],
+      "pixel_sha256": "c37ebe612773c7a258a8193472c61edbbe3e0095833e4f1a3902fb7f4cf72455"
+    },
+    {
+      "family": "green",
+      "pattern": 22,
+      "atlas": [
+        9,
+        5
+      ],
+      "signature": [
+        1,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0
+      ],
+      "pixel_sha256": "c9f29ae6fc617821ccfd9553e4038cce031869f789a36e603ab6a014112ac185"
+    },
+    {
+      "family": "green",
+      "pattern": 23,
+      "atlas": [
+        11,
+        5
+      ],
+      "signature": [
+        1,
+        1,
+        1,
+        0,
+        1,
+        1,
+        1,
+        1,
+        0
+      ],
+      "pixel_sha256": "2b1a9846fe12257b1594257dd6cc037931db6776803475aa3cdec9cae72195ed"
+    },
+    {
+      "family": "green",
+      "pattern": 24,
+      "atlas": [
+        0,
+        6
+      ],
+      "signature": [
+        1,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "pixel_sha256": "6625de5233f408d44658b88bf18abd3b79b485e83910e8bbc36557873dd9d971"
+    },
+    {
+      "family": "green",
+      "pattern": 25,
+      "atlas": [
+        1,
+        6
+      ],
+      "signature": [
+        1,
+        0,
+        1,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0
+      ],
+      "pixel_sha256": "2160b05c1fbceb74d3745c0bb01ab7277eb44c8296920d1b5e330ee7c3a8e6e3"
+    },
+    {
+      "family": "green",
+      "pattern": 26,
+      "atlas": [
+        2,
+        6
+      ],
+      "signature": [
+        1,
+        0,
+        1,
+        0,
+        1,
+        1,
+        0,
+        0,
+        0
+      ],
+      "pixel_sha256": "2f137c97c2e56b2d72b595a237e6e6b3f93f9dd2e42de49c07b56c00a481f872"
+    },
+    {
+      "family": "green",
+      "pattern": 27,
+      "atlas": [
+        3,
+        6
+      ],
+      "signature": [
+        1,
+        0,
+        1,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "pixel_sha256": "eefc70810f37cca02b764c43893c2768341da3b6a16b294433767bb25b7a9ed2"
+    },
+    {
+      "family": "green",
+      "pattern": 28,
+      "atlas": [
+        4,
+        6
+      ],
+      "signature": [
+        1,
+        0,
+        1,
+        1,
+        0,
+        1,
+        0,
+        1,
+        0
+      ],
+      "pixel_sha256": "7ea2e141c254c0b7d0a202e5980f9a6421a8bb9fa84557b5df9a461f3067aa55"
+    },
+    {
+      "family": "green",
+      "pattern": 29,
+      "atlas": [
+        5,
+        6
+      ],
+      "signature": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        1,
+        1
+      ],
+      "pixel_sha256": "50bd5b830727062a6cad35386c94e3a4f79405d79baf766a880210a93e14c017"
+    },
+    {
+      "family": "green",
+      "pattern": 30,
+      "atlas": [
+        6,
+        6
+      ],
+      "signature": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0
+      ],
+      "pixel_sha256": "8d1be40618c4168d855d6b71861bb298593f262f192cb0dae9718cb900f76f12"
+    },
+    {
+      "family": "green",
+      "pattern": 31,
+      "atlas": [
+        7,
+        6
+      ],
+      "signature": [
+        1,
+        1,
+        1,
+        0,
+        1,
+        0,
+        0,
+        1,
+        0
+      ],
+      "pixel_sha256": "20cf6a5cefb6e3859bba684fcece819dcf22a3120b2e241d0503bf70125df1b7"
+    },
+    {
+      "family": "green",
+      "pattern": 32,
+      "atlas": [
+        8,
+        6
+      ],
+      "signature": [
+        1,
+        0,
+        1,
+        1,
+        1,
+        1,
+        0,
+        1,
+        1
+      ],
+      "pixel_sha256": "88a52b213924ef17c9fe05670c236f7afc967b74a4ae81a26d84b5a84407ad99"
+    },
+    {
+      "family": "green",
+      "pattern": 33,
+      "atlas": [
+        9,
+        6
+      ],
+      "signature": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "pixel_sha256": "1c2f50719c586fcdcbbc9e2f58aa03a6dd2b27bb1c0710c35b7e4af31f14d028"
+    },
+    {
+      "family": "green",
+      "pattern": 34,
+      "atlas": [
+        10,
+        6
+      ],
+      "signature": [
+        1,
+        1,
+        1,
+        0,
+        1,
+        1,
+        0,
+        1,
+        1
+      ],
+      "pixel_sha256": "e777bf4442c976cb31bebb51458495aab3cc3dca9de49c49edf923a06e99d37e"
+    },
+    {
+      "family": "green",
+      "pattern": 35,
+      "atlas": [
+        11,
+        6
+      ],
+      "signature": [
+        1,
+        1,
+        1,
+        0,
+        1,
+        0,
+        1,
+        1,
+        0
+      ],
+      "pixel_sha256": "de43f8b450ae93b9b69a243ea9647e63954b89cb0b89949d398247326534f9e2"
+    },
+    {
+      "family": "green",
+      "pattern": 36,
+      "atlas": [
+        0,
+        7
+      ],
+      "signature": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "pixel_sha256": "51fe7a7f8563167d9872bc9f7a2f25778a2b7c1d231eecf072ecac04e2daab73"
+    },
+    {
+      "family": "green",
+      "pattern": 37,
+      "atlas": [
+        1,
+        7
+      ],
+      "signature": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0
+      ],
+      "pixel_sha256": "59e538eb0954b6d4c468a73068ea73d0686dd141e0d72d37696ae4b7f33abd13"
+    },
+    {
+      "family": "green",
+      "pattern": 38,
+      "atlas": [
+        2,
+        7
+      ],
+      "signature": [
+        1,
+        0,
+        0,
+        0,
+        1,
+        1,
+        0,
+        0,
+        0
+      ],
+      "pixel_sha256": "e6cc72254a9dd113c453ced637c819b2222d2a47633cc414e6c5746665ce9ff7"
+    },
+    {
+      "family": "green",
+      "pattern": 39,
+      "atlas": [
+        3,
+        7
+      ],
+      "signature": [
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "pixel_sha256": "31f1ac108f8c64e3da2e22f08e9a1c39ae6811f8865ab5a35ac3cbb3af37c652"
+    },
+    {
+      "family": "green",
+      "pattern": 40,
+      "atlas": [
+        4,
+        7
+      ],
+      "signature": [
+        1,
+        0,
+        1,
+        0,
+        1,
+        1,
+        1,
+        1,
+        0
+      ],
+      "pixel_sha256": "25ebd9e26bd7eef5af1ee917029685a0fe07bc2a68c398c8663a70e714c21ad7"
+    },
+    {
+      "family": "green",
+      "pattern": 41,
+      "atlas": [
+        5,
+        7
+      ],
+      "signature": [
+        1,
+        0,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0
+      ],
+      "pixel_sha256": "c670f0dbc83cbf975cb32134c55462247fb92b7a688efe7456558e816343508d"
+    },
+    {
+      "family": "green",
+      "pattern": 42,
+      "atlas": [
+        6,
+        7
+      ],
+      "signature": [
+        1,
+        1,
+        1,
+        0,
+        1,
+        1,
+        0,
+        0,
+        0
+      ],
+      "pixel_sha256": "a45105399f6e5d89573b83311c5c99d13ddb0b1c141d4426aaebec81f93cd6e8"
+    },
+    {
+      "family": "green",
+      "pattern": 43,
+      "atlas": [
+        7,
+        7
+      ],
+      "signature": [
+        1,
+        0,
+        1,
+        0,
+        1,
+        1,
+        0,
+        1,
+        1
+      ],
+      "pixel_sha256": "2683fa5747bc24e2f8e89b0fd309f7bd32011ca886f1253c21d762d6f68bfc57"
+    },
+    {
+      "family": "green",
+      "pattern": 44,
+      "atlas": [
+        8,
+        7
+      ],
+      "signature": [
+        1,
+        0,
+        1,
+        1,
+        0,
+        1,
+        0,
+        0,
+        0
+      ],
+      "pixel_sha256": "9fb819da456638157752b0eac972043b67942093760bb1982b58d1b6bd787592"
+    },
+    {
+      "family": "green",
+      "pattern": 45,
+      "atlas": [
+        9,
+        7
+      ],
+      "signature": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0
+      ],
+      "pixel_sha256": "d8729712827dbe1a4f0545cb3e8f3dba56f194886239b103d7ceb24068d7f4ef"
+    },
+    {
+      "family": "green",
+      "pattern": 46,
+      "atlas": [
+        10,
+        7
+      ],
+      "signature": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        1,
+        0
+      ],
+      "pixel_sha256": "99dd94637d279fb0c902ef364cd169f627906181412520175d6aad3d178a523e"
+    },
+    {
+      "family": "green",
+      "pattern": 47,
+      "atlas": [
+        11,
+        7
+      ],
+      "signature": [
+        1,
+        1,
+        1,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "pixel_sha256": "e70765831a4196efc4aea85d3b90140496d5d28e297ce3ef5291df7a71a30929"
+    }
+  ],
+  "interiors": [
+    {
+      "atlas": [
+        0,
+        0
+      ],
+      "signature": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "variant": "B",
+      "pixel_sha256": "ed181155435a3050414d236cf565e223e7e12e7cf1fe9fb304f9961de66d3195"
+    },
+    {
+      "atlas": [
+        1,
+        0
+      ],
+      "signature": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "variant": "C",
+      "pixel_sha256": "d4f08a5ba48f34fbb8216c38b9b9f6c2c8cfe47131268b3032857b5c81c09715"
+    },
+    {
+      "atlas": [
+        0,
+        1
+      ],
+      "signature": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "variant": "B",
+      "pixel_sha256": "2baad3a95a23ac2c1df80c598ab631e43188c7f18ef32dd40603e2c77e4beb5f"
+    },
+    {
+      "atlas": [
+        1,
+        1
+      ],
+      "signature": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "variant": "C",
+      "pixel_sha256": "10ca83cb502496c208ea7de596c23055dec2ff2a356de98fb1b24fbcdd0badb2"
+    }
+  ],
+  "output_sha256": {
+    "baseline_94.png": "5a3d448774fc2dc816f02827b75ecca1f1a57678e5023f383525cb811aff1977",
+    "interiors_bc.png": "01de466fcec2e7ed8e8cadf9813a57d3783eb57b50ec56408a9ba0346357efc8",
+    "baked_terrain.tres": "e70237fe02222ccd3b9da8e96a27320d642a7244605e258012f44f4f666f3256"
+  }
+}
