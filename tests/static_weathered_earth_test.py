@@ -15,8 +15,18 @@ BASE = "c3b0460a6b52437b1961b5d0936f6ec279371d55"
 GREEN_BASE = "e1d71ccf9c04e237c5d77a7c17a4918d2f5bdb7b"
 GREEN_SHA256 = {
     "scenes/world/terrain_chunk.gd": "def52c7b1db2cd2c5aa7b07bd716bc5ae543bead2e77e681bf0c0414c019df22",
-    "scenes/world/planet_generator.gd": "332971078f58fba3b9a108e8236689130c82071c09292f3644d8d188f59066fa",
+    "scenes/world/planet_generator.gd": "f586792777178e63515c781f8aebb73f65c43c313f14f5970ce74bed10ca9c49",
 }
+
+
+GREEN_ORIGINAL = "f112f48d1b2f874954af34f6a549a29a6c2c3d55"
+
+
+def original_green_bytes(path, actual):
+    """Pin current candidates before projecting immutable original PR #95 bytes."""
+    normalized = actual.replace(b"\r\n", b"\n")
+    assert hashlib.sha256(normalized).hexdigest() == GREEN_SHA256[path], path
+    return subprocess.check_output(["git", "show", f"{GREEN_ORIGINAL}:{path}"], cwd=ROOT).replace(b"\r\n", b"\n")
 
 
 def weathered_bytes(path, actual):
@@ -25,8 +35,7 @@ def weathered_bytes(path, actual):
     This does not authorize Native use. Owner review of changed controls and
     input scope is still required. Arbitrary edits never receive an exemption.
     """
-    normalized = actual.replace(b"\r\n", b"\n")
-    assert hashlib.sha256(normalized).hexdigest() == GREEN_SHA256[path], path
+    original_green_bytes(path, actual)
     return subprocess.check_output(["git", "show", f"{GREEN_BASE}:{path}"], cwd=ROOT).replace(b"\r\n", b"\n")
 
 

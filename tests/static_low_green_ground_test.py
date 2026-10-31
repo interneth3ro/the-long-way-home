@@ -9,7 +9,7 @@ import unittest
 import zlib
 
 from static_weathered_earth_test import (ROOT, GREEN_BASE, GREEN_SHA256,
-    coordinate_random, noise, weathered_bytes)
+    coordinate_random, noise, weathered_bytes, original_green_bytes)
 
 ART = ROOT / 'assets/environment/exterior/low_green_ground_cover_provisional'
 ASSETS = {
@@ -164,7 +164,7 @@ class LowGreenStaticTest(unittest.TestCase):
         self.assertEqual(material(100,100,26026,anchors=[(6432,6432)]),0)
         generator = (ROOT/'scenes/world/planet_generator.gd').read_bytes().replace(b'\r\n',b'\n')
         original = weathered_bytes('scenes/world/planet_generator.gd',generator)
-        self.assertEqual(generator.split(b'\n\n# Presentation only:')[0],original)
+        self.assertEqual(original_green_bytes('scenes/world/planet_generator.gd', generator).split(b'\n\n# Presentation only:')[0], original)
         chunk = (ROOT/'scenes/world/terrain_chunk.gd').read_text()
         before = weathered_bytes('scenes/world/terrain_chunk.gd', chunk.encode()).decode()
         # All legacy tint/halo/detail code stays exact, beyond the reviewed

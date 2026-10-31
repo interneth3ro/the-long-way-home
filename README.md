@@ -2243,7 +2243,7 @@ Production inputs live in `assets/environment/exterior/low_green_ground_cover_pr
 `PlanetGenerator.sample_ground_material(tile)` is presentation-only: 0 selects
 existing Base Soil, 1..4 select green variants. It does not determine construction
 validity or alter terrain edits, state, Ferrite or factory simulation. The original
-generator methods are preserved verbatim. Protected gameplay space/object clearances
+precise geometry, color, detail and hash methods are preserved verbatim. Protected gameplay space/object clearances
 and all authored polygons plus their full 256-unit recovery feathers select earth.
 Beyond these masks, world-space smooth noise at 768 and 192 units, channels 8/9,
 forms clusters using `broad + fine * 0.18 >= 0.64`. Coordinate hashing on channel 10
@@ -2263,6 +2263,50 @@ can cause more texture switches; actual GPU batching, frame times and memory are
 unmeasured. Chunk radius, retention, two-chunk generation budget and transitions
 are untouched. These are source counts, not performance claims.
 
+The focused material-selection correction caches one conservative rectangle per
+PlanetGenerator at initialization: the union of the protected polygon expanded
+by 48 units, each authored object expanded by 160 units, and each overlay expanded
+by max(48, its full feather). Each extent has one additional world unit so the
+right/bottom exclusion of Rect2.has_point cannot reject an influenced boundary.
+For the current authored inventory the union is (-1281, -1281) to (1281, 1281).
+Only sample_ground_material uses this filter; points inside still run the exact
+original precise predicates, in the original order. Points outside skip both
+protection/overlay loops and continue with identical noise and variant selection.
+Geometry is fixed for the generator lifetime by the existing exterior setup.
+There is no per-frame bound rebuild or new manager/cache beyond this rectangle.
+
+| Material-selection work per fully distant 32 x 32 chunk | Original PR #95 | Correction |
+| --- | ---: | ---: |
+| Rectangle containment tests | 0 | 1,024 |
+| Detailed point-in-polygon calls | 9,216 | 0 |
+| Polygon segment-distance evaluations | 61,440 | 0 |
+| Authored-object distance checks | 4,096 | 0 |
+| Material noise samples | 2,048 | 2,048 |
+
+Counts apply only to the material-selection path and the current four overlays,
+six-vertex protected polygon and four object anchors. Existing color/detail work
+remains. Inside the union (including empty gaps/concavities), all original precise
+checks can still be required, with one additional rectangle test. Bounds build
+once in linear time over authored vertices/anchors; per-cell work keeps its prior
+worst-case complexity. No measured frame-time or batching improvement is claimed.
+
+Static equivalence uses immutable original PR #95 commit f112f48 as the source-pinned
+reference for arithmetic models. It covers protected interiors/edges, full feather
+limits, corners, Ferrite, object clearances, negative/positive chunk boundaries,
+distant samples, multiple seeds, regeneration and reversed visit order. It also
+checks the exact unchanged renderer, streaming, construction/factory files and
+all other original tracked files outside the five existing correction paths.
+These models do not execute GDScript or establish engine parsing/float behavior.
+The preservation amendment changes only the exact generator candidate SHA-256;
+the renderer digest and historical PR #94 baselines stay unchanged. Candidate
+validation now also exposes the immutable original PR #95 bytes to equivalence
+checks. The older machine-icon preservation guard now recognizes only the four
+already committed green PNG paths after checking their original SHA-256 values;
+its previous omission surfaced only once those PR #95 assets were tracked.
+No asset bytes or other protected scope change. Changed/appended/duplicated source
+candidates are still rejected. Independent
+owner review is required before any future Native use; runner scope is unchanged.
+
 Static checks decode PNGs with CRC/filter validation, verify original hashes,
 128 x 128 RGB8 metadata and all 16 ordered shared-edge combinations. Arithmetic
 models check positive/negative boundaries, regeneration, visit order, seed variation,
@@ -2271,7 +2315,11 @@ adapt the historical Weathered Earth/preservation checks to immutable PR #94
 bytes; all historical assertions and tamper rejection remain. Changed controls
 and input scope require independent owner review before any future Native use.
 Runner, policy, engine commands, limits and Native assertions are unchanged.
-No Godot, Native, graphical, profiling or benchmark execution was performed.
+No agent Godot, Native, graphical, profiling or benchmark execution was performed
+for this correction. The owner reported smooth stationary/near-spawn/retained-return
+gameplay and minor stuttering on new terrain. A separate owner Script Profiler
+session caused system-wide sluggishness inside the ship; its cause remains
+unresolved and was not reproduced. These observations are not agent measurements.
 
 The supplied mixed preview has repeated motifs. Matching green edge pixels do
 not establish filtered/mipmapped appearance or Earth/Green compatibility. Square
@@ -2285,8 +2333,19 @@ Owner PASS/FAIL review (agent graphical launch requires separate authorization):
   Weathered Earth remains recognizable and Ferrite/grid remain legible.
 - Farther outside: believable clusters, four useful variants, acceptable seams and
   repetition. Compare screenshots at spawn, farther green terrain, and grid enabled.
-- Initial exit/movement, new chunk generation and return trips: no noticeable
-  regression; ship/hatch, deployment/recovery and production remain functional.
+- Performance PASS/FAIL: normal initial exit, smooth near-spawn movement, new-terrain
+  movement smoother or no worse, smooth retained returns, and no desktop sluggishness.
+- Preservation PASS/FAIL: identical green cluster locations at the same seed and
+  coordinates, unchanged clearing/Ferrite, and no new seams or visual artifacts.
+  The existing reported square Earth/Green boundaries are outside this correction.
+- Gameplay PASS/FAIL: ship/hatch and Dave movement, readable construction grid,
+  unchanged deployment/recovery and production. Optional observations for each.
+
+Await separate owner authorization before graphical acceptance. Keep Script and
+Visual Profilers disabled for any proposed first review; preserve all established
+stop conditions, including immediate stop on desktop sluggishness. Earlier
+owner-operated sessions do not authorize testing this correction. Existing isolated
+snapshots still represent f112f48 and have not been refreshed or modified.
 
 Await owner graphical review. No merge or post-merge cleanup is requested.
 
