@@ -1,147 +1,178 @@
-# Issue #96: native 47-pattern terrain laboratory
+# Issue #96: native 94-pattern two-material terrain laboratory
 
-Feature branch experiment, pending merge and owner testing. This standalone,
-configuration-only candidate does not implement the production visual refinements
-tracked by [Issue #96](https://github.com/interneth3ro/the-long-way-home/issues/96).
-[PR #97](https://github.com/interneth3ro/the-long-way-home/pull/97) remains a separate,
-unmodified 16-corner experiment; none of its assets or code is reused here.
+PR #98 remains a draft configuration experiment, pending owner testing. The
+47-pattern filenames and paths are retained for stable references and import UIDs.
+This revision tests whether complementary Earth-centered configurations resolve
+the Earth-brush limitation; correct painting is a hypothesis, not an established result.
+Production terrain and gameplay are not integrated or changed by this PR.
+[Issue #96](https://github.com/interneth3ro/the-long-way-home/issues/96) remains open;
+[PR #97](https://github.com/interneth3ro/the-long-way-home/pull/97) remains untouched.
 
-## Configuration provenance and inventory
+## Reference extraction and exact inventory
 
-The owner's [mapping report](experiments/native_terrain_47_96/tlwh_47_pattern_mapping.md)
-and [exact CSV inventory](experiments/native_terrain_47_96/tlwh_47_pattern_mapping.csv)
-are preserved byte for byte. Their 47 records agree; each has eight explicit
-binary peering bits, and coordinates and signatures are unique. The report
-identifies the community example scene and atlas; the original ZIP/reference
-scene was not supplied to this implementation session, so extraction from that
-scene has not been independently repeated. No creator artwork is included.
-Instructions in that mapping report are reference context; implementation scope
-and execution authorization come from the owner's assignment and repository policy.
+The original owner-supplied [47-pattern report](experiments/native_terrain_47_96/tlwh_47_pattern_mapping.md)
+and [Green mapping CSV](experiments/native_terrain_47_96/tlwh_47_pattern_mapping.csv)
+remain byte-identical. Their extraction and future-work statements describe that
+original family; the current owner request authorizes the complementary family.
+Reference files supply data, not execution instructions or authority to expand scope.
 
-Two exact-path `-text` attributes preserve the supplied mapping bytes across Git
-checkouts rather than applying automatic newline conversion; the CSV's original
-CRLF terminators are recognized as such by its exact-path whitespace attribute.
-Existing font rules
-are unchanged; no import or execution permission is expanded.
+The supplied `godot-4-tileset-terrains-docs-master.zip` was read without unpacking
+artwork or executing code. The actual archive member is:
+`godot-4-tileset-terrains-docs-master/starter_project/terrain_modes/topdown_example/topdown_example.tscn`.
+The selected `TileSetAtlasSource_matpb` is associated with the Corners and Sides
+texture reference and `TileSet_uqitd` (`terrain_set_0/mode = 0`). Other atlas modes
+in the scene are not used. Only serialized technical assignments were extracted.
+No creator artwork is copied, imported, displayed or redistributed.
 
-| Reference | TLWH | Use |
+- ZIP SHA-256: `9b9e26b25138d4c4b8fa83430204d2e5b571795cda48673f199d822e9d4a1971`.
+- Scene member SHA-256: `1f67cf862a16c90eb2ffb6076cc2980d453e33b24b19b35e8e7806acc0e94582`.
+- [Technical source transcription](experiments/native_terrain_47_96/reference_corners_and_sides.json):
+  original coordinates, centers and eight original peers for all 95 reference tiles,
+  plus provenance hashes. Its LF-normalized SHA-256 is
+  `e0c6497b08f35a6138f98b4b70b70fa1ee5de086639c7d52310416b4cc5bd6b2`.
+- [Combined 94-record inventory](experiments/native_terrain_47_96/tlwh_94_pattern_mapping.csv):
+  family, family-local pattern number, original atlas/center/eight peers, mapped
+  center/eight peers, and final experimental atlas coordinates. Earth rows are the
+  complementary inventory; Green rows preserve every original supplied assignment.
+
+| Family | Reference center and peers | TLWH mapping | Count |
+| --- | --- | --- | --- |
+| A: Earth | Grass center 1; Grass 1 / Water 0 peers | center 0; 1 -> Earth 0, 0 -> Green 1 | 47 |
+| B: Green | Dirt center 2; Dirt 2 / Grass 1 peers | center 1; 2 -> Green 1, 1 -> Earth 0 | 47 |
+
+The reference has exactly 47 Grass-centered and 47 Dirt-centered tiles, each with
+eight explicit peers. The additional Water interior at (10,1), center 0 with eight
+0 peers, is recorded in the source transcription but **excluded** from the TileSet
+and combined mapping. No 95th tile or other family is added. Remapping is
+family-specific; reference Water is not added as a third TLWH material.
+
+All 47 original Green records were compared directly against the ZIP scene:
+center and all 376 peers agree. Both mapped families have 47 unique eight-peer
+signatures. The combined set has **94 unique center-plus-peer signatures**, 94
+unique atlas coordinates and **752 explicit peering assignments**. There are no
+duplicate full signatures or overlapping atlas cells. Peer-only signatures overlap
+across families only for all-zero and all-one peers:
+
+| Peers | Earth-center candidate | Green-center candidate |
 | --- | --- | --- |
-| Grass (1) | Weathered Earth (0) | Peering values only |
-| Dirt (2) | Low Green Cover (1) | All 47 centers and Green peering values |
+| All Earth (0) | (9,2): solid Earth | (0,7): isolated Green candidate |
+| All Green (1) | (0,3): isolated Earth candidate | (9,6): solid Green |
 
-Only these two terrains exist. Reference Water and the separate Grass-to-Water
-family are excluded. The sole terrain set uses Match Corners and Sides (`mode=0`);
-there is one atlas source (`0`), alternative `0`, and exactly 47 tiles. No physics,
-navigation or gameplay metadata is added.
+These two peer-only overlaps are intentional, distinguished by center ID. Whether
+native Connect chooses the intended center and remains stable is still unverified.
 
-The [TileSet](../assets/experiments/native_terrain_47_96/experimental_match_corners_and_sides.tres)
-uses the CSV coordinates unchanged: x=0..11, y=4..7, omitting (10,5).
-The [original diagnostic PNG](../assets/experiments/native_terrain_47_96/experimental_47_patterns.png)
-is 192 x 128 RGBA, with 16 x 16 cells. Rows 0..3 and (10,5) are transparent and
-have no TileSet tile. Transparent padding is not an empty terrain configuration.
+## TileSet, diagnostic PNG and lab
 
-Each occupied cell is a flat 3 x 3 diagnostic matrix. Column/row spans are 4, 8,
-4 pixels: corners occupy four 4 x 4 blocks, sides occupy the middle edge blocks,
-and the 8 x 8 center is Green. Earth is RGBA (156,100,62,255); Green is
-(74,170,82,255). Every sector encodes the corresponding CSV bit. These deliberately
-blocky sectors make side/corner assignments inspectable; they are not final
-transition contours or a candidate for artistic acceptance. Nearest filtering is
-set on the lab root. No generated import sidecar or engine cache is committed.
+The existing [TileSet](../assets/experiments/native_terrain_47_96/experimental_match_corners_and_sides.tres)
+now has one atlas source (`0`), alternative `0`, one Match Corners and Sides terrain
+set (`mode=0`), Weathered Earth (`0`) and Low Green Cover (`1`). No collisions,
+navigation, gameplay metadata or custom autotiler is added. Owner editor UIDs,
+property order, default omissions and all existing Green assignments are retained;
+only 47 Earth records and updated experimental names are added to that serialization.
+The editor omitted tile-size properties at their 16 x 16 defaults; no cell-size
+change is introduced.
 
-## Known limitations before editor testing
+The original flat-color [PNG fixture](../assets/experiments/native_terrain_47_96/experimental_47_patterns.png)
+remains 192 x 128 RGBA with 16 x 16 cells. Its occupied inventory expands from 47
+to 94 by filling previously transparent rows 0..3 with Earth-family patterns.
+Green remains in rows 4..7, with every original Green pixel unchanged. Coordinates
+are identical to the reference for both families; no translation is needed.
+Cells (10,1) and (10,5) remain transparent and have no configured tile.
 
-There are **no Earth-centered configurations**. Pattern #33 at (9,6) is fully
-Green. Pattern #36 at (0,7) has eight Earth peers but a **Green center**; it is
-an isolated Green-center candidate, not a solid Earth tile. No Earth-center island
-candidate or solid Earth backing exists. Defining Earth in the terrain set does
-not establish that the native Earth brush has paintable candidates.
+Each cell is a 3 x 3 diagnostic matrix with 4/8/4-pixel row and column spans.
+The center 8 x 8 block represents its primary terrain; corner blocks and middle
+edge blocks represent the corresponding eight peers. Earth is RGBA
+(156,100,62,255); Green is (74,170,82,255). These blocky sectors encode metadata,
+not final organic contours or illustrated artwork. The lab uses nearest filtering.
+The existing [script-free TileMapLayer laboratory](../scenes/experiments/native_terrain_47_96/terrain_painting_lab.tscn)
+retains its neutral backdrop and native editor tools, with revised two-family labels.
+No production scene or project startup setting references this experiment.
 
-The supplied family is internally consistent but cannot represent arbitrary
-independent binary center/peer assignments. Static completeness of the 47 supplied
-records does not establish sufficiency for both material directions. Additional
-Earth-centered configurations would be needed to represent Earth-centered cells;
-the exact minimal expansion for native painting remains unresolved and is outside
-this PR. No configurations, center substitutions, empty-terrain (`-1`) values or
-custom autotiler are added to hide missing coverage.
+## Owner results and remaining acceptance
 
-Native brush availability, matching/selection, island survival, boundary stability,
-empty-space behavior and painting-order dependence are **NOT RUN**. No 4.7.2 import,
-parse, runtime or graphical compatibility is claimed. This may provide a useful
-configuration reference for original illustrated work only after owner testing;
-it is not yet an accepted terrain-art foundation. Chunk integration, neighbor halos,
-generation order, performance, production 64-unit terrain/construction dimensions,
-streaming and the provisional per-chunk TileMapLayer architecture remain outside scope.
-
-## Owner-controlled editor checks
+For the **original 47-pattern commit** `a5b2a2f`, the owner reports:
+Godot 4.7.2 scene import PASS; basic Green painting PASS; basic Earth painting FAIL.
+Earth painting showed repeated Green centers surrounded by brown. These are
+owner graphical observations, not agent verification. They do not accept this
+94-pattern revision; all revised checks below are **NOT RUN**.
 
 Follow the [execution policy](../AGENTS.md#godot-execution-safety) and
-[testing policy](LOCAL_TESTING.md). Agent Godot execution requires separate explicit
-owner authorization for this assignment, including Native. No runner changes are
-made. Stop on import/parse errors or abnormal responsiveness; do not automatically
-retry, profile, benchmark or reproduce a freeze.
+[testing policy](LOCAL_TESTING.md). No Godot, Native, game, graphical automation,
+profiling or benchmarking was run by the agent. Separate explicit authorization
+is required for agent execution. No runner, execution or preservation policy changes
+are made. Stop on errors or abnormal responsiveness; do not retry automatically.
 
-1. In your editor, open the [laboratory](../scenes/experiments/native_terrain_47_96/terrain_painting_lab.tscn)
-   in 2D. No game launch or F5/F6 is needed. Select `PaintingWorkspace`, open the
-   native TileMap panel's Terrains tab and use **Connect**. Editor labels and a
-   neutral backdrop provide instructions; the layer starts empty.
-2. Inspect terrain set 0 and source 0 in the TileSet editor. Confirm both terrain
-   definitions, mode, center and all eight peering bits against the CSV. Select
-   each Earth/Green brush if available; record a missing/disabled Earth brush.
-3. Use independent small work areas. Attempt an Earth backing then Green marks,
-   and a Green backing then Earth marks. If a backing/brush cannot be made, mark
-   that direction FAIL with the missing candidate, or BLOCKED if no attempt can
-   be performed. Do not count empty canvas, the neutral backdrop, or pattern #36
-   as Earth. Direct atlas placement can inspect tiles but does not prove terrain painting.
-4. Keep results tied to Connect and exact brush order. Repeat with materials and
-   order reversed, including rotated shapes. Optional Path tests require separate
-   records. Inspect actual selected source/atlas/alternative and primary terrain
-   in the editor; compare to the inventory. Preserve test edits and useful evidence
-   separately under the repository preservation policy.
+Open the lab in your editor's 2D workspace, select `PaintingWorkspace`, then native
+TileMap > Terrains > **Connect**. No F5/F6 or game launch is needed. Inspect source
+0, mode 0 and both center families against the CSV. First test import, then solid
+Earth and solid Green regions. **Only after both interiors pass**, perform transition
+checks with a filled backing. Empty canvas or the backdrop does not count as Earth.
+Test both directions, rotations and reversed brush order using separate work areas.
+Direct atlas placement can inspect a candidate but does not verify terrain painting.
+Optional Path-mode observations need separate records.
 
-All result fields start **NOT RUN**. Use PASS/FAIL (or BLOCKED with reason) and
-optional observations independently for each direction; no unchecked row is a PASS.
+| Test | Expected result | Revised status |
+| --- | --- | --- |
+| 1 Import | Scene and TileSet load without errors; 94 exact configurations | NOT RUN |
+| 2 Earth interior | Continuous brown, no repeated Green centers | NOT RUN |
+| 3 Green interior | Continuous green, no unexpected Earth centers | NOT RUN |
+| 4 Green islands in Earth | Single-cell and larger Green centers survive | NOT RUN |
+| 5 Earth islands in Green | Single-cell and larger Earth centers survive | NOT RUN |
+| 6 Straight transitions | Horizontal/vertical boundaries, both directions | NOT RUN |
+| 7 Corners | Convex L shapes and concave notches, all rotations/directions | NOT RUN |
+| 8 Narrow strips | One-/two-cell widths and bends, both materials | NOT RUN |
+| 9 Diagonals | Diagonal cells/checkerboards; record ambiguous selections | NOT RUN |
+| 10 Irregular patches | Tips, protrusions, notches and tile curves; reverse brush order | NOT RUN |
 
-| Test | Expected check | Green into Earth | Earth into Green |
-| --- | --- | --- | --- |
-| 1 Import/configuration | Scene/TileSet load; 47 exact assignments; both brush availability | NOT RUN | NOT RUN |
-| 2 Large regions | Continuous interiors and correctly matched boundaries | NOT RUN | NOT RUN |
-| 3 Single-cell islands | Intended isolated center survives; record actual center ID | NOT RUN | NOT RUN |
-| 4 Straight boundaries | Horizontal/vertical edges remain continuous | NOT RUN | NOT RUN |
-| 5 Corners | Convex L shapes and concave notches, all rotations | NOT RUN | NOT RUN |
-| 6 Narrow strips | One-/two-cell widths, bends and rotated strips survive | NOT RUN | NOT RUN |
-| 7 Diagonals | Diagonal cells/checkerboards; record ambiguous or missing selections | NOT RUN | NOT RUN |
-| 8 Irregular patches | Notches, protrusions, isolated tips and tile curves; reverse order | NOT RUN | NOT RUN |
+Record PASS/FAIL and optional observations per material direction. Mark dependent
+tests BLOCKED if import or either interior fails. For every failure record expected
+and actual result, selected source/atlas/alternative (or no selection), center ID,
+terrain mode, exact backing and brush order, shape/rotation and observations.
+Do not automatically add configurations or change center IDs to fix failures.
 
-For every failure record: test/direction; expected result; actual result;
-source/atlas/alternative coordinates (or no selection); primary terrain ID;
-terrain painting mode; backing, exact brush order and shape/rotation; optional
-observations. Missing Earth centers are a known data limitation, not a reason to
-invent extra tiles during testing. If import fails, dependent checks are BLOCKED.
-
-## Static verification and scope
+## Static validation and preservation
 
 Run `python -B -m unittest discover -s tests -p 'static_*test.py'` for the complete
-nonexecuting Python suite, or use `-p 'static_native_terrain_47_test.py'` for the
-five focused tests. They check supplied-file SHA-256 and Markdown/CSV agreement,
-exact inventory/IDs/peering assignments, unique signatures/coordinates, PNG chunk
-CRC/dimensions/every sector pixel/transparent gaps, resource and lab references,
-known center gaps and byte preservation of all tracked production inputs and
-execution controls against baseline `48cd9150d7aa2e029c7328229e7865cf00e83723`.
-Git diff review checks the remaining changed-file scope. Static assertions inspect
-text and bytes; they do not run Godot, gameplay or a simulated terrain solver.
+permitted suite; use `-p 'static_native_terrain_47_test.py'` for six focused checks.
+They verify original supplied hashes/Markdown agreement; technical source and both
+remaps; exact 94/47/47 inventory and 752 peers; atlas/signature uniqueness and two
+intentional peer-only overlaps; PNG CRC/dimensions/every sector pixel/transparent
+gaps; TileSet/lab references; and production isolation in committed and staged PR
+inputs against main baseline `48cd9150d7aa2e029c7328229e7865cf00e83723`.
+The focused production check now inspects committed/staged inputs, because the
+owner explicitly requested retaining unrelated manual-playtesting edits in place.
+Legacy suite assertions on working production bytes remain unchanged.
 
-Implementation validation on 2026-10-31: **112/112 complete static tests PASS**,
-including **5/5 focused prototype tests**. Changed local Markdown targets and
-Git whitespace checks PASS. All 13 pre-existing untracked files retain their
-original SHA-256 values. Godot import, Native, runtime, graphical, profiling and
-benchmark checks are NOT RUN.
+Revision validation on 2026-10-31:
 
-The deliverables are the PNG and TileSet above, the script-free lab, both unchanged
-mapping inputs, this report/checklist and the focused static test. The README links
-this report. Existing owner artwork, import sidecars, ignored data and the PR #97
-branch remain preserved. No production assets, rendering, project settings,
-narrative canon, gameplay, tests for Native, or execution policy are changed.
+- **6/6 focused static checks PASS**, including after staging the proposed revision.
+- Complete working-tree suite: **113 tests run, 17 assertion failures, 0 errors**.
+  A second run with concise diagnostics confirmed the same result. This is a FAIL,
+  not a complete-suite PASS. Fourteen failure records concern the preserved owner
+  UI/recipe/dialogue serialization, including unresolved owner Theme UIDs in the
+  legacy resource-graph checks. Two historical preservation assertions reject the
+  original PR's exact-path mapping attributes already present in reviewed commit
+  `a5b2a2f`; those attributes are unchanged in this revision. One changed-file
+  whitelist assertion rejects pending experiment edits together with local owner
+  changes. These unrelated historical assertions are left intact.
+- Direct ZIP-to-transcription comparison, original Green mapping and pixel
+  preservation, changed local Markdown targets and staged Git whitespace checks PASS.
+- Preservation checks PASS: 21 pre-existing unrelated tracked/untracked files retain
+  their exact starting SHA-256 values. Removing only this revision's Earth additions
+  and name changes reconstructs the owner's original TileSet bytes exactly.
+- No agent Godot import, Native, runtime, graphical, profiling or benchmark execution.
 
-Godot API references: [TileSet terrain modes](https://docs.godotengine.org/en/4.5/classes/class_tileset.html)
-and [terrain setup](https://docs.godotengine.org/en/latest/tutorials/2d/using_tilesets.html).
-These describe the configuration model, not verification of this resource in 4.7.2.
+The full-suite failures remain visible for owner review; no production resources,
+legacy test assertions or policies are changed to suppress them. Static
+validation does not establish native parsing, terrain matching, visual acceptance
+or performance. The exact 94-pattern baseline is internally consistent, but may
+still omit patterns needed by particular native painting operations. Do not assume
+it solves both directions or is ready for final original artwork until owner tests.
+Procedural chunks, halos, generation order and performance remain outside scope.
+
+Existing owner artwork, imports, experimental assets, evidence and six unrelated
+modified production resources remain in place and excluded from this revision's
+commit. No generated sidecars/caches are staged. The original mapping inputs and
+existing exact-path Git attributes are unchanged. Revision files are the PNG,
+TileSet, lab, this report, README, focused static test and two new technical
+inventories. No merge, cleanup or PR #97 modification is performed.

@@ -10,12 +10,12 @@ metadata/purpose = "Issue 96 configuration experiment; see docs/NATIVE_TERRAIN_4
 [node name="Title" type="Label" parent="."]
 offset_left = 32.0
 offset_top = 16.0
-text = "EXPERIMENTAL #96 - 47 patterns / Match Corners and Sides"
+text = "EXPERIMENTAL #96 - 94 patterns / Match Corners and Sides"
 
 [node name="Instructions" type="Label" parent="."]
 offset_left = 32.0
 offset_top = 48.0
-text = "Select PaintingWorkspace > TileMap > Terrains > Connect. Choose Earth or Green.\n16-unit cells; zoom the editor. No F5/F6 needed. All 47 tile centers are Green.\nEarth has no primary tiles: record missing Earth brush/backing, never substitute empty space.\nSee docs/NATIVE_TERRAIN_47_PROTOTYPE.md for both-direction PASS/FAIL cases."
+text = "Select PaintingWorkspace > TileMap > Terrains > Connect. Choose Earth or Green.\n16-unit cells; zoom the editor. No F5/F6 needed. 47 Earth + 47 Green centers.\nFirst verify solid brown and solid green interiors, then test both transition directions.\nSee docs/NATIVE_TERRAIN_47_PROTOTYPE.md for the owner PASS/FAIL checklist."
 
 [node name="WorkspaceBackdrop" type="Polygon2D" parent="."]
 polygon = PackedVector2Array(32, 160, 800, 160, 800, 672, 32, 672)
@@ -30,7 +30,7 @@ navigation_enabled = false
 [node name="AtlasTitle" type="Label" parent="."]
 offset_left = 848.0
 offset_top = 128.0
-text = "EXPERIMENTAL TECHNICAL FIXTURE\nReference coordinates unchanged: x=0..11, y=4..7\nRows 0..3 and (10,5) transparent / no tile.\nBrown=Earth(0), bright green=Green(1)."
+text = "EXPERIMENTAL TECHNICAL FIXTURE\nEarth family: rows 0..3; Green family: rows 4..7\nReference coordinates unchanged; (10,1)/(10,5) unused.\nBrown=Earth(0), bright green=Green(1)."
 
 [node name="AtlasReference" type="Sprite2D" parent="."]
 position = Vector2(848, 224)
@@ -41,4 +41,4 @@ centered = false
 [node name="Limitations" type="Label" parent="."]
 offset_left = 848.0
 offset_top = 624.0
-text = "Center always Green; edges/corners encode eight bits.\nNo production integration or graphical acceptance.\nRecord selected atlas coordinates and brush order."
+text = "Two center families; edges/corners encode eight bits.\n94-pattern painting hypothesis awaits owner testing.\nRecord selected atlas coordinates and brush order."
