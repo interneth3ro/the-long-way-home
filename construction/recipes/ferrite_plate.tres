@@ -1,15 +1,14 @@
-[gd_resource type="Resource" script_class="RecipeDefinition" load_steps=7 format=3]
+[gd_resource type="Resource" script_class="RecipeDefinition" format=3 uid="uid://cwukj200iq7hq"]
 
-[ext_resource type="Script" path="res://construction/recipe_definition.gd" id="1_recipe"]
-[ext_resource type="Script" path="res://construction/recipe_ingredient.gd" id="2_ingredient"]
+[ext_resource type="Script" uid="uid://css30x75jciqk" path="res://construction/recipe_definition.gd" id="1_recipe"]
+[ext_resource type="Script" uid="uid://bc41o0fqceafe" path="res://construction/recipe_ingredient.gd" id="2_ingredient"]
 [ext_resource type="Resource" path="res://inventory/ferrite_ingot.tres" id="3_ingot"]
 [ext_resource type="Resource" path="res://inventory/ferrite_plate.tres" id="4_output"]
-[ext_resource type="Texture2D" path="res://assets/items/ferrite_plate.png" id="5_icon"]
+[ext_resource type="Texture2D" uid="uid://c0j7yw488scn8" path="res://assets/items/ferrite_plate.png" id="5_icon"]
 
 [sub_resource type="Resource" id="Ingot"]
 script = ExtResource("2_ingredient")
 item = ExtResource("3_ingot")
-quantity = 1
 
 [resource]
 script = ExtResource("1_recipe")
@@ -17,6 +16,4 @@ recipe_id = &"ferrite_plate"
 display_name = "Ferrite Plate"
 ingredients = Array[ExtResource("2_ingredient")]([SubResource("Ingot")])
 output_item = ExtResource("4_output")
-output_quantity = 1
-cycle_seconds = 3.0
 icon = ExtResource("5_icon")
