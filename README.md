@@ -2370,6 +2370,16 @@ explicit owner authorization in this chat. No merge or post-merge cleanup has
 been performed; Native restrictions and independent preservation review before
 future Native use remain in force.
 
+## Native 47-pattern terrain laboratory (feature branch, pending merge)
+
+The isolated [Issue #96 configuration experiment](docs/NATIVE_TERRAIN_47_PROTOTYPE.md)
+provides an original flat-color atlas, native Match Corners and Sides TileSet,
+editor-only TileMapLayer lab, exact owner-supplied inventory and both-direction
+PASS/FAIL checklist. All 47 supplied centers are Green; Earth-centered coverage
+is missing. Static checks do not establish native painting or graphical acceptance.
+Production terrain and gameplay remain unchanged. No Godot execution is authorized
+by these instructions; PR #97 remains a separate, unmodified experiment.
+
 ## Weathered Earth Textured Terrain Foundation (pending merge)
 
 Historical PR #94 implementation record (merged 2026-10-30). The recorded

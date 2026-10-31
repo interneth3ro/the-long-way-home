@@ -2,3 +2,5 @@ assets/fonts/ibm-plex-sans/IBMPlexSans-Regular.ttf.import text eol=lf
 assets/fonts/ibm-plex-sans/IBMPlexSans-Medium.ttf.import text eol=lf
 assets/fonts/ibm-plex-sans/IBMPlexSans-SemiBold.ttf.import text eol=lf
 assets/fonts/ibm-plex-sans/IBMPlexSans-Italic.ttf.import text eol=lf
+docs/experiments/native_terrain_47_96/tlwh_47_pattern_mapping.csv -text whitespace=cr-at-eol
+docs/experiments/native_terrain_47_96/tlwh_47_pattern_mapping.md -text
