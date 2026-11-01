@@ -154,38 +154,59 @@ authorization.
 
 ### Disturbed earth and skid marks (feature branch, pending merge)
 
-The owner-supplied [ground-treatment PNG](assets/environment/exterior/disturbed_earth_skid_marks_v1.png)
-is preserved byte-for-byte: 2200 x 1300, 8-bit RGBA, SHA-256
+One decorative root-level DisturbedEarth Sprite2D uses the
+[ground-treatment PNG](assets/environment/exterior/disturbed_earth_skid_marks_v1.png)
+at top-left `(-1334,-1122)`, scale `(1,1)`, zero rotation, `centered = false`.
+Effective draw order remains terrain Z=-11, ground treatment Z=-2, approved
+shadow Z=-1, hull Z=0; gameplay Y sorting is unchanged. Hide DisturbedEarth for
+visual rollback. Separate localized debris, salvage, hatch animation and
+foreground occlusion remain deferred.
+
+#### Initial owner review and correction (2026-11-01)
+
+Owner gameplay review of `eee70da59aa0cfbe26b518517cdc5502b9ce8855`: **4/6 PASS**.
+Alignment and visual intensity failed; skid placement, terrain blending, hatch
+and gameplay clearance, and performance passed. Performance is an owner
+observation, not a benchmark. The screenshot shows a detached ridge above/left
+of the nose; best-supported explanation is the original broad-patch guide did
+not register that contour to the actual grounded hull. Global translation would
+also displace the accepted rear furrows, so only the forward artwork is warped.
+
+Original 2200 x 1300 RGBA PNG remains in Git at that implementation, SHA-256
 `7d32263726b6c84c12e8687dfd31e296bddd82e62f25e13fc7c47058784e4cb1`.
-CRC/decode checks found alpha 0..252, 2,449,649 transparent pixels and 410,351
-partially transparent pixels. Nonzero alpha bounds are `[260,216)..[1879,1101)`;
-alpha >=128 bounds are `[344,369)..[1551,1028)`.
+Corrected PNG has SHA-256
+`35b4576aba05c8de76b9b6adde56376a219bae8b76e5e09239bc8d2f4efcdf7d`.
+No scene or sprite transform changed. Registration remains world = source +
+`(-1334,-1122)`; the corrected alpha bounds `[340,216)..[1879,1156)` map to
+world `[-994,-906)..[545,34)`. Canvas size is unchanged; scaling uses the visible
+footprint rather than matching the ship's 0.70 scale or canvas dimensions.
 
-One noncolliding root-level DisturbedEarth Sprite2D uses top-left position
-`(-1334,-1122)`, scale `(1,1)`, zero rotation and `centered = false`.
-This scales the actual visible 1619 x 885 footprint against the hull's roughly
-1228 x 610 solid silhouette, rather than matching canvas sizes or reusing 0.70.
-Source broad-patch guide `(750,850)` maps to world `(-584,-272)`, under the
-nose/fuselage, while the upper-right furrow guide `(1800,300)` maps to
-`(466,-822)`, behind the engines. These are approximate visual guides, not
-surveyed contact points. Visible world bounds are `[-1074,-906)..[545,-21)`.
-The irregular furrows follow the same lower-left/upper-right direction as the
-hull; exact perspective alignment requires the owner's gameplay screenshot.
+Deterministic correction uses source pixels and cubic smoothstep S(a,b,v):
 
-Effective draw order is terrain Z=-11, ground treatment Z=-2, approved contact
-shadow Z=-1, hull Z=0, with existing gameplay Y sorting preserved. The overlay
-cannot occlude the hatch or player and introduces no movement/construction
-blocking; visual ground contrast around the hatch and spawn still needs review.
-Placement and apparent opacity are provisional: original PNG alpha is retained
-with default white/full Sprite2D modulation. Ship, locked shadow strength,
-collisions, hatch, spawn, camera, Ferrite, terrain and gameplay are unchanged.
-Hide DisturbedEarth for visual rollback. Localized separate debris remains a
-later phase, alongside the previously deferred salvage and occlusion work.
+- Forward displacement is `(80,55) * (1-S(650,900,x)) * S(550,800,y)`.
+  Inverse mapping uses 16 fixed-point iterations and premultiplied-alpha bilinear
+  sampling, evaluated in X=230..899, Y=550..1159. This tucks the nose-side ridge
+  inward, tapering continuously to the untouched rear/hatch region.
+- Rear contrast uses distance d to segments `(1030,650)-(1820,245)` and
+  `(1250,755)-(1850,375)`, without moving their coordinates. Channel mask is
+  `1-S(14,48,d)`; ridge mask is `S(24,36,d)*(1-S(48,72,d))`. Both are gated by
+  `S(1050,1200,x)*S(8,56,alpha)` in X=1050..1919, Y=180..859.
+  RGB multiplier is `1-0.50*channel*gate+0.12*ridge*gate`; alpha adds
+  `0.55*channel*gate*(255-alpha)`, rounded/clamped to bytes. There is no blanket
+  opacity change or new painted support in the rear; alpha <=8 is unchanged.
 
-Validation is focused and non-native: PNG integrity, registration arithmetic,
-resource references, scene layering and exact baseline preservation. No Godot
-import, engine, gameplay or graphical verification was performed. Ready for
-owner-controlled gameplay screenshot review; no visual acceptance is claimed.
+Focused static checks pass: PNG CRC/decode, unchanged RGBA dimensions, alpha
+0..253 with 2,459,740 transparent and 400,260 partially transparent pixels;
+221,968 forward pixels and 72,206 rear pixels changed only inside the stated
+regions. Both channel cores darken and gain alpha. Source rectangle
+X=900..1000, Y=900..1110 (hatch/spawn/approach) is pixel-identical. Entire scene,
+ship/shadow assets, three collisions, hatch, spawn, camera, construction,
+Ferrite, terrain and gameplay remain unchanged; existing owner files preserved.
+
+Documentation-sync is scoped to this record. Agent checks are non-native;
+Godot, imports, native tests and graphical gameplay verification were not run.
+Exact nose fit, contrast against Weathered Earth and terrain blending require
+owner-controlled graphical retest. **Retest pending; no final acceptance.**
 
 ### Final PR #105 owner acceptance (2026-11-01)
 
