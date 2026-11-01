@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3]
+[gd_scene load_steps=14 format=3]
 
 [ext_resource type="Script" path="res://scenes/interaction/scene_hatch.gd" id="1_hatch"]
 
@@ -7,6 +7,8 @@
 [ext_resource type="Script" uid="uid://c7294cf4973a" path="res://scenes/interaction/ferrite_inspection.gd" id="3_ferrite"]
 [ext_resource type="Texture2D" path="res://assets/environment/exterior/crashed_exploration_ship_approved.png" id="5_ship_art"]
 [ext_resource type="Texture2D" path="res://assets/environment/exterior/crashed_ship_contact_shadow_prototype.png" id="6_ship_shadow"]
+
+[ext_resource type="Texture2D" path="res://assets/environment/exterior/disturbed_earth_skid_marks_v1.png" id="7_disturbed_earth"]
 
 [sub_resource type="CircleShape2D" id="FerriteInspectionFootprint"]
 radius = 24.0
@@ -41,6 +43,14 @@ texture_filter = 1
 collision_enabled = false
 navigation_enabled = false
 occlusion_enabled = false
+
+; Provisional ground registration: source (750, 850) -> world (-584, -272).
+[node name="DisturbedEarth" type="Sprite2D" parent="."]
+z_index = -2
+position = Vector2(-1334, -1122)
+scale = Vector2(1, 1)
+texture = ExtResource("7_disturbed_earth")
+centered = false
 
 [node name="AuthoredCrashSite" type="Node2D" parent="."]
 visible = false

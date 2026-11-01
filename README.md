@@ -152,6 +152,41 @@ hatch, spawn, camera, construction, terrain and chunk streaming are unchanged.
 PR #106 remains draft, pending owner merge consideration; merge requires separate
 authorization.
 
+### Disturbed earth and skid marks (feature branch, pending merge)
+
+The owner-supplied [ground-treatment PNG](assets/environment/exterior/disturbed_earth_skid_marks_v1.png)
+is preserved byte-for-byte: 2200 x 1300, 8-bit RGBA, SHA-256
+`7d32263726b6c84c12e8687dfd31e296bddd82e62f25e13fc7c47058784e4cb1`.
+CRC/decode checks found alpha 0..252, 2,449,649 transparent pixels and 410,351
+partially transparent pixels. Nonzero alpha bounds are `[260,216)..[1879,1101)`;
+alpha >=128 bounds are `[344,369)..[1551,1028)`.
+
+One noncolliding root-level DisturbedEarth Sprite2D uses top-left position
+`(-1334,-1122)`, scale `(1,1)`, zero rotation and `centered = false`.
+This scales the actual visible 1619 x 885 footprint against the hull's roughly
+1228 x 610 solid silhouette, rather than matching canvas sizes or reusing 0.70.
+Source broad-patch guide `(750,850)` maps to world `(-584,-272)`, under the
+nose/fuselage, while the upper-right furrow guide `(1800,300)` maps to
+`(466,-822)`, behind the engines. These are approximate visual guides, not
+surveyed contact points. Visible world bounds are `[-1074,-906)..[545,-21)`.
+The irregular furrows follow the same lower-left/upper-right direction as the
+hull; exact perspective alignment requires the owner's gameplay screenshot.
+
+Effective draw order is terrain Z=-11, ground treatment Z=-2, approved contact
+shadow Z=-1, hull Z=0, with existing gameplay Y sorting preserved. The overlay
+cannot occlude the hatch or player and introduces no movement/construction
+blocking; visual ground contrast around the hatch and spawn still needs review.
+Placement and apparent opacity are provisional: original PNG alpha is retained
+with default white/full Sprite2D modulation. Ship, locked shadow strength,
+collisions, hatch, spawn, camera, Ferrite, terrain and gameplay are unchanged.
+Hide DisturbedEarth for visual rollback. Localized separate debris remains a
+later phase, alongside the previously deferred salvage and occlusion work.
+
+Validation is focused and non-native: PNG integrity, registration arithmetic,
+resource references, scene layering and exact baseline preservation. No Godot
+import, engine, gameplay or graphical verification was performed. Ready for
+owner-controlled gameplay screenshot review; no visual acceptance is claimed.
+
 ### Final PR #105 owner acceptance (2026-11-01)
 
 The owner completed gameplay acceptance for
