@@ -177,7 +177,8 @@ class V2ConnectionStaticTest(unittest.TestCase):
         for name in ["ship_interior", "maintenance_bay", "planet_exterior"]:
             for path in (ROOT / "scenes/world").glob(name + ".*"):
                 relative = path.relative_to(ROOT).as_posix()
-                self.assertEqual(read(relative), base(relative))
+                from production_terrain_preservation import historical_source
+                self.assertEqual(historical_source(relative), base(relative))
 
 
 if __name__ == "__main__":

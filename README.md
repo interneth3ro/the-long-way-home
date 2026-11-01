@@ -1,13 +1,16 @@
 # The Long Way Home
 
-An isolated [production-scale terrain fixture](docs/PRODUCTION_TERRAIN_FIXTURE.md)
-(PR #102 feature branch, pending merge) uses PR #101 with four bounded chunks,
-one shared half-scale TileMapLayer and experimental CPU tint shading. Production
-exterior remains unchanged. Isolated Import and Native Assertions passed; owner
-graphical acceptance is 10/10 PASS at implementation commit
-`07337fdfeb5bdd28200d297ea36951b054dd04a0`, with no observations. Production
-exterior integration, real streaming performance and save/load remain untested.
-Any further engine execution requires fresh owner authorization.
+The isolated [production-scale terrain fixture](docs/PRODUCTION_TERRAIN_FIXTURE.md)
+now has a shared illustrated terrain presenter (PR #103 feature branch, pending
+merge), with the accepted PR #102 reference backend retained as its default.
+At validated implementation `aa62a6d38c981e08c7c6d70cf5929cad642a5414`,
+163 full static tests (including 13 focused presenter tests), cold import and
+native assertions passed. Owner graphical acceptance is **12/12 PASS**, with
+zero failures, zero untested items and no observations; preservation checks passed.
+See the [final acceptance record](docs/PRODUCTION_TERRAIN_FIXTURE.md#final-pr-103-acceptance-2026-11-01)
+for evidence and the deferred PR #104 production integration, gameplay,
+draw-order and performance gates. Any further engine execution requires fresh
+owner authorization.
 
 The [deterministic terrain resolver](docs/TERRAIN_RESOLVER.md) (feature branch,
 pending merge) adds isolated Green-over-Earth signature selection and seeded

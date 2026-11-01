@@ -7,6 +7,7 @@ import struct
 import subprocess
 import unittest
 import zlib
+from production_terrain_preservation import historical_presenter_bytes
 
 from static_weathered_earth_test import (ROOT, GREEN_BASE, GREEN_SHA256,
     coordinate_random, noise, weathered_bytes, original_green_bytes)
@@ -177,7 +178,7 @@ class LowGreenStaticTest(unittest.TestCase):
                      'scenes/world/planet_world_state.gd','scenes/world/world_coordinates.gd',
                      'scenes/world/introductory_ferrite.tres','construction/construction_controller.gd'):
             baseline = subprocess.check_output(['git','show',f'{GREEN_BASE}:{path}'],cwd=ROOT)
-            self.assertEqual((ROOT/path).read_bytes().replace(b'\r\n',b'\n'),baseline.replace(b'\r\n',b'\n'))
+            self.assertEqual(historical_presenter_bytes(path, (ROOT/path).read_bytes()).replace(b'\r\n',b'\n'),baseline.replace(b'\r\n',b'\n'))
 
     def test_exact_source_adapter_rejects_tampering(self):
         for path in GREEN_SHA256:

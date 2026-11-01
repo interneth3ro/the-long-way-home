@@ -1,8 +1,9 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://scenes/experiments/production_terrain/fixture.gd" id="1"]
 [ext_resource type="TileSet" path="res://assets/experiments/native_terrain_47_96/baked_v2/baked_terrain.tres" id="2"]
 [ext_resource type="Shader" path="res://scenes/experiments/production_terrain/tint.gdshader" id="3"]
+[ext_resource type="Script" path="res://scenes/world/illustrated_terrain_presenter.gd" id="4"]
 
 [sub_resource type="ShaderMaterial" id="Tint"]
 shader = ExtResource("3")
@@ -16,6 +17,19 @@ scale = Vector2(0.5, 0.5)
 texture_filter = 1
 material = SubResource("Tint")
 tile_set = ExtResource("2")
+collision_enabled = false
+navigation_enabled = false
+occlusion_enabled = false
+
+[node name="IllustratedTerrainPresenter" type="Node2D" parent="."]
+visible = false
+show_behind_parent = true
+script = ExtResource("4")
+
+[node name="Terrain" type="TileMapLayer" parent="IllustratedTerrainPresenter"]
+scale = Vector2(0.5, 0.5)
+texture_filter = 1
+material = SubResource("Tint")
 collision_enabled = false
 navigation_enabled = false
 occlusion_enabled = false

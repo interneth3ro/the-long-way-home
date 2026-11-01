@@ -1,6 +1,9 @@
 class_name PlanetExterior
 extends Node2D
 
+enum TerrainRenderer { LEGACY, ILLUSTRATED }
+@export var terrain_renderer: TerrainRenderer = TerrainRenderer.LEGACY
+
 @export_range(1, 4, 1) var loading_radius: int = 2
 @export_range(1, 2, 1) var retention_margin: int = 1
 @export_range(1, 8, 1) var chunks_per_frame: int = 2
@@ -20,12 +23,18 @@ var _preparing: bool = false
 var _machine_presenters: Dictionary[int, DeployedMachine] = {}
 var _highlights: Node2D
 var _construction_definition: MachineDefinition
+var _effective_renderer: TerrainRenderer = TerrainRenderer.LEGACY
+var _renderer_warning_reported: bool = false
+var _terrain_generation: int = 0
+var _terrain_tokens: Dictionary[Vector2i, int] = {}
+@onready var _terrain_presenter: IllustratedTerrainPresenter = $IllustratedTerrainPresenter
 
 
 # Transition hook: input stays locked and first arrival stays behind the fade.
 # Subsequent hatch visits already have the spawn neighborhood retained.
 func prepare_for_arrival(player: CharacterBody2D, state: PlanetWorldState) -> void:
 	_preparing = true
+	_configure_terrain_renderer()
 	_player = player
 	_state = state
 	if not _state.machines_changed.is_connected(_queue_machine_sync):
@@ -70,6 +79,8 @@ func _update_neighborhood() -> void:
 	for coordinate in _chunks.keys():
 		if _distance(coordinate, center) > retained_radius:
 			var chunk: TerrainChunk = _chunks[coordinate]
+			if not _retire_illustrated_chunk(coordinate):
+				continue
 			remove_child(chunk)
 			chunk.queue_free()
 			_chunks.erase(coordinate)
@@ -97,6 +108,9 @@ func _generate_budget() -> void:
 		var chunk := TerrainChunk.new()
 		chunk.configure(coordinate, _generator, _state)
 		chunk.z_index = -10
+		if not _present_illustrated_chunk(coordinate):
+			chunk.free()
+			return
 		if _chunks.has(coordinate):
 			var previous: TerrainChunk = _chunks[coordinate]
 			remove_child(previous)
@@ -104,6 +118,48 @@ func _generate_budget() -> void:
 		add_child(chunk)
 		_chunks[coordinate] = chunk
 	_refresh_highlights()
+
+
+func _configure_terrain_renderer() -> void:
+	# PR #103 infrastructure only. Activation/ground separation belongs to #104.
+	_effective_renderer = TerrainRenderer.LEGACY
+	if terrain_renderer == TerrainRenderer.ILLUSTRATED and not _renderer_warning_reported:
+		push_warning("Illustrated exterior unavailable in PR #103; using legacy terrain")
+		_renderer_warning_reported = true
+
+
+func _present_illustrated_chunk(coordinate: Vector2i) -> bool:
+	if _effective_renderer != TerrainRenderer.ILLUSTRATED:
+		return true
+	var initialized := _terrain_presenter.initialize()
+	if not initialized.ok:
+		push_warning(str(initialized))
+		return false
+	_terrain_generation += 1
+	var token := _terrain_generation
+	var registered := _terrain_presenter.begin_generation(coordinate, token)
+	if not registered.ok:
+		push_warning(str(registered))
+		return false
+	_terrain_tokens[coordinate] = token
+	var result := _terrain_presenter.present_chunk(coordinate, token,
+		Callable(_generator, "sample_ground_material"), _state.seed_value, TerrainResolver.RULE_VERSION)
+	if not result.ok:
+		push_warning(str(result))
+	return result.ok
+
+
+func _retire_illustrated_chunk(coordinate: Vector2i) -> bool:
+	if _effective_renderer != TerrainRenderer.ILLUSTRATED:
+		return true
+	if not _terrain_tokens.has(coordinate):
+		return true
+	var result := _terrain_presenter.retire_chunk(coordinate, _terrain_tokens[coordinate])
+	if result.ok:
+		_terrain_tokens.erase(coordinate)
+	else:
+		push_warning(str(result))
+	return result.ok
 
 
 func _queue_machine_sync() -> void:
