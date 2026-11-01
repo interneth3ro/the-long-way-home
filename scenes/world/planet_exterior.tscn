@@ -1,16 +1,24 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene load_steps=12 format=3]
 
 [ext_resource type="Script" path="res://scenes/interaction/scene_hatch.gd" id="1_hatch"]
 
 [ext_resource type="Script" path="res://scenes/world/planet_exterior.gd" id="2_world"]
 [ext_resource type="Script" path="res://scenes/world/illustrated_terrain_presenter.gd" id="4_presenter"]
 [ext_resource type="Script" uid="uid://c7294cf4973a" path="res://scenes/interaction/ferrite_inspection.gd" id="3_ferrite"]
+[ext_resource type="Texture2D" path="res://assets/environment/exterior/crashed_exploration_ship_approved.png" id="5_ship_art"]
 
 [sub_resource type="CircleShape2D" id="FerriteInspectionFootprint"]
 radius = 24.0
 
-[sub_resource type="RectangleShape2D" id="ShipFootprint"]
-size = Vector2(512, 224)
+; Grounded fuselage only: coordinates are ship-local, registered to the locked 0.70 artwork.
+[sub_resource type="ConvexPolygonShape2D" id="ShipNoseFootprint"]
+points = PackedVector2Array(-567, 72, -427, -96, -161, -236, -63, -180, -63, 16, -301, 86, -497, 93)
+
+[sub_resource type="ConvexPolygonShape2D" id="ShipFuselageFootprint"]
+points = PackedVector2Array(-161, -236, 175, -355, 322, -257, 266, -124, 49, -19, -35, -19)
+
+[sub_resource type="ConvexPolygonShape2D" id="ShipRearFootprint"]
+points = PackedVector2Array(175, -355, 406, -439, 553, -411, 616, -327, 609, -236, 406, -124, 266, -124)
 
 [sub_resource type="RectangleShape2D" id="HatchFootprint"]
 size = Vector2(64, 24)
@@ -93,30 +101,47 @@ collision_layer = 5
 position = Vector2(-384, -192)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="GroundObjects/CrashedShip"]
-position = Vector2(0, -112)
-shape = SubResource("ShipFootprint")
+shape = SubResource("ShipNoseFootprint")
+
+[node name="FuselageCollision" type="CollisionShape2D" parent="GroundObjects/CrashedShip"]
+shape = SubResource("ShipFuselageFootprint")
+
+[node name="RearCollision" type="CollisionShape2D" parent="GroundObjects/CrashedShip"]
+shape = SubResource("ShipRearFootprint")
 
 [node name="Hull" type="Polygon2D" parent="GroundObjects/CrashedShip"]
+visible = false
 polygon = PackedVector2Array(-256, -224, 160, -224, 256, -160, 256, -64, 160, 0, -256, 0)
 color = Color(0.38, 0.46, 0.48, 1)
 
 [node name="PortWing" type="Polygon2D" parent="GroundObjects/CrashedShip"]
+visible = false
 polygon = PackedVector2Array(-224, -224, -128, -256, 32, -224)
 color = Color(0.28, 0.35, 0.38, 1)
 
 [node name="Cockpit" type="Polygon2D" parent="GroundObjects/CrashedShip"]
+visible = false
 polygon = PackedVector2Array(112, -192, 160, -192, 224, -152, 224, -112, 112, -112)
 color = Color(0.10, 0.19, 0.23, 1)
 
 [node name="Damage" type="Line2D" parent="GroundObjects/CrashedShip"]
+visible = false
 points = PackedVector2Array(-208, -208, -144, -136, -176, -96, -96, -32)
 width = 12.0
 default_color = Color(0.16, 0.19, 0.20, 1)
 
 [node name="HullStripe" type="Line2D" parent="GroundObjects/CrashedShip"]
+visible = false
 points = PackedVector2Array(-240, -48, -80, -48, 80, -48, 144, -48)
 width = 8.0
 default_color = Color(0.72, 0.53, 0.31, 1)
+
+; Source doorway threshold near (850, 750) registers to the unchanged hatch at ship-local (0, 16).
+[node name="IllustratedHull" type="Sprite2D" parent="GroundObjects/CrashedShip"]
+position = Vector2(-595, -509)
+scale = Vector2(0.70, 0.70)
+texture = ExtResource("5_ship_art")
+centered = false
 
 [node name="Hatch" type="StaticBody2D" parent="GroundObjects"]
 collision_layer = 5
@@ -131,10 +156,12 @@ destination_spawn = &"FromPlanet"
 shape = SubResource("HatchFootprint")
 
 [node name="Door" type="Polygon2D" parent="GroundObjects/Hatch"]
+visible = false
 polygon = PackedVector2Array(-40, -40, 40, -40, 40, 12, -40, 12)
 color = Color(0.10, 0.19, 0.23, 1)
 
 [node name="Threshold" type="Line2D" parent="GroundObjects/Hatch"]
+visible = false
 points = PackedVector2Array(-32, -28, -32, 6, 32, 6, 32, -28)
 width = 4.0
 default_color = Color(0.95, 0.72, 0.35, 1)
