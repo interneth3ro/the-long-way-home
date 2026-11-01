@@ -253,7 +253,8 @@ and normal transition/Windows responsiveness. Agent evidence remains static;
 no numeric frame-time improvement is claimed. Occasional minor new-chunk stutter,
 hard rectangular Earth/Green boundaries, repetition and provisional art are
 accepted limitations, not final environmental presentation.
-One base polygon per terrain cell and warm-earth tint are retained; gameplay
+
+The PR #95 baseline retains one base polygon per terrain cell and warm-earth tint; gameplay
 authority and streaming remain unchanged. Organic transitions, removal of obvious
 64-unit squares, reduced repetition and larger-scale variation are deferred to
 [issue #96](https://github.com/interneth3ro/the-long-way-home/issues/96), implemented
@@ -262,6 +263,12 @@ rendering where practical, deterministic chunk continuity and avoid expensive
 overlapping full-cell passes. New vegetation and clearing remain deferred.
 See the [prototype and owner checks](../README.md#low-green-ground-cover-prototype-feature-branch-pending-merge).
 See the [implementation, tint formula and owner checks](../README.md#weathered-earth-textured-terrain-foundation-pending-merge).
+
+The pending [PR #104 illustrated exterior integration](ILLUSTRATED_EXTERIOR.md)
+uses the accepted baked Earth/Green presentation and preserves the corrected
+PR #95 generator/gameplay behavior with a pre-initialization legacy rollback.
+This is implementation pending separate native, owner graphical/gameplay and
+responsiveness acceptance; it does not change approved environmental intent.
 
 ## Approved Ferrite discovery direction
 

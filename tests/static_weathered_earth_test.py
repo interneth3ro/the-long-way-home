@@ -8,6 +8,7 @@ import subprocess
 import unittest
 import zlib
 from production_terrain_preservation import historical_presenter_bytes
+from exterior_activation_preservation import historical_activation_bytes
 
 ROOT = Path(__file__).resolve().parents[1]
 BASE = "c3b0460a6b52437b1961b5d0936f6ec279371d55"
@@ -26,6 +27,9 @@ GREEN_ORIGINAL = "f112f48d1b2f874954af34f6a549a29a6c2c3d55"
 def original_green_bytes(path, actual):
     """Pin current candidates before projecting immutable original PR #95 bytes."""
     normalized = actual.replace(b"\r\n", b"\n")
+    # Some older callers already projected the exact activation candidate.
+    if hashlib.sha256(normalized).hexdigest() != GREEN_SHA256[path]:
+        normalized = historical_activation_bytes(path, actual).replace(b"\r\n", b"\n")
     assert hashlib.sha256(normalized).hexdigest() == GREEN_SHA256[path], path
     return subprocess.check_output(["git", "show", f"{GREEN_ORIGINAL}:{path}"], cwd=ROOT).replace(b"\r\n", b"\n")
 

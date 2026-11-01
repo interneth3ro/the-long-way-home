@@ -166,8 +166,9 @@ class LowGreenStaticTest(unittest.TestCase):
         generator = (ROOT/'scenes/world/planet_generator.gd').read_bytes().replace(b'\r\n',b'\n')
         original = weathered_bytes('scenes/world/planet_generator.gd',generator)
         self.assertEqual(original_green_bytes('scenes/world/planet_generator.gd', generator).split(b'\n\n# Presentation only:')[0], original)
-        chunk = (ROOT/'scenes/world/terrain_chunk.gd').read_text()
-        before = weathered_bytes('scenes/world/terrain_chunk.gd', chunk.encode()).decode()
+        path = 'scenes/world/terrain_chunk.gd'
+        chunk = historical_presenter_bytes(path, (ROOT/path).read_bytes()).decode().replace('\r\n', '\n')
+        before = weathered_bytes(path, (ROOT/path).read_bytes()).decode()
         # All legacy tint/halo/detail code stays exact, beyond the reviewed
         # texture table, cached byte array, configure assignment and texture lookup.
         restored = re.sub(r'const GROUND_TEXTURES:.*?\]\n', '', chunk, flags=re.S)

@@ -1,8 +1,9 @@
 # Deterministic terrain resolver (PR #101 merged)
 
-The merged resolver-only milestone added opt-in selection logic. Production does not
-initialize it in legacy mode. The PR #95 exterior renderer, procedural sampler, gameplay state,
-laboratories and approved baked artwork remain unchanged.
+The merged resolver-only milestone added opt-in selection logic. The pending
+[PR #104 production integration](ILLUSTRATED_EXTERIOR.md) now uses it when the
+exterior selects illustrated rendering. Legacy mode does not initialize it.
+Procedural sampling, gameplay state, laboratories and baked artwork remain unchanged.
 
 ## Interface and rule 1
 
@@ -49,9 +50,9 @@ intermediates fit signed int64. Presentation channel `193` is local to this
 resolver, with no global RNG, generator RNG calls or mutable random state.
 Fixed coordinates and presentation seed regenerate identical assignments.
 
-Sampling is the caller's responsibility. Future integration can pass
-`PlanetGenerator.sample_ground_material()` results at the center and eight
-offsets, or use a one-cell halo around each chunk. Samples must come from the
+Sampling is the caller's responsibility. The PR #104 integration passes
+`PlanetGenerator.sample_ground_material()` results through the existing
+presenter's one-cell halo around each chunk. Samples must come from the
 same absolute-coordinate material field even when neighboring chunks are
 unloaded. No rendered cells, native Connect painting or loaded-neighbor data are
 consulted. Negative coordinates need no special case in the resolver. Existing
@@ -129,12 +130,16 @@ while the high-water mark prevents stale resurrection. Detach/reattach resets
 neither tokens nor records. Returned diagnostics do not log per-cell failures.
 This provides preparation-failure preservation, not engine crash rollback.
 
-`PlanetExterior` always selects effective legacy rendering in #103, including
-when its reserved illustrated option is requested. Guarded direct lifecycle
+Historical PR #103 always selected effective legacy rendering, including
+when its reserved illustrated option was requested. Guarded direct lifecycle
 boundaries do no lookup initialization, sampling, allocation, resolution or
 TileMapLayer writes in legacy mode. Existing chunk ground/details remain intact.
 Production activation, ground-only suppression, tint/masks, draw-order acceptance,
 streaming performance and gameplay verification belong to #104.
 
 See the [fixture extension and static/preservation gate](PRODUCTION_TERRAIN_FIXTURE.md#pr-103-presenter-extension-feature-branch-pending-merge).
-Native parsing/API behavior and graphical appearance for #103 are not yet verified.
+The [final PR #103 acceptance](PRODUCTION_TERRAIN_FIXTURE.md#final-pr-103-acceptance-2026-11-01)
+records its isolated native and owner graphical PASS. The pending
+[PR #104 activation](ILLUSTRATED_EXTERIOR.md) supersedes the dormant exterior gate
+and documents ground/detail separation, tint and explicit legacy rollback; its
+native, graphical, gameplay and performance gates remain unverified.
