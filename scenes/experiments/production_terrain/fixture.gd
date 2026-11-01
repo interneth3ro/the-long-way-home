@@ -29,6 +29,10 @@ var _selected: int = 0
 var _status: Label
 var _mode_picker: OptionButton
 var _last_operation: String = ""
+@onready var presenter: IllustratedTerrainPresenter = $IllustratedTerrainPresenter
+var _presenter_mode: bool = false
+var _presenter_tokens: Dictionary[Vector2i, int] = {}
+var _generation: int = 0
 
 
 func _ready() -> void:
@@ -175,10 +179,17 @@ func _build_controls() -> void:
 		picker.add_item(str(coordinate))
 	picker.item_selected.connect(func(index: int) -> void: _selected = index)
 	row.add_child(picker)
-	_button(row, "Load / replace", func() -> void: _load_chunk(CHUNKS[_selected]))
-	_button(row, "Unload", func() -> void: _unload_chunk(CHUNKS[_selected]))
-	_button(row, "Load forward", func() -> void: _reload(false))
-	_button(row, "Load reverse", func() -> void: _reload(true))
+	var backend := OptionButton.new()
+	backend.add_item("PR #102 reference")
+	backend.add_item("PR #103 presenter")
+	backend.item_selected.connect(func(index: int) -> void:
+		if not select_presenter_mode(index == 1):
+			backend.select(1 if _presenter_mode else 0))
+	row.add_child(backend)
+	_button(row, "Load / replace", func() -> void: _load_active(CHUNKS[_selected]))
+	_button(row, "Unload", func() -> void: _unload_active(CHUNKS[_selected]))
+	_button(row, "Load forward", func() -> void: _reload_active(false))
+	_button(row, "Load reverse", func() -> void: _reload_active(true))
 	var views := HBoxContainer.new()
 	panel.add_child(views)
 	_button(views, "Overview", func() -> void: _view(Vector2(0, -192), 0.14))
@@ -206,9 +217,79 @@ func _view(point: Vector2, magnification: float) -> void:
 
 
 func _update_status() -> void:
+	if _presenter_mode:
+		_status.text = "Presenter | %s | loaded %d/4" % [_last_operation, _presenter_tokens.size()]
+		queue_redraw()
+		return
 	_status.text = "%s | loaded %d/4; cells %d/4096 | %s" % [
 		_last_operation, _loaded.size(), _loaded.size() * 1024, str(_loaded.keys())]
 	queue_redraw()
+
+
+func select_presenter_mode(enabled: bool) -> bool:
+	if enabled == _presenter_mode:
+		return true
+	if enabled:
+		var result := presenter.initialize()
+		if not result.ok:
+			_status.text = "STOP: " + str(result)
+			return false
+		for coordinate in CHUNKS:
+			_unload_chunk(coordinate)
+	else:
+		for coordinate in _presenter_tokens.keys():
+			if not _unload_active(coordinate):
+				return false
+	_presenter_mode = enabled
+	terrain.visible = not enabled
+	presenter.visible = enabled
+	return _reload_active(false)
+
+
+func _load_active(coordinate: Vector2i) -> bool:
+	if not _presenter_mode:
+		return _load_chunk(coordinate)
+	if coordinate not in CHUNKS:
+		return false
+	_generation += 1
+	var result := presenter.begin_generation(coordinate, _generation)
+	if result.ok:
+		_presenter_tokens[coordinate] = _generation
+		result = presenter.present_chunk(coordinate, _generation, Callable(self, "sample_material"),
+			PRESENTATION_SEED, RULE_VERSION)
+	_last_operation = str(result)
+	_update_status()
+	return result.ok
+
+
+func _unload_active(coordinate: Vector2i) -> bool:
+	if not _presenter_mode:
+		_unload_chunk(coordinate)
+		return true
+	if not _presenter_tokens.has(coordinate):
+		return true
+	var result := presenter.retire_chunk(coordinate, _presenter_tokens[coordinate])
+	if result.ok:
+		_presenter_tokens.erase(coordinate)
+	_last_operation = str(result)
+	_update_status()
+	return result.ok
+
+
+func _reload_active(reverse_order: bool) -> bool:
+	if not _presenter_mode:
+		_reload(reverse_order)
+		return _loaded.size() == CHUNKS.size()
+	for coordinate in _presenter_tokens.keys():
+		if not _unload_active(coordinate):
+			return false
+	var order := CHUNKS.duplicate()
+	if reverse_order:
+		order.reverse()
+	for coordinate in order:
+		if not _load_active(coordinate):
+			return false
+	return true
 
 
 func _draw() -> void:

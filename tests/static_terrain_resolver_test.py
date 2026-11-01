@@ -11,6 +11,7 @@ from pathlib import Path
 import re
 import subprocess
 import unittest
+from production_terrain_preservation import without_presenter_paths, PRESENTER_INPUT_SHA256, verify_presenter_input
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = (ROOT / 'scenes/world/terrain_resolver.gd').read_text()
@@ -245,11 +246,14 @@ class TerrainResolverStaticTest(unittest.TestCase):
                                          'assets', 'scenes', 'shaders', 'inventory', 'construction',
                                          'dialogue', 'objectives', 'project.godot', 'tools'], cwd=ROOT).decode().splitlines()
         changed = subprocess.check_output(['git', 'diff', '--name-only', BASE, '--'], cwd=ROOT).decode().splitlines()
-        self.assertFalse(set(paths) & set(changed), 'Pre-existing production/asset/tool files changed')
+        self.assertFalse(set(paths) & set(without_presenter_paths(changed)), 'Pre-existing production/asset/tool files changed')
         for path in ROOT.glob('scenes/**/*.gd'):
             if path.name not in ('terrain_resolver.gd', 'terrain_assignment_lookup.gd'):
                 from production_terrain_preservation import FIXTURE_INPUT_SHA256, verify_fixture_input
                 relative = path.relative_to(ROOT).as_posix()
+                if relative in PRESENTER_INPUT_SHA256:
+                    verify_presenter_input(relative, path.read_bytes())
+                    continue
                 if relative in FIXTURE_INPUT_SHA256:
                     verify_fixture_input(relative, path.read_bytes())
                     continue

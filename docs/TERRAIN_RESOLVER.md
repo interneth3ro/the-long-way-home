@@ -1,7 +1,7 @@
-# Deterministic terrain resolver (feature branch, pending merge)
+# Deterministic terrain resolver (PR #101 merged)
 
-This resolver-only milestone adds opt-in selection logic. Production does not
-instantiate it. The PR #95 exterior renderer, procedural sampler, gameplay state,
+The merged resolver-only milestone added opt-in selection logic. Production does not
+initialize it in legacy mode. The PR #95 exterior renderer, procedural sampler, gameplay state,
 laboratories and approved baked artwork remain unchanged.
 
 ## Interface and rule 1
@@ -90,8 +90,7 @@ pinned to exact normalized-content hashes and required to be absent from its
 historical baseline. Tampered content and other paths are explicitly rejected.
 Existing production/artwork preservation checks and runner controls are retained.
 
-The separate [production-scale fixture](PRODUCTION_TERRAIN_FIXTURE.md) (PR #102,
-feature branch pending merge) exercises shared TileMapLayer insertion/removal and
+The separate [production-scale fixture](PRODUCTION_TERRAIN_FIXTURE.md) (merged PR #102) exercises shared TileMapLayer insertion/removal and
 experimental vertex-sampled CPU tint shading in isolation. Isolated Import and
 Native Assertions passed, and the owner reported **10/10 graphical PASS**, with
 no observations, for `07337fdfeb5bdd28200d297ea36951b054dd04a0`.
@@ -99,3 +98,43 @@ Production renderer replacement and authored crash-site shading
 migration remain deferred. Future shading must retain the existing CPU tint data,
 authored masks, feathers, overrides and continuous gradients. This PR does not
 establish production integration, visual equivalence or performance acceptance.
+
+
+## PR #103 presenter integration (feature branch, pending merge)
+
+[IllustratedTerrainPresenter](../scenes/world/illustrated_terrain_presenter.gd)
+receives a deterministic `Callable(Vector2i) -> int` in absolute terrain-cell
+coordinates, an explicit presentation seed and rule version. Production's dormant
+adapter is `Callable(_generator, "sample_ground_material")`; no generator,
+resolver, lookup, terrain-rule or distribution changes are included.
+
+Public methods return `{ok, code, chunk, token, message}` with `cell` on cell
+failures: `initialize()`, `begin_generation(coordinate, generation_token)`,
+`present_chunk(coordinate, generation_token, material_sampler, presentation_seed,
+rule_version)`, and `retire_chunk(coordinate, generation_token)`.
+
+Initialization explicitly loads the approved native lookup and baked TileSet;
+node construction/attachment does no terrain work. Each presentation samples a
+34x34 halo, prepares and validates all 1024 native assignments, then overwrites
+its owned rectangle in place without clearing first. Retirement erases only that
+rectangle. No loaded-neighbor sampling, Connect painting, scheduler, per-cell
+ownership registry, yield or per-cell material is introduced.
+
+The caller issues positive monotonic tokens. Registration must exceed the
+presenter's global high-water mark and supersedes authority without erasing old
+pixels. Exact active-token matching protects preparation/commit/retirement;
+duplicate completion and reentrant mutation fail. Failure retains existing
+pixels without restoring older authority. Retirement removes the active record,
+while the high-water mark prevents stale resurrection. Detach/reattach resets
+neither tokens nor records. Returned diagnostics do not log per-cell failures.
+This provides preparation-failure preservation, not engine crash rollback.
+
+`PlanetExterior` always selects effective legacy rendering in #103, including
+when its reserved illustrated option is requested. Guarded direct lifecycle
+boundaries do no lookup initialization, sampling, allocation, resolution or
+TileMapLayer writes in legacy mode. Existing chunk ground/details remain intact.
+Production activation, ground-only suppression, tint/masks, draw-order acceptance,
+streaming performance and gameplay verification belong to #104.
+
+See the [fixture extension and static/preservation gate](PRODUCTION_TERRAIN_FIXTURE.md#pr-103-presenter-extension-feature-branch-pending-merge).
+Native parsing/API behavior and graphical appearance for #103 are not yet verified.

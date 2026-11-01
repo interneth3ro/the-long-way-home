@@ -8,6 +8,7 @@ import struct
 import subprocess
 import unittest
 import zlib
+from production_terrain_preservation import historical_presenter_bytes
 
 ROOT = Path(__file__).resolve().parents[1]
 BASE = '44d83bc46aebe5409d0c2e7ca0e388531ae1e3c3'
@@ -193,7 +194,7 @@ class IllustratedTerrainStaticTest(unittest.TestCase):
             if path.startswith(('assets/', 'scenes/', 'construction/', 'dialogue/', 'inventory/',
                                 'objectives/', 'shaders/', 'tools/')) or path in ('project.godot', 'AGENTS.md', 'docs/LOCAL_TESTING.md'):
                 old = subprocess.check_output(['git', 'show', BASE + ':' + path], cwd=ROOT)
-                now = (ROOT / path).read_bytes()
+                now = historical_presenter_bytes(path, (ROOT / path).read_bytes())
                 if not path.endswith(('.png', '.ttf')):
                     old, now = old.replace(b'\r\n', b'\n'), now.replace(b'\r\n', b'\n')
                 self.assertEqual(old, now, path)

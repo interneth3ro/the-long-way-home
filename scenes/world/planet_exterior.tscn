@@ -1,8 +1,9 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=9 format=3]
 
 [ext_resource type="Script" path="res://scenes/interaction/scene_hatch.gd" id="1_hatch"]
 
 [ext_resource type="Script" path="res://scenes/world/planet_exterior.gd" id="2_world"]
+[ext_resource type="Script" path="res://scenes/world/illustrated_terrain_presenter.gd" id="4_presenter"]
 [ext_resource type="Script" uid="uid://c7294cf4973a" path="res://scenes/interaction/ferrite_inspection.gd" id="3_ferrite"]
 
 [sub_resource type="CircleShape2D" id="FerriteInspectionFootprint"]
@@ -20,6 +21,17 @@ radius = 48.0
 [node name="PlanetExterior" type="Node2D" groups=["construction_world"]]
 texture_filter = 1
 script = ExtResource("2_world")
+
+[node name="IllustratedTerrainPresenter" type="Node2D" parent="."]
+z_index = -10
+script = ExtResource("4_presenter")
+
+[node name="Terrain" type="TileMapLayer" parent="IllustratedTerrainPresenter"]
+scale = Vector2(0.5, 0.5)
+texture_filter = 1
+collision_enabled = false
+navigation_enabled = false
+occlusion_enabled = false
 
 [node name="AuthoredCrashSite" type="Node2D" parent="."]
 visible = false

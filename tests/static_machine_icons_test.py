@@ -5,6 +5,7 @@ import struct
 import subprocess
 import unittest
 import zlib
+from production_terrain_preservation import without_presenter_paths
 
 from static_automatic_transitions_test import ROOT, read
 from static_extractor_inspection_test import functions
@@ -303,6 +304,7 @@ class MachineIconsStaticTest(unittest.TestCase):
             "inventory", "construction", "dialogue", "world", "objectives", "project.godot",
             "AGENTS.md", "tools", "docs/LOCAL_TESTING.md", "tests/fabricator_recipe_switching_test.gd",
         ], cwd=ROOT, text=True).splitlines()
+        changed = without_presenter_paths(changed)
         # Exact Weathered Earth candidates only; no path-wide exemption and no
         # Native permission expansion. Review this amendment before Native use.
         for path in set(changed) & set(INPUT_SHA256):

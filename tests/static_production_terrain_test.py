@@ -7,15 +7,16 @@ import re
 import subprocess
 import unittest
 
-from production_terrain_preservation import FIXTURE_INPUT_SHA256, verify_fixture_input
+from production_terrain_preservation import (FIXTURE_INPUT_SHA256, verify_fixture_input,
+    PRESENTER_INPUT_SHA256, historical_presenter_bytes, historical_source, without_presenter_paths)
 from static_terrain_resolver_test import signature, bucket, variant, inventory, OFFSETS
 from static_weathered_earth_test import earth_tint
 
 ROOT = Path(__file__).resolve().parents[1]
 BASE = '74f4ecb3f5a831bbeed4436ec2324441c60b8c77'
 DIRECTORY = 'scenes/experiments/production_terrain/'
-SOURCE = (ROOT / DIRECTORY / 'fixture.gd').read_text()
-SCENE = (ROOT / DIRECTORY / 'fixture.tscn').read_text()
+SOURCE = historical_source(DIRECTORY + 'fixture.gd')
+SCENE = historical_source(DIRECTORY + 'fixture.tscn')
 SHADER = (ROOT / DIRECTORY / 'tint.gdshader').read_text()
 CHUNKS = ((-1, -1), (0, -1), (-1, 0), (0, 0))
 REGIONS = json.loads(re.search(r'const REGIONS := (\[.*?\])\n\n', SOURCE, re.S)[1])
@@ -25,6 +26,21 @@ TILES = inventory((ASSET / 'baked_terrain.tres').read_text(), json.loads((ASSET 
 
 def body(name):
     return SOURCE.split('func ' + name + '(', 1)[1].split('\n\n\n', 1)[0]
+
+
+def historical_stage_input(path, raw, digest):
+    """Check immutable #102 inventory; never authorize current staging bytes."""
+    import hashlib
+    import production_terrain_preservation as preservation
+    old = subprocess.check_output(['git', 'show', f'{preservation.PRESENTER_BASE}:{path}'], cwd=ROOT)
+    if Path(path).suffix in ('.gd', '.tscn', '.tres', '.gdshader', '.json'):
+        projected = historical_presenter_bytes(path, raw).replace(b'\r\n', b'\n')
+        old = old.replace(b'\r\n', b'\n')
+        assert projected == old, path
+        assert digest in {hashlib.sha256(old).hexdigest(),
+                          hashlib.sha256(old.replace(b'\n', b'\r\n')).hexdigest()}, path
+    else:
+        assert hashlib.sha256(raw).hexdigest() == digest, path
 
 
 def material(x, y):
@@ -216,12 +232,12 @@ class ProductionTerrainStaticTest(unittest.TestCase):
                      'dialogue', 'objectives', 'project.godot', 'AGENTS.md', 'docs/LOCAL_TESTING.md']
         existing = subprocess.check_output(['git', 'ls-tree', '-r', '--name-only', BASE, '--', *protected], cwd=ROOT, text=True).splitlines()
         changed = subprocess.check_output(['git', 'diff', '--name-only', BASE, '--', *protected], cwd=ROOT, text=True).splitlines()
-        self.assertFalse(set(existing) & set(changed))
+        self.assertFalse(set(existing) & set(without_presenter_paths(changed)))
         self.assertEqual(subprocess.check_output(['git', 'rev-parse', 'refs/heads/codex/preserve-editor-resource-serialization'], cwd=ROOT, text=True).strip(),
                          '326591e1a1438944d79b0be4c52992b3eb86af0f')
         for path in existing:
             if path.endswith(('.gd', '.tscn', '.tres', '.godot')):
-                self.assertNotIn('production_terrain', (ROOT/path).read_text())
+                self.assertNotIn('production_terrain', historical_source(path))
 
     def test_exact_new_path_pins_reject_tampering_and_expansion(self):
         self.assertEqual(set(FIXTURE_INPUT_SHA256), {DIRECTORY + name for name in
@@ -240,7 +256,7 @@ class ProductionTerrainStaticTest(unittest.TestCase):
     def test_scene_resources_and_separate_engine_validation_plan(self):
         for path in re.findall(r'path="res://([^"]+)"', SCENE):
             self.assertTrue((ROOT/path).is_file(), path)
-        proposed = (ROOT/DIRECTORY/'engine_validation.gd').read_text()
+        proposed = historical_source(DIRECTORY + 'engine_validation.gd')
         for contract in ('extends SceneTree', 'get_cell_source_id(cell) == -1', 'map_to_local(cell)',
                          'snapshot == fixture._loaded', 'fixture._set_shading(2)',
                          'Production terrain fixture failures: %d'):
@@ -262,10 +278,11 @@ class ProductionTerrainStaticTest(unittest.TestCase):
             self.assertFalse(path.startswith('.'))
             self.assertNotIn('..', Path(path).parts)
             self.assertTrue(path in tracked or path in FIXTURE_INPUT_SHA256)
-            self.assertEqual(hashlib.sha256((ROOT/path).read_bytes()).hexdigest(), digest, path)
+            raw = (ROOT/path).read_bytes()
+            historical_stage_input(path, raw, digest)
             if Path(path).suffix not in ('.gd', '.tscn', '.tres', '.gdshader', '.json'):
                 continue  # Import sidecar cache destinations are outputs, not inputs.
-            text = (ROOT/path).read_text(encoding='utf-8')
+            text = historical_source(path)
             for reference in re.findall(r'res://([A-Za-z0-9_./-]+)', text):
                 self.assertIn(reference, manifest, (path, reference))
             if path.endswith('.gd'):

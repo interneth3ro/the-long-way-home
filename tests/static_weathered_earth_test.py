@@ -7,6 +7,7 @@ import struct
 import subprocess
 import unittest
 import zlib
+from production_terrain_preservation import historical_presenter_bytes
 
 ROOT = Path(__file__).resolve().parents[1]
 BASE = "c3b0460a6b52437b1961b5d0936f6ec279371d55"
@@ -235,7 +236,7 @@ class WeatheredEarthStaticTest(unittest.TestCase):
                  "construction/construction_controller.gd", "construction/deployed_machine.gd"]
         for path in paths:
             expected = subprocess.check_output(["git", "show", f"{BASE}:{path}"], cwd=ROOT)
-            self.assertEqual((ROOT / path).read_bytes().replace(b"\r\n", b"\n"), expected.replace(b"\r\n", b"\n"), path)
+            self.assertEqual(historical_presenter_bytes(path, (ROOT / path).read_bytes()).replace(b"\r\n", b"\n"), expected.replace(b"\r\n", b"\n"), path)
         path = "scenes/world/planet_generator.gd"
         actual = weathered_source(path)
         baseline = subprocess.check_output(["git", "show", f"{BASE}:{path}"], cwd=ROOT, text=True)

@@ -46,12 +46,15 @@ def verify_terrain_input(path, raw):
 
 def historical_test_bytes(path, raw):
     """Restore only two fully pinned test corrections, never owner resources."""
+    # PR #103's exact candidate check precedes the original PR #98 pins.
+    from production_terrain_preservation import historical_presenter_bytes
     if path not in TEST_UPDATE_SHA256:
-        return raw
+        return historical_presenter_bytes(path, raw)
     raw = raw.replace(b'\r\n', b'\n')
     before = subprocess.check_output(['git', 'show', f'{REVIEWED_HEAD}:{path}'], cwd=ROOT).replace(b'\r\n', b'\n')
     if raw == before:
         return raw
+    raw = historical_presenter_bytes(path, raw).replace(b'\r\n', b'\n')
     if hashlib.sha256(raw).hexdigest() != TEST_UPDATE_SHA256[path]:
         raise AssertionError(f'Unreviewed preservation test correction: {path}')
     return before

@@ -8,6 +8,7 @@ import struct
 import subprocess
 import unittest
 import zlib
+from production_terrain_preservation import PRESENTER_INPUT_SHA256, verify_presenter_input
 
 ROOT = Path(__file__).resolve().parents[1]
 ASSET = 'assets/experiments/native_terrain_47_96/'
@@ -199,6 +200,9 @@ class Native47StaticTest(unittest.TestCase):
             for path in changed:
                 protected = path == 'project.godot' or path.startswith(('assets/', 'scenes/', 'construction/', 'inventory/', 'dialogue/', 'objectives/', 'shaders/', 'tools/')) or path in ('AGENTS.md', 'docs/LOCAL_TESTING.md')
                 if protected:
+                    if path in PRESENTER_INPUT_SHA256:
+                        verify_presenter_input(path, (ROOT / path).read_bytes())
+                        continue
                     from production_terrain_preservation import FIXTURE_INPUT_SHA256, verify_fixture_input
                     if path in FIXTURE_INPUT_SHA256:
                         self.assertNotIn(path, paths)

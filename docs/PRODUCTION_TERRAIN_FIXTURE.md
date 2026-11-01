@@ -1,4 +1,4 @@
-# Production-scale illustrated terrain fixture (PR #102, pending merge)
+# Production-scale illustrated terrain fixture (PR #102 merged)
 
 Owner graphical acceptance is **10/10 PASS**, with **no observations**, for exact
 implementation commit `07337fdfeb5bdd28200d297ea36951b054dd04a0`.
@@ -280,5 +280,115 @@ Exact graphically accepted implementation:
 This accepts the bounded isolated fixture. Actual production exterior integration,
 real chunk-streaming performance and save/load behavior remain untested. No
 pixel-perfect legacy shading parity or numeric performance improvement is claimed.
-Production integration and cleanup remain outside this PR. PR #102 stays draft
-and unmerged for final owner review; acceptance does not authorize merging it.
+Production integration and cleanup were outside PR #102. PR #102 subsequently
+merged at `4c5bccc1877472a3551df756b673ef5e059dccf6`; the historical execution
+authorizations above remain consumed.
+
+
+## PR #103 presenter extension (feature branch, pending merge)
+
+The default **PR #102 reference** backend retains its original material field,
+seeds, resolution, load/unload/reload methods, camera views and shading formulas.
+The opt-in **PR #103 presenter** backend exercises the shared presenter in this
+same bounded fixture. Switching retires the previous backend before populating
+the selected one; no competing ground passes remain. Both layers use the existing
+single ShaderMaterial, 0.5 scale and tint field. The presenter itself owns no tint
+logic. The accepted #102 engine and graphical results above apply only to the
+historical implementation, not to this extension.
+
+The extended, **unexecuted** native harness checks reference/presenter assignment
+parity, single/adjacent regions, negative ownership, neighbor preservation,
+in-place replacement, reversed order, regeneration, stale/duplicate requests,
+retirement/reload, reentrancy, invalid material/version/assignment rejection,
+failure preservation and restoration of reference mode. Malformed assignments
+use a private preparation override in the harness, not a production injection API.
+It remains bounded to the existing four-chunk field; the malformed test runs only
+after retiring presenter cells. No timers or streaming loop are added.
+
+### Static acceptance and exact preservation amendments
+
+The focused [static suite](../tests/static_illustrated_terrain_presenter_test.py)
+checks actual source order/guards, rectangle arithmetic, a source-bound token
+predicate with an independent lifecycle/pixel model, resolver arithmetic/metadata,
+reference-method equality, dormant boundaries and negative tampering. Python
+models do not execute GDScript or establish TileMapLayer runtime behavior.
+
+The [preservation helper](../tests/production_terrain_preservation.py) pins six exact
+#103 source/scene inputs and the amended historical test candidates. Only verified
+candidate bytes may project back to immutable PR #102 merge bytes for historical
+comparisons; unlisted paths are returned unchanged. Original fixture hashes remain
+unchanged. Candidate helper bytes are pinned by the focused suite. Appended,
+truncated, duplicated and alternate-path candidates are rejected. No directory,
+asset, runner-policy, command or native execution exemption is added.
+
+| Amended file in `tests/` | Original purpose / #103 conflict | Narrow amendment and retained protection |
+| --- | --- | --- |
+| `static_weathered_earth_test.py` | Exact exterior preservation conflicts with dormant wiring | Verify exact exterior candidate before original historical-byte comparison; all other checks retained |
+| `static_low_green_ground_test.py` | Same exterior-byte conflict | Same verified projection; masks, material distribution, tint/detail assertions retained |
+| `static_illustrated_terrain_test.py` | Whole-tree production preservation rejects wiring | Exact candidate projection before original comparison; artwork and original lab checks retained |
+| `static_native_terrain_47_test.py` | Protected path inventory excludes presenter/wiring | Verify six exact source/scene candidates; every other path follows original guard |
+| `static_machine_icons_test.py` | Changed-path inventory excludes presenter/wiring | Remove only exact hash-verified candidates from historical changed set; original asset/tool checks retained |
+| `static_terrain_resolver_test.py` | Production-preservation and resolver-reference bans reject integration | Exact verified candidate paths only; resolver/lookup hashes and arithmetic tests unchanged |
+| `static_production_terrain_test.py` | #102 fixture/source and raw stage inventory describe historical bytes | Verify current candidates, then test immutable #102 source and inventory; new suite checks actual #103/default-reference methods |
+| `static_v2_connection_test.py` | Shared exterior exact-byte guard rejects wiring | Exact verified projection before its original comparison; other worlds/art remain exact |
+| `static_v2_production_host_test.py` | Older whole-tree guard also includes exterior | Exact candidate projection before existing P8 comparison; unrelated production/artwork checks retained |
+| `native_terrain_preservation.py` | Existing pinned V2-test correction rejects its new exact amendment | Verify #103 candidate before unchanged PR #98 correction/hash checks |
+| `production_terrain_preservation.py` | Four #102 fixture pins reject extended fixture | Retain original pins after exact verified candidate projection; add only explicit #103 inputs/test hashes |
+
+The focused suite supplies altered/appended/duplicated/path-expansion negatives
+for every pinned candidate, helper identity checks, and unchanged/unlisted owner
+resource rejection. The original #102 stage manifest and external evidence remain
+immutable. Its historical raw-working CRLF hashes are reconciled only against
+immutable committed LF/CRLF representations after current candidate verification.
+This historical inventory is not a #103 execution inventory. Its reconciliation
+requires unchanged inputs to equal immutable committed text after newline
+normalization, with binary inputs exact; changed/duplicated/truncated bytes and
+incorrect manifest digests are rejected. The original ground-rejection test is
+unchanged and receives the same exact projection through its existing historical
+helper call.
+
+Static command (non-native, `-B` disables bytecode writes):
+`python -B -m unittest discover -s tests -p 'static_*test.py'`.
+Use an explicit bounded external wait/process timeout; do not silently expand the
+runner's 60-second control. Record results/count/timing separately from native
+and graphical validation. The static suite's existing authoring module is loaded
+with `runpy` under a non-main name and computes PNG bytes in memory; its file-write
+entry point is not invoked. Git subprocesses are read-only inspections.
+
+Static verification on 2026-11-01: **161 tests PASS in 111.970 seconds**
+(112.546 seconds including the external controller), including 11 focused
+presenter checks. The direct Python command above ran under a separate 180-second
+subprocess timeout, without changing the runner's fixed 60-second bound. The
+focused command with pattern `static_illustrated_terrain_presenter_test.py` passed
+11 tests in 4.893 seconds under a 60-second bound. The initial full run exposed
+four historical-guard/newline compatibility failures; those exact checks were
+corrected and the full suite then passed. Markdown target paths and staged diff
+whitespace passed. All 34 pre-existing untracked owner files retained their
+captured SHA-256 hashes; the PR #99 preservation reference is unchanged. No
+Godot/import/native/graphical/performance validation was executed, and production
+illustrated terrain is not activated. No routine success logs were saved.
+
+### Proposed later isolated validation; no authorization granted
+
+Before any launch, review a new exact #103 input inventory, commands, executable
+hash, process/output limits, dependency closure and preservation captures. Do not
+reuse or edit #102 stages, manifest or evidence. Create a fresh unique external
+stage only after separate authorization. Include the extended fixture/harness,
+presenter, unchanged resolver/lookup, approved baked resources, and the existing
+fixture tint/state/type dependencies. Exclude production scenes/startup, autoloads,
+owner files, untracked inputs, caches and historical evidence. Generate only the
+reviewed stage-local configuration, with no production main scene.
+
+Propose sequential one-attempt cold import (60 seconds), then bounded extended
+native assertions (30 seconds), then separately owner-controlled fixture graphics
+(120 seconds). Use the pinned standard executable, 1,048,576-byte combined output
+limit and 4096-byte diagnostics, confirm termination, and stop on any error,
+assertion, malformed completion, timeout, overflow or identity change. No retries,
+profiling, benchmarks, editor launch or production gameplay are included. Exact
+commands/inventory/supervisor require review before authorization; the standing
+recipe-switching Native exception does not cover this fixture.
+
+Graphical review must compare both backends in all three existing shading modes,
+negative cells, seams, retirement/replacement/reload and original camera views.
+Production tint, selective ground suppression with details retained, effective
+Z ordering near -10 below minerals/highlights, streaming and gameplay remain #104.
