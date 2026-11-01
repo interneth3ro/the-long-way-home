@@ -332,7 +332,11 @@ class MachineIconsStaticTest(unittest.TestCase):
         from static_terrain_resolver_test import RESOLVER_INPUT_SHA256, verify_resolver_input
         for path in set(changed) & set(RESOLVER_INPUT_SHA256):
             verify_resolver_input(path, (ROOT / path).read_bytes())
-        allowed = set(RESOLVER_INPUT_SHA256) | set(MACHINE_ICONS_SHA256) | set(INPUT_SHA256) | set(green_assets) | set(TERRAIN_INPUT_SHA256) | set(ILLUSTRATED_INPUT_SHA256) | set(BAKED_INPUT_SHA256) | {
+        # PR #102 permits only four exact new experiment paths and bytes.
+        from production_terrain_preservation import FIXTURE_INPUT_SHA256, verify_fixture_input
+        for path in set(changed) & set(FIXTURE_INPUT_SHA256):
+            verify_fixture_input(path, (ROOT / path).read_bytes())
+        allowed = set(FIXTURE_INPUT_SHA256) | set(RESOLVER_INPUT_SHA256) | set(MACHINE_ICONS_SHA256) | set(INPUT_SHA256) | set(green_assets) | set(TERRAIN_INPUT_SHA256) | set(ILLUSTRATED_INPUT_SHA256) | set(BAKED_INPUT_SHA256) | {
             f"assets/items/{item}.png{suffix}" for item in ART for suffix in ("", ".import")
         }
         self.assertFalse(set(changed) - allowed, set(changed) - allowed)

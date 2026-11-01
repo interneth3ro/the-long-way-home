@@ -199,6 +199,11 @@ class Native47StaticTest(unittest.TestCase):
             for path in changed:
                 protected = path == 'project.godot' or path.startswith(('assets/', 'scenes/', 'construction/', 'inventory/', 'dialogue/', 'objectives/', 'shaders/', 'tools/')) or path in ('AGENTS.md', 'docs/LOCAL_TESTING.md')
                 if protected:
+                    from production_terrain_preservation import FIXTURE_INPUT_SHA256, verify_fixture_input
+                    if path in FIXTURE_INPUT_SHA256:
+                        self.assertNotIn(path, paths)
+                        verify_fixture_input(path, (ROOT / path).read_bytes())
+                        continue
                     # Resolver-only follow-up: two exact NEW scripts, no baseline
                     # production/resource exemptions or Native scope expansion.
                     from static_terrain_resolver_test import RESOLVER_INPUT_SHA256, verify_resolver_input
