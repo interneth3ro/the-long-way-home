@@ -94,9 +94,11 @@ These agent checks are separate from the owner gameplay acceptance below.
 ### Contact shadow integration (feature branch, pending merge)
 
 The owner-supplied [contact-shadow PNG](assets/environment/exterior/crashed_ship_contact_shadow_prototype.png)
-is copied byte-for-byte: 2014 x 1127, 8-bit RGBA, SHA-256
+was initially copied byte-for-byte: 2014 x 1127, 8-bit RGBA, original SHA-256
 `9897753637e9bc6c4a3311f5109e7b127bf0317705d638b024e0dfdc4ed755b9`.
-Its genuine alpha ranges from 0 to 112; visible pixels use RGB `(35,29,26)`
+The corrected asset has SHA-256
+`1cd8111595e11d8beb527f538188f38f8517f1d3365633c013b9a137ca601777`.
+Its alpha now ranges from 0 to 224; visible pixels retain RGB `(35,29,26)`
 with feathered opacity, without separate rock, debris or skid-mark artwork.
 The canvas adds 120 pixels per side to the committed 1774 x 887 hull. With
 `centered = false` and scale `(0.70,0.70)`, ContactShadow's ship-local position
@@ -105,15 +107,26 @@ is `(-679,-593)`: the hull's `(-595,-509)` minus `(84,84)`. Source point
 The Sprite2D is a child of CrashedShip at effective Z=-1, below IllustratedHull
 (Z=0) and above illustrated terrain (Z=-11). Existing Y sorting is unchanged.
 
-Static alpha-mask comparison against the committed hull supports registration
+Initial static alpha-mask comparison against the committed hull supported registration
 (approximately 0.858 intersection-over-union at hull alpha >=128 / shadow alpha
 >=32, sampled every four source pixels). The newly supplied canonical ship and
 local `shipv1.png` both match the committed ship byte-for-byte; the earlier
 different-hash attachment is unavailable, so its historical encoding-versus-artwork
 discrepancy cannot be classified. No current silhouette mismatch blocks integration.
 
-This is a visual prototype using the supplied opacity without modulation.
-Strength, feathering and placement require owner-controlled in-game review;
+Owner initial graphical playtesting at `91658cee15f0f6ae06bae9db9b8d054435744b9f`
+reported **4/5 PASS**: alignment, terrain blending, hatch visibility and performance
+passed; shadow strength failed as too faint. The correction applies exactly
+`new_alpha = min(255, 2 * original_alpha)` to every pixel, preserving RGB,
+dimensions, transparent pixels, registration and feathering apart from that
+multiplication. Maximum alpha changes from 112 to 224, without clipping.
+All 2,269,778 pixels passed exact RGB/alpha comparison; 1,022,700 fully transparent
+pixels remain transparent. The original PNG is recoverable from that Git commit
+at the same asset path using the original hash above.
+
+This remains a visual prototype without Sprite2D modulation. Owner graphical
+retest of the correction is **pending**; visual acceptance is not claimed.
+The existing feathered extent is unchanged;
 the faint alpha>=1 extent touches the bottom canvas edge. Whole-ship Y sorting
 remains coarse. Static inspection does not establish engine import or graphical
 acceptance. No Godot execution is authorized for this integration. Disturbed earth,
