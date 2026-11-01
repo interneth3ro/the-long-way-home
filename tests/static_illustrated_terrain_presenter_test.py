@@ -242,6 +242,53 @@ class PresenterStaticTest(unittest.TestCase):
                        'Reentrant mutation rejected', 'Adjacent 2048 cells', 'Invalid version'):
             self.assertIn(marker, native)
 
+    def test_fixture_startup_is_reference_only(self):
+        directory = ROOT/'scenes/experiments/production_terrain'
+        scene = (directory/'fixture.tscn').read_text()
+        fixture = (directory/'fixture.gd').read_text()
+        def node(header):
+            return scene.split(header, 1)[1].split('[node ', 1)[0]
+        root = node('[node name="ProductionTerrainFixture" type="Node2D"]')
+        reference = node('[node name="Terrain" type="TileMapLayer" parent="."]')
+        presenter = node('[node name="IllustratedTerrainPresenter" type="Node2D" parent="."]')
+        child = node('[node name="Terrain" type="TileMapLayer" parent="IllustratedTerrainPresenter"]')
+        # CanvasItem visibility defaults true; the explicit hidden parent hides
+        # its Terrain child. The presenter also starts empty and uninitialized.
+        self.assertNotIn('visible = false', root + reference)
+        self.assertIn('visible = false', presenter)
+        self.assertIn('tile_set = ExtResource("2")', reference)
+        self.assertNotIn('tile_set =', child)
+        self.assertNotIn('tile_map_data', scene)
+        self.assertIn('var _presenter_mode: bool = false', fixture)
+        self.assertIn('var _presenter_tokens: Dictionary[Vector2i, int] = {}', fixture)
+        ready = body(fixture, '_ready')
+        self.assertIn('_set_shading(0)', ready)
+        self.assertIn('_reload(false)', ready)
+        for forbidden in ('presenter.', 'select_presenter_mode(', '_reload_active(', 'visible =', 'await '):
+            self.assertNotIn(forbidden, ready)
+        controls = body(fixture, '_build_controls')
+        self.assertLess(controls.index('backend.add_item("PR #102 reference")'),
+                        controls.index('backend.add_item("PR #103 presenter")'))
+        self.assertNotIn('backend.select(1)', controls)
+        self.assertNotIn('item_selected.emit', controls)
+
+    def test_fixture_switch_retires_before_exclusive_visibility_and_population(self):
+        fixture = (ROOT/'scenes/experiments/production_terrain/fixture.gd').read_text()
+        switch = body(fixture, 'select_presenter_mode')
+        self.assertIn('if enabled == _presenter_mode:\n\t\treturn true', switch)
+        visibility = '_presenter_mode = enabled\n\tterrain.visible = not enabled\n\tpresenter.visible = enabled'
+        self.assertIn(visibility, switch)
+        self.assertLess(switch.index('_unload_chunk(coordinate)'), switch.index(visibility))
+        self.assertLess(switch.index('_unload_active(coordinate)'), switch.index(visibility))
+        self.assertLess(switch.index(visibility), switch.index('return _reload_active(false)'))
+        self.assertIn('if not result.ok:\n\t\t\t_status.text = "STOP: " + str(result)\n\t\t\treturn false', switch)
+        self.assertIn('if not _unload_active(coordinate):\n\t\t\t\treturn false', switch)
+        for forbidden in ('await ', 'call_deferred', 'create_timer'):
+            self.assertNotIn(forbidden, switch)
+        for selected in (False, True, False, True, False):
+            # Truth table of the exact source assignments, not engine execution.
+            self.assertEqual(sum((not selected, selected)), 1)
+
     def test_unchanged_production_assets_controls_and_historical_inventory(self):
         changed = subprocess.check_output(['git', 'diff', '--name-only', PRESENTER_BASE, '--',
             'assets', 'scenes', 'shaders', 'construction', 'inventory', 'dialogue', 'objectives',

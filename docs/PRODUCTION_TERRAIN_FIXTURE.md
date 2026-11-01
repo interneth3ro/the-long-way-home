@@ -392,3 +392,120 @@ Graphical review must compare both backends in all three existing shading modes,
 negative cells, seams, retirement/replacement/reload and original camera views.
 Production tint, selective ground suppression with details retained, effective
 Z ordering near -10 below minerals/highlights, streaming and gameplay remain #104.
+
+### Startup visibility follow-up (PR #103, pending merge)
+
+Inspection at `123b29b0cef3386f476117b7952d5ad91d6b0f98` found the existing
+configuration already safe: the root/reference Terrain retain default visibility,
+the presenter parent explicitly has `visible = false`, and its Terrain child has
+no TileSet or serialized cells. `_presenter_mode` starts false; `_ready()` loads
+only reference chunks and never initializes the presenter. The backend picker
+lists reference first. No fixture script, scene, native harness, production code,
+artwork, preservation candidate hash or historical comparison was changed.
+
+Two focused static checks now bind those startup facts and the switching order:
+retire the old backend, set complementary visibility flags without yielding,
+then populate the selected backend. Initialization/retirement failure returns
+before changing visibility. These are source contracts, not observed engine
+rendering. The existing reference/shading/camera/determinism checks remain intact.
+
+Follow-up validation on 2026-11-01: **13 focused tests PASS in 4.668 seconds**
+(4.872 seconds with controller; 60-second bound); **163 full static tests PASS
+in 103.812 seconds** (104.408 seconds with controller; 180-second bound). Commands
+use the same `python -B -m unittest discover -s tests` invocation above, with
+patterns `static_illustrated_terrain_presenter_test.py` and `static_*test.py`.
+Exact candidate pins, helper identities, historical comparisons and tamper
+negatives passed unchanged. No engine/native/graphical checks were performed.
+
+### Exact proposed native fixture package (not executed or authorized)
+
+The [new #103 inventory](experiments/illustrated_terrain_presenter_stage.json)
+lists **54 committed input paths with exact byte counts and SHA-256 hashes**, plus
+the complete generated `project.godot` text and its byte count/hash. Use exact Git
+blob bytes from `123b29b0cef3386f476117b7952d5ad91d6b0f98`; the follow-up changes
+only static tests and review documents. Do not copy working-tree CRLF variants,
+untracked sidecars, caches, owner files, historical outputs or a whole checkout.
+Resource/global-class dependency closure was inspected without executing source.
+The original #102 inventory and evidence remain unchanged.
+
+The committed LF inventory SHA-256 is
+`3fd7c93864752be48dbd9f43dd52264a1a37d1b034f3c676d8dc9429a0174928`.
+Generated configuration SHA-256 is
+`5716c7e88113b18915bc027d3714f60ecc36698c84bec332b5ecbe7a1b08b1a2`.
+It uses Compatibility rendering, serial imports, a 1280x720 viewport, and no main
+scene, autoload, production input map or save system. It is UTF-8 without BOM,
+LF with final newline. No stage or stage-local file has been created.
+
+**Executable:** `D:\GameDev\Godot\Standard\Godot_v4.7.2-stable_win64.exe`,
+SHA-256 `AB1824F85BFD8E0E4128182C000C4003A3E042245B2967848D089B2A04B22424`.
+Nonexecuting file metadata reports FileVersion `4.7.2` and ProductVersion
+`4.7.2.stable.official`; the executable hash was read and matched. No `--version`
+launch was performed. Rehash before every proposed process.
+
+After separate authorization, use a new, previously nonexistent plain directory
+`D:\GameDev\Godot\TLWH-NativeStages\tlwh-pr103-review-<fresh-guid>`. Verify resolved
+paths stay inside that parent; reject links/reparse points in inputs, outputs and
+stage paths. Never reuse or modify a #102 stage or its supervisor/evidence. Copy
+only the 54 inventoried blobs and generate only the sealed configuration; verify
+the exact initial 55-file set and all hashes before import.
+
+Capture source revision/branch, complete status, index digest, input identities,
+protected branch refs and hashes of tracked and protected untracked/ignored owner
+files before the required static gate. Require fresh actual static PASS and
+unchanged captures before/during/after each phase; never silently refresh an old
+baseline. Source `.godot/`, saves/settings, assets and evidence are never engine
+inputs or output destinations. Preserve source and every stage on failure/success.
+
+The JSON lists **36 exact allowed generated output paths**: 23 engine cache paths,
+seven absent PNG import sidecars and six absent script/shader UID sidecars. The
+paths derive from the read-only #102 generated-output inventory plus the new
+presenter UID; its historical hashes are not reused as new output hashes. Reject
+all other new paths and any original-input modification, including rewrites of
+the two staged tracked item import sidecars. After clean import, capture the
+actual allowed outputs and their hashes. Assertions/graphics must not add,
+remove or modify that captured output set. No blanket `.godot/` or executable
+extension exemption is proposed. The complete supervisor implementation and seal
+must be separately reviewed against this inventory before any launch; no #103
+supervisor has been prepared or approved by this follow-up.
+
+Run sequentially with working directory `<stage>`, one process at a time, no
+automatic retries. Every row uses the exact pinned executable above:
+
+| Phase | Exact argument vector | Timeout |
+| --- | --- | --- |
+| Cold import | `["--headless", "--editor", "--path", "<stage>", "--quit"]` | 60 seconds |
+| Assertions, only after import PASS | `["--headless", "--path", "<stage>", "--script", "res://scenes/experiments/production_terrain/engine_validation.gd"]` | 30 seconds |
+| Owner-controlled graphical acceptance, separately authorized after both PASS | `["--path", "<stage>", "res://scenes/experiments/production_terrain/fixture.tscn"]` | 120 seconds; owner closes sooner after checks |
+
+Each process has a **1,048,576-byte combined stdout/stderr limit** and a maximum
+**4096-byte retained diagnostic excerpt**. A reviewed external supervisor must
+drain both pipes, enforce time/output limits and confirm process-tree termination.
+Stop on engine/script/parse/shader errors even with exit zero, assertion failure,
+abnormal exit/crash, timeout, output overflow, missing/duplicate/malformed final
+completion, unexpected files, changed source/stage/executable identities or
+uncertain termination. Assertions require exit zero and exactly one final nonempty
+stdout line `Production terrain fixture failures: 0`. Timeout/overflow requires
+bounded process-tree termination and review before any further launch. Never
+automatically retry or escalate to profiling, stress testing or freeze reproduction.
+Keep bounded useful diagnostics in new evidence files without overwriting history.
+
+Owner graphical acceptance must remain separate from process completion:
+
+1. On the first frame, before selecting anything, confirm **PR #102 reference**
+   is selected, only reference ground appears, and all four chunks are present.
+   The native harness checks reference state/cells; visible startup itself still
+   requires this graphical check, not an inferred headless result.
+2. Check Unshaded, CPU tint and Crash-style tint + override at the original
+   Overview, Origin/shading, Negative/pocket, Narrow/seam and Irregular/islands
+   views. Compare accepted #102 appearance without changing historical evidence.
+3. Explicitly select **PR #103 presenter**. Repeat the same shading/views and
+   load/unload/replace/forward/reverse controls. Confirm no duplicate full-ground
+   pass, seams, displaced cells or loss of negative-coordinate ownership.
+4. Switch back to reference and repeat both directions. Confirm only the selected
+   backend remains visible and the reference comparison is restored unchanged.
+5. Inspect diagnostics for errors, record explicit owner PASS/observations for
+   startup, switching, comparisons and lifecycle, then close inside the bound.
+   If responsiveness becomes abnormal, stop; do not attempt to reproduce a freeze.
+
+This proposal grants no execution permission. No editor GUI, production gameplay,
+profiling, benchmark, merge, cleanup or PR #104 activity is included.
