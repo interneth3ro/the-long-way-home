@@ -126,8 +126,8 @@ default_color = Color(0.72, 0.53, 0.31, 1)
 
 ; Source doorway threshold near (850, 750) registers to the unchanged hatch at ship-local (0, 16).
 [node name="IllustratedHull" type="Sprite2D" parent="GroundObjects/CrashedShip"]
-position = Vector2(-382.5, -321.5)
-scale = Vector2(0.45, 0.45)
+position = Vector2(-595, -509)
+scale = Vector2(0.70, 0.70)
 texture = ExtResource("5_ship_art")
 centered = false
 
