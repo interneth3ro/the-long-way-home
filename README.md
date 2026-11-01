@@ -50,6 +50,26 @@ remains separate from agent static checks.
 Its gameplay implementation is independent of FactoryGame; the approved Dave
 migration below reuses only two legacy artwork sheets.
 
+## Illustrated crashed ship prototype (feature branch, pending merge)
+
+The exterior uses the owner-approved, unchanged
+[ship PNG](assets/environment/exterior/crashed_exploration_ship_approved.png)
+as one Sprite2D under the existing CrashedShip. The 1774 x 887 RGBA source has
+SHA-256 `80ae633c36242c1effdcebea38dc05cfef8eb586ca9ef3103f6b02be91564e5b`.
+At scale 0.45, its alpha >=128 silhouette is about 789 x 392 world units.
+Source doorway-threshold guide `(850,750)` registers to the unchanged exterior
+hatch `(-384,-176)`; the sprite's ship-local top-left is `(-382.5,-321.5)`.
+
+The five ship polygon/line visuals and two hatch visuals remain intact but hidden.
+For visual rollback, hide IllustratedHull and show those seven visuals.
+Ship/hatch collisions, construction blockers, spawn, sorting, terrain and gameplay
+are unchanged. The larger diagonal illustration extends beyond the existing
+512 x 224 rectangular ship blocker: visible hull can be walked/built through,
+and blocked corners may not follow the artwork. Whole-ship Y sorting also remains
+coarse; no foreground separation or new shadow/debris treatment is included.
+Focused static asset/scene/preservation checks passed. Engine import, graphical
+alignment, movement and hatch-use acceptance remain pending owner-controlled testing.
+
 ## Requirements and setup
 
 Codex must follow the [Godot execution safety policy](AGENTS.md#godot-execution-safety)
