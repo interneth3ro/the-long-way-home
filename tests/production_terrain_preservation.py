@@ -2,6 +2,9 @@
 import hashlib
 from pathlib import Path
 import subprocess
+from exterior_activation_preservation import (
+    ACTIVATION_INPUT_SHA256, historical_activation_bytes, verify_activation_input,
+)
 
 ROOT = Path(__file__).resolve().parents[1]
 PRESENTER_BASE = '4c5bccc1877472a3551df756b673ef5e059dccf6'
@@ -31,11 +34,13 @@ PRESENTER_TEST_SHA256 = {
 def verify_presenter_input(path, raw):
     if path not in PRESENTER_INPUT_SHA256:
         raise AssertionError('Unapproved presenter path: ' + path)
+    raw = historical_activation_bytes(path, raw)
     if hashlib.sha256(raw.replace(b'\r\n', b'\n')).hexdigest() != PRESENTER_INPUT_SHA256[path]:
         raise AssertionError('Modified presenter input: ' + path)
 
 
 def historical_presenter_bytes(path, raw):
+    raw = historical_activation_bytes(path, raw)
     pins = PRESENTER_INPUT_SHA256 | PRESENTER_TEST_SHA256
     if path not in pins:
         return raw
@@ -51,7 +56,9 @@ def historical_source(path):
 def without_presenter_paths(paths):
     remaining = []
     for path in paths:
-        if path in PRESENTER_INPUT_SHA256:
+        if path in ACTIVATION_INPUT_SHA256:
+            verify_activation_input(path, (ROOT/path).read_bytes())
+        elif path in PRESENTER_INPUT_SHA256:
             verify_presenter_input(path, (ROOT/path).read_bytes())
         else:
             remaining.append(path)

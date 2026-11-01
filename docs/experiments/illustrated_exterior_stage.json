@@ -1,0 +1,428 @@
+{
+  "status": "PREPARATION ONLY - no stage or Godot launch authorized",
+  "implementation_commit": "061b9e24bd1a322a9acf0e45d07b5cb9b6450c31",
+  "source_commit": "seal.review_head",
+  "staging_bytes": "Exact committed blobs at seal.review_head, including this reviewed harness; no working/untracked inputs",
+  "stage_parent": "D:/GameDev/Godot/TLWH-NativeStages",
+  "stage_name": "tlwh-pr104-review-<fresh-guid>",
+  "executable": {
+    "path": "D:/GameDev/Godot/Standard/Godot_v4.7.2-stable_win64.exe",
+    "sha256": "AB1824F85BFD8E0E4128182C000C4003A3E042245B2967848D089B2A04B22424"
+  },
+  "inputs": {
+    "assets/dialogue/portraits/computer_dialogue_portrait.png": {
+      "bytes": 611060,
+      "sha256": "fa16376edbb9003970f23a91017f8020b61c05146f193dfa248c7b019a100e72"
+    },
+    "assets/dialogue/portraits/computer_dialogue_portrait.png.import": {
+      "bytes": 1007,
+      "sha256": "7c4afb1117efe6f87e5a3dc3ab4d52b02b1cd4efd1a7b5c50aa13028ef3bf508"
+    },
+    "assets/dialogue/portraits/dave_dialogue_portrait.png": {
+      "bytes": 702790,
+      "sha256": "0233cabd720b47de79d57634e3796f9740e7ad2da185d0761c27e6608c12b6bc"
+    },
+    "assets/dialogue/portraits/dave_dialogue_portrait.png.import": {
+      "bytes": 995,
+      "sha256": "1e2caade37415df4c847b7b052873c9bb1a236bb8bd8bac78e26b8cf7a63bd18"
+    },
+    "assets/dialogue/portraits/marvin_dialogue_portrait.png": {
+      "bytes": 566357,
+      "sha256": "76e4ae9627a51bdd054bddfa17a4dc5cf1474be41b08d9bc33447570e4b4eb63"
+    },
+    "assets/dialogue/portraits/marvin_dialogue_portrait.png.import": {
+      "bytes": 1001,
+      "sha256": "52936f2e0aa04be7cf775ac1feb91422694c47d84c071cdfb36f9c53a035c22e"
+    },
+    "assets/environment/exterior/low_green_ground_cover_provisional/a_balanced_cover.png": {
+      "bytes": 39289,
+      "sha256": "85043ba1079be6fa1577312bcd2d0884b66efa5f0b7592bd7ccaeb96baae978d"
+    },
+    "assets/environment/exterior/low_green_ground_cover_provisional/b_moss_dominant.png": {
+      "bytes": 38576,
+      "sha256": "38048cb8d8ca542df4a7f247b4a0c917e306d7b9c949a3d08ed3b3ef26f31ad3"
+    },
+    "assets/environment/exterior/low_green_ground_cover_provisional/c_exposed_earth.png": {
+      "bytes": 38865,
+      "sha256": "f5f81c6fcf6a906d96f6e8b7dfe9bdfad65deb83d327bcb2368f30c30032db5a"
+    },
+    "assets/environment/exterior/low_green_ground_cover_provisional/d_fine_grass.png": {
+      "bytes": 38412,
+      "sha256": "dd50462374578046c3f6822f4e8f02d85f6d7e571dfee9a06fe43e0c7c090009"
+    },
+    "assets/environment/exterior/weathered_earth_provisional/a_base_soil.png": {
+      "bytes": 8625,
+      "sha256": "1333e2fe5126193a8f283a2f4517f00dc6480f4ac579e91e4b88fb98c20d5042"
+    },
+    "assets/experiments/native_terrain_47_96/baked_v2/baked_terrain.tres": {
+      "bytes": 41635,
+      "sha256": "e70237fe02222ccd3b9da8e96a27320d642a7244605e258012f44f4f666f3256"
+    },
+    "assets/experiments/native_terrain_47_96/baked_v2/baseline_94.png": {
+      "bytes": 1317028,
+      "sha256": "5a3d448774fc2dc816f02827b75ecca1f1a57678e5023f383525cb811aff1977"
+    },
+    "assets/experiments/native_terrain_47_96/baked_v2/interiors_bc.png": {
+      "bytes": 102343,
+      "sha256": "01de466fcec2e7ed8e8cadf9813a57d3783eb57b50ec56408a9ba0346357efc8"
+    },
+    "assets/experiments/native_terrain_47_96/baked_v2/mapping.json": {
+      "bytes": 35530,
+      "sha256": "7702325b9d235ee7edc7f5ab0e6bdaa23db6f2ee8293f297a5d90449bb98d867"
+    },
+    "assets/items/ferrite_plate.png": {
+      "bytes": 64090,
+      "sha256": "8bb7ed820b3f25d0cbe9ba8053311fc83f5e666611d82fdff9b1bc26151ebc64"
+    },
+    "assets/items/ferrite_plate.png.import": {
+      "bytes": 955,
+      "sha256": "94b1fb7688fb6be729b49c9fcd88554233e975162eabe4329f12e2c95f244a96"
+    },
+    "assets/items/ferrite_rod.png": {
+      "bytes": 68100,
+      "sha256": "be51d5a195e4df6c0d83d618e79ea3c72e500faafa68cc47c40b8caaa8f3b767"
+    },
+    "assets/items/ferrite_rod.png.import": {
+      "bytes": 949,
+      "sha256": "e4ee29171c9a9e6cc0618ee74aa0a11f9ca056b91ea75c6ce5bfaaca70f71b83"
+    },
+    "construction/deployed_machine.gd": {
+      "bytes": 1392,
+      "sha256": "bc2c13ffb5f08b5628c1f597ecc6780e93fea49e20e9d541bc18062530847336"
+    },
+    "construction/deployed_machine.gd.uid": {
+      "bytes": 19,
+      "sha256": "e137dd71c309624e46da1d4d727013ecd639a9a0427117d61ef9d65950bfa1b5"
+    },
+    "construction/machine_definition.gd": {
+      "bytes": 2209,
+      "sha256": "5f0eb3c9c9517d6390cc316c50687d8002c3ef078085592799f1b188a1040020"
+    },
+    "construction/machine_definition.gd.uid": {
+      "bytes": 19,
+      "sha256": "5855476330a058a51eb06a132e2b631d9f18fc843c9433a34e375d98a91f596c"
+    },
+    "construction/machine_visual.gd": {
+      "bytes": 3213,
+      "sha256": "3d204384b0a3d00d6d75830be0234b6680250dd7021bb8b4c69067da7206869a"
+    },
+    "construction/machine_visual.gd.uid": {
+      "bytes": 19,
+      "sha256": "3c6b0423f67c208d2f23f1f395fe538047823516fd7ded4be6ddbb096442d206"
+    },
+    "construction/placement_rules.gd": {
+      "bytes": 2597,
+      "sha256": "9b6843219576a599f5232bd4e12043326c8030115c32cd1de3a57a9cf12c0177"
+    },
+    "construction/placement_rules.gd.uid": {
+      "bytes": 19,
+      "sha256": "88a58ec4ec376e90b314a972a2660de49128578f2007f2e5ad6165cb86b15c08"
+    },
+    "construction/recipe_definition.gd": {
+      "bytes": 1145,
+      "sha256": "b42698c707123f3fa2f1671037d5aec428219a6a27dccbc06b5e5fb8d856e9a3"
+    },
+    "construction/recipe_definition.gd.uid": {
+      "bytes": 20,
+      "sha256": "319f5e9bae7291a1909bbe03d7db2d80876e610b046bbcaab9b18d6bbf053d30"
+    },
+    "construction/recipe_ingredient.gd": {
+      "bytes": 251,
+      "sha256": "5d62f2b3db2716fee7fe3384d014902148b7ebad96bb6a93636d8f0fb47be47b"
+    },
+    "construction/recipe_ingredient.gd.uid": {
+      "bytes": 20,
+      "sha256": "bf19bcb90c86ef13b295219e72acd8d595888f4a89282b0a7eb8c55459accdc1"
+    },
+    "construction/recipes/ferrite_plate.tres": {
+      "bytes": 938,
+      "sha256": "9122fee113937ab561101ddeb0624877a38b2289f7b7307b0ad8c6ff16209614"
+    },
+    "construction/recipes/ferrite_rod.tres": {
+      "bytes": 930,
+      "sha256": "0e530192ce484d485cd6a9fa2be79e51987d30173fd350793a60f38d4ec2aec4"
+    },
+    "dialogue/dialogue_conversation.gd": {
+      "bytes": 462,
+      "sha256": "cfae2d95a2216d4a6474f5c34cb6f3f1bdfc8aea6c4ee338a20430024a205693"
+    },
+    "dialogue/dialogue_conversation.gd.uid": {
+      "bytes": 20,
+      "sha256": "a576aa02577cc34ff9676fb11983509aa335cae2cbccd3b11fcaa658bf2e4f18"
+    },
+    "dialogue/dialogue_entry.gd": {
+      "bytes": 446,
+      "sha256": "6fdb0070b05def77dc6dbe662ad5cfb545f9e53244b61245eb8d2453105873c3"
+    },
+    "dialogue/dialogue_entry.gd.uid": {
+      "bytes": 20,
+      "sha256": "c5020b2ba686a366264f4c5c86d8a2edc3a51d67b6433891962e70c945b474a6"
+    },
+    "inventory/extractor.tres": {
+      "bytes": 582,
+      "sha256": "2b39099ef59f28b21a2be7bc86d276bf1b6bf37ae7c56ab81a70003abd1878e3"
+    },
+    "inventory/fabricator.tres": {
+      "bytes": 725,
+      "sha256": "581f9778aaeabcd2bfe69704096d0c105e8b8eb267dcdeddd2de6b0a14aa2442"
+    },
+    "inventory/ferrite_ingot.tres": {
+      "bytes": 279,
+      "sha256": "38a6b147621e0f46f311f03564b430806cc1ccaef8f6b174ab4b54e6eb96195a"
+    },
+    "inventory/ferrite_ore.tres": {
+      "bytes": 275,
+      "sha256": "8c9c73f66c3543785c43b436d9ea4d3cfcbfdd9858fb093c3807d4cceb5858b8"
+    },
+    "inventory/ferrite_plate.tres": {
+      "bytes": 267,
+      "sha256": "beb0ac3bfd7802a390fba5445ee3d457e9a7673c5def57d5f76bdce2a5ffe2fd"
+    },
+    "inventory/ferrite_rod.tres": {
+      "bytes": 263,
+      "sha256": "f4b42613385400cd06d8e0c9a31e2b567808d3255857f8560299123373c8d82f"
+    },
+    "inventory/inventory_state.gd": {
+      "bytes": 3390,
+      "sha256": "1d51c0eec332faebae64f530f455d3910b18b5b731cb2f7361859ebed335d3ee"
+    },
+    "inventory/inventory_state.gd.uid": {
+      "bytes": 19,
+      "sha256": "a529b6aac568ea8d827bf74987c5ef5703105e73eae06b789efdffbfba28822f"
+    },
+    "inventory/item_definition.gd": {
+      "bytes": 396,
+      "sha256": "679d083d73e900a30662c92ef1c86ad1f22a9ce9d5cabfa5921b40de671532b8"
+    },
+    "inventory/item_definition.gd.uid": {
+      "bytes": 19,
+      "sha256": "2c16ca1e15c8d76b89a339662a5e021b855f308705e4eab74d2285baf513b893"
+    },
+    "inventory/smelter.tres": {
+      "bytes": 701,
+      "sha256": "1dab2b8c50638bfcabd4ef7f28c508910e88b8464bdcee8c8300c8a54c52720c"
+    },
+    "scenes/interaction/ferrite_inspection.gd": {
+      "bytes": 1084,
+      "sha256": "2891a52678e267a0f5d2edbb4c2f1b54999c50916a2a6071166cc5f56209ce0e"
+    },
+    "scenes/interaction/ferrite_inspection.gd.uid": {
+      "bytes": 19,
+      "sha256": "9c34056954862e42ecabbaf7bef86eb8a096032a03b1e9c0d62a487a90d7b65e"
+    },
+    "scenes/interaction/scene_hatch.gd": {
+      "bytes": 775,
+      "sha256": "d697ee765c914753acaa828b0fcdc047024cc0381e3ad7a815783b367f43811d"
+    },
+    "scenes/interaction/scene_hatch.gd.uid": {
+      "bytes": 20,
+      "sha256": "194ab0b6e8cb4eda86dfb9208278decdf92dedd05ca88cefa8598dc353c4e22a"
+    },
+    "scenes/interaction/world_interactable.gd": {
+      "bytes": 815,
+      "sha256": "59f2945ccf01817e2ae301f8b0314e8ea7596f1ca4b107bae19f0e5f3d487b9a"
+    },
+    "scenes/interaction/world_interactable.gd.uid": {
+      "bytes": 21,
+      "sha256": "300017bccde7b681a094bb4198596658b238072e681277d40c55968e37a7dd8c"
+    },
+    "scenes/main/playthrough_state.gd": {
+      "bytes": 6661,
+      "sha256": "f22dc629655cdcba337d9baa52aa1c6a0768407a8bcd9a3cfc2f8224a3d761fc"
+    },
+    "scenes/main/playthrough_state.gd.uid": {
+      "bytes": 20,
+      "sha256": "eef404930c32991bc87ea5fffd3c1d63ec0bbb564e6bbf4aee983af51a88abd1"
+    },
+    "scenes/main/scene_transition_controller.gd": {
+      "bytes": 8633,
+      "sha256": "b505cc054c6cf2b398dd43f217039e3b1bb3c72faaa8e318398f379ac780142b"
+    },
+    "scenes/main/scene_transition_controller.gd.uid": {
+      "bytes": 20,
+      "sha256": "83718db9fc744d1fcb4bd22cb5b6db6af7eb39cbd1968658ce1cb91f760a0a40"
+    },
+    "scenes/player/interaction_detector.gd": {
+      "bytes": 5225,
+      "sha256": "c1b7aeb55610a103316618dab0967d811d368e1eca7a27fa82e6c3fc595ff7c9"
+    },
+    "scenes/player/interaction_detector.gd.uid": {
+      "bytes": 20,
+      "sha256": "d727a2432e0a22a3184c17c66ab0d274125afa96e35c453daddb66ce8a4149f2"
+    },
+    "scenes/ui/dialogue_ui.gd": {
+      "bytes": 5549,
+      "sha256": "ab7db168b7c5aa225305614e8fa974d73dd031abdf525f3ec1a00e7f780107e2"
+    },
+    "scenes/ui/dialogue_ui.gd.uid": {
+      "bytes": 20,
+      "sha256": "b5f9a9ccf56c29736dcc9df312409755436d1f2a2bbcb3eb851bbc1e66eb0e1c"
+    },
+    "scenes/ui/interaction_ui.gd": {
+      "bytes": 585,
+      "sha256": "fe8f0b11521bd6f8065b7812b996fb47b7ffdd0376ef2f3e54e06b71cbfcad98"
+    },
+    "scenes/ui/interaction_ui.gd.uid": {
+      "bytes": 19,
+      "sha256": "efbca09d19c72b27162f7c615ff527591ae94b4db21788cf8fe82a445ed635d8"
+    },
+    "scenes/world/illustrated_terrain_presenter.gd": {
+      "bytes": 9437,
+      "sha256": "d569ff622464ff9db023cf39e8c4d7801df084c16d53e0b790add8bf2ef07935"
+    },
+    "scenes/world/illustrated_terrain_tint.gdshader": {
+      "bytes": 1010,
+      "sha256": "3d9f68df53176c56006773c3921571c871b4c0f452e1899fa79c6ff9f8d09e62"
+    },
+    "scenes/world/introductory_ferrite.tres": {
+      "bytes": 513,
+      "sha256": "87871c5754d53411e03d08709dead17f284d3612cb370072acc74fd88df44769"
+    },
+    "scenes/world/planet_exterior.gd": {
+      "bytes": 11484,
+      "sha256": "d48dbefa96cf319b538432b8ed46f8653b0b674374119ee16ee204405df2f6f9"
+    },
+    "scenes/world/planet_exterior.gd.uid": {
+      "bytes": 19,
+      "sha256": "d439fa26158af2ea5614ae7b29a00c0d0024e9e3f45eb8f00d505919e510dac5"
+    },
+    "scenes/world/planet_exterior.tscn": {
+      "bytes": 6693,
+      "sha256": "bb682c92f4feb70295204159a20e87c6cab55fe473114703156c17ab0fdcb3fb"
+    },
+    "scenes/world/planet_generator.gd": {
+      "bytes": 6562,
+      "sha256": "f586792777178e63515c781f8aebb73f65c43c313f14f5970ce74bed10ca9c49"
+    },
+    "scenes/world/planet_generator.gd.uid": {
+      "bytes": 19,
+      "sha256": "0957d0983daeddc0b4027c7129118efaef42f1abc1ca0d1877909ed8b6dfd3c4"
+    },
+    "scenes/world/planet_world_state.gd": {
+      "bytes": 20036,
+      "sha256": "b2fcc80a4b1f727ffec0ff778ea868e41e4848637146d2e9da990a2d241c707a"
+    },
+    "scenes/world/planet_world_state.gd.uid": {
+      "bytes": 19,
+      "sha256": "7498d4a3dc0a102397daa4d4865a125f2549d31b430ebd281094e462d869e90f"
+    },
+    "scenes/world/resource_deposit.gd": {
+      "bytes": 513,
+      "sha256": "a86c2929b16dd76dbf6a617392e2855c1c09e0d3016127d64d22326ec823e1da"
+    },
+    "scenes/world/resource_deposit.gd.uid": {
+      "bytes": 19,
+      "sha256": "35946d7744adec9b5af6446f7dfaedd9ca5376c3f9a978187a59615e48912ee4"
+    },
+    "scenes/world/terrain_assignment_lookup.gd": {
+      "bytes": 5080,
+      "sha256": "582560a0d625e6531124b90a10ffcea4b2b4d1bca8944a2c673b8b3a30cb9567"
+    },
+    "scenes/world/terrain_chunk.gd": {
+      "bytes": 5170,
+      "sha256": "531632bba6a5f2463dffa21a818d9c468409f4c1edb6a275528a2c04d3ca388e"
+    },
+    "scenes/world/terrain_chunk.gd.uid": {
+      "bytes": 19,
+      "sha256": "a46748a6914dacec38b0a923e80403f268a062a7102b3c24afa4f15727b66cf3"
+    },
+    "scenes/world/terrain_resolver.gd": {
+      "bytes": 2745,
+      "sha256": "75db40185fbb86f394035ef442a44dd18b911ce9bc3e4ab1489f443e1b210117"
+    },
+    "scenes/world/world_coordinates.gd": {
+      "bytes": 858,
+      "sha256": "1337cfcf112d7f480b9e8525ef007d8f30d6abc5258c58d9f11734408d763213"
+    },
+    "scenes/world/world_coordinates.gd.uid": {
+      "bytes": 19,
+      "sha256": "cb6e1dae4abfeeee490e806cf6a7383b7152bc3abc3be3d3185e3d93b59acef6"
+    },
+    "tests/illustrated_exterior_native_validation.gd": {
+      "bytes": 9838,
+      "sha256": "7d7270473443bf2c910d409f0efc7b934119c632631ec35c958a8a877f7c8988"
+    }
+  },
+  "generated_inputs": {
+    "project.godot": {
+      "text": "config_version=5\n\n[application]\nconfig/name=\"TLWH PR104 focused native validation\"\nconfig/features=PackedStringArray(\"4.7\", \"GL Compatibility\")\n\n[display]\nwindow/size/viewport_width=1280\nwindow/size/viewport_height=720\n\n[editor]\nimport/use_multiple_threads=false\n\n[rendering]\nrenderer/rendering_method=\"gl_compatibility\"\nrenderer/rendering_method.mobile=\"gl_compatibility\"\n",
+      "bytes": 373,
+      "sha256": "62941edfdf3e69a5c51189f174559b5b05c8944435ff8133ef511a37ed5120dc"
+    }
+  },
+  "allowed_generated_paths": [
+    ".godot/.gdignore",
+    ".godot/editor/filesystem_cache10",
+    ".godot/editor/project_metadata.cfg",
+    ".godot/global_script_class_cache.cfg",
+    ".godot/imported/a_balanced_cover.png-c4f1361b16ceb87375f50d8c834e15b7.ctex",
+    ".godot/imported/a_balanced_cover.png-c4f1361b16ceb87375f50d8c834e15b7.md5",
+    ".godot/imported/a_base_soil.png-f56ef1926868a170542d01bc67e2f24d.ctex",
+    ".godot/imported/a_base_soil.png-f56ef1926868a170542d01bc67e2f24d.md5",
+    ".godot/imported/b_moss_dominant.png-bdaed0c7dbc83867ebfcd500512b1f91.ctex",
+    ".godot/imported/b_moss_dominant.png-bdaed0c7dbc83867ebfcd500512b1f91.md5",
+    ".godot/imported/baseline_94.png-9c50062a2752bb2f2a8a61def6d987f2.ctex",
+    ".godot/imported/baseline_94.png-9c50062a2752bb2f2a8a61def6d987f2.md5",
+    ".godot/imported/c_exposed_earth.png-8500a6ad50b97f50481e125425d34b57.ctex",
+    ".godot/imported/c_exposed_earth.png-8500a6ad50b97f50481e125425d34b57.md5",
+    ".godot/imported/computer_dialogue_portrait.png-ee7b8f1e0d8ec4899770f71594b4565d.ctex",
+    ".godot/imported/computer_dialogue_portrait.png-ee7b8f1e0d8ec4899770f71594b4565d.md5",
+    ".godot/imported/d_fine_grass.png-ff91b7b77b8dcf3ebfe18bfbc1213193.ctex",
+    ".godot/imported/d_fine_grass.png-ff91b7b77b8dcf3ebfe18bfbc1213193.md5",
+    ".godot/imported/dave_dialogue_portrait.png-81f061aa20db9add4d1f37a43dc68313.ctex",
+    ".godot/imported/dave_dialogue_portrait.png-81f061aa20db9add4d1f37a43dc68313.md5",
+    ".godot/imported/ferrite_plate.png-0e9d8a3f937cbb186ba25e8e5be64dad.ctex",
+    ".godot/imported/ferrite_plate.png-0e9d8a3f937cbb186ba25e8e5be64dad.md5",
+    ".godot/imported/ferrite_rod.png-254e164dff9593ce27ed8d2396f66ff7.ctex",
+    ".godot/imported/ferrite_rod.png-254e164dff9593ce27ed8d2396f66ff7.md5",
+    ".godot/imported/interiors_bc.png-c0fff342b957b74cb530c5b3ed174b48.ctex",
+    ".godot/imported/interiors_bc.png-c0fff342b957b74cb530c5b3ed174b48.md5",
+    ".godot/imported/marvin_dialogue_portrait.png-f8c1b3d776ea6d5823d0fe673b41588b.ctex",
+    ".godot/imported/marvin_dialogue_portrait.png-f8c1b3d776ea6d5823d0fe673b41588b.md5",
+    ".godot/uid_cache.bin",
+    "assets/environment/exterior/low_green_ground_cover_provisional/a_balanced_cover.png.import",
+    "assets/environment/exterior/low_green_ground_cover_provisional/b_moss_dominant.png.import",
+    "assets/environment/exterior/low_green_ground_cover_provisional/c_exposed_earth.png.import",
+    "assets/environment/exterior/low_green_ground_cover_provisional/d_fine_grass.png.import",
+    "assets/environment/exterior/weathered_earth_provisional/a_base_soil.png.import",
+    "assets/experiments/native_terrain_47_96/baked_v2/baseline_94.png.import",
+    "assets/experiments/native_terrain_47_96/baked_v2/interiors_bc.png.import",
+    "scenes/world/illustrated_terrain_presenter.gd.uid",
+    "scenes/world/illustrated_terrain_tint.gdshader.uid",
+    "scenes/world/terrain_assignment_lookup.gd.uid",
+    "scenes/world/terrain_resolver.gd.uid",
+    "tests/illustrated_exterior_native_validation.gd.uid"
+  ],
+  "phases": [
+    {
+      "name": "Import",
+      "arguments": [
+        "--headless",
+        "--editor",
+        "--path",
+        "<stage>",
+        "--quit"
+      ],
+      "timeout_seconds": 60
+    },
+    {
+      "name": "Assertions",
+      "arguments": [
+        "--headless",
+        "--path",
+        "<stage>",
+        "--script",
+        "res://tests/illustrated_exterior_native_validation.gd"
+      ],
+      "timeout_seconds": 30,
+      "required_final_stdout_line": "Illustrated exterior validation failures: 0"
+    }
+  ],
+  "process_policy": {
+    "combined_output_limit_bytes": 1048576,
+    "diagnostic_excerpt_limit_bytes": 4096,
+    "sequential": true,
+    "automatic_retries": false,
+    "output_policy": "Exact initial input set; only enumerated generated paths during import; freeze actual outputs after clean import and reject all assertion-phase drift. No graphical command."
+  }
+}

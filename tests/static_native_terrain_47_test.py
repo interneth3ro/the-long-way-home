@@ -200,6 +200,10 @@ class Native47StaticTest(unittest.TestCase):
             for path in changed:
                 protected = path == 'project.godot' or path.startswith(('assets/', 'scenes/', 'construction/', 'inventory/', 'dialogue/', 'objectives/', 'shaders/', 'tools/')) or path in ('AGENTS.md', 'docs/LOCAL_TESTING.md')
                 if protected:
+                    from exterior_activation_preservation import ACTIVATION_INPUT_SHA256, verify_activation_input
+                    if path in ACTIVATION_INPUT_SHA256:
+                        verify_activation_input(path, (ROOT/path).read_bytes())
+                        continue
                     if path in PRESENTER_INPUT_SHA256:
                         verify_presenter_input(path, (ROOT / path).read_bytes())
                         continue

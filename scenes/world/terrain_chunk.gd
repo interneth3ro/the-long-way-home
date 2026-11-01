@@ -18,9 +18,12 @@ var _colors: PackedColorArray
 var _ground_materials: PackedByteArray
 var _details: Array[Dictionary] = []
 var state_revision: int = -1
+var _draw_legacy_ground: bool = true
 
 
-func configure(coordinate: Vector2i, generator: PlanetGenerator, state: PlanetWorldState) -> void:
+func configure(coordinate: Vector2i, generator: PlanetGenerator, state: PlanetWorldState,
+		draw_legacy_ground: bool = true) -> void:
+	_draw_legacy_ground = draw_legacy_ground
 	state_revision = state.revision
 	position = Vector2(coordinate) * WorldCoordinates.CHUNK_SIZE
 	texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
@@ -40,11 +43,13 @@ func configure(coordinate: Vector2i, generator: PlanetGenerator, state: PlanetWo
 				+ samples[(y + 1) * SAMPLE_WIDTH + x] + samples[(y + 1) * SAMPLE_WIDTH + x + 1]) / 4.0
 			_colors[index] = _earth_tint(color)
 	_details.clear()
-	_ground_materials.resize(WorldCoordinates.CHUNK_TILES * WorldCoordinates.CHUNK_TILES)
+	if _draw_legacy_ground:
+		_ground_materials.resize(WorldCoordinates.CHUNK_TILES * WorldCoordinates.CHUNK_TILES)
 	for y in range(WorldCoordinates.CHUNK_TILES):
 		for x in range(WorldCoordinates.CHUNK_TILES):
 			var tile := coordinate * WorldCoordinates.CHUNK_TILES + Vector2i(x, y)
-			_ground_materials[y * WorldCoordinates.CHUNK_TILES + x] = generator.sample_ground_material(tile)
+			if _draw_legacy_ground:
+				_ground_materials[y * WorldCoordinates.CHUNK_TILES + x] = generator.sample_ground_material(tile)
 			var detail := generator.sample_detail(tile, state)
 			if not detail.is_empty():
 				detail.position -= position
@@ -63,17 +68,18 @@ static func _earth_tint(color: Color) -> Color:
 
 
 func _draw() -> void:
-	for y in range(WorldCoordinates.CHUNK_TILES):
-		for x in range(WorldCoordinates.CHUNK_TILES):
-			var point := Vector2(x, y) * WorldCoordinates.TERRAIN_SIZE
-			var size := float(WorldCoordinates.TERRAIN_SIZE)
-			var vertices := PackedVector2Array([point, point + Vector2(size, 0),
-				point + Vector2(size, size), point + Vector2(0, size)])
-			var index := y * VERTEX_WIDTH + x
-			var colors := PackedColorArray([_colors[index], _colors[index + 1],
-				_colors[index + VERTEX_WIDTH + 1], _colors[index + VERTEX_WIDTH]])
-			var ground_material := int(_ground_materials[y * WorldCoordinates.CHUNK_TILES + x])
-			draw_polygon(vertices, colors, _texture_uvs, GROUND_TEXTURES[ground_material])
+	if _draw_legacy_ground:
+		for y in range(WorldCoordinates.CHUNK_TILES):
+			for x in range(WorldCoordinates.CHUNK_TILES):
+				var point := Vector2(x, y) * WorldCoordinates.TERRAIN_SIZE
+				var size := float(WorldCoordinates.TERRAIN_SIZE)
+				var vertices := PackedVector2Array([point, point + Vector2(size, 0),
+					point + Vector2(size, size), point + Vector2(0, size)])
+				var index := y * VERTEX_WIDTH + x
+				var colors := PackedColorArray([_colors[index], _colors[index + 1],
+					_colors[index + VERTEX_WIDTH + 1], _colors[index + VERTEX_WIDTH]])
+				var ground_material := int(_ground_materials[y * WorldCoordinates.CHUNK_TILES + x])
+				draw_polygon(vertices, colors, _texture_uvs, GROUND_TEXTURES[ground_material])
 	# Low ground details render below all Y-sorted authored objects and Dave.
 	for detail in _details:
 		var point: Vector2 = detail.position
@@ -87,3 +93,10 @@ func _draw() -> void:
 			2:
 				draw_line(point + Vector2(-5, 3), point + Vector2(1, -9), Color(0.42, 0.39, 0.31), 3.0)
 				draw_line(point + Vector2(1, 0), point + Vector2(7, -6), Color(0.42, 0.39, 0.31), 2.0)
+
+
+# Copy the already calculated halo-averaged vertices, without resampling.
+func write_tint(image: Image, origin: Vector2i) -> void:
+	for y in range(VERTEX_WIDTH):
+		for x in range(VERTEX_WIDTH):
+			image.set_pixelv(origin + Vector2i(x, y), _colors[y * VERTEX_WIDTH + x])

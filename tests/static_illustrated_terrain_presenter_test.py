@@ -8,6 +8,7 @@ from pathlib import Path
 import re
 import subprocess
 import unittest
+from exterior_activation_preservation import historical_activation_bytes
 
 from production_terrain_preservation import (
     PRESENTER_BASE, PRESENTER_INPUT_SHA256, PRESENTER_TEST_SHA256,
@@ -17,7 +18,7 @@ from production_terrain_preservation import (
 ROOT = Path(__file__).resolve().parents[1]
 PRESENTER = 'scenes/world/illustrated_terrain_presenter.gd'
 SOURCE = (ROOT/PRESENTER).read_text()
-HELPER_SHA256 = '09ea841ca268e25cecdd4029be268f173ced31c656ad32f72904d56728402e86'
+HELPER_SHA256 = 'dbe31e8fdba3650c2db8b6bf66220365b2d0a03d94dbebb1dda88f95db40f598'
 NATIVE_HELPER_SHA256 = 'dedccbe4f87a3493147d624b749d9084cff15479e7af319dce4897d58bacd245'
 
 
@@ -62,7 +63,7 @@ class PresenterStaticTest(unittest.TestCase):
             self.assertEqual(hashlib.sha256(raw).hexdigest(), digest, path)
             for bad in (raw + b'CHANGED', raw[1:], raw + raw):
                 self.assertNotEqual(hashlib.sha256(bad).hexdigest(), digest, path)
-        for path in ('scenes/world/terrain_chunk.gd', 'scenes/world/planet_generator.gd',
+        for path in ('scenes/world/planet_generator.gd',
                      'assets/ui/b1_theme.tres', 'tools/run-local-tests.ps1', 'AGENTS.md'):
             raw = (ROOT/path).read_bytes() + b'OWNER CHANGE'
             self.assertEqual(historical_presenter_bytes(path, raw), raw)
@@ -193,7 +194,8 @@ class PresenterStaticTest(unittest.TestCase):
         for key in ('"ok"', '"code"', '"chunk"', '"token"', '"message"'):
             self.assertIn(key, body(SOURCE, '_result'))
         self.assertIn('result["cell"] = cell', body(SOURCE, '_cell_failure'))
-        exterior = (ROOT/'scenes/world/planet_exterior.gd').read_text()
+        path = 'scenes/world/planet_exterior.gd'
+        exterior = historical_activation_bytes(path, (ROOT/path).read_bytes()).decode().replace('\r\n', '\n')
         self.assertIn('terrain_renderer: TerrainRenderer = TerrainRenderer.LEGACY', exterior)
         assignments = re.findall(r'_effective_renderer\s*(?::[^=\n]+)?=\s*([^\n]+)', exterior)
         self.assertTrue(assignments)
@@ -299,7 +301,7 @@ class PresenterStaticTest(unittest.TestCase):
                      'scenes/world/world_coordinates.gd', 'scenes/world/terrain_chunk.gd',
                      'scenes/world/terrain_resolver.gd', 'scenes/world/terrain_assignment_lookup.gd',
                      'scenes/experiments/production_terrain/tint.gdshader'):
-            self.assertEqual((ROOT/path).read_text(), old(path), path)
+            self.assertEqual(historical_activation_bytes(path, (ROOT/path).read_bytes()).decode().replace('\r\n', '\n'), old(path), path)
 
 
 if __name__ == '__main__':
