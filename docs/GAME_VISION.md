@@ -267,8 +267,12 @@ See the [implementation, tint formula and owner checks](../README.md#weathered-e
 The pending [PR #104 illustrated exterior integration](ILLUSTRATED_EXTERIOR.md)
 uses the accepted baked Earth/Green presentation and preserves the corrected
 PR #95 generator/gameplay behavior with a pre-initialization legacy rollback.
-This is implementation pending separate native, owner graphical/gameplay and
-responsiveness acceptance; it does not change approved environmental intent.
+Native validation passed, followed by the owner's post-reboot playable-game
+acceptance: **7/7 PASS**, zero failures and zero untested checklist items.
+Minor initial exterior-loading stutter is explicitly accepted as non-blocking;
+no formal performance benchmark was performed. See the
+[final acceptance record](ILLUSTRATED_EXTERIOR.md#final-pr-104-acceptance-2026-11-01).
+The integration remains pending merge and does not change approved environmental intent.
 
 ## Approved Ferrite discovery direction
 

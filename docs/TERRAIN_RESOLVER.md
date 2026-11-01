@@ -83,7 +83,10 @@ These are Python static models and source checks, **not GDScript execution**.
 At the resolver-only milestone these engine behaviors were unverified. The
 subsequent PR #102 fixture's separately authorized Import and Native Assertions
 passed, followed by owner graphical acceptance at the implementation recorded
-below. Production integration remains untested. No further Godot execution,
+below. Production integration was untested at that milestone; subsequent
+[PR #104 acceptance](ILLUSTRATED_EXTERIOR.md#final-pr-104-acceptance-2026-11-01)
+records native PASS and owner gameplay 7/7 PASS with accepted initial-loading
+stutter, without formal performance benchmarking. No further Godot execution,
 Native, profiling, benchmarks or graphical automation is authorized by this record.
 
 The historical laboratory and machine-art guards admit only the two new resolver script paths,
@@ -95,8 +98,8 @@ The separate [production-scale fixture](PRODUCTION_TERRAIN_FIXTURE.md) (merged P
 experimental vertex-sampled CPU tint shading in isolation. Isolated Import and
 Native Assertions passed, and the owner reported **10/10 graphical PASS**, with
 no observations, for `07337fdfeb5bdd28200d297ea36951b054dd04a0`.
-Production renderer replacement and authored crash-site shading
-migration remain deferred. Future shading must retain the existing CPU tint data,
+At the PR #102 milestone, production renderer replacement and authored crash-site
+shading migration remained deferred. Subsequent shading must retain the existing CPU tint data,
 authored masks, feathers, overrides and continuous gradients. This PR does not
 establish production integration, visual equivalence or performance acceptance.
 
@@ -141,5 +144,7 @@ See the [fixture extension and static/preservation gate](PRODUCTION_TERRAIN_FIXT
 The [final PR #103 acceptance](PRODUCTION_TERRAIN_FIXTURE.md#final-pr-103-acceptance-2026-11-01)
 records its isolated native and owner graphical PASS. The pending
 [PR #104 activation](ILLUSTRATED_EXTERIOR.md) supersedes the dormant exterior gate
-and documents ground/detail separation, tint and explicit legacy rollback; its
-native, graphical, gameplay and performance gates remain unverified.
+and documents ground/detail separation, tint and explicit legacy rollback. Its
+[final acceptance record](ILLUSTRATED_EXTERIOR.md#final-pr-104-acceptance-2026-11-01)
+distinguishes native assertions from the owner's 7/7 gameplay PASS and accepted
+initial-loading stutter; no formal performance benchmark was performed.

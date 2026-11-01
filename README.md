@@ -1,10 +1,13 @@
 # The Long Way Home
 
 The [illustrated playable exterior](docs/ILLUSTRATED_EXTERIOR.md) is implemented
-on the PR #104 feature branch, pending merge and separately authorized engine,
-graphical/gameplay and responsiveness validation. Illustrated rendering is the
-intended default; the exterior's Terrain Renderer property selects Legacy before
-first initialization for rollback. Static checks do not establish runtime behavior.
+on the PR #104 feature branch, pending merge. Native validation passed and the
+owner's post-reboot playable-game acceptance is **7/7 PASS**, with zero failures
+and zero untested checklist items. Minor initial exterior-loading stutter is an
+explicitly accepted, non-blocking limitation; no formal performance benchmarking
+was performed. See the [final acceptance record](docs/ILLUSTRATED_EXTERIOR.md#final-pr-104-acceptance-2026-11-01).
+Illustrated rendering is the default; the exterior's Terrain Renderer property
+selects Legacy before first initialization for rollback.
 
 The merged PR #103 shared presenter retains the accepted PR #102 isolated fixture
 as its default reference backend. Its historical acceptance remains separate.
@@ -13,9 +16,9 @@ At validated implementation `aa62a6d38c981e08c7c6d70cf5929cad642a5414`,
 native assertions passed. Owner graphical acceptance is **12/12 PASS**, with
 zero failures, zero untested items and no observations; preservation checks passed.
 See the [final acceptance record](docs/PRODUCTION_TERRAIN_FIXTURE.md#final-pr-103-acceptance-2026-11-01)
-for historical evidence. PR #104 production gameplay, draw-order and performance
-gates remain unverified. Any further engine execution requires fresh
-owner authorization.
+for historical evidence. PR #104 acceptance is recorded separately above and
+does not extend the historical fixture's claims. Further PR #104 engine execution
+requires separate owner authorization.
 
 The merged [deterministic terrain resolver](docs/TERRAIN_RESOLVER.md) adds
 Green-over-Earth signature selection and seeded
@@ -26,8 +29,8 @@ An isolated [illustrated terrain laboratory](docs/ILLUSTRATED_TERRAIN_LAB.md)
 (feature branch, pending merge) now provides baked artwork for all 94 original
 configurations at 128px, plus the approved A/B/C solid-interior treatment. Owner
 graphical acceptance is complete: 12/12 PASS at commit 2c7c392. The earlier
-laboratories and production terrain remain unchanged. Production chunk integration
-and runtime performance have not been tested or accepted.
+laboratories remain unchanged. That laboratory acceptance did not cover production
+chunk integration; the subsequent PR #104 acceptance is recorded above.
 
 A story-driven science-fiction automation adventure. This fresh Godot project
 has a player movement prototype with camera follow and mouse-wheel zoom, plus a

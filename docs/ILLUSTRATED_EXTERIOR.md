@@ -1,9 +1,12 @@
 # Illustrated playable exterior (PR #104 feature branch, pending merge)
 
-The production exterior now intends to use the approved baked Earth/Green artwork
-through the shared PR #103 presenter. This implementation has static evidence
-only. Engine parsing, shader compilation, actual streaming, gameplay, graphical
-acceptance and responsiveness remain unverified. PR #95 is the corrected exterior
+The production exterior uses the approved baked Earth/Green artwork through the
+shared PR #103 presenter. Static and isolated native validation passed, followed
+by the owner's post-reboot playable-game acceptance: **7/7 PASS**, zero failures
+and zero untested checklist items. Minor initial exterior-loading stutter is
+explicitly accepted as non-blocking. No formal performance benchmark was performed.
+See the [final acceptance record](#final-pr-104-acceptance-2026-11-01) for scope
+and evidence. PR #95 is the corrected exterior
 comparison baseline; the [PR #102/#103 acceptance record](PRODUCTION_TERRAIN_FIXTURE.md)
 applies only to its isolated fixture and remains unchanged.
 
@@ -78,8 +81,9 @@ It changes no neighbor assignments or detail state. Clearing a retired slot does
 not clear neighbor borders. There is no full-field CPU resampling or per-cell
 material. Dirty changes upload the fixed texture once per budget call, including
 retirement-only changes; idle calls upload nothing. This is bounded shared upload
-work, not a measured optimization. GPU upload and fragment sampling costs still
-need owner-observed production validation.
+work, not a measured optimization. Owner-observed appearance and responsiveness
+acceptance is recorded below; GPU upload and fragment sampling costs have not
+been formally measured.
 
 The [production shader](../scenes/world/illustrated_terrain_tint.gdshader) adapts
 the accepted fixture's numerical tint field. MODEL_MATRIX yields world positions;
@@ -98,7 +102,8 @@ The shared ground is Z -11, chunk details Z -10, Ferrite artwork Z -5,
 construction highlights Z -4, and authored GroundObjects/Dave remain above these.
 Only ground is shaded. Deposits, collisions, protected exclusions, construction,
 machine simulation, player spawn and arrival/hatch code remain unchanged. Actual
-visual order and gameplay are pending owner verification.
+visual order beyond the seven accepted checklist items is not separately certified
+by the owner's gameplay acceptance below.
 
 ## Static gate and exact preservation amendments
 
@@ -151,6 +156,9 @@ performance, runner Native/NativePlan, supervisor or staging operation is part o
 this implementation.
 
 ## Separately authorized validation proposal
+
+This section preserves the pre-execution proposal. Completed validation and owner
+acceptance are recorded below; the proposal grants no further execution authority.
 
 No phase below is authorized by this document. Before any launch, review the
 final candidate and a concrete, sealed fresh-stage inventory and focused native
@@ -223,6 +231,10 @@ Record actual PASS/FAIL/untested observations; process completion cannot supply
 graphical acceptance. No merge, cleanup or historical-evidence changes are included.
 
 ## Focused native preparation (2026-11-01; execution unauthorized)
+
+Historical preparation status: execution was unauthorized at preparation time.
+The separately authorized phases subsequently passed as recorded in the final
+acceptance section below. Existing package records and manifests remain unchanged.
 
 The implementation baseline is `061b9e24bd1a322a9acf0e45d07b5cb9b6450c31`.
 This follow-up changes only the proposed validation harness, input inventory,
@@ -310,3 +322,72 @@ root's Terrain Renderer to Legacy (`terrain_renderer = 0`) before starting anoth
 fresh playthrough, then repeat the short route. Remove that explicit property to
 restore illustrated default. Do not change the running instance. Record actual
 PASS/FAIL/untested observations; this checklist does not authorize a launch.
+
+## Final PR #104 acceptance (2026-11-01)
+
+The owner completed a successful post-reboot playtest of the actual playable
+game on `codex/104-illustrated-exterior-activation` at validation-preparation HEAD
+`4a364481e5eba90bba0d88b2518a8fce004dc979`. Production implementation remains
+unchanged from `061b9e24bd1a322a9acf0e45d07b5cb9b6450c31`; the later acceptance
+commit changes documentation only. PR #104 remains draft and pending owner merge
+authorization.
+
+| # | Acceptance check | Result |
+| --- | --- | --- |
+| 1 | Ship interior responsiveness | PASS |
+| 2 | Illustrated exterior loading | PASS |
+| 3 | Terrain appearance and shading | PASS |
+| 4 | Chunk streaming | PASS |
+| 5 | Ferrite interaction | PASS |
+| 6 | Return to ship | PASS |
+| 7 | Windows responsiveness | PASS |
+
+Overall: **7/7 PASS, zero failures, zero untested items** in this owner checklist.
+The owner reports minor stuttering when the exterior initially loads and explicitly
+accepts it as a known, non-blocking performance limitation. This does not claim
+that all stuttering has been eliminated. These are qualitative owner observations;
+no formal performance benchmarking was performed. The earlier broader proposed
+checklist is not an additional set of certified results.
+
+### Existing validation and preservation evidence
+
+The retained local evidence package is
+`artifacts/evidence/pr104-native-review-28f57c4c-677f-4f9e-8809-7be9fc66f2d6/`.
+The following references are existing files within that ignored package, not
+newly generated test results or published repository artifacts:
+
+| Evidence | Recorded result |
+| --- | --- |
+| `verification.json` | Full static suite **178/178 PASS** (108.612 seconds); focused activation checks **15/15 PASS** (3.051 seconds) at `4a36448` |
+| `execution-Stage.json`, `execution-state.json` | Stage PASS; Stage/Import/Assertions all PASS, not blocked, no running phase |
+| `execution-Import.json` | Phase 1 cold headless import PASS, exit 0, termination certain |
+| `execution-Assertions.json` | Phase 2 native assertions PASS, exit 0, termination certain; exact completion marker `Illustrated exterior validation failures: 0` |
+| `manifest.json`, `generated-Import.json`, `generated-Assertions.json` | Stage input/output integrity PASS; original staged input hashes retained and import/assertion output inventories identical |
+| `seal.json`, `source-baseline.json`, `prior-evidence.json` | Preserved package identities and source/owner/historical-evidence safeguards; successful native classifications include preservation checks |
+| Owner report in this acceptance assignment | Post-reboot manual playable-game acceptance **7/7 PASS** as listed above |
+
+The exact [committed-input manifest](experiments/illustrated_exterior_stage.json)
+and [native harness](../tests/illustrated_exterior_native_validation.gd) remain
+unchanged. The seal SHA-256 remains
+`55c05b996cfafe30ecf60db3e866e599ed00e8916d372fd9462e91b3409be7e4`.
+The stage remains at
+`D:\GameDev\Godot\TLWH-NativeStages\tlwh-pr104-review-28f57c4c-677f-4f9e-8809-7be9fc66f2d6`.
+Stage inputs/outputs and sealed review files were checked by read-only hash and
+inventory comparison for this documentation update. Historical records were not
+modified. The preparation-time `verification.json` correctly retains its original
+`engine_executed: false` and `stage_created: false`; subsequent execution records
+provide the native results. The native negative case deliberately emits the
+material-validation warning visible in the assertion record; its final failure
+count is zero.
+
+Automated native assertions establish their isolated structural/lifecycle checks;
+the seven manual results establish owner-observed gameplay acceptance. Neither
+establishes formal frame-time measurements or comprehensive performance testing.
+Production code, artwork, TileSets, budgets, test guards and stage packages are
+unchanged. Owner material and the PR #99 preservation branch at
+`326591e1a1438944d79b0be4c52992b3eb86af0f` are preserved. No Godot launch or native
+rerun was performed for this documentation update.
+
+No acceptance blocker remains in the agreed seven-item checklist. PR #104 is ready
+for owner merge consideration with the accepted initial-loading stutter. It stays
+draft; merge, further execution and cleanup require separate owner authorization.
