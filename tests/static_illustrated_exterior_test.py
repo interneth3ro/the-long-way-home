@@ -51,6 +51,48 @@ def vertices(chunk):
 
 
 class IllustratedExteriorStaticTest(unittest.TestCase):
+    def test_proposed_native_package_is_closed_bounded_and_non_playable(self):
+        import json
+        proposal = json.loads((ROOT/'docs/experiments/illustrated_exterior_stage.json').read_text())
+        inputs = proposal['inputs']
+        self.assertEqual(len(inputs), 83)
+        self.assertEqual(proposal['source_commit'], 'seal.review_head')
+        classes = {}
+        for path in subprocess.check_output(['git','ls-files','*.gd'],cwd=ROOT,text=True).splitlines():
+            match = re.search(r'^class_name (\w+)', (ROOT/path).read_text(encoding='utf-8'), re.M)
+            if match:
+                classes[match[1]] = path
+        for path,record in inputs.items():
+            raw = (ROOT/path).read_bytes()
+            if not path.endswith('.png'):
+                raw = raw.replace(b'\r\n',b'\n')
+            self.assertEqual((len(raw),hashlib.sha256(raw).hexdigest()), (record['bytes'],record['sha256']), path)
+            if path.endswith(('.gd','.tscn','.tres','.gdshader')):
+                text = raw.decode('utf-8')
+                for dependency in re.findall(r'(?:path="|(?:load|preload)\(")res://([A-Za-z0-9_./-]+)',text):
+                    self.assertIn(dependency,inputs,(path,dependency))
+                if path.endswith('.gd'):
+                    for name,dependency in classes.items():
+                        if re.search(r'\b'+name+r'\b',text):
+                            self.assertIn(dependency,inputs,(path,name))
+        self.assertEqual({p for p in inputs if p.endswith('.tscn')}, {SCENE})
+        self.assertNotIn('project.godot',inputs)
+        self.assertFalse(any(p.endswith('.exe') or p.startswith(('.godot/','tools/')) for p in inputs))
+        self.assertEqual([p['timeout_seconds'] for p in proposal['phases']], [60,30])
+        self.assertEqual([p['name'] for p in proposal['phases']], ['Import','Assertions'])
+        self.assertEqual(len(set(proposal['allowed_generated_paths'])),41)
+        self.assertEqual(proposal['process_policy']['combined_output_limit_bytes'],1048576)
+        harness = (ROOT/'tests/illustrated_exterior_native_validation.gd').read_text()
+        for marker in ('initial 25 chunks','Ground-only suppression','Stale retirement rejected',
+                       'Absolute negative-coordinate assignment','Shared tint dimensions',
+                       'Revision borders agree','Failure stops further processing',
+                       'Legacy avoids illustrated initialization','Illustrated exterior validation failures: %d'):
+            self.assertIn(marker,harness)
+        self.assertIsNone(re.search(r'^\s*while ',harness,re.M))
+        code = '\n'.join(line.split('#',1)[0] for line in harness.splitlines())
+        for forbidden in ('Input.', 'DisplayServer', 'benchmark', 'main_v2.tscn'):
+            self.assertNotIn(forbidden,code)
+
     def test_default_selection_is_locked_once_and_legacy_does_no_illustrated_work(self):
         self.assertIn('terrain_renderer: TerrainRenderer = TerrainRenderer.ILLUSTRATED', SOURCE)
         configure = body(SOURCE, '_configure_terrain_renderer')

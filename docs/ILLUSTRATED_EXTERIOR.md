@@ -221,3 +221,92 @@ order; arrival/hatch/controls; deterministic regeneration/revisions; explicit
 legacy fallback; and qualitative responsiveness against corrected PR #95.
 Record actual PASS/FAIL/untested observations; process completion cannot supply
 graphical acceptance. No merge, cleanup or historical-evidence changes are included.
+
+## Focused native preparation (2026-11-01; execution unauthorized)
+
+The implementation baseline is `061b9e24bd1a322a9acf0e45d07b5cb9b6450c31`.
+This follow-up changes only the proposed validation harness, input inventory,
+focused static contract and this guide, on the same PR #104 branch. Production
+scripts/scenes, PR #103 presenter, gameplay, budgets and rollback are unchanged.
+
+The exact [proposed manifest](experiments/illustrated_exterior_stage.json) lists
+**83 committed input paths with byte counts and SHA-256 hashes**, plus one generated
+minimal `project.godot` (84 initial files). `source_commit = seal.review_head`
+means the concrete review package seals the final feature commit containing both
+the manifest and harness; every staged source input must match its Git blob there.
+It does not permit working-tree substitutions. This resolves the earlier 17-path
+dependency finding with the required existing import/UID metadata and harness;
+it omits the old fixture scripts/scenes and includes only the exterior scene.
+There is no Main scene, autoload, player-controller scene, main-scene setting or
+playable input-map package. Stored hatch destination strings are not followed or
+executed by this test. No unresolved static dependency was found.
+
+The [Phase 2 harness](../tests/illustrated_exterior_native_validation.gd) uses the
+real exterior's arrival hook once, requires 25 chunks/25,600 cells, and checks
+ground-only suppression with retained detail data/nodes; deterministic token
+replacement, stale rejection, exact negative retirement/reload; shared tint and
+shader binding; a stored override outside crash-mask coverage and shared revision
+borders; cached reattachment; one invalid test-only material sampler preserving
+old data and stopping work; and one direct legacy chunk without illustrated work.
+Exterior automatic processing is disabled in the harness; explicit calls use the
+existing production budget. No movement automation, full-game startup, prolonged
+simulation or benchmark is included. Native checks establish structural binding,
+not actual shader GPU compilation, visible details or gameplay correctness.
+
+The review package is retained at
+`artifacts/evidence/pr104-native-review-28f57c4c-677f-4f9e-8809-7be9fc66f2d6/`.
+It reuses the PR #103 v2 Stage/Import/Assertions supervisor with the final v4
+reference-policy block. Fixed paths, commit/proposal identities, counts and the
+assertion command/completion marker are rebound. Job Object suspended-start
+assignment, watchdog, pipe limits, termination accounting, no-retry state and
+protected-reference rules remain exact. Historical PR #103 packages/stage are
+hash-bound in the package's prior-evidence record; original evidence is untouched.
+The package is preparation material, not a native stage. Its source snapshot
+protects tracked, untracked and ignored owner files, index, branch, worktrees and
+meaningful refs, using the accepted narrow temporary Codex-tree reference policy.
+Decision 16's residual ordinary Windows filesystem-permission risk is unchanged.
+
+Reserved stage, **not created**:
+`D:\GameDev\Godot\TLWH-NativeStages\tlwh-pr104-review-28f57c4c-677f-4f9e-8809-7be9fc66f2d6`.
+Only after owner authorization may Stage copy the exact 83 committed blobs and
+generate the sealed configuration there. Import then uses the pinned executable:
+
+```text
+--headless --editor --path <reserved-stage> --quit
+```
+
+After clean Import PASS and separate owner authorization, Assertions uses:
+
+```text
+--headless --path <reserved-stage> --script res://tests/illustrated_exterior_native_validation.gd
+```
+
+Timeouts remain 60s/30s, combined output 1,048,576 bytes, diagnostic excerpt
+4,096 bytes, one process at a time and no retries. The manifest allows **41 exact
+generated paths** during import (specific cache/import/UID outputs), with all
+original inputs immutable. Actual allowed outputs are captured after clean import
+and must remain identical during assertions. Require exit zero, no engine errors,
+certain process-tree termination and exactly one final stdout completion line
+`Illustrated exterior validation failures: 0`. Stop on any error, changed identity,
+unexpected output, timeout, overflow, malformed completion or uncertain termination.
+The preparation assignment grants neither stage creation nor either native phase.
+
+### Eventual owner manual playtest
+
+After separately approved native gates and a separately authorized playable launch:
+
+1. Start a fresh normal playthrough; enter the exterior and inspect illustrated
+   ground, crash-site Earth treatment and the recovery feather.
+2. Walk across Earth/Green transitions and seams, far enough to load chunks;
+   return through previously visited ground and note missing/doubled ground or stalls.
+3. Inspect decorative details, Ferrite artwork/highlights, construction grid,
+   machine placement/collisions and Dave/prop draw order.
+4. Enter and exit the ship; verify arrival, controls and retained terrain.
+5. Compare responsiveness qualitatively with corrected PR #95; stop on abnormal
+   responsiveness. No profiler, benchmark or freeze reproduction.
+
+For a separately authorized legacy comparison, stop the game, set the exterior
+root's Terrain Renderer to Legacy (`terrain_renderer = 0`) before starting another
+fresh playthrough, then repeat the short route. Remove that explicit property to
+restore illustrated default. Do not change the running instance. Record actual
+PASS/FAIL/untested observations; this checklist does not authorize a launch.
