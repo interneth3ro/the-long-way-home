@@ -62,14 +62,35 @@ hatch `(-384,-176)`; the sprite's ship-local top-left is `(-595,-509)`.
 
 The five ship polygon/line visuals and two hatch visuals remain intact but hidden.
 For visual rollback, hide IllustratedHull and show those seven visuals.
-Ship/hatch collisions, construction blockers, spawn, sorting, terrain and gameplay
-are unchanged. The larger diagonal illustration extends beyond the existing
-512 x 224 rectangular ship blocker: visible hull can be walked/built through.
-The 0.70 scale comparison increases this mismatch and may exceed the viewport;
-blocked corners may not follow the artwork. Whole-ship Y sorting also remains
-coarse; no foreground separation or new shadow/debris treatment is included.
-Focused static asset/scene/preservation checks passed. Engine import, graphical
-alignment, movement and hatch-use acceptance remain pending owner-controlled testing.
+The owner has locked the 0.70 illustrated appearance. The original 512 x 224
+ship rectangle is replaced by three overlapping convex grounded-hull shapes under
+CrashedShip. All shape nodes have zero offset; vertices below are ship-local
+(add root `(-384,-192)` for world coordinates):
+
+| Shape | Convex vertices |
+| --- | --- |
+| Nose | `(-567,72), (-427,-96), (-161,-236), (-63,-180), (-63,16), (-301,86), (-497,93)` |
+| Fuselage | `(-161,-236), (175,-355), (322,-257), (266,-124), (49,-19), (-35,-19)` |
+| Rear | `(175,-355), (406,-439), (553,-411), (616,-327), (609,-236), (406,-124), (266,-124)` |
+
+The nose tapers around the cockpit; fuselage and rear cover the main body and
+engine mass. Elevated fins, antennas and decorative protrusions remain nonsolid.
+The fuselage's south edge at world Y=-211 leaves a recess north of the unchanged
+hatch rectangle (X=-416..-352, Y=-188..-164). The central southern approach and
+spawn remain clear; the interaction ray from spawn reaches the hatch first.
+CrashedShip retains collision layer 5 (solid bodies plus construction blockers),
+so existing layer-3 placement queries include all three shapes. Nearby clearing
+and Ferrite access remain available by static geometry inspection.
+
+Artwork, hatch collision/interaction, spawn, camera, sorting, terrain and gameplay
+scripts are unchanged. The hidden artwork fallback is visual only; these new
+collisions follow the illustration. Straight convex boundaries remain approximate,
+including the damaged rear and hull edges; whole-ship Y sorting remains coarse.
+Focused non-native checks passed for convexity, positive area, overlapping coverage,
+feet-radius route clearance, hatch line of sight, representative construction
+footprints, resource references, asset hash and scoped preservation. The owner has
+accepted the appearance; new collision/movement/construction acceptance remains
+pending owner-controlled gameplay testing. No Godot or native tests were run.
 
 ## Requirements and setup
 

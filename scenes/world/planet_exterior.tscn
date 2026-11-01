@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3]
+[gd_scene load_steps=12 format=3]
 
 [ext_resource type="Script" path="res://scenes/interaction/scene_hatch.gd" id="1_hatch"]
 
@@ -10,8 +10,15 @@
 [sub_resource type="CircleShape2D" id="FerriteInspectionFootprint"]
 radius = 24.0
 
-[sub_resource type="RectangleShape2D" id="ShipFootprint"]
-size = Vector2(512, 224)
+; Grounded fuselage only: coordinates are ship-local, registered to the locked 0.70 artwork.
+[sub_resource type="ConvexPolygonShape2D" id="ShipNoseFootprint"]
+points = PackedVector2Array(-567, 72, -427, -96, -161, -236, -63, -180, -63, 16, -301, 86, -497, 93)
+
+[sub_resource type="ConvexPolygonShape2D" id="ShipFuselageFootprint"]
+points = PackedVector2Array(-161, -236, 175, -355, 322, -257, 266, -124, 49, -19, -35, -19)
+
+[sub_resource type="ConvexPolygonShape2D" id="ShipRearFootprint"]
+points = PackedVector2Array(175, -355, 406, -439, 553, -411, 616, -327, 609, -236, 406, -124, 266, -124)
 
 [sub_resource type="RectangleShape2D" id="HatchFootprint"]
 size = Vector2(64, 24)
@@ -94,8 +101,13 @@ collision_layer = 5
 position = Vector2(-384, -192)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="GroundObjects/CrashedShip"]
-position = Vector2(0, -112)
-shape = SubResource("ShipFootprint")
+shape = SubResource("ShipNoseFootprint")
+
+[node name="FuselageCollision" type="CollisionShape2D" parent="GroundObjects/CrashedShip"]
+shape = SubResource("ShipFuselageFootprint")
+
+[node name="RearCollision" type="CollisionShape2D" parent="GroundObjects/CrashedShip"]
+shape = SubResource("ShipRearFootprint")
 
 [node name="Hull" type="Polygon2D" parent="GroundObjects/CrashedShip"]
 visible = false
