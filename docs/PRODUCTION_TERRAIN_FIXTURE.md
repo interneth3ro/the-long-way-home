@@ -1,10 +1,16 @@
 # Production-scale illustrated terrain fixture (PR #102, pending merge)
 
+Owner graphical acceptance is **10/10 PASS**, with **no observations**, for exact
+implementation commit `07337fdfeb5bdd28200d297ea36951b054dd04a0`.
+The isolated cold Import and Native Assertions also passed, as recorded below;
+these engine results are separate from the owner's graphical acceptance.
+
 Open [fixture.tscn](../scenes/experiments/production_terrain/fixture.tscn) for text
-inspection. Running it requires the separate Gate 2 authorization below. After
-authorization, use **F6 / Run Current Scene** only in the approved stage. F5 still
-starts production V2. No exterior, production scene, generator, renderer, mask,
-construction definition, resolver, artwork or terrain metadata is changed.
+inspection. Any further engine launch requires fresh owner authorization. The
+historical inspection workflow uses **F6 / Run Current Scene** in the approved
+stage; F5 still starts production V2. No exterior, production scene, generator,
+renderer, mask, construction definition, resolver, artwork or terrain metadata
+is changed. This acceptance update changes documentation only.
 
 ## Presentation and bounded chunks
 
@@ -67,19 +73,22 @@ defines this local-to-world transform. A linear nonrepeating numerical sampler
 reads level zero in the vertex stage; an interpolated varying modulates artwork
 in the fragment stage. It changes neither vertices nor atlas coordinates.
 No `source_color` conversion applies to tint. RGBA float data avoids 8-bit tint
-quantization; float vertex texture support/compilation remain unverified.
+quantization. The owner accepted the shaded modes on the reviewed host;
+compatibility across other hardware/renderers remains untested.
 
 The field uploads once per change to a shaded mode. Unshaded switching and chunk
 operations upload nothing. There are no per-cell materials or second ground pass.
 Debug rectangles are unfilled; the grid contains lines/dots. Terrain renders
 behind the parent's debug drawing. No internal TileMapLayer updates are forced.
 
-This evaluates vertex sampling first. Quad triangulation/interpolation, filtering
-and texture edges require visual review. Visually equivalent shading is the aim;
+This evaluates vertex sampling first. The owner accepted the fixture's shading,
+transitions and seams on the reviewed host. Visually equivalent shading is the aim;
 exact interpolation/pixel parity is **not proven**. Use detail views for narrow
 features hidden by overview downsampling. UI is a small desktop fixture panel.
-Shared rendering proves no speed improvement. Performance, responsiveness,
-host stability and GPU behavior remain unverified.
+Shared rendering proves no speed improvement. The owner's short fixture
+responsiveness check passed. Actual production exterior integration, real
+chunk-streaming performance and save/load behavior remain untested; no numeric
+performance improvement or prolonged host-stability result is claimed.
 
 ## Gate 1: static verification
 
@@ -97,7 +106,8 @@ the same suite. Runner limits/policy were not changed. Markdown links and staged
 diff whitespace passed. Production/artwork/control diffs are empty against
 `74f4ecb3f5a831bbeed4436ec2324441c60b8c77`; all 34 existing untracked artwork/
 sidecar files retained their captured SHA-256 hashes. The PR #99 preservation
-branch remains `326591e1a1438944d79b0be4c52992b3eb86af0f`. No engine was invoked.
+branch remains `326591e1a1438944d79b0be4c52992b3eb86af0f`. That initial Gate 1
+verification invoked no engine.
 
 [Focused Python tests](../tests/static_production_terrain_test.py) use source-bound
 models, the existing resolver oracle and resource text. They cover the halo,
@@ -107,17 +117,73 @@ order, upload bounds, references and preservation. These are not engine tests.
 Historical guards admit only four exact new paths with normalized-content hashes,
 rejecting tampering/path expansion. Existing artwork pins and Native controls stay.
 
-## Gate 2: proposed engine execution, NOT AUTHORIZED
+## Gate 2: completed isolated validation
+
+All three phases used the existing isolated stage for implementation commit
+`07337fdfeb5bdd28200d297ea36951b054dd04a0`, the pinned standard Godot 4.7.2
+executable, and the separately reviewed external `review-v2` supervisor. Its seal
+SHA-256 is `45a375965f2c8e087d48b6a65cf36a423c52d5dff221cdb9403eddab164b1ef0`.
+Each phase had separate one-attempt owner authorization. No Editor phase,
+production launch, profiling or benchmark was performed.
+
+| Phase | Supervisor / Godot exit | Result | Supervisor wall time | Combined output |
+| --- | --- | --- | --- | --- |
+| Cold headless Import | 0 / 0 | PASS; termination confirmed, no reported error diagnostics | 5.6873142 seconds | 4,896 bytes |
+| Native Assertions | 0 / 0 | PASS; zero failures, exactly one final success marker, termination confirmed | 2.7619124 seconds | 115 bytes |
+| Owner-controlled Graphical process | 0 / 0 | PROCESS_OK_OWNER_REVIEW_PENDING; termination confirmed, no reported error diagnostics | 30.2612761 seconds | 172 bytes |
+
+Times include supervisor preservation gates; engine-only duration was not
+separately recorded. Diagnostics were retained within the reviewed 4 KiB bound.
+The Assertions harness executed the real lookup/resolver and TileMapLayer checks,
+including order-independent regeneration, replacement, retirement/reload, native
+cell assignments, centers/floor mapping and both tint-field modes. Its final
+success marker was exactly `Production terrain fixture failures: 0`.
+
+The Graphical process result did not infer acceptance. The owner subsequently
+reported the separate **10/10 graphical PASS** below, with no observations.
+The process record's original pending-review classification is retained unchanged.
+
+Evidence is preserved outside the checkout under:
+
+`D:\GameDev\Godot\TLWH-NativeStages\tlwh-pr102-prepared-8e9b3e23-9c43-4f9b-8f35-dbb6e25a29a7\review-v2\`
+
+It includes `execution-Import.json`, `execution-Assertions.json`,
+`execution-Graphical.json`, the three matching `generated-*.json` inventories,
+and `import-postcheck.json`, `assertions-postcheck.json`,
+`graphical-postcheck.json`. Import generated 35 permitted files: 23 `.godot/`
+cache files, seven import sidecars and five UID sidecars. Assertions and Graphical
+added, removed or changed none of those files. Post-execution checks passed for
+all 393 captured source files, 54 original staged inputs, protected references,
+sealed controls, executable hash and prior evidence. No generated material was
+copied back or cleaned up.
+
+The initial supervisor's earlier preflight reference mismatch launched no Godot;
+its evidence and original baseline remain preserved. The separately reviewed
+correction permits only validated capture/checkpoint rotation targeting the
+retained approved tree. It did not refresh the original source baseline or alter
+the 54 staged inputs. The 53-file proposed raw-working inventory remains preserved;
+the external manifests explicitly reconcile its 38 CRLF/LF differences against
+exact committed staging bytes.
+
+This documentation-only acceptance commit does not change the graphically
+accepted implementation. It does change checkout identity; the retained external
+baseline remains pinned to the tested implementation and is not refreshed.
+All phase authorizations are consumed. Further engine execution requires fresh
+owner authorization and reviewed identity checks.
+
+### Retained Gate 2 plan and execution restrictions
 
 Do not run Godot, Native, NativePlan, imports, graphics, profiling, benchmarks or
-automation during implementation. The standing recipe-switching exception covers
+automation under this documentation-only update. The standing recipe-switching exception covers
 neither these commands nor this inventory. This plan grants no permission and
 does not change [LOCAL_TESTING.md](LOCAL_TESTING.md).
 
 Before owner authorization, review these exact commands and the
 [explicit input inventory](experiments/production_terrain_stage.json), including
-raw byte hashes. A future supervised execution implementation must be reviewed
-before use; no runner is installed here. Dependencies exist because real tint
+raw byte hashes. The plan below is retained as historical context for the
+completed isolated runs; it is not an instruction to repeat them. The reviewed
+supervisor exists only in the external evidence package; no runner is installed
+in the project. Dependencies exist because real tint
 functions reference production state/types. No production scene/main startup is
 included. No untracked sidecars, caches, ignored files, secrets, saves, owner
 settings or evidence are inputs.
@@ -194,24 +260,25 @@ TileMap batching/transform assumptions, an unresponsive editor/game and host
 instability. Bounds cannot guarantee recovery from a system freeze. No stress
 test, performance probe, benchmark, freeze reproduction or unattended run is proposed.
 
-## Owner graphical acceptance (all pending)
+## Owner graphical acceptance
 
-- [ ] Imports/classes load cleanly; lookup verifies all 98 native assignments.
-- [ ] Overview/detail show broad interiors, both boundary axes, pocket, islands,
-      narrow bridges and irregular transitions without missing tiles.
-- [ ] Origin view: orange origins/white centers align; 32-unit grid divides each
-      64-unit cell in two per axis, including negative regions.
-- [ ] Forward/reverse loads look identical; seam geometry matches.
-- [ ] Unload each chunk: all 1024 cells disappear, others remain. Reload/replace
-      restore identical assignments and A/B/C artwork.
-- [ ] CPU/crash-style tint compile cleanly and preserve geometry; gradients remain
-      continuous across both seams and the four-chunk junction.
-- [ ] Synthetic recovery/core/override affect tint only; unshaded restores artwork.
-      No doubled ground pass appears.
-- [ ] Detail views show no unacceptable atlas cracks/diagonal tint interpolation;
-      chunk/grid overlay toggles cleanly.
-- [ ] Brief game/editor interaction stays responsive; close within authorized
-      bounds and inspect output, recording issues without profiling/reproduction.
+**Owner-reported result: 10/10 PASS. Owner observations: None.**
+Exact graphically accepted implementation:
+`07337fdfeb5bdd28200d297ea36951b054dd04a0`.
 
-No engine validation, graphical acceptance or performance acceptance is claimed.
-Production exterior integration remains a separate milestone.
+1. [x] Terrain appearance.
+2. [x] Transitions.
+3. [x] Cell alignment.
+4. [x] Chunk loading.
+5. [x] Chunk lifecycle.
+6. [x] CPU shading.
+7. [x] Crash-style shading.
+8. [x] Unshaded comparison.
+9. [x] Seams and tint.
+10. [x] Responsiveness.
+
+This accepts the bounded isolated fixture. Actual production exterior integration,
+real chunk-streaming performance and save/load behavior remain untested. No
+pixel-perfect legacy shading parity or numeric performance improvement is claimed.
+Production integration and cleanup remain outside this PR. PR #102 stays draft
+and unmerged for final owner review; acceptance does not authorize merging it.

@@ -79,9 +79,11 @@ halos, chunk order/regeneration, seed variation, thresholds and preservation.
 The finite representative distribution check is distinct from the exact
 60/25/15 bucket thresholds; it proves no exact percentage across an entire world.
 These are Python static models and source checks, **not GDScript execution**.
-Godot parsing, native API behavior, runtime and graphical behavior are unverified.
-Godot, Native, profiling, benchmarks and graphical automation are excluded from
-this PR's authorization.
+At the resolver-only milestone these engine behaviors were unverified. The
+subsequent PR #102 fixture's separately authorized Import and Native Assertions
+passed, followed by owner graphical acceptance at the implementation recorded
+below. Production integration remains untested. No further Godot execution,
+Native, profiling, benchmarks or graphical automation is authorized by this record.
 
 The historical laboratory and machine-art guards admit only the two new resolver script paths,
 pinned to exact normalized-content hashes and required to be absent from its
@@ -90,8 +92,10 @@ Existing production/artwork preservation checks and runner controls are retained
 
 The separate [production-scale fixture](PRODUCTION_TERRAIN_FIXTURE.md) (PR #102,
 feature branch pending merge) exercises shared TileMapLayer insertion/removal and
-experimental vertex-sampled CPU tint shading in isolation. Engine execution is
-not yet verified. Production renderer replacement and authored crash-site shading
+experimental vertex-sampled CPU tint shading in isolation. Isolated Import and
+Native Assertions passed, and the owner reported **10/10 graphical PASS**, with
+no observations, for `07337fdfeb5bdd28200d297ea36951b054dd04a0`.
+Production renderer replacement and authored crash-site shading
 migration remain deferred. Future shading must retain the existing CPU tint data,
 authored masks, feathers, overrides and continuous gradients. This PR does not
 establish production integration, visual equivalence or performance acceptance.

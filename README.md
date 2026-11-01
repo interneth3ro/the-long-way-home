@@ -3,8 +3,11 @@
 An isolated [production-scale terrain fixture](docs/PRODUCTION_TERRAIN_FIXTURE.md)
 (PR #102 feature branch, pending merge) uses PR #101 with four bounded chunks,
 one shared half-scale TileMapLayer and experimental CPU tint shading. Production
-exterior remains unchanged. Validation is static only; its separate engine plan
-and owner graphical checklist require new authorization before execution.
+exterior remains unchanged. Isolated Import and Native Assertions passed; owner
+graphical acceptance is 10/10 PASS at implementation commit
+`07337fdfeb5bdd28200d297ea36951b054dd04a0`, with no observations. Production
+exterior integration, real streaming performance and save/load remain untested.
+Any further engine execution requires fresh owner authorization.
 
 The [deterministic terrain resolver](docs/TERRAIN_RESOLVER.md) (feature branch,
 pending merge) adds isolated Green-over-Earth signature selection and seeded
