@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3]
+[gd_scene load_steps=13 format=3]
 
 [ext_resource type="Script" path="res://scenes/interaction/scene_hatch.gd" id="1_hatch"]
 
@@ -6,6 +6,7 @@
 [ext_resource type="Script" path="res://scenes/world/illustrated_terrain_presenter.gd" id="4_presenter"]
 [ext_resource type="Script" uid="uid://c7294cf4973a" path="res://scenes/interaction/ferrite_inspection.gd" id="3_ferrite"]
 [ext_resource type="Texture2D" path="res://assets/environment/exterior/crashed_exploration_ship_approved.png" id="5_ship_art"]
+[ext_resource type="Texture2D" path="res://assets/environment/exterior/crashed_ship_contact_shadow_prototype.png" id="6_ship_shadow"]
 
 [sub_resource type="CircleShape2D" id="FerriteInspectionFootprint"]
 radius = 24.0
@@ -135,6 +136,14 @@ visible = false
 points = PackedVector2Array(-240, -48, -80, -48, 80, -48, 144, -48)
 width = 8.0
 default_color = Color(0.72, 0.53, 0.31, 1)
+
+; Same source registration as IllustratedHull, with 120px padding * 0.70 = 84 world units.
+[node name="ContactShadow" type="Sprite2D" parent="GroundObjects/CrashedShip"]
+z_index = -1
+position = Vector2(-679, -593)
+scale = Vector2(0.70, 0.70)
+texture = ExtResource("6_ship_shadow")
+centered = false
 
 ; Source doorway threshold near (850, 750) registers to the unchanged hatch at ship-local (0, 16).
 [node name="IllustratedHull" type="Sprite2D" parent="GroundObjects/CrashedShip"]

@@ -50,7 +50,7 @@ remains separate from agent static checks.
 Its gameplay implementation is independent of FactoryGame; the approved Dave
 migration below reuses only two legacy artwork sheets.
 
-## Illustrated crashed ship prototype (feature branch, pending merge)
+## Illustrated crashed ship prototype (merged PR #105)
 
 The exterior uses the owner-approved, unchanged
 [ship PNG](assets/environment/exterior/crashed_exploration_ship_approved.png)
@@ -61,7 +61,7 @@ Source doorway-threshold guide `(850,750)` registers to the unchanged exterior
 hatch `(-384,-176)`; the sprite's ship-local top-left is `(-595,-509)`.
 
 The five ship polygon/line visuals and two hatch visuals remain intact but hidden.
-For visual rollback, hide IllustratedHull and show those seven visuals.
+For visual rollback, hide IllustratedHull and ContactShadow and show those seven visuals.
 The owner has locked the 0.70 illustrated appearance. The original 512 x 224
 ship rectangle is replaced by three overlapping convex grounded-hull shapes under
 CrashedShip. All shape nodes have zero offset; vertices below are ship-local
@@ -91,12 +91,74 @@ coverage, feet-radius route clearance, hatch line of sight, representative
 construction footprints, resource references, asset hash and scoped preservation.
 These agent checks are separate from the owner gameplay acceptance below.
 
+### Contact shadow integration (feature branch, pending merge)
+
+The owner-supplied [contact-shadow PNG](assets/environment/exterior/crashed_ship_contact_shadow_prototype.png)
+was initially copied byte-for-byte: 2014 x 1127, 8-bit RGBA, original SHA-256
+`9897753637e9bc6c4a3311f5109e7b127bf0317705d638b024e0dfdc4ed755b9`.
+The corrected asset has SHA-256
+`1cd8111595e11d8beb527f538188f38f8517f1d3365633c013b9a137ca601777`.
+Its alpha now ranges from 0 to 224; visible pixels retain RGB `(35,29,26)`
+with feathered opacity, without separate rock, debris or skid-mark artwork.
+The canvas adds 120 pixels per side to the committed 1774 x 887 hull. With
+`centered = false` and scale `(0.70,0.70)`, ContactShadow's ship-local position
+is `(-679,-593)`: the hull's `(-595,-509)` minus `(84,84)`. Source point
+`(120,120)` therefore registers exactly to the hull's source origin.
+The Sprite2D is a child of CrashedShip at effective Z=-1, below IllustratedHull
+(Z=0) and above illustrated terrain (Z=-11). Existing Y sorting is unchanged.
+
+Initial static alpha-mask comparison against the committed hull supported registration
+(approximately 0.858 intersection-over-union at hull alpha >=128 / shadow alpha
+>=32, sampled every four source pixels). The newly supplied canonical ship and
+local `shipv1.png` both match the committed ship byte-for-byte; the earlier
+different-hash attachment is unavailable, so its historical encoding-versus-artwork
+discrepancy cannot be classified. No current silhouette mismatch blocks integration.
+
+Owner initial graphical playtesting at `91658cee15f0f6ae06bae9db9b8d054435744b9f`
+reported **4/5 PASS**: alignment, terrain blending, hatch visibility and performance
+passed; shadow strength failed as too faint. The correction applies exactly
+`new_alpha = min(255, 2 * original_alpha)` to every pixel, preserving RGB,
+dimensions, transparent pixels, registration and feathering apart from that
+multiplication. Maximum alpha changes from 112 to 224, without clipping.
+All 2,269,778 pixels passed exact RGB/alpha comparison; 1,022,700 fully transparent
+pixels remain transparent. The original PNG is recoverable from that Git commit
+at the same asset path using the original hash above.
+
+#### Final PR #106 owner visual acceptance (2026-11-01)
+
+The owner inspected the corrected implementation at
+`6a3719a4ed6398a40eb35f68ccb583ca012d7db9` in-game and explicitly approved it.
+**Final disposition: Owner visual acceptance approved.** Final shadow strength:
+**2x original alpha - LOCKED**, without Sprite2D modulation.
+
+| Check | Corrected review |
+| --- | --- |
+| Shadow alignment | PASS |
+| Shadow strength | PASS |
+| Terrain blending | PASS |
+| Hatch visibility | PASS |
+| Performance | No issues reported in the earlier playtest; no new quantitative benchmark or independent corrected-image performance measurement |
+
+Focused non-native checks reverified both asset hashes, exact RGB preservation
+and alpha transformation against the original Git blob, dimensions, transparency,
+registration, draw order, resource references and unchanged ship/gameplay inputs.
+These agent checks are separate from owner visual acceptance; Godot was not run.
+
+The accepted feathered extent is unchanged; faint alpha reaches the bottom canvas
+edge. Whole-ship Y sorting remains coarse and deferred. Disturbed earth, skid marks,
+debris, salvage interactions, hatch animation and foreground occlusion work remain
+deferred. The hull asset, scale, position, three convex collisions, hidden fallback,
+hatch, spawn, camera, construction, terrain and chunk streaming are unchanged.
+PR #106 remains draft, pending owner merge consideration; merge requires separate
+authorization.
+
 ### Final PR #105 owner acceptance (2026-11-01)
 
 The owner completed gameplay acceptance for
 [PR #105](https://github.com/interneth3ro/the-long-way-home/pull/105) at implementation
 `a2458e30db21089dbaeff6bc417c1d570e4b1e43`. The approved visual scale is
-`(0.70,0.70)`. The PR remains draft and pending owner merge consideration.
+`(0.70,0.70)`. PR #105 subsequently merged at
+`0b491aaacebd30cd18f0577eed673fe2537f18ac`.
 
 | # | Test | Result |
 | --- | --- | --- |
