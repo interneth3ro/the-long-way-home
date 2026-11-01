@@ -86,11 +86,42 @@ Artwork, hatch collision/interaction, spawn, camera, sorting, terrain and gamepl
 scripts are unchanged. The hidden artwork fallback is visual only; these new
 collisions follow the illustration. Straight convex boundaries remain approximate,
 including the damaged rear and hull edges; whole-ship Y sorting remains coarse.
-Focused non-native checks passed for convexity, positive area, overlapping coverage,
-feet-radius route clearance, hatch line of sight, representative construction
-footprints, resource references, asset hash and scoped preservation. The owner has
-accepted the appearance; new collision/movement/construction acceptance remains
-pending owner-controlled gameplay testing. No Godot or native tests were run.
+Implementation static checks passed for convexity, positive area, overlapping
+coverage, feet-radius route clearance, hatch line of sight, representative
+construction footprints, resource references, asset hash and scoped preservation.
+These agent checks are separate from the owner gameplay acceptance below.
+
+### Final PR #105 owner acceptance (2026-11-01)
+
+The owner completed gameplay acceptance for
+[PR #105](https://github.com/interneth3ro/the-long-way-home/pull/105) at implementation
+`a2458e30db21089dbaeff6bc417c1d570e4b1e43`. The approved visual scale is
+`(0.70,0.70)`. The PR remains draft and pending owner merge consideration.
+
+| # | Test | Result |
+| --- | --- | --- |
+| 1 | Nose collision | PASS |
+| 2 | Fuselage collision | PASS |
+| 3 | Rear engine collision | PASS |
+| 4 | Hatch approach | PASS |
+| 5 | Spawn and return | PASS |
+| 6 | Construction blocking | PASS |
+| 7 | Performance | PASS |
+
+**Overall: 7/7 PASS, zero failed checks, zero untested checks.** Performance PASS
+is the owner's gameplay observation; no formal performance benchmarking was performed.
+
+Occasional incorrect Y-sorting around the nose and hatch is a known visual
+limitation accepted for PR #105, not a collision or gameplay acceptance failure.
+A future selective foreground/occlusion pass is deferred. Shadows, debris and
+hatch animation remain outside this PR's scope.
+
+This final acceptance update changes documentation only. Non-native documentation
+checks confirm accurate acceptance records and links, the approved PNG/hash,
+unchanged sprite transforms, three collision shapes, hatch/spawn, construction
+blocking, camera, illustrated terrain/streaming and hidden legacy fallback.
+Owner files and evidence are preserved. No Godot launch, native tests or gameplay
+reruns were performed by the agent for this documentation update.
 
 ## Requirements and setup
 
