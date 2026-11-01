@@ -124,14 +124,33 @@ All 2,269,778 pixels passed exact RGB/alpha comparison; 1,022,700 fully transpar
 pixels remain transparent. The original PNG is recoverable from that Git commit
 at the same asset path using the original hash above.
 
-This remains a visual prototype without Sprite2D modulation. Owner graphical
-retest of the correction is **pending**; visual acceptance is not claimed.
-The existing feathered extent is unchanged;
-the faint alpha>=1 extent touches the bottom canvas edge. Whole-ship Y sorting
-remains coarse. Static inspection does not establish engine import or graphical
-acceptance. No Godot execution is authorized for this integration. Disturbed earth,
-skid marks, debris and foreground occlusion work remain deferred. The hull asset,
-transforms, collisions, hatch, spawn, camera, construction and terrain are unchanged.
+#### Final PR #106 owner visual acceptance (2026-11-01)
+
+The owner inspected the corrected implementation at
+`6a3719a4ed6398a40eb35f68ccb583ca012d7db9` in-game and explicitly approved it.
+**Final disposition: Owner visual acceptance approved.** Final shadow strength:
+**2x original alpha - LOCKED**, without Sprite2D modulation.
+
+| Check | Corrected review |
+| --- | --- |
+| Shadow alignment | PASS |
+| Shadow strength | PASS |
+| Terrain blending | PASS |
+| Hatch visibility | PASS |
+| Performance | No issues reported in the earlier playtest; no new quantitative benchmark or independent corrected-image performance measurement |
+
+Focused non-native checks reverified both asset hashes, exact RGB preservation
+and alpha transformation against the original Git blob, dimensions, transparency,
+registration, draw order, resource references and unchanged ship/gameplay inputs.
+These agent checks are separate from owner visual acceptance; Godot was not run.
+
+The accepted feathered extent is unchanged; faint alpha reaches the bottom canvas
+edge. Whole-ship Y sorting remains coarse and deferred. Disturbed earth, skid marks,
+debris, salvage interactions, hatch animation and foreground occlusion work remain
+deferred. The hull asset, scale, position, three convex collisions, hidden fallback,
+hatch, spawn, camera, construction, terrain and chunk streaming are unchanged.
+PR #106 remains draft, pending owner merge consideration; merge requires separate
+authorization.
 
 ### Final PR #105 owner acceptance (2026-11-01)
 
