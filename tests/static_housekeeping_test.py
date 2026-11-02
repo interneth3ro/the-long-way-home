@@ -4,6 +4,7 @@ import unittest
 from unittest.mock import patch
 
 import housekeeping_preservation as housekeeping
+from ground_art_preservation import stage2a_helper_predecessor
 
 
 class HousekeepingStaticTest(unittest.TestCase):
@@ -25,6 +26,10 @@ class HousekeepingStaticTest(unittest.TestCase):
         data = housekeeping.record()
         for path, entry in data['existing_changes'].items():
             raw = (housekeeping.ROOT / path).read_bytes()
+            if path == 'tests/current_preservation.py':
+                # Verify complete amended and original identities, then retain
+                # every original Stage 2A assertion and immutable receipt below.
+                raw = stage2a_helper_predecessor(path, raw)
             housekeeping.verify(path, raw, entry)
             before = housekeeping.historical_input(path, raw)
             self.assertNotEqual(raw.replace(b'\r\n', b'\n'), before.replace(b'\r\n', b'\n'))

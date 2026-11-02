@@ -3,6 +3,7 @@ import hashlib
 import json
 import subprocess
 import unittest
+from ground_art_preservation import historical_checkout
 
 import housekeeping_preservation as housekeeping
 
@@ -60,7 +61,7 @@ class Stage2EPreservationTest(unittest.TestCase):
         self.assertEqual(blob('', PAYLOAD), raw)  # Proposed index bytes.
         self.assertEqual(data['validation_commit']['path'], PAYLOAD)
         audit = data['audit']
-        self.assertEqual((ROOT / audit['path']).read_bytes(), blob(audit['source_commit'], audit['path']))
+        self.assertEqual(historical_checkout(audit['path']), blob(audit['source_commit'], audit['path']))
 
 
 if __name__ == '__main__':

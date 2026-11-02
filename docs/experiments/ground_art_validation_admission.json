@@ -1,0 +1,207 @@
+{
+  "schema": 1,
+  "status": "owner-authorized validation compatibility; pending technical review",
+  "starting_revision": "5d4f502928ea964e9d8b8b71ded87c0888b5aaaf",
+  "scope": "37 exact offline ground-art additions only; five exact validation amendments; no engine or production integration authority",
+  "identity_convention": "PNG bytes exact; text pinned to Git LF identity and exact LF/CRLF checkout forms; candidate README additionally retains its exact reviewed saved-byte identity",
+  "admitted": {
+    "assets/experiments/native_terrain_47_96/ground_refinement_full_v1/.gdignore": {
+      "format": "checkout-text",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "assets/experiments/native_terrain_47_96/ground_refinement_full_v1/.gitattributes": {
+      "format": "checkout-text",
+      "sha256": "c089985639038cc07dc37c07a8d0d543df7ddf9b1873a948000494a6e230530d"
+    },
+    "assets/experiments/native_terrain_47_96/ground_refinement_full_v1/README.md": {
+      "format": "checkout-text",
+      "sha256": "e3e6cc650da5d2ff116302a469d0234110358b6e7013a24bf1c0ae6dec06b162",
+      "saved_sha256": "28b80ae6c88def020692975dc46889e905f77f15588eb125071d9b74daa43e03"
+    },
+    "assets/experiments/native_terrain_47_96/ground_refinement_full_v1/baseline_94.png": {
+      "format": "binary",
+      "sha256": "36595f982ecadffc75ea2f7ca3498e6d44cbf9f3a7fe298f28268730161056e0"
+    },
+    "assets/experiments/native_terrain_47_96/ground_refinement_full_v1/interiors_bc.png": {
+      "format": "binary",
+      "sha256": "d8c76f080226c93229be7b3947983776543d14f454a475d69700af3f7849c694"
+    },
+    "assets/experiments/native_terrain_47_96/ground_refinement_full_v1/manifest.json": {
+      "format": "checkout-text",
+      "sha256": "038fc807224fb182cc7d3a9462ee0d69e2f195f6906b4f6844007d4830706b2a"
+    },
+    "assets/experiments/native_terrain_47_96/ground_refinement_full_v1/previews/abc_repetition.png": {
+      "format": "binary",
+      "sha256": "07dc7ae78d8f308a02cdc88102ffee464fe521c8eb2755b35e355139108e85fc"
+    },
+    "assets/experiments/native_terrain_47_96/ground_refinement_full_v1/previews/all_transitions.png": {
+      "format": "binary",
+      "sha256": "22663e1234b02877d4cf388e2f1cdbbbcd1fd044a9848660674f4a4e02e44930"
+    },
+    "assets/experiments/native_terrain_47_96/ground_refinement_full_v1/previews/earth_interior.png": {
+      "format": "binary",
+      "sha256": "f23f0868ebab92d31343d88624395b4118ba7412500043c5e3d28592245a0039"
+    },
+    "assets/experiments/native_terrain_47_96/ground_refinement_full_v1/previews/earth_patch_varied.png": {
+      "format": "binary",
+      "sha256": "c2205ef3329a25564bc30b1a63f3ba58c10ac266e59e6bcded15922aa6762d14"
+    },
+    "assets/experiments/native_terrain_47_96/ground_refinement_full_v1/previews/green_interior.png": {
+      "format": "binary",
+      "sha256": "1ff6459bf693b406c7fb66c50cff6fcfa7ebab4dbb1466b24b248818cdf53069"
+    },
+    "assets/experiments/native_terrain_47_96/ground_refinement_full_v1/previews/green_patch_varied.png": {
+      "format": "binary",
+      "sha256": "434ac71ff34b789dd69ac750c3c79ac143722305441d36be49ef0a8f84eb08bb"
+    },
+    "assets/experiments/native_terrain_47_96/ground_refinement_full_v1/previews/meandering_boundary_varied.png": {
+      "format": "binary",
+      "sha256": "ce79138be3dac367e0f164794a57b77c883e0f453eaf0258712ec35339be00bd"
+    },
+    "assets/experiments/native_terrain_47_96/ground_refinement_full_v1/previews/mixed_24x16.png": {
+      "format": "binary",
+      "sha256": "239467dfc950bf55124d60c7ebfe79d30c17d273b45ab10fc5468f3d86837cc6"
+    },
+    "assets/experiments/native_terrain_47_96/ground_refinement_v1/.gdignore": {
+      "format": "checkout-text",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    "assets/experiments/native_terrain_47_96/ground_refinement_v1/.gitattributes": {
+      "format": "checkout-text",
+      "sha256": "eac9d52d9a199f45b45ad9def2e78c37a6868dc1a9cee2363e8e77dd9220bdff",
+      "source_blob": "4bb99cf85ca1ac6e6c408c78d23cfa5d77b906cb"
+    },
+    "assets/experiments/native_terrain_47_96/ground_refinement_v1/README.md": {
+      "format": "checkout-text",
+      "sha256": "4078b23b94993fb8a2f7bc110d9e197b95a6a9342a7993331b86a31982d26105",
+      "source_blob": "680b58eaa3cffddd616f56fbe876beb1764178cb"
+    },
+    "assets/experiments/native_terrain_47_96/ground_refinement_v1/baseline_subset.png": {
+      "format": "binary",
+      "sha256": "84b9091e20c4d3691171b4c9890d986df9b9d70f00d15ee1ea9be219a878b18e",
+      "source_blob": "3f12bd5e78ad805fda9c65a6181e7fe7612b242e"
+    },
+    "assets/experiments/native_terrain_47_96/ground_refinement_v1/interiors_bc.png": {
+      "format": "binary",
+      "sha256": "d8c76f080226c93229be7b3947983776543d14f454a475d69700af3f7849c694",
+      "source_blob": "1e6d455a07ec14dced69ef140521b912f6cde8b3"
+    },
+    "assets/experiments/native_terrain_47_96/ground_refinement_v1/manifest.json": {
+      "format": "checkout-text",
+      "sha256": "0cfbc9453cae2bcca8e0654500c5098436edba01adbf995a3da3d61f1d4034fc",
+      "source_blob": "66ed0c44ebb4e6ce8eab4783775f65398bd4601a"
+    },
+    "assets/experiments/native_terrain_47_96/ground_refinement_v1/previews/abc_repetition.png": {
+      "format": "binary",
+      "sha256": "7b8aeaf5e0e64d340ea7cd52ec906c825fc97d88659ce212aef8fd5c8e8273a1",
+      "source_blob": "aebc21660512ea65d2a056a8b8f8ebc1ae7173ee"
+    },
+    "assets/experiments/native_terrain_47_96/ground_refinement_v1/previews/earth_interior.png": {
+      "format": "binary",
+      "sha256": "d7dbabf223ffcdc25673e05b3120888a65d21e73d8297c3441d941387cf09d70",
+      "source_blob": "2199cc696778a9a97aa9ca6ad41cfdcd3715da38"
+    },
+    "assets/experiments/native_terrain_47_96/ground_refinement_v1/previews/green_interior.png": {
+      "format": "binary",
+      "sha256": "5541a7afaa95b0a4a8cbad2103cfe31d5d8964c378995cbb8366b256348a0e8c",
+      "source_blob": "c9bec846a78b0667ddb8fffffee5b90ad031328b"
+    },
+    "assets/experiments/native_terrain_47_96/ground_refinement_v1/previews/meandering_boundary.png": {
+      "format": "binary",
+      "sha256": "73dfa808d14a537ed8e980125db6e152de01f916290bf5e3b4eba416677caa3d",
+      "source_blob": "6626d66ce09d6442d0308c87ab0db27c22f55dc1"
+    },
+    "assets/experiments/native_terrain_47_96/ground_refinement_v1/previews/mixed_24x16.png": {
+      "format": "binary",
+      "sha256": "31ae03e5e507750b2d2e9ce66d539c99c0ee0a14d919b08879962ba52632e1ab",
+      "source_blob": "ef3915f6ae226f3170a7528773bc7e07af06b2e2"
+    },
+    "assets/experiments/native_terrain_47_96/ground_refinement_v1/previews/transitions.png": {
+      "format": "binary",
+      "sha256": "e8ffe72aa004b0fec0849276609321fcae9d4fa59e1b14a807f61981e4aaed77",
+      "source_blob": "9d4dd8fdb26660f0f4c778bb81b3355d94c10362"
+    },
+    "assets/experiments/native_terrain_47_96/ground_refinement_v1/sources/earth_refined.png": {
+      "format": "binary",
+      "sha256": "43f587282190b7046d7a36f395c38a52beed64e95c84037c1e12ee68d81c6e1f",
+      "source_blob": "e2de43c376f00458e43f709c96601a1e8f2511f3"
+    },
+    "assets/experiments/native_terrain_47_96/ground_refinement_v1/sources/green_refined.png": {
+      "format": "binary",
+      "sha256": "09327f27b2ac2be87fd17586fc9626d1c52bc00f4d1491651a35912c78a94202",
+      "source_blob": "946e0eebbbd99cbfce9e94e186d0774a6f1b87a4"
+    },
+    "assets/experiments/native_terrain_47_96/ground_softness_comparison_v1/.gdignore": {
+      "format": "checkout-text",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    "assets/experiments/native_terrain_47_96/ground_softness_comparison_v1/.gitattributes": {
+      "format": "checkout-text",
+      "sha256": "eac9d52d9a199f45b45ad9def2e78c37a6868dc1a9cee2363e8e77dd9220bdff",
+      "source_blob": "4bb99cf85ca1ac6e6c408c78d23cfa5d77b906cb"
+    },
+    "assets/experiments/native_terrain_47_96/ground_softness_comparison_v1/README.md": {
+      "format": "checkout-text",
+      "sha256": "ab568a7567f598799727948045ba5ca91d35d840d8c27ac5b714c0b771a8d12a",
+      "source_blob": "9cd0d3252a9b9974b7311515f6dca3fc8c54d038"
+    },
+    "assets/experiments/native_terrain_47_96/ground_softness_comparison_v1/manifest.json": {
+      "format": "checkout-text",
+      "sha256": "92507172b56935c4847e11875bd0c59396785f1f4342fd60e8ca571b1c55431f",
+      "source_blob": "4c9268cf0b0011a89a855ecde745d3c6ebd442fb"
+    },
+    "assets/experiments/native_terrain_47_96/ground_softness_comparison_v1/meandering_boundary_varied_comparison.png": {
+      "format": "binary",
+      "sha256": "40b27e2a7cd9d876aa261818b3e77ecf12e800f1fc6465796d3043c47a755896",
+      "source_blob": "04c10f6111b1543329474a9eaa16472b9c12dcd1"
+    },
+    "assets/experiments/native_terrain_47_96/ground_softness_comparison_v1/mixed_24x16_comparison.png": {
+      "format": "binary",
+      "sha256": "56f544b8d33b671b0ca149376a394f3eb7f4767c4e89ae0e8bf1e29c2776e085",
+      "source_blob": "0f37511887f6af58be90eac54e5d8e93aedc22f8"
+    },
+    "tools/ground-art-refinement.py": {
+      "format": "checkout-text",
+      "sha256": "68223b5144221f67276bffffa311d72771d933dd9304b4b2dfc0f6f155437578",
+      "source_blob": "a6519fbe14fe24355906041230a3a6eec034312e"
+    },
+    "tools/ground-refinement-full-atlas.py": {
+      "format": "checkout-text",
+      "sha256": "e4da4f3fcf0f65b6e7482582fb7f0d0ee809a9cff15b2a60485847de3987e0f8"
+    },
+    "tools/ground-transition-softness.py": {
+      "format": "checkout-text",
+      "sha256": "895c5bde4ac6a0a17187a1f589d2d16f12b05d0950f95519ace33df48081cfdb",
+      "source_blob": "b6893d22181ab7bfc563061e062f18be277e09c3"
+    }
+  },
+  "validation_amendments": {
+    "tests/current_preservation.py": {
+      "format": "checkout-text",
+      "sha256": "f1633a42b654cd0a62f35db4a66b7cb0653a4cbfcfefb89a048c0b73e1e64bb6",
+      "source_blob": "5b46df9826a6c3e5e516d9037bdef58c29492556"
+    },
+    "tests/static_ground_refinement_test.py": {
+      "format": "checkout-text",
+      "sha256": "79e5b2a00dc7d29e6146b61a5a93f3ab260386cd7cf721d6a38c6de1523e42f2",
+      "source_blob": "91e44309f6026f4c66958021fecb87b23d129c03"
+    },
+    "tests/static_ground_softness_test.py": {
+      "format": "checkout-text",
+      "sha256": "3087f0020581218442a26f5d389d90bcb6d82394e6fec2aaf4de297a33a4b598",
+      "source_blob": "dcf9c3c6ce9c5aa750b002413cb60057bc06b355"
+    },
+    "tests/static_housekeeping_test.py": {
+      "format": "checkout-text",
+      "sha256": "449564aea13c7572b3b2c98c09db546ce42049e9aac9fd57642946848dddb6c7",
+      "source_blob": "c38306a626f8e5290bf6091b151c07441dfa05f0"
+    },
+    "tests/static_stage2e_preservation_test.py": {
+      "format": "checkout-text",
+      "sha256": "402c806932533cdd58dcb6dce93c752e1c9992edaa1c7bedd748a1ec038c6797",
+      "source_blob": "ef0c1b95dcdb6fdacf2317afd051c66a0cc28e99"
+    }
+  }
+}
