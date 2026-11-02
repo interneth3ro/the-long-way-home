@@ -11,24 +11,42 @@ from static_terrain_resolver_test import inventory
 
 
 class TerrainIntegrationTest(unittest.TestCase):
-    def test_forward_helper_identity_is_independently_pinned(self):
-        self.assertEqual(guard.digest(guard.lf(guard.read("tests/terrain_integration_preservation.py"))),
-                         "ee873015e0039d2dd0ade930da60d14e2cbff34d2d42849a1fc497d2bf751a50")
+    def test_current_lookup_path_contract_accepts_authorized_change(self):
+        raw = guard.read(guard.LOOKUP)
+        # No reference to historical script bytes: an explicitly selected future
+        # resource path and an unrelated source comment satisfy this contract.
+        chosen = 'res://assets/environment/exterior/future_ground/terrain.tres'
+        changed = raw.replace(('res://' + guard.ACTIVE + 'terrain.tres').encode(), chosen.encode())
+        guard.verify_lookup(changed + b'\n# unrelated implementation change\n', chosen)
+        with self.assertRaisesRegex(AssertionError, 'TileSet path'):
+            guard.verify_lookup(changed)
+
+    def test_unrelated_feature_files_are_outside_terrain_integrity(self):
+        reader = guard.read
+        requested = []
+        additions = {
+            'scenes/world/future_feature.gd': b'extends Node\n',
+            'assets/future_feature.png': b'new art',
+            'tests/static_future_feature_test.py': b'# new test',
+            'docs/FUTURE_FEATURE.md': b'# new documentation',
+        }
+        def working(path):
+            requested.append(path)
+            return additions[path] if path in additions else reader(path)
+        with patch.object(guard, 'read', side_effect=working):
+            guard.verify_all()
+        self.assertFalse(set(requested) & additions.keys())
+
 
     def test_exact_active_artwork_and_preserved_originals(self):
         guard.verify_all()
         for name, expected in guard.ATLAS_SHA256.items():
             self.assertEqual(hashlib.sha256(guard.read(guard.ACTIVE + name)).hexdigest(), expected)
-            self.assertEqual(guard.read(guard.ACTIVE + name), guard.original(guard.OFFLINE + name))
+            self.assertEqual(guard.read(guard.ACTIVE + name), guard.read(guard.OFFLINE + name))
 
-    def test_lookup_has_only_the_authorized_path_change(self):
-        self.assertEqual(guard.lf(guard.read(guard.LOOKUP)), guard.expected_lookup())
-        self.assertEqual(guard.predecessor(guard.LOOKUP, guard.read(guard.LOOKUP)), guard.original(guard.LOOKUP))
-        self.assertEqual(guard.predecessor(guard.LOOKUP, guard.original(guard.LOOKUP)), guard.original(guard.LOOKUP))
-        self.assertIn(('res://' + guard.ACTIVE + 'terrain.tres').encode(), guard.read(guard.LOOKUP))
 
     def test_exact_tileset_structure_and_inventory(self):
-        before = guard.original(guard.OLD + 'baked_terrain.tres').decode()
+        before = guard.lf(guard.read(guard.OLD + 'baked_terrain.tres')).decode()
         after = guard.lf(guard.read(guard.ACTIVE + 'terrain.tres')).decode()
         self.assertEqual(after, guard.expected_tileset().decode())
         mapping = json.loads(guard.read(guard.OLD + 'mapping.json'))
@@ -53,14 +71,6 @@ class TerrainIntegrationTest(unittest.TestCase):
                     break
         self.assertTrue((guard.ROOT/guard.OFFLINE/'.gdignore').is_file())
 
-    def test_unauthorized_lookup_changes_and_wrong_paths_are_rejected(self):
-        raw = guard.read(guard.LOOKUP)
-        for bad in (raw+b'\n# unauthorized', raw[1:], raw.replace(b'func initialize()', b'func changed()'),
-                    raw.replace(b'ground_refined_v1', b'ground_refined_wrong')):
-            with self.subTest(bad=bad[:30]), self.assertRaises(AssertionError):
-                guard.predecessor(guard.LOOKUP, bad)
-        with self.assertRaises(AssertionError):
-            guard.verify_resource(guard.LOOKUP + '.other', raw)
 
     def test_changed_peering_metadata_atlas_coordinates_and_texture_paths_are_rejected(self):
         path = guard.ACTIVE + 'terrain.tres'
@@ -84,38 +94,13 @@ class TerrainIntegrationTest(unittest.TestCase):
                     guard.verify_resource(path, bad)
         reader = Path.read_bytes
         for target in (guard.LOOKUP, guard.ACTIVE + 'terrain.tres',
-                       *(guard.ACTIVE + n for n in guard.ATLAS_SHA256), *guard.AMENDMENTS):
+                       *(guard.ACTIVE + n for n in guard.ATLAS_SHA256)):
             def missing(instance):
                 if instance == guard.ROOT/target:
                     raise FileNotFoundError(target)
                 return reader(instance)
             with patch.object(Path, 'read_bytes', missing), self.assertRaises(AssertionError):
-                guard.without_integration_changes([])
-
-    def test_complete_amendments_are_pinned_and_unrelated_paths_are_not_hidden(self):
-        for path in guard.AMENDMENTS:
-            raw = guard.read(path)
-            self.assertEqual(guard.predecessor(path, raw), guard.original(path))
-            for bad in (raw+b'X', raw[1:]):
-                with self.assertRaises(AssertionError):
-                    guard.predecessor(path, bad)
-        self.assertEqual(guard.without_integration_changes(['scenes/world/planet_generator.gd', 'tests/unknown.py']),
-                         ['scenes/world/planet_generator.gd', 'tests/unknown.py'])
-        # Every sibling is checked before filtering, even when not requested.
-        reader = guard.read
-        for target in guard.AMENDMENTS:
-            def altered(path):
-                raw = reader(path)
-                return raw+b'X' if path == target else raw
-            with patch.object(guard, 'read', side_effect=altered), self.assertRaises(AssertionError):
-                guard.without_integration_changes([])
-
-    def test_procedural_shading_scene_and_resolver_sources_are_unchanged(self):
-        for name in ('terrain_resolver.gd', 'illustrated_terrain_presenter.gd',
-                     'planet_exterior.gd', 'planet_exterior.tscn', 'terrain_chunk.gd',
-                     'planet_generator.gd', 'illustrated_terrain_tint.gdshader', 'world_coordinates.gd'):
-            path = 'scenes/world/' + name
-            self.assertEqual(guard.lf(guard.read(path)), guard.original(path), path)
+                guard.verify_all()
 
 
 if __name__ == '__main__':

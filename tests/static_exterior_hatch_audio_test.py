@@ -6,14 +6,11 @@ from pathlib import Path
 import re
 import struct
 import unittest
-from unittest.mock import patch
 import wave
 
-import current_preservation as preservation
 from static_automatic_transitions_test import function
 
 ROOT = Path(__file__).resolve().parents[1]
-VISUAL = 'scenes/interaction/exterior_hatch_visual.gd'
 SCENE = 'scenes/interaction/exterior_hatch_visual.tscn'
 PLAYER = 'scenes/interaction/exterior_hatch_audio.gd'
 GENERATOR = 'tools/generate-hatch-audio.py'
@@ -70,22 +67,6 @@ class ExteriorHatchAudioStaticTest(unittest.TestCase):
         for path in re.findall(r'(?:path=|preload\()"res://([^"]+)"', scene+player):
             self.assertTrue((ROOT/path).is_file(), path)
 
-    def test_animation_changes_are_only_audio_hooks(self):
-        visual = read(VISUAL)
-        restored = visual.replace('@onready var _audio: ExteriorHatchAudio = $MechanicalAudio\n', '', 1)
-        restored = restored.replace('\t_audio.reset_audio()\n', '', 1)
-        hook = '\tif delta > 0.0 and openness != target:\n\t\t_audio.update_motion(_target_open, openness)\n'
-        self.assertEqual(visual.count(hook), 1)
-        restored = restored.replace(hook, '', 1)
-        self.assertEqual(restored, preservation.git_blob(preservation.AUDIO_BASE, VISUAL).decode().replace('\r\n', '\n'))
-        tick = function(visual, '_advance_animation')
-        self.assertLess(tick.index('_audio.update_motion'), tick.index('openness = move_toward'))
-        self.assertIn('OPEN_SECONDS if _target_open else CLOSE_SECONDS', tick)
-        self.assertIn('_audio.reset_audio()', function(visual, 'prepare_for_arrival'))
-        scene = read(SCENE).replace('load_steps=7', 'load_steps=6', 1)
-        scene = scene.replace('[ext_resource type="Script" path="res://'+PLAYER+'" id="4_audio"]\n', '', 1)
-        scene = scene.replace('\n[node name="MechanicalAudio" type="AudioStreamPlayer" parent="."]\nmax_polyphony = 1\nscript = ExtResource("4_audio")\n', '', 1)
-        self.assertEqual(scene, preservation.git_blob(preservation.AUDIO_BASE, SCENE).decode().replace('\r\n', '\n'))
 
     def test_direction_guard_reversal_fades_and_remaining_travel_seek(self):
         code = read(PLAYER)
@@ -121,37 +102,6 @@ class ExteriorHatchAudioStaticTest(unittest.TestCase):
         for contract in ('_ramp.kill()', 'stop()', '_direction = 0', '_switching = false', 'volume_linear = 0.0'):
             self.assertIn(contract, reset)
         self.assertNotIn('process_mode', code)
-
-    def test_protected_boarding_collision_transition_and_player_bytes_unchanged(self):
-        for path in ('scenes/interaction/exterior_boarding.gd', 'scenes/world/planet_exterior.tscn',
-                     'scenes/world/planet_exterior.gd', 'scenes/main/scene_transition_controller.gd',
-                     'scenes/player/dave.gd', 'scenes/player/follow_camera.gd',
-                     'scenes/interaction/scene_hatch.gd', 'scenes/world/production_ship_interior_v2.tscn',
-                     'project.godot'):
-            self.assertEqual(preservation.normalized(path, (ROOT/path).read_bytes()),
-                             preservation.normalized(path, preservation.git_blob(preservation.AUDIO_BASE, path)), path)
-
-    def test_exact_audio_scope_and_projections_reject_tampering(self):
-        self.assertEqual(set(preservation.AUDIO_INPUT_SHA256), {
-            VISUAL, SCENE, PLAYER, GENERATOR, ART+'hatch_open.wav', ART+'hatch_close.wav'})
-        for path, digest in (preservation.AUDIO_INPUT_SHA256 | preservation.AUDIO_TEST_SHA256).items():
-            raw = (ROOT/path).read_bytes()
-            preservation.verify_fingerprint(path, raw, digest)
-            projected = preservation.audio_predecessor(path, raw)
-            if path in preservation.AUDIO_EXISTING_PATHS:
-                self.assertEqual(preservation.normalized(path, projected),
-                                 preservation.normalized(path, preservation.git_blob(preservation.AUDIO_BASE, path)))
-            for bad in (raw+b'UNREVIEWED', raw[1:], raw+raw):
-                with self.subTest(path=path), self.assertRaises(AssertionError):
-                    preservation.audio_predecessor(path, bad)
-                with patch.object(Path, 'read_bytes', return_value=bad):
-                    if path in preservation.AUDIO_INPUT_SHA256:
-                        with self.assertRaises(AssertionError):
-                            preservation.without_current_paths([path])
-        self.assertEqual(preservation.without_current_paths(list(preservation.AUDIO_INPUT_SHA256)), [])
-        self.assertEqual(preservation.without_current_paths([ART+'unrelated.wav']), [ART+'unrelated.wav'])
-        raw = b'RIFF\r\nWAVE'
-        self.assertEqual(preservation.normalized(ART+'hatch_open.wav', raw), raw)
 
 
 if __name__ == '__main__':

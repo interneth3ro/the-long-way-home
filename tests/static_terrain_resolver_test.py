@@ -3,38 +3,21 @@
 Only the resolver's restricted integer expressions are evaluated by Python.
 Engine parsing, native API behavior and runtime integration remain unverified.
 """
-from terrain_integration_preservation import predecessor
 import collections
-import hashlib
 import itertools
 import json
 from pathlib import Path
 import re
-import subprocess
 import unittest
-from current_preservation import without_presenter_paths, PRESENTER_INPUT_SHA256, verify_presenter_input
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = (ROOT / 'scenes/world/terrain_resolver.gd').read_text()
 LOOKUP = (ROOT / 'scenes/world/terrain_assignment_lookup.gd').read_text()
 ASSET = ROOT / 'assets/experiments/native_terrain_47_96/baked_v2'
-BASE = '9f157795b3ee7737ed55787a2a4355a126af5d1e'
-RESOLVER_INPUT_SHA256 = {
-    'scenes/world/terrain_resolver.gd': '75db40185fbb86f394035ef442a44dd18b911ce9bc3e4ab1489f443e1b210117',
-    'scenes/world/terrain_assignment_lookup.gd': '582560a0d625e6531124b90a10ffcea4b2b4d1bca8944a2c673b8b3a30cb9567',
-}
 BITS = ('top_left_corner', 'top_side', 'top_right_corner', 'left_side',
         'right_side', 'bottom_left_corner', 'bottom_side', 'bottom_right_corner')
 OFFSETS = ((0, 0), (-1, -1), (0, -1), (1, -1), (-1, 0),
            (1, 0), (-1, 1), (0, 1), (1, 1))
-
-
-def verify_resolver_input(path, raw):
-    raw = predecessor(path, raw)
-    if path not in RESOLVER_INPUT_SHA256:
-        raise AssertionError('Unapproved resolver input: ' + path)
-    if hashlib.sha256(raw.replace(b'\r\n', b'\n')).hexdigest() != RESOLVER_INPUT_SHA256[path]:
-        raise AssertionError('Modified resolver input: ' + path)
 
 
 def signature(materials):
@@ -241,38 +224,6 @@ class TerrainResolverStaticTest(unittest.TestCase):
             for forbidden in ('randf(', 'randi(', 'randomize(', 'RandomNumberGenerator',
                               'set_cells_terrain_connect', 'get_cell_', 'PlanetGenerator.new'):
                 self.assertNotIn(forbidden, text)
-
-    def test_production_and_approved_assets_preserved(self):
-        # Entire pre-existing simulation/presentation/resource/artwork trees.
-        paths = subprocess.check_output(['git', 'ls-tree', '-r', '--name-only', BASE, '--',
-                                         'assets', 'scenes', 'shaders', 'inventory', 'construction',
-                                         'dialogue', 'objectives', 'project.godot', 'tools'], cwd=ROOT).decode().splitlines()
-        changed = subprocess.check_output(['git', 'diff', '--name-only', BASE, '--'], cwd=ROOT).decode().splitlines()
-        self.assertFalse(set(paths) & set(without_presenter_paths(changed)), 'Pre-existing production/asset/tool files changed')
-        for path in ROOT.glob('scenes/**/*.gd'):
-            if path.name not in ('terrain_resolver.gd', 'terrain_assignment_lookup.gd'):
-                from current_preservation import FIXTURE_INPUT_SHA256, verify_fixture_input
-                relative = path.relative_to(ROOT).as_posix()
-                if relative in PRESENTER_INPUT_SHA256:
-                    verify_presenter_input(relative, path.read_bytes())
-                    continue
-                if relative in FIXTURE_INPUT_SHA256:
-                    verify_fixture_input(relative, path.read_bytes())
-                    continue
-                self.assertNotIn('TerrainResolver', path.read_text())
-                self.assertNotIn('TerrainAssignmentLookup', path.read_text())
-
-    def test_exact_new_script_exception_rejects_tampering_and_other_paths(self):
-        self.assertEqual(len(RESOLVER_INPUT_SHA256), 2)
-        for path in RESOLVER_INPUT_SHA256:
-            raw = (ROOT/path).read_bytes()
-            verify_resolver_input(path, raw)
-            for bad in (raw + b'CHANGED', raw[1:], raw + raw):
-                with self.assertRaises(AssertionError): verify_resolver_input(path, bad)
-            with self.assertRaises(AssertionError): verify_resolver_input(path + '.other', raw)
-        for path in ('scenes/world/planet_generator.gd', 'scenes/world/terrain_chunk.gd',
-                     'tools/run-local-tests.ps1', 'assets/experiments/native_terrain_47_96/baked_v2/baked_terrain.tres'):
-            with self.assertRaises(AssertionError): verify_resolver_input(path, (ROOT/path).read_bytes())
 
 
 if __name__ == '__main__':

@@ -1,16 +1,12 @@
 """Nonexecuting source, PNG integrity and arithmetic models; never runs Godot."""
 import hashlib
 import math
-from pathlib import Path
 import re
 import struct
-import subprocess
 import unittest
 import zlib
-from current_preservation import historical_presenter_bytes
 
-from static_weathered_earth_test import (ROOT, GREEN_BASE, GREEN_SHA256,
-    coordinate_random, noise, weathered_bytes, original_green_bytes)
+from static_weathered_earth_test import ROOT, coordinate_random, noise
 
 ART = ROOT / 'assets/environment/exterior/low_green_ground_cover_provisional'
 ASSETS = {
@@ -163,31 +159,6 @@ class LowGreenStaticTest(unittest.TestCase):
                 if inside(point,protected) or any(inside(point,p) or edge_distance(point,p)<256 for p in overlays):
                     self.assertEqual(material(x,y,26026,protected,overlays), 0)
         self.assertEqual(material(100,100,26026,anchors=[(6432,6432)]),0)
-        generator = (ROOT/'scenes/world/planet_generator.gd').read_bytes().replace(b'\r\n',b'\n')
-        original = weathered_bytes('scenes/world/planet_generator.gd',generator)
-        self.assertEqual(original_green_bytes('scenes/world/planet_generator.gd', generator).split(b'\n\n# Presentation only:')[0], original)
-        path = 'scenes/world/terrain_chunk.gd'
-        chunk = historical_presenter_bytes(path, (ROOT/path).read_bytes()).decode().replace('\r\n', '\n')
-        before = weathered_bytes(path, (ROOT/path).read_bytes()).decode()
-        # All legacy tint/halo/detail code stays exact, beyond the reviewed
-        # texture table, cached byte array, configure assignment and texture lookup.
-        restored = re.sub(r'const GROUND_TEXTURES:.*?\]\n', '', chunk, flags=re.S)
-        restored = re.sub(r'^.*_ground_materials.*\n', '', restored, flags=re.M)
-        restored = restored.replace('GROUND_TEXTURES[ground_material]', 'BASE_SOIL')
-        self.assertEqual(restored, before)
-        for path in ('scenes/world/planet_exterior.gd','scenes/world/planet_exterior.tscn',
-                     'scenes/world/planet_world_state.gd','scenes/world/world_coordinates.gd',
-                     'scenes/world/introductory_ferrite.tres','construction/construction_controller.gd'):
-            baseline = subprocess.check_output(['git','show',f'{GREEN_BASE}:{path}'],cwd=ROOT)
-            self.assertEqual(historical_presenter_bytes(path, (ROOT/path).read_bytes()).replace(b'\r\n',b'\n'),baseline.replace(b'\r\n',b'\n'))
-
-    def test_exact_source_adapter_rejects_tampering(self):
-        for path in GREEN_SHA256:
-            raw = (ROOT/path).read_bytes()
-            weathered_bytes(path,raw)
-            for changed in (raw+b'\n# unrelated',raw+raw,raw.replace(b'func ',b'func changed_',1)):
-                with self.assertRaises(AssertionError):
-                    weathered_bytes(path,changed)
 
 
 if __name__ == '__main__':

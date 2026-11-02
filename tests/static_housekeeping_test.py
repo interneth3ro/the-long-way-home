@@ -4,7 +4,6 @@ import unittest
 from unittest.mock import patch
 
 import housekeeping_preservation as housekeeping
-from ground_art_preservation import stage2a_helper_predecessor
 
 
 class HousekeepingStaticTest(unittest.TestCase):
@@ -17,25 +16,6 @@ class HousekeepingStaticTest(unittest.TestCase):
             for bad in (raw + b'UNREVIEWED', raw[1:]):
                 with self.subTest(path=path), self.assertRaises(AssertionError):
                     housekeeping.verify(path, bad, entry)
-            with patch.object(Path, 'read_bytes', return_value=raw + b'UNREVIEWED'):
-                with self.assertRaises(AssertionError):
-                    housekeeping.without_approved_paths([path])
-        self.assertEqual(housekeeping.without_approved_paths(['unapproved.png']), ['unapproved.png'])
-
-    def test_existing_changes_preserve_old_bytes_and_reject_other_changes(self):
-        data = housekeeping.record()
-        for path, entry in data['existing_changes'].items():
-            raw = (housekeeping.ROOT / path).read_bytes()
-            if path == 'tests/current_preservation.py':
-                # Verify complete amended and original identities, then retain
-                # every original Stage 2A assertion and immutable receipt below.
-                raw = stage2a_helper_predecessor(path, raw)
-            housekeeping.verify(path, raw, entry)
-            before = housekeeping.historical_input(path, raw)
-            self.assertNotEqual(raw.replace(b'\r\n', b'\n'), before.replace(b'\r\n', b'\n'))
-            for bad in (raw + b'UNREVIEWED', raw[1:], raw + raw):
-                with self.subTest(path=path), self.assertRaises(AssertionError):
-                    housekeeping.historical_input(path, bad)
 
     def test_formatting_exceptions_are_exact_and_hash_guarded(self):
         data = housekeeping.record()

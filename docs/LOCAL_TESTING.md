@@ -158,9 +158,11 @@ unsafe paths/links/unexpected files, output/completion/error classification,
 sequential failure stops, no retries, bounded unique evidence, owner-file
 preservation and authorization-withdrawal stops. They do not execute Godot or establish
 native compatibility, GDScript parsing, runtime assertions or graphical behavior.
-The Python preservation assertions account only for the exact approved B1 display
-and machine-scene edits; all other baseline comparisons remain in force. GDScript
-recipe-switching assertions remain unchanged.
+On the Balanced Simplification maintenance branch, Python checks protect immutable
+historical evidence and focused current resource/source contracts. Historical
+checkout inventories and test/source admission pins no longer freeze ordinary
+development. Runner identity, staging, command, inventory, failure and preservation
+controls are unchanged. GDScript recipe-switching assertions remain unchanged.
 
 The process helper reads both streams asynchronously. Detection may consume one
 read buffer per stream beyond the output ceiling while retaining at most 1 MiB.

@@ -1,23 +1,26 @@
-"""Exact offline-art admission and two checkout-portability contracts only.
-
-No engine/runner scope, historical receipt edits, or directory exemptions.
-The separately pinned record binds every admitted file and validation amendment.
-"""
-from terrain_integration_preservation import predecessor, without_integration_changes
+"""Saved ground artwork/receipt integrity and exact historical text checkout forms."""
 import hashlib
+
 import json
+
 from pathlib import Path
+
 import subprocess
 
 ROOT = Path(__file__).resolve().parents[1]
+
 RECORD = 'docs/experiments/ground_art_validation_admission.json'
+
 RECORD_SHA256_LF = '3f156da362bae9faf24b272034a175801c0c299154fdddc45857ef30b3d0b991'
+
 START = '5d4f502928ea964e9d8b8b71ded87c0888b5aaaf'
+
 VALIDATION_PATHS = frozenset({
     'tests/current_preservation.py', 'tests/static_ground_refinement_test.py',
     'tests/static_ground_softness_test.py', 'tests/static_stage2e_preservation_test.py',
     'tests/static_housekeeping_test.py',
 })
+
 PORTABLE = {
     'assets/experiments/native_terrain_47_96/ground_softness_comparison_v1/.gitattributes':
         ('b7358186fda7d5636fd1e7799348d31cd0bef2f1', '4bb99cf85ca1ac6e6c408c78d23cfa5d77b906cb'),
@@ -25,19 +28,15 @@ PORTABLE = {
         ('1a88d641b1c5bfa0929ec5f200f40c48865f95ea', '979a7cbf5dcdc4a257d73dfdb43447fa31f81bed'),
 }
 
-
 def require(condition, message):
     if not condition:
         raise AssertionError(message)
 
-
 def sha256(raw):
     return hashlib.sha256(raw).hexdigest()
 
-
 def blob_id(raw):
     return hashlib.sha1(b'blob '+str(len(raw)).encode()+b'\0'+raw).hexdigest()
-
 
 def read_working(path):
     try:
@@ -45,16 +44,13 @@ def read_working(path):
     except OSError as error:
         raise AssertionError('Missing preserved file: '+path) from error
 
-
 def git_bytes(ref, path):
     return subprocess.check_output(['git', 'show', ref+':'+path], cwd=ROOT)
-
 
 def exact_checkout(raw, lf, path):
     require(b'\r' not in lf, 'Expected LF Git bytes: '+path)
     require(raw in (lf, lf.replace(b'\n', b'\r\n')), 'Changed content or mixed checkout endings: '+path)
     return lf
-
 
 def historical_checkout(path, raw=None):
     """Preserve Git identity and permit only its two exact text checkout forms."""
@@ -66,7 +62,6 @@ def historical_checkout(path, raw=None):
     require(git_bytes('', path) == original, 'Changed index identity: '+path)
     return exact_checkout(read_working(path) if raw is None else raw, original, path)
 
-
 def record():
     raw = read_working(RECORD)
     lf = raw.replace(b'\r\n', b'\n')
@@ -77,9 +72,7 @@ def record():
             'Changed exact ground-art admission inventory')
     return data
 
-
 def verify_identity(path, raw, entry):
-    raw = predecessor(path, raw)
     # The existing candidate README has a reviewed mixed-ending saved form.
     # Preserve those exact bytes as well as its Git checkout representation;
     # this is an individually pinned identity, not mixed-ending normalization.
@@ -92,7 +85,6 @@ def verify_identity(path, raw, entry):
         exact_checkout(raw, canonical, path)
     require(sha256(canonical) == entry['sha256'], 'Changed reviewed ground-art input: '+path)
 
-
 def verify_admitted(path, raw=None):
     pins = record()['admitted']
     require(path in pins, 'Unapproved ground-art path: '+path)
@@ -102,39 +94,3 @@ def verify_admitted(path, raw=None):
         require(blob_id(original) == entry['source_blob'], 'Changed admitted historical Git identity: '+path)
         verify_identity(path, original, entry)
     verify_identity(path, read_working(path) if raw is None else raw, entry)
-
-
-def without_ground_art_paths(paths):
-    pins = record()['admitted']
-    remaining = []
-    for path in paths:
-        if path in pins:
-            verify_admitted(path)
-        else:
-            remaining.append(path)
-    return remaining
-
-
-def without_validation_changes(paths):
-    """Only five complete reviewed validation edits may cross the old guards."""
-    pins = record()['validation_amendments']
-    require(set(pins) == VALIDATION_PATHS, 'Changed exact validation amendment inventory')
-    # Complete verification precedes filtering, even if the changed-path list
-    # contains only one amendment or none. A broken sibling cannot be hidden.
-    for path, entry in pins.items():
-        require(blob_id(git_bytes(START, path)) == entry['source_blob'], 'Changed validation predecessor: '+path)
-        verify_identity(path, read_working(path), entry)
-    return [path for path in without_integration_changes(paths) if path not in pins]
-
-
-def stage2a_helper_predecessor(path, raw):
-    """Verify the one amended helper before the original Stage 2A assertions."""
-    require(path == 'tests/current_preservation.py', 'Unapproved Stage 2A replacement: '+path)
-    pins = record()['validation_amendments']
-    require(path in pins, 'Missing Stage 2A replacement identity: '+path)
-    entry = pins[path]
-    require('source_blob' in entry, 'Missing Stage 2A predecessor identity: '+path)
-    verify_identity(path, raw, entry)
-    original = git_bytes(START, path)
-    require(blob_id(original) == entry['source_blob'], 'Changed Stage 2A predecessor identity: '+path)
-    return original
