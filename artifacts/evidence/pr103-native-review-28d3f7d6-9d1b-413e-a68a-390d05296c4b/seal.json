@@ -1,0 +1,17 @@
+{
+  "authorization": "PREPARATION ONLY; owner review and separate phase authorization required",
+  "input_source_commit": "123b29b0cef3386f476117b7952d5ad91d6b0f98",
+  "project": "D:\\GameDev\\Godot\\TLWH-NativeStages\\tlwh-pr103-review-28d3f7d6-9d1b-413e-a68a-390d05296c4b",
+  "review_files": {
+    "REVIEW.md": "77625b521557c728f27bda27186851e46091beda870be334b9815b0e9de8f7bc",
+    "commands.json": "7a685911e8b5c913bbbc73d239bac062a326c1620672b85b8c4f36b8f970f842",
+    "manifest.json": "c63be2396513cc4145dc4be121489a213fbf97ba4efe735c6dd2d30126b687b7",
+    "proposal.json": "3fd7c93864752be48dbd9f43dd52264a1a37d1b034f3c676d8dc9429a0174928",
+    "source-baseline.json": "973320ab24d74fcd7daa022d3b4214fb05d9ab475829b458f5074886ea99ffac",
+    "supervisor.py": "6c0a23920f30b62c59efbd68465f4a0691769a55ad1f553034d45036e8896209",
+    "supervisor_tests.py": "25da2eb314d7eb8de4c05c86bf76c415e766afacbc4d10862f814154aba11c06",
+    "tests-result.json": "2fbd08daf72ec65f1560a962d9b3c9e3ab7a533b8532c085372a814b48cd4557"
+  },
+  "review_head": "aa62a6d38c981e08c7c6d70cf5929cad642a5414",
+  "schema": 1
+}

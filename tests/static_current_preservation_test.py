@@ -105,7 +105,7 @@ class CurrentPreservationStaticTest(unittest.TestCase):
             'docs/experiments/production_terrain_stage.json', 'docs/LOCAL_TESTING.md',
             'AGENTS.md', '.gitattributes',
         ):
-            actual = scope.normalized(path, (scope.ROOT/path).read_bytes())
+            actual = scope.normalized(path, scope.housekeeping.historical_input(path, (scope.ROOT/path).read_bytes()))
             expected = scope.normalized(path, scope.git_blob(scope.MAINTENANCE_BASE, path))
             self.assertEqual(actual, expected, path)
 

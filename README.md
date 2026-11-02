@@ -1,5 +1,22 @@
 # The Long Way Home
 
+Repository housekeeping is prepared on a feature branch, pending owner review.
+The [Stage 2A disposition](docs/experiments/repository_housekeeping_stage2a.json)
+records exact approved retention/deletion identities; historical receipts and
+execution controls remain unchanged. Four historical-publication exceptions and
+their redundant ZIP stay private/local. PR #5 archives, nested diagnostic clones
+and Godot cache remain protected. Reference studies are retained for art history
+only: [Earth variants](assets/environment/exterior/01_weathered_earth_four_variants_v2.png),
+[crash-site direction](assets/environment/exterior/02_refined_crash_site_terrain_direction.png),
+[green-ground study](assets/environment/exterior/approved_green_ground_study.png) and
+[mixed-ground reference](assets/environment/exterior/low_green_mixed_8x6_reference.png).
+These additions do not activate artwork or abandoned experiments in gameplay.
+Static verification accepts only canonical UID-less CSV Keep metadata; imported
+resources still require valid, unique UIDs. Historical snapshot bytes remain
+immutable: exact-path CRLF rules and one hash-pinned trailing-space exception
+avoid reformatting evidence. Maintained source files use normal whitespace checks.
+
+
 Automatic exterior boarding has final owner gameplay acceptance: **10/10 PASS**,
 zero failures, zero untested checks and no additional observations. PR #112 merged.
 Walk inward through the fully open

@@ -66,10 +66,18 @@ class PresenterStaticTest(unittest.TestCase):
         for path in ('scenes/world/planet_generator.gd',
                      'assets/ui/b1_theme.tres', 'tools/run-local-tests.ps1', 'AGENTS.md'):
             raw = (ROOT/path).read_bytes() + b'OWNER CHANGE'
-            self.assertEqual(historical_presenter_bytes(path, raw), raw)
+            if path == 'AGENTS.md':
+                # Policy retention has an exact receipt; arbitrary policy edits fail.
+                approved = (ROOT/path).read_bytes()
+                self.assertEqual(historical_presenter_bytes(path, approved).decode().replace('\r\n', '\n'), old(path))
+                with self.assertRaisesRegex(AssertionError, 'Changed Stage 2A input'):
+                    historical_presenter_bytes(path, raw)
+                self.assertEqual(without_presenter_paths([path]), [])
+            else:
+                self.assertEqual(historical_presenter_bytes(path, raw), raw)
+                self.assertEqual(without_presenter_paths([path]), [path])
             with self.assertRaises(AssertionError):
                 verify_presenter_input(path, raw)
-            self.assertEqual(without_presenter_paths([path]), [path])
 
     def test_historical_stage_reconciliation_rejects_changed_bytes(self):
         import json

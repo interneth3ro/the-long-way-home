@@ -365,8 +365,14 @@ class IllustratedExteriorStaticTest(unittest.TestCase):
                      'docs/experiments/illustrated_terrain_presenter_stage.json',
                      'docs/PRODUCTION_TERRAIN_FIXTURE.md'):
             raw = (ROOT/path).read_bytes()
-            self.assertEqual(raw.decode().replace('\r\n','\n'),old(path),path)
-            self.assertEqual(historical_activation_bytes(path,raw+b'OWNER'),raw+b'OWNER')
+            if path == 'AGENTS.md':
+                # Exact owner-approved retention amendment, then the same old freeze.
+                self.assertEqual(historical_activation_bytes(path,raw).decode().replace('\r\n','\n'),old(path),path)
+                with self.assertRaisesRegex(AssertionError, 'Changed Stage 2A input'):
+                    historical_activation_bytes(path,raw+b'OWNER')
+            else:
+                self.assertEqual(raw.decode().replace('\r\n','\n'),old(path),path)
+                self.assertEqual(historical_activation_bytes(path,raw+b'OWNER'),raw+b'OWNER')
             with self.assertRaises(AssertionError):
                 verify_activation_input(path,raw)
         self.assertEqual(subprocess.check_output(['git','rev-parse','refs/heads/codex/preserve-editor-resource-serialization'],cwd=ROOT,text=True).strip(),

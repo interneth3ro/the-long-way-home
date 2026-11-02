@@ -1,0 +1,12 @@
+{
+  "classification": "PASS",
+  "diagnostic": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\r\n\r\nWARNING: Exterior terrain stopped; restart after correcting input: { \"ok\": false, \"code\": &\"material\", \"chunk\": (-2, -2), \"token\": 29, \"message\": \"Expected integer material 0..4\", \"cell\": (-65, -65) }\r\n   at: push_warning (core/variant/variant_utility.cpp:1033)\r\n   GDScript backtrace (most recent call first):\r\n       [0] _stop_terrain (res://scenes/world/planet_exterior.gd:184)\r\n       [1] _present_illustrated_chunk (res://scenes/world/planet_exterior.gd:229)\r\n       [2] _generate_budget (res://scenes/world/planet_exterior.gd:123)\r\n       [3] _replace (res://tests/illustrated_exterior_native_validation.gd:59)\r\n       [4] _validate (res://tests/illustrated_exterior_native_validation.gd:163)\r\n       [5] prepare_for_arrival (res://scenes/world/planet_exterior.gd:68)\r\nIllustrated exterior validation failures: 0\r\n",
+  "exit_code": 0,
+  "input_source_commit": "4a364481e5eba90bba0d88b2518a8fce004dc979",
+  "output_bytes": 895,
+  "phase": "Assertions",
+  "review_head": "4a364481e5eba90bba0d88b2518a8fce004dc979",
+  "started": true,
+  "status": "PASS",
+  "termination_certain": true
+}

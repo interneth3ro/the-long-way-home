@@ -1,0 +1,2 @@
+# Exact historical bootstrap note; its full-file hash remains immutable.
+bootstrap-pr-body.md -text whitespace=cr-at-eol

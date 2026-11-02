@@ -1,0 +1,96 @@
+{
+  "authorization": "PREPARATION ONLY. Each Stage/Import/Assertions invocation requires separate explicit owner authorization. --execute and the seal are not permission.",
+  "review_head": "aa62a6d38c981e08c7c6d70cf5929cad642a5414",
+  "input_source_commit": "123b29b0cef3386f476117b7952d5ad91d6b0f98",
+  "project": "D:\\GameDev\\Godot\\TLWH-NativeStages\\tlwh-pr103-review-28d3f7d6-9d1b-413e-a68a-390d05296c4b",
+  "supervisor_sha256": "6c0a23920f30b62c59efbd68465f4a0691769a55ad1f553034d45036e8896209",
+  "read_only_plan": [
+    "C:\\Python314\\python.exe",
+    "-B",
+    "D:\\GameDev\\Godot\\Projects\\TLWH\\artifacts\\evidence\\pr103-native-review-28d3f7d6-9d1b-413e-a68a-390d05296c4b\\supervisor.py",
+    "--phase",
+    "Plan",
+    "--review-seal-sha256",
+    "<independently reviewed seal SHA-256>"
+  ],
+  "phases": {
+    "Stage": {
+      "supervisor_arguments": [
+        "C:\\Python314\\python.exe",
+        "-B",
+        "D:\\GameDev\\Godot\\Projects\\TLWH\\artifacts\\evidence\\pr103-native-review-28d3f7d6-9d1b-413e-a68a-390d05296c4b\\supervisor.py",
+        "--phase",
+        "Stage",
+        "--execute",
+        "--review-seal-sha256",
+        "<independently reviewed seal SHA-256>"
+      ],
+      "engine_execution": false
+    },
+    "Import": {
+      "supervisor_arguments": [
+        "C:\\Python314\\python.exe",
+        "-B",
+        "D:\\GameDev\\Godot\\Projects\\TLWH\\artifacts\\evidence\\pr103-native-review-28d3f7d6-9d1b-413e-a68a-390d05296c4b\\supervisor.py",
+        "--phase",
+        "Import",
+        "--execute",
+        "--review-seal-sha256",
+        "<independently reviewed seal SHA-256>"
+      ],
+      "engine_arguments": [
+        "--headless",
+        "--editor",
+        "--path",
+        "D:\\GameDev\\Godot\\TLWH-NativeStages\\tlwh-pr103-review-28d3f7d6-9d1b-413e-a68a-390d05296c4b",
+        "--quit"
+      ],
+      "working_directory": "D:\\GameDev\\Godot\\TLWH-NativeStages\\tlwh-pr103-review-28d3f7d6-9d1b-413e-a68a-390d05296c4b",
+      "timeout_seconds": 60,
+      "combined_output_bytes": 1048576,
+      "diagnostic_excerpt_bytes": 4096
+    },
+    "Assertions": {
+      "supervisor_arguments": [
+        "C:\\Python314\\python.exe",
+        "-B",
+        "D:\\GameDev\\Godot\\Projects\\TLWH\\artifacts\\evidence\\pr103-native-review-28d3f7d6-9d1b-413e-a68a-390d05296c4b\\supervisor.py",
+        "--phase",
+        "Assertions",
+        "--execute",
+        "--review-seal-sha256",
+        "<independently reviewed seal SHA-256>"
+      ],
+      "engine_arguments": [
+        "--headless",
+        "--path",
+        "D:\\GameDev\\Godot\\TLWH-NativeStages\\tlwh-pr103-review-28d3f7d6-9d1b-413e-a68a-390d05296c4b",
+        "--script",
+        "res://scenes/experiments/production_terrain/engine_validation.gd"
+      ],
+      "working_directory": "D:\\GameDev\\Godot\\TLWH-NativeStages\\tlwh-pr103-review-28d3f7d6-9d1b-413e-a68a-390d05296c4b",
+      "timeout_seconds": 30,
+      "combined_output_bytes": 1048576,
+      "diagnostic_excerpt_bytes": 4096,
+      "completion": "Production terrain fixture failures: 0; exactly once, last nonempty stdout line, exit 0"
+    }
+  },
+  "pre_execution_static_gate": {
+    "command": [
+      "C:\\Python314\\python.exe",
+      "-B",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "tests",
+      "-p",
+      "static_*test.py"
+    ],
+    "working_directory": "D:\\GameDev\\Godot\\Projects\\TLWH",
+    "timeout_seconds": 180,
+    "requires_actual_pass": true,
+    "preservation": "Recheck the sealed source baseline before and after; no refresh or automatic retry",
+    "authorization": "Required before future Stage/Import; not run by this preparation or automatically dispatched by the supervisor"
+  }
+}

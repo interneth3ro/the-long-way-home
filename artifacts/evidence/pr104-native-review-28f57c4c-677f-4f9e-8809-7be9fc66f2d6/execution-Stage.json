@@ -1,0 +1,9 @@
+{
+  "classification": "PASS",
+  "engine_attempted": false,
+  "initial_files": 84,
+  "input_source_commit": "4a364481e5eba90bba0d88b2518a8fce004dc979",
+  "phase": "Stage",
+  "review_head": "4a364481e5eba90bba0d88b2518a8fce004dc979",
+  "started": false
+}

@@ -1,0 +1,6621 @@
+{
+  "stage": "1 - offline proof only",
+  "head": "e8a722e50de4c89442a579584ae1228aef483ff6",
+  "generated_signatures": 37,
+  "inventory_sha256": "678c107702c1b933510a36101f77f04e4f7277cfab7c86ced25a1ed086100e4c",
+  "package_sha256": "75beb531dc5aaf238fc05cb46a4a671a73d5470be581ba990a69db9efede7b50",
+  "source_sha256": {
+    "earth_solid.png": "1e530bdcefa9ba29575b8bd2c61a15ec26c04567b928ffebfb4b460336d4ff3f",
+    "green_solid.png": "bc64176fde0d899dfd8c56d42a62fc81525e780c3b22687b982bde31244270e2"
+  },
+  "representative_png_count": 20,
+  "representatives": [
+    {
+      "name": "earth solid",
+      "image": "representatives/earth_solid_9_2.png",
+      "mask": "masks/earth_solid_9_2.png",
+      "signature": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "original_atlas": [
+        9,
+        2
+      ]
+    },
+    {
+      "name": "earth convex_nw",
+      "image": "representatives/earth_convex_nw_8_0.png",
+      "mask": "masks/earth_convex_nw_8_0.png",
+      "signature": [
+        0,
+        1,
+        1,
+        1,
+        1,
+        0,
+        1,
+        0,
+        0
+      ],
+      "original_atlas": [
+        8,
+        0
+      ]
+    },
+    {
+      "name": "earth concave_nw",
+      "image": "representatives/earth_concave_nw_5_1.png",
+      "mask": "masks/earth_concave_nw_5_1.png",
+      "signature": [
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "original_atlas": [
+        5,
+        1
+      ]
+    },
+    {
+      "name": "earth endpoint_south",
+      "image": "representatives/earth_endpoint_south_0_0.png",
+      "mask": "masks/earth_endpoint_south_0_0.png",
+      "signature": [
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        1
+      ],
+      "original_atlas": [
+        0,
+        0
+      ]
+    },
+    {
+      "name": "earth narrow_ns",
+      "image": "representatives/earth_narrow_ns_0_1.png",
+      "mask": "masks/earth_narrow_ns_0_1.png",
+      "signature": [
+        0,
+        1,
+        0,
+        1,
+        1,
+        1,
+        1,
+        0,
+        1
+      ],
+      "original_atlas": [
+        0,
+        1
+      ]
+    },
+    {
+      "name": "earth isolated",
+      "image": "representatives/earth_isolated_0_3.png",
+      "mask": "masks/earth_isolated_0_3.png",
+      "signature": [
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "original_atlas": [
+        0,
+        3
+      ]
+    },
+    {
+      "name": "earth north",
+      "image": "representatives/earth_north_10_0.png",
+      "mask": "masks/earth_north_10_0.png",
+      "signature": [
+        0,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "original_atlas": [
+        10,
+        0
+      ]
+    },
+    {
+      "name": "earth south",
+      "image": "representatives/earth_south_9_3.png",
+      "mask": "masks/earth_south_9_3.png",
+      "signature": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1
+      ],
+      "original_atlas": [
+        9,
+        3
+      ]
+    },
+    {
+      "name": "earth west",
+      "image": "representatives/earth_west_8_1.png",
+      "mask": "masks/earth_west_8_1.png",
+      "signature": [
+        0,
+        1,
+        0,
+        0,
+        1,
+        0,
+        1,
+        0,
+        0
+      ],
+      "original_atlas": [
+        8,
+        1
+      ]
+    },
+    {
+      "name": "earth east",
+      "image": "representatives/earth_east_11_2.png",
+      "mask": "masks/earth_east_11_2.png",
+      "signature": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        1,
+        0,
+        0,
+        1
+      ],
+      "original_atlas": [
+        11,
+        2
+      ]
+    },
+    {
+      "name": "green solid",
+      "image": "representatives/green_solid_9_6.png",
+      "mask": "masks/green_solid_9_6.png",
+      "signature": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "original_atlas": [
+        9,
+        6
+      ]
+    },
+    {
+      "name": "green convex_nw",
+      "image": "representatives/green_convex_nw_8_4.png",
+      "mask": "masks/green_convex_nw_8_4.png",
+      "signature": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        1,
+        1
+      ],
+      "original_atlas": [
+        8,
+        4
+      ]
+    },
+    {
+      "name": "green concave_nw",
+      "image": "representatives/green_concave_nw_5_5.png",
+      "mask": "masks/green_concave_nw_5_5.png",
+      "signature": [
+        1,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "original_atlas": [
+        5,
+        5
+      ]
+    },
+    {
+      "name": "green endpoint_south",
+      "image": "representatives/green_endpoint_south_0_4.png",
+      "mask": "masks/green_endpoint_south_0_4.png",
+      "signature": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0
+      ],
+      "original_atlas": [
+        0,
+        4
+      ]
+    },
+    {
+      "name": "green narrow_ns",
+      "image": "representatives/green_narrow_ns_0_5.png",
+      "mask": "masks/green_narrow_ns_0_5.png",
+      "signature": [
+        1,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0
+      ],
+      "original_atlas": [
+        0,
+        5
+      ]
+    },
+    {
+      "name": "green isolated",
+      "image": "representatives/green_isolated_0_7.png",
+      "mask": "masks/green_isolated_0_7.png",
+      "signature": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "original_atlas": [
+        0,
+        7
+      ]
+    },
+    {
+      "name": "green north",
+      "image": "representatives/green_north_10_4.png",
+      "mask": "masks/green_north_10_4.png",
+      "signature": [
+        1,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "original_atlas": [
+        10,
+        4
+      ]
+    },
+    {
+      "name": "green south",
+      "image": "representatives/green_south_9_7.png",
+      "mask": "masks/green_south_9_7.png",
+      "signature": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0
+      ],
+      "original_atlas": [
+        9,
+        7
+      ]
+    },
+    {
+      "name": "green west",
+      "image": "representatives/green_west_8_5.png",
+      "mask": "masks/green_west_8_5.png",
+      "signature": [
+        1,
+        0,
+        1,
+        1,
+        0,
+        1,
+        0,
+        1,
+        1
+      ],
+      "original_atlas": [
+        8,
+        5
+      ]
+    },
+    {
+      "name": "green east",
+      "image": "representatives/green_east_11_6.png",
+      "mask": "masks/green_east_11_6.png",
+      "signature": [
+        1,
+        1,
+        1,
+        0,
+        1,
+        0,
+        1,
+        1,
+        0
+      ],
+      "original_atlas": [
+        11,
+        6
+      ]
+    }
+  ],
+  "subset": [
+    {
+      "signature": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "original_atlas": [
+        9,
+        2
+      ]
+    },
+    {
+      "signature": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1
+      ],
+      "original_atlas": [
+        6,
+        2
+      ]
+    },
+    {
+      "signature": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "original_atlas": [
+        5,
+        2
+      ]
+    },
+    {
+      "signature": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1
+      ],
+      "original_atlas": [
+        9,
+        3
+      ]
+    },
+    {
+      "signature": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "original_atlas": [
+        6,
+        1
+      ]
+    },
+    {
+      "signature": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1
+      ],
+      "original_atlas": [
+        11,
+        1
+      ]
+    },
+    {
+      "signature": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        1,
+        0,
+        0,
+        1
+      ],
+      "original_atlas": [
+        11,
+        2
+      ]
+    },
+    {
+      "signature": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        1,
+        1,
+        1,
+        1
+      ],
+      "original_atlas": [
+        11,
+        3
+      ]
+    },
+    {
+      "signature": [
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "original_atlas": [
+        5,
+        1
+      ]
+    },
+    {
+      "signature": [
+        0,
+        1,
+        0,
+        0,
+        1,
+        0,
+        1,
+        0,
+        0
+      ],
+      "original_atlas": [
+        8,
+        1
+      ]
+    },
+    {
+      "signature": [
+        0,
+        1,
+        0,
+        0,
+        1,
+        0,
+        1,
+        1,
+        1
+      ],
+      "original_atlas": [
+        8,
+        3
+      ]
+    },
+    {
+      "signature": [
+        0,
+        1,
+        0,
+        1,
+        1,
+        0,
+        1,
+        1,
+        1
+      ],
+      "original_atlas": [
+        1,
+        2
+      ]
+    },
+    {
+      "signature": [
+        0,
+        1,
+        0,
+        1,
+        1,
+        1,
+        1,
+        0,
+        1
+      ],
+      "original_atlas": [
+        0,
+        1
+      ]
+    },
+    {
+      "signature": [
+        0,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "original_atlas": [
+        10,
+        0
+      ]
+    },
+    {
+      "signature": [
+        0,
+        1,
+        1,
+        1,
+        0,
+        1,
+        0,
+        0,
+        1
+      ],
+      "original_atlas": [
+        11,
+        0
+      ]
+    },
+    {
+      "signature": [
+        0,
+        1,
+        1,
+        1,
+        0,
+        1,
+        1,
+        1,
+        1
+      ],
+      "original_atlas": [
+        3,
+        3
+      ]
+    },
+    {
+      "signature": [
+        0,
+        1,
+        1,
+        1,
+        1,
+        0,
+        1,
+        0,
+        0
+      ],
+      "original_atlas": [
+        8,
+        0
+      ]
+    },
+    {
+      "signature": [
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        1
+      ],
+      "original_atlas": [
+        0,
+        0
+      ]
+    },
+    {
+      "signature": [
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "original_atlas": [
+        0,
+        3
+      ]
+    },
+    {
+      "signature": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "original_atlas": [
+        0,
+        7
+      ]
+    },
+    {
+      "signature": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0
+      ],
+      "original_atlas": [
+        0,
+        4
+      ]
+    },
+    {
+      "signature": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        1,
+        1
+      ],
+      "original_atlas": [
+        8,
+        4
+      ]
+    },
+    {
+      "signature": [
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "original_atlas": [
+        3,
+        7
+      ]
+    },
+    {
+      "signature": [
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        1,
+        1,
+        0
+      ],
+      "original_atlas": [
+        11,
+        4
+      ]
+    },
+    {
+      "signature": [
+        1,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "original_atlas": [
+        10,
+        4
+      ]
+    },
+    {
+      "signature": [
+        1,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0
+      ],
+      "original_atlas": [
+        0,
+        5
+      ]
+    },
+    {
+      "signature": [
+        1,
+        0,
+        1,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0
+      ],
+      "original_atlas": [
+        1,
+        6
+      ]
+    },
+    {
+      "signature": [
+        1,
+        0,
+        1,
+        1,
+        0,
+        1,
+        0,
+        0,
+        0
+      ],
+      "original_atlas": [
+        8,
+        7
+      ]
+    },
+    {
+      "signature": [
+        1,
+        0,
+        1,
+        1,
+        0,
+        1,
+        0,
+        1,
+        1
+      ],
+      "original_atlas": [
+        8,
+        5
+      ]
+    },
+    {
+      "signature": [
+        1,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "original_atlas": [
+        5,
+        5
+      ]
+    },
+    {
+      "signature": [
+        1,
+        1,
+        1,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "original_atlas": [
+        11,
+        7
+      ]
+    },
+    {
+      "signature": [
+        1,
+        1,
+        1,
+        0,
+        1,
+        0,
+        1,
+        1,
+        0
+      ],
+      "original_atlas": [
+        11,
+        6
+      ]
+    },
+    {
+      "signature": [
+        1,
+        1,
+        1,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "original_atlas": [
+        6,
+        5
+      ]
+    },
+    {
+      "signature": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0
+      ],
+      "original_atlas": [
+        9,
+        7
+      ]
+    },
+    {
+      "signature": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        1,
+        1
+      ],
+      "original_atlas": [
+        5,
+        6
+      ]
+    },
+    {
+      "signature": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0
+      ],
+      "original_atlas": [
+        6,
+        6
+      ]
+    },
+    {
+      "signature": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "original_atlas": [
+        9,
+        6
+      ]
+    }
+  ],
+  "previews": [
+    {
+      "name": "green_patch_baseline",
+      "image": "previews/green_patch_baseline.png",
+      "layout": [
+        "000000000000",
+        "000111100000",
+        "001111111000",
+        "001110111100",
+        "000110011000",
+        "000111111000",
+        "000001100000",
+        "000000000000"
+      ],
+      "invert": 0,
+      "vary": false,
+      "cells": [
+        [
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              1,
+              0,
+              0
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 0
+          }
+        ],
+        [
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              1,
+              0,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              1,
+              0,
+              0
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 0
+          }
+        ],
+        [
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              0,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              1,
+              0,
+              0
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 0
+          }
+        ],
+        [
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              0,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              0,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              0
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 0
+          }
+        ],
+        [
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              1,
+              1,
+              1,
+              0,
+              1,
+              0,
+              0,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              1,
+              0,
+              1,
+              1,
+              0,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              1,
+              1,
+              1,
+              0,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              1,
+              1,
+              1,
+              1,
+              0,
+              1,
+              0,
+              0
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              1,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 0
+          }
+        ],
+        [
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              0,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              0
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 0
+          }
+        ],
+        [
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              1,
+              1,
+              1,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              1,
+              1,
+              1,
+              0,
+              1,
+              0,
+              0,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              1,
+              1,
+              1,
+              1,
+              0,
+              1,
+              0,
+              0
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              1,
+              1,
+              1,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              1,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 0
+          }
+        ],
+        [
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              1,
+              1,
+              1,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              1,
+              1,
+              1,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              1,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 0
+          }
+        ]
+      ]
+    },
+    {
+      "name": "green_patch_varied",
+      "image": "previews/green_patch_varied.png",
+      "layout": [
+        "000000000000",
+        "000111100000",
+        "001111111000",
+        "001110111100",
+        "000110011000",
+        "000111111000",
+        "000001100000",
+        "000000000000"
+      ],
+      "invert": 0,
+      "vary": true,
+      "cells": [
+        [
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 2
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              1,
+              1,
+              1
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              1,
+              1,
+              1
+            ],
+            "variant": 2
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              1,
+              1,
+              1
+            ],
+            "variant": 2
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              1,
+              0,
+              0
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 2
+          }
+        ],
+        [
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 2
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              1,
+              0,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 2
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 2
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              1,
+              1
+            ],
+            "variant": 2
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              1,
+              1,
+              1
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              1,
+              0,
+              0
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 1
+          }
+        ],
+        [
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 2
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              0,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 2
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 2
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 2
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              0,
+              1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              1,
+              1
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              1,
+              0,
+              0
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 2
+          }
+        ],
+        [
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              0,
+              1
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              0,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              0,
+              1
+            ],
+            "variant": 2
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              0,
+              1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              0
+            ],
+            "variant": 2
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 2
+          }
+        ],
+        [
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              0,
+              1,
+              1,
+              1,
+              0,
+              1,
+              0,
+              0,
+              1
+            ],
+            "variant": 2
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 2
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 2
+          },
+          {
+            "signature": [
+              0,
+              1,
+              0,
+              1,
+              1,
+              0,
+              1,
+              1,
+              1
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              0,
+              1,
+              1,
+              1,
+              0,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 2
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              1,
+              1,
+              1,
+              1,
+              0,
+              1,
+              0,
+              0
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              0,
+              1,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 2
+          }
+        ],
+        [
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              0,
+              1
+            ],
+            "variant": 2
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 2
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              0
+            ],
+            "variant": 2
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 0
+          }
+        ],
+        [
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 2
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              0,
+              1,
+              1,
+              1,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 2
+          },
+          {
+            "signature": [
+              0,
+              1,
+              1,
+              1,
+              0,
+              1,
+              0,
+              0,
+              1
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              1,
+              1,
+              1,
+              1,
+              0,
+              1,
+              0,
+              0
+            ],
+            "variant": 2
+          },
+          {
+            "signature": [
+              0,
+              1,
+              1,
+              1,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              0,
+              1,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 2
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 2
+          }
+        ],
+        [
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              1,
+              1,
+              1,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              1,
+              1,
+              1,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 2
+          },
+          {
+            "signature": [
+              0,
+              1,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 2
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 2
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 0
+          }
+        ]
+      ]
+    },
+    {
+      "name": "earth_patch_varied",
+      "image": "previews/earth_patch_varied.png",
+      "layout": [
+        "000000000000",
+        "000111100000",
+        "001111111000",
+        "001110111100",
+        "000110011000",
+        "000111111000",
+        "000001100000",
+        "000000000000"
+      ],
+      "invert": 1,
+      "vary": true,
+      "cells": [
+        [
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 2
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              0
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              0,
+              0,
+              0
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              0,
+              0,
+              0
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              0,
+              0,
+              0
+            ],
+            "variant": 2
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              0,
+              0,
+              0
+            ],
+            "variant": 2
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              0,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 2
+          }
+        ],
+        [
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 2
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              0
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              0,
+              1,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 2
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 2
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              1,
+              0,
+              1,
+              1,
+              0,
+              1,
+              0,
+              0,
+              0
+            ],
+            "variant": 2
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              0,
+              0,
+              0
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              0,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 1
+          }
+        ],
+        [
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 2
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              0,
+              1,
+              0,
+              1,
+              1,
+              0
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 2
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 2
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 2
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              1,
+              0,
+              1,
+              1,
+              0,
+              1,
+              0,
+              0,
+              0
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              0,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 2
+          }
+        ],
+        [
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              0,
+              1,
+              0,
+              1,
+              1,
+              0
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              1,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              1,
+              0
+            ],
+            "variant": 2
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              1,
+              0,
+              1,
+              1,
+              0,
+              1,
+              0,
+              1,
+              1
+            ],
+            "variant": 2
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 2
+          }
+        ],
+        [
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              0,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              1,
+              0,
+              0,
+              0,
+              1,
+              0,
+              1,
+              1,
+              0
+            ],
+            "variant": 2
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 2
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 2
+          },
+          {
+            "signature": [
+              1,
+              0,
+              1,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              1,
+              0,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 2
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              1,
+              0,
+              0,
+              0,
+              0,
+              1,
+              0,
+              1,
+              1
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              1,
+              0,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 2
+          }
+        ],
+        [
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              0,
+              1,
+              0,
+              1,
+              1,
+              0
+            ],
+            "variant": 2
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 2
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              1,
+              0,
+              1,
+              1,
+              0,
+              1,
+              0,
+              1,
+              1
+            ],
+            "variant": 2
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          }
+        ],
+        [
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 2
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              0,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              1,
+              0,
+              0,
+              0,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 2
+          },
+          {
+            "signature": [
+              1,
+              0,
+              0,
+              0,
+              1,
+              0,
+              1,
+              1,
+              0
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              1,
+              0,
+              0,
+              0,
+              0,
+              1,
+              0,
+              1,
+              1
+            ],
+            "variant": 2
+          },
+          {
+            "signature": [
+              1,
+              0,
+              0,
+              0,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              1,
+              0,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 2
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 2
+          }
+        ],
+        [
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              0,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              1,
+              0,
+              0,
+              0,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              1,
+              0,
+              0,
+              0,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 2
+          },
+          {
+            "signature": [
+              1,
+              0,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 2
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 2
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          }
+        ]
+      ]
+    },
+    {
+      "name": "meandering_boundary_varied",
+      "image": "previews/meandering_boundary_varied.png",
+      "layout": [
+        "000000111111",
+        "000001111111",
+        "000111111111",
+        "000011111111",
+        "000001111111",
+        "000011111111",
+        "001111111111",
+        "001111111111"
+      ],
+      "invert": 0,
+      "vary": true,
+      "cells": [
+        [
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 2
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              1
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              1,
+              0,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 2
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 2
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 2
+          }
+        ],
+        [
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 2
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              1,
+              1,
+              1
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              1,
+              0,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 2
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 2
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 2
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 1
+          }
+        ],
+        [
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 2
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              0,
+              1
+            ],
+            "variant": 2
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 2
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 2
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 2
+          }
+        ],
+        [
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              0,
+              1,
+              1,
+              1,
+              0,
+              1,
+              0,
+              0,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 2
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 2
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 2
+          }
+        ],
+        [
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 2
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0,
+              0,
+              1
+            ],
+            "variant": 2
+          },
+          {
+            "signature": [
+              0,
+              1,
+              1,
+              1,
+              0,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 2
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 2
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 2
+          }
+        ],
+        [
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              1,
+              1,
+              1
+            ],
+            "variant": 2
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              1,
+              0,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 2
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 2
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          }
+        ],
+        [
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              0,
+              1
+            ],
+            "variant": 2
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 2
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 2
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 2
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 2
+          }
+        ],
+        [
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              0,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              0,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 2
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 1
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 2
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 2
+          },
+          {
+            "signature": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "variant": 0
+          }
+        ]
+      ]
+    }
+  ],
+  "validation": {
+    "exact_compatible_edge_comparisons": 4887,
+    "maximum_channel_difference": 0,
+    "protected_source_files_unchanged": 371,
+    "godot": "NOT RUN"
+  },
+  "outputs": {
+    "masks/earth_concave_nw_5_1.png": "e240603a8c3603af1ad13b1cf9deef55aa597668fac6a9a45985af251ff4f93e",
+    "masks/earth_convex_nw_8_0.png": "32c0940a1b31b462d48536c54b44b2cd1f206cce32f9bd0bae5972306e5bb298",
+    "masks/earth_east_11_2.png": "14b30551786336e053d1c509fb9ee7db0b78d3c372da6a466db813e8d74d1de6",
+    "masks/earth_endpoint_south_0_0.png": "07c4a209b59155398cf2932bef51383e9f70d0115543461a1a19c85bd53be660",
+    "masks/earth_isolated_0_3.png": "e3da0d70284c72a3dd2d397949a869407f77256847569ee86c2ffd6aef312694",
+    "masks/earth_narrow_ns_0_1.png": "856442cb5c686dfcc9c5da9cf124c62de2d2b1a89047837fb6768b9b4d537214",
+    "masks/earth_north_10_0.png": "2df151956bb3de97f81abfd2ea5e8333c15f7cace98cc5fd3c4596916f1e59ef",
+    "masks/earth_solid_9_2.png": "7659100791b0b0d9d5707576f6d04cdae4e769ae4ba3034169540fe3990efae5",
+    "masks/earth_south_9_3.png": "d2f8b96d231a35aeaae0b72ae338e4f5edd38f7cc32f053d817819b3b772ea9d",
+    "masks/earth_west_8_1.png": "ab0adc91613965798895f9d04e6b18daa65457399c3e607210bf7b89537b14d1",
+    "masks/green_concave_nw_5_5.png": "5685f6009bbc9592eae76feecb76585701e0fba635f7ec817de9e573376efadd",
+    "masks/green_convex_nw_8_4.png": "8d5267003fe7584c66c5154f4d5a58a1610787721db447f5b87b096ef1e580de",
+    "masks/green_east_11_6.png": "4b8e4889a5653510dd4896f8a371dcb75069337c447d687e4c3f4ff84bdd0485",
+    "masks/green_endpoint_south_0_4.png": "b71c2ea33d49fcfbfbaee922afc76be2e7fd59703a2e36e18fbe66b27767f2c6",
+    "masks/green_isolated_0_7.png": "d9dac701e01fcdd2a104ebeb93d9a8c660a6219264825007788797cfb3d45324",
+    "masks/green_narrow_ns_0_5.png": "ffe7c443ea41ce51b39a9c18d4aa968e330cea31d66694d3f790bde944eb7863",
+    "masks/green_north_10_4.png": "71157b28e1c115d138f764a47b0b4bc17157c4f421a2205af498648f4f8c02c9",
+    "masks/green_solid_9_6.png": "c888e51cbbfd3cd10a08cc48997a0c6855f733bb99b7c3cf62ae9e5026c5ed2c",
+    "masks/green_south_9_7.png": "5b80a18b1f31fdd78b8293088314bc9a4c6db601df6944968f152ad4e0ce9d60",
+    "masks/green_west_8_5.png": "a38eb3318bf83d40531d9cf8e659dddefaed92f59beedcccb8619f96733e1be6",
+    "previews/earth_patch_varied.png": "9358bc33a93d2d81b572c932004395a492cf97d37a4a16fe47c196c910404f8d",
+    "previews/earth_repeat_a.png": "bae4ecb06b6ea510133d607042ddc72779a4be83fb8af0d8275736c04e2492f7",
+    "previews/earth_repeat_abc.png": "91ced97814d9c562be73bb72e0099ad0519a7b7ed27cd6f040e1a03113893c23",
+    "previews/green_patch_baseline.png": "e149648f859c41f68b0a3593ce6e80286243b2fc46a2b31df4251c517f743461",
+    "previews/green_patch_varied.png": "dbc6cc280c78bc7aa5475c51c27f1d5acb2e8c36dd4c5a0ed38eb66253b13028",
+    "previews/green_repeat_a.png": "cfa13458abfdef39fdc0e5139a2bc99e21e5474611ca8a0a6cf572975701abb3",
+    "previews/green_repeat_abc.png": "fee1a98601f1594868e9b96e4bfb02706bfdacf183147a7e058f951b738fd06e",
+    "previews/meandering_boundary_varied.png": "eb002d4c12a8a99fa1668e51543c108d49429bf639c22617d6af7e39ac4ff149",
+    "references/assembled_12x10_preview.png": "6aac8bd50b19ca260139f96d3ef12a46821ad34fb51e14b4dbc0777d24fcfa9f",
+    "references/transition_contact_sheet.png": "5349dc7148be450f84d51458655e6dda31c7e566d317e71c9f84da8e72400e71",
+    "representatives/earth_concave_nw_5_1.png": "8f8e6547411dd7ef0d3bd9fedcc0079db1328994f83af314073caafc69012f9b",
+    "representatives/earth_convex_nw_8_0.png": "cf1d98c9120a976e814faf859d95d246d0c784cc3fad7bc6b8902f4f35cfa2cf",
+    "representatives/earth_east_11_2.png": "91c02639ac0929f375861c5d75376a06857543c58ba81138ea9fd96d613f8186",
+    "representatives/earth_endpoint_south_0_0.png": "43c42aa00bb7b40be8a987206724ce91988a8e025634ef0de6313188f1155d68",
+    "representatives/earth_isolated_0_3.png": "4c8f83d9f496e5678f465019b48dc55940145f8fd92f0a98de4573e63319a6ba",
+    "representatives/earth_narrow_ns_0_1.png": "88994b952882cdbaa313c1b84b18b25cfab2776a9f16ec13288e5e0f85c68143",
+    "representatives/earth_north_10_0.png": "a38ed0b9b8f906926ba1b03bd6beb8dfa6dac70bef4e2a60790feed28958ef2f",
+    "representatives/earth_solid_9_2.png": "7ce29cc5a6c0753da600799fc88056c9875bcd465e356f956d328e357f5c1460",
+    "representatives/earth_south_9_3.png": "dd2e801e60a1602b26a6d8277ff13927764eea896092cbd3f764c6f8ea4692a1",
+    "representatives/earth_west_8_1.png": "6d44dabc3d8eedaf59b923bb395b91ff40d9cc0450bbda6ee9d7f1a4ee2809c7",
+    "representatives/green_concave_nw_5_5.png": "d4d32ea9d1d40f3640e0c964f36cfed06102f4699786b8b12dec99bfa0c15967",
+    "representatives/green_convex_nw_8_4.png": "4572f451472b0227c05f963fef448c8209d5144b0b8da8873ad62b8ff1dc634e",
+    "representatives/green_east_11_6.png": "596f4ea6026cd588f41c87111c2d280fc183a2f954cbd31419445865c6037c09",
+    "representatives/green_endpoint_south_0_4.png": "05c39ae5edc5f1f6e6a083b705b819d86d878df22e1df514d4874c307c062cc3",
+    "representatives/green_isolated_0_7.png": "679ba60e8cc3e7f386a2656b850d730de5b49ce0f42b02a93f2ee10f91d6b6b7",
+    "representatives/green_narrow_ns_0_5.png": "09056fc05796ea65ea1f21f115e92f7964b3286e455f767c3b5638db386f01d1",
+    "representatives/green_north_10_4.png": "2f123261208c21e50ee40e58392e5cff62014c2d4205fdc8e2035f8e12110844",
+    "representatives/green_solid_9_6.png": "8b0036d4ff7e90a2658667cf416daf2a1e7cd6e46e29ba2b67049ecf7a575158",
+    "representatives/green_south_9_7.png": "e179c71aa33ab0ad14164e08d92b5cf1145164e523c174d8e334d8bfcd116039",
+    "representatives/green_west_8_5.png": "41feb46d9e0e8b5e4c663732a6be3808d2d03ba9d454a848b12bf74a860deed5",
+    "variants/earth_1.png": "e1951b82e85cb12b3b588b34573dc0814ce82ca3624b0db1ce2547f3a0eb6144",
+    "variants/earth_2.png": "f9f48001f8fe0cda14516782feafba5f3b7fcadc7e59943fed257d5b70520c50",
+    "variants/green_1.png": "e010ef9c4ce81bbbc053eb2aaf6bef65b7239f8539af0ef52ec5d2d6c7faa3a0",
+    "variants/green_2.png": "36342ca6910ae89d85e5c50cf242dcadd3ba4b505508f391ce5159b5f8eb769b"
+  }
+}
