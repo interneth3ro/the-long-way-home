@@ -12,8 +12,13 @@ acceptance. Stage 2D PR #5 historical preservation is prepared on this feature
 branch, pending owner acceptance and merge. Its
 [disposition](docs/experiments/repository_housekeeping_stage2d.json) records the
 unchanged recovery bundle, sanitized diagnostic evidence and the exact ZIP
-preservation-before-deletion gate. Nested diagnostic clones, Godot cache, private
-validation profiles and unrelated local artifacts remain protected.
+preservation-before-deletion gate. Stage 2E diagnostic clone preservation and
+retirement is prepared on this feature branch, pending owner acceptance and merge.
+Its [disposition](docs/experiments/repository_housekeeping_stage2e.json) records
+the exact inert validation commit payload, clone provenance and retirement gates;
+the [reviewed audit](docs/experiments/repository_housekeeping_stage2e_audit.md)
+retains its original historical findings. Godot cache, private validation profiles,
+PR #5 recovery evidence and unrelated local artifacts remain protected.
 Reference studies are retained for art history
 only: [Earth variants](assets/environment/exterior/01_weathered_earth_four_variants_v2.png),
 [crash-site direction](assets/environment/exterior/02_refined_crash_site_terrain_direction.png),
