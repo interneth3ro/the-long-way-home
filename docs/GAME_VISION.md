@@ -279,7 +279,8 @@ The integration remains pending merge and does not change approved environmental
 - Ferrite is the first structural metal resource. The approved new artwork
   direction is **Faceted Ferrite - Slightly Raised Mineral Shelf**: broad cool
   charcoal/gunmetal surfaces, silver-gray facets, shallow fractures, restrained
-  oxidation and softly irregular, predominantly rectangular boundaries. Avoid
+  oxidation and softly irregular, connected grid-conforming fields, including
+  rectangular, L-shaped, stepped and asymmetrical clustered deposits. Avoid
   tall formations. Deposits remain infinite, uniformly rich and never deplete.
 - Approved future introductory geometry is 10x6 **64-unit terrain cells**
   (640x384 world units / 20x12 construction cells), with a rectangular logical
@@ -287,8 +288,10 @@ The integration remains pending merge and does not change approved environmental
   A 6x4 terrain-cell example is illustrative, not a procedural size class.
   Medium/large deposits should be common and small deposits relatively rare;
   procedural dimensions, weights and distribution remain undecided.
-  The [offline artwork prototype](FERRITE_ARTWORK_PROTOTYPE_V1.md) is pending owner
-  visual acceptance. Current gameplay retains the authored oval polygon and
+  The [offline artwork prototype](FERRITE_ARTWORK_PROTOTYPE_V1.md) has owner approval
+  of its material's artistic direction; irregular assembly architecture and new
+  previews remain pending owner acceptance, and PR #123 is not authorized to merge.
+  Current gameplay retains the authored oval polygon and
   placeholder drawing; this artwork task does not implement the new geometry.
 - One guaranteed authored deposit near the ship introduces deliberate inspection,
   Dave's engineering deduction and guidance to locate the Extractor in the

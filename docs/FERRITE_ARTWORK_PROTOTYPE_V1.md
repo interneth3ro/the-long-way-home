@@ -1,7 +1,10 @@
 # Ferrite artwork prototype v1
 
-Offline artwork candidate on the feature branch, pending merge and owner visual
-acceptance. No production integration or Godot execution.
+Offline artwork candidate on the PR #123 feature branch, pending merge. The owner
+approved the existing material's artistic direction; irregular assembly architecture
+and the new previews remain pending owner acceptance. No production integration or
+Godot execution. The original rectangular images and their earlier status captions
+are preserved unchanged.
 
 ## Review package
 
@@ -13,6 +16,133 @@ acceptance. No production integration or Godot execution.
 
 The overlay is a reference rectangle, not new Extractor artwork. Checkerboards
 appear only on the contact sheet. The package's `.gdignore` prevents engine import.
+
+## Irregular assembly proof
+
+- [Three-shape comparison](../assets/experiments/ferrite_artwork_v1/previews/irregular_contact_sheet.png).
+- L-shaped: [clean](../assets/experiments/ferrite_artwork_v1/previews/irregular_l_shape.png)
+  / [logical mask overlay](../assets/experiments/ferrite_artwork_v1/previews/irregular_l_shape_mask.png).
+- Stepped: [clean](../assets/experiments/ferrite_artwork_v1/previews/irregular_stepped.png)
+  / [logical mask overlay](../assets/experiments/ferrite_artwork_v1/previews/irregular_stepped_mask.png).
+- Organic grid cluster: [clean](../assets/experiments/ferrite_artwork_v1/previews/irregular_organic.png)
+  / [logical mask overlay](../assets/experiments/ferrite_artwork_v1/previews/irregular_organic_mask.png).
+- Close-ups: [concave turn](../assets/experiments/ferrite_artwork_v1/previews/irregular_concave_closeup.png)
+  / [stepped perimeter](../assets/experiments/ferrite_artwork_v1/previews/irregular_step_closeup.png).
+
+### Reproducible occupancy masks
+
+`#` means an occupied 64-world-unit terrain cell; `.` means empty. Rows run north
+to south, columns west to east. All three masks were authored with broad connected
+regions; none was changed after the first proof build. These are demonstrations,
+not procedural generation rules or changes to production resource geometry.
+
+Shape A, [l_shape.txt](../assets/experiments/ferrite_artwork_v1/masks/l_shape.txt):
+8x6 bounding cells, 36 occupied, 5 convex / 1 concave turn.
+
+```text
+####....
+####....
+####....
+########
+########
+########
+```
+
+Shape B, [stepped.txt](../assets/experiments/ferrite_artwork_v1/masks/stepped.txt):
+10x7 bounding cells, 50 occupied, 8 convex / 4 concave turns.
+
+```text
+..######..
+..######..
+########..
+########..
+..########
+..########
+....######
+```
+
+Shape C, [organic.txt](../assets/experiments/ferrite_artwork_v1/masks/organic.txt):
+10x8 bounding cells, 56 occupied, 14 convex / 10 concave turns.
+
+```text
+...####...
+.#######..
+.########.
+#########.
+.#########
+.#########
+...######.
+....####..
+```
+
+| Shape | Logical source bounds | Clean/overlay PNG canvas | World bounds |
+| --- | --- | --- | --- |
+| A | 1024x768 | 1152x896 | 512x384 |
+| B | 1280x896 | 1408x1024 | 640x448 |
+| C | 1280x1024 | 1408x1152 | 640x512 |
+
+All logical origins remain `(64,64)` source pixels. The contact sheet displays
+the three clean assemblies at exactly 0.5 source scale, overlays at 0.25, the
+concave crop at 1.0, and the stepped crop at 0.8. Standalone crops retain native
+pixels: 384x384 and 640x512 respectively. No complete deposit is stretched.
+
+### Architecture extension and corner treatment
+
+The original nine-slice system cannot represent concave footprints. It remains
+unchanged for the preserved rectangles. The new `irregular.ps1` adds a separate,
+bounded offline contour compositor using **the same existing interior and four
+directional painted edge strips**, without generating new artwork.
+
+1. Cancel cell-internal boundaries and trace one clockwise exterior contour.
+   Classify convex and concave vertices from the turn direction.
+2. Round both types of corner with a 24-source-pixel quadratic turn. Straight
+   spans receive at most five pixels of deterministic contour variation; this
+   changes geometry only, not the mineral material.
+3. Sample one continuous, native-density interior in deposit coordinates.
+   A 96-pixel overlap blends repeated source intervals. Cell boundaries never
+   reset texture coordinates, so adjoining regions share the same facets.
+4. Follow the entire contour with the original painted perimeter strips.
+   Register samples to each strip's actual opaque painted rim, preserving useful
+   edge paint instead of stretching transparent fringe RGB. Blend world-facing
+   strip samples through rounded turns; do not rotate or mirror lighting.
+   Feather painted edge material into the shared interior over 24..104 pixels.
+5. Retain shallow orientation-dependent sidewalls (2..12 source pixels) and add
+   a low-opacity contact-shadow skirt, ending within 36 pixels of the contour.
+   This includes recesses and short step spans, not only the outer bounding box.
+
+The eight new `components/irregular_convex_*.png` and
+`components/irregular_concave_*.png` files expose canonical 192x192 corner
+treatments. Convex suffixes identify the occupied quadrant; concave suffixes the
+missing quadrant. **These are inspection exports of the shared corner sampler,
+not finished corner sprites pasted into the assemblies.** All eight exports and
+all three shapes execute the same contour/paint mapping rule. Material color
+comes from the original illustration, not flat polygon fills or noise.
+
+This is not overlapping finished deposits or hard-cutting a rectangular preview:
+the interior and directional edge assets are sampled independently, and the
+perimeter is rebuilt around every convex/concave transition. There are no
+shape-specific paint edits or retouched final images, and no 94-signature system.
+
+### Supported shapes and honest assessment
+
+Demonstrated support: connected, hole-free, orthogonal occupancy masks with broad
+regions, re-entrant corners, multiple width changes and short protrusions/recesses.
+The sampler can repeat material beyond the rectangular compositor's splice-size
+limits, with increasing visible repetition. Arbitrary topology is not claimed:
+disconnected masks, holes/multiple loops, malformed rows and diagonal-only boundary
+contacts fail explicitly. Thin necks and long one-cell tendrils are not artistically
+validated; opposite edge bands would compete for their limited interior space.
+
+At 0.5 source scale the three proofs retain the same mineral identity and continuous
+interior. They are nevertheless **less naturally varied than the rectangular
+artwork**: similar highlights recur at exposed north edges; the predominantly
+diagonal grain repeats vertically; some rounded turns expose converging texture
+or softened fractures. The cluster remains visibly grid-conforming, rather than
+an unconstrained natural silhouette. Concave edges are thinner and more regular
+than the source's best hand-painted outer corners. The proof establishes reusable
+contour coverage, not equal artistic polish or owner architectural acceptance.
+Further art-library refinement may be needed if the owner rejects these tradeoffs;
+this task does not silently redesign the approved material.
 
 ## Dimensions and assembly
 
@@ -70,6 +200,8 @@ From the repository root:
 ```powershell
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File assets/experiments/ferrite_artwork_v1/build.ps1
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File assets/experiments/ferrite_artwork_v1/build.ps1 -Check
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File assets/experiments/ferrite_artwork_v1/irregular.ps1
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File assets/experiments/ferrite_artwork_v1/irregular.ps1 -Check
 ```
 
 The execution-policy option applies only to that process, not persistent policy.
@@ -78,6 +210,17 @@ Build writes only 15 fixed derived PNGs in this package's `components/` and
 writing outputs. Source dimensions, outside transparency and fully opaque safe
 interior pixels are checked, including component joins. Cross-platform/font-version
 byte equality is not promised for the contact sheet.
+
+The irregular build reads the existing component family and the three text masks.
+It writes only 17 fixed `irregular_*` PNGs (six clean/overlay assemblies, eight
+corner-treatment exports, two close-ups, one contact sheet). Its `-Check` mode
+regenerates and compares exact PNG bytes without writing. Validation covers
+four-neighbor logical connectivity, single-contour topology, turn counts,
+occupied/empty cell-center agreement, opaque contour interiors and transparent
+exterior beyond the shadow skirt. Flood fills at alpha thresholds 1 and 128 check
+both all visible pixels and the solid mineral body for disconnected islands.
+Run the original `build.ps1 -Check` as the rectangular/component regression.
+These are focused offline checks, not Godot or artistic acceptance tests.
 
 Source artwork was made using built-in imagegen with the owner-supplied Ferrite
 size/shape study as a visual reference, not a pixel source. No previous-game ore

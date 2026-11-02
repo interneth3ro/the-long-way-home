@@ -3,7 +3,9 @@
 [Ferrite artwork prototype v1](docs/FERRITE_ARTWORK_PROTOTYPE_V1.md) is an isolated
 offline artwork candidate on the feature branch, pending merge and owner visual
 acceptance. It demonstrates 6x4 and 10x6 terrain-cell deposits from one reusable
-family. Production Ferrite, terrain and Extractor behavior remain unchanged;
+family, plus connected L-shaped, stepped and grid-cluster assembly proofs.
+The material direction is owner-approved; irregular architecture and PR #123
+remain pending owner acceptance. Production Ferrite, terrain and Extractor remain unchanged;
 no Godot execution or in-game acceptance is claimed for this prototype.
 
 Stage 2A repository housekeeping merged in PR #114. Historical evidence
