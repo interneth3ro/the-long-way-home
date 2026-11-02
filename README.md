@@ -1,5 +1,12 @@
 # The Long Way Home
 
+[Ferrite artwork prototype v1](docs/FERRITE_ARTWORK_PROTOTYPE_V1.md#owner-acceptance-2026-11-02)
+received owner visual/architecture acceptance on 2026-11-02 at `1662a61`, including
+6x4 and 10x6 rectangular examples and connected L-shaped, stepped and grid-cluster
+assembly proofs with documented limitations. PR #123 remains draft and unmerged.
+Production integration and in-game verification remain deferred; no Godot execution
+or gameplay change is included in this offline prototype.
+
 Stage 2A repository housekeeping merged in PR #114. Historical evidence
 sanitization is prepared on this feature branch, pending owner acceptance and merge.
 The [Stage 2A disposition](docs/experiments/repository_housekeeping_stage2a.json)
