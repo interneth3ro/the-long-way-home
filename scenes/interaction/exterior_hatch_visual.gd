@@ -1,6 +1,7 @@
+class_name ExteriorHatchVisual
 extends Node2D
 
-# Presentation only. The separate SceneHatch retains all collision and E travel.
+# Presentation only. Exterior boarding reads readiness; it owns collision/travel.
 const OPEN_SECONDS: float = 0.6
 const CLOSE_SECONDS: float = 0.7
 const CLOSE_DELAY: float = 1.0
@@ -21,6 +22,19 @@ func _enter_tree() -> void:
 	# Cached exterior reattachment must not consume stale empty overlap data.
 	_registration_frames = 2
 	_outside_seconds = 0.0
+
+
+func is_boarding_ready() -> bool:
+	return openness == 1.0
+
+
+func prepare_for_arrival() -> void:
+	# Explicitly initialize cached as well as fresh arrivals before reveal.
+	openness = 1.0
+	_target_open = true
+	_outside_seconds = 0.0
+	_registration_frames = 2
+	_door.position = DOOR_TRAVEL
 
 
 func _physics_process(delta: float) -> void:

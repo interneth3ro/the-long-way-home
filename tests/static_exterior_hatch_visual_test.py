@@ -1,4 +1,4 @@
-"""Offline PNG composition, geometry and source-contract checks; no Godot."""
+"""PR #110 offline art/animation contracts, plus exact boarding projection; no Godot."""
 import hashlib
 import math
 from pathlib import Path
@@ -20,7 +20,7 @@ BASE = '14876d26e4199922a5bd09cf436997792d7a5b6a'
 
 
 def text(path):
-    return (ROOT/path).read_text(encoding='utf-8')
+    return preservation.boarding_predecessor(path, (ROOT/path).read_bytes()).decode('utf-8').replace('\r\n', '\n')
 
 
 def baseline(path):
@@ -226,7 +226,7 @@ class ExteriorHatchVisualStaticTest(unittest.TestCase):
                      'scenes/player/interaction_detector.gd', 'project.godot',
                      'scenes/world/planet_exterior.gd', 'scenes/interaction/automatic_doorway.gd',
                      'scenes/world/production_ship_interior_v2.tscn'):
-            self.assertEqual((ROOT/path).read_bytes().replace(b'\r\n', b'\n'),
+            self.assertEqual(preservation.boarding_predecessor(path, (ROOT/path).read_bytes()).replace(b'\r\n', b'\n'),
                              baseline(path).replace(b'\r\n', b'\n'), path)
         # Owner's initial 8/8 acceptance remains preserved at its commit.
         # This refinement may change only the two sizes, centers and comment.
@@ -247,7 +247,7 @@ class ExteriorHatchVisualStaticTest(unittest.TestCase):
                          {SCENE, SCRIPT, VISUAL, ART+'door_leaf_opaque_v2.png', ART+'recess_backing_black_light.png'})
         for path, digest in preservation.HATCH_INPUT_SHA256.items():
             raw = (ROOT/path).read_bytes()
-            preservation.verify_fingerprint(path, raw, digest)
+            preservation.verify_fingerprint(path, preservation.boarding_predecessor(path, raw), digest)
             for bad in (raw+b'EXTRA', raw[1:], raw+raw):
                 with self.subTest(path=path), self.assertRaises(AssertionError):
                     preservation.verify_fingerprint(path, bad, digest)

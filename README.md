@@ -1,10 +1,12 @@
 # The Long Way Home
 
-Exterior hatch visual animation is implemented on the PR #110 feature branch,
-pending merge with final owner gameplay acceptance: 12/12 PASS. Proximity
-opens/closes the approved door artwork; E boarding and existing collisions remain
-unchanged. See the
-[artwork, timing and validation scope](docs/ILLUSTRATED_EXTERIOR.md#exterior-hatch-visual-animation-pr-110-feature-branch-pending-merge).
+Automatic exterior boarding has final owner gameplay acceptance: **10/10 PASS**,
+zero failures, zero untested checks and no additional observations. PR #112 remains
+draft, ready for owner merge consideration. Walk inward through the fully open
+hatch without E; the accepted quick fade is 0.15 seconds each direction. PR #110
+artwork, animation and proximity geometry remain unchanged. Mechanical audio and
+interior hatch animation remain deferred. See the
+[accepted boarding rules and verification record](docs/ILLUSTRATED_EXTERIOR.md#automatic-exterior-boarding-pr-112-feature-branch-pending-merge).
 
 The [illustrated playable exterior](docs/ILLUSTRATED_EXTERIOR.md) is implemented
 on the PR #104 feature branch, pending merge. Native validation passed and the

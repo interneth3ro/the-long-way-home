@@ -10,6 +10,112 @@ and evidence. PR #95 is the corrected exterior
 comparison baseline; the [PR #102/#103 acceptance record](PRODUCTION_TERRAIN_FIXTURE.md)
 applies only to its isolated fixture and remains unchanged.
 
+## Automatic exterior boarding (PR #112 feature branch, pending merge)
+
+PR #110 merged at `e4686cfb839eb7b205f56f28141541a318c4c94b`; its accepted
+artwork, animation and proximity geometry below are retained. This branch replaces
+exterior E boarding with deliberate inward walking. Interior interactions, global
+E controls, production destination injection and the existing `FromPlanet` arrival
+remain unchanged. No character movement is scripted.
+
+The unchanged hatch body is anchored at `(-384,-176)`. Its layer-0, mask-1
+sensor is 64 x 16 world units, offset `(0,8)`, centered at `(-384,-168)`.
+Dave's feet-origin movement segment must cross Y=-168 northward within center
+lane X `[-406,-362]`; interpolation catches steps that skip the sensor. Overlap,
+approach, holding still and outward movement alone never request travel. The
+22-unit half-lane allows Dave's radius-10 feet circle within the 64-unit doorway.
+These threshold values are owner-accepted and locked; hull polygons are unchanged.
+
+Readiness requires exactly full openness. The hatch retains player collision
+through opening until that endpoint. An early walker reaches the solid blocker
+at approximately feet Y=-144, before the boarding line, and can continue inward
+once it releases without stepping out and re-entering. Releasing movement before
+crossing does not board. A deliberate crossing observed before readiness remains
+pending only within the inner half of the threshold; leaving cancels it. Requests
+are consumed before dispatch, including rejection, and require fresh southern
+separation before rearming. Threshold processing follows Dave's movement.
+
+The same StaticBody2D and 64 x 24 footprint remain terrain-generation inputs.
+Only player solidity changes, deferred between physics steps: layer 5 when closed,
+layer 4 when fully open. Construction's layer-3 bit stays active throughout.
+Closing keeps the blocker released until the closed endpoint and a fresh direct
+shape query, with 4-unit safety margin, confirms Dave is absent. Collision never
+restores based solely on stale Area2D overlap data. Existing hold-open/reversal
+behavior remains unchanged.
+
+`PlanetExterior.prepare_for_arrival` explicitly resets boarding and silently sets
+the visual to fully open before preparation/reveal, for both new and cached worlds.
+The existing spawn stays `(-384,-64)`, inside the approved approach/hold-open
+zones. Boarding waits two physics registration ticks after arrival or transition
+activity, then requires no sensor overlap and feet south of the threshold.
+Source reattachment on quick-transition rollback resets crossing history and
+separation arming; cancellation before detach also resets via the busy guard.
+No cached door state or old movement segment can cause immediate re-entry.
+Walking away follows the approved one-second delay and 0.7-second closing;
+returning reverses the existing continuous animation.
+
+Boarding uses the unchanged controller's `QUICK_FADE`: **0.15 seconds out and
+0.15 seconds in**, now owner-accepted and locked. Its synchronous input lock,
+player identity, scene cache, validation, cancellation/rollback and camera limits
+are unchanged. Terrain preparation can extend the obscured transfer interval.
+
+Previously reported implementation validation at
+`2750f0c94d430c7468017dd71c2703c9fde0108c` was non-native: **18/18 focused
+boarding/hatch checks** and **206/206 full Python static tests PASS**, with the
+complete implementation staged. Offline
+GDScript grammar, changed documentation links and diff checks pass. All 54
+pre-existing untracked hashes and 3,017 ignored-file size/mtime identities are
+preserved. These checks do not establish GDScript engine parsing,
+live physics overlap/registration, fade cancellation timing or playable behavior.
+Owner gameplay acceptance is recorded below, separately from these agent checks.
+Mechanical audio, interior hatch animation, new artwork, occlusion and sorting
+remain deferred.
+Existing owner artwork, sidecars and historical evidence are preserved.
+
+### Final PR #112 owner acceptance (2026-11-02)
+
+The owner completed gameplay testing of the accepted implementation at
+`2750f0c94d430c7468017dd71c2703c9fde0108c` for
+[PR #112](https://github.com/interneth3ro/the-long-way-home/pull/112).
+**Final owner gameplay acceptance: 10/10 PASS, zero failures, zero untested
+checks, and no additional observations.**
+
+| Check | Owner result |
+| --- | --- |
+| Automatic boarding | PASS |
+| No accidental boarding | PASS |
+| Early arrival | PASS |
+| Door collision | PASS |
+| Exterior return | PASS |
+| Repeat boarding | PASS |
+| Closing and reversal | PASS |
+| Fade and transitions | PASS |
+| Other interactions | PASS |
+| Performance | PASS |
+
+Performance acceptance is observational, not quantitative benchmarking.
+The threshold, full-open readiness, collision-state rules and 0.15-second fades
+above are locked. Exterior E prompt and E boarding are removed. Exterior arrival
+initializes the hatch fully open; separation arming prevents immediate re-entry
+and supports repeat boarding. Production interior destination and interactions
+are preserved, together with all approved PR #110 artwork, animation and
+proximity geometry. Mechanical audio and interior hatch animation remain deferred.
+
+This finalization changes documentation only; the accepted implementation and
+historical preservation safeguards remain unchanged. Lightweight checks compare
+all tracked non-documentation inputs with the accepted implementation, verify
+approved artwork/ship/contact-shadow hashes and unchanged scene geometry, check
+local documentation links and Git whitespace, and preserve owner files/evidence.
+The earlier static suite results above are retained with their original provenance;
+they were not rerun for this documentation-only update. No agent Godot launch,
+import, native/graphical test or performance probe was performed.
+
+**PR #112 remains draft, ready for owner merge consideration.** No further
+implementation changes are requested; merging requires the owner's decision.
+
+The PR #110 records below describe its historical E/collision behavior, superseded
+for this feature branch by the rules above; its owner acceptance remains intact.
+
 ## Exterior hatch visual animation (PR #110 feature branch, pending merge)
 
 The exterior hatch opens visually on approach; **E still enters the ship**.

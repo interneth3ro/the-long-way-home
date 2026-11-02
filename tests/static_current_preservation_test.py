@@ -75,7 +75,7 @@ class CurrentPreservationStaticTest(unittest.TestCase):
         for path, digest in scope.MAINTAINED_TEST_SHA256.items():
             raw = (scope.ROOT/path).read_bytes()
             before = scope.git_blob(scope.MAINTENANCE_BASE, path)
-            scope.verify_fingerprint(path, raw, digest)
+            scope.verify_fingerprint(path, scope.boarding_predecessor(path, raw), digest)
             self.assertNotEqual(scope.normalized(path, raw), scope.normalized(path, before))
             self.assertEqual(scope.historical_bytes(path, raw), before)
             for bad in (mutate(raw), raw + b'UNRELATED', raw + raw, raw[1:]):
