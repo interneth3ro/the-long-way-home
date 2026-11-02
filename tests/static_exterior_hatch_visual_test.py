@@ -164,22 +164,33 @@ class ExteriorHatchVisualStaticTest(unittest.TestCase):
 
     def test_world_unit_zones_include_doorway_footprint_and_arrival(self):
         scene = text(VISUAL)
-        self.assertIn('size = Vector2(176, 160)', scene)
-        self.assertIn('size = Vector2(224, 208)', scene)
+        def dimensions(name):
+            match = re.search(r'id="'+name+r'"\]\nsize = Vector2\((\d+), (\d+)\)', scene)
+            return tuple(map(int, match.groups()))
+        approach, hold = dimensions('ApproachZone'), dimensions('HoldOpenZone')
+        self.assertEqual(approach, (128, 112))
+        self.assertEqual(hold, (176, 160))
         self.assertNotIn('scale =', node(scene, 'HatchVisual'))
         for name in ('Approach', 'HoldOpen'):
             area = node(scene, name)
-            for prop in ('position = Vector2(0, 96)', 'collision_layer = 0',
+            for prop in ('position = Vector2(0, 71)', 'collision_layer = 0',
                          'collision_mask = 1', 'monitorable = false'):
                 self.assertIn(prop, area)
-        # Hold-open world bounds [-496,-272] x [-200,8] contain the entire
-        # unchanged hatch collider and Dave's surrounding radius-10 footprint.
-        self.assertLessEqual(-496, -416-10)
-        self.assertGreaterEqual(-272, -352+10)
-        self.assertLessEqual(-200, -188-10)
-        self.assertGreaterEqual(8, -164+10)
+        # Same center and 24 units of hysteresis margin on each side.
+        self.assertEqual(tuple((h-a)/2 for a, h in zip(approach, hold)), (24, 24))
+        center = (-384, -192+71)
+        self.assertEqual(center, (-384, -176+55))
+        left, right = center[0]-hold[0]/2, center[0]+hold[0]/2
+        top, bottom = center[1]-hold[1]/2, center[1]+hold[1]/2
+        self.assertEqual((left, right, top, bottom), (-472, -296, -201, -41))
+        # Hold zone still contains the unchanged hatch plus a radius-10 buffer.
+        self.assertLessEqual(left, -416-10)
+        self.assertGreaterEqual(right, -352+10)
+        self.assertLessEqual(top, -188-10)
+        self.assertGreaterEqual(bottom, -164+10)
         # Dave's arrival circle center (-384,-74) is inside approach and hold.
-        self.assertTrue(-472 < -384 < -296 and -176 < -74 < -16)
+        self.assertTrue(center[0]-approach[0]/2 < -384 < center[0]+approach[0]/2)
+        self.assertTrue(center[1]-approach[1]/2 < -74 < center[1]+approach[1]/2)
 
     def test_animation_source_preserves_partial_position_and_delay(self):
         source = text(SCRIPT)
@@ -217,6 +228,19 @@ class ExteriorHatchVisualStaticTest(unittest.TestCase):
                      'scenes/world/production_ship_interior_v2.tscn'):
             self.assertEqual((ROOT/path).read_bytes().replace(b'\r\n', b'\n'),
                              baseline(path).replace(b'\r\n', b'\n'), path)
+        # Owner's initial 8/8 acceptance remains preserved at its commit.
+        # This refinement may change only the two sizes, centers and comment.
+        accepted = '3c315a707f1131367d58d3f1a61f5b70776596b8'
+        refined = text(VISUAL)
+        refined = refined.replace('id="ApproachZone"]\nsize = Vector2(128, 112)',
+                                  'id="ApproachZone"]\nsize = Vector2(176, 160)')
+        refined = refined.replace('id="HoldOpenZone"]\nsize = Vector2(176, 160)',
+                                  'id="HoldOpenZone"]\nsize = Vector2(224, 208)')
+        refined = refined.replace('position = Vector2(0, 71)', 'position = Vector2(0, 96)')
+        refined = refined.replace('; + (0,55).', '; + (0,80).')
+        for path, actual in ((VISUAL, refined), (SCRIPT, text(SCRIPT))):
+            original = subprocess.check_output(['git', 'show', f'{accepted}:{path}'], cwd=ROOT)
+            self.assertEqual(actual, original.decode().replace('\r\n', '\n'), path)
 
     def test_new_exact_receipts_reject_tampering_and_expansion(self):
         self.assertEqual(set(preservation.HATCH_INPUT_SHA256),

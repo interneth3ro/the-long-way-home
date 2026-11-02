@@ -29,7 +29,7 @@ HATCH_BASE = '14876d26e4199922a5bd09cf436997792d7a5b6a'
 HATCH_INPUT_SHA256 = {
     'scenes/world/planet_exterior.tscn': 'cd9f423e3711a13e968ec69c390e8a23484b4afbab1183745272a6eaae346d85',
     'scenes/interaction/exterior_hatch_visual.gd': 'a44154c7c798db799aadb5d22d84035388efac3e96e1727bde82dccef1a57a40',
-    'scenes/interaction/exterior_hatch_visual.tscn': '721f7fe52a4658245506202d2f6fb17c8f16dd11c7e51e435001c06eb3424637',
+    'scenes/interaction/exterior_hatch_visual.tscn': '5ff70e61445b29b185e99db7bf2c72418997a305ea24c7a954771635fa387042',
     'assets/environment/exterior/hatch_v2/door_leaf_opaque_v2.png': '7cccb9390beff971abd9e0f1c74455a35cf5b4cd05844f37887542ccea067e10',
     'assets/environment/exterior/hatch_v2/recess_backing_black_light.png': '80aa066edd98fae9eb5392ee79bb061bd82c80d48dc41e854e7c31141a3872c6',
 }

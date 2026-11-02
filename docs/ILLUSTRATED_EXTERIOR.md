@@ -50,8 +50,8 @@ consume time before the delay expires. Reversal starts from current openness;
 remaining travel takes the proportional duration. Travel is `(10,-140)` source
 pixels, or `(7,-98)` world units, behind the fixed housing/aperture.
 
-The unscaled ship-local sensor center is `(0,96)`: hatch `(0,16)` plus `(0,80)`.
-Approach is 176 x 160 world units; hold-open is 224 x 208. Both use layer 0,
+The unscaled ship-local sensor center is `(0,71)`: hatch `(0,16)` plus `(0,55)`.
+Approach is 128 x 112 world units; hold-open is 176 x 160. Both use layer 0,
 mask 1 and recognize only the controller's existing Dave through local overlap
 lists. Approach opens; hold-open retains or reverses an already-active door,
 cancels closing delay and includes the entire existing doorway footprint.
@@ -74,13 +74,43 @@ Historical hashes, sealed inputs and execution policy are unchanged. A separate
 five-path/full-hash PR #110 receipt validates the complete intentional production
 delta before historical comparisons receive their original scene bytes; tampering
 and unrelated paths remain rejected. No native package or execution permission is
-expanded. Owner graphical acceptance is pending: inspect housing clipping,
-perspective and edge behavior, all three lamps, delay/reversal, cached return and
-E boarding in closed, opening, open and closing states. Godot has not been run.
-Validation: eight focused hatch static checks pass; broader static discovery
+expanded. The owner's initial graphical acceptance and the pending zone retest
+are recorded below. The agent has not launched Godot.
+Initial validation: eight focused hatch static checks pass; broader static discovery
 passes **196/196**, including with all new production inputs staged. Changed
 documentation links and `git diff --check` pass. The 51 pre-existing untracked
 file hashes and 3,016 ignored-file size/mtime identities remain unchanged.
+
+### Owner acceptance and proximity refinement (2026-11-02)
+
+At `3c315a707f1131367d58d3f1a61f5b70776596b8`, the owner reported **8/8 PASS**:
+closed appearance, opening animation, open recess, closing animation, interrupted
+closing, proximity stability, existing E boarding and performance. This is
+owner-reported gameplay acceptance, not an agent benchmark or engine check.
+The owner reported smooth animation and no flicker. The sole requested refinement
+is shorter opening/hold-open reach; artwork and animation remain accepted.
+
+| Geometry (world units, offsets from unchanged hatch anchor) | Initial accepted | Revised, retest pending |
+| --- | --- | --- |
+| Approach rectangle | 176 x 160 | 128 x 112 |
+| Hold-open rectangle | 224 x 208 | 176 x 160 |
+| Both zone centers | (0,80) | (0,55) |
+
+Both revised sensors share world center `(-384,-121)`. Hold-open bounds are
+X `[-472,-296]`, Y `[-201,-41]`; they still include the unchanged hatch collider
+with a radius-10 buffer for Dave. Approach is strictly inside hold-open with a
+24-unit margin on every side. Existing delay cancellation, reversal and boundary
+hysteresis logic are byte-identical; no timer, zone or polling system was added.
+Durations, travel, all artwork, clipping, anchors, E boarding, collisions and
+transitions are unchanged. Only the visual scene's sizes/centers and its current
+full-hash test receipt change; historical evidence remains at its original commits.
+
+Owner retest of the revised opening distance, hold-open distance, doorway safety
+and repeated boundary crossings is pending. The initial 8/8 result does not
+constitute acceptance of the revised geometry. No agent graphical test was run.
+Refinement validation: **8/8 focused static checks** and **196/196 broader static
+tests PASS**. Documentation links and diff checks pass; 54 existing untracked-file
+hashes and 3,019 ignored-file size/mtime identities are preserved.
 
 ## Exterior camera zoom (PR #109 feature branch, pending merge)
 

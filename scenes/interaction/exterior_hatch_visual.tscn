@@ -5,10 +5,10 @@
 [ext_resource type="Texture2D" path="res://assets/environment/exterior/hatch_v2/door_leaf_opaque_v2.png" id="3_door"]
 
 [sub_resource type="RectangleShape2D" id="ApproachZone"]
-size = Vector2(176, 160)
+size = Vector2(128, 112)
 
 [sub_resource type="RectangleShape2D" id="HoldOpenZone"]
-size = Vector2(224, 208)
+size = Vector2(176, 160)
 
 [node name="HatchVisual" type="Node2D"]
 texture_filter = 1
@@ -30,10 +30,10 @@ centered = false
 texture = ExtResource("3_door")
 centered = false
 
-; Unscaled world-unit sensors. Hatch anchor is ship-local (0,16); + (0,80).
+; Unscaled world-unit sensors. Hatch anchor is ship-local (0,16); + (0,55).
 ; Layer 0 prevents interference with E detector rays or construction queries.
 [node name="Approach" type="Area2D" parent="."]
-position = Vector2(0, 96)
+position = Vector2(0, 71)
 collision_layer = 0
 collision_mask = 1
 monitorable = false
@@ -42,7 +42,7 @@ monitorable = false
 shape = SubResource("ApproachZone")
 
 [node name="HoldOpen" type="Area2D" parent="."]
-position = Vector2(0, 96)
+position = Vector2(0, 71)
 collision_layer = 0
 collision_mask = 1
 monitorable = false
