@@ -24,7 +24,7 @@ Dave's feet-origin movement segment must cross Y=-168 northward within center
 lane X `[-406,-362]`; interpolation catches steps that skip the sensor. Overlap,
 approach, holding still and outward movement alone never request travel. The
 22-unit half-lane allows Dave's radius-10 feet circle within the 64-unit doorway.
-Geometry uses the proposed values without adjustment; hull polygons are unchanged.
+These threshold values are owner-accepted and locked; hull polygons are unchanged.
 
 Readiness requires exactly full openness. The hatch retains player collision
 through opening until that endpoint. An early walker reaches the solid blocker
@@ -55,21 +55,63 @@ Walking away follows the approved one-second delay and 0.7-second closing;
 returning reverses the existing continuous animation.
 
 Boarding uses the unchanged controller's `QUICK_FADE`: **0.15 seconds out and
-0.15 seconds in**, retaining the established timing in preference to changing
-global presentation to the proposed 0.2-0.3 seconds. Its synchronous input lock,
+0.15 seconds in**, now owner-accepted and locked. Its synchronous input lock,
 player identity, scene cache, validation, cancellation/rollback and camera limits
 are unchanged. Terrain preparation can extend the obscured transfer interval.
 
-Validation is non-native: **18/18 focused boarding/hatch checks** and **206/206
-full Python static tests PASS**, with the complete implementation staged. Offline
+Previously reported implementation validation at
+`2750f0c94d430c7468017dd71c2703c9fde0108c` was non-native: **18/18 focused
+boarding/hatch checks** and **206/206 full Python static tests PASS**, with the
+complete implementation staged. Offline
 GDScript grammar, changed documentation links and diff checks pass. All 54
 pre-existing untracked hashes and 3,017 ignored-file size/mtime identities are
 preserved. These checks do not establish GDScript engine parsing,
 live physics overlap/registration, fade cancellation timing or playable behavior.
-Owner-controlled graphical testing remains pending, particularly early arrival,
-closing occupancy, repeated travel, rollback/rejection and other interactions.
-Audio, interior hatch animation, new artwork, occlusion and sorting remain deferred.
+Owner gameplay acceptance is recorded below, separately from these agent checks.
+Mechanical audio, interior hatch animation, new artwork, occlusion and sorting
+remain deferred.
 Existing owner artwork, sidecars and historical evidence are preserved.
+
+### Final PR #112 owner acceptance (2026-11-02)
+
+The owner completed gameplay testing of the accepted implementation at
+`2750f0c94d430c7468017dd71c2703c9fde0108c` for
+[PR #112](https://github.com/interneth3ro/the-long-way-home/pull/112).
+**Final owner gameplay acceptance: 10/10 PASS, zero failures, zero untested
+checks, and no additional observations.**
+
+| Check | Owner result |
+| --- | --- |
+| Automatic boarding | PASS |
+| No accidental boarding | PASS |
+| Early arrival | PASS |
+| Door collision | PASS |
+| Exterior return | PASS |
+| Repeat boarding | PASS |
+| Closing and reversal | PASS |
+| Fade and transitions | PASS |
+| Other interactions | PASS |
+| Performance | PASS |
+
+Performance acceptance is observational, not quantitative benchmarking.
+The threshold, full-open readiness, collision-state rules and 0.15-second fades
+above are locked. Exterior E prompt and E boarding are removed. Exterior arrival
+initializes the hatch fully open; separation arming prevents immediate re-entry
+and supports repeat boarding. Production interior destination and interactions
+are preserved, together with all approved PR #110 artwork, animation and
+proximity geometry. Mechanical audio and interior hatch animation remain deferred.
+
+This finalization changes documentation only; the accepted implementation and
+historical preservation safeguards remain unchanged. Lightweight checks compare
+all tracked non-documentation inputs with the accepted implementation, verify
+approved artwork/ship/contact-shadow hashes and unchanged scene geometry, check
+local documentation links and Git whitespace, and preserve owner files/evidence.
+The earlier static suite results above are retained with their original provenance;
+they were not rerun for this documentation-only update. No agent Godot launch,
+import, native/graphical test or performance probe was performed.
+
+**PR #112 remains draft, ready for owner merge consideration.** No further
+implementation changes are requested; merging requires the owner's decision.
 
 The PR #110 records below describe its historical E/collision behavior, superseded
 for this feature branch by the rules above; its owner acceptance remains intact.
