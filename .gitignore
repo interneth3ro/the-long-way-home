@@ -310,3 +310,9 @@ mono_crash.*.json
 # Regenerable Python bytecode.
 __pycache__/
 *.pyc
+
+# Owner-approved Stage 2C sanitized historical derivatives only.
+!/artifacts/evidence/first-run-review-bfc2398e04ab4b09ad55c81a509d645c.sanitized.txt
+!/artifacts/evidence/pr100-terrain-proof-stage1-v1/proof.sanitized.py
+!/artifacts/evidence/pr100-terrain-proof-stage1-v2/proof.sanitized.py
+!/artifacts/evidence/pr100-terrain-proof-stage1-v3/proof.sanitized.py

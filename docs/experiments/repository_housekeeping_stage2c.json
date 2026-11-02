@@ -1,0 +1,169 @@
+{
+  "schema": 1,
+  "baseline": "79112574779a52a9d62094348ee00eeedafdb22f",
+  "authorization": "Owner Stage 2C request explicitly approves publishing four sanitized historical derivatives, recording provenance, and deleting exactly the four originals and redundant ZIP only after verified preservation commit. No other cleanup or engine execution is authorized.",
+  "owner_acceptance": "PENDING",
+  "scope": "Historical evidence sanitization only; no gameplay, asset activation, engine commands, script modernization or new reproduction claim.",
+  "artifacts": [
+    {
+      "original": "artifacts/evidence/first-run-review-bfc2398e04ab4b09ad55c81a509d645c.txt",
+      "sha256": "c014c74bfec80b419f59fabff187a5c4a1a7f4354592e021bb409123d79b069d",
+      "bytes": 35746,
+      "derivative": "artifacts/evidence/first-run-review-bfc2398e04ab4b09ad55c81a509d645c.sanitized.txt",
+      "derivative_bytes": 34824,
+      "derivative_sha256": "5911261cf26baeb269e44811fc737dc9159cf293b9ac05bbf56237f336b911ee",
+      "transformations": {
+        "absolute_path_substitutions": 14,
+        "role_occurrences": {
+          "<PINNED_GODOT_EXECUTABLE>": 3,
+          "<HISTORICAL_STAGE_DIRECTORY>": 7,
+          "<HISTORICAL_RUNNER_PATH>": 1,
+          "<HISTORICAL_CHECKOUT>": 1,
+          "<HISTORICAL_EVIDENCE_DIRECTORY>": 1,
+          "<HISTORICAL_RECEIPT_PATH>": 1
+        },
+        "header_lines": 3,
+        "line_endings": "LF",
+        "preserved": "All other historical text, hashes, revision, inactive authorization, command structure, res:// paths, 43-test PASS and Native NOT RUN conclusions."
+      },
+      "historical_plan": {
+        "revision": "8db6e8c09be9d01ff8c2db2f65c68982ced8749a",
+        "control_count": 9,
+        "input_count": 199,
+        "authorization": "INACTIVE",
+        "routine": "INACTIVE",
+        "godot_resource_script": "res://tests/fabricator_recipe_switching_test.gd",
+        "summary": "Summary: static=PASS; staging plan=PASS; native import=NOT RUN; recipe test=NOT RUN; overall=PASS"
+      }
+    },
+    {
+      "original": "artifacts/evidence/pr100-terrain-proof-stage1-v1/proof.py",
+      "sha256": "cc979a3e741e46fa1e46888a91cff5b38d33a0bf0d8f7b4dff24124d7a81a58f",
+      "bytes": 13723,
+      "derivative": "artifacts/evidence/pr100-terrain-proof-stage1-v1/proof.sanitized.py",
+      "derivative_bytes": 13841,
+      "derivative_sha256": "14b6dea34c9d357ce939f7daa8c97fbca97b08c6b44bdbe2b63aa4db467c8d0c",
+      "transformations": {
+        "package_path_literal_substitutions": 1,
+        "header_comment_lines": 2,
+        "line_endings": "LF",
+        "placeholder": "<HISTORICAL_REFERENCE_PACKAGE_ZIP>"
+      },
+      "normalized_ast_sha256": "162e76486b8f9e7d34246ec70094d21f7799c5e8a32b9792dd1ebda6ae6060e9"
+    },
+    {
+      "original": "artifacts/evidence/pr100-terrain-proof-stage1-v2/proof.py",
+      "sha256": "12731bd1d2140e806f38c86550eafa13beb9881e59d3df3d9ccb92268221d6b3",
+      "bytes": 14748,
+      "derivative": "artifacts/evidence/pr100-terrain-proof-stage1-v2/proof.sanitized.py",
+      "derivative_bytes": 14539,
+      "derivative_sha256": "47d85a22fb3c97cbb6ee05965f9e5bf130410c279717f2f742bd02530ce1f50f",
+      "transformations": {
+        "package_path_literal_substitutions": 1,
+        "header_comment_lines": 2,
+        "line_endings": "LF",
+        "placeholder": "<HISTORICAL_REFERENCE_PACKAGE_ZIP>"
+      },
+      "normalized_ast_sha256": "8fb262b6374b867d5a5fcb2e9febe330b5b1fd37b2a472faaed75409730e91f5"
+    },
+    {
+      "original": "artifacts/evidence/pr100-terrain-proof-stage1-v3/proof.py",
+      "sha256": "d4c1ba5baa436dca7b96abd3920c06832f06d7df6385114b7108166fead10cd7",
+      "bytes": 18063,
+      "derivative": "artifacts/evidence/pr100-terrain-proof-stage1-v3/proof.sanitized.py",
+      "derivative_bytes": 17782,
+      "derivative_sha256": "7293a5387c036df1a00797af0936a3bbc4b0a8d955585e7f74853b6ec8655dbd",
+      "transformations": {
+        "package_path_literal_substitutions": 1,
+        "header_comment_lines": 2,
+        "line_endings": "LF",
+        "placeholder": "<HISTORICAL_REFERENCE_PACKAGE_ZIP>"
+      },
+      "normalized_ast_sha256": "d2dc37f9018ee1aa3914ccb184e56195245e3c10567c4d123a80f17730809355"
+    }
+  ],
+  "archive": {
+    "original": "artifacts/evidence/evidence.zip",
+    "sha256": "1d7796ade0c00a9a1eaba385c5e4190fce0b446929723f75586d98453517a1b4",
+    "bytes": 172995,
+    "members": [
+      {
+        "name": "first-run-review-bfc2398e04ab4b09ad55c81a509d645c.txt",
+        "bytes": 35746,
+        "sha256": "c014c74bfec80b419f59fabff187a5c4a1a7f4354592e021bb409123d79b069d",
+        "preservation": "artifacts/evidence/first-run-review-bfc2398e04ab4b09ad55c81a509d645c.txt",
+        "committed_identical": false
+      },
+      {
+        "name": "pr-8-project-godot-before-restore-a73797defec745d1ab5ffc72e9bbf809.bak",
+        "bytes": 3309,
+        "sha256": "f9b3eb8047d291488c91a31499cff40d87a8e0cdfe9f8946eb60136360ff6a7b",
+        "preservation": "artifacts/evidence/pr-8-project-godot-before-restore-a73797defec745d1ab5ffc72e9bbf809.bak",
+        "committed_identical": true
+      },
+      {
+        "name": "pr-15-project-godot-before-restore-e5e9aa021c8b4a71b101741cae6cc136.bak",
+        "bytes": 3651,
+        "sha256": "199f841ee77c8a9ea466f37a931ae4198cfd24378a62d2eaaff44e4714debc4d",
+        "preservation": "artifacts/evidence/pr-15-project-godot-before-restore-e5e9aa021c8b4a71b101741cae6cc136.bak",
+        "committed_identical": true
+      },
+      {
+        "name": "pr98-static-diagnosis-ae589cda0bc94778833d56dfd34bfb6b.json",
+        "bytes": 797223,
+        "sha256": "8cbcb49ca8321b83b35cb31246fa3bb205a683198b9887f96ee3f13e36b97c03",
+        "preservation": "artifacts/evidence/pr98-static-diagnosis-ae589cda0bc94778833d56dfd34bfb6b.json",
+        "committed_identical": true
+      },
+      {
+        "name": "pr98-static-review-1212f80a46314248825c2498e5439cb1.md",
+        "bytes": 62141,
+        "sha256": "8890b0f3fe552ed9ee47edc6b221412c00a5372938c785bda353146d73f2e118",
+        "preservation": "artifacts/evidence/pr98-static-review-1212f80a46314248825c2498e5439cb1.md",
+        "committed_identical": true
+      }
+    ],
+    "independent_value": "No unique payload: four entries already committed byte-identically; remaining entry is the deferred log preserved by its sanitized derivative. ZIP metadata consists of Unix numeric owner/group IDs and timestamps; no comments.",
+    "verification": "All five entries fully read with CRC checks, unique safe relative names, local equality and four committed-blob equality checks. No extraction.",
+    "metadata_disposition": "Archive wrapper metadata has no identified diagnostic or acceptance value; original archive hash remains provenance."
+  },
+  "historical_dependencies": [
+    "docs/experiments/repository_housekeeping_stage2a.json",
+    "docs/experiments/repository_housekeeping_stage2a_cleanup.json",
+    "artifacts/evidence/pr98-static-diagnosis-ae589cda0bc94778833d56dfd34bfb6b.json",
+    "artifacts/evidence/terrain-resolver-pr1-preservation.json",
+    "artifacts/evidence/pr100-stage2-baked-v2/preservation_snapshot.json",
+    "artifacts/evidence/pr100-terrain-proof-stage1-v3/manifest.json",
+    "artifacts/evidence/pr103-native-review-28d3f7d6-9d1b-413e-a68a-390d05296c4b/source-baseline.json",
+    "artifacts/evidence/pr103-native-review-28d3f7d6-9d1b-413e-a68a-390d05296c4b/seal.json",
+    "artifacts/evidence/pr104-native-review-28f57c4c-677f-4f9e-8809-7be9fc66f2d6/source-baseline.json",
+    "artifacts/evidence/pr104-native-review-28f57c4c-677f-4f9e-8809-7be9fc66f2d6/seal.json",
+    "assets/experiments/native_terrain_47_96/baked_v2/mapping.json",
+    "tools/bake-illustrated-terrain.py"
+  ],
+  "integrity": "Original hashes continue to identify original bytes. Derivatives are deliberately different and do not replace historical hash pins. Existing receipts, manifests, seals, acceptance claims and Stage 2A records remain unchanged. v1/v2/v3 algorithm differences are retained.",
+  "privacy_review": "Full derivative review plus true-absolute-path and common credential indicator checks; JSON-escaped and raw paths handled consistently. No private path values are recorded here.",
+  "deletion_gate": "Pending in this preservation record: commit derivatives and this record, verify committed hashes, rehash all five originals, then exact-path deletion only. Results and preservation commit SHA belong in repository_housekeeping_stage2c_cleanup.json.",
+  "completion_record": "docs/experiments/repository_housekeeping_stage2c_cleanup.json",
+  "protected_exclusions": [
+    "PR #5 archives",
+    "nested diagnostic clones",
+    "ordinary Godot cache",
+    "isolated validation-profile settings/logs",
+    "historical branches and engine execution controls"
+  ],
+  "historical_dependency_sha256": {
+    "docs/experiments/repository_housekeeping_stage2a.json": "18341364e959fb7f512357bbce24d2033a26660422beb2dffbf8dfc01b7bfa20",
+    "docs/experiments/repository_housekeeping_stage2a_cleanup.json": "0c8904624fa55105536488975c008fe51f102987511b2afe1acc7e4ed31cddb8",
+    "artifacts/evidence/pr98-static-diagnosis-ae589cda0bc94778833d56dfd34bfb6b.json": "8cbcb49ca8321b83b35cb31246fa3bb205a683198b9887f96ee3f13e36b97c03",
+    "artifacts/evidence/terrain-resolver-pr1-preservation.json": "9cedbf3779414629db9413e4535db609edf90480f40205f226815cf30c3a239a",
+    "artifacts/evidence/pr100-stage2-baked-v2/preservation_snapshot.json": "51a6aa6f03a13ed3bde96e23a92598df1b8a2d61b819a5f397ad4258e5afa3ee",
+    "artifacts/evidence/pr100-terrain-proof-stage1-v3/manifest.json": "81de729192857447e36ccb98e297b85b4d0db5d9208d261e5a0f63a0ad393be3",
+    "artifacts/evidence/pr103-native-review-28d3f7d6-9d1b-413e-a68a-390d05296c4b/source-baseline.json": "973320ab24d74fcd7daa022d3b4214fb05d9ab475829b458f5074886ea99ffac",
+    "artifacts/evidence/pr103-native-review-28d3f7d6-9d1b-413e-a68a-390d05296c4b/seal.json": "b25024de8ea6968fcb46bf25b2fbe412f88bd0e4537a73eb3c580ea351615dce",
+    "artifacts/evidence/pr104-native-review-28f57c4c-677f-4f9e-8809-7be9fc66f2d6/source-baseline.json": "1ccfe75d9f33ed46f538ccc517f055c697d8e1be3cca58757c46490a84451a11",
+    "artifacts/evidence/pr104-native-review-28f57c4c-677f-4f9e-8809-7be9fc66f2d6/seal.json": "55c05b996cfafe30ecf60db3e866e599ed00e8916d372fd9462e91b3409be7e4",
+    "assets/experiments/native_terrain_47_96/baked_v2/mapping.json": "7702325b9d235ee7edc7f5ab0e6bdaa23db6f2ee8293f297a5d90449bb98d867",
+    "tools/bake-illustrated-terrain.py": "2227fe4b280dd3538ed435ace64af5540b7061be3dbe396633df8cd931d6acdf"
+  }
+}

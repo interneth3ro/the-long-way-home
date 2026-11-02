@@ -146,11 +146,14 @@ Unknown files remain protected even when ignored, named as caches or located in
 The Stage 2A housekeeping disposition in
 `docs/experiments/repository_housekeeping_stage2a.json` records only the exact
 owner-approved retention and deletion scope. It does not change historical
-receipts or authorize further cleanup. Four historical-publication exceptions
-remain byte-preserved at their original local paths, pending a later sanitization
-and preservation decision. Their redundant ZIP also remains local because it
-contains a deferred original. Never force-add those exceptions or publish their
-embedded private paths. PR #5 archives, nested diagnostic clones, ordinary Godot
+receipts or authorize further cleanup. The owner-approved Stage 2C disposition in
+`docs/experiments/repository_housekeeping_stage2c.json` permits four sanitized
+historical derivatives and deletion of exactly their four private originals and
+redundant ZIP after verified preservation commit. Its separate completion record
+records the actual deletions. Historical receipts and original hash pins remain
+immutable; derivatives have new identities. This grants no further cleanup or
+engine execution authority. Never publish the original private path values.
+PR #5 archives, nested diagnostic clones, ordinary Godot
 cache and isolated-profile settings/logs remain protected exclusions.
 
 Permanent evidence requires explicit publication approval and privacy review;

@@ -20,8 +20,45 @@ def _parse(raw):
 def record():
     return _parse((ROOT / RECORD).read_bytes().replace(b'\r\n', b'\n'))
 
+# Exact forward-looking Stage 2C policy deltas; original Stage 2A pins stay intact.
+STAGE2C_BASE = '79112574779a52a9d62094348ee00eeedafdb22f'
+STAGE2C_INPUT_SHA256 = {'AGENTS.md': '7918ea7188d5841e348a1e64f736507b42343829b95561ee00d195a60f42f2c9', '.gitignore': 'f7a802083849f1364fe3b1576eacfd04c88c836829cba8755402bddadbe46016', 'README.md': '4509e0ff64d9e70bba9b4a3abe9beb463723fcb57255bb9656b543a238ba11bf'}
+
+
+def stage2c_predecessor(path, raw):
+    if path not in STAGE2C_INPUT_SHA256:
+        return raw
+    normalized = raw.replace(b"\r\n", b"\n")
+    before = subprocess.check_output(["git", "show", STAGE2C_BASE + ":" + path], cwd=ROOT)
+    if normalized == before.replace(b"\r\n", b"\n"):
+        return before
+    if hashlib.sha256(normalized).hexdigest() == STAGE2C_INPUT_SHA256[path]:
+        return before
+    # Keep the older exact fixtures available to their original historical guards.
+    original = subprocess.check_output(["git", "show", record()["baseline"] + ":" + path], cwd=ROOT)
+    if normalized == original.replace(b"\r\n", b"\n"):
+        return raw
+    raise AssertionError("Changed Stage 2A input: " + path)
+
 
 def verify(path, raw, entry):
+    raw = stage2c_predecessor(path, raw)
+    # Stage 2A retained metadata pins identify committed Git blobs. On Windows,
+    # autocrlf can change their checkout representation without changing content.
+    # Keep this exception inside the exact immutable receipt, not every text file.
+    if (path.endswith(('.import', '.uid'))
+            and record()['retained'].get(path) == entry):
+        attributes = subprocess.check_output(
+            ['git', 'check-attr', '-z', 'filter', 'working-tree-encoding', '--', path], cwd=ROOT)
+        values = attributes.split(b'\0')[2::3]
+        if values != [b'unspecified', b'unspecified']:
+            raise AssertionError('Unexpected retained metadata conversion: ' + path)
+        canonical = subprocess.check_output(['git', 'show', ':' + path], cwd=ROOT)
+        checkout = subprocess.check_output(
+            ['git', 'cat-file', '--filters', '--path=' + path, ':' + path], cwd=ROOT)
+        if raw not in (canonical, checkout):
+            raise AssertionError('Changed Stage 2A input: ' + path)
+        raw = canonical
     if entry.get('normalize_lf'):
         raw = raw.replace(b'\r\n', b'\n')
     if hashlib.sha256(raw).hexdigest() != entry['sha256'] or len(raw) != entry['bytes']:
