@@ -1,7 +1,7 @@
 class_name TerrainAssignmentLookup
 extends RefCounted
 
-const TILESET_PATH := "res://assets/experiments/native_terrain_47_96/baked_v2/baked_terrain.tres"
+const TILESET_PATH := "res://assets/environment/exterior/ground_refined_v1/terrain.tres"
 const MANIFEST_PATH := "res://assets/experiments/native_terrain_47_96/baked_v2/mapping.json"
 const PEERS := [TileSet.CELL_NEIGHBOR_TOP_LEFT_CORNER, TileSet.CELL_NEIGHBOR_TOP_SIDE,
 	TileSet.CELL_NEIGHBOR_TOP_RIGHT_CORNER, TileSet.CELL_NEIGHBOR_LEFT_SIDE,

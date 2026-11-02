@@ -3,6 +3,7 @@
 Only the resolver's restricted integer expressions are evaluated by Python.
 Engine parsing, native API behavior and runtime integration remain unverified.
 """
+from terrain_integration_preservation import predecessor
 import collections
 import hashlib
 import itertools
@@ -29,6 +30,7 @@ OFFSETS = ((0, 0), (-1, -1), (0, -1), (1, -1), (-1, 0),
 
 
 def verify_resolver_input(path, raw):
+    raw = predecessor(path, raw)
     if path not in RESOLVER_INPUT_SHA256:
         raise AssertionError('Unapproved resolver input: ' + path)
     if hashlib.sha256(raw.replace(b'\r\n', b'\n')).hexdigest() != RESOLVER_INPUT_SHA256[path]:

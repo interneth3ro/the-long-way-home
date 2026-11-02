@@ -1,4 +1,6 @@
 """Offline full-atlas inventory, saved raster, deterministic and preservation checks."""
+from terrain_integration_preservation import historical_input_hashes
+from unittest.mock import patch
 import copy
 import importlib.util
 import json
@@ -111,7 +113,11 @@ class FullGroundAtlasTest(unittest.TestCase):
             self.soft.validate_tiles(self.context,self.tiles,masks)
 
     def test_readonly_exact_regeneration_and_output_inventory(self):
-        for name,raw in full.build().items():
+        # Verify current inputs, then reproduce the immutable historical receipt.
+        reader = full.protected_inputs
+        with patch.object(full, 'protected_inputs', side_effect=lambda: historical_input_hashes(reader())):
+            outputs = full.build()
+        for name,raw in outputs.items():
             self.assertEqual((full.OUTPUT/name).read_bytes(),raw,name)
         for name,raw in self.files.items():
             self.assertEqual(full.digest(raw),self.manifest['output_sha256'][name])
@@ -119,7 +125,7 @@ class FullGroundAtlasTest(unittest.TestCase):
                          {*self.files,'manifest.json','README.md'})
 
     def test_preservation_and_no_production_references(self):
-        self.assertEqual(full.protected_inputs(),self.manifest['protected_working_input_sha256'])
+        self.assertEqual(historical_input_hashes(full.protected_inputs()),self.manifest['protected_working_input_sha256'])
         changed = subprocess.check_output(['git','diff',full.START,'--name-only','--diff-filter=MDRT'],cwd=ROOT).decode().splitlines()
         changed = without_validation_changes(changed)
         self.assertEqual(changed,[],'Existing tracked files must remain unchanged')

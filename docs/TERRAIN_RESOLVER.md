@@ -23,7 +23,9 @@ in the complete inventory for future rules.
 
 Call `TerrainAssignmentLookup.new()` and require `initialize()` to succeed before
 resolving. Initialization reads native TileData center and peering values from the
-[approved TileSet](../assets/experiments/native_terrain_47_96/baked_v2/baked_terrain.tres)
+[active TileSet](../assets/environment/exterior/ground_refined_v1/terrain.tres)
+(artwork-only derivative, feature branch pending merge; see the
+[production integration](GROUND_REFINEMENT_FULL_ATLAS.md#production-integration-feature-branch-pending-merge))
 and verifies all 98 locations and signatures against its existing
 [manifest](../assets/experiments/native_terrain_47_96/baked_v2/mapping.json).
 Native source enumeration follows the
