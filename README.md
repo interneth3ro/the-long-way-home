@@ -1,5 +1,11 @@
 # The Long Way Home
 
+[Ferrite artwork prototype v1](docs/FERRITE_ARTWORK_PROTOTYPE_V1.md) is an isolated
+offline artwork candidate on the feature branch, pending merge and owner visual
+acceptance. It demonstrates 6x4 and 10x6 terrain-cell deposits from one reusable
+family. Production Ferrite, terrain and Extractor behavior remain unchanged;
+no Godot execution or in-game acceptance is claimed for this prototype.
+
 Stage 2A repository housekeeping merged in PR #114. Historical evidence
 sanitization is prepared on this feature branch, pending owner acceptance and merge.
 The [Stage 2A disposition](docs/experiments/repository_housekeeping_stage2a.json)
