@@ -1,0 +1,120 @@
+{
+  "repository": "interneth3ro/the-long-way-home",
+  "pr": 5,
+  "feature_branch": "codex/walkable-ship-foundation",
+  "feature_commit": "3b5fecc77c88e7a9da69edcf850951cd04824748",
+  "main_commit": "de8cf67e7073a0871574b9aebc5b569630f09599",
+  "created_utc": "2026-10-25T17:40:57.3625046Z",
+  "incident": "Abandoned following severe system instability during Godot execution; root cause undetermined. No project code executed for preservation.",
+  "history_bundle": {
+    "path": "<PRIMARY_CHECKOUT>/artifacts/archive/pr-5-abandoned-3b5fecc-20261025T174020Z-c07b84f2/feature-history.bundle",
+    "size": 25718,
+    "sha256": "7BCF92A3EBE8B2C3240DDA06D21667993C6F2E0626791103E9264EF561C83D60",
+    "verification": "git bundle verify; exact list-heads; extracted pack checked by git index-pack --strict and git verify-pack"
+  },
+  "files": [
+    {
+      "original_path": "<HISTORICAL_PR5_WORKTREE>/project.godot",
+      "archive_path": "project.godot",
+      "size": 4718,
+      "sha256": "AF064A8AFF60BEBC9509135660EEB4B28EA92DDADAE364E94D18B24806FD0E5E"
+    },
+    {
+      "original_path": "<HISTORICAL_PR5_WORKTREE>/artifacts/tmp/performance_probe_20261025.gd",
+      "archive_path": "artifacts/tmp/performance_probe_20261025.gd",
+      "size": 5047,
+      "sha256": "66CE2F687AC1628CEF31009AA7456CA8E7238B085F52240920793C19A4239024"
+    },
+    {
+      "original_path": "<HISTORICAL_PR5_WORKTREE>/artifacts/tmp/performance_run_20261025.py",
+      "archive_path": "artifacts/tmp/performance_run_20261025.py",
+      "size": 2185,
+      "sha256": "119D9F60B14AB663FA45C3E0329A05F6A0DF1057342A68DAAD610EBBF57D1CC2"
+    },
+    {
+      "original_path": "<HISTORICAL_PR5_WORKTREE>/artifacts/tmp/perf_manual_initial.png",
+      "archive_path": "artifacts/tmp/perf_manual_initial.png",
+      "size": 35393,
+      "sha256": "AED6A3745D20A60FBB90CB955350D4C1DD86FF5E4FF9856847A0909AF165D9D3"
+    },
+    {
+      "original_path": "<HISTORICAL_PR5_WORKTREE>/artifacts/tmp/perf_manual_final.png",
+      "archive_path": "artifacts/tmp/perf_manual_final.png",
+      "size": 35393,
+      "sha256": "AED6A3745D20A60FBB90CB955350D4C1DD86FF5E4FF9856847A0909AF165D9D3"
+    },
+    {
+      "original_path": "<HISTORICAL_PR5_WORKTREE>/.godot/.gdignore",
+      "archive_path": ".godot/.gdignore",
+      "size": 1,
+      "sha256": "01BA4719C80B6FE911B091A7C05124B64EEECE964E09C058EF8F9805DACA546B"
+    },
+    {
+      "original_path": "<HISTORICAL_PR5_WORKTREE>/.godot/global_script_class_cache.cfg",
+      "archive_path": ".godot/global_script_class_cache.cfg",
+      "size": 8,
+      "sha256": "F61AA7AD3097022D6A9D110CA3F73FA7BB348EC2CF9A6E7C9523574DC75F5A16"
+    },
+    {
+      "original_path": "<HISTORICAL_PR5_WORKTREE>/.godot/scene_groups_cache.cfg",
+      "archive_path": ".godot/scene_groups_cache.cfg",
+      "size": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "original_path": "<HISTORICAL_PR5_WORKTREE>/.godot/uid_cache.bin",
+      "archive_path": ".godot/uid_cache.bin",
+      "size": 124,
+      "sha256": "2CF46288140E6347C3AF8F92419AFF7D824F3C9219F22BD780C9DCAD4480FD47"
+    },
+    {
+      "original_path": "<HISTORICAL_PR5_WORKTREE>/.godot/editor/editor_layout.cfg",
+      "archive_path": ".godot/editor/editor_layout.cfg",
+      "size": 1636,
+      "sha256": "6964E63F37FDB51ED2E797810EE66DA81BD5CD06EC02A527041FAB2FA4F42C1C"
+    },
+    {
+      "original_path": "<HISTORICAL_PR5_WORKTREE>/.godot/editor/editor_script_doc_cache.res-folding-a7de57390d6e786984ca20c70a831128.cfg",
+      "archive_path": ".godot/editor/editor_script_doc_cache.res-folding-a7de57390d6e786984ca20c70a831128.cfg",
+      "size": 49,
+      "sha256": "FA44DFBAE9B3B64980C44D9922ACDAD9B34EA46C85CCE8A917708577229C27F6"
+    },
+    {
+      "original_path": "<HISTORICAL_PR5_WORKTREE>/.godot/editor/filesystem_cache10",
+      "archive_path": ".godot/editor/filesystem_cache10",
+      "size": 985,
+      "sha256": "AFDE78EC717A8D10F21942404253C2953545AF8BD08F5B264AB290B3F14382A4"
+    },
+    {
+      "original_path": "<HISTORICAL_PR5_WORKTREE>/.godot/editor/main.tscn-folding-f39996a6d27a38698d16421ab974097b.cfg",
+      "archive_path": ".godot/editor/main.tscn-folding-f39996a6d27a38698d16421ab974097b.cfg",
+      "size": 4917,
+      "sha256": "1801F54E39635D3645FB9A0895F77BEF0DB7CEFE7AB3B761EE0BD92F4D646C67"
+    },
+    {
+      "original_path": "<HISTORICAL_PR5_WORKTREE>/.godot/editor/project_metadata.cfg",
+      "archive_path": ".godot/editor/project_metadata.cfg",
+      "size": 243,
+      "sha256": "41B6EE174EC647407F0C243298528D13038795BE213233587749404F0CC5F18C"
+    },
+    {
+      "original_path": "<HISTORICAL_PR5_WORKTREE>/.godot/editor/script_editor_cache.cfg",
+      "archive_path": ".godot/editor/script_editor_cache.cfg",
+      "size": 534,
+      "sha256": "9657A566237800DBFB42B4558A784EE32405DA3D0A2912873C739DC54B09D8B7"
+    }
+  ],
+  "classification": {
+    "editor_metadata": "All .godot/editor files preserved, including uncertain cache/state files",
+    "root_metadata": "All small .godot root files preserved conservatively",
+    "shader_cache": "Regenerable renderer cache; excluded from archive and retained untouched in original worktree",
+    "imported": "Empty at inventory; original retained"
+  },
+  "_stage2d": {
+    "status": "Historical evidence; not an execution authorization",
+    "source_manifest_sha256": "e4a00dd7bff63347046fc629cb84541916c42097b4787c9a4c41213ab1c06d04",
+    "original_zip_sha256": "6df1b4dbbb181e15cf7b250a19445c99366e229f90bc4d59a6921f1c79979c65",
+    "limitations": "Root cause undetermined; no raw result log or crash dump in ZIP. Historical probes are not current tests. Original statement that no project code was executed for preservation is retained.",
+    "authorization": "Owner now authorizes publication of approved evidence and exact original ZIP deletion after verified committed preservation. No Godot, historical script execution, performance probe or incident reproduction is authorized."
+  }
+}

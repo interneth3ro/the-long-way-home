@@ -1,0 +1,3 @@
+# Exact historical script bytes; hash-checked, never executed.
+performance-probe.gd.txt whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof
+performance-runner.sanitized.py.txt whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof

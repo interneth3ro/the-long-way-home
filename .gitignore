@@ -316,3 +316,21 @@ __pycache__/
 !/artifacts/evidence/pr100-terrain-proof-stage1-v1/proof.sanitized.py
 !/artifacts/evidence/pr100-terrain-proof-stage1-v2/proof.sanitized.py
 !/artifacts/evidence/pr100-terrain-proof-stage1-v3/proof.sanitized.py
+
+# Owner-approved Stage 2D exact historical preservation paths only.
+!/artifacts/archive/
+/artifacts/archive/*
+!/artifacts/archive/pr-5-abandoned-3b5fecc-20261025T174020Z-c07b84f2/
+/artifacts/archive/pr-5-abandoned-3b5fecc-20261025T174020Z-c07b84f2/*
+!/artifacts/archive/pr-5-abandoned-3b5fecc-20261025T174020Z-c07b84f2/feature-history.bundle
+!/artifacts/evidence/pr5-abandoned-history/
+/artifacts/evidence/pr5-abandoned-history/*
+!/artifacts/evidence/pr5-abandoned-history/.gitattributes
+!/artifacts/evidence/pr5-abandoned-history/README.md
+!/artifacts/evidence/pr5-abandoned-history/editor-state.json
+!/artifacts/evidence/pr5-abandoned-history/historical-project.godot.txt
+!/artifacts/evidence/pr5-abandoned-history/manifest.sanitized.json
+!/artifacts/evidence/pr5-abandoned-history/perf_manual.png
+!/artifacts/evidence/pr5-abandoned-history/performance-probe.gd.txt
+!/artifacts/evidence/pr5-abandoned-history/performance-runner.sanitized.py.txt
+!/artifacts/evidence/pr5-abandoned-history/project-metadata.sanitized.cfg.txt

@@ -8,8 +8,12 @@ records four sanitized historical derivatives, their distinct original identitie
 and the preservation-before-deletion gate. The separate completion receipt records
 verified local deletion after committed preservation. Derivatives preserve historical
 methods and results; they do not claim present-day reproducibility or new runtime
-acceptance. PR #5 archives, nested diagnostic clones, Godot cache and private
-validation profiles remain protected.
+acceptance. Stage 2D PR #5 historical preservation is prepared on this feature
+branch, pending owner acceptance and merge. Its
+[disposition](docs/experiments/repository_housekeeping_stage2d.json) records the
+unchanged recovery bundle, sanitized diagnostic evidence and the exact ZIP
+preservation-before-deletion gate. Nested diagnostic clones, Godot cache, private
+validation profiles and unrelated local artifacts remain protected.
 Reference studies are retained for art history
 only: [Earth variants](assets/environment/exterior/01_weathered_earth_four_variants_v2.png),
 [crash-site direction](assets/environment/exterior/02_refined_crash_site_terrain_direction.png),
