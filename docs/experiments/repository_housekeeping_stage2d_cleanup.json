@@ -1,0 +1,356 @@
+{
+  "schema": 1,
+  "state": "Owner-authorized Stage 2D preservation committed and verified; exact original diagnostic ZIP deleted. Draft feature PR and owner acceptance pending.",
+  "owner_acceptance": "PENDING",
+  "baseline": "d5f54506efeab1567dc850aa45ffa84bf194162b",
+  "preservation_commit": "aa66c90ca5d47474ff75bc710f44801e7d7b23bd",
+  "disposition": "docs/experiments/repository_housekeeping_stage2d.json",
+  "disposition_sha256": "8b97ca029ef33a2c5380b1d6b643fb7211336dd8712409c28d680ec095f0166b",
+  "authorization": "Owner explicitly renewed completion authorization after 232/232 static PASS. Commit and verify approved preservation before deleting only the exact approved original diagnostic ZIP. No other cleanup, Godot, historical code execution or incident reproduction authorized.",
+  "original_archives": [
+    {
+      "path": "artifacts/archive/pr-5-abandoned-3b5fecc-20261025T174020Z-c07b84f2/feature-history.bundle",
+      "bytes": 25718,
+      "sha256": "7bcf92a3ebe8b2c3240dda06d21667993c6f2e0626791103e9264ef561c83d60"
+    },
+    {
+      "path": "artifacts/archive/pr-5-abandoned-3b5fecc-20261025T174020Z-c07b84f2/settings-and-diagnostics.zip",
+      "bytes": 70428,
+      "sha256": "6df1b4dbbb181e15cf7b250a19445c99366e229f90bc4d59a6921f1c79979c65"
+    }
+  ],
+  "committed_evidence": [
+    {
+      "path": "artifacts/archive/pr-5-abandoned-3b5fecc-20261025T174020Z-c07b84f2/feature-history.bundle",
+      "bytes": 25718,
+      "sha256": "7bcf92a3ebe8b2c3240dda06d21667993c6f2e0626791103e9264ef561c83d60",
+      "ref": "refs/heads/codex/walkable-ship-foundation",
+      "tip": "3b5fecc77c88e7a9da69edcf850951cd04824748",
+      "objects": {
+        "commit": 11,
+        "tree": 30,
+        "blob": 29
+      },
+      "object_list_sha256": "b49bd9f4f4088b5fbbe243629ae2cadb981343e8e069f2f8cce8e845058343b7",
+      "self_contained": true,
+      "purpose": "Independent recovery artifact for abandoned PR #5; not active gameplay or a development branch.",
+      "remote_status_at_audit": "Feature branch absent; GitHub refs/pull/5/head advertised same tip. Local origin feature ref is stale.",
+      "verification": "Bundle verify, pack checksum, bounded delta/object decoding, exact reachable set and local object equality; no import."
+    },
+    {
+      "path": "artifacts/evidence/pr5-abandoned-history/.gitattributes",
+      "bytes": 222,
+      "sha256": "b32d69f177522e96cb732cc001ca72a06cfbf78e37b8f7bf07634051cca642ad"
+    },
+    {
+      "path": "artifacts/evidence/pr5-abandoned-history/editor-state.json",
+      "bytes": 1738,
+      "sha256": "513428bea9e044e66ba02a84b5bcda96353e852895c9259fd452b3b493c3e32d"
+    },
+    {
+      "path": "artifacts/evidence/pr5-abandoned-history/historical-project.godot.txt",
+      "bytes": 4718,
+      "sha256": "af064a8aff60bebc9509135660eeb4b28ea92ddadae364e94d18b24806fd0e5e"
+    },
+    {
+      "path": "artifacts/evidence/pr5-abandoned-history/manifest.sanitized.json",
+      "bytes": 5988,
+      "sha256": "b6ffeb8f756b37441955201bbe6cc8efc0acebf78b9538b5550ed87f248da8e2"
+    },
+    {
+      "path": "artifacts/evidence/pr5-abandoned-history/perf_manual.png",
+      "bytes": 35393,
+      "sha256": "aed6a3745d20a60fbb90cb955350d4c1dd86ff5e4ff9856847a0909af165d9d3"
+    },
+    {
+      "path": "artifacts/evidence/pr5-abandoned-history/performance-probe.gd.txt",
+      "bytes": 5047,
+      "sha256": "66ce2f687ac1628cef31009aa7456ca8e7238b085f52240920793c19a4239024"
+    },
+    {
+      "path": "artifacts/evidence/pr5-abandoned-history/performance-runner.sanitized.py.txt",
+      "bytes": 2158,
+      "sha256": "1469f8db289080e83533c1cea9e87739c6c07f74d4059888c9b3f052035aa4ba"
+    },
+    {
+      "path": "artifacts/evidence/pr5-abandoned-history/project-metadata.sanitized.cfg.txt",
+      "bytes": 217,
+      "sha256": "1866b243cf05fe9e62e99199557a0e720f9721b5259d702f94fe6a7b6c1cee99"
+    },
+    {
+      "path": "artifacts/evidence/pr5-abandoned-history/README.md",
+      "bytes": 1733,
+      "sha256": "e509c0a2bbe8467ccca5335c77a8db449da907c9d68c239a5523cc8c0c39a3dc"
+    }
+  ],
+  "deleted": [
+    {
+      "path": "artifacts/archive/pr-5-abandoned-3b5fecc-20261025T174020Z-c07b84f2/settings-and-diagnostics.zip",
+      "bytes": 70428,
+      "sha256": "6df1b4dbbb181e15cf7b250a19445c99366e229f90bc4d59a6921f1c79979c65",
+      "entry_count": 16,
+      "uncompressed_bytes": 97117,
+      "compressed_entry_bytes": 68048,
+      "created_utc": "2026-10-25T17:40:57.3625046Z",
+      "entries": [
+        {
+          "name": "project.godot",
+          "bytes": 4718,
+          "compressed_bytes": 764,
+          "sha256": "af064a8aff60bebc9509135660eeb4b28ea92ddadae364e94d18b24806fd0e5e",
+          "disposition": "exact original",
+          "preserved": {
+            "path": "artifacts/evidence/pr5-abandoned-history/historical-project.godot.txt",
+            "bytes": 4718,
+            "sha256": "af064a8aff60bebc9509135660eeb4b28ea92ddadae364e94d18b24806fd0e5e"
+          }
+        },
+        {
+          "name": "artifacts/tmp/performance_probe_20261025.gd",
+          "bytes": 5047,
+          "compressed_bytes": 1847,
+          "sha256": "66ce2f687ac1628cef31009aa7456ca8e7238b085f52240920793c19a4239024",
+          "disposition": "exact original",
+          "preserved": {
+            "path": "artifacts/evidence/pr5-abandoned-history/performance-probe.gd.txt",
+            "bytes": 5047,
+            "sha256": "66ce2f687ac1628cef31009aa7456ca8e7238b085f52240920793c19a4239024"
+          }
+        },
+        {
+          "name": "artifacts/tmp/performance_run_20261025.py",
+          "bytes": 2185,
+          "compressed_bytes": 1123,
+          "sha256": "119d9f60b14ab663fa45c3e0329a05f6a0df1057342a68daad610ebbf57d1cc2",
+          "disposition": "sanitized derivative",
+          "path_literal_substitutions": 2,
+          "normalized_ast_sha256": "29cfeafdb31ccd88c70c79a6fd0e9dbaf5df3eafaa46a0a13dafc5d5a67afdd1",
+          "preserved": {
+            "path": "artifacts/evidence/pr5-abandoned-history/performance-runner.sanitized.py.txt",
+            "bytes": 2158,
+            "sha256": "1469f8db289080e83533c1cea9e87739c6c07f74d4059888c9b3f052035aa4ba"
+          }
+        },
+        {
+          "name": "artifacts/tmp/perf_manual_initial.png",
+          "bytes": 35393,
+          "compressed_bytes": 30184,
+          "sha256": "aed6a3745d20a60fbb90cb955350d4c1dd86ff5e4ff9856847a0909af165d9d3",
+          "disposition": "exact original; visually reviewed",
+          "preserved": {
+            "path": "artifacts/evidence/pr5-abandoned-history/perf_manual.png",
+            "bytes": 35393,
+            "sha256": "aed6a3745d20a60fbb90cb955350d4c1dd86ff5e4ff9856847a0909af165d9d3"
+          }
+        },
+        {
+          "name": "artifacts/tmp/perf_manual_final.png",
+          "bytes": 35393,
+          "compressed_bytes": 30184,
+          "sha256": "aed6a3745d20a60fbb90cb955350d4c1dd86ff5e4ff9856847a0909af165d9d3",
+          "disposition": "excluded exact duplicate",
+          "equivalent_to": "artifacts/tmp/perf_manual_initial.png",
+          "reason": "Full decompressed bytes and hashes equal; not distinct before/after evidence."
+        },
+        {
+          "name": ".godot/.gdignore",
+          "bytes": 1,
+          "compressed_bytes": 3,
+          "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+          "disposition": "excluded regenerable or empty metadata",
+          "reason": "Single newline import marker; replacement remains under existing artifacts/.gdignore."
+        },
+        {
+          "name": ".godot/global_script_class_cache.cfg",
+          "bytes": 8,
+          "compressed_bytes": 10,
+          "sha256": "f61aa7ad3097022d6a9d110ca3f73fa7bb348ec2cf9a6e7c9523574dc75f5a16",
+          "disposition": "excluded regenerable or empty metadata",
+          "reason": "Generated empty class list (list=[]); no diagnostic measurements."
+        },
+        {
+          "name": ".godot/scene_groups_cache.cfg",
+          "bytes": 0,
+          "compressed_bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "disposition": "excluded regenerable or empty metadata",
+          "reason": "Empty generated scene-group cache."
+        },
+        {
+          "name": ".godot/uid_cache.bin",
+          "bytes": 124,
+          "compressed_bytes": 97,
+          "sha256": "2cf46288140e6347c3af8f92419aff7d824f3c9219f22bd780c9dcad4480fd47",
+          "disposition": "excluded regenerable or empty metadata",
+          "reason": "Generated resource UID cache; no diagnostic measurements. Bundle retains source UID sidecars."
+        },
+        {
+          "name": ".godot/editor/editor_layout.cfg",
+          "bytes": 1636,
+          "compressed_bytes": 717,
+          "sha256": "6964e63f37fdb51ed2e797810ee66da81bd5cd06ec02a527041fab2fa4f42c1c",
+          "disposition": "meaningful state summarized; derived session/cache payload excluded",
+          "preserved": {
+            "path": "artifacts/evidence/pr5-abandoned-history/editor-state.json",
+            "bytes": 1738,
+            "sha256": "513428bea9e044e66ba02a84b5bcda96353e852895c9259fd452b3b493c3e32d"
+          }
+        },
+        {
+          "name": ".godot/editor/editor_script_doc_cache.res-folding-a7de57390d6e786984ca20c70a831128.cfg",
+          "bytes": 49,
+          "compressed_bytes": 49,
+          "sha256": "fa44dfbae9b3b64980c44d9922acdad9b34ea46c85cce8a917708577229c27f6",
+          "disposition": "excluded regenerable or empty metadata",
+          "reason": "Empty inspector folding list for generated script documentation cache."
+        },
+        {
+          "name": ".godot/editor/filesystem_cache10",
+          "bytes": 985,
+          "compressed_bytes": 365,
+          "sha256": "afde78ec717a8d10f21942404253c2953545af8bd08f5b264ab290b3f14382a4",
+          "disposition": "meaningful state summarized; derived session/cache payload excluded",
+          "preserved": {
+            "path": "artifacts/evidence/pr5-abandoned-history/editor-state.json",
+            "bytes": 1738,
+            "sha256": "513428bea9e044e66ba02a84b5bcda96353e852895c9259fd452b3b493c3e32d"
+          }
+        },
+        {
+          "name": ".godot/editor/main.tscn-folding-f39996a6d27a38698d16421ab974097b.cfg",
+          "bytes": 4917,
+          "compressed_bytes": 530,
+          "sha256": "1801f54e39635d3645fb9a0895f77bef0db7cefe7ab3b761ee0bd92f4d646c67",
+          "disposition": "meaningful state summarized; derived session/cache payload excluded",
+          "preserved": {
+            "path": "artifacts/evidence/pr5-abandoned-history/editor-state.json",
+            "bytes": 1738,
+            "sha256": "513428bea9e044e66ba02a84b5bcda96353e852895c9259fd452b3b493c3e32d"
+          }
+        },
+        {
+          "name": ".godot/editor/project_metadata.cfg",
+          "bytes": 243,
+          "compressed_bytes": 169,
+          "sha256": "41b6ee174ec647407f0c243298528d13038795be213233587749404f0cc5f18c",
+          "disposition": "sanitized derivative",
+          "absolute_path_substitutions": 1,
+          "preserved": {
+            "path": "artifacts/evidence/pr5-abandoned-history/project-metadata.sanitized.cfg.txt",
+            "bytes": 217,
+            "sha256": "1866b243cf05fe9e62e99199557a0e720f9721b5259d702f94fe6a7b6c1cee99"
+          }
+        },
+        {
+          "name": ".godot/editor/script_editor_cache.cfg",
+          "bytes": 534,
+          "compressed_bytes": 181,
+          "sha256": "9657a566237800dbfb42b4558a784ee32405da3d0a2912873c739dc54b09d8b7",
+          "disposition": "meaningful state summarized; derived session/cache payload excluded",
+          "preserved": {
+            "path": "artifacts/evidence/pr5-abandoned-history/editor-state.json",
+            "bytes": 1738,
+            "sha256": "513428bea9e044e66ba02a84b5bcda96353e852895c9259fd452b3b493c3e32d"
+          }
+        },
+        {
+          "name": "manifest.json",
+          "bytes": 5884,
+          "compressed_bytes": 1825,
+          "sha256": "e4a00dd7bff63347046fc629cb84541916c42097b4787c9a4c41213ab1c06d04",
+          "disposition": "sanitized derivative",
+          "absolute_path_substitutions": 16,
+          "preserved": {
+            "path": "artifacts/evidence/pr5-abandoned-history/manifest.sanitized.json",
+            "bytes": 5988,
+            "sha256": "b6ffeb8f756b37441955201bbe6cc8efc0acebf78b9538b5550ed87f248da8e2"
+          }
+        }
+      ],
+      "absent": true
+    }
+  ],
+  "deleted_files": 1,
+  "deleted_file_payload_bytes": 70428,
+  "space_measurement": "Exact original ZIP file length removed; not filesystem allocation, net disk free space or Git storage. New evidence adds tracked payload.",
+  "deletion_method": "Exact-path Remove-Item only, after commit/blob verification and protected-file comparison. Absolute target verified within checkout; file and parents checked for reparse points; length and SHA-256 rechecked immediately before deletion. No recursive deletion or git clean.",
+  "final_inventory_after_completion_record_is_committed": {
+    "tracked_files": 691,
+    "untracked_files": 0,
+    "git_ignored_entries": 625,
+    "ignored_ordinary_files": 622,
+    "ignored_nested_repository_placeholders": 3,
+    "unexplained_files": 0
+  },
+  "protected_exceptions": {
+    "ordinary_godot_cache_files": 618,
+    "isolated_validation_profile_files": 3,
+    "nested_clones": 3,
+    "nested_working_files": 932,
+    "audit_markdown_files": 1,
+    "history_bundle": "Committed unchanged at original path; not deleted.",
+    "original_zip": "Only approved original removed.",
+    "historical_records": "All preexisting receipts, manifests, seals and original hash pins unchanged.",
+    "historical_refs": "Only this feature branch advances and its origin ref is added on push. Other preexisting refs unchanged during completion; Codex per-turn checkpoint refs can rotate between chat turns.",
+    "unchanged": true
+  },
+  "verification": {
+    "pre_deletion_focused": {
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "status": "PASS"
+    },
+    "prior_corrective_full_static": {
+      "tests": 232,
+      "failures": 0,
+      "errors": 0,
+      "status": "PASS",
+      "scope": "Owner-accepted complete static suite after verifier correction, before preservation commit."
+    },
+    "committed_preservation": "PASS: bundle bytes, 70-object inventory, nine evidence files, screenshot and original ZIP identities verified after preservation commit.",
+    "protected_files_before_deletion": "PASS: all 2324 baseline working-file sizes, modification times and SHA-256 hashes unchanged; only feature branch ref advanced.",
+    "post_deletion_full_static": {
+      "tests": 232,
+      "failures": 0,
+      "errors": 0,
+      "status": "PASS",
+      "seconds": 180.503,
+      "provenance": "Full suite ran after ZIP deletion with the completion receipt present. Only receipt result fields were finalized afterward; final focused checks cover the finalized receipt."
+    },
+    "final_focused": {
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "status": "PASS",
+      "scope": "Post-deletion committed-preservation and finalized completion-receipt checks."
+    },
+    "publication_privacy": "PASS: original bundle texts, nine publishable evidence/disposition text files, screenshot privacy approval and exact committed output identities reviewed. No private original values published.",
+    "source_equivalence": "PASS: all 16 original entries CRC/hash verified before deletion; exact settings/probe/screenshot retained; runner differs by two executable path literals only with AST equality; manifest replaces 16 absolute paths and adds explicitly forward-looking context; metadata replaces one executable path.",
+    "documentation_links": {
+      "status": "PASS",
+      "checked": 3
+    },
+    "resource_references": {
+      "status": "PASS",
+      "active_literal_references": 162,
+      "active_gameplay_source_changes": 0
+    },
+    "git_whitespace": {
+      "status": "PASS",
+      "scope": "Working/index/full feature diff and completion-record new-file check. Ordinary LF-to-CRLF checkout notices are not whitespace failures."
+    },
+    "final_inventory_reconciliation": {
+      "status": "PASS",
+      "baseline_files_unchanged": 2323,
+      "removed_files": 1,
+      "added_completion_records": 1,
+      "unexpected_changes": 0,
+      "inventory_timing": "690 tracked plus one untracked completion record before its commit; 691 tracked and zero untracked after commit. 625 ignored entries accounted for."
+    },
+    "godot_launched": false,
+    "historical_scripts_executed": false,
+    "runtime_acceptance": "NOT RUN",
+    "performance_verification": "NOT RUN"
+  }
+}

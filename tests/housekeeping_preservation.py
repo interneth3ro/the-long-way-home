@@ -25,7 +25,24 @@ STAGE2C_BASE = '79112574779a52a9d62094348ee00eeedafdb22f'
 STAGE2C_INPUT_SHA256 = {'AGENTS.md': '7918ea7188d5841e348a1e64f736507b42343829b95561ee00d195a60f42f2c9', '.gitignore': 'f7a802083849f1364fe3b1576eacfd04c88c836829cba8755402bddadbe46016', 'README.md': '4509e0ff64d9e70bba9b4a3abe9beb463723fcb57255bb9656b543a238ba11bf'}
 
 
+# Forward-looking Stage 2D policy projection; all historical pins stay intact.
+# Only these two exact complete files may reach the unchanged older guards.
+STAGE2D_BASE = 'd5f54506efeab1567dc850aa45ffa84bf194162b'
+STAGE2D_INPUT_SHA256 = {
+    '.gitignore': 'd774efbacb5f1b485e4889594c3da78cad52974a9da4343cf55ea7e49aa9a283',
+    'README.md': '653061674a9401cdb3e0aa9558cbd09e0ec6573e32b6e36b6fc9f393efa14bca',
+}
+
+
+def stage2d_predecessor(path, raw):
+    expected = STAGE2D_INPUT_SHA256.get(path)
+    if expected and hashlib.sha256(raw.replace(b'\r\n', b'\n')).hexdigest() == expected:
+        return subprocess.check_output(['git', 'show', STAGE2D_BASE + ':' + path], cwd=ROOT)
+    return raw  # Unknown bytes still reach, and must pass, the older exact guards.
+
+
 def stage2c_predecessor(path, raw):
+    raw = stage2d_predecessor(path, raw)
     if path not in STAGE2C_INPUT_SHA256:
         return raw
     normalized = raw.replace(b"\r\n", b"\n")

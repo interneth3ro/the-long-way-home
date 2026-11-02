@@ -1,0 +1,115 @@
+extends SceneTree
+var player: CharacterBody2D
+var camera: Camera2D
+var started: int
+var last: int
+var frames: Dictionary = {}
+var label: String = ""
+var previous_camera: float
+var camera_still: int = 0
+var samples: int = 0
+var direction: int = 1
+var distance: float = 0.0
+var previous_x: float
+var measured_physics: int = 0
+var manual: bool = false
+var duration: float = 10.0
+var captured: bool = false
+var old_velocity := Vector2.ZERO
+
+func _initialize() -> void:
+	call_deferred("start")
+
+func start() -> void:
+	var config := {"ticks":120, "interp":true, "camera":0, "vsync":0, "cap":120, "maximized":false, "manual":false, "duration":10.0}
+	for arg in OS.get_cmdline_user_args():
+		var parts := arg.split("=", true, 1)
+		if parts.size() == 2:
+			if parts[0] == "label":
+				label = parts[1]
+			else:
+				config[parts[0]] = JSON.parse_string(parts[1])
+	Engine.physics_ticks_per_second = int(config.ticks)
+	Engine.max_fps = int(config.cap)
+	physics_interpolation = bool(config.interp)
+	Engine.physics_jitter_fix = 0.0 if physics_interpolation else 0.5
+	DisplayServer.window_set_vsync_mode(int(config.vsync))
+	if config.maximized:
+		root.mode = Window.MODE_MAXIMIZED
+	manual = bool(config.manual)
+	duration = float(config.duration)
+	var scene: Node2D = load("res://scenes/main/main.tscn").instantiate()
+	player = scene.get_node("Actors/Dave")
+	camera = player.get_node("Camera2D")
+	camera.process_callback = int(config.camera)
+	root.add_child(scene)
+	player.reset_physics_interpolation()
+	RenderingServer.viewport_set_measure_render_time(root.get_viewport_rid(), true)
+	for key in ["frame", "process_monitor", "physics_monitor", "render_cpu", "render_gpu", "setup_cpu", "camera_step", "draw_calls", "objects"]:
+		frames[key] = []
+	started = Time.get_ticks_usec()
+	last = started
+	previous_x = player.position.x
+	previous_camera = camera.get_screen_center_position().x
+	print("CONFIG ", JSON.stringify(config), " PID ", OS.get_process_id(), " renderer=", RenderingServer.get_current_rendering_method(), " adapter=", RenderingServer.get_video_adapter_name(), " screen_hz=", DisplayServer.screen_get_refresh_rate(), " size=", root.size)
+
+func _physics_process(_delta: float) -> bool:
+	if not is_instance_valid(player):
+		return false
+	if Time.get_ticks_usec() - started > 2000000:
+		measured_physics += 1
+	if not manual:
+		if player.position.x > 950:
+			direction = -1
+		elif player.position.x < 650:
+			direction = 1
+		Input.action_press("move_right" if direction == 1 else "move_left")
+		Input.action_release("move_left" if direction == 1 else "move_right")
+	return false
+
+func distribution(values: Array) -> Dictionary:
+	values.sort()
+	var size := values.size()
+	if size == 0:
+		return {}
+	return {"p50":snappedf(values[size/2], 0.001), "p95":snappedf(values[int(size*0.95)],0.001), "p99":snappedf(values[int(size*0.99)],0.001), "max":snappedf(values.back(),0.001)}
+
+func _process(_delta: float) -> bool:
+	if not is_instance_valid(player):
+		return false
+	var now := Time.get_ticks_usec()
+	if manual and not captured and now-started > 3000000:
+		root.get_texture().get_image().save_png("res://artifacts/tmp/perf_manual_initial.png")
+		captured = true
+	if manual and not player.velocity.is_equal_approx(old_velocity):
+		print("NATIVE_MOVEMENT velocity=", player.velocity, " position=", player.position)
+		old_velocity = player.velocity
+	if now - started > 2000000:
+		var rid := root.get_viewport_rid()
+		frames.frame.append((now-last)/1000.0)
+		frames.process_monitor.append(Performance.get_monitor(Performance.TIME_PROCESS)*1000.0)
+		frames.physics_monitor.append(Performance.get_monitor(Performance.TIME_PHYSICS_PROCESS)*1000.0)
+		frames.render_cpu.append(RenderingServer.viewport_get_measured_render_time_cpu(rid))
+		frames.render_gpu.append(RenderingServer.viewport_get_measured_render_time_gpu(rid))
+		frames.setup_cpu.append(RenderingServer.get_frame_setup_time_cpu())
+		frames.draw_calls.append(Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME))
+		frames.objects.append(Performance.get_monitor(Performance.RENDER_TOTAL_OBJECTS_IN_FRAME))
+		var camera_x := camera.get_screen_center_position().x
+		frames.camera_step.append(absf(camera_x-previous_camera))
+		if is_equal_approx(camera_x, previous_camera):
+			camera_still += 1
+
+		distance += absf(player.position.x - previous_x)
+		samples += 1
+	previous_x = player.position.x
+	previous_camera = camera.get_screen_center_position().x
+	last = now
+	if now - started > duration*1000000:
+		var result := {"label":label, "samples":samples, "camera_still_percent":100.0*camera_still/maxi(samples,1), "movement_units_per_sec":distance/(duration-2.0), "measured_physics_hz":measured_physics/(duration-2.0), "node_count":get_node_count()}
+		for key in frames:
+			result[key] = distribution(frames[key])
+		if manual:
+			root.get_texture().get_image().save_png("res://artifacts/tmp/perf_manual_final.png")
+		print("RESULT ", JSON.stringify(result))
+		quit()
+	return false

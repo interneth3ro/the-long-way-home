@@ -1,0 +1,41 @@
+import subprocess, ctypes, time, json, sys, os, threading
+from ctypes import wintypes
+exe=r"<HISTORICAL_GODOT_EXECUTABLE>"
+class FT(ctypes.Structure):
+ _fields_=[('low',wintypes.DWORD),('high',wintypes.DWORD)]
+get_times=ctypes.windll.kernel32.GetProcessTimes
+get_times.argtypes=[wintypes.HANDLE,ctypes.POINTER(FT),ctypes.POINTER(FT),ctypes.POINTER(FT),ctypes.POINTER(FT)]
+def cpu(p):
+ a,b,c,d=FT(),FT(),FT(),FT()
+ if not get_times(int(p._handle),ctypes.byref(a),ctypes.byref(b),ctypes.byref(c),ctypes.byref(d)): return None
+ return ((c.high<<32)+c.low+(d.high<<32)+d.low)/1e7
+def gpu():
+ try:
+  return subprocess.check_output([r"<HISTORICAL_GPU_QUERY_EXECUTABLE>",'--query-gpu=utilization.gpu,utilization.memory,memory.used,power.draw','--format=csv,noheader,nounits'],creationflags=subprocess.CREATE_NO_WINDOW,text=True,timeout=3).strip()
+ except Exception as e: return str(e)
+for spec in sys.argv[1:]:
+ label,*args=spec.split(',')
+ before=gpu()
+ start=time.monotonic()
+ p=subprocess.Popen([exe,'--path','.', '--script','artifacts/tmp/performance_probe_20261025.gd','--','label='+label,*args],stdout=subprocess.PIPE,stderr=subprocess.STDOUT,text=True,creationflags=subprocess.CREATE_NO_WINDOW)
+ lines=[]
+ def drain():
+  for line in p.stdout:
+   lines.append(line)
+   if not line.startswith("   at:"): print(line.rstrip(),flush=True)
+ reader=threading.Thread(target=drain,daemon=True)
+ reader.start()
+ points=[]
+ while p.poll() is None:
+  if time.monotonic()-start > 20:
+   p.terminate()
+   p.wait(timeout=5)
+   print("Probe timeout; stopping only the process created by this runner",flush=True)
+   break
+  time.sleep(1)
+  points.append((round(time.monotonic()-start,2),cpu(p),gpu()))
+ reader.join(timeout=2)
+ total=cpu(p)
+ elapsed=time.monotonic()-start
+ print('OS_RESOURCE',json.dumps({'label':label,'exit':p.returncode,'cpu_seconds':total,'wall_seconds':round(elapsed,2),'one_core_percent':round(100*total/elapsed,2) if total else None,'logical_cpus':os.cpu_count(),'gpu_before':before,'gpu_samples_percent_mem_percent_vram_MB_power_W':[x[2] for x in points]}),flush=True)
+ if p.returncode: sys.exit(p.returncode)

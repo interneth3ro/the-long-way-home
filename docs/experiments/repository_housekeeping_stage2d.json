@@ -1,0 +1,311 @@
+{
+  "schema": 1,
+  "baseline": "d5f54506efeab1567dc850aa45ffa84bf194162b",
+  "owner_acceptance": "PENDING",
+  "authorization": "Owner explicitly approved unchanged bundle publication, sanitized historical diagnostics, visual review and one safe useful screenshot, and deletion only of the original diagnostic ZIP after verified source-controlled preservation. No Godot, historical script, benchmark, incident reproduction, nested-clone retirement or other cleanup authorized.",
+  "bundle": {
+    "path": "artifacts/archive/pr-5-abandoned-3b5fecc-20261025T174020Z-c07b84f2/feature-history.bundle",
+    "bytes": 25718,
+    "sha256": "7bcf92a3ebe8b2c3240dda06d21667993c6f2e0626791103e9264ef561c83d60",
+    "ref": "refs/heads/codex/walkable-ship-foundation",
+    "tip": "3b5fecc77c88e7a9da69edcf850951cd04824748",
+    "objects": {
+      "commit": 11,
+      "tree": 30,
+      "blob": 29
+    },
+    "object_list_sha256": "b49bd9f4f4088b5fbbe243629ae2cadb981343e8e069f2f8cce8e845058343b7",
+    "self_contained": true,
+    "purpose": "Independent recovery artifact for abandoned PR #5; not active gameplay or a development branch.",
+    "remote_status_at_audit": "Feature branch absent; GitHub refs/pull/5/head advertised same tip. Local origin feature ref is stale.",
+    "verification": "Bundle verify, pack checksum, bounded delta/object decoding, exact reachable set and local object equality; no import."
+  },
+  "zip": {
+    "path": "artifacts/archive/pr-5-abandoned-3b5fecc-20261025T174020Z-c07b84f2/settings-and-diagnostics.zip",
+    "bytes": 70428,
+    "sha256": "6df1b4dbbb181e15cf7b250a19445c99366e229f90bc4d59a6921f1c79979c65",
+    "entry_count": 16,
+    "uncompressed_bytes": 97117,
+    "compressed_entry_bytes": 68048,
+    "created_utc": "2026-10-25T17:40:57.3625046Z",
+    "entries": [
+      {
+        "name": "project.godot",
+        "bytes": 4718,
+        "compressed_bytes": 764,
+        "sha256": "af064a8aff60bebc9509135660eeb4b28ea92ddadae364e94d18b24806fd0e5e",
+        "disposition": "exact original",
+        "preserved": {
+          "path": "artifacts/evidence/pr5-abandoned-history/historical-project.godot.txt",
+          "bytes": 4718,
+          "sha256": "af064a8aff60bebc9509135660eeb4b28ea92ddadae364e94d18b24806fd0e5e"
+        }
+      },
+      {
+        "name": "artifacts/tmp/performance_probe_20261025.gd",
+        "bytes": 5047,
+        "compressed_bytes": 1847,
+        "sha256": "66ce2f687ac1628cef31009aa7456ca8e7238b085f52240920793c19a4239024",
+        "disposition": "exact original",
+        "preserved": {
+          "path": "artifacts/evidence/pr5-abandoned-history/performance-probe.gd.txt",
+          "bytes": 5047,
+          "sha256": "66ce2f687ac1628cef31009aa7456ca8e7238b085f52240920793c19a4239024"
+        }
+      },
+      {
+        "name": "artifacts/tmp/performance_run_20261025.py",
+        "bytes": 2185,
+        "compressed_bytes": 1123,
+        "sha256": "119d9f60b14ab663fa45c3e0329a05f6a0df1057342a68daad610ebbf57d1cc2",
+        "disposition": "sanitized derivative",
+        "path_literal_substitutions": 2,
+        "normalized_ast_sha256": "29cfeafdb31ccd88c70c79a6fd0e9dbaf5df3eafaa46a0a13dafc5d5a67afdd1",
+        "preserved": {
+          "path": "artifacts/evidence/pr5-abandoned-history/performance-runner.sanitized.py.txt",
+          "bytes": 2158,
+          "sha256": "1469f8db289080e83533c1cea9e87739c6c07f74d4059888c9b3f052035aa4ba"
+        }
+      },
+      {
+        "name": "artifacts/tmp/perf_manual_initial.png",
+        "bytes": 35393,
+        "compressed_bytes": 30184,
+        "sha256": "aed6a3745d20a60fbb90cb955350d4c1dd86ff5e4ff9856847a0909af165d9d3",
+        "disposition": "exact original; visually reviewed",
+        "preserved": {
+          "path": "artifacts/evidence/pr5-abandoned-history/perf_manual.png",
+          "bytes": 35393,
+          "sha256": "aed6a3745d20a60fbb90cb955350d4c1dd86ff5e4ff9856847a0909af165d9d3"
+        }
+      },
+      {
+        "name": "artifacts/tmp/perf_manual_final.png",
+        "bytes": 35393,
+        "compressed_bytes": 30184,
+        "sha256": "aed6a3745d20a60fbb90cb955350d4c1dd86ff5e4ff9856847a0909af165d9d3",
+        "disposition": "excluded exact duplicate",
+        "equivalent_to": "artifacts/tmp/perf_manual_initial.png",
+        "reason": "Full decompressed bytes and hashes equal; not distinct before/after evidence."
+      },
+      {
+        "name": ".godot/.gdignore",
+        "bytes": 1,
+        "compressed_bytes": 3,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+        "disposition": "excluded regenerable or empty metadata",
+        "reason": "Single newline import marker; replacement remains under existing artifacts/.gdignore."
+      },
+      {
+        "name": ".godot/global_script_class_cache.cfg",
+        "bytes": 8,
+        "compressed_bytes": 10,
+        "sha256": "f61aa7ad3097022d6a9d110ca3f73fa7bb348ec2cf9a6e7c9523574dc75f5a16",
+        "disposition": "excluded regenerable or empty metadata",
+        "reason": "Generated empty class list (list=[]); no diagnostic measurements."
+      },
+      {
+        "name": ".godot/scene_groups_cache.cfg",
+        "bytes": 0,
+        "compressed_bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "disposition": "excluded regenerable or empty metadata",
+        "reason": "Empty generated scene-group cache."
+      },
+      {
+        "name": ".godot/uid_cache.bin",
+        "bytes": 124,
+        "compressed_bytes": 97,
+        "sha256": "2cf46288140e6347c3af8f92419aff7d824f3c9219f22bd780c9dcad4480fd47",
+        "disposition": "excluded regenerable or empty metadata",
+        "reason": "Generated resource UID cache; no diagnostic measurements. Bundle retains source UID sidecars."
+      },
+      {
+        "name": ".godot/editor/editor_layout.cfg",
+        "bytes": 1636,
+        "compressed_bytes": 717,
+        "sha256": "6964e63f37fdb51ed2e797810ee66da81bd5cd06ec02a527041fab2fa4f42c1c",
+        "disposition": "meaningful state summarized; derived session/cache payload excluded",
+        "preserved": {
+          "path": "artifacts/evidence/pr5-abandoned-history/editor-state.json",
+          "bytes": 1738,
+          "sha256": "513428bea9e044e66ba02a84b5bcda96353e852895c9259fd452b3b493c3e32d"
+        }
+      },
+      {
+        "name": ".godot/editor/editor_script_doc_cache.res-folding-a7de57390d6e786984ca20c70a831128.cfg",
+        "bytes": 49,
+        "compressed_bytes": 49,
+        "sha256": "fa44dfbae9b3b64980c44d9922acdad9b34ea46c85cce8a917708577229c27f6",
+        "disposition": "excluded regenerable or empty metadata",
+        "reason": "Empty inspector folding list for generated script documentation cache."
+      },
+      {
+        "name": ".godot/editor/filesystem_cache10",
+        "bytes": 985,
+        "compressed_bytes": 365,
+        "sha256": "afde78ec717a8d10f21942404253c2953545af8bd08f5b264ab290b3f14382a4",
+        "disposition": "meaningful state summarized; derived session/cache payload excluded",
+        "preserved": {
+          "path": "artifacts/evidence/pr5-abandoned-history/editor-state.json",
+          "bytes": 1738,
+          "sha256": "513428bea9e044e66ba02a84b5bcda96353e852895c9259fd452b3b493c3e32d"
+        }
+      },
+      {
+        "name": ".godot/editor/main.tscn-folding-f39996a6d27a38698d16421ab974097b.cfg",
+        "bytes": 4917,
+        "compressed_bytes": 530,
+        "sha256": "1801f54e39635d3645fb9a0895f77bef0db7cefe7ab3b761ee0bd92f4d646c67",
+        "disposition": "meaningful state summarized; derived session/cache payload excluded",
+        "preserved": {
+          "path": "artifacts/evidence/pr5-abandoned-history/editor-state.json",
+          "bytes": 1738,
+          "sha256": "513428bea9e044e66ba02a84b5bcda96353e852895c9259fd452b3b493c3e32d"
+        }
+      },
+      {
+        "name": ".godot/editor/project_metadata.cfg",
+        "bytes": 243,
+        "compressed_bytes": 169,
+        "sha256": "41b6ee174ec647407f0c243298528d13038795be213233587749404f0cc5f18c",
+        "disposition": "sanitized derivative",
+        "absolute_path_substitutions": 1,
+        "preserved": {
+          "path": "artifacts/evidence/pr5-abandoned-history/project-metadata.sanitized.cfg.txt",
+          "bytes": 217,
+          "sha256": "1866b243cf05fe9e62e99199557a0e720f9721b5259d702f94fe6a7b6c1cee99"
+        }
+      },
+      {
+        "name": ".godot/editor/script_editor_cache.cfg",
+        "bytes": 534,
+        "compressed_bytes": 181,
+        "sha256": "9657a566237800dbfb42b4558a784ee32405da3d0a2912873c739dc54b09d8b7",
+        "disposition": "meaningful state summarized; derived session/cache payload excluded",
+        "preserved": {
+          "path": "artifacts/evidence/pr5-abandoned-history/editor-state.json",
+          "bytes": 1738,
+          "sha256": "513428bea9e044e66ba02a84b5bcda96353e852895c9259fd452b3b493c3e32d"
+        }
+      },
+      {
+        "name": "manifest.json",
+        "bytes": 5884,
+        "compressed_bytes": 1825,
+        "sha256": "e4a00dd7bff63347046fc629cb84541916c42097b4787c9a4c41213ab1c06d04",
+        "disposition": "sanitized derivative",
+        "absolute_path_substitutions": 16,
+        "preserved": {
+          "path": "artifacts/evidence/pr5-abandoned-history/manifest.sanitized.json",
+          "bytes": 5988,
+          "sha256": "b6ffeb8f756b37441955201bbe6cc8efc0acebf78b9538b5550ed87f248da8e2"
+        }
+      }
+    ]
+  },
+  "outputs": [
+    {
+      "path": "artifacts/evidence/pr5-abandoned-history/.gitattributes",
+      "bytes": 222,
+      "sha256": "b32d69f177522e96cb732cc001ca72a06cfbf78e37b8f7bf07634051cca642ad"
+    },
+    {
+      "path": "artifacts/evidence/pr5-abandoned-history/editor-state.json",
+      "bytes": 1738,
+      "sha256": "513428bea9e044e66ba02a84b5bcda96353e852895c9259fd452b3b493c3e32d"
+    },
+    {
+      "path": "artifacts/evidence/pr5-abandoned-history/historical-project.godot.txt",
+      "bytes": 4718,
+      "sha256": "af064a8aff60bebc9509135660eeb4b28ea92ddadae364e94d18b24806fd0e5e"
+    },
+    {
+      "path": "artifacts/evidence/pr5-abandoned-history/manifest.sanitized.json",
+      "bytes": 5988,
+      "sha256": "b6ffeb8f756b37441955201bbe6cc8efc0acebf78b9538b5550ed87f248da8e2"
+    },
+    {
+      "path": "artifacts/evidence/pr5-abandoned-history/perf_manual.png",
+      "bytes": 35393,
+      "sha256": "aed6a3745d20a60fbb90cb955350d4c1dd86ff5e4ff9856847a0909af165d9d3"
+    },
+    {
+      "path": "artifacts/evidence/pr5-abandoned-history/performance-probe.gd.txt",
+      "bytes": 5047,
+      "sha256": "66ce2f687ac1628cef31009aa7456ca8e7238b085f52240920793c19a4239024"
+    },
+    {
+      "path": "artifacts/evidence/pr5-abandoned-history/performance-runner.sanitized.py.txt",
+      "bytes": 2158,
+      "sha256": "1469f8db289080e83533c1cea9e87739c6c07f74d4059888c9b3f052035aa4ba"
+    },
+    {
+      "path": "artifacts/evidence/pr5-abandoned-history/project-metadata.sanitized.cfg.txt",
+      "bytes": 217,
+      "sha256": "1866b243cf05fe9e62e99199557a0e720f9721b5259d702f94fe6a7b6c1cee99"
+    },
+    {
+      "path": "artifacts/evidence/pr5-abandoned-history/README.md",
+      "bytes": 1733,
+      "sha256": "e509c0a2bbe8467ccca5335c77a8db449da907c9d68c239a5523cc8c0c39a3dc"
+    }
+  ],
+  "screenshot_review": {
+    "result": "PASS: visually reviewed exact image shows ship greybox viewport with game title, control labels, room labels and player; no personal/account identifiers, private paths, credentials or sensitive desktop content.",
+    "pixels_and_metadata_unchanged": true,
+    "metadata": "PNG chunk CRCs verified; only IHDR, sRGB, IDAT, IEND; no textual/EXIF chunks.",
+    "retained_copies": 1,
+    "limitations": "Identical initial/final image cannot demonstrate performance improvement or incident cause."
+  },
+  "publication_review": {
+    "text": "Complete proposed text review and absolute-path/account/credential indicator scan; no private values published.",
+    "runner": "Exactly two executable-path literal substitutions; AST otherwise identical. Never executed.",
+    "bundle": "All 29 blob texts reviewed for path/credential indicators; normal already-public Git authorship metadata retained.",
+    "editor": "Each of ten editor/cache entries classified separately; safe meaningful state summarized; one executable path sanitized.",
+    "activation": "Text-suffixed scripts outside active tooling; artifacts/.gdignore retained unchanged."
+  },
+  "historical_limitations": [
+    "Root cause undetermined; severe reported Windows lockup and hard reboot not reproduced.",
+    "No raw performance-result log or crash dump in ZIP.",
+    "No new runtime, gameplay, performance or engine verification.",
+    "Exact settings also exist in local-only Codex snapshot e2778174d48649da208d35507a06251de0907034; blob e7c5fac3169261f24bea41b49c92fbf9d31346dd."
+  ],
+  "historical_dependency_sha256": {
+    "docs/experiments/repository_housekeeping_stage2a.json": "18341364e959fb7f512357bbce24d2033a26660422beb2dffbf8dfc01b7bfa20",
+    "docs/experiments/repository_housekeeping_stage2a_cleanup.json": "0c8904624fa55105536488975c008fe51f102987511b2afe1acc7e4ed31cddb8",
+    "docs/experiments/repository_housekeeping_stage2c.json": "4c3675f8a27cbf776a2068f393fa299bc16de809a5e075b8944074096726afa9",
+    "docs/experiments/repository_housekeeping_stage2c_cleanup.json": "05527d7071927915b00a4f99ce019f3526cff615b338ef7cfbc9a69836d4255b",
+    "artifacts/evidence/pr103-native-review-28d3f7d6-9d1b-413e-a68a-390d05296c4b/seal.json": "b25024de8ea6968fcb46bf25b2fbe412f88bd0e4537a73eb3c580ea351615dce",
+    "artifacts/evidence/pr103-native-review-28d3f7d6-9d1b-413e-a68a-390d05296c4b/REVIEW.md": "77625b521557c728f27bda27186851e46091beda870be334b9815b0e9de8f7bc",
+    "artifacts/evidence/pr103-native-review-28d3f7d6-9d1b-413e-a68a-390d05296c4b/commands.json": "7a685911e8b5c913bbbc73d239bac062a326c1620672b85b8c4f36b8f970f842",
+    "artifacts/evidence/pr103-native-review-28d3f7d6-9d1b-413e-a68a-390d05296c4b/manifest.json": "c63be2396513cc4145dc4be121489a213fbf97ba4efe735c6dd2d30126b687b7",
+    "artifacts/evidence/pr103-native-review-28d3f7d6-9d1b-413e-a68a-390d05296c4b/proposal.json": "3fd7c93864752be48dbd9f43dd52264a1a37d1b034f3c676d8dc9429a0174928",
+    "artifacts/evidence/pr103-native-review-28d3f7d6-9d1b-413e-a68a-390d05296c4b/source-baseline.json": "973320ab24d74fcd7daa022d3b4214fb05d9ab475829b458f5074886ea99ffac",
+    "artifacts/evidence/pr103-native-review-28d3f7d6-9d1b-413e-a68a-390d05296c4b/supervisor.py": "6c0a23920f30b62c59efbd68465f4a0691769a55ad1f553034d45036e8896209",
+    "artifacts/evidence/pr103-native-review-28d3f7d6-9d1b-413e-a68a-390d05296c4b/supervisor_tests.py": "25da2eb314d7eb8de4c05c86bf76c415e766afacbc4d10862f814154aba11c06",
+    "artifacts/evidence/pr103-native-review-28d3f7d6-9d1b-413e-a68a-390d05296c4b/tests-result.json": "2fbd08daf72ec65f1560a962d9b3c9e3ab7a533b8532c085372a814b48cd4557",
+    "artifacts/evidence/pr104-native-review-28f57c4c-677f-4f9e-8809-7be9fc66f2d6/seal.json": "55c05b996cfafe30ecf60db3e866e599ed00e8916d372fd9462e91b3409be7e4",
+    "artifacts/evidence/pr104-native-review-28f57c4c-677f-4f9e-8809-7be9fc66f2d6/REVIEW.md": "e91438933279a018e0d09eaa280bd42fcfcb87fc085bdb9c1e1ddcdc29ed900e",
+    "artifacts/evidence/pr104-native-review-28f57c4c-677f-4f9e-8809-7be9fc66f2d6/commands.json": "e88b2b710158fde83ccc0c5e256e045aef2f1250636c90b4a35e8572bb14c43b",
+    "artifacts/evidence/pr104-native-review-28f57c4c-677f-4f9e-8809-7be9fc66f2d6/manifest.json": "a613c62830f431b90cc5466435cac836573ed641026e60d515339d6e3a094fab",
+    "artifacts/evidence/pr104-native-review-28f57c4c-677f-4f9e-8809-7be9fc66f2d6/prior-evidence.json": "bd16aa0fb902c840d32389776cb0ed0cc901c391299cf1fc8fd335bc0a004576",
+    "artifacts/evidence/pr104-native-review-28f57c4c-677f-4f9e-8809-7be9fc66f2d6/proposal.json": "a1496c8bcd64a1d21d0d4c0fc44a67607b94b207c621c883ddf522627767f117",
+    "artifacts/evidence/pr104-native-review-28f57c4c-677f-4f9e-8809-7be9fc66f2d6/review_checks.py": "1638a58259b87c50c9f6ba84a4703e8e82c763b2275dd204ad6917e6a9ec7311",
+    "artifacts/evidence/pr104-native-review-28f57c4c-677f-4f9e-8809-7be9fc66f2d6/source-baseline.json": "1ccfe75d9f33ed46f538ccc517f055c697d8e1be3cca58757c46490a84451a11",
+    "artifacts/evidence/pr104-native-review-28f57c4c-677f-4f9e-8809-7be9fc66f2d6/supervisor.py": "48fad1fadf03ac04661b26c8b44ef796f4b6aec8d008eafb186d2ccd5addff05",
+    "artifacts/evidence/pr104-native-review-28f57c4c-677f-4f9e-8809-7be9fc66f2d6/verification.json": "7a5e0b8d824d14288b057b20a512eee4789ee8fb1b6498ea580e7a239bb2aa76"
+  },
+  "deletion": {
+    "authorized_path": "artifacts/archive/pr-5-abandoned-3b5fecc-20261025T174020Z-c07b84f2/settings-and-diagnostics.zip",
+    "required_bytes": 70428,
+    "required_sha256": "6df1b4dbbb181e15cf7b250a19445c99366e229f90bc4d59a6921f1c79979c65",
+    "gate": "Commit bundle, evidence and disposition; verify committed exact output identities, sanitized equivalence, privacy, static checks, original ZIP identity and protected files before exact-path deletion. Preserve ZIP on any failure.",
+    "completion_record": "docs/experiments/repository_housekeeping_stage2d_cleanup.json"
+  },
+  "protected_exclusions": [
+    "All historical receipts, seals, manifests and original pins remain unchanged.",
+    "Nested diagnostic clones, ordinary Godot caches, validation profiles, unrelated ignored files and audit Markdown remain protected.",
+    "History bundle must remain byte-identical; only ZIP deletion authorized."
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "historical_only": true,
+  "source": "PR #5 diagnostic ZIP; no current runtime verification",
+  "entries": {
+    ".godot/editor/editor_layout.cfg": {
+      "retained_meaning": "Main scene open; Dave and ship camera scripts open; editor and game windows on display index 1; editor maximized.",
+      "open_scenes": [
+        "res://scenes/main/main.tscn"
+      ],
+      "open_scripts": [
+        "res://scripts/dave.gd",
+        "res://scripts/ship_camera.gd"
+      ],
+      "editor_window": {
+        "screen": 1,
+        "mode": "maximized",
+        "position": [
+          1920,
+          23
+        ]
+      },
+      "game_view": {
+        "screen": 1,
+        "rect": [
+          2234,
+          113,
+          1292,
+          769
+        ]
+      }
+    },
+    ".godot/editor/script_editor_cache.cfg": {
+      "scripts": [
+        "res://scripts/dave.gd",
+        "res://scripts/ship_camera.gd"
+      ],
+      "bookmarks": [],
+      "breakpoints": [],
+      "selection": false,
+      "cursor_row": 0,
+      "cursor_column": 0,
+      "retained_meaning": "Both scripts have empty breakpoint/bookmark lists and reset cursor state; scrolling and folding payload excluded."
+    },
+    ".godot/editor/filesystem_cache10": {
+      "retained_meaning": "Resource scan indexes AGENTS, README, GAME_VISION, main/player scenes, Dave/camera scripts and ship-foundation test. Filesystem timestamps and derived resource-cache syntax excluded."
+    },
+    ".godot/editor/main.tscn-folding-f39996a6d27a38698d16421ab974097b.cfg": {
+      "retained_meaning": "Inspector expansion state for greybox floor/walkway, thresholds, Actors hull/bulkheads/props/Dave and HUD. No runtime result; nodes_folded and animation_groups_folded are empty."
+    }
+  }
+}
