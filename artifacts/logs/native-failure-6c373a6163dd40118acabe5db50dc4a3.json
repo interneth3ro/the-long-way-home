@@ -1,0 +1,32 @@
+{
+  "Static": "PASS",
+  "Import": "FAIL",
+  "Native": "NOT RUN",
+  "Infrastructure": "FAIL",
+  "Authorization": "PASS",
+  "Reason": "DISPATCH_VALIDATION_OR_PROCESS_FAILURE",
+  "Revision": "4d741f1ac626ed87ac5d00058561b82ca9bd757c",
+  "Executable": "D:\\GameDev\\Godot\\Standard\\Godot_v4.7.2-stable_win64.exe",
+  "Sha256": "AB1824F85BFD8E0E4128182C000C4003A3E042245B2967848D089B2A04B22424",
+  "StageDirectory": "D:\\GameDev\\Godot\\TLWH-NativeStages\\tlwh-native-plan-8bda66888e4e425a9dde17da0abc8481",
+  "Commands": [
+    {
+      "Phase": "Import",
+      "Executable": "D:\\GameDev\\Godot\\Standard\\Godot_v4.7.2-stable_win64.exe",
+      "Sha256": "AB1824F85BFD8E0E4128182C000C4003A3E042245B2967848D089B2A04B22424",
+      "Arguments": [
+        "--headless",
+        "--editor",
+        "--path",
+        "D:\\GameDev\\Godot\\TLWH-NativeStages\\tlwh-native-plan-8bda66888e4e425a9dde17da0abc8481",
+        "--quit"
+      ],
+      "Directory": "D:\\GameDev\\Godot\\TLWH-NativeStages\\tlwh-native-plan-8bda66888e4e425a9dde17da0abc8481",
+      "Seconds": 60,
+      "MaxBytes": 1048576
+    }
+  ],
+  "Diagnostic": "Unexpected staged file.",
+  "WorkingSha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+  "InputsSha256": "51D855E46305444E18558FFC6A4E0C1F8B428D95C459FAF0120BE80EAC5956B6"
+}

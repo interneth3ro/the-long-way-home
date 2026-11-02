@@ -13,6 +13,7 @@ import subprocess
 import exterior_activation_preservation as activation
 import production_terrain_preservation as presenter
 import native_terrain_preservation as native
+import housekeeping_preservation as housekeeping
 
 # Re-export immutable identities, never substitute current hashes for old pins.
 from exterior_activation_preservation import (
@@ -138,6 +139,7 @@ def verify_current_input(path, raw):
 
 def audio_predecessor(path, raw):
     """Validate exact audio candidates before comparing immutable predecessors."""
+    raw = housekeeping.historical_input(path, raw)
     pins = AUDIO_INPUT_SHA256 | AUDIO_TEST_SHA256
     if path not in pins:
         return raw
@@ -193,6 +195,7 @@ def hatch_predecessor(path, raw):
 
 def historical_bytes(path, raw):
     """Validate a complete approved delta before returning its original bytes."""
+    raw = housekeeping.historical_input(path, raw)
     raw = hatch_predecessor(path, raw)
     pins = CURRENT_INPUT_SHA256 | ACCEPTED_TEST_SHA256 | MAINTAINED_TEST_SHA256
     if path not in pins:
@@ -243,6 +246,7 @@ def historical_test_bytes(path, raw):
 
 
 def without_current_paths(paths):
+    paths = housekeeping.without_approved_paths(paths)
     remaining = []
     for path in paths:
         if path in AUDIO_INPUT_SHA256:

@@ -1,0 +1,35 @@
+{
+  "engine_executed": false,
+  "focused": {
+    "seconds": 3.051,
+    "status": "PASS",
+    "tests": 15
+  },
+  "head": "4a364481e5eba90bba0d88b2518a8fce004dc979",
+  "protected_source_owner_files": 4386,
+  "stage_created": false,
+  "static": {
+    "command": [
+      "python",
+      "-B",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "tests",
+      "-p",
+      "static_*test.py"
+    ],
+    "controller_seconds": 109.226,
+    "seconds": 108.612,
+    "status": "PASS",
+    "tests": 178,
+    "timeout_seconds": 180
+  },
+  "supervisor_inert": {
+    "meaning": "AST equality and pure classification/reference checks; no engine, stage or process probes",
+    "seconds": 0.09,
+    "status": "PASS",
+    "tests": 4
+  }
+}

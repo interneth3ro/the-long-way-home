@@ -1,0 +1,82 @@
+{
+  "phase": "Import",
+  "result": "PREFLIGHT_FAIL",
+  "supervisor_exit_code": 1,
+  "supervisor_wall_seconds": 0.6028352,
+  "Godot_started": false,
+  "Godot_exit_code": null,
+  "Godot_duration_seconds": null,
+  "engine_output_bytes": 0,
+  "diagnostic": "RuntimeError: Source HEAD/branch/index/status/refs/working input identity changed",
+  "failure_location": "supervisor.py verify_source:104, guards at main:433; before execution-state creation and process launch",
+  "supervisor_invocation": [
+    "python",
+    "-B",
+    "D:\\GameDev\\Godot\\TLWH-NativeStages\\tlwh-pr102-prepared-8e9b3e23-9c43-4f9b-8f35-dbb6e25a29a7\\review\\supervisor.py",
+    "--phase",
+    "Import",
+    "--execute",
+    "--review-seal-sha256",
+    "d6fb450a82041905698749816c367fceba53370c44435f0d2a1eec3c8cc06327"
+  ],
+  "planned_engine_executable": "D:\\GameDev\\Godot\\Standard\\Godot_v4.7.2-stable_win64.exe",
+  "planned_engine_arguments": [
+    "--headless",
+    "--editor",
+    "--path",
+    "D:\\GameDev\\Godot\\TLWH-NativeStages\\tlwh-pr102-prepared-8e9b3e23-9c43-4f9b-8f35-dbb6e25a29a7\\project",
+    "--quit"
+  ],
+  "reviewed_seal_sha256": "d6fb450a82041905698749816c367fceba53370c44435f0d2a1eec3c8cc06327",
+  "seal_and_review_controls_unchanged": true,
+  "preflight_gates": {
+    "mutex": "PASS",
+    "preexisting_Godot_process_exclusion": "PASS",
+    "review_controls": "PASS",
+    "source_preservation": "FAIL",
+    "stage_and_executable": "NOT REACHED DURING ATTEMPT"
+  },
+  "post_failure_read_only_checks": {
+    "stage": "PASS",
+    "stage_file_count": 54,
+    "generated_files": {},
+    "executable_hash_matches_pin": true,
+    "all_393_working_files_unchanged": true,
+    "head_unchanged": true,
+    "branch_unchanged": true,
+    "index_unchanged": true,
+    "status_unchanged": true
+  },
+  "source_fields_changed": [
+    "refs_hex"
+  ],
+  "reference_differences": {
+    "refs/codex/turn-diffs/captures/1793491735271/1a22bada-100d-4c19-a55a-e16dc1c26650/base": {
+      "baseline": "40d40f06d46d21846e0cb43860dc4ff757a60036",
+      "current": null
+    },
+    "refs/codex/turn-diffs/captures/1793492483206/eb7fbb2a-27ae-4433-a3b8-c72b0353334c/base": {
+      "baseline": null,
+      "current": "40d40f06d46d21846e0cb43860dc4ff757a60036"
+    },
+    "refs/codex/turn-diffs/checkpoints/3dc43fcc656f2a9c4ff1761f566a082f/56786ae432e54df18942f6916a4be767/1793489295165/bdf5da44-efc2-41de-b5e7-18e8b0151970": {
+      "baseline": "40d40f06d46d21846e0cb43860dc4ff757a60036",
+      "current": null
+    },
+    "refs/codex/turn-diffs/checkpoints/3dc43fcc656f2a9c4ff1761f566a082f/87783d97ae153507f78e6f4bce07a543/1793492314926/dbc1cdcd-4918-469a-8bd7-e2b55b0d217e": {
+      "baseline": null,
+      "current": "40d40f06d46d21846e0cb43860dc4ff757a60036"
+    }
+  },
+  "baseline_refs_sha256": "b23858dfcd893bd2f1266c8893bb981f382c87bab85f782ee26a8b4e63828115",
+  "current_refs_sha256": "d5aaa52de13e8a755c5f6ae2a2abb8160e3140d81cbc649c424ff6427cd91d1d",
+  "retry": false,
+  "subsequent_phases_attempted": false,
+  "execution_state_exists": false,
+  "pr102_status": {
+    "head": "07337fdfeb5bdd28200d297ea36951b054dd04a0",
+    "draft": true,
+    "merged": false
+  },
+  "stage_preserved": true
+}

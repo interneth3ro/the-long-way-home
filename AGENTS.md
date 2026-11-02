@@ -128,7 +128,7 @@ overlapping documents. Do not introduce custom tooling without a concrete need.
 | Category | Retention and location |
 | --- | --- |
 | Permanent | Source, scenes, approved production artwork/source assets, narrative content and authoritative documentation. Keep documentation in `docs/` and approved assets in `assets/` when needed. Preserve existing conventions. |
-| Historical evidence | Selected screenshots, useful failure logs and meaningful PR verification records. Retain only evidence useful after merge; store under the ignored `artifacts/` paths below. |
+| Historical evidence | Commit explicitly owner-approved, privacy-reviewed permanent screenshots, useful failure logs and meaningful PR verification records under `artifacts/evidence/` or `artifacts/logs/`. Preserve exact historical bytes and provenance. Temporary outputs remain ignored. |
 | Disposable | Proven regenerable temporary outputs and routine successful check output with no continuing value. Prefer no saved output; remove only exact, verified task-owned files when authorized. |
 
 Use `artifacts/screenshots/` for temporary visual evidence, `artifacts/logs/` for
@@ -141,6 +141,23 @@ approved; do not retain routine successful validation logs permanently.
 Preserve user-authored artwork, saves, settings and irreplaceable material.
 Unknown files remain protected even when ignored, named as caches or located in
 `artifacts/tmp/`. Location and extension alone never authorize deletion.
+
+
+The Stage 2A housekeeping disposition in
+`docs/experiments/repository_housekeeping_stage2a.json` records only the exact
+owner-approved retention and deletion scope. It does not change historical
+receipts or authorize further cleanup. Four historical-publication exceptions
+remain byte-preserved at their original local paths, pending a later sanitization
+and preservation decision. Their redundant ZIP also remains local because it
+contains a deferred original. Never force-add those exceptions or publish their
+embedded private paths. PR #5 archives, nested diagnostic clones, ordinary Godot
+cache and isolated-profile settings/logs remain protected exclusions.
+
+Permanent evidence requires explicit publication approval and privacy review;
+ignored status is not a retention decision. Keep permanent source assets in
+`assets/`, documentation in `docs/`, and approved evidence in the existing
+`artifacts/` conventions. An `artifacts/.gdignore` marker prevents editor imports
+of evidence; it does not authorize deleting or executing anything there.
 
 ## Historical evidence archives
 

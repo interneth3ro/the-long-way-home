@@ -1,0 +1,9 @@
+{
+  "phase": "Phase1Preflight",
+  "result": "FAIL",
+  "return_code": 1,
+  "wall_seconds": 11.704306500032544,
+  "engine_attempted": false,
+  "stage_created": false,
+  "diagnostic": "Traceback (most recent call last):\r\n  File \"D:\\GameDev\\Godot\\Projects\\TLWH\\artifacts\\evidence\\pr103-native-review-28d3f7d6-9d1b-413e-a68a-390d05296c4b\\supervisor.py\", line 581, in <module>\r\n    main()\r\n    ~~~~^^\r\n  File \"D:\\GameDev\\Godot\\Projects\\TLWH\\artifacts\\evidence\\pr103-native-review-28d3f7d6-9d1b-413e-a68a-390d05296c4b\\supervisor.py\", line 493, in main\r\n    verify_source(baseline)\r\n    ~~~~~~~~~~~~~^^^^^^^^^^\r\n  File \"D:\\GameDev\\Godot\\Projects\\TLWH\\artifacts\\evidence\\pr103-native-review-28d3f7d6-9d1b-413e-a68a-390d05296c4b\\supervisor.py\", line 100, in verify_source\r\n    raise RuntimeError(\"Source/protected owner material/references/worktrees/history changed\")\r\nRuntimeError: Source/protected owner material/references/worktrees/history changed\r\n"
+}

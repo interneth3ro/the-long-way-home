@@ -1,0 +1,102 @@
+{
+  "purpose": "Historical preservation of closed, unmerged PR #107; owner-authorized abandoned experiment cleanup",
+  "owner_disposition": "PR #107 was abandoned for artistic reasons, not because of a performance or gameplay failure. The owner found the disturbed-earth and skid-mark treatment insufficiently impactful and preferred the existing ship/contact-shadow presentation.",
+  "pr_snapshot": {
+    "url": "https://github.com/interneth3ro/the-long-way-home/pull/107",
+    "number": 107,
+    "state": "closed",
+    "merged": false,
+    "mergeable": true,
+    "draft": true,
+    "body": "Integrates the owner-approved disturbed-earth concept as one reversible, noncolliding Sprite2D beneath the approved contact shadow and hull. Based on merged PR #106 at 029e1d54958d6259940cf44e4b5f56fb53bc0133. The original PNG remains preserved in Git at initial implementation eee70da59aa0cfbe26b518517cdc5502b9ce8855.\n\nOwner initial gameplay review: **4/6 PASS**. Artwork alignment FAIL; skid-mark placement PASS; visual intensity FAIL; terrain blending PASS; hatch/gameplay clearance PASS; performance PASS (owner observation, no benchmark). The supplied screenshot shows a detached soil ridge above/left of the nose, while rear furrows are barely visible. Best-supported explanation: the initial broad-patch guide did not register its ridge contour to the actual grounded hull. A global translation would also move the accepted rear placement.\n\nCorrection: localized deterministic forward warp, plus selective rear channel/ridge contrast. Sprite transform is UNCHANGED: world top-left (-1334,-1122), scale (1,1), zero rotation, centered=false, Z=-2. Terrain Z=-11, shadow Z=-1, hull Z=0 and existing Y sorting remain unchanged.\n\nExact image correction (source pixel coordinates; S denotes cubic smoothstep):\n- Forward displacement (80,55) * (1-S(650,900,x)) * S(550,800,y), inverse-mapped with 16 fixed-point iterations and premultiplied-alpha bilinear sampling in X=230..899, Y=550..1159. This tucks the forward patch inward while tapering to untouched hatch/rear coordinates.\n- Rear masks use distance d to unchanged segments (1030,650)-(1820,245) and (1250,755)-(1850,375), evaluated in X=1050..1919, Y=180..859. Channel=1-S(14,48,d); ridge=S(24,36,d)*(1-S(48,72,d)); gate=S(1050,1200,x)*S(8,56,alpha). RGB multiplier=1-0.50*channel*gate+0.12*ridge*gate; alpha adds 0.55*channel*gate*(255-alpha), rounded/clamped to bytes. No blanket opacity multiplier; rear alpha <=8 is unchanged and no new rear painted support is added.\n\nAsset: assets/environment/exterior/disturbed_earth_skid_marks_v1.png\nOriginal SHA-256: 7d32263726b6c84c12e8687dfd31e296bddd82e62f25e13fc7c47058784e4cb1\nCorrected SHA-256: 35b4576aba05c8de76b9b6adde56376a219bae8b76e5e09239bc8d2f4efcdf7d\n\nFocused static validation PASS:\n- Exact deterministic regeneration from original Git blob; PNG chunk CRC/decode and RGBA 2200 x 1300 retained. Alpha 0..253; 2,459,740 transparent and 400,260 partially transparent pixels.\n- Exactly 221,968 forward and 72,206 rear pixels changed within the stated regions. Rear coordinates/directions retained; both channel cores measurably darken and gain alpha. Low-alpha rear feathering is unchanged.\n- Corrected source alpha bounds [340,216)..[1879,1156) map to world [-994,-906)..[545,34). Source rectangle X=900..1000, Y=900..1110 around hatch/spawn/approach is pixel-identical.\n- Entire scene byte-equivalent to initial implementation after line-ending normalization: references, sprite transform, layer order, shadow/hull registration, three convex collisions, hatch/spawn and existing sorting unchanged. Approved ship and shadow PNGs are byte-identical. No camera, terrain, construction, Ferrite, gameplay or hidden legacy visual changes.\n- Only PNG and scoped README record changed in this correction; documentation-sync, Markdown link and git diff --check pass. All 45 pre-existing untracked files remain hash-identical. Existing owner files and evidence preserved.\n\nA local ignored static before/after registration composition uses the actual approved hull and shadow on a plain background. This is asset inspection, not an in-game screenshot or Weathered Earth blending verification. No Godot, imports, native tests, gameplay launches or benchmarks were run.\n\n**Owner graphical retest pending; no final acceptance.** Ready for owner-controlled screenshot review of nose fit, skid visibility, soft terrain blending and hatch clearance. Hide DisturbedEarth for rollback. Separate debris, salvage, hatch animation, foreground occlusion and camera work remain deferred. Do not merge automatically.",
+    "title": "Integrate disturbed earth and skid marks beneath crashed ship",
+    "base": "main",
+    "base_sha": "029e1d54958d6259940cf44e4b5f56fb53bc0133",
+    "head": "codex/disturbed-earth-skid-marks",
+    "head_sha": "5191e55ca46474a1a63cc5348955e9db42154400",
+    "head_repo_id": 1433378018,
+    "head_repo_full_name": "interneth3ro/the-long-way-home",
+    "merge_commit_sha": "c05ea146b04bb3997b0b8fcc0977ef993d86e359",
+    "user": {
+      "login": "interneth3ro",
+      "name": "interneth3ro",
+      "email": null,
+      "avatar_url": "https://avatars.githubusercontent.com/u/5272022?v=4",
+      "id": 5272022
+    },
+    "requested_reviewers": null,
+    "requested_team_reviewers": null,
+    "diff": null,
+    "comments": null,
+    "created_at": "2026-11-01T23:46:10Z",
+    "updated_at": "2026-11-01T23:59:04Z",
+    "closed_at": "2026-11-01T23:59:04Z",
+    "merged_at": null,
+    "commits": 2,
+    "changed_files": 3,
+    "additions": 67,
+    "deletions": 1,
+    "display_url": "https://github.com/interneth3ro/the-long-way-home/pull/107",
+    "display_title": "Integrate disturbed earth and skid marks beneath crashed ship"
+  },
+  "preservation_branch": "codex/preserve-pr107-abandoned-experiment",
+  "final_head": "5191e55ca46474a1a63cc5348955e9db42154400",
+  "accepted_main": "029e1d54958d6259940cf44e4b5f56fb53bc0133",
+  "original_artwork": {
+    "commit": "eee70da59aa0cfbe26b518517cdc5502b9ce8855",
+    "path": "assets/environment/exterior/disturbed_earth_skid_marks_v1.png",
+    "sha256": "7d32263726b6c84c12e8687dfd31e296bddd82e62f25e13fc7c47058784e4cb1"
+  },
+  "corrected_artwork": {
+    "commit": "5191e55ca46474a1a63cc5348955e9db42154400",
+    "path": "assets/environment/exterior/disturbed_earth_skid_marks_v1.png",
+    "sha256": "35b4576aba05c8de76b9b6adde56376a219bae8b76e5e09239bc8d2f4efcdf7d"
+  },
+  "retained_evidence": {
+    "artifacts/evidence/pr107-static-registration-before-after.png": {
+      "size": 469020,
+      "sha256": "0418c6b378d76fa31a5106f64be1c0a7af4bd3ee1330f25b886c96a5d33e8058"
+    },
+    "artifacts/evidence/pr107-static-registration-before-after.png.import": {
+      "size": 1036,
+      "sha256": "8612b8cf91b59b7746230fa81b810fc79068aef66b876acf481768d187230ecf"
+    }
+  },
+  "source_chat": {
+    "id": "01a1997e-6e19-7930-b809-d1286be64775",
+    "title": "Integrate crash-site damage art",
+    "final_reports": [
+      "The request mentions an in-game screenshot, but it wasn\u00e2\u20ac\u2122t attached here. Please attach it or provide its local file path so I can check the nose mismatch against your view.",
+      "Updated [draft PR #107](https://github.com/interneth3ro/the-long-way-home/pull/107).\n\n**HEAD:** `5191e55ca46474a1a63cc5348955e9db42154400`\n\nThe nose mismatch appears to come from the broad patch\u00e2\u20ac\u2122s ridge contour missing the grounded hull. A localized warp now tucks it inward by up to `(80,55)` pixels, tapering before the hatch region. Rear furrow coordinates remain fixed.\n\nSprite transform is unchanged: position `(-1334,-1122)`, scale `(1,1)`, rotation `0`, Z=-2. Selective channel darkening, alpha increases and modest ridge highlights strengthen the skids without blanket opacity adjustment.\n\n- **Original SHA-256:** `7d32263726b6c84c12e8687dfd31e296bddd82e62f25e13fc7c47058784e4cb1`\n- **Corrected SHA-256:** `35b4576aba05c8de76b9b6adde56376a219bae8b76e5e09239bc8d2f4efcdf7d`\n\nFocused static checks passed: deterministic regeneration, PNG integrity, RGBA dimensions, transparency, registration and preservation. Ship, shadow, scene and gameplay remain unchanged; all 45 existing untracked files are preserved. Tracked working tree and index are clean.\n\nReady for owner-controlled graphical retesting. Nose fit and contrast against Weathered Earth remain unverified in-game. Godot was not launched; no merge or cleanup performed.",
+      "Created [draft PR #107](https://github.com/interneth3ro/the-long-way-home/pull/107).\n\n- **HEAD:** `eee70da59aa0cfbe26b518517cdc5502b9ce8855`\n- **Asset:** [disturbed_earth_skid_marks_v1.png](/D:/GameDev/Godot/Projects/TLWH/assets/environment/exterior/disturbed_earth_skid_marks_v1.png)\n- **SHA-256:** `7d32263726b6c84c12e8687dfd31e296bddd82e62f25e13fc7c47058784e4cb1`\n- **Verified:** 2200 \u00c3\u2014 1300 RGBA; genuine transparency, feathered alpha; byte-identical to supplied PNG.\n- **Sprite:** position `(-1334,-1122)`, scale `(1,1)`, zero rotation, top-left registration, Z=-2.\n- **Layering:** terrain \u00e2\u2020\u2019 ground treatment \u00e2\u2020\u2019 approved shadow \u00e2\u2020\u2019 hull; existing sorting preserved.\n\nThe broad patch sits beneath the nose/fuselage, with furrows extending upper right behind the engines. Placement, perspective alignment and apparent opacity remain provisional.\n\nFocused static checks passed for PNG integrity, references, scene configuration, transform arithmetic and preservation. Ship, shadow, collisions, hatch, spawn, camera and gameplay remain unchanged; all 44 existing untracked files remain hash-identical.\n\nReady for owner-controlled graphical review. Godot was not launched. No merge, cleanup or debris development was performed."
+    ]
+  },
+  "verification": "Original and corrected artwork hashes verified against Git blobs; two-commit branch history verified; tracked state clean; accepted hull/contact-shadow hashes verified. Historical static results are recorded above, not rerun. No Godot execution.",
+  "owner_material_baseline": {
+    "untracked_count": 45,
+    "untracked_digest": "8e21b6c7db5952d10c1f1e4788b00776178641000e0c294afc799233046634c6",
+    "preserved_refs": [
+      "refs/heads/codex/96-native-47-pattern-prototype 1e5b5ee2a92d75b384ae8c9aa74b8a23a099a898",
+      "refs/heads/codex/96-native-terrain-prototype 840ca4df88feeb6ce0fd40d20d590631db4234fc",
+      "refs/heads/codex/preserve-editor-resource-serialization 326591e1a1438944d79b0be4c52992b3eb86af0f",
+      "refs/preservation/pr-24-unmerged-36d0306 36d030627d20aa2a07201357745f555b71916e49"
+    ],
+    "collision_checks": "PASS",
+    "residual_checks": "PASS",
+    "approved_asset": "PASS"
+  },
+  "retention": "Preserve this record and existing evidence in the surviving primary checkout; source/scene/README history retained by the dedicated local and remote preservation branch. No ZIP or original evidence deletion.",
+  "cleanup_result": {
+    "checkout": "main",
+    "accepted_main": "029e1d54958d6259940cf44e4b5f56fb53bc0133",
+    "historical_head": "5191e55ca46474a1a63cc5348955e9db42154400",
+    "local_branch": "Renamed to codex/preserve-pr107-abandoned-experiment; full history and reflog retained",
+    "remote_feature_branch": "Retired using exact historical-head SHA lease after independent preservation",
+    "remote_preservation_branch": "Verified at exact historical head",
+    "untracked_files": "45 files hash-identical to pre-cleanup baseline",
+    "existing_evidence": "Both recorded evidence files hash-identical",
+    "protected_refs": "Unchanged",
+    "worktrees": "Sole primary checkout; no worktree retired",
+    "scope": "No Godot, tests, rollback commit, merge, archive ZIP, source edits or owner-file cleanup"
+  }
+}

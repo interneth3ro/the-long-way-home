@@ -1,0 +1,32 @@
+{
+  "Static": "PASS",
+  "Import": "FAIL",
+  "Native": "NOT RUN",
+  "Infrastructure": "FAIL",
+  "Authorization": "PASS",
+  "Reason": "DISPATCH_VALIDATION_OR_PROCESS_FAILURE",
+  "Revision": "4f8195c8dc1d85630ec6ff5a15b3558ba2ff71d9",
+  "Executable": "D:\\GameDev\\Godot\\Standard\\Godot_v4.7.2-stable_win64.exe",
+  "Sha256": "AB1824F85BFD8E0E4128182C000C4003A3E042245B2967848D089B2A04B22424",
+  "StageDirectory": "D:\\GameDev\\Godot\\TLWH-NativeStages\\tlwh-native-plan-b404eeab0c76478aae7378363e2e37fa",
+  "Commands": [
+    {
+      "Phase": "Import",
+      "Executable": "D:\\GameDev\\Godot\\Standard\\Godot_v4.7.2-stable_win64.exe",
+      "Sha256": "AB1824F85BFD8E0E4128182C000C4003A3E042245B2967848D089B2A04B22424",
+      "Arguments": [
+        "--headless",
+        "--editor",
+        "--path",
+        "D:\\GameDev\\Godot\\TLWH-NativeStages\\tlwh-native-plan-b404eeab0c76478aae7378363e2e37fa",
+        "--quit"
+      ],
+      "Directory": "D:\\GameDev\\Godot\\TLWH-NativeStages\\tlwh-native-plan-b404eeab0c76478aae7378363e2e37fa",
+      "Seconds": 60,
+      "MaxBytes": 1048576
+    }
+  ],
+  "Diagnostic": "Source or staged input changed: assets/fonts/ibm-plex-sans/IBMPlexSans-Medium.ttf.import",
+  "WorkingSha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+  "InputsSha256": "0F68B25F979CF52C6C9602E74CE51E0EDE75283B8902AC356D520A96E5D75433"
+}

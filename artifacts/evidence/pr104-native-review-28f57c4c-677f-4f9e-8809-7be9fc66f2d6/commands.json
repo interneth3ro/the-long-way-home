@@ -1,0 +1,37 @@
+{
+  "executable": "D:\\GameDev\\Godot\\Standard\\Godot_v4.7.2-stable_win64.exe",
+  "limits": {
+    "automatic_retries": false,
+    "diagnostic": 4096,
+    "output": 1048576
+  },
+  "phase1_authorization_needed": "Explicit owner approval for single-use Stage creation, followed by one Import only. --execute and seal digest are integrity gates, never permission.",
+  "phase2_authorization_needed": "Separate owner approval after clean Import PASS.",
+  "phases": {
+    "Assertions": [
+      [
+        "--headless",
+        "--path",
+        "D:\\GameDev\\Godot\\TLWH-NativeStages\\tlwh-pr104-review-28f57c4c-677f-4f9e-8809-7be9fc66f2d6",
+        "--script",
+        "res://tests/illustrated_exterior_native_validation.gd"
+      ],
+      30
+    ],
+    "Import": [
+      [
+        "--headless",
+        "--editor",
+        "--path",
+        "D:\\GameDev\\Godot\\TLWH-NativeStages\\tlwh-pr104-review-28f57c4c-677f-4f9e-8809-7be9fc66f2d6",
+        "--quit"
+      ],
+      60
+    ]
+  },
+  "sha256": "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424",
+  "stage_exists": false,
+  "status": "PREPARATION ONLY; no execution authorized",
+  "supervisor": "D:\\GameDev\\Godot\\Projects\\TLWH\\artifacts\\evidence\\pr104-native-review-28f57c4c-677f-4f9e-8809-7be9fc66f2d6\\supervisor.py",
+  "working_directory": "D:\\GameDev\\Godot\\TLWH-NativeStages\\tlwh-pr104-review-28f57c4c-677f-4f9e-8809-7be9fc66f2d6"
+}

@@ -1,0 +1,105 @@
+{
+  "schema": 1,
+  "state": "Approved local cleanup completed; feature PR remains pending owner review.",
+  "baseline": "0701430b7fa29f845bffebf0475e0bb683f9ef42",
+  "retention_commit": "e09d643cb4ebb84e4650e57a1e7c521ac0d7c1ea",
+  "approved_disposition": "docs/experiments/repository_housekeeping_stage2a.json",
+  "approved_disposition_sha256": "18341364e959fb7f512357bbce24d2033a26660422beb2dffbf8dfc01b7bfa20",
+  "scope": "Records execution of the prior exact allowlist only; grants no additional cleanup or engine authorization. Historical receipts, seals and manifests are unchanged.",
+  "removed_groups": {
+    "D8": {
+      "files": 174,
+      "bytes": 176317
+    },
+    "D4": {
+      "files": 1961,
+      "bytes": 24211475
+    },
+    "D5": {
+      "files": 22,
+      "bytes": 8135870
+    },
+    "D6": {
+      "files": 2,
+      "bytes": 1980
+    },
+    "D2": {
+      "files": 8,
+      "bytes": 8029
+    },
+    "D3": {
+      "files": 6,
+      "bytes": 5792
+    },
+    "D1": {
+      "files": 30,
+      "bytes": 642069
+    },
+    "relocation": {
+      "files": 5,
+      "bytes": 5151493
+    }
+  },
+  "disposable_files_removed": 2203,
+  "disposable_file_payload_bytes_removed": 33181532,
+  "relocations_completed": [
+    {
+      "source": ".godot/bootstrap-pr-body.md",
+      "target": "docs/experiments/bootstrap-pr-body.md",
+      "sha256": "425be271e677c50c3bfe71a301b7574025d4dc41e582527d61f3566aa92c574f"
+    },
+    {
+      "source": "artifacts/tmp/low-green-handoff/approved_green_ground_study.png",
+      "target": "assets/environment/exterior/approved_green_ground_study.png",
+      "sha256": "8709b1f0016c109299c17648f23589864f435071bf1bc3153e8b77913b4e75f7"
+    },
+    {
+      "source": "artifacts/tmp/low-green-handoff/mixed_8x6.png",
+      "target": "assets/environment/exterior/low_green_mixed_8x6_reference.png",
+      "sha256": "139959d35a84be54ff522a52dd52f5ec12a3a265239bf46cdea483089e84a46b"
+    },
+    {
+      "source": "artifacts/tmp/pr98-reviewed-commit-validation-f0b58fe35a6a4e79b7c94c873af5a831/verify_static.py",
+      "target": "artifacts/evidence/pr98-reviewed-commit-validation-f0b58fe35a6a4e79b7c94c873af5a831/verify_static.py",
+      "sha256": "3fb68a831a4f1187f262b2e2b481b88f98d44296b05b42d97891affd3d491584"
+    },
+    {
+      "source": "artifacts/tmp/pr98-static-diagnosis-ae589cda0bc94778833d56dfd34bfb6b/run_static.py",
+      "target": "artifacts/evidence/pr98-static-diagnosis-ae589cda0bc94778833d56dfd34bfb6b/run_static.py",
+      "sha256": "78b018d57f958f11bea562a3f16456f619438bc082e9b1258cea584a5713d255"
+    }
+  ],
+  "duplicate_relocation_source_payload_bytes_removed": 5151493,
+  "total_removed_file_payload_bytes": 38333025,
+  "space_measurement": "Actual lengths of verified removed files; filesystem allocation, Git object storage and volume free-space changes are not measured. Relocation sources had committed byte-identical replacements before removal.",
+  "csv_import_configurations_replaced_with_keep": 2,
+  "skipped_files": 0,
+  "deferred_disposable_group": "D7 ZIP remains protected because it contains a deferred historical original.",
+  "protected_publication_exceptions": {
+    "deferred_originals": 4,
+    "deferred_zip": 1,
+    "unchanged": true
+  },
+  "protected_exclusions": {
+    "pr5_archives": 2,
+    "nested_clones": 3,
+    "nested_working_files": 932,
+    "ordinary_godot_cache_files": 618,
+    "isolated_profile_files": 3,
+    "unchanged": true
+  },
+  "remaining_ignored_accounting": {
+    "ordinary_godot_cache": 618,
+    "isolated_profile_settings_and_logs": 3,
+    "pr5_archives": 2,
+    "deferred_historical_originals": 4,
+    "deferred_zip": 1,
+    "ordinary_ignored_files": 628,
+    "nested_repository_directory_placeholders": 3,
+    "git_ignored_entries": 631
+  },
+  "untracked_files_after_completion_record_is_committed": 0,
+  "unexplained_ignored_files": 0,
+  "godot_launched": false,
+  "historical_review_sealed_hashes_preserved": 17
+}

@@ -760,6 +760,29 @@ def tracked_non_dev_files(pattern):
     return [path for path in paths if not is_dev_path(path)]
 
 
+def tracked_metadata_uid(path, text):
+    """Keep files are not imported resources and need no resource UID."""
+    if path.endswith('.uid'):
+        uid = text.strip()
+    else:
+        # Accept only the canonical UID-less Keep form, not any missing UID.
+        if re.fullmatch(r'\s*\[remap\]\s+importer="keep"\s*', text):
+            return None
+        sections = re.findall(r'^\[remap\]\s*\n(.*?)(?=^\[|\Z)', text, re.M | re.S)
+        if len(sections) != 1:
+            raise AssertionError('Malformed import remap section: ' + path)
+        importers = re.findall(r'^importer="([a-zA-Z0-9_]+)"$', sections[0], re.M)
+        declarations = re.findall(r'^uid="([^"]*)"$', sections[0], re.M)
+        if (len(importers) != 1 or len(declarations) != 1
+                or len(re.findall(r'^importer\s*=', sections[0], re.M)) != 1
+                or len(re.findall(r'^uid\s*=', sections[0], re.M)) != 1):
+            raise AssertionError('Missing or duplicate imported-resource UID/importer: ' + path)
+        uid = declarations[0]
+    if re.fullmatch(r'uid://[a-z0-9]+', uid) is None:
+        raise AssertionError('Malformed resource UID: ' + path)
+    return uid
+
+
 class V2ProductionHostStaticTest(unittest.TestCase):
     def test_fabricator_allowance_restores_main_and_rejects_tampering(self):
         for path in FABRICATOR_SHA256:
@@ -841,7 +864,9 @@ class V2ProductionHostStaticTest(unittest.TestCase):
         for pattern, suffix in [("*.uid", ".uid"), ("*.import", ".import")]:
             for path in tracked_non_dev_files(pattern):
                 text = read(path)
-                uid = text.strip() if suffix == ".uid" else re.search(r'^uid="([^"]+)"', text, re.M)[1]
+                uid = tracked_metadata_uid(path, text)
+                if uid is None:
+                    continue  # Canonical Keep metadata has no resource identity.
                 self.assertNotIn(uid, uids, uid)
                 uids[uid] = path[:-len(suffix)]
         # Text scenes/resources declare their own UID in the file header.
@@ -916,6 +941,32 @@ class V2ProductionHostStaticTest(unittest.TestCase):
                 with self.assertRaisesRegex(AssertionError,
                         "Unresolved tracked UID" if edge.startswith("uid://") else "forbidden"):
                     self.assert_resource_graph(["scenes/main/main.tscn"])
+
+    def test_resource_graph_accepts_canonical_keep_metadata_without_uid(self):
+        for name in ('tlwh_47_pattern_mapping.csv', 'tlwh_94_pattern_mapping.csv'):
+            path = 'docs/experiments/native_terrain_47_96/' + name + '.import'
+            self.assertIsNone(tracked_metadata_uid(path, read(path)))
+        self.assertEqual(tracked_metadata_uid('valid.png.import',
+                         '[remap]\nimporter="texture"\nuid="uid://valid123"\n'), 'uid://valid123')
+        self.assert_resource_graph(['project.godot'])
+
+    def test_import_metadata_rejects_invalid_resource_and_keep_declarations(self):
+        invalid = [
+            ('bad.png.import', '[remap]\nimporter="texture"\n'),
+            ('bad.png.import', '[remap]\nimporter="texture"\nuid="invalid"\n'),
+            ('bad.png.import', '[remap]\nimporter="texture"\nuid="uid://a"\nuid="uid://b"\n'),
+            ('bad.png.import', '[remap]\nimporter="texture"\nuid="uid://a"\nuid=invalid\n'),
+            ('bad.png.import', '[remap]\nimporter="texture"\nimporter=invalid\nuid="uid://a"\n'),
+            ('bad.png.import', '[deps]\nimporter="texture"\nuid="uid://a"\n'),
+            ('bad.png.import', '[remap]\nuid="uid://a"\n'),
+            ('bad.csv.import', '[remap]\nimporter="keep"\nuid="invalid"\n'),
+            ('bad.csv.import', '[remap]\nimporter="keep"\nunexpected=true\n'),
+            ('bad.csv.import', '[remap]\nimporter="keep"\n[remap]\nimporter="keep"\n'),
+            ('bad.gd.uid', 'invalid'),
+        ]
+        for path, text in invalid:
+            with self.subTest(path=path, text=text), self.assertRaises(AssertionError):
+                tracked_metadata_uid(path, text)
 
     def test_resource_graph_registers_text_uids_and_rejects_duplicates(self):
         source_read = read

@@ -1,0 +1,156 @@
+{
+  "base_head": "56e2990fb8866b36f87d49d746e0cf7b9f9062e2",
+  "review_report": "D:\\GameDev\\Godot\\Projects\\TLWH\\artifacts\\evidence\\pr98-static-review-1212f80a46314248825c2498e5439cb1.md",
+  "review_report_sha256": "8890b0f3fe552ed9ee47edc6b221412c00a5372938c785bda353146d73f2e118",
+  "original_evidence": "D:\\GameDev\\Godot\\Projects\\TLWH\\artifacts\\evidence\\pr98-static-diagnosis-ae589cda0bc94778833d56dfd34bfb6b.json",
+  "original_evidence_sha256": "8cbcb49ca8321b83b35cb31246fa3bb205a683198b9887f96ee3f13e36b97c03",
+  "candidate_manifest_lf_sha256": {
+    "tests/native_terrain_preservation.py": "79ecfda2de8e8765ffcb42c2dff67232bc5e7e30f82bd3d36239cca95857b40f",
+    "tests/static_ground_rejection_test.py": "aaa0ba2c4c90626583d9850c94c20686206340ee661a4b0cac9d770ba8a15c60",
+    "tests/static_machine_icons_test.py": "9ef81684101ed9e72e9429d214aae5fda28cd8a7418b3b9235011aec3b30f7c8",
+    "tests/static_musing_ui_test.py": "59ee7b549f1a756ffea216ad8eb0433ce157b92f2b4cd5f7cd48d75fa11663d8",
+    "tests/static_v2_production_host_test.py": "64655f154435b7cec2e652dd5f2c0e20c0ea181be1ac108e5fd6a70612943d5e",
+    "tests/static_preservation_guards_test.py": "6f2cf93c2d35755b67d81579288333c1f5052b9a220c90ec47568318a8df0a3a",
+    "docs/NATIVE_TERRAIN_47_PROTOTYPE.md": "d33a88a3170244b2c985b456c2a88c4e92a238dbe17120e0f69b1f439c71b1fc",
+    "docs/PR98_STATIC_TEST_INVESTIGATION.md": "10a86f5bfabf01db8d813003d40701a3b2f3a0fef4f1fe82155a62b0db127f4d"
+  },
+  "candidate_raw_sha256": {
+    "tests/native_terrain_preservation.py": "79ecfda2de8e8765ffcb42c2dff67232bc5e7e30f82bd3d36239cca95857b40f",
+    "tests/static_ground_rejection_test.py": "80c7b91736ccfaae6e5713d158746a3abf3cf72c074f9680541443c1b508a4ad",
+    "tests/static_machine_icons_test.py": "90b755505146a706c2e5ef5f143e9a40853442a15c258182e42b600ec23164d8",
+    "tests/static_musing_ui_test.py": "15510006e5e47d1c4fb71536671517ba8db754f220bc12068f15c3825addc6fa",
+    "tests/static_v2_production_host_test.py": "abe79a6f770d04d5d647da748979d38573ba8c0f6be0992c5ecfda92ac25780e",
+    "tests/static_preservation_guards_test.py": "6f2cf93c2d35755b67d81579288333c1f5052b9a220c90ec47568318a8df0a3a",
+    "docs/NATIVE_TERRAIN_47_PROTOTYPE.md": "d33a88a3170244b2c985b456c2a88c4e92a238dbe17120e0f69b1f439c71b1fc",
+    "docs/PR98_STATIC_TEST_INVESTIGATION.md": "10a86f5bfabf01db8d813003d40701a3b2f3a0fef4f1fe82155a62b0db127f4d"
+  },
+  "dependencies": {
+    "REVIEWED_HEAD": "56e2990fb8866b36f87d49d746e0cf7b9f9062e2",
+    "BASE_ATTRIBUTES_SHA256": "acb53bcce3ee93874e9fa9a6bb9c26b9f98ce459e4db49071bcf7b667061804e",
+    "MAPPING_ATTRIBUTES_SHA256": "cf52b95e79821eb811cfdaff290b5c9bd93da571fbb776b8b809757b64b99e0d",
+    "TERRAIN_INPUT_SHA256": {
+      "assets/experiments/native_terrain_47_96/experimental_47_patterns.png": "ecc7c6fbdfd1a141753420be800b5443b73eb7d91a068626d634433e3611a1f3",
+      "assets/experiments/native_terrain_47_96/experimental_match_corners_and_sides.tres": "b9eedbd2c94843381a977c921aacdedc55ffcf8aeba241ef0862d56d6c98dc50",
+      "scenes/experiments/native_terrain_47_96/terrain_painting_lab.tscn": "3c251d7066a7d3f66d62f6d1f4018ca6edf431eec139e8177076df6725a052b3"
+    },
+    "TEST_UPDATE_SHA256": {
+      "tests/static_musing_ui_test.py": "59ee7b549f1a756ffea216ad8eb0433ce157b92f2b4cd5f7cd48d75fa11663d8",
+      "tests/static_v2_production_host_test.py": "64655f154435b7cec2e652dd5f2c0e20c0ea181be1ac108e5fd6a70612943d5e"
+    }
+  },
+  "temporary_root": "D:\\GameDev\\Godot\\Projects\\TLWH\\artifacts\\tmp\\pr98-reviewed-commit-validation-f0b58fe35a6a4e79b7c94c873af5a831",
+  "evidence": "D:\\GameDev\\Godot\\Projects\\TLWH\\artifacts\\evidence\\pr98-reviewed-commit-validation-f0b58fe35a6a4e79b7c94c873af5a831.json",
+  "results": {
+    "isolated": {
+      "root": "D:\\GameDev\\Godot\\Projects\\TLWH\\artifacts\\tmp\\pr98-reviewed-commit-validation-f0b58fe35a6a4e79b7c94c873af5a831\\isolated",
+      "head": "791c48b1c4001d9b2b52f6ecd73535417514af6b",
+      "tree": "18c623b778fc3dc35fd142f066b328eaec2079da",
+      "tests": 119,
+      "failure_records": [],
+      "errors": [],
+      "failed_methods": 0,
+      "focused_exit_code": 0,
+      "focused_output": "......\r\n----------------------------------------------------------------------\r\nRan 6 tests in 0.210s\r\n\r\nOK\r\n",
+      "status_unchanged": true,
+      "candidate_hashes_unchanged": true,
+      "status": ""
+    },
+    "working": {
+      "root": "D:\\GameDev\\Godot\\Projects\\TLWH",
+      "head": "56e2990fb8866b36f87d49d746e0cf7b9f9062e2",
+      "tree": "65b053c56af654a891761aea109394e2b111c069",
+      "tests": 119,
+      "failure_records": [
+        {
+          "id": "static_conversation_ui_test.ConversationUIStaticTest.test_compact_controls_leave_layout_text_and_shared_styles_unchanged",
+          "method": "static_conversation_ui_test.ConversationUIStaticTest.test_compact_controls_leave_layout_text_and_shared_styles_unchanged",
+          "traceback": "Traceback (most recent call last):\n  File \"D:\\GameDev\\Godot\\Projects\\TLWH\\tests\\static_conversation_ui_test.py\", line 109, in test_compact_controls_leave_layout_text_and_shared_styles_unchanged\n    self.assertEqual(read(path), original)\n    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: '[gd_[17 chars]eme\" format=3 uid=\"uid://j1imorduxy1e\"]\\n\\n[ex[7019 chars]10\\n' != '[gd_[17 chars]eme\" load_steps=18 format=3]\\n\\n[ext_resource [6955 chars]\")\\n'\nDiff is 13645 characters long. Set self.maxDiff to None to see it.\n"
+        },
+        {
+          "id": "static_conversation_ui_test.ConversationUIStaticTest.test_gameplay_ownership_and_narrative_unchanged (path='dialogue/computer_opening.tres')",
+          "method": "static_conversation_ui_test.ConversationUIStaticTest.test_gameplay_ownership_and_narrative_unchanged",
+          "traceback": "Traceback (most recent call last):\n  File \"D:\\GameDev\\Godot\\Projects\\TLWH\\tests\\static_conversation_ui_test.py\", line 57, in test_gameplay_ownership_and_narrative_unchanged\n    self.assertEqual(without_conversation_changes(path, without_italic_staging_changes(path, read(path))), baseline(path))\n    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: '[gd_[56 chars]ion\" format=3 uid=\"uid://cg3ljtt586ye2\"]\\n\\n[e[1267 chars]])\\n' != '[gd_[56 chars]ion\" load_steps=6 format=3]\\n\\n[ext_resource t[1316 chars]])\\n'\nDiff is 1743 characters long. Set self.maxDiff to None to see it.\n"
+        },
+        {
+          "id": "static_extractor_inspection_test.ExtractorInspectionStaticTest.test_smelter_dispatch_preserves_approved_extractor_and_fabricator (path='assets/ui/machine_actions.tres')",
+          "method": "static_extractor_inspection_test.ExtractorInspectionStaticTest.test_smelter_dispatch_preserves_approved_extractor_and_fabricator",
+          "traceback": "Traceback (most recent call last):\n  File \"D:\\GameDev\\Godot\\Projects\\TLWH\\tests\\static_extractor_inspection_test.py\", line 77, in test_smelter_dispatch_preserves_approved_extractor_and_fabricator\n    self.assertEqual(read(path), expected.decode(\"utf-8\").replace(\"\\r\\n\", \"\\n\"))\n    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: '[gd_[17 chars]eme\" format=3 uid=\"uid://co6ld0u22pejv\"]\\n\\n[e[4994 chars]\")\\n' != '[gd_[17 chars]eme\" load_steps=11 format=3]\\n\\n[ext_resource [4965 chars]\")\\n'\nDiff is 9558 characters long. Set self.maxDiff to None to see it.\n"
+        },
+        {
+          "id": "static_fabricator_inspection_test.FabricatorInspectionStaticTest.test_chooser_candidate_and_gameplay_boundary",
+          "method": "static_fabricator_inspection_test.FabricatorInspectionStaticTest.test_chooser_candidate_and_gameplay_boundary",
+          "traceback": "Traceback (most recent call last):\n  File \"D:\\GameDev\\Godot\\Projects\\TLWH\\tests\\static_fabricator_inspection_test.py\", line 91, in test_chooser_candidate_and_gameplay_boundary\n    self.assertEqual(hashlib.sha256(read(path).encode()).hexdigest(), digest, path)\n    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: '2ea79ef841294dc7e935d5cc69cce84db6140c8531b466bc14d6e9940c9f1130' != '0be69e2cf39d05b123874b1ddd829b3ddb76c2497f3e8e07fff49ee69e994be9'\n- 2ea79ef841294dc7e935d5cc69cce84db6140c8531b466bc14d6e9940c9f1130\n+ 0be69e2cf39d05b123874b1ddd829b3ddb76c2497f3e8e07fff49ee69e994be9\n : assets/ui/recipe_chooser.tres\n"
+        },
+        {
+          "id": "static_fabricator_inspection_test.FabricatorInspectionStaticTest.test_protected_methods_and_other_presentations_preserved",
+          "method": "static_fabricator_inspection_test.FabricatorInspectionStaticTest.test_protected_methods_and_other_presentations_preserved",
+          "traceback": "Traceback (most recent call last):\n  File \"D:\\GameDev\\Godot\\Projects\\TLWH\\tests\\static_fabricator_inspection_test.py\", line 69, in test_protected_methods_and_other_presentations_preserved\n    self.assertEqual(actual, expected, path)\n    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: b'[gd[18 chars]eme\" format=3 uid=\"uid://co6ld0u22pejv\"]\\n\\n[e[4994 chars]\")\\n' != b'[gd[18 chars]eme\" load_steps=11 format=3]\\n\\n[ext_resource [4965 chars]\")\\n' : assets/ui/machine_actions.tres\n"
+        },
+        {
+          "id": "static_ground_rejection_test.GroundRejectionStaticTest.test_distant_operation_counts_and_unchanged_systems",
+          "method": "static_ground_rejection_test.GroundRejectionStaticTest.test_distant_operation_counts_and_unchanged_systems",
+          "traceback": "Traceback (most recent call last):\n  File \"D:\\GameDev\\Godot\\Projects\\TLWH\\tests\\static_ground_rejection_test.py\", line 213, in test_distant_operation_counts_and_unchanged_systems\n    self.assertEqual(actual,expected,path)\n    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: b'[gd[18 chars]eme\" format=3 uid=\"uid://j1imorduxy1e\"]\\n\\n[ex[7019 chars]10\\n' != b'[gd[18 chars]eme\" load_steps=18 format=3]\\n\\n[ext_resource [6955 chars]\")\\n' : assets/ui/b1_theme.tres\n"
+        },
+        {
+          "id": "static_machine_icons_test.MachineIconsStaticTest.test_protected_assets_gameplay_and_execution_controls_match_pr91",
+          "method": "static_machine_icons_test.MachineIconsStaticTest.test_protected_assets_gameplay_and_execution_controls_match_pr91",
+          "traceback": "Traceback (most recent call last):\n  File \"D:\\GameDev\\Godot\\Projects\\TLWH\\tests\\static_machine_icons_test.py\", line 323, in test_protected_assets_gameplay_and_execution_controls_match_pr91\n    self.assertFalse(set(changed) - allowed, set(changed) - allowed)\n    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: {'assets/ui/machine_actions.tres', 'assets/ui/b1_theme.tres', 'dialogue/computer_opening.tres', 'construction/recipes/ferrite_rod.tres', 'assets/ui/recipe_chooser.tres', 'construction/recipes/ferrite_plate.tres'} is not false : {'assets/ui/machine_actions.tres', 'assets/ui/b1_theme.tres', 'dialogue/computer_opening.tres', 'construction/recipes/ferrite_rod.tres', 'assets/ui/recipe_chooser.tres', 'construction/recipes/ferrite_plate.tres'}\n"
+        },
+        {
+          "id": "static_musing_ui_test.MusingUIStaticTest.test_narrative_progression_and_adjacent_ui_preserved (path='assets/ui/b1_theme.tres')",
+          "method": "static_musing_ui_test.MusingUIStaticTest.test_narrative_progression_and_adjacent_ui_preserved",
+          "traceback": "Traceback (most recent call last):\n  File \"D:\\GameDev\\Godot\\Projects\\TLWH\\tests\\static_musing_ui_test.py\", line 126, in test_narrative_progression_and_adjacent_ui_preserved\n    self.assertEqual(without_italic_staging_changes(path, read(path)), historical)\n    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: '[gd_[17 chars]eme\" format=3 uid=\"uid://j1imorduxy1e\"]\\n\\n[ex[7019 chars]10\\n' != '[gd_[17 chars]eme\" load_steps=18 format=3]\\n\\n[ext_resource [6955 chars]\")\\n'\nDiff is 13645 characters long. Set self.maxDiff to None to see it.\n"
+        },
+        {
+          "id": "static_musing_ui_test.MusingUIStaticTest.test_narrative_progression_and_adjacent_ui_preserved (path='dialogue/computer_opening.tres')",
+          "method": "static_musing_ui_test.MusingUIStaticTest.test_narrative_progression_and_adjacent_ui_preserved",
+          "traceback": "Traceback (most recent call last):\n  File \"D:\\GameDev\\Godot\\Projects\\TLWH\\tests\\static_musing_ui_test.py\", line 126, in test_narrative_progression_and_adjacent_ui_preserved\n    self.assertEqual(without_italic_staging_changes(path, read(path)), historical)\n    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: '[gd_[56 chars]ion\" format=3 uid=\"uid://cg3ljtt586ye2\"]\\n\\n[e[1267 chars]])\\n' != '[gd_[56 chars]ion\" load_steps=6 format=3]\\n\\n[ext_resource t[1316 chars]])\\n'\nDiff is 1743 characters long. Set self.maxDiff to None to see it.\n"
+        },
+        {
+          "id": "static_v2_production_host_test.V2ProductionHostStaticTest.test_ferrite_icon_candidate_restores_main_and_rejects_tampering (path='construction/recipes/ferrite_plate.tres')",
+          "method": "static_v2_production_host_test.V2ProductionHostStaticTest.test_ferrite_icon_candidate_restores_main_and_rejects_tampering",
+          "traceback": "Traceback (most recent call last):\n  File \"D:\\GameDev\\Godot\\Projects\\TLWH\\tests\\static_v2_production_host_test.py\", line 1172, in test_ferrite_icon_candidate_restores_main_and_rejects_tampering\n    self.assertEqual(without_ferrite_icon_changes(path, original), before)\n                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^\n  File \"D:\\GameDev\\Godot\\Projects\\TLWH\\tests\\static_v2_production_host_test.py\", line 644, in without_ferrite_icon_changes\n    raise AssertionError(f\"Missing or modified Ferrite icon candidate bytes: {path}\")\nAssertionError: Missing or modified Ferrite icon candidate bytes: construction/recipes/ferrite_plate.tres\n"
+        },
+        {
+          "id": "static_v2_production_host_test.V2ProductionHostStaticTest.test_ferrite_icon_candidate_restores_main_and_rejects_tampering (path='construction/recipes/ferrite_rod.tres')",
+          "method": "static_v2_production_host_test.V2ProductionHostStaticTest.test_ferrite_icon_candidate_restores_main_and_rejects_tampering",
+          "traceback": "Traceback (most recent call last):\n  File \"D:\\GameDev\\Godot\\Projects\\TLWH\\tests\\static_v2_production_host_test.py\", line 1172, in test_ferrite_icon_candidate_restores_main_and_rejects_tampering\n    self.assertEqual(without_ferrite_icon_changes(path, original), before)\n                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^\n  File \"D:\\GameDev\\Godot\\Projects\\TLWH\\tests\\static_v2_production_host_test.py\", line 644, in without_ferrite_icon_changes\n    raise AssertionError(f\"Missing or modified Ferrite icon candidate bytes: {path}\")\nAssertionError: Missing or modified Ferrite icon candidate bytes: construction/recipes/ferrite_rod.tres\n"
+        },
+        {
+          "id": "static_v2_production_host_test.V2ProductionHostStaticTest.test_protected_existing_code_art_and_sidecars_unchanged",
+          "method": "static_v2_production_host_test.V2ProductionHostStaticTest.test_protected_existing_code_art_and_sidecars_unchanged",
+          "traceback": "Traceback (most recent call last):\n  File \"D:\\GameDev\\Godot\\Projects\\TLWH\\tests\\static_v2_production_host_test.py\", line 1361, in test_protected_existing_code_art_and_sidecars_unchanged\n    actual = without_ferrite_icon_changes(path, actual.decode(\"utf-8\").replace(\"\\r\\n\", \"\\n\")).encode(\"utf-8\")\n             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"D:\\GameDev\\Godot\\Projects\\TLWH\\tests\\static_v2_production_host_test.py\", line 644, in without_ferrite_icon_changes\n    raise AssertionError(f\"Missing or modified Ferrite icon candidate bytes: {path}\")\nAssertionError: Missing or modified Ferrite icon candidate bytes: construction/recipes/ferrite_plate.tres\n"
+        }
+      ],
+      "errors": [],
+      "failed_methods": 10,
+      "focused_exit_code": 0,
+      "focused_output": "......\r\n----------------------------------------------------------------------\r\nRan 6 tests in 0.206s\r\n\r\nOK\r\n",
+      "status_unchanged": true,
+      "candidate_hashes_unchanged": true,
+      "status": " M assets/ui/b1_theme.tres\n M assets/ui/machine_actions.tres\n M assets/ui/recipe_chooser.tres\n M construction/recipes/ferrite_plate.tres\n M construction/recipes/ferrite_rod.tres\n M dialogue/computer_opening.tres\nM  docs/NATIVE_TERRAIN_47_PROTOTYPE.md\nA  docs/PR98_STATIC_TEST_INVESTIGATION.md\nA  tests/native_terrain_preservation.py\nM  tests/static_ground_rejection_test.py\nM  tests/static_machine_icons_test.py\nM  tests/static_musing_ui_test.py\nA  tests/static_preservation_guards_test.py\nM  tests/static_v2_production_host_test.py\n?? assets/environment/exterior/01_weathered_earth_four_variants_v2.png\n?? assets/environment/exterior/01_weathered_earth_four_variants_v2.png.import\n?? assets/environment/exterior/02_refined_crash_site_terrain_direction.png\n?? assets/environment/exterior/02_refined_crash_site_terrain_direction.png.import\n?? assets/environment/exterior/low_green_ground_cover_provisional/a_balanced_cover.png.import\n?? assets/environment/exterior/low_green_ground_cover_provisional/b_moss_dominant.png.import\n?? assets/environment/exterior/low_green_ground_cover_provisional/c_exposed_earth.png.import\n?? assets/environment/exterior/low_green_ground_cover_provisional/d_fine_grass.png.import\n?? assets/environment/exterior/weathered_earth_provisional/a_base_soil.png.import\n?? assets/environment/exterior/weathered_earth_provisional/b_compacted_soil.png.import\n?? assets/environment/exterior/weathered_earth_provisional/c_dusty_patches.png.import\n?? assets/environment/exterior/weathered_earth_provisional/d_subtle_gravel.png.import\n?? assets/experiments/native_terrain_47_96/experimental_47_patterns.png.import\n?? assets/experiments/native_terrain_96/\n?? docs/experiments/native_terrain_47_96/tlwh_47_pattern_mapping.csv.import\n?? docs/experiments/native_terrain_47_96/tlwh_94_pattern_mapping.csv.import\n"
+    }
+  },
+  "staged_tree": "18c623b778fc3dc35fd142f066b328eaec2079da",
+  "isolated_root": "D:\\GameDev\\Godot\\Projects\\TLWH\\artifacts\\tmp\\pr98-reviewed-commit-validation-f0b58fe35a6a4e79b7c94c873af5a831\\isolated",
+  "validation_snapshot_commit": "791c48b1c4001d9b2b52f6ecd73535417514af6b",
+  "isolated_initial_status": "clean",
+  "commit": "1e5b5ee2a92d75b384ae8c9aa74b8a23a099a898",
+  "committed_tree_matches_validated_tree": true,
+  "owner_preservation": {
+    "files_verified": 2231,
+    "mismatches": []
+  },
+  "publication": {
+    "commit": "1e5b5ee2a92d75b384ae8c9aa74b8a23a099a898",
+    "pushed": true,
+    "pr_url": "https://github.com/interneth3ro/the-long-way-home/pull/98",
+    "draft": true,
+    "description_updated": true,
+    "owner_files_verified_after_push": 2231,
+    "mismatches": [],
+    "index_empty": true,
+    "no_godot_native_profiling_benchmark": true,
+    "no_merge_cleanup": true
+  }
+}
