@@ -34,7 +34,24 @@ STAGE2D_INPUT_SHA256 = {
 }
 
 
+# Stage 2E admits only the complete reviewed policy/documentation bytes.
+# Project those forward-looking changes through the unchanged historical guards.
+STAGE2E_BASE = '59348ae29116f34865d8be0f58bf163551fe350e'
+STAGE2E_INPUT_SHA256 = {
+    '.gitignore': '0c9703070c9e2dc8e7f3cc48b5a7718548357d581b8a54672d4c2c283ed7440d',
+    'README.md': '1e43e629086175ae7fd35523a4be3f596327ad4bdee2381bcfadf760ef0382d2',
+}
+
+
+def stage2e_predecessor(path, raw):
+    expected = STAGE2E_INPUT_SHA256.get(path)
+    if expected and hashlib.sha256(raw.replace(b'\r\n', b'\n')).hexdigest() == expected:
+        return subprocess.check_output(['git', 'show', STAGE2E_BASE + ':' + path], cwd=ROOT)
+    return raw  # Unknown bytes receive no exemption from historical checks.
+
+
 def stage2d_predecessor(path, raw):
+    raw = stage2e_predecessor(path, raw)
     expected = STAGE2D_INPUT_SHA256.get(path)
     if expected and hashlib.sha256(raw.replace(b'\r\n', b'\n')).hexdigest() == expected:
         return subprocess.check_output(['git', 'show', STAGE2D_BASE + ':' + path], cwd=ROOT)

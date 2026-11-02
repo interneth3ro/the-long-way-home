@@ -1,0 +1,174 @@
+{
+  "schema": 1,
+  "baseline": "59348ae29116f34865d8be0f58bf163551fe350e",
+  "owner_acceptance": "PENDING",
+  "authorization": "Owner Stage 2E implementation request explicitly approves exact validation payload/provenance publication, three named clone retirements after verified preservation commit, audit consolidation and subsequent PR117 closure without merge. No other cleanup or engine execution.",
+  "audit": {
+    "path": "docs/experiments/repository_housekeeping_stage2e_audit.md",
+    "source_commit": "1a88d641b1c5bfa0929ec5f200f40c48865f95ea",
+    "blob": "979a7cbf5dcdc4a257d73dfdb43447fa31f81bed",
+    "provenance": "Exact reviewed privacy-safe publication copy; historical audit not rerun."
+  },
+  "validation_commit": {
+    "path": "artifacts/evidence/pr98-validation-commit-791c48b1.payload",
+    "commit": "791c48b1c4001d9b2b52f6ecd73535417514af6b",
+    "parent": "56e2990fb8866b36f87d49d746e0cf7b9f9062e2",
+    "tree": "18c623b778fc3dc35fd142f066b328eaec2079da",
+    "payload_bytes": 327,
+    "payload_sha256": "e3b833c248c6c629b36778febe7d286a03641cac32edaa99e53bb4c8113c64d6",
+    "original_loose_object_bytes": 211,
+    "original_loose_object_sha256": "96dfcb121b456635677ac75783fb498dcce5976d5848c353035ca73bd920d59f",
+    "identity_lines": [
+      "author Codex Static Validation <static-validation@localhost> 1793471948 -0500",
+      "committer Codex Static Validation <static-validation@localhost> 1793471948 -0500"
+    ],
+    "purpose": "Exact isolated validation snapshot of owner-reviewed PR98 correction tree; synthetic validation identity. Tree equals published correction 1e5b5ee2a92d75b384ae8c9aa74b8a23a099a898. Inert payload, no object import or historical ref rewrite.",
+    "source_clone": "artifacts/tmp/pr98-reviewed-commit-validation-f0b58fe35a6a4e79b7c94c873af5a831/isolated"
+  },
+  "clones": [
+    {
+      "id": "V",
+      "path": "artifacts/tmp/pr98-reviewed-commit-validation-f0b58fe35a6a4e79b7c94c873af5a831/isolated",
+      "head": "791c48b1c4001d9b2b52f6ecd73535417514af6b",
+      "state": "clean detached",
+      "refs": {
+        "refs/heads/codex/96-native-47-pattern-prototype": "56e2990fb8866b36f87d49d746e0cf7b9f9062e2",
+        "refs/remotes/origin/HEAD": "56e2990fb8866b36f87d49d746e0cf7b9f9062e2",
+        "refs/remotes/origin/codex/96-native-47-pattern-prototype": "56e2990fb8866b36f87d49d746e0cf7b9f9062e2",
+        "refs/remotes/origin/codex/96-native-terrain-prototype": "840ca4df88feeb6ce0fd40d20d590631db4234fc",
+        "refs/remotes/origin/main": "48cd9150d7aa2e029c7328229e7865cf00e83723"
+      },
+      "symbolic_origin_HEAD": "refs/remotes/origin/codex/96-native-47-pattern-prototype",
+      "origin": "<PRIMARY_CHECKOUT>",
+      "alternates": "<PRIMARY_CHECKOUT>/.git/objects; one-way borrowing only",
+      "working_files": 315,
+      "working_bytes": 32141460,
+      "git_files": 27,
+      "git_bytes": 64551,
+      "logical_bytes": 32206011,
+      "working_manifest_sha256": "8b4de98a2718e045d765b010fd6c904128ec4a4af74482f1a8e6badec0eb3512",
+      "git_manifest_sha256": "c1e88dc36e31f981453eb7f8613e97b33d2e6a2402f0e72df825320a1b257aef",
+      "unique_objects": "One validation commit; no unique trees/blobs",
+      "working_equivalence": "Every file exact or CRLF-equivalent to a blob reachable from baseline main. Every individual working/admin hash matches both immutable PR103 and PR104 source-baseline records.",
+      "dirty_files": {},
+      "purpose": "Owner-reviewed PR98 correction tree isolated validation"
+    },
+    {
+      "id": "M",
+      "path": "artifacts/tmp/pr98-static-diagnosis-ae589cda0bc94778833d56dfd34bfb6b/main",
+      "head": "48cd9150d7aa2e029c7328229e7865cf00e83723",
+      "state": "clean detached",
+      "refs": {
+        "refs/heads/codex/96-native-47-pattern-prototype": "56e2990fb8866b36f87d49d746e0cf7b9f9062e2",
+        "refs/remotes/origin/HEAD": "56e2990fb8866b36f87d49d746e0cf7b9f9062e2",
+        "refs/remotes/origin/codex/96-native-47-pattern-prototype": "56e2990fb8866b36f87d49d746e0cf7b9f9062e2",
+        "refs/remotes/origin/codex/96-native-terrain-prototype": "840ca4df88feeb6ce0fd40d20d590631db4234fc",
+        "refs/remotes/origin/main": "48cd9150d7aa2e029c7328229e7865cf00e83723"
+      },
+      "symbolic_origin_HEAD": "refs/remotes/origin/codex/96-native-47-pattern-prototype",
+      "origin": "<PRIMARY_CHECKOUT>",
+      "alternates": "<PRIMARY_CHECKOUT>/.git/objects; one-way borrowing only",
+      "working_files": 303,
+      "working_bytes": 31998315,
+      "git_files": 26,
+      "git_bytes": 62489,
+      "logical_bytes": 32060804,
+      "working_manifest_sha256": "ad6536598ad1cc676c92b59f7f68f32983fe754d21574bdce7447c98b061f7f2",
+      "git_manifest_sha256": "e19ec017d5ebca8dbff19cbf3a0d73f4fcba306434f4aca3706882117aa49684",
+      "unique_objects": "None",
+      "working_equivalence": "Every file exact or CRLF-equivalent to a blob reachable from baseline main. Every individual working/admin hash matches both immutable PR103 and PR104 source-baseline records.",
+      "dirty_files": {},
+      "purpose": "Clean historical main diagnostic baseline"
+    },
+    {
+      "id": "P",
+      "path": "artifacts/tmp/pr98-static-diagnosis-ae589cda0bc94778833d56dfd34bfb6b/pr98",
+      "head": "56e2990fb8866b36f87d49d746e0cf7b9f9062e2",
+      "state": "dirty detached",
+      "refs": {
+        "refs/heads/codex/96-native-47-pattern-prototype": "56e2990fb8866b36f87d49d746e0cf7b9f9062e2",
+        "refs/remotes/origin/HEAD": "56e2990fb8866b36f87d49d746e0cf7b9f9062e2",
+        "refs/remotes/origin/codex/96-native-47-pattern-prototype": "56e2990fb8866b36f87d49d746e0cf7b9f9062e2",
+        "refs/remotes/origin/codex/96-native-terrain-prototype": "840ca4df88feeb6ce0fd40d20d590631db4234fc",
+        "refs/remotes/origin/main": "48cd9150d7aa2e029c7328229e7865cf00e83723"
+      },
+      "symbolic_origin_HEAD": "refs/remotes/origin/codex/96-native-47-pattern-prototype",
+      "origin": "<PRIMARY_CHECKOUT>",
+      "alternates": "<PRIMARY_CHECKOUT>/.git/objects; one-way borrowing only",
+      "working_files": 314,
+      "working_bytes": 32121567,
+      "git_files": 26,
+      "git_bytes": 63869,
+      "logical_bytes": 32185436,
+      "working_manifest_sha256": "da89e5b61f790bb351658e158b5e1d324f7445d371237d16d89d129f1e1a38c3",
+      "git_manifest_sha256": "3f35b11796cc51f29705822cca7fb06649cce32b1330d73ea0f7489a88168b25",
+      "unique_objects": "None",
+      "working_equivalence": "Every file exact or CRLF-equivalent to a blob reachable from baseline main. Every individual working/admin hash matches both immutable PR103 and PR104 source-baseline records.",
+      "dirty_files": {
+        "tests/static_ground_rejection_test.py": {
+          "raw_sha256": "80c7b91736ccfaae6e5713d158746a3abf3cf72c074f9680541443c1b508a4ad",
+          "published_commit": "1e5b5ee2a92d75b384ae8c9aa74b8a23a099a898",
+          "published_blob": "98f4be0928db9774d4b43bf1ed0b730da69db5d2",
+          "equivalence": "CRLF-normalized bytes"
+        },
+        "tests/static_machine_icons_test.py": {
+          "raw_sha256": "90b755505146a706c2e5ef5f143e9a40853442a15c258182e42b600ec23164d8",
+          "published_commit": "1e5b5ee2a92d75b384ae8c9aa74b8a23a099a898",
+          "published_blob": "b9bab2855529ebe0b3f18cef6771ce7ac1cf4d06",
+          "equivalence": "CRLF-normalized bytes"
+        },
+        "tests/static_musing_ui_test.py": {
+          "raw_sha256": "15510006e5e47d1c4fb71536671517ba8db754f220bc12068f15c3825addc6fa",
+          "published_commit": "1e5b5ee2a92d75b384ae8c9aa74b8a23a099a898",
+          "published_blob": "a6697eb32ed53e54bc541e5e312853d00dd842b4",
+          "equivalence": "CRLF-normalized bytes"
+        },
+        "tests/static_v2_production_host_test.py": {
+          "raw_sha256": "abe79a6f770d04d5d647da748979d38573ba8c0f6be0992c5ecfda92ac25780e",
+          "published_commit": "1e5b5ee2a92d75b384ae8c9aa74b8a23a099a898",
+          "published_blob": "88960b3d98c7a5635c7f26f52970db4983b0e6e5",
+          "equivalence": "CRLF-normalized bytes"
+        },
+        "tests/native_terrain_preservation.py": {
+          "raw_sha256": "79ecfda2de8e8765ffcb42c2dff67232bc5e7e30f82bd3d36239cca95857b40f",
+          "published_commit": "1e5b5ee2a92d75b384ae8c9aa74b8a23a099a898",
+          "published_blob": "cbcea1a822d7cbc646afa7841ac391ab80ce21e9",
+          "equivalence": "exact bytes"
+        },
+        "tests/static_preservation_guards_test.py": {
+          "raw_sha256": "6f2cf93c2d35755b67d81579288333c1f5052b9a220c90ec47568318a8df0a3a",
+          "published_commit": "1e5b5ee2a92d75b384ae8c9aa74b8a23a099a898",
+          "published_blob": "3e7ba64ebdb9b6129ffa9791df288e13674a5fd0",
+          "equivalence": "exact bytes"
+        }
+      },
+      "purpose": "PR98 inputs plus proposed static corrections"
+    }
+  ],
+  "retirement_gate": [
+    "Preservation commit succeeds; committed audit/payload/provenance bytes verified.",
+    "Static suite PASS; privacy review PASS; no gameplay changes.",
+    "Immediately reverify every individual hash, aggregate manifests, HEADs, refs, dirty files, alternates, no links/reparse points, no worktree or parent object dependency. Stop on mismatch without repair.",
+    "Native PowerShell exact-path removal of only the three clone directories; retain their parents.",
+    "Separate completion record records actual results; historical receipts/seals/pins unchanged."
+  ],
+  "protected_exclusions": [
+    "PR5 recovery bundle and diagnostic evidence",
+    "Stage2A/2C/2D records and all other historical evidence",
+    "Ordinary Godot cache, three validation-profile files, protected ignored audit original",
+    "Parent object database, preexisting refs, saves, settings, artwork and unrelated files"
+  ],
+  "manifest_format": "SHA256 of UTF8 JSON sorted keys compact separators mapping clone-relative paths (including .git/ for administration) to [length,lowercase SHA256]. Individual hashes remain in immutable PR103/104 source baselines.",
+  "completion_record": "docs/experiments/repository_housekeeping_stage2e_cleanup.json",
+  "godot_launched": false,
+  "historical_scripts_executed": false,
+  "policy_amendment": {
+    "base": "59348ae29116f34865d8be0f58bf163551fe350e",
+    "reason": "Existing evidence admission rules are exact-path allowlists; the new inert payload is excluded without its one exact-path exception. No existing evidence file is replaced or repurposed.",
+    "normalized_sha256": {
+      ".gitignore": "0c9703070c9e2dc8e7f3cc48b5a7718548357d581b8a54672d4c2c283ed7440d",
+      "README.md": "1e43e629086175ae7fd35523a4be3f596327ad4bdee2381bcfadf760ef0382d2"
+    },
+    "verification": "Maintained Stage2E projection recognizes only these complete SHA256-bound files and returns baseline bytes to unchanged Stage2D/2C/2A comparisons. Unknown content and other paths receive no exemption. Historical pins, receipts, seals and comparisons remain unchanged."
+  }
+}

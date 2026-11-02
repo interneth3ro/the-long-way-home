@@ -334,3 +334,6 @@ __pycache__/
 !/artifacts/evidence/pr5-abandoned-history/performance-probe.gd.txt
 !/artifacts/evidence/pr5-abandoned-history/performance-runner.sanitized.py.txt
 !/artifacts/evidence/pr5-abandoned-history/project-metadata.sanitized.cfg.txt
+
+# Owner-approved Stage 2E inert validation commit payload only.
+!/artifacts/evidence/pr98-validation-commit-791c48b1.payload
