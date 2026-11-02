@@ -1,5 +1,19 @@
 # Ground artwork refinement prototype v1
 
+## Follow-up transition softness review
+
+The owner reviewed the quieter ground as a substantial visual improvement and
+requested slightly smoother transitions. The approved refined Earth/Green
+sources and the current 0.20-0.80 prototype remain unchanged. An additive
+[three-way softness comparison](../assets/experiments/native_terrain_47_96/ground_softness_comparison_v1/README.md)
+shows Current 0.20-0.80, Candidate A 0.15-0.85 and Candidate B 0.10-0.90 on the
+same saved meandering/mixed layouts at approximate gameplay scale and native
+detail scale. It validates all compatible edges of the same 41-signature subset
+for every treatment. No replacement atlas, new TileSet or runtime change is
+introduced. The feathering choice remains pending owner visual acceptance.
+
+The original prototype method and validation record follow unchanged.
+
 This additive artwork study is pending owner visual acceptance and merge. It
 implements the approved quieter direction using transformed original source
 textures. Production integration and a full 94-signature replacement remain
