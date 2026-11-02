@@ -1,0 +1,30 @@
+{
+  "status": "owner-approved isolated artwork prototype",
+  "accepted_date": "2026-11-02",
+  "accepted_artwork_revision": "b7358186fda7d5636fd1e7799348d31cd0bef2f1",
+  "approval_source": "Owner instruction: TLWH — PR #119: Finalize Approved Ground Artwork Prototype",
+  "selected": {
+    "label": "CANDIDATE A",
+    "feather_range": [0.15, 0.85],
+    "use": "Selected treatment for separately authorized future production artwork generation"
+  },
+  "recipe": {
+    "path": "tools/ground-transition-softness.py",
+    "sha256_lf": "895c5bde4ac6a0a17187a1f589d2d16f12b05d0950f95519ace33df48081cfdb",
+    "entry_point": "render(load_context(), 0.15, 0.85)",
+    "mask_remap": "smoothstep((old_weight - 0.15) / 0.70)"
+  },
+  "comparison_manifest": {
+    "path": "assets/experiments/native_terrain_47_96/ground_softness_comparison_v1/manifest.json",
+    "sha256_lf": "92507172b56935c4847e11875bd0c59396785f1f4342fd60e8ca571b1c55431f"
+  },
+  "refined_source_sha256": {
+    "earth_refined.png": "43f587282190b7046d7a36f395c38a52beed64e95c84037c1e12ee68d81c6e1f",
+    "green_refined.png": "09327f27b2ac2be87fd17586fc9626d1c52bc00f4d1491651a35912c78a94202"
+  },
+  "preserved_treatments": [
+    {"label": "CURRENT", "feather_range": [0.20, 0.80], "disposition": "historical prototype baseline; not selected"},
+    {"label": "CANDIDATE B", "feather_range": [0.10, 0.90], "disposition": "comparison evidence; not selected"}
+  ],
+  "scope": "Artistic acceptance only; no production integration, full atlas generation, engine execution or merge authorization"
+}
