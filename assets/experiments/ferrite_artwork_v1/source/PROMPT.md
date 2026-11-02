@@ -3,7 +3,8 @@
 Built-in imagegen; owner-provided Ferrite size/shape study used as visual reference
 only. Reference pixels and previous-game ore artwork were not reused. The saved
 master is the reproducibility input; an AI rerun need not match it. Transparent
-background requested. Owner artistic acceptance is pending.
+background requested. Owner visual/architecture acceptance was recorded on
+2026-11-02; see the [acceptance record](../../../../docs/FERRITE_ARTWORK_PROTOTYPE_V1.md#owner-acceptance-2026-11-02).
 
 ## Exact generation prompt
 

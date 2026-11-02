@@ -1,10 +1,25 @@
 # Ferrite artwork prototype v1
 
-Offline artwork candidate on the PR #123 feature branch, pending merge. The owner
-approved the existing material's artistic direction; irregular assembly architecture
-and the new previews remain pending owner acceptance. No production integration or
-Godot execution. The original rectangular images and their earlier status captions
-are preserved unchanged.
+Owner-accepted offline artwork prototype on the PR #123 feature branch, pending
+merge. No production integration or Godot execution. All images, including their
+earlier pending-acceptance captions, are preserved unchanged; the record below
+supersedes those status captions.
+
+## Owner acceptance: 2026-11-02
+
+The owner explicitly approved the delivered prototype and irregular assembly proof
+at commit `1662a616346f33718fe4dbaee7989b2c70f7aa40`, then requested that PR #123
+and its documentation record acceptance. This accepts the Faceted Ferrite artwork
+and the demonstrated reusable architecture: rectangular examples plus connected
+L-shaped, stepped and organic grid-cluster assemblies, overlays, corner treatments
+and close-ups, with the documented limitations retained.
+
+This is owner visual/architecture acceptance of the isolated offline prototype.
+It does not claim in-game verification, authorize production integration or
+procedural distribution, or request a merge. PR #123 remains draft and unmerged.
+The prior offline validation results at the reviewed commit remain the technical
+evidence; this documentation-only acceptance update does not rerun generation or
+Godot checks.
 
 ## Review package
 
@@ -139,10 +154,10 @@ artwork**: similar highlights recur at exposed north edges; the predominantly
 diagonal grain repeats vertically; some rounded turns expose converging texture
 or softened fractures. The cluster remains visibly grid-conforming, rather than
 an unconstrained natural silhouette. Concave edges are thinner and more regular
-than the source's best hand-painted outer corners. The proof establishes reusable
-contour coverage, not equal artistic polish or owner architectural acceptance.
-Further art-library refinement may be needed if the owner rejects these tradeoffs;
-this task does not silently redesign the approved material.
+than the source's best hand-painted outer corners. The owner accepted the delivered
+proof with these documented limitations. Acceptance does not imply equal artistic
+polish across all shapes or an unrestricted production library. Further refinement
+remains separately scoped; the approved material is not redesigned by this record.
 
 ## Dimensions and assembly
 
@@ -241,9 +256,10 @@ reference's varied layered facets. Sample crops do not solve variation across
 many deposits; no autonomous per-deposit variation is implemented. This is not
 claimed as a final seam-free production library.
 
-The contact sheet uses a neutral backdrop. Refined-ground compatibility, normal
-gameplay scale, machine readability and engine appearance need later owner
-acceptance. No graphical, gameplay or performance PASS is claimed. Production
+The contact sheet uses a neutral backdrop. Offline visual/architecture acceptance
+is recorded above. Refined-ground compatibility in-game, normal gameplay scale,
+machine readability and engine appearance still require later integration and
+owner verification. No engine, gameplay or performance PASS is claimed. Production
 terrain, resource geometry, clearing, simulation, Extractor and placement are
-unchanged. Preserve a rejected prototype for comparison; no automatic redesign
-or cleanup follows rejection.
+unchanged. Retain the source and previews for comparison; acceptance does not
+request redesign or cleanup.

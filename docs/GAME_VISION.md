@@ -288,9 +288,10 @@ The integration remains pending merge and does not change approved environmental
   A 6x4 terrain-cell example is illustrative, not a procedural size class.
   Medium/large deposits should be common and small deposits relatively rare;
   procedural dimensions, weights and distribution remain undecided.
-  The [offline artwork prototype](FERRITE_ARTWORK_PROTOTYPE_V1.md) has owner approval
-  of its material's artistic direction; irregular assembly architecture and new
-  previews remain pending owner acceptance, and PR #123 is not authorized to merge.
+  The [offline artwork prototype](FERRITE_ARTWORK_PROTOTYPE_V1.md#owner-acceptance-2026-11-02)
+  received owner visual/architecture acceptance on 2026-11-02 at `1662a61`, including
+  the irregular assemblies and their documented limitations. PR #123 remains draft
+  and unmerged; production integration and in-game verification remain deferred.
   Current gameplay retains the authored oval polygon and
   placeholder drawing; this artwork task does not implement the new geometry.
 - One guaranteed authored deposit near the ship introduces deliberate inspection,
