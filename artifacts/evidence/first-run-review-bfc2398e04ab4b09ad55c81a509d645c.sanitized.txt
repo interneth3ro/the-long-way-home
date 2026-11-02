@@ -1,0 +1,904 @@
+Sanitized historical log derivative; absolute local paths replaced by role.
+Provenance: docs/experiments/repository_housekeeping_stage2c.json
+
+Source revision: 8db6e8c09be9d01ff8c2db2f65c68982ced8749a
+Working status (untracked files are excluded from staging):
+
+Pinned executable (not invoked): <PINNED_GODOT_EXECUTABLE> SHA256=AB1824F85BFD8E0E4128182C000C4003A3E042245B2967848D089B2A04B22424
+Static: PASS (PASS, exit=0, bytes=147)
+...........................................
+----------------------------------------------------------------------
+Ran 43 tests in 4.099s
+
+OK
+Stage created (retained even on failure): <HISTORICAL_STAGE_DIRECTORY>
+Retained dry-run stage: <HISTORICAL_STAGE_DIRECTORY>
+PROPOSED ONLY: first-run review scope; not authorization or a loadable approval file.
+{
+  "Purpose": "FIRST_RUN_REVIEW_ONLY",
+  "Authorization": "INACTIVE",
+  "Routine": "INACTIVE",
+  "RunnerPath": "<HISTORICAL_RUNNER_PATH>",
+  "Source": "<HISTORICAL_CHECKOUT>",
+  "Revision": "8db6e8c09be9d01ff8c2db2f65c68982ced8749a",
+  "Working": "",
+  "IndexSha256": "2FD10AA203FB7B38860102CC785C2A7E3DCA92346C74960B62BBE571465A672E",
+  "Controls": [
+    {
+      "Path": "AGENTS.md",
+      "Sha256": "E3DB2F7E8B30A2FE07C47A459CCA687C76CFC36F1316C76E0B2CA002462E48D4"
+    },
+    {
+      "Path": "docs/LOCAL_TESTING.md",
+      "Sha256": "C52D9876C43C7BB0A8E3D57B61088849009E67EF2DBD86541B79C6A94C2B4473"
+    },
+    {
+      "Path": "tests/local_runner_fixture_test.ps1",
+      "Sha256": "25E355237F4D8CBDCA42617D91CB2B211DE3A30F2A6C7C213DDACC61F09B1A31"
+    },
+    {
+      "Path": "tests/static_automatic_transitions_test.py",
+      "Sha256": "175F77252B8883C8B62533CACA09086A8A0575BBD7BB4284C4F8702B2701E073"
+    },
+    {
+      "Path": "tests/static_port_console_geometry_test.py",
+      "Sha256": "5CD04C0B7CA7C39DAD8FA65C119BF87BB2EBAE913F7EEF6ACA6B4558E05BB863"
+    },
+    {
+      "Path": "tests/static_v2_connection_test.py",
+      "Sha256": "A66489AA69148D9CE00BA1082A6204396B13799200E986F5803666CBD369F51F"
+    },
+    {
+      "Path": "tests/static_v2_production_host_test.py",
+      "Sha256": "C56313490DAABF615078529C306907680E7751CE9C5FE59643D288F0FD913399"
+    },
+    {
+      "Path": "tests/static_v2_stationary_machines_test.py",
+      "Sha256": "781C1B31791C7BA614CA55341DE1A8F6791F09F84BBCC686F57621CB76C06FD1"
+    },
+    {
+      "Path": "tools/run-local-tests.ps1",
+      "Sha256": "D37F96F14C92DCCC5D5B4CE976C1550B3E8B7EF51BC3E6F51A773D4CF02AE262"
+    }
+  ],
+  "Inputs": [
+    {
+      "Path": "assets/characters/dave/character_idle.png",
+      "Sha256": "8CD4187072D894391D03165B798C3D6D90368624EB0256A0D11E1E0AF369F21E"
+    },
+    {
+      "Path": "assets/characters/dave/character_idle.png.import",
+      "Sha256": "F297F232D7FAAB849585C2DB97257A32EEB8A4DB84311B678AE5907263672E90"
+    },
+    {
+      "Path": "assets/characters/dave/character_walk.png",
+      "Sha256": "425B952B6168FD6E3D6291D71D5B3F16E3C54911074E18F1963DE65A4B8B5CCF"
+    },
+    {
+      "Path": "assets/characters/dave/character_walk.png.import",
+      "Sha256": "E27B77A43EE5D0A5294AEAF71809406B9C491FD170C85868176D25289CA99DEC"
+    },
+    {
+      "Path": "assets/characters/dave/dave_idle_angled_overhead_pilot.png",
+      "Sha256": "BB1900160A12DF194D817D5A8DB815D8ABCA5DD4E0DC5A68A6D009D74C292CC0"
+    },
+    {
+      "Path": "assets/characters/dave/dave_idle_angled_overhead_pilot.png.import",
+      "Sha256": "F51D642EBEFB7FAC18D64F776B6E248998C486EE2B57FDEFCA0A9EE4991CBA94"
+    },
+    {
+      "Path": "assets/characters/dave/dave_idle_north.png",
+      "Sha256": "DF2C97EDCD7FCC38929B025FFB3A7C753647B086978DF8C3DB7B23112FC69E53"
+    },
+    {
+      "Path": "assets/characters/dave/dave_idle_north.png.import",
+      "Sha256": "D8598C024D642AAC132A06F0CD8F770D2BC3DB3E8A589F364D5DFEC0A240F96D"
+    },
+    {
+      "Path": "assets/characters/dave/dave_idle_south.png",
+      "Sha256": "07F8353A3C225C4B547DF055CD7E1D1620CDCE9F5529EB4B24F399C3A733B99D"
+    },
+    {
+      "Path": "assets/characters/dave/dave_idle_south.png.import",
+      "Sha256": "3C9D36E0656831B62A7AB2AEA673597F3E1646AF3EC100BD36B80CC5F46AAF5E"
+    },
+    {
+      "Path": "assets/characters/dave/dave_static_approved_v2.png",
+      "Sha256": "1A80F0CFF3A10ACE6D0F4935DFFD34069F08BDC9383898ED5C39B641F580C858"
+    },
+    {
+      "Path": "assets/characters/dave/dave_static_approved_v2.png.import",
+      "Sha256": "DD5E548043FEDBDFA931934BDD9C01F689FD85B9DCE6E16CB69B23B910771DCC"
+    },
+    {
+      "Path": "assets/characters/dave/dave_walk_north.png",
+      "Sha256": "17D8B3D999450E820CE368A905FBCDD548DE62D7894197077430A75BF0AEE39C"
+    },
+    {
+      "Path": "assets/characters/dave/dave_walk_north.png.import",
+      "Sha256": "0C49F20C27C1277C17F8C5BD69DFCAFC1C07FC01FA7CA8416D5A7A31DD7FDA3D"
+    },
+    {
+      "Path": "assets/characters/dave/dave_walk_north_atlas.png",
+      "Sha256": "48926C31BEFDCFA59C31299080AD9A92920C40FF0DA06BD9FC96A2BD54098CEE"
+    },
+    {
+      "Path": "assets/characters/dave/dave_walk_north_atlas.png.import",
+      "Sha256": "E59BCAC07D2524FA79EDB257C19D64ABAA01D1D3C17FBCAF6BD2281CB9904214"
+    },
+    {
+      "Path": "assets/characters/dave/dave_walk_south_atlas.png",
+      "Sha256": "F525E335FC9AF940EB6A03B914986708ED97438E066C335F00F9BCA68EE4BDE7"
+    },
+    {
+      "Path": "assets/characters/dave/dave_walk_south_atlas.png.import",
+      "Sha256": "22A94672B67F47903AEC44958D0D2C025BFB44914A510BC2DD71E0548551CBD5"
+    },
+    {
+      "Path": "assets/characters/dave/dave_walking.png",
+      "Sha256": "02C9D474A90E7A6BD1F88BB2A954E88AFB3DF50C408F88DC1476596DCBF1A7A7"
+    },
+    {
+      "Path": "assets/characters/dave/dave_walking.png.import",
+      "Sha256": "376CFF1C14A125151D72F70AD760D22FD511CA114992FD3ACEAE48878C3BE407"
+    },
+    {
+      "Path": "assets/environment/computer/computer_damaged_pilot.png",
+      "Sha256": "E72DE0B79EEE5495D7B22911F005709825331FED10F242D1B5172E377F48C2E8"
+    },
+    {
+      "Path": "assets/environment/computer/computer_damaged_pilot.png.import",
+      "Sha256": "A27B23589A9614DBA4168F1004187798CD1BA9CFE9D8098AF81A2218B1FA51BF"
+    },
+    {
+      "Path": "assets/environment/computer/computer_repaired_pilot.png",
+      "Sha256": "D82C20CE1AE1C4BE4FE034B9D26D4F036170EAAF561C7613112A430FCA2365D9"
+    },
+    {
+      "Path": "assets/environment/computer/computer_repaired_pilot.png.import",
+      "Sha256": "8709E73AD6181171BFB0A45569D662EB30E8E3F9EC652DC6882FA430818D3FA4"
+    },
+    {
+      "Path": "assets/environment/maintenance_bay_v2/machines/extractor_stationary.png",
+      "Sha256": "1640723731CB25A224AC797B1C0B5006EA82895507BBA39E41E61F62E5ABC9BB"
+    },
+    {
+      "Path": "assets/environment/maintenance_bay_v2/machines/extractor_stationary.png.import",
+      "Sha256": "F8F69C422AE41DFAF385CB88A2CCCE9BF110609ED42CC6005531484868B4164C"
+    },
+    {
+      "Path": "assets/environment/maintenance_bay_v2/machines/fabricator_stationary.png",
+      "Sha256": "B8639413684ED4EA90068EF9A330087DD4C48B696633B9F5F4A7040262E7CE12"
+    },
+    {
+      "Path": "assets/environment/maintenance_bay_v2/machines/fabricator_stationary.png.import",
+      "Sha256": "437C942658635AADF62BC0166A2B000E9B8E97DC112A4D7357929401FC9661A2"
+    },
+    {
+      "Path": "assets/environment/maintenance_bay_v2/machines/smelter_stationary.png",
+      "Sha256": "BF11742F8CA6FECC08DDF4A7A4B18B5A3FCE1A57D4508524359DCD6D73A0F54D"
+    },
+    {
+      "Path": "assets/environment/maintenance_bay_v2/machines/smelter_stationary.png.import",
+      "Sha256": "F65669DAA1C1DDE0C603C57204E22F2F2A99BC9C48F8B8A7C3B5B570F2B35BB3"
+    },
+    {
+      "Path": "assets/environment/maintenance_bay_v2/maintenance_bay_v2_machine_free_background.png",
+      "Sha256": "968D4DECA9E8DF72BD5ABB205A018D11A866B902DE0AC0C1440750CAA5EF99E1"
+    },
+    {
+      "Path": "assets/environment/maintenance_bay_v2/maintenance_bay_v2_machine_free_background.png.import",
+      "Sha256": "5B8EC4E61003730F3BD4E701A53DBD304275365AAD4CC1112100A7B4ACA386C8"
+    },
+    {
+      "Path": "assets/environment/maintenance_bay_v2/manifest.json",
+      "Sha256": "EF72C754D013ABE84AF42BB2A52CAFE22B4D48FB95ED2CAF96EBCEC5E026DDEC"
+    },
+    {
+      "Path": "assets/environment/ship_interior_v2/approved_initial_composite_REFERENCE.png",
+      "Sha256": "C92C2D07645800B43D4DB59421C1A3ED75E59E5058C6F2D65F4B60ABD71A52B1"
+    },
+    {
+      "Path": "assets/environment/ship_interior_v2/approved_initial_composite_REFERENCE.png.import",
+      "Sha256": "2F08834B70410AF60D70D260E44E0D1692215A86180F70948BC4A0911E4DB5D3"
+    },
+    {
+      "Path": "assets/environment/ship_interior_v2/computer_damaged_overlay.png",
+      "Sha256": "0B47906CCB6BC8E935265B5194375FE8C4F6A8647A0B2F0F52C7C1D7DADD6FFE"
+    },
+    {
+      "Path": "assets/environment/ship_interior_v2/computer_damaged_overlay.png.import",
+      "Sha256": "972C4B29A8E4113629859D14B6D6C5421E5F1288F8BB7466DEDA88D8008CB2E7"
+    },
+    {
+      "Path": "assets/environment/ship_interior_v2/computer_repaired_overlay.png",
+      "Sha256": "58B59712D47900F5C38C60D7F2AD4E5D1E773DE557B4FBF21931CA8E679DB526"
+    },
+    {
+      "Path": "assets/environment/ship_interior_v2/computer_repaired_overlay.png.import",
+      "Sha256": "C914593296C4E5136D0F7EE700ED707B8A518A278D6953B8919E4183A8DC011F"
+    },
+    {
+      "Path": "assets/environment/ship_interior_v2/exterior_closed_overlay.png",
+      "Sha256": "64085D665F67F408B0CD67F69BEBAA5A814B79EEED296C3D952E62988D7A440F"
+    },
+    {
+      "Path": "assets/environment/ship_interior_v2/exterior_closed_overlay.png.import",
+      "Sha256": "C4C6DF74B179EA2A0C479236275D3DAF886951D5D1E08ACA7C48A386979A338B"
+    },
+    {
+      "Path": "assets/environment/ship_interior_v2/exterior_open_overlay_DEFERRED.png",
+      "Sha256": "66D405F38C605155C7393328524D186A9E028A06075CDF85BBCE1F13F4F353E1"
+    },
+    {
+      "Path": "assets/environment/ship_interior_v2/exterior_open_overlay_DEFERRED.png.import",
+      "Sha256": "364E79598E205FB3CEC1284ED7DDC473CED3D260CDA6A178AADC8EAB8CCFAB49"
+    },
+    {
+      "Path": "assets/environment/ship_interior_v2/maintenance_closed_overlay.png",
+      "Sha256": "52382E8BD75D1C21DE9DEF2A483A92378366D5059BC1A01A54DEDF31024E033E"
+    },
+    {
+      "Path": "assets/environment/ship_interior_v2/maintenance_closed_overlay.png.import",
+      "Sha256": "8B36DFF83A268456BEC5F770DA0380336B7E9B1E653B8A5A029A269A7B088DEB"
+    },
+    {
+      "Path": "assets/environment/ship_interior_v2/maintenance_open_overlay_DEFERRED.png",
+      "Sha256": "64085D665F67F408B0CD67F69BEBAA5A814B79EEED296C3D952E62988D7A440F"
+    },
+    {
+      "Path": "assets/environment/ship_interior_v2/maintenance_open_overlay_DEFERRED.png.import",
+      "Sha256": "2D21F89A3188203CC3492B0A9C34B3C49FA70F0C54FC8A7BDF7F3C984FCE6643"
+    },
+    {
+      "Path": "assets/environment/ship_interior_v2/manifest.json",
+      "Sha256": "6D28D051E03FE4DC3A8B5EAA9780C33F07EF8E68DDDC08A73155A3588D47D66C"
+    },
+    {
+      "Path": "assets/environment/ship_interior_v2/ship_interior_background.png",
+      "Sha256": "8B766B93D7E0BF5E427EE013653164C9BD414518644784DA5BD284EC3E3AF857"
+    },
+    {
+      "Path": "assets/environment/ship_interior_v2/ship_interior_background.png.import",
+      "Sha256": "67C19A416E981769F66DBB8B9D556AB30CBE0DF2D2E56FEDF9521F39CE528F9B"
+    },
+    {
+      "Path": "assets/environment/ship_interior_v2/wreckage_hidden_marvin.png",
+      "Sha256": "AE1CB5E8556AA5E8262670109AF281115BFDA133450AEAF17ACB59DB048BE71C"
+    },
+    {
+      "Path": "assets/environment/ship_interior_v2/wreckage_hidden_marvin.png.import",
+      "Sha256": "1965801D86EFB781168904335B4B4E7EB3EFEDC8D4645BAC47B9F85A23520FD3"
+    },
+    {
+      "Path": "assets/items/ferrite_plate.svg",
+      "Sha256": "D8F0CEDF15EE534F70CAC6BDCBB39001617D4ED4D8575613A93702849BC449AA"
+    },
+    {
+      "Path": "assets/items/ferrite_plate.svg.import",
+      "Sha256": "D778B87836F392C3AD764A543BBA52EC9A0A2D4E7259E2D0AA2B298BE737C84D"
+    },
+    {
+      "Path": "assets/items/ferrite_rod.svg",
+      "Sha256": "9D9F01CE684DE91E6C8C2A362ECA40B88D3B61AB44D60B42D21F654296425338"
+    },
+    {
+      "Path": "assets/items/ferrite_rod.svg.import",
+      "Sha256": "FBB4F282F722225DD7DC5E1812EA6F3C3BE1BCF8A5C70F22A75B646CA5073717"
+    },
+    {
+      "Path": "construction/construction_controller.gd",
+      "Sha256": "1654EAB81EA2D583EE993067CAAF41440EEECDBE4AF9637610A492C5C80A6EE9"
+    },
+    {
+      "Path": "construction/construction_controller.gd.uid",
+      "Sha256": "FF0AAE1EB45DEB287D9F63CD4A686089B2333348F7BCD1311437F3DD06D3C103"
+    },
+    {
+      "Path": "construction/construction_controller.tscn",
+      "Sha256": "828363E2915EB1AB749EAB8ADF53E77EBAE62D073B0E84D9008688084447B33F"
+    },
+    {
+      "Path": "construction/deployed_machine.gd",
+      "Sha256": "E31B0C6CC474DFFDE575D2C22F12E4F0F039FB0350FDA6339DC1F4B3378967E5"
+    },
+    {
+      "Path": "construction/deployed_machine.gd.uid",
+      "Sha256": "58DE1B83B80C9DFB551B2F4B3929A5A12FE9A69D333305E79A30D8C19FC47A3B"
+    },
+    {
+      "Path": "construction/machine_definition.gd",
+      "Sha256": "240006AB9689F6914894555806A6DCFECEC3553B3D9EE603D957E2074D42C353"
+    },
+    {
+      "Path": "construction/machine_definition.gd.uid",
+      "Sha256": "689EED91D57948B6B0BB70E3DC5347F2557828544B2E3E5DC140998B8A7E41A4"
+    },
+    {
+      "Path": "construction/machine_visual.gd",
+      "Sha256": "935FB042487F43B11CAA3C6BC187D12DFFF6162C39DC37D3290E6DA3935A7C0A"
+    },
+    {
+      "Path": "construction/machine_visual.gd.uid",
+      "Sha256": "C4B8B46AC72D56C5F6FD7DC24C413C826688AC0633D6A353A871117ED3269862"
+    },
+    {
+      "Path": "construction/placement_rules.gd",
+      "Sha256": "58B528825B033A57A2DFBD4F8298E651E83396D9AF253068557E811CA43E171C"
+    },
+    {
+      "Path": "construction/placement_rules.gd.uid",
+      "Sha256": "96F0531E752E91000B88BB700326B93FD5B9C6AABF71CA7A23F4882518AFEEF8"
+    },
+    {
+      "Path": "construction/recipe_definition.gd",
+      "Sha256": "A5DF0812E2AA9035CDD02B3E6BF615DBE370D6B74B5DAE00294C0E604260709A"
+    },
+    {
+      "Path": "construction/recipe_definition.gd.uid",
+      "Sha256": "50A7EED2BBE45364A759E3B4B62F5C21CE2F47101149BF747971CC6AC138161C"
+    },
+    {
+      "Path": "construction/recipe_ingredient.gd",
+      "Sha256": "1388984302CEFBB5F8581B22A08D43A31D3EA02D8B30F87F5E40A2E67C0DAFF0"
+    },
+    {
+      "Path": "construction/recipe_ingredient.gd.uid",
+      "Sha256": "1D4B4560013C608D7089B53610413C37BB4144FA03FA7AA831D45DF822CFCAA5"
+    },
+    {
+      "Path": "construction/recipes/ferrite_plate.tres",
+      "Sha256": "94D3B6D3EE38EA3727086873A44ED45946E0D439B2E6152A17403040A519BC60"
+    },
+    {
+      "Path": "construction/recipes/ferrite_rod.tres",
+      "Sha256": "3C3A6DBDFF8EB61FF83F5F8498D3C5E4D8A4EFBDEF717805DF1AF6F8AFA05040"
+    },
+    {
+      "Path": "dialogue/computer_opening.tres",
+      "Sha256": "EF885982369654411D81B36122831CABA5B8289CF7D1C5A0D183E958C2F7A8DC"
+    },
+    {
+      "Path": "dialogue/dialogue_conversation.gd",
+      "Sha256": "BBA839EA2DC21C614B2CEAE7129A87747E2A4804DEA6041163E5D7C5F6DC3D6C"
+    },
+    {
+      "Path": "dialogue/dialogue_conversation.gd.uid",
+      "Sha256": "5E2882E80718258BD00DB6DAE37B2167A0D3646CBF745398E143052D61F3C0EA"
+    },
+    {
+      "Path": "dialogue/dialogue_entry.gd",
+      "Sha256": "A6C427B502A8A9F5F74BDB96BC20977EC35DAEC147AF62F51C3061D36123F87A"
+    },
+    {
+      "Path": "dialogue/dialogue_entry.gd.uid",
+      "Sha256": "D65BC7FDF5D5CB3DA69F8DC47079E46103F8967C974629C3A03774432DE435D1"
+    },
+    {
+      "Path": "dialogue/extractor_recovery.tres",
+      "Sha256": "C348A214C9DC171FAE9410E28BBA6253ADC3AD9DC1FCCDAC564E5FBC27D2B330"
+    },
+    {
+      "Path": "dialogue/ferrite_acquisition.tres",
+      "Sha256": "73F3119EC21FF92012E8C0497A73306354370B4C372EC7DC537B7BA4088DE9F2"
+    },
+    {
+      "Path": "dialogue/ferrite_discovery.tres",
+      "Sha256": "64ECED8EE17E31CB73527045040A8FC3146E2F64FDE3A5902FA1784D784A7A84"
+    },
+    {
+      "Path": "dialogue/ferrite_ingot_acquisition.tres",
+      "Sha256": "964407FA05C10F3CDBF3731C2EC0C56D0885992B4CF7C43F1BFE58560A6EA592"
+    },
+    {
+      "Path": "dialogue/musing_definition.gd",
+      "Sha256": "D7EB05AB86BCB647D233C9F85800416B6853C67E33D6090DE9C340A2C2EFA276"
+    },
+    {
+      "Path": "dialogue/musing_definition.gd.uid",
+      "Sha256": "BB47C8A89A4CB1FD385C0055F70C8775B0BD14B8B91C57992DC496806A438F21"
+    },
+    {
+      "Path": "inventory/extractor.tres",
+      "Sha256": "CB37EB9D398FCA0FB38519E71E60C7730D1B25E1209128CB7B24E14D8EF5C98A"
+    },
+    {
+      "Path": "inventory/fabricator.tres",
+      "Sha256": "B687989C0B99D2DBF2C5EB410D1F8F93EC45AF158868D25A6247B3A2F49910B4"
+    },
+    {
+      "Path": "inventory/ferrite_ingot.tres",
+      "Sha256": "C75137AEE1DD8801A235499A793BCD1888ADECA535F31C72B638D5DCB553C0B7"
+    },
+    {
+      "Path": "inventory/ferrite_ore.tres",
+      "Sha256": "AF68CDF771390230AF07894C655AD02D194456C62485EFE480183389B650865D"
+    },
+    {
+      "Path": "inventory/ferrite_plate.tres",
+      "Sha256": "58E2830C500B86B7839756BFF2E82867CEF02DF316C92AEA8A74A363CB7B8722"
+    },
+    {
+      "Path": "inventory/ferrite_rod.tres",
+      "Sha256": "2A2BFFE5825E895700D68481F8C4C7B7024AD3DDB5E760C223E8FE7E2847C56B"
+    },
+    {
+      "Path": "inventory/inventory_state.gd",
+      "Sha256": "7ECD58453F05AD651F06DFC7D99A6B79D2DB140987B6BF472F7E4FD0A11D7EA5"
+    },
+    {
+      "Path": "inventory/inventory_state.gd.uid",
+      "Sha256": "B847B4FF60A37BCBF0ECAD5C33CCFD36BE0CFBEBCA6E6E3EAF2DBF16077CACC7"
+    },
+    {
+      "Path": "inventory/item_definition.gd",
+      "Sha256": "47E8DD9009C6FABAEC5736DD4C412E0A75C7CC3FA69878B86290FD858450CED3"
+    },
+    {
+      "Path": "inventory/item_definition.gd.uid",
+      "Sha256": "3879011C72544F83E49CDDA36555570CDA3C8BBA1F568B3EA4E073BD0C9156AF"
+    },
+    {
+      "Path": "inventory/smelter.tres",
+      "Sha256": "AC652AD1FABCC78A10FB3623C2F97AB6922767420C83474FC619605CDCC45088"
+    },
+    {
+      "Path": "objectives/objective_controller.gd",
+      "Sha256": "2CE858DB6AEAA236C5EFE6CAD0D40F2655B2934EB26CF1736E7BDA1AF15EB090"
+    },
+    {
+      "Path": "objectives/objective_controller.gd.uid",
+      "Sha256": "1C052CEAA141F020674CC1CE7C98B7CF5F351B5F055C70A356DDB12ADBAA5D47"
+    },
+    {
+      "Path": "objectives/objective_definition.gd",
+      "Sha256": "40292954D38554C1985713760C4BC6CC9392D57450046509BF874AD7962BD382"
+    },
+    {
+      "Path": "objectives/objective_definition.gd.uid",
+      "Sha256": "41178EF98D468EE47B9FB9EE20B63FE91560350A503C07F5DF95946283D620AD"
+    },
+    {
+      "Path": "objectives/restore_computer.tres",
+      "Sha256": "180734DE8F0CA571BE757EDD1CF317C378EABB9E89BE905AB451136B465AAF52"
+    },
+    {
+      "Path": "objectives/restore_computer_extractor.tres",
+      "Sha256": "0303199054BA049D86A7D6A1C9757FA7FD771ED111C8B7E7439F2BC9ED18C912"
+    },
+    {
+      "Path": "objectives/restore_computer_fabricator.tres",
+      "Sha256": "EC4D7B17766700835C00C3BC1C5F71202112192626C57AC16B643A45422BF037"
+    },
+    {
+      "Path": "objectives/restore_computer_ferrite.tres",
+      "Sha256": "9B0C991C779B15962432B9D91183AE6554D629A7E158C343D2118CC8B01418C5"
+    },
+    {
+      "Path": "objectives/restore_computer_plate.tres",
+      "Sha256": "E40E332935A690E24D8054E53C6319B08788647A3A2143A8B3EBB4A4E6F46A5C"
+    },
+    {
+      "Path": "objectives/restore_computer_production.tres",
+      "Sha256": "CF1A37046842918EEFA5176B466D24CD41542E081C23D77BB0CD352184E4595E"
+    },
+    {
+      "Path": "objectives/restore_computer_smelter.tres",
+      "Sha256": "8DFD5A2AC2442EA821BCF69426BC6078F5013A1E66FE733F7B81A889D4189927"
+    },
+    {
+      "Path": "objectives/restore_computer_smelter_deployment.tres",
+      "Sha256": "D16DE3AAFD6F884D19BF41B0B5F3FD117466E531158B30D0FE805CF72FA61296"
+    },
+    {
+      "Path": "objectives/restore_computer_smelting.tres",
+      "Sha256": "65379D9ABFC9C6F1EEFF7EB0569682B89444F28FFCCC84E68B16A980ADF105B1"
+    },
+    {
+      "Path": "project.godot",
+      "Sha256": "83FDE3F26E2D0CB376B012F343C5FE0821DFBE4723C5CC6688519C5729EF8A02"
+    },
+    {
+      "Path": "scenes/interaction/automatic_doorway.gd",
+      "Sha256": "590DE2910BAD523ABD0D37669B29B589B6B49DDF9993A35C0372AB19B9099C6B"
+    },
+    {
+      "Path": "scenes/interaction/automatic_doorway.gd.uid",
+      "Sha256": "D0E5D0889317D6EFC97CC47CD716E9E37A9FB42F6F8CC9509561B1358BF6076D"
+    },
+    {
+      "Path": "scenes/interaction/automatic_doorway.tscn",
+      "Sha256": "5A98685C17AF268B74FA1CF6ACC885F77852BE794BF4DBE42FF5D5B426573B11"
+    },
+    {
+      "Path": "scenes/interaction/extractor_rack.gd",
+      "Sha256": "2159C536DE91C669F9E938F65776FE2A5B34F16BA272C56CD9EFC70B3369DBF1"
+    },
+    {
+      "Path": "scenes/interaction/extractor_rack.gd.uid",
+      "Sha256": "013259573E4E26B89A5EA455854B21BAA0B6F3B39274D2582D72C7CEE066EB6A"
+    },
+    {
+      "Path": "scenes/interaction/fabricator_rack.gd",
+      "Sha256": "9DB5006A4FDBB22D2907D58E8EFE15443EFC1029C0D9027142303C0FD352A746"
+    },
+    {
+      "Path": "scenes/interaction/fabricator_rack.gd.uid",
+      "Sha256": "D644A36C37D6A74D23038C92786E9427F8F123608DC705B4127C881CF2C93474"
+    },
+    {
+      "Path": "scenes/interaction/ferrite_inspection.gd",
+      "Sha256": "C1433A10D19E9CFB08671D336373F41DA59D3E9DD1F5755868CBFEA4EB662511"
+    },
+    {
+      "Path": "scenes/interaction/ferrite_inspection.gd.uid",
+      "Sha256": "4ACBA05B74B9D15FC991FC67ABE47FCACD2D6FD53C296CB0340D8DE62C56ADF3"
+    },
+    {
+      "Path": "scenes/interaction/scene_hatch.gd",
+      "Sha256": "F8D57003D082948B933A85EF8C54310611F3E32E2BFBE4B78BA04E12378319DA"
+    },
+    {
+      "Path": "scenes/interaction/scene_hatch.gd.uid",
+      "Sha256": "E75BD52BA7AE68DD94EF04B53FF85F3539C11CEFACAC7D2476133F51116AFACA"
+    },
+    {
+      "Path": "scenes/interaction/smelter_rack.gd",
+      "Sha256": "65E0FA25BADBCF2CDC57B708F6272F43A1266A369CF930ADC7BA367A3D89B854"
+    },
+    {
+      "Path": "scenes/interaction/smelter_rack.gd.uid",
+      "Sha256": "9EC6E512F7CF8FAFBE635382C4EA423DC20365CF980CE6D56A132D0681E4C8DC"
+    },
+    {
+      "Path": "scenes/interaction/v2_extractor_recovery.gd",
+      "Sha256": "4C4DAC87C77C624B9D8A96550C87B5226D0550476DECC886E95ACB05FF342CE9"
+    },
+    {
+      "Path": "scenes/interaction/v2_extractor_recovery.gd.uid",
+      "Sha256": "47B35E49BD414E7D0639DEAC9476BE878B801482D1629F9785B585FEF4651233"
+    },
+    {
+      "Path": "scenes/interaction/v2_fabricator_recovery.gd",
+      "Sha256": "5C0789704EA9971E94694E8345238F0466EE6591E9F5FE2483933A221EA9B164"
+    },
+    {
+      "Path": "scenes/interaction/v2_fabricator_recovery.gd.uid",
+      "Sha256": "FAC1155D41995263CD65BA80A3D28A3498AD3C4FA1734A5E1AC45A2181A3B222"
+    },
+    {
+      "Path": "scenes/interaction/v2_smelter_recovery.gd",
+      "Sha256": "3EB441DF6D31A623CA1169744A8F4983E2D5271EEBDC731E0019B879577658F7"
+    },
+    {
+      "Path": "scenes/interaction/v2_smelter_recovery.gd.uid",
+      "Sha256": "3C18C39E9B2DCB7643E9CF46AE6F456586FDF408E33D2DD299A1E34CE791D679"
+    },
+    {
+      "Path": "scenes/interaction/world_interactable.gd",
+      "Sha256": "2ED080D81F58B09E8B856807734E9E36A612A09DBDD19C3E4F9D21B0E70BDE6D"
+    },
+    {
+      "Path": "scenes/interaction/world_interactable.gd.uid",
+      "Sha256": "190ED5404C9DD0998C47573EA508B4CEEA4FEE5ED2E05F6966E9B3D4E1391D67"
+    },
+    {
+      "Path": "scenes/main/main.gd",
+      "Sha256": "C2135E4C2FAE2E3B5F9287C0DFB480F5C1E04588207861CE98AC750BE7B68159"
+    },
+    {
+      "Path": "scenes/main/main.gd.uid",
+      "Sha256": "261B2E6A9AC7E82047C1B74494441915C9FBD4B1F2FD6BE77771CDCB1047545B"
+    },
+    {
+      "Path": "scenes/main/main.tscn",
+      "Sha256": "AE4E3813D65203B1F2223B36AD968A0E3EAD1441711D633B499462AB92867FC5"
+    },
+    {
+      "Path": "scenes/main/main_v2.gd",
+      "Sha256": "746CED90CBA930811893E3560B44A99FF00F9BFF13900A4D92BA65C413051054"
+    },
+    {
+      "Path": "scenes/main/main_v2.gd.uid",
+      "Sha256": "89B42EB35282E823DA7A0F35D36468B241FC399F8BB87A613E45AAD5BF0F10D5"
+    },
+    {
+      "Path": "scenes/main/main_v2.tscn",
+      "Sha256": "A6476AE2861E12423CE35CA5EEC08C7F7EBDB734EE8815DC8830F186D4CEC105"
+    },
+    {
+      "Path": "scenes/main/playthrough_state.gd",
+      "Sha256": "80B89F2FDCCA86084417A507814BCE2BF62D4F948ADBF1878E5A5D5F4C28D1A5"
+    },
+    {
+      "Path": "scenes/main/playthrough_state.gd.uid",
+      "Sha256": "7E7AE321B58FEFAADEA553C76C33FB036742924B6EA73D52C83198905AC6FB9F"
+    },
+    {
+      "Path": "scenes/main/scene_transition_controller.gd",
+      "Sha256": "CCF34DDA488AB7B3717EDE6144B49FA4592249B2336F5C8F4540DA10B218F629"
+    },
+    {
+      "Path": "scenes/main/scene_transition_controller.gd.uid",
+      "Sha256": "0BC9550E548800E36BCDD0CB0605E8BD5011F05EBE127EA9DF929D8A0001EA69"
+    },
+    {
+      "Path": "scenes/player/dave.gd",
+      "Sha256": "3BA232F256C1B9655E2CBBB95D63346756BD95F497F866EC1B10E9CD8BE12A6F"
+    },
+    {
+      "Path": "scenes/player/dave.gd.uid",
+      "Sha256": "314CA2348BE8A1548A2E1336E510B146E5D5A50CB56CE720A008B93418DB9C98"
+    },
+    {
+      "Path": "scenes/player/dave.tscn",
+      "Sha256": "3984322148B2752933778C9E9721C7FE12AAC70297D64B1220D2880A3D486262"
+    },
+    {
+      "Path": "scenes/player/follow_camera.gd",
+      "Sha256": "56FE1ED506FA09BE5CA124F7AB93D89609179DF344FD55378F0F342585EA0FE6"
+    },
+    {
+      "Path": "scenes/player/follow_camera.gd.uid",
+      "Sha256": "8AB6E7E352D5AA6530ACD29ACDEAB97A967095B45EB95CB2EFC44CB776D23730"
+    },
+    {
+      "Path": "scenes/player/interaction_detector.gd",
+      "Sha256": "AD4C0E814536501A91F2C0395698CB9064AB6EE1F60B90B2B542D1B69B7598F4"
+    },
+    {
+      "Path": "scenes/player/interaction_detector.gd.uid",
+      "Sha256": "77503E501961AD00DACE0EFBF57480E83D9D327F437C8EF59D19AA8C640188B3"
+    },
+    {
+      "Path": "scenes/ui/developer_coordinates.gd",
+      "Sha256": "C8591F8B2A99714F4FD9520669134E364122AB6D04D370DEA6038F11672748CC"
+    },
+    {
+      "Path": "scenes/ui/developer_coordinates.gd.uid",
+      "Sha256": "B178D66E40BB4A963C830EEC641439379D6FCCD84ED8654ACB67E1EB77A31469"
+    },
+    {
+      "Path": "scenes/ui/developer_coordinates.tscn",
+      "Sha256": "6E75B255B1C0C03794F572E11C96F796EF613820F67C97F6AFC2C9C8FBE5F809"
+    },
+    {
+      "Path": "scenes/ui/dialogue_ui.gd",
+      "Sha256": "1E021687968920964384BE486CE2567B3BB21ED63785CF827921D734D72F76F4"
+    },
+    {
+      "Path": "scenes/ui/dialogue_ui.gd.uid",
+      "Sha256": "8C0A09FFBED69897A398A85F03D4C592A3C762035E525F747ED26AD90A75DBED"
+    },
+    {
+      "Path": "scenes/ui/dialogue_ui.tscn",
+      "Sha256": "04922EBA686027C28C8C718C2F431DDC61392FEEC86BC430626C5E1D4C6618D0"
+    },
+    {
+      "Path": "scenes/ui/interaction_ui.gd",
+      "Sha256": "4829E1BE18A489FB6A16611249A9AE90C2BCF22370282E3AB964FA75BDDD4D20"
+    },
+    {
+      "Path": "scenes/ui/interaction_ui.gd.uid",
+      "Sha256": "A2733CD0CD408CD08FD5DAEAB63F0096AAE5848442782594019B7891F901DAE5"
+    },
+    {
+      "Path": "scenes/ui/interaction_ui.tscn",
+      "Sha256": "644C0E0856F251C661F9FDE8A89F29FB995C1D14E4E8C74DA7C78232F78120F0"
+    },
+    {
+      "Path": "scenes/ui/inventory_ui.gd",
+      "Sha256": "A5B91B16F808EA9997DC8A38C4D3596031CEB95517087FE95886ECD6D991277E"
+    },
+    {
+      "Path": "scenes/ui/inventory_ui.gd.uid",
+      "Sha256": "6BC65E435AC6C53F49BF218FBB50D49E8461B96654D0332915F1786FD27585EA"
+    },
+    {
+      "Path": "scenes/ui/inventory_ui.tscn",
+      "Sha256": "B516F1377C0CC86143B92AFAB5FC5AEBC9D7EA9FD449BB55891A98A2C7DE9CBD"
+    },
+    {
+      "Path": "scenes/ui/machine_ui.gd",
+      "Sha256": "3C04CDAEB48D4CA540A52CC328F0E40D9DFB84A7EE5C48879ED40EB514DD30D8"
+    },
+    {
+      "Path": "scenes/ui/machine_ui.gd.uid",
+      "Sha256": "362BF6EB6D47A33744CFFBD522AA8922C2CCAEF1FE87533270BE8298A6619A7F"
+    },
+    {
+      "Path": "scenes/ui/machine_ui.tscn",
+      "Sha256": "9FD145276A53E20F4B5880F807DD900495FB6EAB81597564A44E2938BBCEDF20"
+    },
+    {
+      "Path": "scenes/ui/musing_ui.gd",
+      "Sha256": "542F1FFDF5061F87210013589A81E931B8A6F5318B1712AD7C3DB1A03D683948"
+    },
+    {
+      "Path": "scenes/ui/musing_ui.gd.uid",
+      "Sha256": "BEF9EBC3D7BCDF8E38B3B654FEF3E1001CDD5C07C309C95CDB6C1B962AD113C8"
+    },
+    {
+      "Path": "scenes/ui/musing_ui.tscn",
+      "Sha256": "88534A2572AB11FD35B0A9CA260731F1E9804A632EBF71150A64BD2B51D8F04B"
+    },
+    {
+      "Path": "scenes/ui/objective_tracker.gd",
+      "Sha256": "9D04169B5D6ED5CDB6257AEC6D43C2FD1DFD925C6FA0B0491E1D2AC91567F142"
+    },
+    {
+      "Path": "scenes/ui/objective_tracker.gd.uid",
+      "Sha256": "4CAE59FAF1B9AD5539568A25E9CA1AAA105B7A240A219898BB8EF874AA5C6F44"
+    },
+    {
+      "Path": "scenes/ui/objective_tracker.tscn",
+      "Sha256": "DF2EB6F143BB7BDE837BF88B667216D9455E37D93AE01E6DCD49811DBE5CE95E"
+    },
+    {
+      "Path": "scenes/visuals/extractor_stationary.tscn",
+      "Sha256": "859ECE918C9A1EF058C56207CCBF6579420D9FA02F8CD23E8C476EB4E50E202F"
+    },
+    {
+      "Path": "scenes/visuals/fabricator_stationary.tscn",
+      "Sha256": "BF456A26E0378A4D5B661E66B99C086328ED61FEBE758216A2911661CADFF8EA"
+    },
+    {
+      "Path": "scenes/visuals/smelter_stationary.tscn",
+      "Sha256": "1048FAF86D3A65288CB99DD173C81438FDCA2E7636BBE9B0084B51B808C25674"
+    },
+    {
+      "Path": "scenes/world/introductory_ferrite.tres",
+      "Sha256": "8E01655F166F2525DF339DA7EA300B9D2B1876AD12FD3ECB78D36104E292E275"
+    },
+    {
+      "Path": "scenes/world/maintenance_bay.tscn",
+      "Sha256": "18CAA84153F2AA290726744C4F41ACAC4BBA1FAAB3DD950675BACF85D344DF0B"
+    },
+    {
+      "Path": "scenes/world/maintenance_bay_v2.tscn",
+      "Sha256": "7FAF2AB4C059E5A8F1CB7029441AEEC40DE5DEAF99EE2353A70E39D4DD2E18AB"
+    },
+    {
+      "Path": "scenes/world/planet_exterior.gd",
+      "Sha256": "5C463DFD89774E6987E4F0FF2E51D23C8E16ECDC25FF8C09455D34621DC6AC1D"
+    },
+    {
+      "Path": "scenes/world/planet_exterior.gd.uid",
+      "Sha256": "574DBE159CA8D386ECA78E1631F385B0A983FB09A228E43A45882CF7B61FEEF4"
+    },
+    {
+      "Path": "scenes/world/planet_exterior.tscn",
+      "Sha256": "EF7C612AEA465E1CDCCBA3D061A42D2D269A437F41902AC06E2789A28C33E9CC"
+    },
+    {
+      "Path": "scenes/world/planet_generator.gd",
+      "Sha256": "BC87340D9A63B9D7BA277D9FA8C3872A9E7A126324A535DA1433F23DC6DCAF4F"
+    },
+    {
+      "Path": "scenes/world/planet_generator.gd.uid",
+      "Sha256": "404F750C2091DB8798D9E3679276F0E0CA5E5986CF881105B836FB9C05F946EC"
+    },
+    {
+      "Path": "scenes/world/planet_world_state.gd",
+      "Sha256": "620C4775D7909D53E1DFB5D8CC58FE07D039D63C222B25D22C91AD08DFC30F66"
+    },
+    {
+      "Path": "scenes/world/planet_world_state.gd.uid",
+      "Sha256": "3E61E0327BF1C0642A5BB2002C8E68973BF225BBEDDA08AA4895B6FFD4E6BFD0"
+    },
+    {
+      "Path": "scenes/world/production_maintenance_bay_v2.tscn",
+      "Sha256": "240DC1541A42D8D32ED7CEBBDCB5402ED9EECE824356A29CCE1720A86CEB6CBB"
+    },
+    {
+      "Path": "scenes/world/production_ship_interior_v2.tscn",
+      "Sha256": "91632C88F39D6A5C80A6086DA7F987A4273A1340411AD49DA79FFB47EE26BB7E"
+    },
+    {
+      "Path": "scenes/world/resource_deposit.gd",
+      "Sha256": "97A160454E9888EDE0E523F25183F8CB0BD87064814DFF5EFFECEB8959CAD4AB"
+    },
+    {
+      "Path": "scenes/world/resource_deposit.gd.uid",
+      "Sha256": "B4352D511F6506D8E23297550DF4175EF5C67CCD833F457DE2EAEFB9806E9041"
+    },
+    {
+      "Path": "scenes/world/ship_interior.tscn",
+      "Sha256": "E694B73F7E7BA3BF0A7F544D93A1CE91548A0DB2A6BD04F2EB77FAE4470FE533"
+    },
+    {
+      "Path": "scenes/world/ship_interior_v2.tscn",
+      "Sha256": "367458010BFC3F4063B54D4F9964036EDA8C5667AA580003A67549B7E100767D"
+    },
+    {
+      "Path": "scenes/world/stationary_machine_presentation.gd",
+      "Sha256": "35F98FC7C742DB68B2BD21AE16A3360DD007E98B8B89DC1C2CF16B3EC6401423"
+    },
+    {
+      "Path": "scenes/world/stationary_machine_presentation.gd.uid",
+      "Sha256": "B26D7365DD35974FCF2A98104EB58A3287412ABB97CB21BA09749862C00982FF"
+    },
+    {
+      "Path": "scenes/world/terrain_chunk.gd",
+      "Sha256": "EBD5B61E187CBE1A3CC0AECC8CFCCFB2539C66202A3851F81BE9D98338251F97"
+    },
+    {
+      "Path": "scenes/world/terrain_chunk.gd.uid",
+      "Sha256": "FEA5C2A44D0B3EBC9296578BCCBF1A9E80055B8092D4084CC7FDC21D6C4793AA"
+    },
+    {
+      "Path": "scenes/world/v2_room_arrival.gd",
+      "Sha256": "C434651B6685CF4C5C83A8147A5DCFFFA2D679F12842B134B17B6BF34090F0A9"
+    },
+    {
+      "Path": "scenes/world/v2_room_arrival.gd.uid",
+      "Sha256": "E4F8A8D7AAF8283F7AB1EDB9F3923257E6FFC8C7B76C225C5B7C275D20970029"
+    },
+    {
+      "Path": "scenes/world/world_coordinates.gd",
+      "Sha256": "AF8FACE71DD7CABC672972F7347E160EBDCFB1630373124D5F2C40D54F86BB4D"
+    },
+    {
+      "Path": "scenes/world/world_coordinates.gd.uid",
+      "Sha256": "942FC2C1617B0DC0CB3356AEFF6C18C37E1657E7524CB9E6102E432B3D2CE7B9"
+    },
+    {
+      "Path": "shaders/objective_silhouette.gdshader",
+      "Sha256": "0535D25BD006FAC251E3390B1417266EE8DF6414148CE6754AC41DCDC1680E18"
+    },
+    {
+      "Path": "shaders/objective_silhouette.gdshader.uid",
+      "Sha256": "3F4ECA1D4BF74FF16E25D451FFE99D939E94C6647D56997B223861E0CE26B268"
+    },
+    {
+      "Path": "tests/fabricator_recipe_switching_test.gd",
+      "Sha256": "7B8732A269C139EC2A921261A29D208DCE33A40717BF78B0B8B7A7713D270F1A"
+    },
+    {
+      "Path": "tests/fabricator_recipe_switching_test.gd.uid",
+      "Sha256": "85D6B033E0405C934462A947EDCDA923C840C31C2D8EC6160B708E6AD6FE3CD0"
+    }
+  ],
+  "StageDirectory": "<HISTORICAL_STAGE_DIRECTORY>",
+  "Commands": [
+    {
+      "Phase": "Import",
+      "Executable": "<PINNED_GODOT_EXECUTABLE>",
+      "Sha256": "AB1824F85BFD8E0E4128182C000C4003A3E042245B2967848D089B2A04B22424",
+      "Arguments": [
+        "--headless",
+        "--editor",
+        "--path",
+        "<HISTORICAL_STAGE_DIRECTORY>",
+        "--quit"
+      ],
+      "Directory": "<HISTORICAL_STAGE_DIRECTORY>",
+      "Seconds": 60,
+      "MaxBytes": 1048576
+    },
+    {
+      "Phase": "Native",
+      "Executable": "<PINNED_GODOT_EXECUTABLE>",
+      "Sha256": "AB1824F85BFD8E0E4128182C000C4003A3E042245B2967848D089B2A04B22424",
+      "Arguments": [
+        "--headless",
+        "--path",
+        "<HISTORICAL_STAGE_DIRECTORY>",
+        "--script",
+        "res://tests/fabricator_recipe_switching_test.gd"
+      ],
+      "Directory": "<HISTORICAL_STAGE_DIRECTORY>",
+      "Seconds": 30,
+      "MaxBytes": 1048576
+    }
+  ],
+  "EvidenceDirectory": "<HISTORICAL_EVIDENCE_DIRECTORY>",
+  "ReceiptPath": "<HISTORICAL_RECEIPT_PATH>",
+  "ExcerptBytes": 4096,
+  "StaticRequired": "ACTUAL_PYTHON_PASS",
+  "RoutineAfterPass": "INACTIVE",
+  "StopConditions": "ERROR;ASSERTION;COMPLETION;ABNORMAL_EXIT;TIMEOUT;OUTPUT_LIMIT;UNCERTAIN_TERMINATION;IDENTITY_CHANGE;WITHDRAWN_APPROVAL",
+  "MaxAttemptsPerPhase": 1,
+  "MaxConcurrentProcesses": 1
+}
+Summary: static=PASS; staging plan=PASS; native import=NOT RUN; recipe test=NOT RUN; overall=PASS

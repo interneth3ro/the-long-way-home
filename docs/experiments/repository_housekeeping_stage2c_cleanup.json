@@ -1,0 +1,147 @@
+{
+  "schema": 1,
+  "state": "Owner-authorized five-file local cleanup completed after verified preservation commit; feature PR and owner acceptance pending.",
+  "owner_acceptance": "PENDING",
+  "baseline": "79112574779a52a9d62094348ee00eeedafdb22f",
+  "preservation_commit": "d2e2d95203fb6bd0668000b447aa87a52f50f62a",
+  "disposition": "docs/experiments/repository_housekeeping_stage2c.json",
+  "disposition_sha256": "4c3675f8a27cbf776a2068f393fa299bc16de809a5e075b8944074096726afa9",
+  "authorization": "Owner explicitly authorized completion of Stage 2C: commit and verify preservation before exact-path deletion of the five approved originals. No additional cleanup, engine launch, archive review or clone retirement.",
+  "preservation_verification": "All four committed derivative blob sizes and hashes match the disposition. Original-to-derivative mappings match unchanged Stage 2A identities. All five originals were present and byte-identical after preservation commit. Historical dependency blobs and 17 sealed review-file hashes verified unchanged.",
+  "derivatives": [
+    {
+      "path": "artifacts/evidence/first-run-review-bfc2398e04ab4b09ad55c81a509d645c.sanitized.txt",
+      "bytes": 34824,
+      "sha256": "5911261cf26baeb269e44811fc737dc9159cf293b9ac05bbf56237f336b911ee",
+      "original": "artifacts/evidence/first-run-review-bfc2398e04ab4b09ad55c81a509d645c.txt",
+      "original_sha256": "c014c74bfec80b419f59fabff187a5c4a1a7f4354592e021bb409123d79b069d"
+    },
+    {
+      "path": "artifacts/evidence/pr100-terrain-proof-stage1-v1/proof.sanitized.py",
+      "bytes": 13841,
+      "sha256": "14b6dea34c9d357ce939f7daa8c97fbca97b08c6b44bdbe2b63aa4db467c8d0c",
+      "original": "artifacts/evidence/pr100-terrain-proof-stage1-v1/proof.py",
+      "original_sha256": "cc979a3e741e46fa1e46888a91cff5b38d33a0bf0d8f7b4dff24124d7a81a58f"
+    },
+    {
+      "path": "artifacts/evidence/pr100-terrain-proof-stage1-v2/proof.sanitized.py",
+      "bytes": 14539,
+      "sha256": "47d85a22fb3c97cbb6ee05965f9e5bf130410c279717f2f742bd02530ce1f50f",
+      "original": "artifacts/evidence/pr100-terrain-proof-stage1-v2/proof.py",
+      "original_sha256": "12731bd1d2140e806f38c86550eafa13beb9881e59d3df3d9ccb92268221d6b3"
+    },
+    {
+      "path": "artifacts/evidence/pr100-terrain-proof-stage1-v3/proof.sanitized.py",
+      "bytes": 17782,
+      "sha256": "7293a5387c036df1a00797af0936a3bbc4b0a8d955585e7f74853b6ec8655dbd",
+      "original": "artifacts/evidence/pr100-terrain-proof-stage1-v3/proof.py",
+      "original_sha256": "d4c1ba5baa436dca7b96abd3920c06832f06d7df6385114b7108166fead10cd7"
+    }
+  ],
+  "deleted": [
+    {
+      "path": "artifacts/evidence/first-run-review-bfc2398e04ab4b09ad55c81a509d645c.txt",
+      "bytes": 35746,
+      "sha256": "c014c74bfec80b419f59fabff187a5c4a1a7f4354592e021bb409123d79b069d",
+      "immediate_pre_delete_sha256_verified": true,
+      "absent": true
+    },
+    {
+      "path": "artifacts/evidence/pr100-terrain-proof-stage1-v1/proof.py",
+      "bytes": 13723,
+      "sha256": "cc979a3e741e46fa1e46888a91cff5b38d33a0bf0d8f7b4dff24124d7a81a58f",
+      "immediate_pre_delete_sha256_verified": true,
+      "absent": true
+    },
+    {
+      "path": "artifacts/evidence/pr100-terrain-proof-stage1-v2/proof.py",
+      "bytes": 14748,
+      "sha256": "12731bd1d2140e806f38c86550eafa13beb9881e59d3df3d9ccb92268221d6b3",
+      "immediate_pre_delete_sha256_verified": true,
+      "absent": true
+    },
+    {
+      "path": "artifacts/evidence/pr100-terrain-proof-stage1-v3/proof.py",
+      "bytes": 18063,
+      "sha256": "d4c1ba5baa436dca7b96abd3920c06832f06d7df6385114b7108166fead10cd7",
+      "immediate_pre_delete_sha256_verified": true,
+      "absent": true
+    },
+    {
+      "path": "artifacts/evidence/evidence.zip",
+      "bytes": 172995,
+      "sha256": "1d7796ade0c00a9a1eaba385c5e4190fce0b446929723f75586d98453517a1b4",
+      "immediate_pre_delete_sha256_verified": true,
+      "absent": true
+    }
+  ],
+  "deleted_files": 5,
+  "deleted_payload_bytes": 255275,
+  "space_measurement": "Sum of verified deleted ordinary-file lengths. Not filesystem allocation, net volume free space or Git object storage.",
+  "deletion_method": "Exact-path ordinary-file deletion only. Resolved paths verified inside checkout, no reparse targets, full allowlist verified first, length and SHA-256 rechecked immediately before each deletion. No recursive cleanup or git clean.",
+  "historical_references_retained": [
+    "docs/experiments/repository_housekeeping_stage2a.json",
+    "docs/experiments/repository_housekeeping_stage2a_cleanup.json",
+    "artifacts/evidence/pr98-static-diagnosis-ae589cda0bc94778833d56dfd34bfb6b.json",
+    "artifacts/evidence/terrain-resolver-pr1-preservation.json",
+    "artifacts/evidence/pr100-stage2-baked-v2/preservation_snapshot.json",
+    "artifacts/evidence/pr100-terrain-proof-stage1-v3/manifest.json",
+    "artifacts/evidence/pr103-native-review-28d3f7d6-9d1b-413e-a68a-390d05296c4b/source-baseline.json",
+    "artifacts/evidence/pr103-native-review-28d3f7d6-9d1b-413e-a68a-390d05296c4b/seal.json",
+    "artifacts/evidence/pr104-native-review-28f57c4c-677f-4f9e-8809-7be9fc66f2d6/source-baseline.json",
+    "artifacts/evidence/pr104-native-review-28f57c4c-677f-4f9e-8809-7be9fc66f2d6/seal.json",
+    "assets/experiments/native_terrain_47_96/baked_v2/mapping.json",
+    "tools/bake-illustrated-terrain.py"
+  ],
+  "historical_integrity": "Original hashes identify original bytes only. Historical receipts, seals, manifests, original pins and Stage 2A records were not rewritten. Sanitized derivatives have distinct hashes.",
+  "verification": {
+    "pre_deletion_static_suite": {
+      "tests": 226,
+      "failures": 0,
+      "errors": 0,
+      "status": "PASS"
+    },
+    "post_deletion_static_suite": {
+      "tests": 226,
+      "failures": 0,
+      "errors": 0,
+      "status": "PASS"
+    },
+    "godot_launched": false,
+    "runtime_acceptance": "NOT RUN",
+    "focused_preservation_tests": {
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "status": "PASS"
+    },
+    "publication_privacy": "PASS: no actual absolute local paths or credential indicators in four derivatives or Stage 2C records; original source equivalence checked before deletion.",
+    "documentation_links": "PASS: scoped README links and completion-record reference resolve; unrelated README bytes preserved.",
+    "literal_resource_references": {
+      "count": 188,
+      "status": "PASS"
+    },
+    "git_whitespace": "PASS",
+    "inventory_reconciliation": "PASS: exactly the five approved originals removed, one new completion receipt, no other working-file changes.",
+    "historical_refs": "PASS: non-feature local branches and remote refs unchanged; only the authorized feature branch advances."
+  },
+  "final_inventory_after_completion_record_is_committed": {
+    "tracked_files": 678,
+    "untracked_files": 0,
+    "ignored_ordinary_files": 623,
+    "ignored_nested_repository_placeholders": 3,
+    "git_ignored_entries": 626,
+    "unexplained_files": 0
+  },
+  "protected_exceptions": {
+    "ordinary_godot_cache_files": 618,
+    "isolated_validation_profile_files": 3,
+    "pr5_archives": 2,
+    "nested_clones": 3,
+    "nested_working_files": 932,
+    "remaining_deferred_historical_originals": 0,
+    "remaining_deferred_zip": 0,
+    "unchanged": true
+  },
+  "preservation_scope": "Protected working-file hashes compared with the pre-task snapshot. Historical refs remain unchanged except this feature branch; pushing its corresponding origin ref is authorized. No PR #5 archive review or nested clone retirement performed."
+}

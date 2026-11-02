@@ -1,11 +1,16 @@
 # The Long Way Home
 
-Repository housekeeping is prepared on a feature branch, pending owner review.
+Stage 2A repository housekeeping merged in PR #114. Historical evidence
+sanitization is prepared on this feature branch, pending owner acceptance and merge.
 The [Stage 2A disposition](docs/experiments/repository_housekeeping_stage2a.json)
-records exact approved retention/deletion identities; historical receipts and
-execution controls remain unchanged. Four historical-publication exceptions and
-their redundant ZIP stay private/local. PR #5 archives, nested diagnostic clones
-and Godot cache remain protected. Reference studies are retained for art history
+remains immutable. The [Stage 2C disposition](docs/experiments/repository_housekeeping_stage2c.json)
+records four sanitized historical derivatives, their distinct original identities
+and the preservation-before-deletion gate. The separate completion receipt records
+verified local deletion after committed preservation. Derivatives preserve historical
+methods and results; they do not claim present-day reproducibility or new runtime
+acceptance. PR #5 archives, nested diagnostic clones, Godot cache and private
+validation profiles remain protected.
+Reference studies are retained for art history
 only: [Earth variants](assets/environment/exterior/01_weathered_earth_four_variants_v2.png),
 [crash-site direction](assets/environment/exterior/02_refined_crash_site_terrain_direction.png),
 [green-ground study](assets/environment/exterior/approved_green_ground_study.png) and
