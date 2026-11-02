@@ -10,6 +10,31 @@ and evidence. PR #95 is the corrected exterior
 comparison baseline; the [PR #102/#103 acceptance record](PRODUCTION_TERRAIN_FIXTURE.md)
 applies only to its isolated fixture and remains unchanged.
 
+## Exterior camera zoom (PR #109 feature branch, pending merge)
+
+The existing mouse wheel now permits numerical zoom **0.50–1.50** in the
+production planet exterior. Interiors retain **0.75–1.50**. The initial/default
+zoom remains **1.0**, wheel increments remain **0.1**, and wheel zoom retains its
+**0.15-second** sine/ease-out tween. The crashed ship remains at scale **0.70**.
+
+The persistent Dave camera selects its limits from the transition controller's
+current world at initialization and after each successful transfer, before camera
+scroll is updated or the destination is revealed. Quick-transition rollback
+reselects the source world's range. Returning inside clamps both the requested
+zoom and any in-flight visual zoom to the interior range, cancelling a tween
+that would violate that range; any remaining valid interpolation continues from
+the clamped value. In-range zoom is retained. Exiting again unlocks 0.50 without
+resetting zoom or remembering a separate exterior preference.
+
+Focused scene/script text checks are static only. Godot, imports, playable scenes
+and graphical tests have not been run for this change. **Owner graphical testing
+is pending**: check first exit, wheel limits, return inside from 0.50 (including
+mid-scroll), interior/maintenance travel, and a subsequent exterior revisit.
+All 14 focused transition checks pass. Broader discovery runs 181 tests with 19
+failures in historical preservation/inventory assertions, including the changed
+transition controller and unchanged ship scene/assets; this is not a full-suite
+PASS. Historical guards and native execution scope are unchanged.
+
 ## Selection and rollback
 
 `PlanetExterior.terrain_renderer` defaults to `ILLUSTRATED`. Before the first

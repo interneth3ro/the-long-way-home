@@ -9,6 +9,7 @@ signal transition_started
 enum Presentation { IMMEDIATE, FIRST_EXTERIOR_REVEAL, QUICK_FADE }
 
 const FADE_SECONDS: float = 0.65
+const EXTERIOR_SCENE: String = "res://scenes/world/planet_exterior.tscn"
 @export_range(0.01, 1.0, 0.01) var quick_fade_seconds: float = 0.15
 
 @export var player: CharacterBody2D
@@ -35,6 +36,7 @@ func initialize() -> void:
 	_current_world = world_host.get_child(0) as Node2D
 	_worlds[_current_world.scene_file_path] = _current_world
 	player.reparent(_current_world.get_node("GroundObjects"))
+	_reset_camera()
 
 
 func is_transitioning() -> bool:
@@ -115,10 +117,8 @@ func _perform_transition(source_scene: String, destination_scene: String,
 	player.global_position = spawn.global_position
 	if destination.has_method("prepare_for_arrival"):
 		await destination.call("prepare_for_arrival", player, progression.planet)
-	var camera := player.get_node("Camera2D") as Camera2D
-	camera.reset_smoothing()
 	# Camera processing is locked with Dave, so update before the reveal begins.
-	camera.force_update_scroll()
+	_reset_camera()
 	# Allow one physics frame for the destination's bodies to register before
 	# accepting interaction queries. Immediate transitions have no fade/timer.
 	await get_tree().physics_frame
@@ -200,7 +200,8 @@ func _perform_quick_transition(source_scene: String, destination_scene: String,
 
 
 func _reset_camera() -> void:
-	var camera := player.get_node("Camera2D") as Camera2D
+	var camera := player.get_node("Camera2D") as FollowCamera
+	camera.set_exterior_zoom(_current_world.scene_file_path == EXTERIOR_SCENE)
 	camera.reset_smoothing()
 	camera.force_update_scroll()
 
