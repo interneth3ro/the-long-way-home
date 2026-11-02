@@ -15,6 +15,7 @@ var _registration_frames: int = 2
 @onready var _approach: Area2D = $Approach
 @onready var _hold_open: Area2D = $HoldOpen
 @onready var _door: Sprite2D = $Artwork/Recess/Door
+@onready var _audio: ExteriorHatchAudio = $MechanicalAudio
 @onready var _transitions: SceneTransitionController = get_tree().get_first_node_in_group(&"scene_transitions") as SceneTransitionController
 
 
@@ -30,6 +31,7 @@ func is_boarding_ready() -> bool:
 
 func prepare_for_arrival() -> void:
 	# Explicitly initialize cached as well as fresh arrivals before reveal.
+	_audio.reset_audio()
 	openness = 1.0
 	_target_open = true
 	_outside_seconds = 0.0
@@ -75,5 +77,7 @@ func _advance_animation(delta: float) -> void:
 	# by remaining distance. No tween restarts, endpoint toggles or sprite swaps.
 	var duration := OPEN_SECONDS if _target_open else CLOSE_SECONDS
 	var target := 1.0 if _target_open else 0.0
+	if delta > 0.0 and openness != target:
+		_audio.update_motion(_target_open, openness)
 	openness = move_toward(openness, target, delta / duration)
 	_door.position = DOOR_TRAVEL * openness

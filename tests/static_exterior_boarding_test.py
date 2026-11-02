@@ -20,7 +20,8 @@ VISUAL = 'scenes/interaction/exterior_hatch_visual.gd'
 
 
 def read(path):
-    return (ROOT/path).read_text(encoding='utf-8')
+    # Exact audio-only candidate projection; original gameplay assertions remain.
+    return preservation.audio_predecessor(path, (ROOT/path).read_bytes()).decode('utf-8').replace('\r\n', '\n')
 
 
 def old(path):
@@ -174,7 +175,7 @@ class ExteriorBoardingStaticTest(unittest.TestCase):
                      'assets/environment/exterior/crashed_ship_contact_shadow_prototype.png',
                      'assets/environment/exterior/hatch_v2/door_leaf_opaque_v2.png',
                      'assets/environment/exterior/hatch_v2/recess_backing_black_light.png'):
-            self.assertEqual((ROOT/path).read_bytes().replace(b'\r\n',b'\n'),
+            self.assertEqual(preservation.audio_predecessor(path, (ROOT/path).read_bytes()).replace(b'\r\n',b'\n'),
                              preservation.git_blob(BASE,path).replace(b'\r\n',b'\n'),path)
         current, previous = resources(self.scene), resources(old(WORLD))
         for shape in ('ShipNoseFootprint','ShipFuselageFootprint','ShipRearFootprint','HatchFootprint'):
@@ -190,7 +191,7 @@ class ExteriorBoardingStaticTest(unittest.TestCase):
             WORLD, SCRIPT, VISUAL, 'scenes/world/planet_exterior.gd'})
         for path, digest in (preservation.BOARDING_INPUT_SHA256 | preservation.BOARDING_TEST_SHA256).items():
             raw = (ROOT/path).read_bytes()
-            preservation.verify_fingerprint(path, raw, digest)
+            preservation.verify_fingerprint(path, preservation.audio_predecessor(path, raw), digest)
             projected = preservation.boarding_predecessor(path, raw)
             if path != SCRIPT:
                 self.assertEqual(preservation.normalized(path,projected),

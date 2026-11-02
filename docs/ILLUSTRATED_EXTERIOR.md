@@ -10,6 +10,77 @@ and evidence. PR #95 is the corrected exterior
 comparison baseline; the [PR #102/#103 acceptance record](PRODUCTION_TERRAIN_FIXTURE.md)
 applies only to its isolated fixture and remains unchanged.
 
+## Exterior hatch mechanical audio (feature branch, pending merge)
+
+Original, restrained industrial opening/closing audio accompanies the accepted
+PR #110 animation and PR #112 automatic boarding. PR #112 merged at
+`ee75b8007de2bbefe73f192c971fd236872b810a`; its historical acceptance below
+remains separate. **Owner listening/gameplay acceptance: PENDING.**
+
+| Asset | Duration | Format | File size |
+| --- | --- | --- | --- |
+| [hatch_open.wav](../assets/audio/exterior_hatch/hatch_open.wav) | 0.6 seconds | Mono 24 kHz, signed 16-bit PCM | 28,844 bytes |
+| [hatch_close.wav](../assets/audio/exterior_hatch/hatch_close.wav) | 0.7 seconds | Mono 24 kHz, signed 16-bit PCM | 33,644 bytes |
+
+[generate-hatch-audio.py](../tools/generate-hatch-audio.py) uses only Python's
+standard library: a gently modulated 115-127 Hz motor with subdued harmonics,
+low-pass deterministic LCG noise for friction, and short damped 245/510 Hz
+contacts. Opening has a small unlock; closing has a heavier endpoint latch.
+The outer 10 ms cosine envelopes reach zero at both boundaries, with substantial
+PCM headroom. No external samples, downloads, runtime synthesis, reverb or new
+dependencies are used. `python -B tools/generate-hatch-audio.py --check` verifies
+reproducibility without writes. Without `--check`, it creates missing assets only
+and refuses to replace differing existing files.
+
+The existing animation advancement calls one local
+[ExteriorHatchAudio](../scenes/interaction/exterior_hatch_audio.gd) player only
+when positive time advances a non-endpoint door. A direction guard prevents
+restarting on stable movement ticks or after natural clip completion. Reversals
+fade the current voice to zero over 12 ms, stop it, replace its stream, seek to
+the fraction already travelled in the new direction, and fade in over 12 ms.
+Only the newest direction is retained if another reversal occurs during fade-out;
+there are no concurrent directional voices. Normal full travel starts at sample
+zero. Gain is 0.65 linear, in addition to the restrained source amplitude.
+
+Transition-start fades the voice without delaying boarding. Scene detach/free
+kills its tween and stops playback, including cached worlds; subsequent global
+transition signals cannot start tweens on the detached player. Explicit exterior
+arrival resets it silently before setting the hatch fully open. The original
+0.6/0.7-second animation, one-second delay, travel, sensors, art, collision,
+boarding readiness/entry rules, 0.15-second fades and interior behavior remain
+unchanged. No global audio manager or settings flow is introduced.
+
+Static verification checks PCM structure, duration, headroom, DC/boundary/sample
+steps, reproducibility, resource closure, direction/fade/cleanup source contracts,
+and exact preservation of the existing animation, geometry and gameplay inputs.
+Historical preservation receipts remain immutable; exact new audio hashes are
+validated before projecting only the two audio-modified hatch files and the
+three test-reader amendments to their pre-audio representations. This adds no
+Native runner inputs, commands or execution permissions.
+
+Validation with the full implementation staged: **214/214 Python static tests
+PASS**, including eight focused audio tests. Reproducibility, new documentation
+links and Git whitespace checks pass. The Static PowerShell wrapper stopped before
+tests because the preserved working-status output exceeds its 4 KiB reporting
+limit; its unchanged underlying Python discovery command passed directly.
+All 85 pre-existing untracked hashes and 3,020 ignored-file size/mtime identities
+are preserved. No Godot import, engine parsing, headless or graphical tests ran.
+
+Limitations: the player is non-positional and uses the existing Master bus.
+Partial reversals skip already-travelled audio, potentially skipping the unlock
+or part of the endpoint contact on very short travel. Buffer latency, fade audibility,
+perceived loudness, synchronization and rapid-reversal behavior require owner
+listening in-game. Agent verification is offline/static only; Godot was not run.
+
+Owner manual acceptance checklist (all **PENDING**):
+
+- [ ] Opening: substantial, subdued movement and a small unlock/stop; comfortable volume.
+- [ ] Closing: related mechanical movement and a slightly heavier latch; comfortable volume.
+- [ ] Synchronization: sounds begin with movement and endpoint contacts fit full/partial travel.
+- [ ] Reversal: approach during closing repeatedly; no overlapping directions, loud clicks or repeated restarts.
+- [ ] Repeat boarding/return: comfortable repetition, silent open arrival, no interior or cached-world audio leakage.
+- [ ] Regression: accepted approach/hold zones, smooth reversal, delay, collision release/restoration, deliberate full-open boarding and quick fades still behave correctly.
+
 ## Automatic exterior boarding (PR #112 feature branch, pending merge)
 
 PR #110 merged at `e4686cfb839eb7b205f56f28141541a318c4c94b`; its accepted
