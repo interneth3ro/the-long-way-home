@@ -15,7 +15,9 @@ applies only to its isolated fixture and remains unchanged.
 Original, restrained industrial opening/closing audio accompanies the accepted
 PR #110 animation and PR #112 automatic boarding. PR #112 merged at
 `ee75b8007de2bbefe73f192c971fd236872b810a`; its historical acceptance below
-remains separate. **Owner listening/gameplay acceptance: PENDING.**
+remains separate. **Final owner gameplay acceptance: 6/6 PASS, zero failures,
+no additional observations.** PR #113 remains draft, ready for owner merge
+consideration; it has not been merged.
 
 | Asset | Duration | Format | File size |
 | --- | --- | --- | --- |
@@ -58,7 +60,7 @@ validated before projecting only the two audio-modified hatch files and the
 three test-reader amendments to their pre-audio representations. This adds no
 Native runner inputs, commands or execution permissions.
 
-Validation with the full implementation staged: **214/214 Python static tests
+Initial validation with the full implementation staged: **214/214 Python static tests
 PASS**, including eight focused audio tests. Reproducibility, new documentation
 links and Git whitespace checks pass. The Static PowerShell wrapper stopped before
 tests because the preserved working-status output exceeds its 4 KiB reporting
@@ -68,18 +70,37 @@ are preserved. No Godot import, engine parsing, headless or graphical tests ran.
 
 Limitations: the player is non-positional and uses the existing Master bus.
 Partial reversals skip already-travelled audio, potentially skipping the unlock
-or part of the endpoint contact on very short travel. Buffer latency, fade audibility,
-perceived loudness, synchronization and rapid-reversal behavior require owner
-listening in-game. Agent verification is offline/static only; Godot was not run.
+or part of the endpoint contact on very short travel. The owner accepted the
+current mechanical audio as-is after gameplay testing. Higher-quality audio may
+optionally be substituted in the future; this is not a completion blocker or
+requested implementation change. Agent verification remains offline/static only;
+Godot was not run by the agent.
 
-Owner manual acceptance checklist (all **PENDING**):
+### Final PR #113 owner acceptance (2026-11-02)
 
-- [ ] Opening: substantial, subdued movement and a small unlock/stop; comfortable volume.
-- [ ] Closing: related mechanical movement and a slightly heavier latch; comfortable volume.
-- [ ] Synchronization: sounds begin with movement and endpoint contacts fit full/partial travel.
-- [ ] Reversal: approach during closing repeatedly; no overlapping directions, loud clicks or repeated restarts.
-- [ ] Repeat boarding/return: comfortable repetition, silent open arrival, no interior or cached-world audio leakage.
-- [ ] Regression: accepted approach/hold zones, smooth reversal, delay, collision release/restoration, deliberate full-open boarding and quick fades still behave correctly.
+The owner reported **6/6 PASS**, **0 failures**, and **no additional observations**
+for [PR #113](https://github.com/interneth3ro/the-long-way-home/pull/113) at accepted
+implementation `5caf2ece47d2f010a563fa1b7f1967a07cbcf68e`.
+
+- [x] Opening: substantial, subdued movement and a small unlock/stop; comfortable volume.
+- [x] Closing: related mechanical movement and a slightly heavier latch; comfortable volume.
+- [x] Synchronization: sounds begin with movement and endpoint contacts fit full/partial travel.
+- [x] Reversal: approach during closing repeatedly; no overlapping directions, loud clicks or repeated restarts.
+- [x] Repeat boarding/return: comfortable repetition, silent open arrival, no interior or cached-world audio leakage.
+- [x] Regression: accepted approach/hold zones, smooth reversal, delay, collision release/restoration, deliberate full-open boarding and quick fades still behave correctly.
+
+This finalization changes only README.md and this acceptance record. Audio assets,
+synthesis code, gameplay, tests, historical preservation receipts and execution
+safeguards remain unchanged. Owner artwork, import metadata and historical evidence
+are preserved. Owner gameplay acceptance is separate from agent static checks;
+no agent Godot launch, import, headless/graphical verification or performance probe
+was performed. **Ready for owner merge consideration; do not merge automatically.**
+
+After the acceptance documentation edits, the full Python static suite passed
+again: **214/214 PASS**, including eight focused audio checks. Affected local
+documentation links and Git whitespace checks pass. The accepted implementation
+and safeguards are unchanged; all 88 currently pre-existing untracked hashes and
+3,026 ignored-file size/mtime identities are preserved. Audio was not regenerated.
 
 ## Automatic exterior boarding (PR #112 feature branch, pending merge)
 
