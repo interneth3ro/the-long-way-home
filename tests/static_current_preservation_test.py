@@ -52,7 +52,10 @@ class CurrentPreservationStaticTest(unittest.TestCase):
         for path, digest in scope.CURRENT_INPUT_SHA256.items():
             raw = (scope.ROOT/path).read_bytes()
             accepted = scope.git_blob(scope.ACCEPTED_IMPLEMENTATION, path)
-            self.assertEqual(scope.normalized(path, raw), scope.normalized(path, accepted), path)
+            # PR #110 validates its complete scene before the unchanged PR #109
+            # identity and historical projections are exercised.
+            self.assertEqual(scope.normalized(path, scope.hatch_predecessor(path, raw)),
+                             scope.normalized(path, accepted), path)
             scope.verify_current_input(path, raw)
             self.assertEqual(hashlib.sha256(scope.normalized(path, accepted)).hexdigest(), digest)
             before = scope.git_blob(scope.PREDECESSORS[path], path) if path in scope.PREDECESSORS else raw

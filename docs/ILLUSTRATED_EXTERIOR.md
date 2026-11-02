@@ -10,6 +10,128 @@ and evidence. PR #95 is the corrected exterior
 comparison baseline; the [PR #102/#103 acceptance record](PRODUCTION_TERRAIN_FIXTURE.md)
 applies only to its isolated fixture and remains unchanged.
 
+## Exterior hatch visual animation (PR #110 feature branch, pending merge)
+
+The exterior hatch opens visually on approach; **E still enters the ship**.
+The separate visual controller changes no collision, interaction, destination,
+transition, player, camera or terrain code. Automatic boarding, collision-state
+changes, brief transition fade, audio and Dave-specific foreground occlusion remain
+deferred. Whole-ship Y-sorting and the deferred nose issue are unchanged.
+
+Artwork comes from the owner-approved `tlwh-hatch-alpha-correction-v2.zip`,
+SHA-256 `1ec18d5c2b38dc8063bb2278bf526772f3cfde54bbd8f5cc97503c6da025f167`.
+Only these two byte-identical package layers are installed under
+`assets/environment/exterior/hatch_v2/`:
+
+| PNG (275 x 275 RGBA) | SHA-256 |
+| --- | --- |
+| `door_leaf_opaque_v2.png` | `7cccb9390beff971abd9e0f1c74455a35cf5b4cd05844f37887542ccea067e10` |
+| `recess_backing_black_light.png` | `80aa066edd98fae9eb5392ee79bb061bd82c80d48dc41e854e7c31141a3872c6` |
+
+The unchanged ship draws first, the opaque recess conceals its painted door,
+then the corrected leaf draws above the recess. The recess's binary alpha is
+pixel-identical to the approved owner aperture, so it doubles as the fixed
+clipping mask using Godot's built-in `clip_children = 2` (draw and clip children).
+The leaf is its child. No stationary-surround overlay, shader, dynamic light or
+new rendering framework is used. Original stationary frame and step pixels remain
+on the hull and draw once; all three approved amber lights move with the leaf.
+See the [CanvasItem clipping contract](https://docs.godotengine.org/en/stable/classes/class_canvasitem.html#enum-canvasitem-clipchildrenmode).
+
+The crop starts at source `(725,535)` on the unchanged 1774 x 887 ship. Under
+ship root `(-384,-192)`, Artwork uses ship-local `(-87.5,-134.5)` and scale
+`(0.70,0.70)`, yielding world top-left `(-471.5,-326.5)` and footprint
+192.5 x 192.5. Crop anchor `(125,215)` maps to hatch `(-384,-176)`. The existing
+IllustratedHull transform and approved ship/contact-shadow bytes are unchanged.
+
+`exterior_hatch_visual.gd` advances one continuous openness value at fixed rates:
+0.6 seconds to open, 0.7 to close, and 1.0 second of delay after leaving the
+hold-open zone. The grace-period boundary frame is split so closing does not
+consume time before the delay expires. Reversal starts from current openness;
+remaining travel takes the proportional duration. Travel is `(10,-140)` source
+pixels, or `(7,-98)` world units, behind the fixed housing/aperture.
+
+The unscaled ship-local sensor center is `(0,71)`: hatch `(0,16)` plus `(0,55)`.
+Approach is 128 x 112 world units; hold-open is 176 x 160. Both use layer 0,
+mask 1 and recognize only the controller's existing Dave through local overlap
+lists. Approach opens; hold-open retains or reverses an already-active door,
+cancels closing delay and includes the entire existing doorway footprint.
+Hold-open alone leaves a fully closed door closed. No threshold area is added.
+The controller caches the transition reference once, waits for physics overlap
+registration after attachment/transition, and retains partial openness while the
+cached exterior is detached. Existing exterior arrival/spawn behavior is retained;
+this stage does not force an instant open state on arrival.
+
+Offline source-over checks reproduce the accepted closed-state tolerance:
+**0 differing RGB pixels**, mean absolute RGB deviation **0**, and 11,021
+alpha-only differences with maximum **3/255**. Over the accepted example
+terrain-colored background, maximum displayed RGB deviation is **2/255**.
+This is RGB equivalence, **not exact RGBA equivalence**. Five masked diagnostic
+states preserve every pixel outside the aperture and fully clear the leaf at
+the endpoint. Static source contracts and geometry checks do not establish
+engine parsing, live overlap timing, rendering or gameplay correctness.
+
+Historical hashes, sealed inputs and execution policy are unchanged. A separate
+five-path/full-hash PR #110 receipt validates the complete intentional production
+delta before historical comparisons receive their original scene bytes; tampering
+and unrelated paths remain rejected. No native package or execution permission is
+expanded. The owner's initial graphical acceptance and final zone acceptance
+are recorded below. The agent has not launched Godot.
+Initial validation: eight focused hatch static checks pass; broader static discovery
+passes **196/196**, including with all new production inputs staged. Changed
+documentation links and `git diff --check` pass. The 51 pre-existing untracked
+file hashes and 3,016 ignored-file size/mtime identities remain unchanged.
+
+### Owner acceptance and proximity refinement (2026-11-02)
+
+At `3c315a707f1131367d58d3f1a61f5b70776596b8`, the owner reported **8/8 PASS**:
+closed appearance, opening animation, open recess, closing animation, interrupted
+closing, proximity stability, existing E boarding and performance. This is
+owner-reported gameplay acceptance, not an agent benchmark or engine check.
+The owner praised smooth animation, absence of flicker and overall appearance.
+The sole requested refinement was shorter opening/hold-open reach; artwork and
+animation remain accepted.
+
+| Geometry (world units, offsets from unchanged hatch anchor) | Initial accepted | Final locked |
+| --- | --- | --- |
+| Approach rectangle | 176 x 160 | 128 x 112 |
+| Hold-open rectangle | 224 x 208 | 176 x 160 |
+| Both zone centers | (0,80) | (0,55) |
+
+Both revised sensors share world center `(-384,-121)`. Hold-open bounds are
+X `[-472,-296]`, Y `[-201,-41]`; they still include the unchanged hatch collider
+with a radius-10 buffer for Dave. Approach is strictly inside hold-open with a
+24-unit margin on every side. Existing delay cancellation, reversal and boundary
+hysteresis logic are byte-identical; no timer, zone or polling system was added.
+Durations, travel, all artwork, clipping, anchors, E boarding, collisions and
+transitions are unchanged. Only the visual scene's sizes/centers and its current
+full-hash test receipt change; historical evidence remains at its original commits.
+
+At `f3a0e597f90a2e19c6e32cd83bb25942d4f503b8`, the owner completed the revised
+proximity retest with **4/4 PASS**: opening distance, hold-open distance,
+interrupted closing and existing E boarding. Owner observation:
+"Much better, I think we can lock this in."
+
+**Final owner gameplay acceptance: 12/12 PASS**, combining the original eight
+checks and four proximity retests, with no outstanding gameplay issues reported.
+The revised geometry above is locked. Opening remains **0.6 seconds**, closing
+**0.7 seconds**, closing delay **1.0 second**, and travel **(+10,-140) source
+pixels / (+7,-98) world units**. Existing E boarding remains required. Approved
+ship, contact shadow, camera, collisions and scene transitions remain unchanged.
+Performance acceptance is observational, not quantitative benchmarking. No agent
+graphical test was run.
+
+Automatic boarding, hatch collision-state changes, brief transition fade and
+audio remain deferred. This documentation-only finalization changes no accepted
+production implementation, artwork or historical preservation guards. PR #110
+remains draft, ready for owner merge consideration; merging is an owner decision.
+Refinement validation: **8/8 focused static checks** and **196/196 broader static
+tests PASS**. Documentation links and diff checks pass; 54 existing untracked-file
+hashes and 3,019 ignored-file size/mtime identities are preserved.
+Documentation finalization retains those completed implementation test results;
+only lightweight documentation/diff and preservation checks were repeated. All
+four approved artwork hashes, 54 untracked-file hashes and 3,020 ignored-file
+identities pass. Accepted production files and historical guards are unchanged.
+
 ## Exterior camera zoom (PR #109 feature branch, pending merge)
 
 The existing mouse wheel now permits numerical zoom **0.50–1.50** in the
