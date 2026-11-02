@@ -7,7 +7,7 @@ import struct
 import subprocess
 import unittest
 import zlib
-from production_terrain_preservation import historical_presenter_bytes
+from current_preservation import historical_presenter_bytes
 
 from static_weathered_earth_test import (ROOT, GREEN_BASE, GREEN_SHA256,
     coordinate_random, noise, weathered_bytes, original_green_bytes)

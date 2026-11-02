@@ -7,7 +7,7 @@ import re
 import subprocess
 import unittest
 
-from production_terrain_preservation import (FIXTURE_INPUT_SHA256, verify_fixture_input,
+from current_preservation import (FIXTURE_INPUT_SHA256, verify_fixture_input,
     PRESENTER_INPUT_SHA256, historical_presenter_bytes, historical_source, without_presenter_paths)
 from static_terrain_resolver_test import signature, bucket, variant, inventory, OFFSETS
 from static_weathered_earth_test import earth_tint

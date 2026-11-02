@@ -10,8 +10,11 @@ from pathlib import Path
 import re
 import subprocess
 import unittest
+from current_preservation import (
+    historical_text, SEALED_REVIEW_HEAD, git_blob, sealed_input,
+)
 
-from exterior_activation_preservation import (
+from current_preservation import (
     ACTIVATION_BASE, ACTIVATION_INPUT_SHA256, ACTIVATION_TEST_SHA256,
     historical_activation_bytes, verify_activation_input,
 )
@@ -58,14 +61,16 @@ class IllustratedExteriorStaticTest(unittest.TestCase):
         self.assertEqual(len(inputs), 83)
         self.assertEqual(proposal['source_commit'], 'seal.review_head')
         classes = {}
-        for path in subprocess.check_output(['git','ls-files','*.gd'],cwd=ROOT,text=True).splitlines():
-            match = re.search(r'^class_name (\w+)', (ROOT/path).read_text(encoding='utf-8'), re.M)
+        # Historical closure must use the same committed universe as its seal,
+        # not current global classes or working resource bytes.
+        for path in subprocess.check_output(['git','ls-tree','-r','--name-only',SEALED_REVIEW_HEAD],cwd=ROOT,text=True).splitlines():
+            if not path.endswith('.gd'):
+                continue
+            match = re.search(r'^class_name (\w+)', git_blob(SEALED_REVIEW_HEAD, path).decode('utf-8'), re.M)
             if match:
                 classes[match[1]] = path
         for path,record in inputs.items():
-            raw = (ROOT/path).read_bytes()
-            if not path.endswith('.png'):
-                raw = raw.replace(b'\r\n',b'\n')
+            raw = sealed_input(path, record)
             self.assertEqual((len(raw),hashlib.sha256(raw).hexdigest()), (record['bytes'],record['sha256']), path)
             if path.endswith(('.gd','.tscn','.tres','.gdshader')):
                 text = raw.decode('utf-8')
@@ -82,7 +87,7 @@ class IllustratedExteriorStaticTest(unittest.TestCase):
         self.assertEqual([p['name'] for p in proposal['phases']], ['Import','Assertions'])
         self.assertEqual(len(set(proposal['allowed_generated_paths'])),41)
         self.assertEqual(proposal['process_policy']['combined_output_limit_bytes'],1048576)
-        harness = (ROOT/'tests/illustrated_exterior_native_validation.gd').read_text()
+        harness = git_blob(SEALED_REVIEW_HEAD, 'tests/illustrated_exterior_native_validation.gd').decode('utf-8')
         for marker in ('initial 25 chunks','Ground-only suppression','Stale retirement rejected',
                        'Absolute negative-coordinate assignment','Shared tint dimensions',
                        'Revision borders agree','Failure stops further processing',
@@ -299,7 +304,7 @@ class IllustratedExteriorStaticTest(unittest.TestCase):
                      'scenes/world/world_coordinates.gd', 'scenes/world/terrain_resolver.gd',
                      'scenes/world/terrain_assignment_lookup.gd', 'scenes/main/scene_transition_controller.gd',
                      'scenes/main/main_v2.gd', 'construction/construction_controller.gd'):
-            self.assertEqual((ROOT/path).read_text(encoding='utf-8'), old(path), path)
+            self.assertEqual(historical_text(path, (ROOT/path).read_text(encoding='utf-8')), old(path), path)
         for name in ('_queue_machine_sync', '_sync_machines', 'set_construction_definition', '_refresh_highlights', '_distance'):
             self.assertEqual(body(SOURCE,name), body(old(EXTERIOR),name), name)
         arrival = body(SOURCE,'prepare_for_arrival')
@@ -313,7 +318,9 @@ class IllustratedExteriorStaticTest(unittest.TestCase):
 
     def test_scene_draw_order_and_resource_references(self):
         scene = (ROOT/SCENE).read_text(encoding='utf-8')
-        self.assertEqual(scene.replace('z_index = -11', 'z_index = -10'), old(SCENE))
+        # Verify today's complete accepted scene first, then retain the original
+        # PR #104-vs-#103 Z-only comparison. Current Z/resource checks stay below.
+        self.assertEqual(historical_text(SCENE, scene).replace('z_index = -11', 'z_index = -10'), old(SCENE))
         self.assertIn('chunk.z_index = -10', SOURCE)
         self.assertIn('_highlights.z_index = -4', SOURCE)
         self.assertIn('[node name="FerriteGround" type="Node2D" parent="."]\nz_index = -5', scene)

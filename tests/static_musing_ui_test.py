@@ -4,6 +4,7 @@ import re
 import struct
 import subprocess
 import unittest
+from current_preservation import historical_text
 from native_terrain_preservation import historical_mapping_attributes
 
 from static_automatic_transitions_test import ROOT, read as raw_read
@@ -15,7 +16,7 @@ from static_v2_production_host_test import (
 
 
 def read(path):
-    return without_ferrite_refinement_changes(path, raw_read(path))
+    return without_ferrite_refinement_changes(path, historical_text(path, raw_read(path)))
 
 
 class MusingUIStaticTest(unittest.TestCase):

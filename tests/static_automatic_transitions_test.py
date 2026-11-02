@@ -105,6 +105,55 @@ class AutomaticTransitionsStaticTest(unittest.TestCase):
         self.door = (ROOT / "scenes/interaction/automatic_doorway.gd").read_text()
         self.interior = read(PRIMARY)
 
+    def test_environment_zoom_limits_and_existing_controls(self):
+        camera = read("scenes/player/follow_camera.gd")
+        for name, value in [("MIN_ZOOM", 0.75), ("EXTERIOR_MIN_ZOOM", 0.5),
+                            ("MAX_ZOOM", 1.5), ("ZOOM_STEP", 0.1),
+                            ("ZOOM_DURATION", 0.15)]:
+            self.assertEqual(float(re.search(rf'const {name}: float = ([\d.]+)', camera)[1]), value)
+        self.assertIn('var _target_zoom: float = 1.0', camera)
+        self.assertIn('var _minimum_zoom: float = MIN_ZOOM', camera)
+        self.assertNotIn('zoom =', nodes(read("scenes/player/dave.tscn"))["Camera2D"][1])
+        wheel = function(camera, "_unhandled_input")
+        self.assertIn('if not event.pressed:', wheel)
+        self.assertIn('MOUSE_BUTTON_WHEEL_UP:\n\t\t\tzoom_change = ZOOM_STEP', wheel)
+        self.assertIn('MOUSE_BUTTON_WHEEL_DOWN:\n\t\t\tzoom_change = -ZOOM_STEP', wheel)
+        self.assertIn('clampf(_target_zoom + zoom_change, _minimum_zoom, MAX_ZOOM)', wheel)
+        self.assertIn('_tween_to_target()', wheel)
+        tween = function(camera, "_tween_to_target")
+        self.assertIn('Tween.TRANS_SINE', tween)
+        self.assertIn('Tween.EASE_OUT', tween)
+        self.assertIn('Vector2.ONE * _target_zoom, ZOOM_DURATION', tween)
+
+    def test_return_clamps_visual_and_target_and_stops_stale_tween(self):
+        setter = function(read("scenes/player/follow_camera.gd"), "set_exterior_zoom")
+        self.assertIn('EXTERIOR_MIN_ZOOM if is_exterior else MIN_ZOOM', setter)
+        self.assertIn('clampf(_target_zoom, _minimum_zoom, MAX_ZOOM)', setter)
+        self.assertIn('clampf(zoom.x, _minimum_zoom, MAX_ZOOM)', setter)
+        # Leave valid interpolation alone; stop an invalid tween before clamping.
+        self.assertLess(setter.index('return'), setter.index('_zoom_tween.kill()'))
+        self.assertLess(setter.index('_zoom_tween.kill()'), setter.index('zoom = Vector2.ONE'))
+        self.assertIn('_target_zoom = clamped_target', setter)
+        self.assertIn('zoom = Vector2.ONE * clamped_zoom', setter)
+        self.assertIn('if not is_equal_approx(clamped_zoom, _target_zoom):\n\t\t_tween_to_target()', setter)
+
+    def test_zoom_range_selected_before_reveal_and_on_rollback(self):
+        reset = function(self.controller, "_reset_camera")
+        self.assertIn(f'const EXTERIOR_SCENE: String = "res://{EXTERIOR}"', self.controller)
+        self.assertIn('as FollowCamera', reset)
+        self.assertIn('camera.set_exterior_zoom(_current_world.scene_file_path == EXTERIOR_SCENE)', reset)
+        self.assertLess(reset.index('set_exterior_zoom'), reset.index('reset_smoothing'))
+        self.assertLess(reset.index('set_exterior_zoom'), reset.index('force_update_scroll'))
+        initialize = function(self.controller, "initialize")
+        self.assertLess(initialize.index('_current_world ='), initialize.index('_reset_camera()'))
+        for name in ["_perform_transition", "_perform_quick_transition"]:
+            transfer = function(self.controller, name)
+            self.assertLess(transfer.index('_current_world = destination'), transfer.index('_reset_camera()'))
+            self.assertLess(transfer.index('_reset_camera()'), transfer.index('await get_tree().physics_frame'))
+        quick = function(self.controller, "_perform_quick_transition")
+        rollback = quick[quick.index('_current_world = source'):]
+        self.assertLess(rollback.index('_reset_camera()'), rollback.index('_quick_committed = true'))
+
     def test_resource_references_and_load_steps(self):
         paths = WORLDS + ["scenes/main/main_v2.tscn", "scenes/main/main.tscn",
                           "scenes/interaction/automatic_doorway.tscn"]

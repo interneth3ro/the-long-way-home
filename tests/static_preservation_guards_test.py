@@ -4,8 +4,9 @@ import unittest
 
 from native_terrain_preservation import (
     ROOT, REVIEWED_HEAD, TERRAIN_INPUT_SHA256, TEST_UPDATE_SHA256,
-    historical_mapping_attributes, historical_test_bytes, verify_terrain_input,
+    historical_mapping_attributes, verify_terrain_input,
 )
+from current_preservation import historical_test_bytes
 
 
 def reviewed(path):
