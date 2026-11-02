@@ -1,0 +1,2880 @@
+{
+  "status": "comparison only; no feathering value selected",
+  "base_revision": "9b558cceef13d2ab37563f89d96a5401236d1ec0",
+  "pinned_inputs": {
+    "tools/ground-art-refinement.py": "68223b5144221f67276bffffa311d72771d933dd9304b4b2dfc0f6f155437578",
+    "assets/experiments/native_terrain_47_96/ground_refinement_v1/manifest.json": "0cfbc9453cae2bcca8e0654500c5098436edba01adbf995a3da3d61f1d4034fc"
+  },
+  "source_sha256": {
+    "earth_refined.png": "43f587282190b7046d7a36f395c38a52beed64e95c84037c1e12ee68d81c6e1f",
+    "green_refined.png": "09327f27b2ac2be87fd17586fc9626d1c52bc00f4d1491651a35912c78a94202"
+  },
+  "layout_sha256": {
+    "meandering_boundary_varied": "7d5beea143f59188e8c972167eb83d0e3efd9e64e2dcfda736ae713ac47ae475",
+    "mixed_24x16": "2b1d794dc0f348a89f9a3331959d7c5a4cb52d6c90183927bed6ece55c39bcef"
+  },
+  "baseline": [
+    {
+      "atlas": [
+        9,
+        2
+      ],
+      "signature": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "atlas": [
+        6,
+        2
+      ],
+      "signature": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "atlas": [
+        5,
+        2
+      ],
+      "signature": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "atlas": [
+        9,
+        3
+      ],
+      "signature": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "atlas": [
+        6,
+        1
+      ],
+      "signature": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "atlas": [
+        11,
+        1
+      ],
+      "signature": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "atlas": [
+        11,
+        2
+      ],
+      "signature": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        1,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "atlas": [
+        11,
+        3
+      ],
+      "signature": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "atlas": [
+        5,
+        1
+      ],
+      "signature": [
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "atlas": [
+        8,
+        1
+      ],
+      "signature": [
+        0,
+        1,
+        0,
+        0,
+        1,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "atlas": [
+        8,
+        3
+      ],
+      "signature": [
+        0,
+        1,
+        0,
+        0,
+        1,
+        0,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "atlas": [
+        1,
+        2
+      ],
+      "signature": [
+        0,
+        1,
+        0,
+        1,
+        1,
+        0,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "atlas": [
+        0,
+        1
+      ],
+      "signature": [
+        0,
+        1,
+        0,
+        1,
+        1,
+        1,
+        1,
+        0,
+        1
+      ]
+    },
+    {
+      "atlas": [
+        10,
+        0
+      ],
+      "signature": [
+        0,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "atlas": [
+        11,
+        0
+      ],
+      "signature": [
+        0,
+        1,
+        1,
+        1,
+        0,
+        1,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "atlas": [
+        3,
+        3
+      ],
+      "signature": [
+        0,
+        1,
+        1,
+        1,
+        0,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "atlas": [
+        8,
+        0
+      ],
+      "signature": [
+        0,
+        1,
+        1,
+        1,
+        1,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "atlas": [
+        0,
+        0
+      ],
+      "signature": [
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        1
+      ]
+    },
+    {
+      "atlas": [
+        0,
+        3
+      ],
+      "signature": [
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "atlas": [
+        0,
+        7
+      ],
+      "signature": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "atlas": [
+        0,
+        4
+      ],
+      "signature": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0
+      ]
+    },
+    {
+      "atlas": [
+        1,
+        7
+      ],
+      "signature": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "atlas": [
+        8,
+        4
+      ],
+      "signature": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        1,
+        1
+      ]
+    },
+    {
+      "atlas": [
+        3,
+        7
+      ],
+      "signature": [
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "atlas": [
+        11,
+        4
+      ],
+      "signature": [
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        1,
+        1,
+        0
+      ]
+    },
+    {
+      "atlas": [
+        5,
+        4
+      ],
+      "signature": [
+        1,
+        0,
+        0,
+        0,
+        1,
+        1,
+        0,
+        1,
+        1
+      ]
+    },
+    {
+      "atlas": [
+        10,
+        4
+      ],
+      "signature": [
+        1,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "atlas": [
+        0,
+        5
+      ],
+      "signature": [
+        1,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0
+      ]
+    },
+    {
+      "atlas": [
+        1,
+        6
+      ],
+      "signature": [
+        1,
+        0,
+        1,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "atlas": [
+        8,
+        7
+      ],
+      "signature": [
+        1,
+        0,
+        1,
+        1,
+        0,
+        1,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "atlas": [
+        8,
+        5
+      ],
+      "signature": [
+        1,
+        0,
+        1,
+        1,
+        0,
+        1,
+        0,
+        1,
+        1
+      ]
+    },
+    {
+      "atlas": [
+        8,
+        6
+      ],
+      "signature": [
+        1,
+        0,
+        1,
+        1,
+        1,
+        1,
+        0,
+        1,
+        1
+      ]
+    },
+    {
+      "atlas": [
+        5,
+        5
+      ],
+      "signature": [
+        1,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "atlas": [
+        11,
+        7
+      ],
+      "signature": [
+        1,
+        1,
+        1,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "atlas": [
+        11,
+        6
+      ],
+      "signature": [
+        1,
+        1,
+        1,
+        0,
+        1,
+        0,
+        1,
+        1,
+        0
+      ]
+    },
+    {
+      "atlas": [
+        11,
+        5
+      ],
+      "signature": [
+        1,
+        1,
+        1,
+        0,
+        1,
+        1,
+        1,
+        1,
+        0
+      ]
+    },
+    {
+      "atlas": [
+        6,
+        5
+      ],
+      "signature": [
+        1,
+        1,
+        1,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "atlas": [
+        9,
+        7
+      ],
+      "signature": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "atlas": [
+        5,
+        6
+      ],
+      "signature": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        1,
+        1
+      ]
+    },
+    {
+      "atlas": [
+        6,
+        6
+      ],
+      "signature": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0
+      ]
+    },
+    {
+      "atlas": [
+        9,
+        6
+      ],
+      "signature": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ]
+    }
+  ],
+  "interiors": [
+    {
+      "atlas": [
+        0,
+        0
+      ],
+      "signature": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "variant": "B",
+      "pixel_sha256": "df9a42682047457b1d1228d3fc0194a608b6b707a31003561240d3aecd40e502"
+    },
+    {
+      "atlas": [
+        1,
+        0
+      ],
+      "signature": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "variant": "C",
+      "pixel_sha256": "352a3df254bddaf07cd9e6b34fda26694f20b3d52aa60b103debac9e45a0fa17"
+    },
+    {
+      "atlas": [
+        0,
+        1
+      ],
+      "signature": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "variant": "B",
+      "pixel_sha256": "f8044c401e8042b4e49ca4e9fd31c28a0e688c94de2afd111eec8362daa51d39"
+    },
+    {
+      "atlas": [
+        1,
+        1
+      ],
+      "signature": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "variant": "C",
+      "pixel_sha256": "62a978fec52d1c2eb7574af58642ef034013da874e0dc0468839128685426796"
+    }
+  ],
+  "treatments": [
+    {
+      "label": "CURRENT",
+      "range": [
+        0.2,
+        0.8
+      ],
+      "validation": {
+        "configured_records": 45,
+        "baseline_signatures": 41,
+        "anchors": 369,
+        "compatible_ordered_edge_pairs": 836,
+        "assembled_adjacencies": 900,
+        "partially_blended_texels": 64986,
+        "maximum_shared_edge_channel_difference": 0
+      },
+      "tile_pixel_sha256": [
+        {
+          "signature": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "variant": "A",
+          "sha256": "beb062ca00f89cc4b056b26b3309d867237704f8be7c35c6b69c9cc081106b81"
+        },
+        {
+          "signature": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "variant": "B",
+          "sha256": "df9a42682047457b1d1228d3fc0194a608b6b707a31003561240d3aecd40e502"
+        },
+        {
+          "signature": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "variant": "C",
+          "sha256": "352a3df254bddaf07cd9e6b34fda26694f20b3d52aa60b103debac9e45a0fa17"
+        },
+        {
+          "signature": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1
+          ],
+          "variant": "A",
+          "sha256": "adb1cc1c93b886ad2689e3f139fe8525d08323ef521b14d37dae93bdc2054f54"
+        },
+        {
+          "signature": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0
+          ],
+          "variant": "A",
+          "sha256": "5e6c9d711b9a0f7c9bd13e27184289cf7dd71c6fe5186a2e4f7bfb52500b9a68"
+        },
+        {
+          "signature": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            1,
+            1
+          ],
+          "variant": "A",
+          "sha256": "90d0b3eb3e8276df6d96193d0c63937261237f5feba1801817dd8fbbcd6ea12c"
+        },
+        {
+          "signature": [
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "variant": "A",
+          "sha256": "6178f72bf6d0c16eb58504dd49c03755e24355251769c7e6820900bc573ee220"
+        },
+        {
+          "signature": [
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            1
+          ],
+          "variant": "A",
+          "sha256": "3ad3f5632311a4d1c48e890b6331ba1dcd0ec4e5390aa4eaadf239442fe3244b"
+        },
+        {
+          "signature": [
+            0,
+            0,
+            0,
+            1,
+            0,
+            1,
+            0,
+            0,
+            1
+          ],
+          "variant": "A",
+          "sha256": "05531cb2391586b65075133f471a7a439a91386095c57372baa3ecb8a1a98ccf"
+        },
+        {
+          "signature": [
+            0,
+            0,
+            0,
+            1,
+            0,
+            1,
+            1,
+            1,
+            1
+          ],
+          "variant": "A",
+          "sha256": "b1072f0341cb51479be78597952bd11e71e06dfd63544e0c09954838a6d4f725"
+        },
+        {
+          "signature": [
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "variant": "A",
+          "sha256": "3183d19950fb80d8e882ef7c169a0c59e20b47f9d688de1735bcd8d04f301bd5"
+        },
+        {
+          "signature": [
+            0,
+            1,
+            0,
+            0,
+            1,
+            0,
+            1,
+            0,
+            0
+          ],
+          "variant": "A",
+          "sha256": "d94d98db7ea72d30724126183176c6dd6eab00ce80e50a6f042beefb3f34db2b"
+        },
+        {
+          "signature": [
+            0,
+            1,
+            0,
+            0,
+            1,
+            0,
+            1,
+            1,
+            1
+          ],
+          "variant": "A",
+          "sha256": "f703ee894ed82b64a850c76b98b4c02095eba2f716f5279b65dd9390e8f7984f"
+        },
+        {
+          "signature": [
+            0,
+            1,
+            0,
+            1,
+            1,
+            0,
+            1,
+            1,
+            1
+          ],
+          "variant": "A",
+          "sha256": "cf8a4840617e9840ce528b8b0028d49072b464a06d8551ccbf1f992c82a16848"
+        },
+        {
+          "signature": [
+            0,
+            1,
+            0,
+            1,
+            1,
+            1,
+            1,
+            0,
+            1
+          ],
+          "variant": "A",
+          "sha256": "3fd3a256d0ec479d5851c861bd314f9f168384eab24ae5d7959b46748644bddc"
+        },
+        {
+          "signature": [
+            0,
+            1,
+            1,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "variant": "A",
+          "sha256": "7c8657b4949240d1fb865dededdf9cfc40071721c594a6d12a1ee1afbea9a74a"
+        },
+        {
+          "signature": [
+            0,
+            1,
+            1,
+            1,
+            0,
+            1,
+            0,
+            0,
+            1
+          ],
+          "variant": "A",
+          "sha256": "ac51985f8bea1855f49ccee7216c6934aeeacc15ab293a56944e8b9286b13714"
+        },
+        {
+          "signature": [
+            0,
+            1,
+            1,
+            1,
+            0,
+            1,
+            1,
+            1,
+            1
+          ],
+          "variant": "A",
+          "sha256": "2eb49ae32e0c52322509aa93d58492c2efcb04e2e7d21f9c7d39dbf8402a53d9"
+        },
+        {
+          "signature": [
+            0,
+            1,
+            1,
+            1,
+            1,
+            0,
+            1,
+            0,
+            0
+          ],
+          "variant": "A",
+          "sha256": "5840a966a7bbb1548b972a9dacb2864b531098f46db6c429e16c06a70a73ae29"
+        },
+        {
+          "signature": [
+            0,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            0,
+            1
+          ],
+          "variant": "A",
+          "sha256": "20f8b66ea2fec6840a4b5a1402372273a656c6cc434d0063a335c7c598786902"
+        },
+        {
+          "signature": [
+            0,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "variant": "A",
+          "sha256": "ccaf61bdd149aee56783a6d9468c6a8a60db9192b7f381d44472dcafa65deede"
+        },
+        {
+          "signature": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "variant": "A",
+          "sha256": "12d71efeae0a9bfd833ce8831d3fe742962b0d491b5fe218ab3f53657fee09ef"
+        },
+        {
+          "signature": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0
+          ],
+          "variant": "A",
+          "sha256": "df63d91db151a99af25d598993d38b91c6f7fea5c782730e9e7324edb71b9cf0"
+        },
+        {
+          "signature": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0
+          ],
+          "variant": "A",
+          "sha256": "682eca18eb2ba4c77f14cbd0f15eae01223314b482a51d5cea324f264df52a65"
+        },
+        {
+          "signature": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            1,
+            1
+          ],
+          "variant": "A",
+          "sha256": "7ec0fec65ee0732106a22ef8ab1baebdd104be2d6552d27d790e748cf03a4e61"
+        },
+        {
+          "signature": [
+            1,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "variant": "A",
+          "sha256": "8c1a4de4c8152ead9d51253341605a926a461f5ae1a611ba399f537008cd1f4c"
+        },
+        {
+          "signature": [
+            1,
+            0,
+            0,
+            0,
+            1,
+            0,
+            1,
+            1,
+            0
+          ],
+          "variant": "A",
+          "sha256": "c96f1626cedcc2a5672a1163c177899a46c4de5edbdf0a0b66d407cd7cc62143"
+        },
+        {
+          "signature": [
+            1,
+            0,
+            0,
+            0,
+            1,
+            1,
+            0,
+            1,
+            1
+          ],
+          "variant": "A",
+          "sha256": "a7a784ab49731234e8b7812622be666824e9c90cfae9030fa285c81f3b3aa594"
+        },
+        {
+          "signature": [
+            1,
+            0,
+            0,
+            0,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "variant": "A",
+          "sha256": "43ff8af7f71f7c39a882d5cbdf9477672cb7d218a2056cb78e11f3a8c5bd973f"
+        },
+        {
+          "signature": [
+            1,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0
+          ],
+          "variant": "A",
+          "sha256": "c2681a29f101197863ae5eb8d67b261acee9ef0c8cfe3690a6175a32d7039787"
+        },
+        {
+          "signature": [
+            1,
+            0,
+            1,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0
+          ],
+          "variant": "A",
+          "sha256": "ecaf55bb53dd0e63052ab0361c4ff991621ee148da0c37a147ad97aa3097c6d4"
+        },
+        {
+          "signature": [
+            1,
+            0,
+            1,
+            1,
+            0,
+            1,
+            0,
+            0,
+            0
+          ],
+          "variant": "A",
+          "sha256": "5e8b673bd3f9137563258873924bd15964f8255e5e71d512389421cbd148b350"
+        },
+        {
+          "signature": [
+            1,
+            0,
+            1,
+            1,
+            0,
+            1,
+            0,
+            1,
+            1
+          ],
+          "variant": "A",
+          "sha256": "dac65edcdb646de1d3c6eb7ebf0fd4d8f152086c32f538eae234aa6015ad5154"
+        },
+        {
+          "signature": [
+            1,
+            0,
+            1,
+            1,
+            1,
+            1,
+            0,
+            1,
+            1
+          ],
+          "variant": "A",
+          "sha256": "c857567dc01d035bd7df82517a69426cd6494679aa86107691f9182fd042a4a1"
+        },
+        {
+          "signature": [
+            1,
+            0,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "variant": "A",
+          "sha256": "25a5289422a26c1ae3e3d01a33be6d6f5ddac55778fc0856533bdfed4a23906f"
+        },
+        {
+          "signature": [
+            1,
+            1,
+            1,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "variant": "A",
+          "sha256": "fbe620795e8020fee56bd2d220a677fbf28a6a6567bb4b1d4a38c308c036a153"
+        },
+        {
+          "signature": [
+            1,
+            1,
+            1,
+            0,
+            1,
+            0,
+            1,
+            1,
+            0
+          ],
+          "variant": "A",
+          "sha256": "cc2e8495285140807726464626c734c1efe107f33d650c95627df0c530bb53cc"
+        },
+        {
+          "signature": [
+            1,
+            1,
+            1,
+            0,
+            1,
+            1,
+            1,
+            1,
+            0
+          ],
+          "variant": "A",
+          "sha256": "f6fb109a1f7b9e855ee882de92d6929683b1e9748faa951c400eeacc3c006c0e"
+        },
+        {
+          "signature": [
+            1,
+            1,
+            1,
+            0,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "variant": "A",
+          "sha256": "7db06ba1e7c32ea5c3981743f581fa9d34325f737a7026b03197246bc62b2c5c"
+        },
+        {
+          "signature": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            0,
+            0,
+            0
+          ],
+          "variant": "A",
+          "sha256": "d85c7c7c43bb3eb65034f05131e6312208f0d4b46b60e7d6859f2552c9dc2544"
+        },
+        {
+          "signature": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            0,
+            1,
+            1
+          ],
+          "variant": "A",
+          "sha256": "179f0dfd4d3f478205ea73f0e116b36d3ff5b0f297573831f0cb59fa0d2fa7d7"
+        },
+        {
+          "signature": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            0
+          ],
+          "variant": "A",
+          "sha256": "862275326454098bb3001f1a592c4c9df0590ea6eca12cf8b87114bc0ff4672a"
+        },
+        {
+          "signature": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "variant": "A",
+          "sha256": "f5fe0d1b92e36086e4cb6b15c98fdbb9f49e8e8f6a22e8c93817ea2f73f77af9"
+        },
+        {
+          "signature": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "variant": "B",
+          "sha256": "f8044c401e8042b4e49ca4e9fd31c28a0e688c94de2afd111eec8362daa51d39"
+        },
+        {
+          "signature": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "variant": "C",
+          "sha256": "62a978fec52d1c2eb7574af58642ef034013da874e0dc0468839128685426796"
+        }
+      ]
+    },
+    {
+      "label": "CANDIDATE A",
+      "range": [
+        0.15,
+        0.85
+      ],
+      "validation": {
+        "configured_records": 45,
+        "baseline_signatures": 41,
+        "anchors": 369,
+        "compatible_ordered_edge_pairs": 836,
+        "assembled_adjacencies": 900,
+        "partially_blended_texels": 77934,
+        "maximum_shared_edge_channel_difference": 0
+      },
+      "tile_pixel_sha256": [
+        {
+          "signature": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "variant": "A",
+          "sha256": "beb062ca00f89cc4b056b26b3309d867237704f8be7c35c6b69c9cc081106b81"
+        },
+        {
+          "signature": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "variant": "B",
+          "sha256": "df9a42682047457b1d1228d3fc0194a608b6b707a31003561240d3aecd40e502"
+        },
+        {
+          "signature": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "variant": "C",
+          "sha256": "352a3df254bddaf07cd9e6b34fda26694f20b3d52aa60b103debac9e45a0fa17"
+        },
+        {
+          "signature": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1
+          ],
+          "variant": "A",
+          "sha256": "302190a36c659063ed0314969e887d7740d391ca73f110ed4aa180a03c62c453"
+        },
+        {
+          "signature": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0
+          ],
+          "variant": "A",
+          "sha256": "ba4239c926c6aeba92d6e18b441cd694b007db017c94a89ee45189bc78478c1a"
+        },
+        {
+          "signature": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            1,
+            1
+          ],
+          "variant": "A",
+          "sha256": "f10422b67ee9d3e98fe7040ed309699077996827567dfc19f129fe5196ef9fa4"
+        },
+        {
+          "signature": [
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "variant": "A",
+          "sha256": "04d111cc44f37266e850f8ccdf1b761f2341d196917394e5490a988fe4dfd84b"
+        },
+        {
+          "signature": [
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            1
+          ],
+          "variant": "A",
+          "sha256": "744fedac084e7cdf348cf35b5a85c9ffeadf6a56892893f0072cc778b7b1a4cb"
+        },
+        {
+          "signature": [
+            0,
+            0,
+            0,
+            1,
+            0,
+            1,
+            0,
+            0,
+            1
+          ],
+          "variant": "A",
+          "sha256": "e46af88e57fb1a4a3afdec41c4aded81002774a81314b3a35b0efb1e94d70ac4"
+        },
+        {
+          "signature": [
+            0,
+            0,
+            0,
+            1,
+            0,
+            1,
+            1,
+            1,
+            1
+          ],
+          "variant": "A",
+          "sha256": "644bd4accef7b5227224aa5dda70a3fdff111e064c2c3aecde3400a61fc4fef8"
+        },
+        {
+          "signature": [
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "variant": "A",
+          "sha256": "bc7136ede0a83d1953c95ba97dba8f05776761990eca63f289494e62801ffab0"
+        },
+        {
+          "signature": [
+            0,
+            1,
+            0,
+            0,
+            1,
+            0,
+            1,
+            0,
+            0
+          ],
+          "variant": "A",
+          "sha256": "1b86779fcd3334087b263b679ea1ff8e53809a37b8ca7fe664f573878fab4c5b"
+        },
+        {
+          "signature": [
+            0,
+            1,
+            0,
+            0,
+            1,
+            0,
+            1,
+            1,
+            1
+          ],
+          "variant": "A",
+          "sha256": "2d45cb28f4e4711e0cf12d4b0a979be1e433c9a80c45a8755bb092bb601f12a9"
+        },
+        {
+          "signature": [
+            0,
+            1,
+            0,
+            1,
+            1,
+            0,
+            1,
+            1,
+            1
+          ],
+          "variant": "A",
+          "sha256": "a6440e7d1b8031aca1c831d987f10fd075f77fdcad644f5213c73b7ac9540e7d"
+        },
+        {
+          "signature": [
+            0,
+            1,
+            0,
+            1,
+            1,
+            1,
+            1,
+            0,
+            1
+          ],
+          "variant": "A",
+          "sha256": "5317532b68b5b187acb347ed29eaa4d4c95b732abadcf7e0222f1f793c5b59ea"
+        },
+        {
+          "signature": [
+            0,
+            1,
+            1,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "variant": "A",
+          "sha256": "bce98faa8b2ecad99a41994a10c076d923d002f8d97b817d5c092954473e1b38"
+        },
+        {
+          "signature": [
+            0,
+            1,
+            1,
+            1,
+            0,
+            1,
+            0,
+            0,
+            1
+          ],
+          "variant": "A",
+          "sha256": "a8da12d628adcc62634eaa6a17e5bbdfcf9bdf380d196318d36c29e5eb20d46c"
+        },
+        {
+          "signature": [
+            0,
+            1,
+            1,
+            1,
+            0,
+            1,
+            1,
+            1,
+            1
+          ],
+          "variant": "A",
+          "sha256": "a05c17b075f11e8e7e7d7aab22092d37bbe03ade18bfd8b9db1ce8f3a3c101d4"
+        },
+        {
+          "signature": [
+            0,
+            1,
+            1,
+            1,
+            1,
+            0,
+            1,
+            0,
+            0
+          ],
+          "variant": "A",
+          "sha256": "ab61ea8e139bc163de0a8fbd37527d428e3f683a5d8d471c3ac3f8f8ef2da421"
+        },
+        {
+          "signature": [
+            0,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            0,
+            1
+          ],
+          "variant": "A",
+          "sha256": "e5f33761cb5603bebd8fb6960a623f311415c04fb0f1ee9aa8507ee5f755ef80"
+        },
+        {
+          "signature": [
+            0,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "variant": "A",
+          "sha256": "61b04e88ebeeb10c64f0526e7fc8763beef082cb4c7ca83db6eb16504cbbe5ea"
+        },
+        {
+          "signature": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "variant": "A",
+          "sha256": "264a3c4eb4f46ff2c8275e43650e11d2f7c3c33149a935071086976c77c9d185"
+        },
+        {
+          "signature": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0
+          ],
+          "variant": "A",
+          "sha256": "7d7910616f11aa102b82b571d9b74e5b1bf06e17353adcfb21907ca67729e6ad"
+        },
+        {
+          "signature": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0
+          ],
+          "variant": "A",
+          "sha256": "4337fa60f8d98492ad4af30324056183c3a30dcc359f6bb5cb742146be84e1c1"
+        },
+        {
+          "signature": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            1,
+            1
+          ],
+          "variant": "A",
+          "sha256": "f332c7cb8fab35be969344e2c1c0f960aaef68176cb94c6d464c5d955ad49c6b"
+        },
+        {
+          "signature": [
+            1,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "variant": "A",
+          "sha256": "736d5d3c8dbfbbb09f2c2f565fe83ae6e1a52fc5294dad1f06f5eed58276fb38"
+        },
+        {
+          "signature": [
+            1,
+            0,
+            0,
+            0,
+            1,
+            0,
+            1,
+            1,
+            0
+          ],
+          "variant": "A",
+          "sha256": "f3e9afd119682bfdcf13493c583fd152b225bddc3d7c9fd311f6cec04306fe1b"
+        },
+        {
+          "signature": [
+            1,
+            0,
+            0,
+            0,
+            1,
+            1,
+            0,
+            1,
+            1
+          ],
+          "variant": "A",
+          "sha256": "76a0f7b3015d48663f2227ab9a3f6c74bdc1ffac4f6ddecec52be495312e8043"
+        },
+        {
+          "signature": [
+            1,
+            0,
+            0,
+            0,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "variant": "A",
+          "sha256": "aecd976e4cedafadb0a4db93190ab1655e05bfd208824f3f7e308deb4cbd9beb"
+        },
+        {
+          "signature": [
+            1,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0
+          ],
+          "variant": "A",
+          "sha256": "7755672a7122282bd2c640efbd49f2af460667e6d7f60a2403dd300c1b9d43b2"
+        },
+        {
+          "signature": [
+            1,
+            0,
+            1,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0
+          ],
+          "variant": "A",
+          "sha256": "c9330c980f50f42ff004072ee973f22c053e4bc5b441d230ce986299deea9174"
+        },
+        {
+          "signature": [
+            1,
+            0,
+            1,
+            1,
+            0,
+            1,
+            0,
+            0,
+            0
+          ],
+          "variant": "A",
+          "sha256": "2dd40ef259df72ec3334c06cc9de7409d2d8be2058fddc81b0a6da51164d96d5"
+        },
+        {
+          "signature": [
+            1,
+            0,
+            1,
+            1,
+            0,
+            1,
+            0,
+            1,
+            1
+          ],
+          "variant": "A",
+          "sha256": "56f281861f4a41007fffadb62e6645ad6f9607160233f28f5bc8451f42f04c2e"
+        },
+        {
+          "signature": [
+            1,
+            0,
+            1,
+            1,
+            1,
+            1,
+            0,
+            1,
+            1
+          ],
+          "variant": "A",
+          "sha256": "f93c49c315a30c8d27c226c25549c89254b61b4272e3de17cc11ebe0bf30c883"
+        },
+        {
+          "signature": [
+            1,
+            0,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "variant": "A",
+          "sha256": "c0fd0b57820c8e40e673943919bff8b06c9e3140c37e0effc13456a1343f53d5"
+        },
+        {
+          "signature": [
+            1,
+            1,
+            1,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "variant": "A",
+          "sha256": "46b84604b2c203af8ef96c5d48e6cfa7bd68d92b4fce63b851f0f3b199cabed4"
+        },
+        {
+          "signature": [
+            1,
+            1,
+            1,
+            0,
+            1,
+            0,
+            1,
+            1,
+            0
+          ],
+          "variant": "A",
+          "sha256": "c2f3e8be7140697647245fec815374768c56f9fb97da42b2f896bd1a0471df6c"
+        },
+        {
+          "signature": [
+            1,
+            1,
+            1,
+            0,
+            1,
+            1,
+            1,
+            1,
+            0
+          ],
+          "variant": "A",
+          "sha256": "0c203275ce8cd36bfe1e2746bebc0232625ab84bf52b903e1ae622625bcc9474"
+        },
+        {
+          "signature": [
+            1,
+            1,
+            1,
+            0,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "variant": "A",
+          "sha256": "a4200f1946e562ac357fabd90618e9bcba998065b1d3e4283546fa00062c4a01"
+        },
+        {
+          "signature": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            0,
+            0,
+            0
+          ],
+          "variant": "A",
+          "sha256": "f4f1f7e20c20384168282e4d22b2a7b88db123451e7d367225d2984201a64f8b"
+        },
+        {
+          "signature": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            0,
+            1,
+            1
+          ],
+          "variant": "A",
+          "sha256": "62a632fb0864f471d2529f213e80aa41db78e2402fdba850129b8c4aa8774cfc"
+        },
+        {
+          "signature": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            0
+          ],
+          "variant": "A",
+          "sha256": "f57d198955eac32fd46bcf97849d82f20a0ed7f3ab1abb45d17b85a8d08b8ef0"
+        },
+        {
+          "signature": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "variant": "A",
+          "sha256": "f5fe0d1b92e36086e4cb6b15c98fdbb9f49e8e8f6a22e8c93817ea2f73f77af9"
+        },
+        {
+          "signature": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "variant": "B",
+          "sha256": "f8044c401e8042b4e49ca4e9fd31c28a0e688c94de2afd111eec8362daa51d39"
+        },
+        {
+          "signature": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "variant": "C",
+          "sha256": "62a978fec52d1c2eb7574af58642ef034013da874e0dc0468839128685426796"
+        }
+      ]
+    },
+    {
+      "label": "CANDIDATE B",
+      "range": [
+        0.1,
+        0.9
+      ],
+      "validation": {
+        "configured_records": 45,
+        "baseline_signatures": 41,
+        "anchors": 369,
+        "compatible_ordered_edge_pairs": 836,
+        "assembled_adjacencies": 900,
+        "partially_blended_texels": 92601,
+        "maximum_shared_edge_channel_difference": 0
+      },
+      "tile_pixel_sha256": [
+        {
+          "signature": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "variant": "A",
+          "sha256": "beb062ca00f89cc4b056b26b3309d867237704f8be7c35c6b69c9cc081106b81"
+        },
+        {
+          "signature": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "variant": "B",
+          "sha256": "df9a42682047457b1d1228d3fc0194a608b6b707a31003561240d3aecd40e502"
+        },
+        {
+          "signature": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "variant": "C",
+          "sha256": "352a3df254bddaf07cd9e6b34fda26694f20b3d52aa60b103debac9e45a0fa17"
+        },
+        {
+          "signature": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1
+          ],
+          "variant": "A",
+          "sha256": "9907647675d828c4115451c7827bb4e5fd58390b7e0bfa6360181203f07da1f4"
+        },
+        {
+          "signature": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0
+          ],
+          "variant": "A",
+          "sha256": "80685364a48bd098927664e831fd3dfdf956b25b7dcf528f9d0c3f02660f83c2"
+        },
+        {
+          "signature": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            1,
+            1
+          ],
+          "variant": "A",
+          "sha256": "98ab47f95c0bb424db4c32f26e30f1ac9480160c3ea7cc625db0ca5f4fa8667f"
+        },
+        {
+          "signature": [
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "variant": "A",
+          "sha256": "c5383929c734a2ad245b4cad68d7b4c8e0dc740db23fd00cb8173e5b34eb0bcf"
+        },
+        {
+          "signature": [
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            1
+          ],
+          "variant": "A",
+          "sha256": "a5b71435d1e77eb8d2bf661458749457c2079c1479c1ef1dbbc9408d2ac09ba9"
+        },
+        {
+          "signature": [
+            0,
+            0,
+            0,
+            1,
+            0,
+            1,
+            0,
+            0,
+            1
+          ],
+          "variant": "A",
+          "sha256": "fbc22ad0b29a32d0dcb6e7214cc13f29f66b65cc57a3c1e4b19fe9c8936ed8f8"
+        },
+        {
+          "signature": [
+            0,
+            0,
+            0,
+            1,
+            0,
+            1,
+            1,
+            1,
+            1
+          ],
+          "variant": "A",
+          "sha256": "0d8409050187007c081b35a511756c23911465746ac65690a46e938861916468"
+        },
+        {
+          "signature": [
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "variant": "A",
+          "sha256": "56bd36c03c67bcfab8222df26210f5e5760607122c765922b2f1261ec7eeac60"
+        },
+        {
+          "signature": [
+            0,
+            1,
+            0,
+            0,
+            1,
+            0,
+            1,
+            0,
+            0
+          ],
+          "variant": "A",
+          "sha256": "506c100bc790a11f921b194555032291c63899460c9d55dfa6b4347fe4764264"
+        },
+        {
+          "signature": [
+            0,
+            1,
+            0,
+            0,
+            1,
+            0,
+            1,
+            1,
+            1
+          ],
+          "variant": "A",
+          "sha256": "7a15293164ae81dd04f694c3415c904bd2ce051dbe3d9365d04b3b6526ffad6b"
+        },
+        {
+          "signature": [
+            0,
+            1,
+            0,
+            1,
+            1,
+            0,
+            1,
+            1,
+            1
+          ],
+          "variant": "A",
+          "sha256": "3daed4d50e183bbcfeffb3703bf3a10d45e8a126b7d37f377cd389d850ae2a48"
+        },
+        {
+          "signature": [
+            0,
+            1,
+            0,
+            1,
+            1,
+            1,
+            1,
+            0,
+            1
+          ],
+          "variant": "A",
+          "sha256": "0c3e7a75ac1f6dde26d1bdc9d956c49c994bdf9557458bd2ff913ff7c334184c"
+        },
+        {
+          "signature": [
+            0,
+            1,
+            1,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "variant": "A",
+          "sha256": "6cdf306fa74e85d94c63f13510e973f19b718302e85c3a89861fae95475e91c0"
+        },
+        {
+          "signature": [
+            0,
+            1,
+            1,
+            1,
+            0,
+            1,
+            0,
+            0,
+            1
+          ],
+          "variant": "A",
+          "sha256": "e80ae1232903f2e87b2a3658610bc78bc695d1efcdd372410eefb063f199d1ac"
+        },
+        {
+          "signature": [
+            0,
+            1,
+            1,
+            1,
+            0,
+            1,
+            1,
+            1,
+            1
+          ],
+          "variant": "A",
+          "sha256": "53e3c7d6774fff45a6b18cd94c0e99ee18717d1dc813548f2c0055f207cff384"
+        },
+        {
+          "signature": [
+            0,
+            1,
+            1,
+            1,
+            1,
+            0,
+            1,
+            0,
+            0
+          ],
+          "variant": "A",
+          "sha256": "e8d530b7b4cda1dbecbe244e243bc1b0679ab5ca4657b9e2fca8685946464557"
+        },
+        {
+          "signature": [
+            0,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            0,
+            1
+          ],
+          "variant": "A",
+          "sha256": "7ec338807732a02e00e4e1c4a512f36d7455f0b8b16442a81a71e7455b44ec52"
+        },
+        {
+          "signature": [
+            0,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "variant": "A",
+          "sha256": "558dbcaba699e381f54069da0f33cc14cb662d0f96f427b8eff4958682175cfb"
+        },
+        {
+          "signature": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "variant": "A",
+          "sha256": "f6515016b6909b80edea4e82724acec80f288de69de53991072803d1c29026fd"
+        },
+        {
+          "signature": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0
+          ],
+          "variant": "A",
+          "sha256": "f36babe36c80f78b6e60058dc543e28b3f61bcb0ea442997b22c1800f297bc2e"
+        },
+        {
+          "signature": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0
+          ],
+          "variant": "A",
+          "sha256": "59a04e485fa4211238b337c01bfa850d63702e6d67d9eeace78bdb30f3ec5d5c"
+        },
+        {
+          "signature": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            1,
+            1
+          ],
+          "variant": "A",
+          "sha256": "7f0b5ae73d60abd0c1c8760ad06f8044719b54080ef03136f89465cb9789de2f"
+        },
+        {
+          "signature": [
+            1,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "variant": "A",
+          "sha256": "0355b777ccb1e89271aaf32fa8e3fd72b0a1f99fb0c444fb77e42996d3eebbb3"
+        },
+        {
+          "signature": [
+            1,
+            0,
+            0,
+            0,
+            1,
+            0,
+            1,
+            1,
+            0
+          ],
+          "variant": "A",
+          "sha256": "a33db436b82086ad8c62f750622227d5d60a70ee9e3c6e4d5596f481b5c1ad34"
+        },
+        {
+          "signature": [
+            1,
+            0,
+            0,
+            0,
+            1,
+            1,
+            0,
+            1,
+            1
+          ],
+          "variant": "A",
+          "sha256": "2218a90c31dc77b323961eb7296765f2e3ca40aadbd8fbef8ede72dbb2a311fc"
+        },
+        {
+          "signature": [
+            1,
+            0,
+            0,
+            0,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "variant": "A",
+          "sha256": "ccd9c26e1f5eeff3406ef351fb5d3a363981a2aae1a149fe2f47db9138dc1d44"
+        },
+        {
+          "signature": [
+            1,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0
+          ],
+          "variant": "A",
+          "sha256": "c2f4bceb24e8b552788d824012fb06867be391bc871658c6cb5870646d69fd9e"
+        },
+        {
+          "signature": [
+            1,
+            0,
+            1,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0
+          ],
+          "variant": "A",
+          "sha256": "0d706c8779d203e4972764f9f2b2d387cbef65d2c2552ec1e3a836b410483677"
+        },
+        {
+          "signature": [
+            1,
+            0,
+            1,
+            1,
+            0,
+            1,
+            0,
+            0,
+            0
+          ],
+          "variant": "A",
+          "sha256": "e886508d46feb0125697ddcca0633649a69cbee45d4dbc2207dd278da27a613b"
+        },
+        {
+          "signature": [
+            1,
+            0,
+            1,
+            1,
+            0,
+            1,
+            0,
+            1,
+            1
+          ],
+          "variant": "A",
+          "sha256": "f66691f46121c047edff495824698b89f32cf951ac393f3564522a20bf5ccdf0"
+        },
+        {
+          "signature": [
+            1,
+            0,
+            1,
+            1,
+            1,
+            1,
+            0,
+            1,
+            1
+          ],
+          "variant": "A",
+          "sha256": "b88486468c50d4db0a3bca58dd871cb3181b1e2e62a1884355057c8db4ec0124"
+        },
+        {
+          "signature": [
+            1,
+            0,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "variant": "A",
+          "sha256": "732887d29a8c9bf7d98f78c6e9117847b1ab969329d52428f3487e62a8fd05e0"
+        },
+        {
+          "signature": [
+            1,
+            1,
+            1,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "variant": "A",
+          "sha256": "9b03c40b94774b81434af4dc39114876d063fe3eaf801baf3f672f6586946d54"
+        },
+        {
+          "signature": [
+            1,
+            1,
+            1,
+            0,
+            1,
+            0,
+            1,
+            1,
+            0
+          ],
+          "variant": "A",
+          "sha256": "5abba4d7e1b3a06f8b974240bf82cfc78db4360d49c46a02b88685b853cc487b"
+        },
+        {
+          "signature": [
+            1,
+            1,
+            1,
+            0,
+            1,
+            1,
+            1,
+            1,
+            0
+          ],
+          "variant": "A",
+          "sha256": "0794d271a45e15a7c9fed4b1c214ad1942fa73a058752eb56210c6223826e432"
+        },
+        {
+          "signature": [
+            1,
+            1,
+            1,
+            0,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "variant": "A",
+          "sha256": "822f4ce0d72b16a670985bb251a049fcd75835f46b77cbd53b933b4d398f7569"
+        },
+        {
+          "signature": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            0,
+            0,
+            0
+          ],
+          "variant": "A",
+          "sha256": "1e51b974e01d09818325992f77c3bd9f617ff62d5f5d2360d77e6c0570763030"
+        },
+        {
+          "signature": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            0,
+            1,
+            1
+          ],
+          "variant": "A",
+          "sha256": "69091b52b48645eeee0d3f66500e48ad0b69f6ff183b050f9ccfe112e61ea157"
+        },
+        {
+          "signature": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            0
+          ],
+          "variant": "A",
+          "sha256": "4722362a01546c817e4dba9c0ecfb0bfef6300daf03c6d9a7609e0fdd5c0cacb"
+        },
+        {
+          "signature": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "variant": "A",
+          "sha256": "f5fe0d1b92e36086e4cb6b15c98fdbb9f49e8e8f6a22e8c93817ea2f73f77af9"
+        },
+        {
+          "signature": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "variant": "B",
+          "sha256": "f8044c401e8042b4e49ca4e9fd31c28a0e688c94de2afd111eec8362daa51d39"
+        },
+        {
+          "signature": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "variant": "C",
+          "sha256": "62a978fec52d1c2eb7574af58642ef034013da874e0dc0468839128685426796"
+        }
+      ]
+    }
+  ],
+  "output_sha256": {
+    ".gdignore": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".gitattributes": "eac9d52d9a199f45b45ad9def2e78c37a6868dc1a9cee2363e8e77dd9220bdff",
+    "meandering_boundary_varied_comparison.png": "40b27e2a7cd9d876aa261818b3e77ecf12e800f1fc6465796d3043c47a755896",
+    "mixed_24x16_comparison.png": "56f544b8d33b671b0ca149376a394f3eb7f4767c4e89ae0e8bf1e29c2776e085"
+  }
+}
