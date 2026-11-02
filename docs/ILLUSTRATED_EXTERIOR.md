@@ -26,14 +26,150 @@ that would violate that range; any remaining valid interpolation continues from
 the clamped value. In-range zoom is retained. Exiting again unlocks 0.50 without
 resetting zoom or remembering a separate exterior preference.
 
-Focused scene/script text checks are static only. Godot, imports, playable scenes
-and graphical tests have not been run for this change. **Owner graphical testing
-is pending**: check first exit, wheel limits, return inside from 0.50 (including
-mid-scroll), interior/maintenance travel, and a subsequent exterior revisit.
-All 14 focused transition checks pass. Broader discovery runs 181 tests with 19
-failures in historical preservation/inventory assertions, including the changed
-transition controller and unchanged ship scene/assets; this is not a full-suite
-PASS. Historical guards and native execution scope are unchanged.
+### Final PR #109 owner acceptance (2026-11-01)
+
+The owner completed gameplay acceptance at implementation
+`cb64ecacdf5dab5b76c26b8f3f765ce059f6e541` and reports that the new zoom range
+is exactly as desired, with no further changes requested.
+
+| Check | Owner result |
+| --- | --- |
+| Exterior zoom-out to 0.50 | PASS |
+| Whole-ship framing | PASS |
+| Default zoom and controls | PASS |
+| Interior minimum zoom 0.75 | PASS |
+| Exterior-to-interior transition | PASS |
+| Return to exterior | PASS |
+| Performance and terrain streaming | PASS |
+
+**Overall: 7/7 PASS, zero failures, zero untested checks.** Performance and
+streaming PASS are owner gameplay observations, not quantitative benchmarking.
+Agent verification remains non-native: no Godot launch, import, playable scene,
+graphical automation or performance probe was performed. The owner results do
+not establish separate acceptance of quick-transition cancellation or every
+possible in-flight tween timing; those paths have static coverage only.
+
+Static re-verification at the accepted implementation: all **14 focused
+transition tests PASS**; full discovery runs **181 tests with 19 failures and
+zero errors**. The classification below accounts for every reported failure,
+including the two failed subtests. No tests were skipped or suppressed. No
+historical assertion, manifest, sealed evidence, pin, preservation record or
+native runner restriction was changed. **Full-suite PASS is not claimed.**
+
+### Classification of all 19 static failures
+
+The assertion locations and values below were inspected from a fresh read-only
+Python discovery run and compared with immutable Git blobs. Test names are
+fully qualified; line numbers refer to the accepted implementation. Tables
+record the first failing assertion of each test/subtest, not unexecuted later
+assertions. A mixed test's remaining production checks can still be relevant;
+a historical whole-file freeze is not a current gameplay regression oracle.
+
+Exact comparison values (SHA-256; text normalized to LF, matching the guards):
+
+| Key | File/value | Bytes | SHA-256 |
+| --- | --- | --- | --- |
+| C-old | Historical `scenes/main/scene_transition_controller.gd` | 8633 | `b505cc054c6cf2b398dd43f217039e3b1bb3c72faaa8e318398f379ac780142b` |
+| C-new | PR #109 transition controller | 8709 | `40bbb800b56b97254b929910af2a7bc1479baec08e902eefccd56c81d51e93ed` |
+| S-104 | PR #104 `scenes/world/planet_exterior.tscn` pin | 6693 | `bb682c92f4feb70295204159a20e87c6cab55fe473114703156c17ab0fdcb3fb` |
+| S-now | Current exterior scene, identical to PR #109 base | 8413 | `9359bc70d73d9d738c456c6d28169047370c4be1087512a7314d9a73f96acfd7` |
+| S-103 | PR #103 exterior scene | 6693 | `dc693501865ecea78a4f93e40009955139e3016f9abbc1ee8606c0feca2f7b5d` |
+| S-adjusted | Current scene after the test replaces `z_index = -11` with `z_index = -10` | 8413 | `361efc4dbefb3101c66459c1430468c140b8a3c141a87f9d1313be8055cf1fc5` |
+
+#### Seven intentional PR #109 controller-preservation mismatches
+
+Every row expects **C-old** and receives **C-new**. The camera-range selection,
+initial camera reset and shared transition reset account for the complete scoped
+controller diff. The same C-old hash exists at each listed historical dependency
+and at the PR base `029e1d54958d6259940cf44e4b5f56fb53bc0133`; this difference
+is caused by the intentional PR #109 implementation, not an unexpected regression.
+For each row, the failing whole-file/hash freeze remains a historical guard but
+is not applicable as an unchanged-file requirement for current production.
+
+| Test | Assertion/location | Historical dependency |
+| --- | --- | --- |
+| `static_conversation_ui_test.ConversationUIStaticTest.test_gameplay_ownership_and_narrative_unchanged` (subtest `path='scenes/main/scene_transition_controller.gd'`) | Normalized text equality, line 57: C-old → C-new | Conversation preservation, `CONVERSATION_BASE = 8ec5e6ca8ba424b6c4ba2973ebbab9882e202422`, after existing conversation/italic adapters |
+| `static_ground_rejection_test.GroundRejectionStaticTest.test_distant_operation_counts_and_unchanged_systems` | Protected source bytes equal, line 213: C-old → C-new | PR #95 `GREEN_ORIGINAL = f112f48d1b2f874954af34f6a549a29a6c2c3d55`, historical test-byte projection |
+| `static_illustrated_exterior_test.IllustratedExteriorStaticTest.test_ordered_masks_feather_state_and_gameplay_remain_exact` | Source text equals `old(path)`, line 302: C-old → C-new | PR #103 `ACTIVATION_BASE = 63318e464898b8ecf4596216f9577cd64e72dbcc` |
+| `static_illustrated_terrain_test.IllustratedTerrainStaticTest.test_references_diagnostic_visibility_and_production_preservation` | Historical bytes equal projected current bytes, line 200: C-old → C-new | Illustrated-lab `BASE = 44d83bc46aebe5409d0c2e7ca0e388531ae1e3c3`, presenter projection |
+| `static_musing_ui_test.MusingUIStaticTest.test_narrative_progression_and_adjacent_ui_preserved` (subtest `path='scenes/main/scene_transition_controller.gd'`) | Normalized source text equality, line 126: C-old → C-new | `MUSING_BASE = a03057408cbee6301b42e00a2a26c01e25d3c8ac`, existing musing/italic adapters |
+| `static_v2_connection_test.V2ConnectionStaticTest.test_single_host_and_unchanged_cache_lock_and_rearm_contract` | Approved-B1 projection equals `base(file)`, line 146: C-old → C-new | Post-P6 `P8_BASE = e14703e64aef961f18feba8a616acec00c4f069e` |
+| `static_v2_production_host_test.V2ProductionHostStaticTest.test_protected_existing_code_art_and_sidecars_unchanged` | SHA-256 digest equality, line 1390: C-old → C-new | Same immutable P8/post-P6 baseline, existing exact preservation adapters |
+
+#### One intentional PR #109 sealed-package mismatch
+
+| Test | Expected → actual assertion | Dependency and classification | Current applicability |
+| --- | --- | --- | --- |
+| `static_illustrated_exterior_test.IllustratedExteriorStaticTest.test_proposed_native_package_is_closed_bounded_and_non_playable` | Line 69: controller `(8633, C-old SHA-256)` → `(8709, C-new SHA-256)` | `docs/experiments/illustrated_exterior_stage.json`, immutable 83-input PR #104 package; intentional PR #109 source change | Still a valid gate for reproducing that exact historical package. The current checkout does not match the package; it must not be treated as authorized for historical package execution. This is not a current camera-behavior assertion or a merge prohibition. No manifest/pin renewal was made. |
+
+#### Nine pre-existing PR #104 scene-pin mismatches
+
+Every row fails within `exterior_activation_preservation.py`: expected
+**S-104**, actual **S-now**, before an outer historical comparison can finish.
+`historical_activation_bytes()` line 37 raises `Unreviewed PR #104 bytes`;
+`verify_activation_input()` line 29 raises `Modified exterior activation input`.
+These are exact candidate checks, not proof that current artwork is unapproved.
+The pin matches PR #104 commit `061b9e2`; S-now already appears at PR #106
+commit `91658ce` and is byte-identical at PR #109's base. PR #105 added the
+approved hull/scale/collisions; PR #106 added the accepted contact shadow.
+Thus all nine differences **predate PR #109**. Each pin remains applicable to
+its historical candidate, not as a current production scene freeze. Other
+behavioral checks in the containing tests remain relevant, but later assertions
+in these failed methods are not claimed to have passed.
+
+| Test | Assertion/location and expected → actual | Historical dependency/outer comparison |
+| --- | --- | --- |
+| `static_illustrated_exterior_test.IllustratedExteriorStaticTest.test_exact_candidate_amendments_reject_tampering_and_expansion` | Line 332 → helper line 37: S-104 → S-now | PR #104 `ACTIVATION_INPUT_SHA256`, candidate projection to `ACTIVATION_BASE` |
+| `static_illustrated_terrain_presenter_test.PresenterStaticTest.test_exact_inputs_and_test_amendments_reject_tampering` | Line 46 → `verify_presenter_input` → helper line 37: S-104 → S-now | PR #103 presenter candidate verification passes through the PR #104 projection first; outer presenter pin is not reached for this scene |
+| `static_illustrated_terrain_presenter_test.PresenterStaticTest.test_unchanged_production_assets_controls_and_historical_inventory` | Line 299 → `without_presenter_paths` → helper line 29: S-104 → S-now | Historical inventory filter for the PR #103 presenter; blocked on its PR #104 scene allowance before final inventory assertion |
+| `static_low_green_ground_test.LowGreenStaticTest.test_authored_clearing_masks_and_authority_preserved` | Line 182 → `historical_presenter_bytes` → helper line 37: S-104 → S-now | Historical Green baseline `e1d71ccf9c04e237c5d77a7c17a4918d2f5bdb7b`; its projected-byte comparison is not reached |
+| `static_machine_icons_test.MachineIconsStaticTest.test_protected_assets_gameplay_and_execution_controls_match_pr91` | Line 307 → `without_presenter_paths` → helper line 29: S-104 → S-now | PR #91 protected-path inventory with later exact terrain/presenter allowances; final inventory assertion is not reached |
+| `static_production_terrain_test.ProductionTerrainStaticTest.test_production_assets_policy_and_pr99_unchanged` | Line 235 → `without_presenter_paths` → helper line 29: S-104 → S-now | Fixture `BASE = 74f4ecb3f5a831bbeed4436ec2324441c60b8c77`; filtering changed production paths fails before set comparison |
+| `static_terrain_resolver_test.TerrainResolverStaticTest.test_production_and_approved_assets_preserved` | Line 249 → `without_presenter_paths` → helper line 29: S-104 → S-now | Resolver `BASE = 9f157795b3ee7737ed55787a2a4355a126af5d1e`; final protected-path set comparison is not reached |
+| `static_v2_connection_test.V2ConnectionStaticTest.test_art_and_shared_production_preserved` | Line 181 → `historical_source` → helper line 37: S-104 → S-now | Presenter/activation projection before immutable post-P6 shared-world equality |
+| `static_weathered_earth_test.WeatheredEarthStaticTest.test_unchanged_gameplay_lifecycle_and_generator_methods` | Line 243 → `historical_presenter_bytes` → helper line 37: S-104 → S-now | Weathered-earth `BASE = c3b0460a6b52437b1961b5d0936f6ec279371d55`; outer scene equality is not reached (outer expected LF blob is 6266 bytes, SHA-256 `f6ec74f27a9ebadd13b355e6d0911919c6043f8af044525d208cc55d887f281d`) |
+
+#### Two further pre-existing scene/inventory mismatches
+
+| Test | Assertion and expected → actual | Historical dependency and classification | Current applicability |
+| --- | --- | --- | --- |
+| `static_illustrated_exterior_test.IllustratedExteriorStaticTest.test_scene_draw_order_and_resource_references` | Line 316: current scene with Z restored must equal old scene; S-103 → S-adjusted. Expected `load_steps=9`, actual `load_steps=13` | PR #103 `ACTIVATION_BASE`; approved PR #105/#106 ship resources/nodes/collisions/shadow predate PR #109; S-now equals the PR base | Z-order/resource correctness remains relevant; whole-scene equality after replacing only one Z value does not describe current production. The later assertions in this method were not reached. |
+| `static_native_terrain_47_test.Native47StaticTest.test_lab_references_and_production_isolation` | Line 227: expected `path.startswith(('assets/experiments/native_terrain_47_96/', 'scenes/experiments/native_terrain_47_96/')) == True`; actual `False` for `assets/environment/exterior/crashed_exploration_ship_approved.png` | Lab `BASE = 48cd9150d7aa2e029c7328229e7865cf00e83723`; approved hull added in PR #105 commit `6c6ba05`, outside the old lab-only inventory | Historical experiment-isolation guard remains valid for that experiment. Its closed path inventory is not a current production inventory. Later changed paths, including PR #109 camera files, are not evaluated after this first failure. |
+
+**Disposition: 11 pre-existing failures + 8 intentional PR #109 failures = 19;
+zero unexpected regressions identified.** This classification does not turn
+failed tests into passes. No maintained current-production behavior assertion
+was found to require an implementation or test change for this task. The
+historical suite's inability to serve as a green current-production aggregate
+remains test-maintenance debt; any future reconciliation needs its own reviewed
+scope. The sealed historical native package remains unusable with these current
+bytes. No execution authorization follows from owner acceptance or this audit.
+
+### PR #109 preservation and merge consideration
+
+Static inspection reconfirms exterior **0.50–1.50**, interior **0.75–1.50**,
+default **1.00**, unchanged wheel controls, **0.1** steps and **0.15-second**
+sine/ease-out tween. No separate zoom persistence was added. Both target and
+visual values clamp on interior arrival; valid zoom is retained and exterior
+revisits re-enable the wider range.
+
+The exterior scene, approved hull and contact shadow match the merged #105/#106
+base byte-for-byte. Hull SHA-256 is
+`80ae633c36242c1effdcebea38dc05cfef8eb586ca9ef3103f6b02be91564e5b`;
+shadow SHA-256 is
+`1cd8111595e11d8beb527f538188f38f8517f1d3365633c013b9a137ca601777`.
+Ship and shadow scale remain **0.70**. The complete feature diff contains only
+the camera controller, transition controller, focused static tests and this
+document; no PR #107/#108 artwork was restored or referenced. All 51 pre-existing
+untracked files retain their hashes from the start of implementation. Owner
+files and historical evidence were preserved; no cleanup was performed.
+
+The final acceptance update changes this document and the PR description only;
+implementation and tests remain at the owner-accepted bytes. Focused static
+checks and `git diff --check` pass. PR #109 remains **draft**, ready for owner
+merge consideration with the 19 classified failures explicitly disclosed.
+No production regression or implementation blocker was identified; merge is
+an owner decision and full-suite PASS remains unavailable.
 
 ## Selection and rollback
 
