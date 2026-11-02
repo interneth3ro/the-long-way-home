@@ -5,6 +5,7 @@ exact scoped candidates and individually pinned test edits below can be projecte
 Everything else still reaches the original preservation guards. Audio candidate
 receipts support static review; owner listening acceptance remains pending.
 """
+from terrain_integration_preservation import predecessor as integration_predecessor
 from functools import lru_cache
 import hashlib
 from pathlib import Path
@@ -158,6 +159,7 @@ def audio_predecessor(path, raw):
 
 def boarding_predecessor(path, raw):
     """Validate complete boarding deltas before immutable PR #110 comparisons."""
+    raw = integration_predecessor(path, raw)
     raw = audio_predecessor(path, raw)
     pins = BOARDING_INPUT_SHA256 | BOARDING_TEST_SHA256
     if path not in pins:
@@ -196,6 +198,7 @@ def hatch_predecessor(path, raw):
 
 def historical_bytes(path, raw):
     """Validate a complete approved delta before returning its original bytes."""
+    raw = integration_predecessor(path, raw)
     raw = housekeeping.historical_input(path, raw)
     raw = hatch_predecessor(path, raw)
     pins = CURRENT_INPUT_SHA256 | ACCEPTED_TEST_SHA256 | MAINTAINED_TEST_SHA256

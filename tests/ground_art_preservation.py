@@ -3,6 +3,7 @@
 No engine/runner scope, historical receipt edits, or directory exemptions.
 The separately pinned record binds every admitted file and validation amendment.
 """
+from terrain_integration_preservation import predecessor, without_integration_changes
 import hashlib
 import json
 from pathlib import Path
@@ -78,6 +79,7 @@ def record():
 
 
 def verify_identity(path, raw, entry):
+    raw = predecessor(path, raw)
     # The existing candidate README has a reviewed mixed-ending saved form.
     # Preserve those exact bytes as well as its Git checkout representation;
     # this is an individually pinned identity, not mixed-ending normalization.
@@ -122,7 +124,7 @@ def without_validation_changes(paths):
     for path, entry in pins.items():
         require(blob_id(git_bytes(START, path)) == entry['source_blob'], 'Changed validation predecessor: '+path)
         verify_identity(path, read_working(path), entry)
-    return [path for path in paths if path not in pins]
+    return [path for path in without_integration_changes(paths) if path not in pins]
 
 
 def stage2a_helper_predecessor(path, raw):
