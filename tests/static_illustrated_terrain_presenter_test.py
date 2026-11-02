@@ -8,9 +8,9 @@ from pathlib import Path
 import re
 import subprocess
 import unittest
-from exterior_activation_preservation import historical_activation_bytes
+from current_preservation import historical_activation_bytes
 
-from production_terrain_preservation import (
+from current_preservation import (
     PRESENTER_BASE, PRESENTER_INPUT_SHA256, PRESENTER_TEST_SHA256,
     historical_presenter_bytes, verify_presenter_input, without_presenter_paths,
 )

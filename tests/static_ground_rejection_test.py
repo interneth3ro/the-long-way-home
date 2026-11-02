@@ -7,7 +7,8 @@ import unittest
 
 from static_weathered_earth_test import ROOT, GREEN_ORIGINAL, original_green_bytes, noise, coordinate_random
 from static_low_green_ground_test import inside, edge_distance
-from native_terrain_preservation import historical_mapping_attributes, historical_test_bytes
+from native_terrain_preservation import historical_mapping_attributes
+from current_preservation import historical_test_bytes
 
 
 def authored_geometry():

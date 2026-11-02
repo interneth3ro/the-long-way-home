@@ -5,6 +5,7 @@ import math
 import re
 import subprocess
 import unittest
+from current_preservation import historical_text
 
 import static_automatic_transitions_test as geometry
 from static_automatic_transitions_test import ROOT, PRIMARY, MAINTENANCE, read, merged_nodes
@@ -143,7 +144,7 @@ class V2ConnectionStaticTest(unittest.TestCase):
         for file in ["scenes/main/scene_transition_controller.gd", "scenes/main/playthrough_state.gd",
                      "scenes/interaction/automatic_doorway.gd", "scenes/player/dave.tscn",
                      "scenes/player/dave.gd", "scenes/main/main.tscn"]:
-            self.assertEqual(without_approved_b1_changes(file, read(file)), base(file))
+            self.assertEqual(without_approved_b1_changes(file, historical_text(file, read(file))), base(file))
         actual = without_approved_b1_changes("project.godot", read("project.godot")).encode("utf-8")
         expected = subprocess.check_output(
             ["git", "show", f"{P8_BASE}:project.godot"], cwd=ROOT).replace(b"\r\n", b"\n")
@@ -177,7 +178,7 @@ class V2ConnectionStaticTest(unittest.TestCase):
         for name in ["ship_interior", "maintenance_bay", "planet_exterior"]:
             for path in (ROOT / "scenes/world").glob(name + ".*"):
                 relative = path.relative_to(ROOT).as_posix()
-                from production_terrain_preservation import historical_source
+                from current_preservation import historical_source
                 self.assertEqual(historical_source(relative), base(relative))
 
 

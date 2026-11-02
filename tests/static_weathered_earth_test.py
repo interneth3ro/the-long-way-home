@@ -7,8 +7,8 @@ import struct
 import subprocess
 import unittest
 import zlib
-from production_terrain_preservation import historical_presenter_bytes
-from exterior_activation_preservation import historical_activation_bytes
+from current_preservation import historical_presenter_bytes
+from current_preservation import historical_activation_bytes
 
 ROOT = Path(__file__).resolve().parents[1]
 BASE = "c3b0460a6b52437b1961b5d0936f6ec279371d55"

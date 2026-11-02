@@ -1350,7 +1350,7 @@ class V2ProductionHostStaticTest(unittest.TestCase):
                 header = proc.stdout.readline().split()
                 expected = proc.stdout.read(int(header[2]))
                 self.assertEqual(proc.stdout.read(1), b"\n")
-                from production_terrain_preservation import historical_presenter_bytes
+                from current_preservation import historical_presenter_bytes
                 actual = historical_presenter_bytes(path, (ROOT / path).read_bytes())
                 if path in TERRAIN_SHA256:
                     actual = preserved_terrain_bytes(path, actual)

@@ -58,6 +58,11 @@ native runner restriction was changed. **Full-suite PASS is not claimed.**
 
 ### Classification of all 19 static failures
 
+This is the original audit at `5afaf66335a6dc4c7e1c2585c107ddeb91a1f8f2`.
+Its assertion locations, results and deferred-maintenance disposition are retained
+as historical evidence. The owner subsequently required all 19 failures to be
+resolved in this PR; the maintenance resolution below supersedes that disposition.
+
 The assertion locations and values below were inspected from a fresh read-only
 Python discovery run and compared with immutable Git blobs. Test names are
 fully qualified; line numbers refer to the accepted implementation. Tables
@@ -170,6 +175,91 @@ checks and `git diff --check` pass. PR #109 remains **draft**, ready for owner
 merge consideration with the 19 classified failures explicitly disclosed.
 No production regression or implementation blocker was identified; merge is
 an owner decision and full-suite PASS remains unavailable.
+
+### PR #109 static-test maintenance resolution
+
+The owner authorized focused test maintenance after the preceding audit. The
+accepted camera implementation and 7/7 owner gameplay acceptance remain unchanged.
+This follow-up distinguishes current-production identity checks from historical
+candidate comparisons, rather than changing old expected values.
+
+[current_preservation.py](../tests/current_preservation.py) verifies the complete
+accepted bytes of exactly five production inputs: camera, transition controller,
+exterior scene, approved ship PNG and accepted contact-shadow PNG. Their current
+identities are independently checked against immutable owner-accepted commit
+`cb64ecacdf5dab5b76c26b8f3f765ce059f6e541`. Only then can historical comparisons
+receive the pre-camera controller/camera at `029e1d5` or the exact PR #104 scene
+at `061b9e2`. No partial text removal, broad path allowance or directory exemption
+is used. Unrelated inputs still go through the original guards.
+
+The 15 edited existing test files have separate, complete maintenance receipts.
+Their current bytes must match those new receipts before an original historical
+test pin can compare its untouched source from `5afaf66`. None of the original
+candidate/test/helper hashes was recalculated or replaced. Rejected byte mutations
+include same-length changes, appended data, truncation and duplication. Reverting
+production inputs to their historical predecessors also fails current-identity
+checks, even though historical comparisons still accept their original inputs.
+The approved three camera assertions in `static_automatic_transitions_test.py`
+also have an exact receipt bound to the accepted implementation before older
+whole-tree comparisons receive that file's pre-camera version. The original
+PR #98 self-test can still supply its exact immutable `REVIEWED_HEAD` bytes;
+altered versions of that old input are rejected. Both requirements became
+visible after the earlier first failures stopped masking later assertions.
+
+| Original purpose / affected tests | Why the old comparison failed | Safety-equivalent correction |
+| --- | --- | --- |
+| Conversation/musing ownership freezes (`static_conversation_ui_test.py`, `static_musing_ui_test.py`) and V2 host/cache preservation (`static_v2_connection_test.py`, `static_v2_production_host_test.py`) | Approved camera-range selection changes the previously frozen controller | Validate the full accepted controller before historical projection; keep original ownership/transition comparisons and all current camera/transition assertions |
+| PR #95 whole-tree preservation (`static_ground_rejection_test.py`) and illustrated-lab production preservation (`static_illustrated_terrain_test.py`) | Approved controller/camera and ship changes, plus reviewed maintenance edits, postdate the old whole-tree baseline | Validate each complete approved input/test delta before passing original bytes to the existing historical guard; no unrelated-file exemption |
+| Activation/presenter exact candidate and inventory checks (`static_illustrated_exterior_test.py`, `static_illustrated_terrain_presenter_test.py`), Green preservation (`static_low_green_ground_test.py`), PR #91 protected inventory (`static_machine_icons_test.py`), fixture isolation (`static_production_terrain_test.py`), resolver isolation (`static_terrain_resolver_test.py`), weathered-earth preservation (`static_weathered_earth_test.py`) | Later approved scene, controller and art no longer equal old candidates/inventories | Keep original immutable candidate pins and original helper implementations; verify exact current inputs before projecting/filtering only those exact five paths; preserve later assertions that were previously masked by first failures |
+| Sealed PR #104 dependency closure (`static_illustrated_exterior_test.py`) | Current working bytes/classes were compared to a historical committed-input package | Read all 83 inputs, original class universe and harness from the seal's actual review HEAD `4a364481e5eba90bba0d88b2518a8fce004dc979`; retain every original length/hash/closure/process-limit assertion; verify the unchanged working manifest against that historical manifest |
+| Whole-scene Z-only activation comparison (`static_illustrated_exterior_test.py`) | Approved ship/collision/shadow additions exceed the original Z-only diff | Verify the complete accepted current scene, then apply the original Z-only comparison to the PR #104 scene; retain current Z-order, resource-reference and TileMap checks |
+| Experiment-only changed-path inventory (`static_native_terrain_47_test.py`) | The approved ship PNG and camera changes are outside the old experiment paths | Individually verify the five accepted current paths before the unchanged lab-only inventory sees remaining paths; unknown paths or altered artwork still fail; no abandoned artwork restored |
+| Exact historical test-correction checks (`static_preservation_guards_test.py`) | Maintained test call sites differ from their older exact test pins | Verify whole-file maintenance receipts first, then retain the original PR #98 test-correction checks and mutation rejection; historical helper bytes and old pins remain unchanged |
+
+[Seven additional static tests](../tests/static_current_preservation_test.py)
+cover current input identities/projections, the 15 full test receipts, unchanged
+historical helpers/manifests/runner controls, no unrelated-owner exemption,
+all 83 sealed inputs and their tamper rejection, all 18 working-input guards under
+controlled corruption, and the sealed-package guard under historical-controller
+corruption. Each of the original 19 failing methods is required to fail under
+its respective corrupted input with an assertion failure and no harness error.
+These expected failures occur only inside explicit negative test doubles; the
+normal suite has no skipped, removed or suppressed failures.
+
+No native stage, native test infrastructure, execution permission or replacement
+seal was created. The retained PR #104 seal remains SHA-256
+`55c05b996cfafe30ecf60db3e866e599ed00e8916d372fd9462e91b3409be7e4`;
+the historical package still does not describe current production bytes. Its
+successful historical static verification grants no engine execution authority.
+
+Final non-native validation:
+
+| Check | Tests | Failures | Errors | Skips |
+| --- | --- | --- | --- | --- |
+| Existing focused camera/transition suite | 14 | 0 | 0 | 0 |
+| Original 19 failing methods plus seven new preservation tests | 26 | 0 | 0 | 0 |
+| Full `python -B -m unittest discover -s tests -p 'static_*test.py'` discovery | 188 | 0 | 0 | 0 |
+
+**Full static suite: 188/188 PASS.** This comprises the existing 181 tests plus
+seven new tests; no existing method was removed, disabled or skipped. The final
+full run took 91.902 seconds. Controlled mutation checks are part of the passing
+suite and require each original guard to produce an assertion failure for its
+corrupted input; they do not suppress normal discovery failures.
+
+`git diff --check` and changed local Markdown links pass. Complete production
+inputs remain identical to the owner-accepted implementation. All 51 pre-existing
+untracked owner files retain their implementation-start hashes. Original helper
+files, historical manifests/pins, native harness/runner/policy and the protected
+serialization ref remain unchanged. Test-maintenance changes are confined to
+15 existing Python test files, the two new static-only Python files linked above,
+and this existing document; no other production files or evidence changed.
+
+The original 19-failure audit remains above for provenance. All five failure
+categories and the subsequently unmasked camera-test/PR #98 assertions now pass
+with exact preservation checks. No remaining blocker was identified. PR #109
+remains **draft**, ready for owner merge consideration with the approved camera
+behavior and passing static suite together. Godot, imports, native execution,
+graphical checks, merge and cleanup were not performed for this maintenance.
 
 ## Selection and rollback
 

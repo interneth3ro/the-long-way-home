@@ -5,7 +5,7 @@ import struct
 import subprocess
 import unittest
 import zlib
-from production_terrain_preservation import without_presenter_paths
+from current_preservation import without_presenter_paths
 
 from static_automatic_transitions_test import ROOT, read
 from static_extractor_inspection_test import functions
@@ -335,7 +335,7 @@ class MachineIconsStaticTest(unittest.TestCase):
         for path in set(changed) & set(RESOLVER_INPUT_SHA256):
             verify_resolver_input(path, (ROOT / path).read_bytes())
         # PR #102 permits only four exact new experiment paths and bytes.
-        from production_terrain_preservation import FIXTURE_INPUT_SHA256, verify_fixture_input
+        from current_preservation import FIXTURE_INPUT_SHA256, verify_fixture_input
         for path in set(changed) & set(FIXTURE_INPUT_SHA256):
             verify_fixture_input(path, (ROOT / path).read_bytes())
         allowed = set(FIXTURE_INPUT_SHA256) | set(RESOLVER_INPUT_SHA256) | set(MACHINE_ICONS_SHA256) | set(INPUT_SHA256) | set(green_assets) | set(TERRAIN_INPUT_SHA256) | set(ILLUSTRATED_INPUT_SHA256) | set(BAKED_INPUT_SHA256) | {

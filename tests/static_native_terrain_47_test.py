@@ -8,7 +8,7 @@ import struct
 import subprocess
 import unittest
 import zlib
-from production_terrain_preservation import PRESENTER_INPUT_SHA256, verify_presenter_input
+from current_preservation import PRESENTER_INPUT_SHA256, verify_presenter_input
 
 ROOT = Path(__file__).resolve().parents[1]
 ASSET = 'assets/experiments/native_terrain_47_96/'
@@ -197,17 +197,21 @@ class Native47StaticTest(unittest.TestCase):
         for args in (['git', 'diff', BASE, 'HEAD', '--name-only'],
                      ['git', 'diff', BASE, '--cached', '--name-only']):
             changed = subprocess.check_output(args, cwd=ROOT, text=True).splitlines()
+            # Current approved ship/camera bytes are checked exactly before the
+            # historical lab-only inventory sees its original scope.
+            from current_preservation import without_current_paths
+            changed = without_current_paths(changed)
             for path in changed:
                 protected = path == 'project.godot' or path.startswith(('assets/', 'scenes/', 'construction/', 'inventory/', 'dialogue/', 'objectives/', 'shaders/', 'tools/')) or path in ('AGENTS.md', 'docs/LOCAL_TESTING.md')
                 if protected:
-                    from exterior_activation_preservation import ACTIVATION_INPUT_SHA256, verify_activation_input
+                    from current_preservation import ACTIVATION_INPUT_SHA256, verify_activation_input
                     if path in ACTIVATION_INPUT_SHA256:
                         verify_activation_input(path, (ROOT/path).read_bytes())
                         continue
                     if path in PRESENTER_INPUT_SHA256:
                         verify_presenter_input(path, (ROOT / path).read_bytes())
                         continue
-                    from production_terrain_preservation import FIXTURE_INPUT_SHA256, verify_fixture_input
+                    from current_preservation import FIXTURE_INPUT_SHA256, verify_fixture_input
                     if path in FIXTURE_INPUT_SHA256:
                         self.assertNotIn(path, paths)
                         verify_fixture_input(path, (ROOT / path).read_bytes())
