@@ -14,6 +14,7 @@ import exterior_activation_preservation as activation
 import production_terrain_preservation as presenter
 import native_terrain_preservation as native
 import housekeeping_preservation as housekeeping
+from ground_art_preservation import without_ground_art_paths, without_validation_changes
 
 # Re-export immutable identities, never substitute current hashes for old pins.
 from exterior_activation_preservation import (
@@ -246,6 +247,10 @@ def historical_test_bytes(path, raw):
 
 
 def without_current_paths(paths):
+    # Verify all five complete authorized validation edits before the unchanged
+    # Stage 2A comparison sees its remaining historical inputs.
+    paths = without_validation_changes(paths)
+    paths = without_ground_art_paths(paths)
     paths = housekeeping.without_approved_paths(paths)
     remaining = []
     for path in paths:

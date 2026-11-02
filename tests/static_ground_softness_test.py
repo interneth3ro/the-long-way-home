@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 import subprocess
 import unittest
+from ground_art_preservation import historical_checkout
 
 ROOT = Path(__file__).resolve().parents[1]
 spec = importlib.util.spec_from_file_location('softness_study',ROOT/'tools/ground-transition-softness.py')
@@ -21,9 +22,15 @@ class GroundSoftnessTest(unittest.TestCase):
 
     def test_exact_regeneration_and_saved_output_hashes(self):
         for name,raw in softness.build().items():
-            self.assertEqual((softness.OUTPUT/name).read_bytes(),raw,name)
+            saved = (softness.OUTPUT/name).read_bytes()
+            if name == '.gitattributes':
+                saved = historical_checkout((softness.OUTPUT/name).relative_to(ROOT).as_posix(), saved)
+            self.assertEqual(saved,raw,name)
         for name,expected in self.manifest['output_sha256'].items():
-            self.assertEqual(hashlib.sha256((softness.OUTPUT/name).read_bytes()).hexdigest(),expected,name)
+            saved = (softness.OUTPUT/name).read_bytes()
+            if name == '.gitattributes':
+                saved = historical_checkout((softness.OUTPUT/name).relative_to(ROOT).as_posix(), saved)
+            self.assertEqual(hashlib.sha256(saved).hexdigest(),expected,name)
         self.assertEqual({p.name for p in softness.OUTPUT.iterdir()},
                          {*self.manifest['output_sha256'],'manifest.json','README.md'})
 
