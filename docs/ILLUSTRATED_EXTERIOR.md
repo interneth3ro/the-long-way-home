@@ -10,6 +10,78 @@ and evidence. PR #95 is the corrected exterior
 comparison baseline; the [PR #102/#103 acceptance record](PRODUCTION_TERRAIN_FIXTURE.md)
 applies only to its isolated fixture and remains unchanged.
 
+## Exterior hatch visual animation (PR #110 feature branch, pending merge)
+
+The exterior hatch opens visually on approach; **E still enters the ship**.
+The separate visual controller changes no collision, interaction, destination,
+transition, player, camera or terrain code. Automatic boarding, collision-state
+changes, audio and Dave-specific foreground occlusion remain deferred. Whole-ship
+Y-sorting and the deferred nose issue are unchanged.
+
+Artwork comes from the owner-approved `tlwh-hatch-alpha-correction-v2.zip`,
+SHA-256 `1ec18d5c2b38dc8063bb2278bf526772f3cfde54bbd8f5cc97503c6da025f167`.
+Only these two byte-identical package layers are installed under
+`assets/environment/exterior/hatch_v2/`:
+
+| PNG (275 x 275 RGBA) | SHA-256 |
+| --- | --- |
+| `door_leaf_opaque_v2.png` | `7cccb9390beff971abd9e0f1c74455a35cf5b4cd05844f37887542ccea067e10` |
+| `recess_backing_black_light.png` | `80aa066edd98fae9eb5392ee79bb061bd82c80d48dc41e854e7c31141a3872c6` |
+
+The unchanged ship draws first, the opaque recess conceals its painted door,
+then the corrected leaf draws above the recess. The recess's binary alpha is
+pixel-identical to the approved owner aperture, so it doubles as the fixed
+clipping mask using Godot's built-in `clip_children = 2` (draw and clip children).
+The leaf is its child. No stationary-surround overlay, shader, dynamic light or
+new rendering framework is used. Original stationary frame and step pixels remain
+on the hull and draw once; all three approved amber lights move with the leaf.
+See the [CanvasItem clipping contract](https://docs.godotengine.org/en/stable/classes/class_canvasitem.html#enum-canvasitem-clipchildrenmode).
+
+The crop starts at source `(725,535)` on the unchanged 1774 x 887 ship. Under
+ship root `(-384,-192)`, Artwork uses ship-local `(-87.5,-134.5)` and scale
+`(0.70,0.70)`, yielding world top-left `(-471.5,-326.5)` and footprint
+192.5 x 192.5. Crop anchor `(125,215)` maps to hatch `(-384,-176)`. The existing
+IllustratedHull transform and approved ship/contact-shadow bytes are unchanged.
+
+`exterior_hatch_visual.gd` advances one continuous openness value at fixed rates:
+0.6 seconds to open, 0.7 to close, and 1.0 second of delay after leaving the
+hold-open zone. The grace-period boundary frame is split so closing does not
+consume time before the delay expires. Reversal starts from current openness;
+remaining travel takes the proportional duration. Travel is `(10,-140)` source
+pixels, or `(7,-98)` world units, behind the fixed housing/aperture.
+
+The unscaled ship-local sensor center is `(0,96)`: hatch `(0,16)` plus `(0,80)`.
+Approach is 176 x 160 world units; hold-open is 224 x 208. Both use layer 0,
+mask 1 and recognize only the controller's existing Dave through local overlap
+lists. Approach opens; hold-open retains or reverses an already-active door,
+cancels closing delay and includes the entire existing doorway footprint.
+Hold-open alone leaves a fully closed door closed. No threshold area is added.
+The controller caches the transition reference once, waits for physics overlap
+registration after attachment/transition, and retains partial openness while the
+cached exterior is detached. Existing exterior arrival/spawn behavior is retained;
+this stage does not force an instant open state on arrival.
+
+Offline source-over checks reproduce the accepted closed-state tolerance:
+**0 differing RGB pixels**, mean absolute RGB deviation **0**, and 11,021
+alpha-only differences with maximum **3/255**. Over the accepted example
+terrain-colored background, maximum displayed RGB deviation is **2/255**.
+This is RGB equivalence, **not exact RGBA equivalence**. Five masked diagnostic
+states preserve every pixel outside the aperture and fully clear the leaf at
+the endpoint. Static source contracts and geometry checks do not establish
+engine parsing, live overlap timing, rendering or gameplay correctness.
+
+Historical hashes, sealed inputs and execution policy are unchanged. A separate
+five-path/full-hash PR #110 receipt validates the complete intentional production
+delta before historical comparisons receive their original scene bytes; tampering
+and unrelated paths remain rejected. No native package or execution permission is
+expanded. Owner graphical acceptance is pending: inspect housing clipping,
+perspective and edge behavior, all three lamps, delay/reversal, cached return and
+E boarding in closed, opening, open and closing states. Godot has not been run.
+Validation: eight focused hatch static checks pass; broader static discovery
+passes **196/196**, including with all new production inputs staged. Changed
+documentation links and `git diff --check` pass. The 51 pre-existing untracked
+file hashes and 3,016 ignored-file size/mtime identities remain unchanged.
+
 ## Exterior camera zoom (PR #109 feature branch, pending merge)
 
 The existing mouse wheel now permits numerical zoom **0.50–1.50** in the

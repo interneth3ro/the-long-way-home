@@ -1,0 +1,51 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://scenes/interaction/exterior_hatch_visual.gd" id="1_visual"]
+[ext_resource type="Texture2D" path="res://assets/environment/exterior/hatch_v2/recess_backing_black_light.png" id="2_recess"]
+[ext_resource type="Texture2D" path="res://assets/environment/exterior/hatch_v2/door_leaf_opaque_v2.png" id="3_door"]
+
+[sub_resource type="RectangleShape2D" id="ApproachZone"]
+size = Vector2(176, 160)
+
+[sub_resource type="RectangleShape2D" id="HoldOpenZone"]
+size = Vector2(224, 208)
+
+[node name="HatchVisual" type="Node2D"]
+texture_filter = 1
+script = ExtResource("1_visual")
+
+; Ship-local crop origin: (-595,-509) + (725,535) * 0.70.
+[node name="Artwork" type="Node2D" parent="."]
+position = Vector2(-87.5, -134.5)
+scale = Vector2(0.70, 0.70)
+
+; Its binary alpha IS the approved aperture; draw backing and clip only Door.
+; CanvasItem.CLIP_CHILDREN_AND_DRAW. Do not add a stationary surround overlay.
+[node name="Recess" type="Sprite2D" parent="Artwork"]
+clip_children = 2
+texture = ExtResource("2_recess")
+centered = false
+
+[node name="Door" type="Sprite2D" parent="Artwork/Recess"]
+texture = ExtResource("3_door")
+centered = false
+
+; Unscaled world-unit sensors. Hatch anchor is ship-local (0,16); + (0,80).
+; Layer 0 prevents interference with E detector rays or construction queries.
+[node name="Approach" type="Area2D" parent="."]
+position = Vector2(0, 96)
+collision_layer = 0
+collision_mask = 1
+monitorable = false
+
+[node name="Shape" type="CollisionShape2D" parent="Approach"]
+shape = SubResource("ApproachZone")
+
+[node name="HoldOpen" type="Area2D" parent="."]
+position = Vector2(0, 96)
+collision_layer = 0
+collision_mask = 1
+monitorable = false
+
+[node name="Shape" type="CollisionShape2D" parent="HoldOpen"]
+shape = SubResource("HoldOpenZone")
