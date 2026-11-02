@@ -1,11 +1,16 @@
 # The Long Way Home
 
 Automatic exterior boarding has final owner gameplay acceptance: **10/10 PASS**,
-zero failures, zero untested checks and no additional observations. PR #112 remains
-draft, ready for owner merge consideration. Walk inward through the fully open
+zero failures, zero untested checks and no additional observations. PR #112 merged.
+Walk inward through the fully open
 hatch without E; the accepted quick fade is 0.15 seconds each direction. PR #110
-artwork, animation and proximity geometry remain unchanged. Mechanical audio and
-interior hatch animation remain deferred. See the
+artwork, animation and proximity geometry remain unchanged. Restrained exterior
+mechanical audio in PR #113 has final owner gameplay acceptance: **6/6 PASS**,
+zero failures and no additional observations. The current audio is accepted
+as-is; an optional future quality upgrade does not block completion. PR #113
+remains draft, ready for owner merge consideration. Interior hatch animation
+remains deferred. See the
+[audio implementation and final acceptance record](docs/ILLUSTRATED_EXTERIOR.md#exterior-hatch-mechanical-audio-feature-branch-pending-merge) and
 [accepted boarding rules and verification record](docs/ILLUSTRATED_EXTERIOR.md#automatic-exterior-boarding-pr-112-feature-branch-pending-merge).
 
 The [illustrated playable exterior](docs/ILLUSTRATED_EXTERIOR.md) is implemented

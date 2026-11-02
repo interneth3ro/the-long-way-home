@@ -1,8 +1,9 @@
 """Current approved bytes before immutable historical guards; no engine execution.
 
 Historical helpers, pins and manifests are deliberately left untouched. Only the
-five exact owner-accepted inputs and individually reviewed test edits below can
-be projected. Everything else still reaches the original preservation guards.
+exact scoped candidates and individually pinned test edits below can be projected.
+Everything else still reaches the original preservation guards. Audio candidate
+receipts support static review; owner listening acceptance remains pending.
 """
 from functools import lru_cache
 import hashlib
@@ -23,6 +24,26 @@ from production_terrain_preservation import (
 )
 
 ROOT = Path(__file__).resolve().parents[1]
+# Hatch audio candidate only; no Native inventory or execution authorization.
+# Historical PR #110/#112 receipts below remain unchanged.
+AUDIO_BASE = 'ee75b8007de2bbefe73f192c971fd236872b810a'
+AUDIO_INPUT_SHA256 = {
+    'scenes/interaction/exterior_hatch_visual.gd': '915f11a2c0b4059557df5fdacb98fb450b02bb44be048ade3f2c700715e70bdc',
+    'scenes/interaction/exterior_hatch_visual.tscn': '0d0acf585f14dd3f993597e3eb0c496ece2cffa1243eb48c32641ac4fab051fe',
+    'scenes/interaction/exterior_hatch_audio.gd': '6f811bec85a3ff56fe46bf38079f12432a6846ce7b67bbb1fedd3d9cd859cdb2',
+    'tools/generate-hatch-audio.py': 'd49e925fdfea691d5cd1044479d53b98c989e6ed9a24668cd8da2d292d92fa35',
+    'assets/audio/exterior_hatch/hatch_open.wav': '20fe5cda88b672702f869921ad93a4c55f0906851b39142244a712ad13f13ea2',
+    'assets/audio/exterior_hatch/hatch_close.wav': '17dee920be23e8d96848124ee8a3fbab4e9b3bca6895d929df840e35ae450b6f',
+}
+AUDIO_EXISTING_PATHS = {
+    'scenes/interaction/exterior_hatch_visual.gd',
+    'scenes/interaction/exterior_hatch_visual.tscn',
+    'tests/static_exterior_boarding_test.py',
+}
+AUDIO_TEST_SHA256 = {
+    'tests/static_exterior_boarding_test.py': 'ef01c636727637065b0b3e0ce6443b8052cddeaf29f84e305afe8de05a0a2b9a',
+}
+
 # PR #110's five exact production inputs. The original accepted hashes and
 # sealed historical candidates below remain immutable. No directory exemption.
 HATCH_BASE = '14876d26e4199922a5bd09cf436997792d7a5b6a'
@@ -93,7 +114,7 @@ MAINTAINED_TEST_SHA256 = {
 
 
 def normalized(path, raw):
-    return raw if path.endswith('.png') else raw.replace(b'\r\n', b'\n')
+    return raw if path.endswith(('.png', '.wav')) else raw.replace(b'\r\n', b'\n')
 
 
 @lru_cache(maxsize=None)
@@ -115,8 +136,26 @@ def verify_current_input(path, raw):
     verify_fingerprint(path, raw, CURRENT_INPUT_SHA256[path])
 
 
+def audio_predecessor(path, raw):
+    """Validate exact audio candidates before comparing immutable predecessors."""
+    pins = AUDIO_INPUT_SHA256 | AUDIO_TEST_SHA256
+    if path not in pins:
+        return raw
+    before = git_blob(AUDIO_BASE, path) if path in AUDIO_EXISTING_PATHS else None
+    if before is not None and normalized(path, raw) == normalized(path, before):
+        return before
+    # Original PR #110 fixtures must still reach their original comparisons.
+    if path == 'scenes/interaction/exterior_hatch_visual.gd':
+        original = git_blob(BOARDING_BASE, path)
+        if normalized(path, raw) == normalized(path, original):
+            return original
+    verify_fingerprint(path, raw, pins[path])
+    return before if before is not None else raw
+
+
 def boarding_predecessor(path, raw):
     """Validate complete boarding deltas before immutable PR #110 comparisons."""
+    raw = audio_predecessor(path, raw)
     pins = BOARDING_INPUT_SHA256 | BOARDING_TEST_SHA256
     if path not in pins:
         return raw
@@ -206,7 +245,9 @@ def historical_test_bytes(path, raw):
 def without_current_paths(paths):
     remaining = []
     for path in paths:
-        if path in CURRENT_INPUT_SHA256:
+        if path in AUDIO_INPUT_SHA256:
+            audio_predecessor(path, (ROOT/path).read_bytes())
+        elif path in CURRENT_INPUT_SHA256:
             verify_current_input(path, (ROOT/path).read_bytes())
         elif path in BOARDING_INPUT_SHA256:
             verify_fingerprint(path, (ROOT/path).read_bytes(), BOARDING_INPUT_SHA256[path])
