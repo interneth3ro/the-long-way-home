@@ -1,6 +1,6 @@
-[gd_scene load_steps=14 format=3]
+[gd_scene load_steps=15 format=3]
 
-[ext_resource type="Script" path="res://scenes/interaction/scene_hatch.gd" id="1_hatch"]
+[ext_resource type="Script" path="res://scenes/interaction/exterior_boarding.gd" id="1_hatch"]
 
 [ext_resource type="Script" path="res://scenes/world/planet_exterior.gd" id="2_world"]
 [ext_resource type="Script" path="res://scenes/world/illustrated_terrain_presenter.gd" id="4_presenter"]
@@ -25,6 +25,9 @@ points = PackedVector2Array(175, -355, 406, -439, 553, -411, 616, -327, 609, -23
 
 [sub_resource type="RectangleShape2D" id="HatchFootprint"]
 size = Vector2(64, 24)
+
+[sub_resource type="RectangleShape2D" id="BoardingThreshold"]
+size = Vector2(64, 16)
 
 [sub_resource type="CircleShape2D" id="RockFootprint"]
 radius = 48.0
@@ -157,16 +160,25 @@ centered = false
 [node name="HatchVisual" parent="GroundObjects/CrashedShip" instance=ExtResource("7_hatch_visual")]
 
 [node name="Hatch" type="StaticBody2D" parent="GroundObjects"]
+process_physics_priority = 1
 collision_layer = 5
 position = Vector2(-384, -176)
 script = ExtResource("1_hatch")
-interaction_prompt = "E — Enter ship"
 source_scene = "res://scenes/world/planet_exterior.tscn"
 destination_scene = "res://scenes/world/ship_interior.tscn"
 destination_spawn = &"FromPlanet"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="GroundObjects/Hatch"]
 shape = SubResource("HatchFootprint")
+
+[node name="BoardingSensor" type="Area2D" parent="GroundObjects/Hatch"]
+position = Vector2(0, 8)
+collision_layer = 0
+collision_mask = 1
+monitorable = false
+
+[node name="Shape" type="CollisionShape2D" parent="GroundObjects/Hatch/BoardingSensor"]
+shape = SubResource("BoardingThreshold")
 
 [node name="Door" type="Polygon2D" parent="GroundObjects/Hatch"]
 visible = false

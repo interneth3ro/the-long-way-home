@@ -33,6 +33,20 @@ HATCH_INPUT_SHA256 = {
     'assets/environment/exterior/hatch_v2/door_leaf_opaque_v2.png': '7cccb9390beff971abd9e0f1c74455a35cf5b4cd05844f37887542ccea067e10',
     'assets/environment/exterior/hatch_v2/recess_backing_black_light.png': '80aa066edd98fae9eb5392ee79bb061bd82c80d48dc41e854e7c31141a3872c6',
 }
+# PR #112 exact reviewed deltas; historical pins above remain unchanged.
+BOARDING_BASE = 'e4686cfb839eb7b205f56f28141541a318c4c94b'
+BOARDING_INPUT_SHA256 = {
+    'scenes/world/planet_exterior.tscn': '268fc13fb56d039f4ee9131f7e8d78031d3d300992d48c508524ce8b7c29682a',
+    'scenes/world/planet_exterior.gd': '2c5f1a7f9cc39db58e0c76e8be8f3ae8d4caa5897c87f3fa30ae9b3bf8325f26',
+    'scenes/interaction/exterior_hatch_visual.gd': '6f92b7d07f1d6fdff361989f2bb022bb70d21a22cb6a74a5a726da7f7105dbe7',
+    'scenes/interaction/exterior_boarding.gd': 'e540b018cba6533193f921fb6aa5aab656c5ffb588a25122008733258f12b3b9',
+}
+BOARDING_TEST_SHA256 = {
+    'tests/static_exterior_hatch_visual_test.py': '5696485b1fabcc678226ca7db4abe3bea63f423cf16310e591a851e08c7cfbc6',
+    'tests/static_illustrated_exterior_test.py': 'd9806b87a38a4b462a31cbecee1b70cea2eafb3c782cc9fd1bb7ae92e314ba79',
+}
+
+
 ACCEPTED_IMPLEMENTATION = 'cb64ecacdf5dab5b76c26b8f3f765ce059f6e541'
 MAINTENANCE_BASE = '5afaf66335a6dc4c7e1c2585c107ddeb91a1f8f2'
 SEALED_REVIEW_HEAD = '4a364481e5eba90bba0d88b2518a8fce004dc979'
@@ -101,8 +115,30 @@ def verify_current_input(path, raw):
     verify_fingerprint(path, raw, CURRENT_INPUT_SHA256[path])
 
 
+def boarding_predecessor(path, raw):
+    """Validate complete boarding deltas before immutable PR #110 comparisons."""
+    pins = BOARDING_INPUT_SHA256 | BOARDING_TEST_SHA256
+    if path not in pins:
+        return raw
+    # New boarding script has no earlier representation.
+    if path == 'scenes/interaction/exterior_boarding.gd':
+        verify_fingerprint(path, raw, pins[path])
+        return raw
+    before = git_blob(BOARDING_BASE, path)
+    if normalized(path, raw) == normalized(path, before):
+        return before
+    # Older historical fixtures still reach their original guards unchanged.
+    if path == 'scenes/world/planet_exterior.tscn':
+        for ref in (HATCH_BASE, PREDECESSORS[path]):
+            if normalized(path, raw) == normalized(path, git_blob(ref, path)):
+                return raw
+    verify_fingerprint(path, raw, pins[path])
+    return before
+
+
 def hatch_predecessor(path, raw):
     """Validate the complete visual-only scene before older comparisons run."""
+    raw = boarding_predecessor(path, raw)
     if path != 'scenes/world/planet_exterior.tscn':
         return raw
     before = git_blob(HATCH_BASE, path)
@@ -172,8 +208,10 @@ def without_current_paths(paths):
     for path in paths:
         if path in CURRENT_INPUT_SHA256:
             verify_current_input(path, (ROOT/path).read_bytes())
+        elif path in BOARDING_INPUT_SHA256:
+            verify_fingerprint(path, (ROOT/path).read_bytes(), BOARDING_INPUT_SHA256[path])
         elif path in HATCH_INPUT_SHA256:
-            verify_fingerprint(path, (ROOT/path).read_bytes(), HATCH_INPUT_SHA256[path])
+            verify_fingerprint(path, boarding_predecessor(path, (ROOT/path).read_bytes()), HATCH_INPUT_SHA256[path])
         else:
             remaining.append(path)
     return remaining

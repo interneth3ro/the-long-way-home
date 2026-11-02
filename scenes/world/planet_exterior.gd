@@ -39,6 +39,7 @@ var _terrain_tokens: Dictionary[Vector2i, int] = {}
 # Transition hook: input stays locked and first arrival stays behind the fade.
 # Subsequent hatch visits already have the spawn neighborhood retained.
 func prepare_for_arrival(player: CharacterBody2D, state: PlanetWorldState) -> void:
+	$GroundObjects/Hatch.prepare_for_arrival()
 	_preparing = true
 	_configure_terrain_renderer()
 	_player = player

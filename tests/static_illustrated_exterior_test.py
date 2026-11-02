@@ -11,7 +11,7 @@ import re
 import subprocess
 import unittest
 from current_preservation import (
-    historical_text, SEALED_REVIEW_HEAD, git_blob, sealed_input,
+    historical_text, boarding_predecessor, SEALED_REVIEW_HEAD, git_blob, sealed_input,
 )
 
 from current_preservation import (
@@ -307,7 +307,8 @@ class IllustratedExteriorStaticTest(unittest.TestCase):
             self.assertEqual(historical_text(path, (ROOT/path).read_text(encoding='utf-8')), old(path), path)
         for name in ('_queue_machine_sync', '_sync_machines', 'set_construction_definition', '_refresh_highlights', '_distance'):
             self.assertEqual(body(SOURCE,name), body(old(EXTERIOR),name), name)
-        arrival = body(SOURCE,'prepare_for_arrival')
+        # Validate the complete PR #112 delta before the historical arrival check.
+        arrival = body(boarding_predecessor(EXTERIOR, SOURCE.encode()).decode(),'prepare_for_arrival')
         self.assertEqual(arrival.replace(' and _terrain_failure.is_empty()', ''), body(old(EXTERIOR),'prepare_for_arrival'))
         generator = (ROOT/'scenes/world/planet_generator.gd').read_text(encoding='utf-8')
         sample = body(generator,'sample_color')
