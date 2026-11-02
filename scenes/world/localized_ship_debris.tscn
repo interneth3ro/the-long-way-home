@@ -1,0 +1,144 @@
+[gd_scene load_steps=14 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/environment/exterior/debris_v1/tlwh_debris_atlas_v1.png" id="1_atlas"]
+
+[sub_resource type="AtlasTexture" id="DebrisRegion0"]
+atlas = ExtResource("1_atlas")
+region = Rect2(0, 0, 640, 640)
+
+[sub_resource type="ConvexPolygonShape2D" id="DebrisFootprint0"]
+points = PackedVector2Array(-35.986, -20.740, -20.563, -51.435, 21.420, -51.435, 36.842, -24.888, 23.990, -6.637, -22.277, -6.637)
+
+[sub_resource type="AtlasTexture" id="DebrisRegion1"]
+atlas = ExtResource("1_atlas")
+region = Rect2(640, 0, 640, 640)
+
+[sub_resource type="ConvexPolygonShape2D" id="DebrisFootprint1"]
+points = PackedVector2Array(-33.629, -18.402, -19.217, -45.638, 20.018, -45.638, 34.430, -22.083, 22.420, -5.889, -20.818, -5.889)
+
+[sub_resource type="AtlasTexture" id="DebrisRegion2"]
+atlas = ExtResource("1_atlas")
+region = Rect2(1280, 0, 640, 640)
+
+[sub_resource type="ConvexPolygonShape2D" id="DebrisFootprint2"]
+points = PackedVector2Array(-25, -18, -14, -43, 8, -46, 24, -27, 17, -9, -23, -7)
+
+[sub_resource type="AtlasTexture" id="DebrisRegion3"]
+atlas = ExtResource("1_atlas")
+region = Rect2(0, 640, 640, 640)
+
+[sub_resource type="ConvexPolygonShape2D" id="DebrisFootprint3"]
+points = PackedVector2Array(-35, -8, -28, -22, -6, -36, 24, -34, 8, -20, -17, -5)
+
+[sub_resource type="AtlasTexture" id="DebrisRegion4"]
+atlas = ExtResource("1_atlas")
+region = Rect2(640, 640, 640, 640)
+
+[sub_resource type="ConvexPolygonShape2D" id="DebrisFootprint4"]
+points = PackedVector2Array(-22.556, -8.740, -12.889, -21.675, 13.426, -21.675, 23.093, -10.488, 15.037, -2.797, -13.963, -2.797)
+
+[sub_resource type="AtlasTexture" id="DebrisRegion5"]
+atlas = ExtResource("1_atlas")
+region = Rect2(1280, 640, 640, 640)
+
+[sub_resource type="ConvexPolygonShape2D" id="DebrisFootprint5"]
+points = PackedVector2Array(-19.404, -10.050, -11.088, -24.924, 11.550, -24.924, 19.866, -12.060, 12.936, -3.216, -12.012, -3.216)
+
+[node name="LocalizedDebris" type="Node2D"]
+y_sort_enabled = true
+
+; torn_armor_panel: alpha bounds (68, 76, 504, 488); longest visible dimension 85.68.
+[node name="TornArmorPanel" type="StaticBody2D" parent="."]
+position = Vector2(310, -535)
+rotation = -0.209439510
+collision_layer = 5
+collision_mask = 0
+
+[node name="Sprite2D" type="Sprite2D" parent="TornArmorPanel"]
+position = Vector2(-54.4000, -95.8800)
+scale = Vector2(0.17, 0.17)
+texture = SubResource("DebrisRegion0")
+centered = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TornArmorPanel"]
+shape = SubResource("DebrisFootprint0")
+
+; damaged_engine_housing: alpha bounds (84, 103, 471, 433); longest visible dimension 80.07.
+[node name="DamagedEngineHousing" type="StaticBody2D" parent="."]
+position = Vector2(300, -405)
+rotation = 0.279252680
+collision_layer = 5
+collision_mask = 0
+
+[node name="Sprite2D" type="Sprite2D" parent="DamagedEngineHousing"]
+position = Vector2(-54.3150, -91.1200)
+scale = Vector2(0.17, 0.17)
+texture = SubResource("DebrisRegion1")
+centered = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DamagedEngineHousing"]
+shape = SubResource("DebrisFootprint1")
+
+; bent_structural_frame: alpha bounds (114, 60, 411, 520); longest visible dimension 78.00.
+[node name="BentStructuralFrame" type="StaticBody2D" parent="."]
+position = Vector2(130, -700)
+rotation = -0.314159265
+collision_layer = 5
+collision_mask = 0
+
+[node name="Sprite2D" type="Sprite2D" parent="BentStructuralFrame"]
+position = Vector2(-47.9250, -87.0000)
+scale = Vector2(0.15, 0.15)
+texture = SubResource("DebrisRegion2")
+centered = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="BentStructuralFrame"]
+shape = SubResource("DebrisFootprint2")
+
+; broken_exhaust_vane: alpha bounds (70, 132, 500, 376); longest visible dimension 80.00.
+[node name="BrokenExhaustVane" type="StaticBody2D" parent="."]
+position = Vector2(245, -645)
+rotation = 0.383972435
+collision_layer = 5
+collision_mask = 0
+
+[node name="Sprite2D" type="Sprite2D" parent="BrokenExhaustVane"]
+position = Vector2(-51.2000, -81.2800)
+scale = Vector2(0.16, 0.16)
+texture = SubResource("DebrisRegion3")
+centered = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="BrokenExhaustVane"]
+shape = SubResource("DebrisFootprint3")
+
+; severed_conduit_assembly: alpha bounds (86, 168, 467, 304); longest visible dimension 53.71.
+[node name="SeveredConduitAssembly" type="StaticBody2D" parent="."]
+position = Vector2(220, -305)
+rotation = -0.244346095
+collision_layer = 5
+collision_mask = 0
+
+[node name="Sprite2D" type="Sprite2D" parent="SeveredConduitAssembly"]
+position = Vector2(-36.7425, -54.2800)
+scale = Vector2(0.115, 0.115)
+texture = SubResource("DebrisRegion4")
+centered = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SeveredConduitAssembly"]
+shape = SubResource("DebrisFootprint4")
+
+; fragment_cluster: alpha bounds (127, 152, 385, 335); longest visible dimension 46.20.
+[node name="FragmentCluster" type="StaticBody2D" parent="."]
+position = Vector2(330, -315)
+rotation = 0.139626340
+collision_layer = 5
+collision_mask = 0
+
+[node name="Sprite2D" type="Sprite2D" parent="FragmentCluster"]
+position = Vector2(-38.3400, -58.4400)
+scale = Vector2(0.12, 0.12)
+texture = SubResource("DebrisRegion5")
+centered = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="FragmentCluster"]
+shape = SubResource("DebrisFootprint5")

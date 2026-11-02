@@ -50,6 +50,74 @@ remains separate from agent static checks.
 Its gameplay implementation is independent of FactoryGame; the approved Dave
 migration below reuses only two legacy artwork sheets.
 
+## Localized crashed-ship debris (feature branch, pending merge)
+
+Six owner-approved props are placed in
+[localized_ship_debris.tscn](scenes/world/localized_ship_debris.tscn), instanced
+under GroundObjects. One Y-sorted parent contains six independently adjustable
+StaticBody2D children, each with one atlas sprite and one six-vertex convex
+footprint. No scripts, interactions, salvage, drops or dynamic physics are added.
+
+The nine supplied package files are preserved byte-for-byte in
+[debris_v1](assets/environment/exterior/debris_v1/atlas_manifest.json), including
+its README, manifest and six standalone RGBA PNGs. Only the single
+[atlas PNG](assets/environment/exterior/debris_v1/tlwh_debris_atlas_v1.png) is
+referenced by the scene. Standalone sprites remain as production source assets.
+The original Downloads ZIP remains untouched; ZIP SHA-256:
+`8b1dcdd67b34bfddad934b3ee2f4a26a4830ff2a15269d5b836e62b262bd3da9`.
+Atlas: 1920 x 1280 RGBA; SHA-256:
+`846773a82ee2e128ead678e37e79e7c3ffb4fbe0b1644f68d7eecad0970fcd29`.
+The manifest identifies source `a_clean_concept_art_style_sprite_sheet_asset_atl.png`,
+SHA-256 `cdd2ec526eb907fe9dce7d43adf5f03a07a8424fdffa1e1941e8bcff34cf224e`,
+from the owner-approved second concept sheet. That original source sheet is not
+supplied here: its hash is recorded provenance, not independently verified.
+All seven supplied PNG hashes, dimensions, CRCs, transparency, alpha bounds and
+pixel-exact atlas/standalone correspondence are verified. Artwork is unmodified.
+
+Initial placement follows the current ship root `(-384,-192)`, locked sprite
+scale 0.70 and three collision polygons. Most debris sits east/north of the
+rear engines, with two smaller pieces beside the rear hull. Positions below are
+exterior-local (world coordinates at the exterior's identity transform). Body
+origins register to the visible lower edge before rotation; sprite offsets
+account for padding using the manifest's actual nonzero-alpha bounds.
+
+| Asset / AtlasTexture | Region x,y,w,h | Body position | Uniform sprite scale | Rotation degrees | Visible width x height before rotation | Rotated alpha>0 AABB size |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Torn Armor Panel / DebrisRegion0 | 0,0,640,640 | (310,-535) | 0.17 | -12 | 85.68 x 82.96 | 75.92 x 94.21 |
+| Damaged Engine Housing / DebrisRegion1 | 640,0,640,640 | (300,-405) | 0.17 | 16 | 80.07 x 73.61 | 80.45 x 69.52 |
+| Bent Structural Frame / DebrisRegion2 | 1280,0,640,640 | (130,-700) | 0.15 | -18 | 61.65 x 78.00 | 69.61 x 78.22 |
+| Broken Exhaust Vane / DebrisRegion3 | 0,640,640,640 | (245,-645) | 0.16 | 22 | 80.00 x 60.16 | 94.23 x 32.54 |
+| Severed Conduit Assembly / DebrisRegion4 | 640,640,640,640 | (220,-305) | 0.115 | -14 | 53.71 x 34.96 | 53.69 x 36.02 |
+| Small Fragment Cluster / DebrisRegion5 | 1280,640,640,640 | (330,-315) | 0.12 | 8 | 46.20 x 40.20 | 45.63 x 38.88 |
+
+Pre-rotation dimensions use actual alpha bounds, not the padded 640px cells.
+Rotated AABBs bound transformed nonzero-alpha pixel centers. Each body rotates
+its visual and collision together without body scaling. Collision polygons fit
+the lower grounded area; frame and diagonal vane use individually fitted shapes.
+The fragment cluster intentionally combines small gaps between shards.
+All bodies use layer bitmask **5** (solid bodies + construction blockers, named
+layers 1 and 3) and mask **0**. Dave's existing solid-body physics and the existing
+PlacementRules blocker query (mask **4**) therefore see the same footprints.
+
+Static geometry checks pass: all shapes are convex/nondegenerate, within visible
+bounds, at least 20 units apart along a separating axis, and at least 16 units
+clear of ship collisions. A 32-unit separating-axis margin remains around the
+hatch/spawn corridor `(-448,-200)..(-320,40)`, Ferrite ground bounds
+`(124,140)..(452,372)` and example starter construction area
+`(-256,0)..(128,384)`. These are geometric assessments; runtime placement and
+navigation acceptance remain for the owner.
+
+Validation: `python -B -m unittest discover -s tests -p static_ship_debris_test.py -v`
+(three focused tests), package byte comparison and `git diff --check`.
+Existing exterior nodes remain text-identical after removing only the two added
+sections and load-step increment. Approved ship and accepted 2x-alpha contact
+shadow hashes are unchanged. PR #107 disturbed-earth/skid-mark artwork is not
+restored. Terrain, camera, movement, hatch/spawn, factory logic and the deferred
+ship Y-sorting limitation are unchanged. Owner untracked/ignored files are
+preserved. Placement, collision fit, occlusion and detail at gameplay zoom remain
+provisional for owner-controlled graphical playtesting. No Godot launch, import,
+runtime test or benchmark was performed for this integration. Keep the PR draft.
+
 ## Illustrated crashed ship prototype (merged PR #105)
 
 The exterior uses the owner-approved, unchanged
@@ -91,7 +159,7 @@ coverage, feet-radius route clearance, hatch line of sight, representative
 construction footprints, resource references, asset hash and scoped preservation.
 These agent checks are separate from the owner gameplay acceptance below.
 
-### Contact shadow integration (feature branch, pending merge)
+### Contact shadow integration (merged PR #106)
 
 The owner-supplied [contact-shadow PNG](assets/environment/exterior/crashed_ship_contact_shadow_prototype.png)
 was initially copied byte-for-byte: 2014 x 1127, 8-bit RGBA, original SHA-256
@@ -146,11 +214,11 @@ These agent checks are separate from owner visual acceptance; Godot was not run.
 
 The accepted feathered extent is unchanged; faint alpha reaches the bottom canvas
 edge. Whole-ship Y sorting remains coarse and deferred. Disturbed earth, skid marks,
-debris, salvage interactions, hatch animation and foreground occlusion work remain
-deferred. The hull asset, scale, position, three convex collisions, hidden fallback,
+salvage interactions, hatch animation and foreground occlusion work remain
+deferred. Localized environmental debris is now proposed separately above.
+The hull asset, scale, position, three convex collisions, hidden fallback,
 hatch, spawn, camera, construction, terrain and chunk streaming are unchanged.
-PR #106 remains draft, pending owner merge consideration; merge requires separate
-authorization.
+PR #106 merged in baseline `029e1d54958d6259940cf44e4b5f56fb53bc0133`.
 
 ### Final PR #105 owner acceptance (2026-11-01)
 

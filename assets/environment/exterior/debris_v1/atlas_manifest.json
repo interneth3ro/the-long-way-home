@@ -1,0 +1,148 @@
+{
+  "version": 1,
+  "source_file": "a_clean_concept_art_style_sprite_sheet_asset_atl.png",
+  "source_sha256": "cdd2ec526eb907fe9dce7d43adf5f03a07a8424fdffa1e1941e8bcff34cf224e",
+  "atlas_size": [
+    1920,
+    1280
+  ],
+  "cell_size": [
+    640,
+    640
+  ],
+  "regions": [
+    {
+      "name": "torn_armor_panel",
+      "rect": [
+        0,
+        0,
+        640,
+        640
+      ],
+      "source_bounds": [
+        35,
+        98,
+        539,
+        586
+      ],
+      "visible_bounds_in_cell": [
+        68,
+        76,
+        504,
+        488
+      ],
+      "sha256": "6c17b12dd4f9c343aceff1893b0c0c1cd512f8f4ab48578dcd802bbaa428fb35"
+    },
+    {
+      "name": "damaged_engine_housing",
+      "rect": [
+        640,
+        0,
+        640,
+        640
+      ],
+      "source_bounds": [
+        567,
+        144,
+        1038,
+        577
+      ],
+      "visible_bounds_in_cell": [
+        84,
+        103,
+        471,
+        433
+      ],
+      "sha256": "6620c8b1dc2af62649de369308974856489541b3aeb8285e8fe2d12356e39b55"
+    },
+    {
+      "name": "bent_structural_frame",
+      "rect": [
+        1280,
+        0,
+        640,
+        640
+      ],
+      "source_bounds": [
+        1090,
+        72,
+        1501,
+        592
+      ],
+      "visible_bounds_in_cell": [
+        114,
+        60,
+        411,
+        520
+      ],
+      "sha256": "9ea8bc43c8a42812539681fd8138da06d9a1476f1c26422434f3299a6ca6e11c"
+    },
+    {
+      "name": "broken_exhaust_vane",
+      "rect": [
+        0,
+        640,
+        640,
+        640
+      ],
+      "source_bounds": [
+        58,
+        599,
+        558,
+        975
+      ],
+      "visible_bounds_in_cell": [
+        70,
+        132,
+        500,
+        376
+      ],
+      "sha256": "6bd428849050b9781087eb7be5f9ecb9fba090989f69dabdbf295c7de1bfb05a"
+    },
+    {
+      "name": "severed_conduit_assembly",
+      "rect": [
+        640,
+        640,
+        640,
+        640
+      ],
+      "source_bounds": [
+        589,
+        653,
+        1056,
+        957
+      ],
+      "visible_bounds_in_cell": [
+        86,
+        168,
+        467,
+        304
+      ],
+      "sha256": "c0fc990cc21c0c36160c17909c78bb07565810c253fc8e9cb6d2e50948b5936b"
+    },
+    {
+      "name": "fragment_cluster",
+      "rect": [
+        1280,
+        640,
+        640,
+        640
+      ],
+      "source_bounds": [
+        1116,
+        640,
+        1501,
+        975
+      ],
+      "visible_bounds_in_cell": [
+        127,
+        152,
+        385,
+        335
+      ],
+      "sha256": "ebe8e680bb665f87f938b1a546f06042b9431fda6a7d594314a54489046fda8c"
+    }
+  ],
+  "atlas_sha256": "846773a82ee2e128ead678e37e79e7c3ffb4fbe0b1644f68d7eecad0970fcd29"
+}

@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3]
+[gd_scene load_steps=14 format=3]
 
 [ext_resource type="Script" path="res://scenes/interaction/scene_hatch.gd" id="1_hatch"]
 
@@ -7,6 +7,8 @@
 [ext_resource type="Script" uid="uid://c7294cf4973a" path="res://scenes/interaction/ferrite_inspection.gd" id="3_ferrite"]
 [ext_resource type="Texture2D" path="res://assets/environment/exterior/crashed_exploration_ship_approved.png" id="5_ship_art"]
 [ext_resource type="Texture2D" path="res://assets/environment/exterior/crashed_ship_contact_shadow_prototype.png" id="6_ship_shadow"]
+
+[ext_resource type="PackedScene" path="res://scenes/world/localized_ship_debris.tscn" id="7_debris"]
 
 [sub_resource type="CircleShape2D" id="FerriteInspectionFootprint"]
 radius = 24.0
@@ -151,6 +153,8 @@ position = Vector2(-595, -509)
 scale = Vector2(0.70, 0.70)
 texture = ExtResource("5_ship_art")
 centered = false
+
+[node name="LocalizedDebris" parent="GroundObjects" instance=ExtResource("7_debris")]
 
 [node name="Hatch" type="StaticBody2D" parent="GroundObjects"]
 collision_layer = 5
