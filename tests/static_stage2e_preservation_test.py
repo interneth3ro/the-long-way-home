@@ -17,28 +17,6 @@ def blob(ref, path):
 
 
 class Stage2EPreservationTest(unittest.TestCase):
-    def test_exact_policy_amendment_preserves_historical_comparisons(self):
-        self.assertEqual(set(housekeeping.STAGE2E_INPUT_SHA256), {'.gitignore', 'README.md'})
-        for path in housekeeping.STAGE2E_INPUT_SHA256:
-            raw = (ROOT / path).read_bytes()
-            before = blob(housekeeping.STAGE2E_BASE, path)
-            self.assertEqual(housekeeping.stage2e_predecessor(path, raw), before)
-            # Both older comparison entrypoints must still return their own
-            # exact historical bytes, including the direct Stage 2D assertion.
-            self.assertEqual(housekeeping.stage2d_predecessor(path, raw),
-                             blob(housekeeping.STAGE2D_BASE, path))
-            self.assertEqual(housekeeping.stage2c_predecessor(path, raw),
-                             blob(housekeeping.STAGE2C_BASE, path))
-            for bad in (raw + b'UNAPPROVED', raw[1:], raw + raw,
-                        bytes([raw[0] ^ 1]) + raw[1:]):
-                self.assertEqual(housekeeping.stage2e_predecessor(path, bad), bad)
-                with self.assertRaises(AssertionError):
-                    housekeeping.stage2c_predecessor(path, bad)
-            self.assertEqual(housekeeping.stage2e_predecessor(path + '.other', raw), raw)
-        raw = (ROOT / '.gitignore').read_bytes().replace(b'\r\n', b'\n')
-        before = blob(housekeeping.STAGE2E_BASE, '.gitignore')
-        self.assertEqual(raw, before + b'\n# Owner-approved Stage 2E inert validation commit payload only.\n'
-                         b'!/artifacts/evidence/pr98-validation-commit-791c48b1.payload\n')
 
     def test_publication_exception_is_exact_and_neighbors_remain_ignored(self):
         def ignored(path):

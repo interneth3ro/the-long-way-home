@@ -91,10 +91,12 @@ records native PASS and owner gameplay 7/7 PASS with accepted initial-loading
 stutter, without formal performance benchmarking. No further Godot execution,
 Native, profiling, benchmarks or graphical automation is authorized by this record.
 
-The historical laboratory and machine-art guards admit only the two new resolver script paths,
-pinned to exact normalized-content hashes and required to be absent from its
-historical baseline. Tampered content and other paths are explicitly rejected.
-Existing production/artwork preservation checks and runner controls are retained.
+Balanced Simplification (maintenance feature branch, pending merge) removes
+historical laboratory/machine-art changed-file inventories and whole resolver
+script hashes. Current resolver expressions and invariants remain tested, along
+with active resource paths, mapping, peering and approved artwork. Historical
+receipts and original source/artwork snapshots remain immutable; ordinary source
+changes and new files need no historical admission. Execution controls are unchanged.
 
 The separate [production-scale fixture](PRODUCTION_TERRAIN_FIXTURE.md) (merged PR #102) exercises shared TileMapLayer insertion/removal and
 experimental vertex-sampled CPU tint shading in isolation. Isolated Import and

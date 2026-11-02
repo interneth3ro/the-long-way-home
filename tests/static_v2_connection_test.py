@@ -3,26 +3,17 @@
 import hashlib
 import math
 import re
-import subprocess
 import unittest
-from current_preservation import historical_text
 
 import static_automatic_transitions_test as geometry
 from static_automatic_transitions_test import ROOT, PRIMARY, MAINTENANCE, read, merged_nodes
-from static_v2_production_host_test import P8_BASE, tracked_non_dev_files, without_approved_b1_changes
+from static_v2_production_host_test import tracked_non_dev_files
 
 
 PAIRS = [
     ("ship_interior_v2", PRIMARY, "Maintenance", "FromMaintenance"),
     ("maintenance_bay_v2", MAINTENANCE, "Interior", "FromInterior"),
 ]
-
-
-def base(path):
-    # These contracts did not change in P8; compare with verified post-P6 blobs,
-    # never moving origin/main (which could compare a merged change to itself).
-    return subprocess.check_output(
-        ["git", "show", f"{P8_BASE}:{path}"], cwd=ROOT, text=True, encoding="utf-8")
 
 
 class V2ConnectionStaticTest(unittest.TestCase):
@@ -57,13 +48,6 @@ class V2ConnectionStaticTest(unittest.TestCase):
             self.assertNotIn("res://scenes/dev/", text)
             self.assertNotIn("GroundObjects", text)
             self.assertNotIn('name="Dave"', text)
-            # Every existing shape and node remains byte-for-byte equivalent.
-            original = base(f"scenes/world/{room}.tscn")
-            for key, value in geometry.resources(original).items():
-                self.assertEqual(geometry.resources(text)[key], value)
-            for key, value in geometry.nodes(original).items():
-                self.assertEqual(nodes[key][0], value[0])
-                self.assertEqual(nodes[key][1].strip(), value[1].strip())
         door = read("scenes/interaction/automatic_doorway.gd")
         self.assertIn("if controller == null:\n\t\treturn", door)
 
@@ -141,19 +125,6 @@ class V2ConnectionStaticTest(unittest.TestCase):
         self.assertEqual([p for p in nodes if p.startswith("Worlds/")], ["Worlds/ShipInterior"])
         self.assertIn('instance=ExtResource("3_dave")', nodes["Dave"][0])
         self.assertNotIn("scale =", nodes["Dave"][1])
-        for file in ["scenes/main/scene_transition_controller.gd", "scenes/main/playthrough_state.gd",
-                     "scenes/interaction/automatic_doorway.gd", "scenes/player/dave.tscn",
-                     "scenes/player/dave.gd", "scenes/main/main.tscn"]:
-            self.assertEqual(without_approved_b1_changes(file, historical_text(file, read(file))), base(file))
-        actual = without_approved_b1_changes("project.godot", read("project.godot")).encode("utf-8")
-        expected = subprocess.check_output(
-            ["git", "show", f"{P8_BASE}:project.godot"], cwd=ROOT).replace(b"\r\n", b"\n")
-        approved = b'run/main_scene="res://scenes/main/main_v2.tscn"'
-        baseline = b'run/main_scene="res://scenes/main/main.tscn"'
-        pattern = rb"^[ \t]*run/main_scene[ \t]*=.*$"
-        self.assertEqual(re.findall(pattern, actual, re.M), [approved])
-        self.assertEqual(re.findall(pattern, expected, re.M), [baseline])
-        self.assertEqual(actual.replace(approved, baseline, 1), expected)
         for role in ["player", "world_host", "progression"]:
             self.assertIn(f"{role} = NodePath", nodes["SceneTransitions"][1])
         for script in ["scene_transition_controller.gd", "playthrough_state.gd"]:
@@ -174,12 +145,6 @@ class V2ConnectionStaticTest(unittest.TestCase):
         art = ROOT / "assets/environment/maintenance_bay_v2/maintenance_bay_v2_machine_free_background.png"
         self.assertEqual(hashlib.sha256(art.read_bytes()).hexdigest(),
                          "968d4deca9e8df72bd5abb205a018d11a866b902de0ac0c1440750caa5ef99e1")
-        # Production worlds cannot acquire a reference to the new harness.
-        for name in ["ship_interior", "maintenance_bay", "planet_exterior"]:
-            for path in (ROOT / "scenes/world").glob(name + ".*"):
-                relative = path.relative_to(ROOT).as_posix()
-                from current_preservation import historical_source
-                self.assertEqual(historical_source(relative), base(relative))
 
 
 if __name__ == "__main__":

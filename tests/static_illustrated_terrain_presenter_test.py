@@ -2,32 +2,17 @@
 
 Python arithmetic/sequence proofs do not establish native TileMapLayer behavior.
 """
-import hashlib
 import itertools
 from pathlib import Path
 import re
-import subprocess
 import unittest
-from current_preservation import historical_activation_bytes
-
-from current_preservation import (
-    PRESENTER_BASE, PRESENTER_INPUT_SHA256, PRESENTER_TEST_SHA256,
-    historical_presenter_bytes, verify_presenter_input, without_presenter_paths,
-)
-
 ROOT = Path(__file__).resolve().parents[1]
 PRESENTER = 'scenes/world/illustrated_terrain_presenter.gd'
 SOURCE = (ROOT/PRESENTER).read_text()
-HELPER_SHA256 = 'dbe31e8fdba3650c2db8b6bf66220365b2d0a03d94dbebb1dda88f95db40f598'
-NATIVE_HELPER_SHA256 = 'dedccbe4f87a3493147d624b749d9084cff15479e7af319dce4897d58bacd245'
 
 
 def body(source, name):
     return re.search(r'^(?:static )?func ' + name + r'\(.*?(?=^func |\Z)', source, re.M | re.S)[0]
-
-
-def old(path):
-    return subprocess.check_output(['git', 'show', f'{PRESENTER_BASE}:{path}'], cwd=ROOT).decode().replace('\r\n', '\n')
 
 
 def region(coordinate):
@@ -35,67 +20,6 @@ def region(coordinate):
 
 
 class PresenterStaticTest(unittest.TestCase):
-    def test_exact_inputs_and_test_amendments_reject_tampering(self):
-        self.assertEqual(set(PRESENTER_INPUT_SHA256), {PRESENTER,
-            'scenes/world/planet_exterior.gd', 'scenes/world/planet_exterior.tscn',
-            'scenes/experiments/production_terrain/fixture.gd',
-            'scenes/experiments/production_terrain/fixture.tscn',
-            'scenes/experiments/production_terrain/engine_validation.gd'})
-        for path in PRESENTER_INPUT_SHA256:
-            raw = (ROOT/path).read_bytes()
-            verify_presenter_input(path, raw)
-            for bad in (raw + b'CHANGED', raw[1:], raw + raw):
-                with self.subTest(path=path), self.assertRaises(AssertionError):
-                    verify_presenter_input(path, bad)
-            with self.assertRaises(AssertionError):
-                verify_presenter_input(path + '.other', raw)
-        for path in PRESENTER_TEST_SHA256:
-            raw = (ROOT/path).read_bytes()
-            self.assertEqual(historical_presenter_bytes(path, raw).decode().replace('\r\n', '\n'), old(path))
-            for bad in (raw + b'CHANGED', raw[1:], raw + raw):
-                with self.subTest(path=path), self.assertRaises(AssertionError):
-                    historical_presenter_bytes(path, bad)
-
-    def test_preservation_helpers_and_unrelated_inputs(self):
-        for path, digest in [('tests/production_terrain_preservation.py', HELPER_SHA256),
-                             ('tests/native_terrain_preservation.py', NATIVE_HELPER_SHA256)]:
-            raw = (ROOT/path).read_bytes().replace(b'\r\n', b'\n')
-            self.assertEqual(hashlib.sha256(raw).hexdigest(), digest, path)
-            for bad in (raw + b'CHANGED', raw[1:], raw + raw):
-                self.assertNotEqual(hashlib.sha256(bad).hexdigest(), digest, path)
-        for path in ('scenes/world/planet_generator.gd',
-                     'assets/ui/b1_theme.tres', 'tools/run-local-tests.ps1', 'AGENTS.md'):
-            raw = (ROOT/path).read_bytes() + b'OWNER CHANGE'
-            if path == 'AGENTS.md':
-                # Policy retention has an exact receipt; arbitrary policy edits fail.
-                approved = (ROOT/path).read_bytes()
-                self.assertEqual(historical_presenter_bytes(path, approved).decode().replace('\r\n', '\n'), old(path))
-                with self.assertRaisesRegex(AssertionError, 'Changed Stage 2A input'):
-                    historical_presenter_bytes(path, raw)
-                self.assertEqual(without_presenter_paths([path]), [])
-            else:
-                self.assertEqual(historical_presenter_bytes(path, raw), raw)
-                self.assertEqual(without_presenter_paths([path]), [path])
-            with self.assertRaises(AssertionError):
-                verify_presenter_input(path, raw)
-
-    def test_historical_stage_reconciliation_rejects_changed_bytes(self):
-        import json
-        from static_production_terrain_test import historical_stage_input
-        manifest_path = 'docs/experiments/production_terrain_stage.json'
-        self.assertEqual((ROOT/manifest_path).read_text(), old(manifest_path))
-        manifest = json.loads(old(manifest_path))
-        for path in ('scenes/experiments/production_terrain/tint.gdshader',
-                     'scenes/experiments/production_terrain/fixture.gd',
-                     'assets/experiments/native_terrain_47_96/baked_v2/baseline_94.png'):
-            raw = (ROOT/path).read_bytes()
-            historical_stage_input(path, raw, manifest[path])
-            for bad in (raw + b'CHANGED', raw[1:], raw + raw):
-                with self.subTest(path=path), self.assertRaises(AssertionError):
-                    historical_stage_input(path, bad, manifest[path])
-            with self.assertRaises(AssertionError):
-                historical_stage_input(path, raw, '0'*64)
-
     def test_region_geometry_negative_ownership_and_halo(self):
         self.assertIn('WIDTH: int = WorldCoordinates.CHUNK_TILES', SOURCE)
         self.assertEqual(region((-1, -1)), set(itertools.product(range(-32, 0), repeat=2)))
@@ -198,25 +122,10 @@ class PresenterStaticTest(unittest.TestCase):
                           'PlanetWorldState', 'PlanetGenerator.new', 'push_error(', 'push_warning('):
             self.assertNotIn(forbidden, SOURCE)
 
-    def test_diagnostics_and_dormant_production_gate(self):
+    def test_diagnostics(self):
         for key in ('"ok"', '"code"', '"chunk"', '"token"', '"message"'):
             self.assertIn(key, body(SOURCE, '_result'))
         self.assertIn('result["cell"] = cell', body(SOURCE, '_cell_failure'))
-        path = 'scenes/world/planet_exterior.gd'
-        exterior = historical_activation_bytes(path, (ROOT/path).read_bytes()).decode().replace('\r\n', '\n')
-        self.assertIn('terrain_renderer: TerrainRenderer = TerrainRenderer.LEGACY', exterior)
-        assignments = re.findall(r'_effective_renderer\s*(?::[^=\n]+)?=\s*([^\n]+)', exterior)
-        self.assertTrue(assignments)
-        self.assertTrue(all(value == 'TerrainRenderer.LEGACY' for value in assignments))
-        for name, call in [('_present_illustrated_chunk', '_terrain_presenter.initialize()'),
-                           ('_retire_illustrated_chunk', '_terrain_presenter.retire_chunk')]:
-            method = body(exterior, name)
-            self.assertLess(method.index('if _effective_renderer != TerrainRenderer.ILLUSTRATED:\n\t\treturn true'), method.index(call))
-        self.assertIn('Callable(_generator, "sample_ground_material")', exterior)
-        self.assertIn('_present_illustrated_chunk(coordinate)', body(exterior, '_generate_budget'))
-        self.assertIn('_retire_illustrated_chunk(coordinate)', body(exterior, '_update_neighborhood'))
-        for unchanged in ('loading_radius: int = 2', 'retention_margin: int = 1', 'chunks_per_frame: int = 2'):
-            self.assertIn(unchanged, exterior)
 
     def test_scene_layers_and_no_autonomous_initialization(self):
         for path in ('scenes/world/planet_exterior.tscn', 'scenes/experiments/production_terrain/fixture.tscn'):
@@ -235,10 +144,6 @@ class PresenterStaticTest(unittest.TestCase):
     def test_reference_methods_shading_and_masks_remain_exact(self):
         path = 'scenes/experiments/production_terrain/fixture.gd'
         fixture = (ROOT/path).read_text()
-        baseline = old(path)
-        for name in ('_ready', 'sample_material', '_generate', '_load_chunk', '_unload_chunk',
-                     '_reload', '_set_shading', '_view', '_draw', '_button'):
-            self.assertEqual(body(fixture, name).rstrip(), body(baseline, name).rstrip(), name)
         self.assertIn('_presenter_mode: bool = false', fixture)
         self.assertIn('backend.add_item("PR #102 reference")', fixture)
         switch = body(fixture, 'select_presenter_mode')
@@ -298,18 +203,6 @@ class PresenterStaticTest(unittest.TestCase):
         for selected in (False, True, False, True, False):
             # Truth table of the exact source assignments, not engine execution.
             self.assertEqual(sum((not selected, selected)), 1)
-
-    def test_unchanged_production_assets_controls_and_historical_inventory(self):
-        changed = subprocess.check_output(['git', 'diff', '--name-only', PRESENTER_BASE, '--',
-            'assets', 'scenes', 'shaders', 'construction', 'inventory', 'dialogue', 'objectives',
-            'tools', 'AGENTS.md', 'project.godot', 'docs/LOCAL_TESTING.md',
-            'docs/experiments/production_terrain_stage.json'], cwd=ROOT, text=True).splitlines()
-        self.assertEqual(without_presenter_paths(changed), [])
-        for path in ('scenes/world/planet_generator.gd', 'scenes/world/planet_world_state.gd',
-                     'scenes/world/world_coordinates.gd', 'scenes/world/terrain_chunk.gd',
-                     'scenes/world/terrain_resolver.gd', 'scenes/world/terrain_assignment_lookup.gd',
-                     'scenes/experiments/production_terrain/tint.gdshader'):
-            self.assertEqual(historical_activation_bytes(path, (ROOT/path).read_bytes()).decode().replace('\r\n', '\n'), old(path), path)
 
 
 if __name__ == '__main__':

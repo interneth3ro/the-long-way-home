@@ -126,17 +126,6 @@ class HistoricalSanitizationTest(unittest.TestCase):
             self.assertEqual((ROOT / path).read_bytes().replace(b'\r\n', b'\n'),
                              before.replace(b'\r\n', b'\n'))
 
-    def test_policy_projection_rejects_unapproved_changes(self):
-        for path in housekeeping.STAGE2C_INPUT_SHA256:
-            raw = (ROOT / path).read_bytes()
-            before = housekeeping.stage2c_predecessor(path, raw)
-            self.assertEqual(before, subprocess.check_output(
-                ['git', 'show', housekeeping.STAGE2C_BASE + ':' + path], cwd=ROOT))
-            for changed in (raw + b'UNAPPROVED', raw[1:]):
-                with self.assertRaises(AssertionError):
-                    housekeeping.stage2c_predecessor(path, changed)
-        raw = b'unrelated owner content'
-        self.assertEqual(housekeeping.stage2c_predecessor('tools/run-local-tests.ps1', raw), raw)
 
     def test_completion_receipt_records_only_the_authorized_deletions(self):
         data = record()

@@ -2,7 +2,6 @@
 import csv
 import hashlib
 import json
-from pathlib import Path
 import re
 import unittest
 
@@ -130,11 +129,6 @@ class BakedTerrainStaticTest(unittest.TestCase):
             verify_input(path,raw)
             for bad in (raw+b'CHANGED',raw[1:],raw+raw):
                 with self.assertRaises(AssertionError):verify_input(path,bad)
-        protected = json.loads((ROOT/'assets/experiments/native_terrain_47_96/illustrated_v1/mapping.json').read_text())['protected_working_sha256']
-        for path,digest in protected.items():
-            raw = (ROOT/path).read_bytes()
-            self.assertEqual(hashlib.sha256(raw).hexdigest(),digest,path)
-            with self.assertRaises(AssertionError):verify_input(path,raw)
 
 
 if __name__ == '__main__':

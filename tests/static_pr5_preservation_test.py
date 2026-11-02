@@ -11,7 +11,6 @@ import unittest
 import zipfile
 import zlib
 
-import housekeeping_preservation as housekeeping
 
 ROOT = Path(__file__).resolve().parents[1]
 RECORD = 'docs/experiments/repository_housekeeping_stage2d.json'
@@ -288,14 +287,6 @@ class PR5PreservationTest(unittest.TestCase):
             raw = (ROOT / path).read_bytes()
             self.assertIn(expected, (digest(raw), digest(raw.replace(b'\r\n', b'\n'))))
             self.assertEqual(digest(subprocess.check_output(['git', 'show', data['baseline'] + ':' + path], cwd=ROOT)), expected)
-        for path in housekeeping.STAGE2D_INPUT_SHA256:
-            raw = (ROOT / path).read_bytes()
-            before = housekeeping.stage2d_predecessor(path, raw)
-            self.assertEqual(before, subprocess.check_output(['git', 'show', data['baseline'] + ':' + path], cwd=ROOT))
-            for bad in (raw + b'UNAPPROVED', raw[1:], raw + raw):
-                with self.assertRaises(AssertionError):
-                    housekeeping.stage2c_predecessor(path, bad)
-        self.assertEqual(housekeeping.stage2d_predecessor('unrelated', b'unchanged'), b'unchanged')
 
     def test_completion_requires_committed_preservation_before_exact_deletion(self):
         data = record()
