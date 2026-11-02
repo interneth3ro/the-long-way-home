@@ -15,8 +15,8 @@ applies only to its isolated fixture and remains unchanged.
 The exterior hatch opens visually on approach; **E still enters the ship**.
 The separate visual controller changes no collision, interaction, destination,
 transition, player, camera or terrain code. Automatic boarding, collision-state
-changes, audio and Dave-specific foreground occlusion remain deferred. Whole-ship
-Y-sorting and the deferred nose issue are unchanged.
+changes, brief transition fade, audio and Dave-specific foreground occlusion remain
+deferred. Whole-ship Y-sorting and the deferred nose issue are unchanged.
 
 Artwork comes from the owner-approved `tlwh-hatch-alpha-correction-v2.zip`,
 SHA-256 `1ec18d5c2b38dc8063bb2278bf526772f3cfde54bbd8f5cc97503c6da025f167`.
@@ -74,7 +74,7 @@ Historical hashes, sealed inputs and execution policy are unchanged. A separate
 five-path/full-hash PR #110 receipt validates the complete intentional production
 delta before historical comparisons receive their original scene bytes; tampering
 and unrelated paths remain rejected. No native package or execution permission is
-expanded. The owner's initial graphical acceptance and the pending zone retest
+expanded. The owner's initial graphical acceptance and final zone acceptance
 are recorded below. The agent has not launched Godot.
 Initial validation: eight focused hatch static checks pass; broader static discovery
 passes **196/196**, including with all new production inputs staged. Changed
@@ -87,10 +87,11 @@ At `3c315a707f1131367d58d3f1a61f5b70776596b8`, the owner reported **8/8 PASS**:
 closed appearance, opening animation, open recess, closing animation, interrupted
 closing, proximity stability, existing E boarding and performance. This is
 owner-reported gameplay acceptance, not an agent benchmark or engine check.
-The owner reported smooth animation and no flicker. The sole requested refinement
-is shorter opening/hold-open reach; artwork and animation remain accepted.
+The owner praised smooth animation, absence of flicker and overall appearance.
+The sole requested refinement was shorter opening/hold-open reach; artwork and
+animation remain accepted.
 
-| Geometry (world units, offsets from unchanged hatch anchor) | Initial accepted | Revised, retest pending |
+| Geometry (world units, offsets from unchanged hatch anchor) | Initial accepted | Final locked |
 | --- | --- | --- |
 | Approach rectangle | 176 x 160 | 128 x 112 |
 | Hold-open rectangle | 224 x 208 | 176 x 160 |
@@ -105,12 +106,31 @@ Durations, travel, all artwork, clipping, anchors, E boarding, collisions and
 transitions are unchanged. Only the visual scene's sizes/centers and its current
 full-hash test receipt change; historical evidence remains at its original commits.
 
-Owner retest of the revised opening distance, hold-open distance, doorway safety
-and repeated boundary crossings is pending. The initial 8/8 result does not
-constitute acceptance of the revised geometry. No agent graphical test was run.
+At `f3a0e597f90a2e19c6e32cd83bb25942d4f503b8`, the owner completed the revised
+proximity retest with **4/4 PASS**: opening distance, hold-open distance,
+interrupted closing and existing E boarding. Owner observation:
+"Much better, I think we can lock this in."
+
+**Final owner gameplay acceptance: 12/12 PASS**, combining the original eight
+checks and four proximity retests, with no outstanding gameplay issues reported.
+The revised geometry above is locked. Opening remains **0.6 seconds**, closing
+**0.7 seconds**, closing delay **1.0 second**, and travel **(+10,-140) source
+pixels / (+7,-98) world units**. Existing E boarding remains required. Approved
+ship, contact shadow, camera, collisions and scene transitions remain unchanged.
+Performance acceptance is observational, not quantitative benchmarking. No agent
+graphical test was run.
+
+Automatic boarding, hatch collision-state changes, brief transition fade and
+audio remain deferred. This documentation-only finalization changes no accepted
+production implementation, artwork or historical preservation guards. PR #110
+remains draft, ready for owner merge consideration; merging is an owner decision.
 Refinement validation: **8/8 focused static checks** and **196/196 broader static
 tests PASS**. Documentation links and diff checks pass; 54 existing untracked-file
 hashes and 3,019 ignored-file size/mtime identities are preserved.
+Documentation finalization retains those completed implementation test results;
+only lightweight documentation/diff and preservation checks were repeated. All
+four approved artwork hashes, 54 untracked-file hashes and 3,020 ignored-file
+identities pass. Accepted production files and historical guards are unchanged.
 
 ## Exterior camera zoom (PR #109 feature branch, pending merge)
 
