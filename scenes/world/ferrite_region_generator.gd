@@ -302,18 +302,27 @@ func query_is_bounded(area: Rect2) -> bool:
 	return true
 
 
-func query(area: Rect2) -> Array:
+func query_owners(area: Rect2) -> Array[Vector2i]:
+	var result: Array[Vector2i] = []
 	if not query_is_bounded(area):
-		return []
+		return result
 	var reach := float(MAX_REACH_CELLS * CELL + CELL)
 	var first := owner_at(area.position - Vector2.ONE * reach)
 	var last := owner_at(area.end + Vector2.ONE * CELL)
-	var result: Array = []
 	for y in range(first.y, last.y + 1):
 		for x in range(first.x, last.x + 1):
-			for descriptor in region(Vector2i(x, y)):
-				if area.intersects(descriptor.illustrated_envelope, true):
-					result.append(descriptor)
+			result.append(Vector2i(x, y))
+	return result
+
+
+func query(area: Rect2) -> Array:
+	if not query_is_bounded(area):
+		return []
+	var result: Array = []
+	for owner in query_owners(area):
+		for descriptor in region(owner):
+			if area.intersects(descriptor.illustrated_envelope, true):
+				result.append(descriptor)
 	return result
 
 

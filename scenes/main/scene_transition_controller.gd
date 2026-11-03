@@ -25,6 +25,7 @@ var _quick_active: bool = false
 var _quick_cancelled: bool = false
 var _quick_committed: bool = false
 var _quick_previous_mode: Node.ProcessMode
+var _arrival_world: Node2D
 
 
 func _ready() -> void:
@@ -136,6 +137,8 @@ func cancel_quick_transition() -> bool:
 	# current fade under the lock and restore the source while still obscured.
 	if _quick_active and not _quick_committed:
 		_quick_cancelled = true
+		if is_instance_valid(_arrival_world) and _arrival_world.has_method("cancel_arrival_preparation"):
+			_arrival_world.call("cancel_arrival_preparation")
 		return true
 	return false
 
@@ -180,7 +183,9 @@ func _perform_quick_transition(source_scene: String, destination_scene: String,
 	player.reparent(ground_objects)
 	player.global_position = spawn.global_position
 	if destination.has_method("prepare_for_arrival"):
+		_arrival_world = destination
 		await destination.call("prepare_for_arrival", player, progression.planet)
+		_arrival_world = null
 	_reset_camera()
 	await get_tree().physics_frame
 	if _quick_cancelled:
@@ -191,6 +196,10 @@ func _perform_quick_transition(source_scene: String, destination_scene: String,
 		_current_world = source
 		player.reparent(source.get_node("GroundObjects"))
 		player.global_position = source_position
+		# Detachment cancels exterior streaming. Re-arm the retained source before
+		# restoring input, including a rollback while preparation was still pending.
+		if source.has_method("prepare_for_arrival"):
+			await source.call("prepare_for_arrival", player, progression.planet)
 		_reset_camera()
 		await get_tree().physics_frame
 	_quick_committed = true

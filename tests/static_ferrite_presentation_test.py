@@ -91,7 +91,7 @@ class FerritePresentationStaticTest(unittest.TestCase):
             area = retained(center,3)
             self.assertEqual(nearby(oracle,area),{d.deposit_id:d for d in oracle.query(area)})
         self.assertIn('nearby[descriptor.deposit_id] = descriptor',PRESENTER)
-        self.assertIn('if _sprites.has(identity):\n\t\t\tcontinue',PRESENTER)
+        self.assertIn('if not _sprites.has(identity):',PRESENTER)
 
     def test_repeated_arrival_revisions_eviction_and_bounded_retirement(self):
         oracle, nodes, created = Oracle(), {}, 0
@@ -110,7 +110,7 @@ class FerritePresentationStaticTest(unittest.TestCase):
             self.assertLessEqual(len(nodes),64*6)
         self.assertEqual(nearby(oracle,retained((0,0),3)),original)
         self.assertGreater(created,0)
-        for text in ('if not nearby.has(identity):','remove_child(sprite)',
+        for text in ('area.intersects(_envelopes[identity], true)','remove_child(sprite)',
                      'sprite.queue_free()', '_sprites.erase(identity)'):
             self.assertIn(text,PRESENTER)
 
@@ -200,22 +200,24 @@ class FerritePresentationStaticTest(unittest.TestCase):
 
     def test_highlight_spatial_filter_identity_color_cleanup_and_chunk_scope(self):
         highlight = function(EXTERIOR,'_refresh_highlights')
-        for text in ('_state.get_deposits_in_area(page)','nearby[deposit.deposit_id] = deposit',
+        for text in ('_ferrite_presenter.highlight_deposits(_state, _ferrite_token)',
                      'compatible_resources.has(deposit.resource_type)',
                      'if not _chunks.has(coordinate):','highlight.color = deposit.construction_highlight',
-                     '_highlights.remove_child(child)','child.queue_free()',
                      '_construction_definition == null','world_to_chunk(bounds.position)',
                      'world_to_chunk(bounds.end)'):
             self.assertIn(text,highlight)
         self.assertNotIn('_state.get_deposits()',highlight)
         self.assertNotIn('for coordinate in _chunks:',highlight)
-        self.assertLess(highlight.index('child.queue_free()'),highlight.index('_construction_definition == null'))
+        self.assertLess(highlight.index('_clear_highlights()'),highlight.index('_construction_definition == null'))
+        clear = function(EXTERIOR,'_clear_highlights')
+        self.assertIn('_highlights.remove_child(child)',clear)
+        self.assertIn('child.queue_free()',clear)
 
     def test_neighborhood_change_gate_layers_and_no_per_frame_rebuild(self):
         update = function(EXTERIOR,'_update_neighborhood')
         self.assertLess(update.index('center == _center and _state.revision == _revision'),
-                        update.index('_ferrite_presenter.refresh'))
-        self.assertEqual(EXTERIOR.count('_ferrite_presenter.refresh('),1)
+                        update.index('_ferrite_presenter.request'))
+        self.assertEqual(EXTERIOR.count('_ferrite_presenter.request('),1)
         self.assertNotIn('_process(',PRESENTER)
         self.assertNotIn('refresh(',function(EXTERIOR,'_process'))
         for text in ('_ferrite_presenter.z_index = -5','_highlights.z_index = -4'):
@@ -229,8 +231,9 @@ class FerritePresentationStaticTest(unittest.TestCase):
                      'state.is_resource_generation_ready()', 'Correct the input/package and restart'):
             self.assertIn(text,PRESENTER)
         self.assertLess(PRESENTER.index('_textures.get(variant.id)'),PRESENTER.index('load(path)'))
-        self.assertLess(PRESENTER.index('return _failure("Catalog envelope mismatch'),
-                        PRESENTER.index('Sprite2D.new()'))
+        step = function(PRESENTER,'step')
+        self.assertLess(step.index('_registration(state, _nearby[identity])'),
+                        step.index('Sprite2D.new()'))
         self.assertIn('get_tree().paused = true',function(EXTERIOR,'_update_neighborhood'))
         for bad in (None, '', 'wrong.png', '../outside.png',VARIANTS[1]['png_path']):
             data = deepcopy(DATA)
