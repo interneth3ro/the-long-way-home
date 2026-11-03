@@ -5,7 +5,8 @@ Runtime acceptance is recorded below for reviewed commit `366378a`.
 Uses the ten
 accepted variants from merged PR #125's [catalog](FERRITE_SHAPE_CATALOG_V1.md).
 Milestone 3A presentation/highlighting is implemented on the feature branch,
-pending owner acceptance and merge; see its scope and checklist below.
+owner graphical/gameplay acceptance is approved (8/8 PASS), pending merge;
+see its scope and dated acceptance record below.
 Generated deposits have no discovery interactions. The introductory deposit, progression,
 machine calculations and terrain generation remain unchanged.
 
@@ -236,7 +237,7 @@ membership, concave Geometry2D clipping, exported JSON availability and performa
 benchmarks remain unverified. Further engine/graphical checks require explicit
 owner authorization.
 Catalog variety remains ten. Milestone 3A's presentation/highlight implementation
-and unverified owner acceptance are described below. Deliberate preloading,
+and final owner acceptance are described below. Deliberate preloading,
 lookahead/loading behavior and performance optimization belong to 3B; loading
 screens, world maps and distance-based size progression are not added here.
 
@@ -302,7 +303,8 @@ paging and identity lifecycle, padded-envelope retention, signed boundaries,
 mask-cell clipping coverage and a synthetic U-shaped multi-piece clipping
 contract. These are Python models and source checks, **not execution of GDScript
 or Geometry2D**. They do not establish Godot parsing/import, runtime clipping,
-gameplay, appearance, memory use or performance. No Godot process was launched.
+gameplay, appearance, memory use or performance. No Godot process was launched
+by the agent. The owner's separate graphical/gameplay results are recorded below.
 
 Region queries still compute synchronously on cache miss, and the first nearby
 use of each texture loads synchronously. The bounded region FIFO can churn while
@@ -313,7 +315,7 @@ hybrid preparation/lookahead/scheduling work. There is no stutter-free claim,
 performance probe or loading-screen implementation in 3A. Known repeated silver
 highlights/grain and regular concave rims remain nonblocking artistic limitations.
 
-### Owner acceptance checklist — 3A, not yet performed
+### Original owner acceptance checklist — 3A
 
 1. Open/run the project locally; confirm no parser, import, catalog or texture
    errors, and normal interior/exterior arrival and hatch return.
@@ -335,6 +337,44 @@ highlights/grain and regular concave rims remain nonblocking artistic limitation
 8. Observe ordinary movement and first encounters with each variant for new
    noticeable stutter. Record qualitative observations only; no formal benchmark
    or memory/performance acceptance is claimed by static PASS.
+
+### Final PR #127 owner graphical/gameplay acceptance — 2026-11-02
+
+The owner completed Godot graphical and gameplay testing of reviewed commit
+`7a2dd6e448777f3dba4cd2d6195c6e1f67db7e2f` on 2026-11-02
+(America/Chicago). **All eight acceptance checks PASSED; zero functional failures
+reported. Owner graphical and gameplay acceptance: APPROVED.**
+
+1. Godot startup, resource imports, exterior arrival and hatch return: PASS.
+2. Introductory Ferrite artwork, discovery and progression preservation: PASS.
+3. Generated Ferrite appearance, scale, variety and rendering layers: PASS.
+4. Exact construction highlighting, including concave notches: PASS.
+5. Extractor placement, production, collection and recovery: PASS.
+6. Cross-chunk/region presentation, including negative coordinates: PASS.
+7. Stable deposits across departure, return and indoor travel; production
+   independent of sprite lifetime: PASS.
+8. General stability without severe freezes or gameplay blockers: PASS.
+
+**Accepted nonblocking performance observation — investigate in Milestone 3B.**
+The owner observed slightly more noticeable stuttering during initial exterior
+discovery than before PR #127. The increase was modest and did not prevent normal
+gameplay. Milestone 3B must investigate this observation. Synchronous region
+generation, first-use texture loading and repeated presentation/highlight queries
+are potential contributors only: these are hypotheses, not established causes.
+No performance optimization, measured performance or stutter-free operation has
+been verified. Memory use and formal performance measurements remain unverified.
+
+These owner-reported results are separate from the previously completed agent
+static suite (**258/258 PASS**), focused Ferrite checks (**40/40 PASS**) and offline
+PNG checks. They do not establish exhaustive clipping/determinism, injected
+failure handling or exported-build compatibility. The deferred raw catalog JSON
+packaging and exported-build verification requirement above remains in force.
+
+This acceptance follow-up changes documentation only, preserving the reviewed
+implementation, generation/distribution, artwork/catalog, mining calculations
+and terrain. The agent did not launch Godot or run benchmarks. PR #127 is prepared
+for owner review and a normal **merge commit** through GitHub; no automatic merge
+is authorized or performed. Post-merge cleanup belongs in a separate conversation.
 
 ## Final owner runtime acceptance — 2026-11-02
 
