@@ -43,6 +43,66 @@ version or explicit migration; never silently reinterpret saved worlds under
 changed `v1` rules. Released catalog geometry, masks, registration and IDs must
 remain reconstructible. No save format or migration system is added here.
 
+## Catalog initialization and failure handling
+
+The focused PR #126 correction hardens the startup dependency without changing
+generation policy. Godot 4.7 supports FileAccess text reads and JSON parsing;
+an expected JSON object becomes a Dictionary, arrays remain Arrays and JSON
+numbers may be floats. The original typed assignment from `JSON.parse_string()`
+was valid only for the expected object. A failed parse returns null, and other
+top-level JSON types do not satisfy that assignment. Missing/wrong fields could
+also fail later indexing or selection. Debug assertions did not safely handle
+these failures and are omitted from release builds. See the official
+[JSON API](https://docs.godotengine.org/en/4.7/classes/class_json.html),
+[FileAccess API](https://docs.godotengine.org/en/stable/classes/class_fileaccess.html)
+and [assert reference](https://docs.godotengine.org/en/4.7/classes/class_%40gdscript.html).
+
+Initialization now explicitly opens/reads/closes the file, checks I/O status and
+empty content, and uses `JSON.parse()` with line/error diagnostics. Before typed
+assignment it checks the top-level object and catalog version, then the ten-entry
+collection, unique nonempty IDs, known size/family strings, coverage of all three
+sizes, finite integral dimensions/reach, fixed scale/registration, matching padded
+image dimensions, and numeric grid-aligned polygon vertices within logical bounds.
+Only consumed fields are checked; mask topology/artwork admission stays with the
+existing offline catalog compiler and tests. This is not a replacement authoring
+validator or a test of Godot's JSON parser through Python.
+
+Both variant collections publish only after complete validation and protection
+setup. Valid numeric values and polygon ordering are retained without conversion;
+selection, hashes, identities, geometry and tuning stay unchanged. There is no
+retry or alternate catalog. `FerriteRegionGenerator.is_ready()` and
+`initialization_error()` expose status. A failure logs the exact catalog path and
+reason with a correction/restart instruction. Region, ID, area and resource
+reconstruction cannot consume failed/unpublished state. Empty results on those
+paths do not mean successful generation: readiness remains false and the error
+remains available. Existing authored-only access is retained for inspection.
+
+World state forwards status through `is_resource_generation_ready()` and
+`resource_generation_error()`. Deployment is rejected, machine status is inactive,
+and production does not advance when the generator is unavailable. Successful
+production rules/calculations are unchanged. Main checks readiness before session
+transition initialization, logs a startup-blocked error and pauses the scene tree.
+The V2 override returns after the parent check before accessing the current world
+or preparing arrival. Thus there is no playable authored-only fallback. Existing
+arrival hooks do not return a general initialization result; blocking at startup
+avoids adding a loading/error framework or changing transition behavior. Recovery
+requires correcting the input/package and restarting; there is no new error UI.
+
+No `export_presets.cfg` or catalog `.json.import`/Keep override is present in the
+reviewed checkout, and `project.godot` supplies no raw-catalog export inclusion.
+The raw FileAccess path is not automatically a ResourceLoader dependency merely
+because a script names it. Exported availability is therefore **not established**.
+Before exporting, the owner should approve adding the exact non-resource include
+filter `assets/environment/exterior/ferrite/catalog_v1/catalog.json` to each
+applicable export preset, then verify its raw availability and successful startup
+in the actual export. Godot documents non-resource JSON inclusion in its
+[export resource options](https://docs.godotengine.org/en/4.7/tutorials/export/exporting_projects.html#resource-options).
+No export setting, import metadata, dependency or artwork was changed here.
+Missing packaged input will block startup with an actionable error rather than
+silently changing procedural results. Actual Godot 4.7 parsing, release failure
+handling, scene-tree pause behavior and export packaging remain owner acceptance
+items requiring separately authorized engine execution.
+
 ## Initial tuning and bounded conflict policy
 
 These are conservative **engineering defaults**, not owner-approved numeric
@@ -152,6 +212,10 @@ chunk/region/corner crossings, translated occupied/empty centers, full-envelope
 exclusion, spacing, bounded work and family availability. Existing production,
 discovery, extraction and terrain regressions run in the full static suite.
 These are offline models and source inspection, **not GDScript execution**.
+Initialization checks additionally model missing/empty/malformed input, wrong
+top-level/version/types, missing consumed fields, duplicate IDs, size coverage,
+registration and numeric constraints, plus source checks for atomic publication,
+readiness guards and blocked startup. Python's parser is not a Godot parser test.
 
 No Godot editor, game, headless process, import, benchmark or profiling was run.
 Engine parsing, runtime reconstruction/cache behavior, boundary membership,

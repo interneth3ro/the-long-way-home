@@ -27,25 +27,132 @@ var _variants: Array = []
 var _by_id: Dictionary = {}
 var _cache: Dictionary[Vector2i, Array] = {}
 var _protected_bounds: Array[Rect2] = []
+var _initialization_error: String = "Ferrite catalog initialization incomplete"
 
 
 func _init(world_seed: int) -> void:
 	_seed = world_seed
-	var catalog: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(CATALOG_PATH))
-	assert(catalog.catalog_version == CATALOG_VERSION)
-	_variants = catalog.variants
-	_variants.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return a.id < b.id)
-	for variant: Dictionary in _variants:
-		assert(variant.width_cells <= MAX_REACH_CELLS and variant.height_cells <= MAX_REACH_CELLS)
-		assert(variant.display_scale == 0.5 and variant.logical_origin_source_pixels == [64, 64])
-		assert(variant.image_size_pixels[0] <= (MAX_REACH_CELLS * CELL + CELL) * 2)
-		assert(variant.image_size_pixels[1] <= (MAX_REACH_CELLS * CELL + CELL) * 2)
-		_by_id[variant.id] = variant
+	var file := FileAccess.open(CATALOG_PATH, FileAccess.READ)
+	if file == null:
+		_fail("cannot open file (error %d); check resource/export inclusion" % FileAccess.get_open_error())
+		return
+	var text := file.get_as_text()
+	var read_error := file.get_error()
+	file.close()
+	if read_error != OK and read_error != ERR_FILE_EOF:
+		_fail("cannot read file (error %d)" % read_error)
+		return
+	if text.strip_edges().is_empty():
+		_fail("file is empty")
+		return
+	var parser := JSON.new()
+	if parser.parse(text) != OK:
+		_fail("JSON line %d: %s" % [parser.get_error_line(), parser.get_error_message()])
+		return
+	var error := _catalog_error(parser.data)
+	if not error.is_empty():
+		_fail(error)
+		return
+	# Validate everything before publishing either collection. Numeric JSON values
+	# may be floats; retain the original values to preserve successful generation.
+	var catalog: Dictionary = parser.data
+	var variants: Array = catalog.variants
+	variants.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return a.id < b.id)
+	var by_id: Dictionary = {}
+	for variant: Dictionary in variants:
+		by_id[variant.id] = variant
 	# Conservative whole-envelope rejection, including containment and edge contact.
 	_protected_bounds.append(_bounds(PackedVector2Array(CrashSiteProtection.GAMEPLAY)).grow(VISIBLE_GAP))
 	var intro: ResourceDeposit = preload("res://scenes/world/introductory_ferrite.tres")
 	# Intro artwork has the same 32-world-unit padded registration as the catalog.
 	_protected_bounds.append(_bounds(intro.footprint).grow(32.0 + VISIBLE_GAP))
+	_variants = variants
+	_by_id = by_id
+	_initialization_error = ""
+
+
+func is_ready() -> bool:
+	return _initialization_error.is_empty()
+
+
+func initialization_error() -> String:
+	return _initialization_error
+
+
+func _fail(reason: String) -> void:
+	_initialization_error = "Ferrite catalog %s: %s. Correct the input/package and restart the session." % [CATALOG_PATH, reason]
+	push_error(_initialization_error)
+
+
+static func _whole_number(value: Variant, minimum: int, maximum: int) -> bool:
+	if not (value is int or value is float):
+		return false
+	var number := float(value)
+	return is_finite(number) and number == floor(number) and number >= minimum and number <= maximum
+
+
+static func _pair(value: Variant) -> bool:
+	return value is Array and value.size() == 2
+
+
+# Only fields consumed by generation are checked here. Offline catalog admission
+# still owns mask topology/artwork validation; this is not an authoring compiler.
+static func _catalog_error(data: Variant) -> String:
+	if not data is Dictionary:
+		return "top-level JSON must be an object"
+	var version: Variant = data.get("catalog_version")
+	if not version is String or version != CATALOG_VERSION:
+		return "missing or incompatible catalog_version; expected " + CATALOG_VERSION
+	var variants: Variant = data.get("variants")
+	if not variants is Array or variants.size() != 10:
+		return "variants must be an array of the ten approved entries"
+	var identities: Dictionary = {}
+	var sizes: Dictionary = {}
+	for index in range(variants.size()):
+		var entry: Variant = variants[index]
+		var label := "variants[%d]" % index
+		if not entry is Dictionary:
+			return label + " must be an object"
+		var identity: Variant = entry.get("id")
+		if not identity is String or identity.is_empty() or identities.has(identity):
+			return label + ": id must be a unique nonempty string"
+		identities[identity] = true
+		var size: Variant = entry.get("size_class")
+		var family: Variant = entry.get("shape_family")
+		if not size is String or not ["small", "medium", "large"].has(size):
+			return label + ": invalid size_class"
+		if not family is String or not SHAPE_ORDER.has(family):
+			return label + ": invalid shape_family"
+		sizes[size] = true
+		for field in ["width_cells", "height_cells"]:
+			if not _whole_number(entry.get(field), 1, MAX_REACH_CELLS):
+				return label + ": invalid " + field
+		var scale: Variant = entry.get("display_scale")
+		if not (scale is int or scale is float) or scale != 0.5:
+			return label + ": display_scale must be 0.5"
+		var origin: Variant = entry.get("logical_origin_source_pixels")
+		if not _pair(origin) or not _whole_number(origin[0], 64, 64) or not _whole_number(origin[1], 64, 64):
+			return label + ": logical_origin_source_pixels must be [64,64]"
+		var image: Variant = entry.get("image_size_pixels")
+		if not _pair(image):
+			return label + ": image_size_pixels must be a pair"
+		for axis in range(2):
+			var dimension := int(entry.width_cells if axis == 0 else entry.height_cells)
+			var expected := dimension * CELL * 2 + 128
+			if not _whole_number(image[axis], expected, expected):
+				return label + ": image dimensions do not match logical bounds and padding"
+		var polygon: Variant = entry.get("logical_polygon_world_units")
+		if not polygon is Array or polygon.size() < 3:
+			return label + ": logical_polygon_world_units needs at least three vertices"
+		for vertex: Variant in polygon:
+			if not _pair(vertex) or not _whole_number(vertex[0], 0, int(entry.width_cells) * CELL) \
+					or not _whole_number(vertex[1], 0, int(entry.height_cells) * CELL):
+				return label + ": invalid logical polygon vertex"
+			if int(vertex[0]) % CELL != 0 or int(vertex[1]) % CELL != 0:
+				return label + ": logical polygon vertex is off the terrain grid"
+	if sizes.size() != 3:
+		return "variants must cover small, medium and large size classes"
+	return ""
 
 
 static func _bounds(polygon: PackedVector2Array) -> Rect2:
@@ -133,6 +240,8 @@ static func _precedes(a: Dictionary, b: Dictionary) -> bool:
 # Compare eligible raw candidates, including losers. No recursive acceptance,
 # retries or first-query wins; local minima survive even across region borders.
 func region(owner: Vector2i) -> Array:
+	if not is_ready():
+		return []
 	if absi(owner.x) > MAX_REGION_COORDINATE or absi(owner.y) > MAX_REGION_COORDINATE:
 		return []
 	if _cache.has(owner):
@@ -166,6 +275,8 @@ func region(owner: Vector2i) -> Array:
 # Inclusive broad-phase envelope query, deterministic row-major owner/slot order.
 # Reject oversize requests in full; callers must page explicitly, never truncate.
 func query_is_bounded(area: Rect2) -> bool:
+	if not is_ready():
+		return false
 	if not area.is_finite() or not area.end.is_finite() or area.size.x < 0.0 or area.size.y < 0.0:
 		return false
 	# Reject unrepresentable coordinates before floor/int conversion, and huge
@@ -203,6 +314,8 @@ func query(area: Rect2) -> Array:
 
 
 func descriptor_by_id(deposit_id: StringName) -> Dictionary:
+	if not is_ready():
+		return {}
 	var parts := String(deposit_id).split(":")
 	if parts.size() != 6 or parts[0] != "ferrite" or parts[1] != GENERATION_VERSION:
 		return {}
@@ -221,6 +334,8 @@ func descriptor_by_id(deposit_id: StringName) -> Dictionary:
 # Fresh Resource objects protect cached immutable descriptors from caller edits.
 # Rendering metadata stays in descriptors, never on the simulation Resource.
 func resource(descriptor: Dictionary) -> ResourceDeposit:
+	if not is_ready():
+		return null
 	var variant: Dictionary = _by_id[descriptor.variant_id]
 	var deposit := ResourceDeposit.new()
 	deposit.deposit_id = StringName(descriptor.deposit_id)

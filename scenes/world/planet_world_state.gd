@@ -28,6 +28,14 @@ func get_deposits() -> Array[ResourceDeposit]:
 	return _deposits.duplicate()
 
 
+func is_resource_generation_ready() -> bool:
+	return _ferrite.is_ready()
+
+
+func resource_generation_error() -> String:
+	return _ferrite.initialization_error()
+
+
 func get_deposit_region(owner: Vector2i) -> Array:
 	return _ferrite.region(owner)
 
@@ -79,7 +87,7 @@ func deploy_machine(definition: MachineDefinition, cell: Vector2i, turns: int,
 func deploy_machine_instance(definition: MachineDefinition, cell: Vector2i, turns: int,
 		inventory: InventoryState, player: CharacterBody2D, world: Node2D,
 		construction_range: float) -> int:
-	if _machine_transaction or inventory == null:
+	if not is_resource_generation_ready() or _machine_transaction or inventory == null:
 		return 0
 	if not PlacementRules.rejection(self, definition, cell, turns, player, world,
 			construction_range, inventory).is_empty():
@@ -155,7 +163,7 @@ func get_machine(machine_id: int) -> Dictionary:
 
 
 func machine_status(machine: Dictionary) -> OperatingStatus:
-	if machine.is_empty():
+	if not is_resource_generation_ready() or machine.is_empty():
 		return OperatingStatus.INACTIVE
 	var definition: MachineDefinition = machine.definition
 	if definition.has_recipes():
@@ -261,7 +269,7 @@ func _advance_recipe(machine: Dictionary, delta: float) -> void:
 
 # Called only by persistent PlaythroughState, never by terrain or UI nodes.
 func advance_production(delta: float) -> void:
-	if _machine_transaction or not is_finite(delta) or delta <= 0.0:
+	if not is_resource_generation_ready() or _machine_transaction or not is_finite(delta) or delta <= 0.0:
 		return
 	_machine_transaction = true
 	var changed := false

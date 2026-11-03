@@ -178,8 +178,8 @@ class FerriteRegionStaticTest(unittest.TestCase):
         region = function(SOURCE,'region')
         self.assertEqual(region.count('region('), 1)  # no acceptance recursion
         self.assertIn('if _precedes(other, candidate)', region)
-        self.assertIn('catalog.catalog_version == CATALOG_VERSION', SOURCE)
-        self.assertIn('MAX_REACH_CELLS', function(SOURCE,'_init'))
+        self.assertIn('not version is String or version != CATALOG_VERSION', SOURCE)
+        self.assertIn('MAX_REACH_CELLS', function(SOURCE.replace('static func ', 'func '),'_catalog_error'))
 
     def test_stable_vectors_seed_and_slot_identity(self):
         o = Oracle(-42)
