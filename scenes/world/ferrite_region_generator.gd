@@ -117,6 +117,10 @@ static func _catalog_error(data: Variant) -> String:
 		if not identity is String or identity.is_empty() or identities.has(identity):
 			return label + ": id must be a unique nonempty string"
 		identities[identity] = true
+		var png_path: Variant = entry.get("png_path")
+		var expected_png := CATALOG_PATH.get_base_dir().trim_prefix("res://") + "/" + String(identity) + ".png"
+		if not png_path is String or png_path != expected_png:
+			return label + ": png_path must name the catalog variant PNG"
 		var size: Variant = entry.get("size_class")
 		var family: Variant = entry.get("shape_family")
 		if not size is String or not ["small", "medium", "large"].has(size):
@@ -329,6 +333,13 @@ func descriptor_by_id(deposit_id: StringName) -> Dictionary:
 		if descriptor.deposit_id == String(deposit_id):
 			return descriptor
 	return {}
+
+
+# Presentation reads a copy of the already validated catalog, without image I/O.
+func variant_metadata(variant_id: String) -> Dictionary:
+	if not is_ready() or not _by_id.has(variant_id):
+		return {}
+	return _by_id[variant_id].duplicate(true)
 
 
 # Fresh Resource objects protect cached immutable descriptors from caller edits.

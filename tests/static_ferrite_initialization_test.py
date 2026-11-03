@@ -36,6 +36,8 @@ def validate(data):
         if not isinstance(identity, str) or not identity or identity in ids:
             return 'id'
         ids.add(identity)
+        if entry.get('png_path') != f'assets/environment/exterior/ferrite/catalog_v1/{identity}.png':
+            return 'png_path'
         if entry.get('size_class') not in ('small', 'medium', 'large'):
             return 'size_class'
         if entry.get('shape_family') not in ('rectangle', 'l_shape', 'stepped', 'organic'):
@@ -115,7 +117,7 @@ class FerriteInitializationStaticTest(unittest.TestCase):
                 self.assertEqual((model.variants,model.by_id),([],{}))
 
     def test_missing_consumed_fields_and_malformed_late_entry_are_atomic(self):
-        fields = ('id','size_class','shape_family','width_cells','height_cells',
+        fields = ('id','png_path','size_class','shape_family','width_cells','height_cells',
                   'display_scale','logical_origin_source_pixels','image_size_pixels',
                   'logical_polygon_world_units')
         for field in fields:

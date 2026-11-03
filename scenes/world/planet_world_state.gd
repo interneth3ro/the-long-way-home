@@ -24,7 +24,7 @@ var _recipe_change_pauses: Dictionary[int, RefCounted] = {}
 
 
 func get_deposits() -> Array[ResourceDeposit]:
-	# Authored-only legacy list: current exterior highlighting stays unchanged.
+	# Authored-only legacy list; spatial consumers use get_deposits_in_area.
 	return _deposits.duplicate()
 
 
@@ -40,9 +40,14 @@ func get_deposit_region(owner: Vector2i) -> Array:
 	return _ferrite.region(owner)
 
 
-# Broad-phase illustrated-envelope query for future bounded presentation.
+# Broad-phase illustrated-envelope query for bounded presentation.
 func query_deposit_descriptors(area: Rect2) -> Array:
 	return _ferrite.query(area)
+
+
+# A copy of validated catalog registration; no textures or nodes in simulation.
+func get_deposit_variant(variant_id: String) -> Dictionary:
+	return _ferrite.variant_metadata(variant_id)
 
 
 func get_deposits_in_area(area: Rect2) -> Array[ResourceDeposit]:

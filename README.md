@@ -2826,12 +2826,17 @@ depending on artwork or disposable terrain chunks. Deposits are infinite,
 uniform and nondepleting; existing Extractor production is unchanged.
 Definitions are shared immutable content; discovery belongs to PlaythroughState.
 
-Ferrite Milestone 2 adds [deterministic region data and bounded lookup](docs/FERRITE_REGION_GENERATION.md)
-on this feature branch, pending review and merge. get_deposits() remains
-authored-only for current highlights. Generated Ferrite resolves lazily through
-the existing identity/extraction-point APIs without an exterior node; new bounded
-queries prepare data for future presentation. No generated artwork is displayed.
-Validation is static/offline only; Godot execution and performance remain unverified.
+Ferrite Milestone 2's [deterministic region data and bounded lookup](docs/FERRITE_REGION_GENERATION.md)
+merged in PR #126 with owner startup/gameplay smoke-test acceptance.
+Milestone 3A's [nearby artwork and exact construction highlights](docs/FERRITE_REGION_GENERATION.md#milestone-3a-presentation-and-highlighting--feature-branch-pending-merge)
+are implemented on this feature branch, pending owner acceptance and merge.
+Generated fields use shared catalog textures at registered 0.5 scale, with
+stable-ID deduplication and whole-image retention across chunk/region boundaries.
+`get_deposits()` stays authored-only; presentation/highlights use bounded spatial
+queries. Simulation remains independent of sprites. 3A validation is static/offline
+only; Godot parsing/import, clipping, visuals, gameplay, memory and performance
+remain unverified. Hybrid preparation, lookahead and loading optimization belong
+to 3B; no loading screen is added.
 
 The mineral area is separate from the decorative outline. Two adjacent
 64 x 64 footprints at (192, 192) and (256, 192) fit inside it. The introductory
