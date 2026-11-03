@@ -3,9 +3,14 @@
 [Ferrite artwork prototype v1](docs/FERRITE_ARTWORK_PROTOTYPE_V1.md#owner-acceptance-2026-11-02)
 received owner visual/architecture acceptance on 2026-11-02 at `1662a61`, including
 6x4 and 10x6 rectangular examples and connected L-shaped, stepped and grid-cluster
-assembly proofs with documented limitations. PR #123 remains draft and unmerged.
-Production integration and in-game verification remain deferred; no Godot execution
-or gameplay change is included in this offline prototype.
+assembly proofs with documented limitations. PR #123 merged at `87ca973`.
+The [production integration](docs/FERRITE_ARTWORK_PROTOTYPE_V1.md#production-integration-feature-branch-pending-merge)
+is prepared on this feature branch. Owner graphical acceptance is **PASS** at
+`2850c3b`: the artwork renders correctly and is accepted for production. Its
+contrast with the restrained terrain and placeholder Extractor is an accepted
+temporary visual-cohesion limitation. Reevaluate after further environmental and
+machine artwork; do not alter Ferrite solely to match current placeholders.
+Merge still requires explicit owner approval.
 
 Stage 2A repository housekeeping merged in PR #114. Historical evidence
 sanitization is prepared on this feature branch, pending owner acceptance and merge.
@@ -2802,29 +2807,29 @@ these checks; agent static results do not establish gameplay acceptance.
 
 ## First Ferrite - Discovery (PR #28, merged)
 
-One authored Ferrite deposit lies east/southeast of the hatch, centered near
-(288, 256), approximately three seconds' direct walking distance from FromShip.
-Provisional dark slate-gray ground and silver veins distinguish it from terrain.
-The patch is broadly oval with modest edge variation. The introductory inspection
-region has no artwork; the same mineral ground and veins remain visible before
-and after discovery. The separate raised discovery formation is removed by this
-refinement. Existing ship, hatch, spawn and rocks are unchanged. Protected gameplay
-geometry suppresses procedural details over the patch and its approach for every
-seed.
+One authored Ferrite deposit lies east/southeast of the hatch. The pending
+production integration replaces the oval placeholder with the approved Faceted
+Ferrite v1 slightly raised mineral shelf. Its logical 10x6 terrain-cell rectangle
+runs from (128,128) to (768,512), centered at (448,320). The inspection point stays
+at (304,280), preserving the opening approach. Artwork and the invisible inspection
+region remain unchanged by discovery. Existing ship, hatch, spawn, rocks and
+protected clearing are unchanged; the larger field and immediate access apron
+already fit inside that protection. See the
+[registration and owner checklist](docs/FERRITE_ARTWORK_PROTOTYPE_V1.md#production-integration-feature-branch-pending-merge).
 
 `PlanetWorldState` owns a read-only authored `ResourceDeposit` definition from
 `scenes/world/introductory_ferrite.tres`: stable ID `crash_site_ferrite`, resource
 type `ferrite`, and a mineral-bearing polygon in planet world coordinates. Its
-bounds are (128, 144) to (448, 368). `get_deposit(id)` and
+bounds are (128, 128) to (768, 512) on this feature branch. `get_deposit(id)` and
 `deposit_at(world_point, resource_type)` query identity and mineral ground without
 depending on artwork or disposable terrain chunks. Deposits are infinite,
-uniform and nondepleting; no quantity, yield or extraction simulation exists.
+uniform and nondepleting; existing Extractor production is unchanged.
 Definitions are shared immutable content; discovery belongs to PlaythroughState.
 
-The mineral area is separate from the decorative outline. Two future adjacent
+The mineral area is separate from the decorative outline. Two adjacent
 64 x 64 footprints at (192, 192) and (256, 192) fit inside it. The introductory
-invisible inspection region at (304, 280), radius 24, sits at the silver-vein
-junction within mineral-bearing ground and occupies no construction cells.
+invisible inspection region at (304, 280), radius 24, remains within mineral-bearing
+ground and occupies no construction cells.
 The independent construction cell is 32 x 32; Extractors occupy 2 x 2 cells.
 Only a designated extraction point
 must overlap compatible mineral ground; the remaining footprint may extend off
@@ -2833,7 +2838,7 @@ Every valid extraction point has equal richness. Construction validation,
 compatible-deposit highlights and placement previews are added by the deployment
 feature below.
 
-Approach the silver-veined part of the deposit to see **E - Examine mineral
+Approach the western inspection point of the deposit to see **E - Examine mineral
 deposit** (an em dash is displayed in-game). The invisible Area2D reuses
 WorldInteractable and the detector's normal 120-unit target-point range,
 nearest-target selection and obstruction ray. No mouse targeting or exact

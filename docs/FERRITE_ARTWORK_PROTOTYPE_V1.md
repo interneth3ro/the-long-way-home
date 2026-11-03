@@ -1,8 +1,9 @@
 # Ferrite artwork prototype v1
 
-Owner-accepted offline artwork prototype on the PR #123 feature branch, pending
-merge. No production integration or Godot execution. All images, including their
-earlier pending-acceptance captions, are preserved unchanged; the record below
+Owner-accepted offline artwork prototype, merged in PR #123 at `87ca973`.
+The prototype itself involved no production integration or Godot execution.
+All images, including their earlier pending-acceptance captions, are preserved
+unchanged; the record below
 supersedes those status captions.
 
 ## Owner acceptance: 2026-11-02
@@ -16,7 +17,7 @@ and close-ups, with the documented limitations retained.
 
 This is owner visual/architecture acceptance of the isolated offline prototype.
 It does not claim in-game verification, authorize production integration or
-procedural distribution, or request a merge. PR #123 remains draft and unmerged.
+procedural distribution, or request a merge. PR #123 subsequently merged.
 The prior offline validation results at the reviewed commit remain the technical
 evidence; this documentation-only acceptance update does not rerun generation or
 Godot checks.
@@ -263,3 +264,88 @@ owner verification. No engine, gameplay or performance PASS is claimed. Producti
 terrain, resource geometry, clearing, simulation, Extractor and placement are
 unchanged. Retain the source and previews for comparison; acceptance does not
 request redesign or cleanup.
+
+## Production integration (feature branch, pending merge)
+
+The production exterior uses one static Sprite2D below `FerriteGround` (Z -5),
+above terrain (Z -11/-10), below construction highlights (Z -4), Dave and machines.
+It has no terrain tint shader or modulation. The four polygon/line placeholder
+nodes are removed. The original prototype, components, masks and authoring tools
+remain unchanged behind their `.gdignore`.
+
+The sole production asset is a byte-for-byte copy of the approved
+[large preview](../assets/experiments/ferrite_artwork_v1/previews/large_10x6.png) at
+[faceted_ferrite_10x6.png](../assets/environment/exterior/ferrite/faceted_ferrite_10x6.png).
+SHA-256: `82442d7e11eaf4483202ff22b22060efa4c2f638e66f30694d8b527dd1961c75`.
+The preview remains the authoring source of truth; future approved revisions must
+update the production copy explicitly. No regeneration, repainting or recoloring
+was performed. Keeping only this final PNG outside the ignored package makes it
+importable without exposing the experimental tools and review images to Godot.
+
+| Registration | Value |
+| --- | --- |
+| Logical bounds in exterior world units | `(128,128)..(768,512)` |
+| Terrain cells | X 2..11, Y 2..7: exactly 10x6 |
+| Logical dimensions | 640x384 world units, 20x12 construction cells |
+| PNG canvas | 1408x896 RGBA source pixels |
+| Logical source origin and size | `(64,64)`, 1280x768 pixels |
+| Sprite canvas origin | `(96,96)`, `centered = false` |
+| Uniform display scale | 0.5; 128 source pixels per 64-unit terrain cell |
+| Displayed canvas bounds, including margins | `(96,96)..(800,544)` |
+| Inspection | unchanged `(304,280)`, radius 24, ID `crash_site_ferrite` |
+
+The expanded field stays east/southeast of the ship, retains the original western
+inspection approach from spawn `(-384,-64)` and leaves the hatch `(-384,-176)`
+clear. Its full canvas and a 64-unit logical access apron fit inside the existing
+protected gameplay polygon. Both authored rocks are remote from the field.
+Procedural details there are already suppressed; generated details elsewhere are
+decorative and noncolliding. No clearing, gradients, terrain assets, resolver,
+shading, streaming, navigation or environmental collisions change.
+
+`introductory_ferrite.tres` retains `crash_site_ferrite`, type `ferrite` and its
+highlight color. Its axis-aligned rectangle alone controls membership and the
+existing chunk-clipped compatible-resource highlights. Decorative alpha may
+recede within or overhang the rectangle; it never controls mining. Discovery,
+objective progression and interaction scripts are unchanged. Extractors remain
+2x2 construction cells with the existing designated extraction-point rule,
+rotations, overlap/solid/range checks and all production behavior. Full containment
+is not required. Adjacent nonoverlapping Extractors can share this deposit.
+
+Offline checks inspect exact geometry, image identity/header, registration,
+resource reachability, protected coverage, representative extraction-point cases,
+unchanged gameplay contracts and the scoped diff. They do not execute GDScript or
+establish Godot import success, physics, visual quality or performance. No Godot
+execution is authorized for this milestone. Procedural distribution remains a
+future milestone requiring varied connected irregular grid-conforming deposits;
+no runtime compositor or procedural ore generator is introduced here.
+
+### Owner acceptance checklist (reference)
+
+- Exterior loads and imports the new texture successfully.
+- Approved artwork appears at the intended location with no old placeholder.
+- Surface, shallow edges and contact shading suit Weathered Earth and Low Green Cover.
+- Dave and Extractors render correctly above the mineral surface.
+- Construction highlights match the rectangular mineable area.
+- Valid interior/edge extraction points work; outside points are rejected.
+- Multiple adjacent Extractors work; overlap and obstacle rejection remain intact.
+- Discovery remains accessible and advances the opening objective normally.
+- Mining, production, ship access and nearby walking remain normal.
+- No obvious performance regression during ordinary play.
+
+### Owner graphical acceptance: 2026-11-02
+
+The owner reports **PASS** for the integration at
+`2850c3b082ec39383967bd267b34c8059fa592c7`: the approved Faceted Ferrite artwork
+renders correctly and is accepted for production.
+
+Its high-detail illustrated appearance contrasts noticeably with the intentionally
+restrained terrain and placeholder Extractor. The owner accepts this as a
+**temporary visual-cohesion limitation**. Reevaluate after additional environmental
+and machine artwork is integrated; do not alter Ferrite solely to match the
+current placeholders.
+
+This records owner graphical acceptance, separately from the earlier agent offline
+checks. No individual gameplay checklist results, new performance measurements or
+agent engine execution are claimed. This documentation update changes no artwork,
+scene, resource geometry or gameplay. Explicit merge approval remains required;
+PR #124 remains draft and unmerged.
