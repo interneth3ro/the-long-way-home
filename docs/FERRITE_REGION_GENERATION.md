@@ -1,6 +1,8 @@
 # Ferrite Milestone 2: deterministic region data
 
-Feature-branch implementation, pending owner review and merge. Uses the ten
+Owner-accepted local-development milestone, pending final documentation review
+and merge. Runtime acceptance is recorded below for reviewed commit `366378a`.
+Uses the ten
 accepted variants from merged PR #125's [catalog](FERRITE_SHAPE_CATALOG_V1.md).
 Procedural deposits have data and lookup; they have no production artwork nodes,
 discovery interactions or highlights yet. The introductory deposit, progression,
@@ -88,25 +90,33 @@ arrival hooks do not return a general initialization result; blocking at startup
 avoids adding a loading/error framework or changing transition behavior. Recovery
 requires correcting the input/package and restarting; there is no new error UI.
 
+The raw FileAccess input is
+`res://assets/environment/exterior/ferrite/catalog_v1/catalog.json`.
 No `export_presets.cfg` or catalog `.json.import`/Keep override is present in the
 reviewed checkout, and `project.godot` supplies no raw-catalog export inclusion.
 The raw FileAccess path is not automatically a ResourceLoader dependency merely
 because a script names it. Exported availability is therefore **not established**.
-Before exporting, the owner should approve adding the exact non-resource include
+**Before the first exported-build acceptance, ensure the Ferrite catalog JSON is
+included in every applicable export preset and verify successful catalog
+initialization in an actual exported build.** This is a deferred export-readiness
+requirement, not a blocker for the accepted local-development milestone.
+The owner should approve adding the exact non-resource include
 filter `assets/environment/exterior/ferrite/catalog_v1/catalog.json` to each
 applicable export preset, then verify its raw availability and successful startup
 in the actual export. Godot documents non-resource JSON inclusion in its
 [export resource options](https://docs.godotengine.org/en/4.7/tutorials/export/exporting_projects.html#resource-options).
 No export setting, import metadata, dependency or artwork was changed here.
 Missing packaged input will block startup with an actionable error rather than
-silently changing procedural results. Actual Godot 4.7 parsing, release failure
-handling, scene-tree pause behavior and export packaging remain owner acceptance
-items requiring separately authorized engine execution.
+silently changing procedural results. The owner has confirmed successful local
+Godot parsing/startup in the acceptance below. Injected initialization failures,
+release failure handling, scene-tree pause behavior on failure and export
+packaging remain unverified and require separately authorized engine execution.
 
 ## Initial tuning and bounded conflict policy
 
-These are conservative **engineering defaults**, not owner-approved numeric
-abundance targets or measured density/performance results:
+These are conservative, provisional **engineering defaults**, not owner-approved
+numeric abundance targets or measured density/performance results. They remain
+subject to future distribution and performance tuning:
 
 | Parameter | Initial value and purpose |
 | --- | --- |
@@ -217,11 +227,41 @@ top-level/version/types, missing consumed fields, duplicate IDs, size coverage,
 registration and numeric constraints, plus source checks for atomic publication,
 readiness guards and blocked startup. Python's parser is not a Godot parser test.
 
-No Godot editor, game, headless process, import, benchmark or profiling was run.
-Engine parsing, runtime reconstruction/cache behavior, boundary membership,
-concave Geometry2D clipping, exported JSON availability and performance remain
-unverified. No performance PASS or gameplay/graphical acceptance is claimed.
-Milestone 3 requires explicit owner authorization for engine/graphical checks.
+The agent ran no Godot editor, game, headless process, import, benchmark or
+profiling. The owner's separate runtime smoke-test results are recorded below.
+Exhaustive runtime determinism, reconstruction/cache behavior, boundary
+membership, concave Geometry2D clipping, exported JSON availability and performance
+benchmarks remain unverified. Further engine/graphical checks require explicit
+owner authorization.
 Catalog variety remains ten. Presentation/highlights, visual retirement,
 preloading/loading screens, world maps and distance-based size progression remain
 deferred.
+
+## Final owner runtime acceptance — 2026-11-02
+
+The owner reports **6/6 acceptance checks PASS, zero failures** for reviewed
+implementation `366378a5090d2fb4b34a1d9d28ab32430b948a04` on 2026-11-02
+(America/Chicago). The owner accepts Milestone 2's deterministic region-generation
+architecture and corrected catalog initialization behavior.
+
+1. Godot project opens without GDScript parser errors.
+2. Session startup succeeds without Ferrite catalog initialization errors.
+3. Ship interior and exterior transitions work normally.
+4. Introductory Ferrite and discovery remain functional.
+5. Extractor placement and mining remain functional.
+6. No obvious startup delay or gameplay stutter was observed.
+
+These are owner-reported runtime results, separate from the previously completed
+agent static suite (**246/246 PASS**), focused Ferrite checks (**28/28 PASS**) and
+corrective code review (**PASS**). The acceptance documentation update preserves
+the reviewed implementation and all generation policy values.
+
+The absence of observed delay/stutter is a smoke-test observation, not a benchmark
+or measured performance guarantee. This acceptance does not establish procedural
+deposit graphical presentation, exhaustive runtime determinism or exported-build
+compatibility. The export-readiness requirement above remains deferred; no export
+preset is created or changed by this PR. Engineering defaults remain provisional.
+
+PR #126 is prepared for owner review and a normal **merge commit** through GitHub.
+No automatic merge is authorized. Post-merge cleanup belongs in the separate
+cleanup conversation and is not part of this acceptance update.
