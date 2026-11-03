@@ -73,6 +73,10 @@
   `4f1dcaf8d565d657d354f8ba672fa6ed681fa072`: preparation passed, but the smoke
   script failed to parse. The inactive gate was restored without fixing/retrying
   the test. Any further metadata invocation requires new explicit owner approval.
+  A second separately authorized invocation, based on reviewed `43f0fad`, was
+  consumed at `a38ae0249495587213a945622b9aef2b2de5f6c2`: preparation passed;
+  the smoke ran but reported two `golden prepare` assertion failures. No fix or
+  retry followed; the gate is inactive again. Neither grant permits another run.
   No metadata import, execution, real-stage creation, or numerical certification
   is authorized by this implementation or its inert/static checks. Separate
   explicit owner approval and a reviewed activation amendment are required;

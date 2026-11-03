@@ -358,9 +358,8 @@ function Invoke-RestrictedNativeDispatch {
 function Assert-NativeExecutionAuthorization {
     [CmdletBinding()]
     param([switch]$Metadata)
-    # Second one-time owner authorization against reviewed 43f0fad (2026-11-03).
-    # Exactly one supervised invocation; previous grant consumed; restore gate afterward.
-    if ($Metadata) { return }
+    # Workflow gate: the draft extension has no engine execution authorization.
+    if ($Metadata) { throw 'MetadataSmoke requires separate explicit owner execution authorization; draft recipe inactive.' }
 }
 
 function Assert-ReviewedNativeRunner {

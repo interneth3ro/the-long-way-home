@@ -231,3 +231,15 @@ records the exact invocation, failure, retained stage/evidence and post-run
 preservation results. Preparation PASS does not establish successful parsing or
 execution of the metadata builder. This failure adds no runtime parity,
 malformed-input, numerical or production-integration acceptance.
+
+A second separately authorized invocation after the focused seed annotation ran
+at `a38ae0249495587213a945622b9aef2b2de5f6c2`. Static validation passed 350 tests
+in 246.382 seconds; preparation passed; the smoke script parsed and ran to
+completion with two `golden prepare` failures. Other metadata and representative
+malformed-input rejection assertions executed without reported failures, but
+**overall metadata runtime validation remains FAIL**. The failing vector/error
+identities are not retained by those diagnostics, so no cause is claimed or fixed.
+See the [second execution record](../LOCAL_TESTING.md#second-one-time-metadata-execution-result-2026-11-03)
+for the exact results and preserved new stage/evidence. No automatic retry occurred;
+the inactive gate is restored and both grants are consumed. Numerical certification
+and Stage 3B integration remain unproven and unauthorized.

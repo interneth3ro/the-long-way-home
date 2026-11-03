@@ -387,3 +387,62 @@ the inert runner fixtures are the non-engine validation; exact command/results
 are recorded in PR #139. Runtime parsing, metadata generation and malformed-input
 rejection remain unverified until separately authorized execution. No numerical
 certification or Stage 3B integration is authorized by this correction.
+
+## Second one-time metadata execution result (2026-11-03)
+
+The owner separately authorized one additional supervised invocation against
+reviewed HEAD `43f0fad4ad238ef798b71c7e78ab859e4b4aef28`. Only the metadata
+authorization branch was temporarily changed, in activation commit
+`a38ae0249495587213a945622b9aef2b2de5f6c2`. Exact source comparison confirmed
+that all 32 input paths and bytes, the two aliases, test assertions, Native
+behavior, static selection/PASS gate, 360-second static deadline, 60/30-second
+engine commands/limits, supervision, identity and evidence controls were unchanged.
+An inert gate/side-effect check and PowerShell AST check passed; the test suite
+and its assertions were not changed for this activation.
+
+Exactly one invocation was made:
+
+```powershell
+pwsh -NoProfile -File tools/run-local-tests.ps1 -Mode MetadataSmoke
+```
+
+| Check | Actual result |
+| --- | --- |
+| Complete Python static suite under 360 seconds | PASS: 350 tests, 246.382 seconds, exit 0, 513 output bytes |
+| Headless editor preparation under 60 seconds | PASS |
+| Smoke command under 30 seconds | FAIL: NONZERO_EXIT; two `golden prepare` assertion failures |
+| Smoke-script parsing and execution | Succeeded; reached the completion print |
+| Metadata generation, layout/parity, halo, seed, ownership/envelope, repeatability/copy assertions | Executed; no failures reported outside the two golden preparations |
+| Representative malformed-input rejection assertions | Executed; no failures reported |
+| Completion output | `TLWH_METADATA_SMOKE_V1 failures: 2`; required zero-failure result not met |
+| Overall runner | Exit 1; Static=PASS, Import=PASS, Native=FAIL, Infrastructure=FAIL, Authorization=PASS |
+
+The two stderr diagnostics were both `SMOKE_FAIL: golden prepare`. They do not
+identify the failing vectors or returned errors. No cause is inferred or fixed
+in this execution task. The script parsed, invoked the real metadata builder, instantiated the production
+generator and exercised the rejection checks, but **overall metadata
+runtime validation remains FAIL**. These partial results do not establish a
+passing golden suite, numerical protection, GPU parity or production acceptance.
+The existing failure format does not retain numeric child exit code or per-phase
+elapsed/output-byte totals; no such values are inferred.
+
+The new retained stage is
+`D:\GameDev\Godot\TLWH-NativeStages\tlwh-native-plan-a4ca78ba7db646f282f04144895e9138`;
+it is distinct from, and did not reuse, the earlier failed stage. Local ignored
+failure evidence capture succeeded at
+`artifacts/logs/native-failure-cd532128e7494e078edcd44b1a1cf293.json`, SHA-256
+`F4955B08161380080B996AD5AA036744D43C5B3975305C097586CE3A1612C107`.
+The input digest is
+`E728F9AD38BD26BDA2B3B5192965E83F7FDEC8673B7762F2C628EBF6D90C5CAB`.
+Both stage and raw evidence remain local/preserved; the evidence is not committed.
+
+After failure, no fix or retry was attempted. The inactive gate was restored
+exactly to reviewed `43f0fad` source. Both one-time grants are consumed. Any new
+engine invocation needs new explicit owner approval. Post-run read-only checks
+passed for all 32 source/stage hashes, input/working-state digests, executable,
+allowed generated inventory, clean tracked/index state, 15 protected sidecars,
+A1 branch, three annotated tag objects/targets, backup bundle, C1 source hashes,
+original/refined diagnostic manifests and 7+3 output hashes. The prior failure
+evidence SHA-256 and earlier stage's 32-file digest also remain unchanged.
+No gameplay, unrelated engine command, production modification, numerical/GPU
+certification, presenter integration, merge or repository cleanup occurred.
