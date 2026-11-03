@@ -199,10 +199,11 @@ part of this task.
 
 The feature branch adds one `MetadataSmoke` recipe to the existing supervised
 local runner. Its metadata-only review controls leave Native's recipe-switching
-behavior unchanged. The draft authorization gate rejects it before any process
-or real stage; separate explicit owner approval and a reviewed activation
-amendment are required. **No Godot invocation, parsing, instantiation or actual
-metadata smoke execution has occurred in this task.**
+behavior unchanged. On 2026-11-03 the owner separately approved a metadata-only
+activation amendment based on `33ea31be2aee7f9aa07405e441d61a8b855437a7` and
+one supervised invocation after preflight. The gate is temporarily open for that
+invocation only and must be restored inactive afterward. No execution result is
+claimed by the activation amendment; stop on failure without retry.
 
 The [exact staging/commands and owner execution checklist](../LOCAL_TESTING.md#fixed-metadata-smoke-extension-draft-unexecuted)
 freeze an asset-free 32-file dependency closure: complete production scripts/types,

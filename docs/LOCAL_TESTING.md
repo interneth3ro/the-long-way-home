@@ -180,10 +180,13 @@ and needs review. A failed first invocation must not be retried automatically.
 ## Fixed metadata smoke extension (draft, unexecuted)
 
 Stage 3A-2 adds `MetadataSmoke` to the existing runner on this feature branch,
-pending review/merge. **It is inactive:** the authorization gate rejects it
-before prerequisites, subprocesses or staging. Do not invoke it for this PR.
-A separate explicit owner execution approval and reviewed gate amendment are
-required. There is no override flag, environment switch or approval file.
+pending review/merge. On 2026-11-03 the owner authorized **one supervised
+MetadataSmoke invocation only**, after a metadata-only activation amendment based
+on `33ea31be2aee7f9aa07405e441d61a8b855437a7` and passing all preflight checks.
+The gate is temporarily open for that invocation; restore it inactive afterward.
+There is no standing metadata authorization, override flag, environment switch
+or approval file. Stop on failure without retry. No execution result is claimed
+by the activation amendment itself.
 `Static`, `NativePlan` and `Native` keep their existing recipe-switching behavior,
 command arrays, allowlist and review controls. Metadata-specific review paths are
 appended only for `MetadataSmoke`.
@@ -193,13 +196,13 @@ validation on 2026-11-03. MetadataSmoke therefore has a fixed **360-second**
 bounded Python static-suite deadline. `Static`, `NativePlan` and `Native` retain
 **60 seconds**. Test selection, actual PASS/zero-exit/termination-certainty
 requirements, output limits and the stop-before-staging/dispatch failure gate
-are unchanged. This deadline amendment does not activate MetadataSmoke. The
+are unchanged. The separate one-time authorization above does not expand them. The
 planned Godot preparation/smoke deadlines remain **60/30 seconds**, respectively.
 
 The metadata recipe uses the same identity capture, pre-static hashes, actual
 Python PASS requirement, reviewed-control checks, fresh external stage, sequential
 bounded supervisor, failure evidence, final identity checks and no-retry rules.
-Its only commands, **planned but NOT RUN**, are:
+Its only authorized commands for the one-time invocation are:
 
 | Phase | Exact arguments | Deadline | Combined output |
 | --- | --- | --- | --- |
@@ -208,7 +211,7 @@ Its only commands, **planned but NOT RUN**, are:
 
 Both use `<stage>` as working directory and the pinned executable listed above.
 Preparation is intentional: import-free global script-class discovery has not
-been established. This task has not run even a version/help probe. Normal zero
+been established. No version/help probe is authorized. Normal zero
 exit and no engine/script/parse/assertion errors are required in both phases.
 Smoke PASS additionally requires exactly one completion line, the final nonempty
 stdout line: `TLWH_METADATA_SMOKE_V1 failures: 0`. Missing, duplicate, malformed,
