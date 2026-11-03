@@ -20,6 +20,7 @@ var _revision: int = -1
 var _preparing: bool = false
 var _machine_presenters: Dictionary[int, DeployedMachine] = {}
 var _highlights: Node2D
+var _ferrite_presenter: FerriteDepositPresenter
 var _construction_definition: MachineDefinition
 var _effective_renderer: TerrainRenderer = TerrainRenderer.LEGACY
 var _renderer_configured: bool = false
@@ -42,6 +43,10 @@ func prepare_for_arrival(player: CharacterBody2D, state: PlanetWorldState) -> vo
 	_configure_terrain_renderer()
 	_player = player
 	_state = state
+	if _ferrite_presenter == null:
+		_ferrite_presenter = FerriteDepositPresenter.new()
+		_ferrite_presenter.z_index = -5
+		add_child(_ferrite_presenter)
 	if not _state.machines_changed.is_connected(_queue_machine_sync):
 		_state.machines_changed.connect(_queue_machine_sync)
 	_sync_machines()
@@ -105,6 +110,12 @@ func _update_neighborhood() -> void:
 				_pending.append(coordinate)
 	_pending.sort_custom(func(a: Vector2i, b: Vector2i) -> bool:
 		return _distance(a, center) < _distance(b, center))
+	var presented := _ferrite_presenter.refresh(_state, _retained_presentation_area())
+	if not presented.ok:
+		_stop_terrain(presented)
+		push_error("Exterior Ferrite presentation blocked: " + str(presented))
+		get_tree().paused = true
+		return
 	_refresh_highlights()
 
 
@@ -275,28 +286,47 @@ func set_construction_definition(definition: MachineDefinition) -> void:
 	_refresh_highlights()
 
 
+# Planet-local square, independent of which terrain requests have completed.
+func _retained_presentation_area() -> Rect2:
+	var radius := loading_radius + retention_margin
+	return Rect2(Vector2(_center - Vector2i.ONE * radius) * WorldCoordinates.CHUNK_SIZE,
+		Vector2.ONE * (2 * radius + 1) * WorldCoordinates.CHUNK_SIZE)
+
+
 func _refresh_highlights() -> void:
 	if _highlights == null:
 		return
 	for child in _highlights.get_children():
 		_highlights.remove_child(child)
 		child.queue_free()
-	if _construction_definition == null or _state == null:
+	if _construction_definition == null or _state == null or _chunks.is_empty():
 		return
-	for deposit in _state.get_deposits():
+	var nearby: Dictionary[StringName, ResourceDeposit] = {}
+	for page in FerriteDepositPresenter.query_areas(_retained_presentation_area()):
+		for deposit in _state.get_deposits_in_area(page):
+			nearby[deposit.deposit_id] = deposit
+	for deposit: ResourceDeposit in nearby.values():
 		if not _construction_definition.compatible_resources.has(deposit.resource_type):
 			continue
-		for coordinate in _chunks:
-			var start := Vector2(coordinate) * WorldCoordinates.CHUNK_SIZE
-			var end := start + Vector2.ONE * WorldCoordinates.CHUNK_SIZE
-			var boundary := PackedVector2Array([start, Vector2(end.x, start.y), end,
-				Vector2(start.x, end.y)])
-			# Exact mineral geometry clipped to loaded presentation, never its bounds.
-			for polygon in Geometry2D.intersect_polygons(deposit.footprint, boundary):
-				var highlight := Polygon2D.new()
-				highlight.polygon = polygon
-				highlight.color = deposit.construction_highlight
-				_highlights.add_child(highlight)
+		var bounds := FerriteRegionGenerator._bounds(deposit.footprint)
+		var first := WorldCoordinates.world_to_chunk(bounds.position)
+		var last := WorldCoordinates.world_to_chunk(bounds.end)
+		# Visit footprint chunk candidates only, never explored deposits x chunks.
+		for y in range(first.y, last.y + 1):
+			for x in range(first.x, last.x + 1):
+				var coordinate := Vector2i(x, y)
+				if not _chunks.has(coordinate):
+					continue
+				var start := Vector2(coordinate) * WorldCoordinates.CHUNK_SIZE
+				var end := start + Vector2.ONE * WorldCoordinates.CHUNK_SIZE
+				var boundary := PackedVector2Array([start, Vector2(end.x, start.y), end,
+					Vector2(start.x, end.y)])
+				# All pieces of the actual concave footprint; decorative rims stay empty.
+				for polygon in Geometry2D.intersect_polygons(deposit.footprint, boundary):
+					var highlight := Polygon2D.new()
+					highlight.polygon = polygon
+					highlight.color = deposit.construction_highlight
+					_highlights.add_child(highlight)
 
 
 func _distance(a: Vector2i, b: Vector2i) -> int:

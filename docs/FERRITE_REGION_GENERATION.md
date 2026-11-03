@@ -1,11 +1,13 @@
 # Ferrite Milestone 2: deterministic region data
 
-Owner-accepted local-development milestone, pending final documentation review
-and merge. Runtime acceptance is recorded below for reviewed commit `366378a`.
+Owner-accepted local-development Milestone 2 merged in PR #126.
+Runtime acceptance is recorded below for reviewed commit `366378a`.
 Uses the ten
 accepted variants from merged PR #125's [catalog](FERRITE_SHAPE_CATALOG_V1.md).
-Procedural deposits have data and lookup; they have no production artwork nodes,
-discovery interactions or highlights yet. The introductory deposit, progression,
+Milestone 3A presentation/highlighting is implemented on the feature branch,
+owner graphical/gameplay acceptance is approved (8/8 PASS), pending merge;
+see its scope and dated acceptance record below.
+Generated deposits have no discovery interactions. The introductory deposit, progression,
 machine calculations and terrain generation remain unchanged.
 
 ## Ownership and reconstruction
@@ -182,11 +184,12 @@ still uses `Geometry2D.is_point_in_polygon` and the existing extraction-point ru
 
 | World-state API | Semantics |
 | --- | --- |
-| `get_deposits()` | Existing authored-only list; no generated enumeration. Current highlights retain their existing scope. |
+| `get_deposits()` | Existing authored-only list; no generated enumeration. Spatial presentation/highlights use bounded area APIs. |
 | `get_deposit(id)` | Authored identity first, then strict current-seed/version generated reconstruction. Unknown, rejected or noncanonical IDs return null. |
 | `deposit_at(point, type)` | Authored membership first, then bounded generated Ferrite lookup and logical polygon membership; independent of exterior/chunk existence. |
 | `get_deposit_region(owner)` | Immutable generated descriptors for this canonical owner only, including its cross-boundary deposits. Lazy preparation hook. |
 | `query_deposit_descriptors(area)` | Generated-only broad phase: illustrated envelopes intersecting the inclusive area, row-major owner then slot order. |
+| `get_deposit_variant(variant_id)` | Deep copy of validated catalog metadata, or empty for unknown/unready input; forwards `FerriteRegionGenerator.variant_metadata`. No image loading in simulation. |
 | `get_deposits_in_area(area)` | Authored resources whose footprint bounds intersect plus generated resources from the illustrated-envelope broad phase. Precise clipping/membership is the caller's responsibility. |
 
 Areas must be finite, with nonnegative size; point rectangles are allowed. The
@@ -201,9 +204,9 @@ performs at most 3,456 raw slot evaluations before cache reuse. Temporary neighb
 arrays never become persistent entries. Eviction discards only reconstructible
 descriptors, never machines, discovery or exploration state.
 
-No per-frame enumeration or preparation is added. Milestone 3 should use spatial
-queries for highlights rather than multiplying all explored deposits by loaded
-chunks. Coordinates retain Godot's finite Vector2/Vector2i representation; lazy
+Milestone 3A uses bounded spatial queries for artwork/highlights rather than
+multiplying all explored deposits by loaded chunks. Coordinates retain Godot's
+finite Vector2/Vector2i representation; lazy
 unbounded-world generation does not provide arbitrary-precision coordinates.
 Direct owner requests beyond ±44,739,240 return empty to avoid terrain-cell
 integer overflow. Area queries also reject coordinates outside the corresponding
@@ -233,9 +236,145 @@ Exhaustive runtime determinism, reconstruction/cache behavior, boundary
 membership, concave Geometry2D clipping, exported JSON availability and performance
 benchmarks remain unverified. Further engine/graphical checks require explicit
 owner authorization.
-Catalog variety remains ten. Presentation/highlights, visual retirement,
-preloading/loading screens, world maps and distance-based size progression remain
-deferred.
+Catalog variety remains ten. Milestone 3A's presentation/highlight implementation
+and final owner acceptance are described below. Deliberate preloading,
+lookahead/loading behavior and performance optimization belong to 3B; loading
+screens, world maps and distance-based size progression are not added here.
+
+## Milestone 3A presentation and highlighting — feature branch, pending merge
+
+[FerriteDepositPresenter](../scenes/world/ferrite_deposit_presenter.gd) is a small
+disposable Node2D owned by the exterior. It queries generated descriptors only,
+deduplicates stable IDs across pages, and keeps one uncentered Sprite2D per nearby
+deposit. The authored introductory sprite/scene and discovery remain separate
+and unchanged. No resource or machine state belongs to this helper.
+
+The retention square is planet-local: `(center_chunk - radius) * 2048`, with side
+`(2 * radius + 1) * 2048`, where radius is loading radius plus retention margin.
+The helper's `refresh(state, area)` runs only after the existing neighborhood
+center/revision gate, including arrival, rather than on every process frame.
+Cached exterior reattachment retains the helper, sprites and shared textures.
+The query includes a deposit whenever its **complete padded image rectangle**
+intersects retention, including edge contact, even when its owner region or
+terrain chunk is absent. Only departure of that full envelope retires its sprite;
+returning reconstructs the same identity without changing simulation.
+
+`query_areas(area)` divides that square into pages of at most 8,192 world units
+per side (four chunks). At maximum exported settings (radius six), there are at
+most 16 pages. Each page's owner lookup plus halo stays below the existing
+64-owner query cap. Negative positions retain floor-based chunk/region semantics.
+Queries enumerate nearby owners, never all previously explored deposits.
+
+The existing validated catalog is the registration source; there is no second
+variant map or JSON parser. Initialization now also rejects missing/noncanonical
+`png_path` metadata. A sprite's planet-local canvas origin is
+`origin_cell * 64 - logical_origin_source_pixels * display_scale`.
+All accepted variants use `(64,64)` source registration and uniform 0.5 scale,
+so the canvas begins 32 world units before the logical origin. The helper loads
+a Texture2D only on first nearby use of its variant, validates image dimensions
+and the descriptor envelope, and caches at most the ten shared catalog textures
+for the exterior lifetime. It never composes, stretches, rotates, mirrors or
+tints images. Layer order is terrain at −11/−10, Ferrite at −5, construction
+highlights at −4, then Dave and deployed machines above.
+
+Readiness errors propagate from the existing generator contract. Missing texture,
+wrong dimensions, unknown variant or inconsistent registration returns an explicit
+failure before node mutation. The exterior records the failure, logs the reason
+and pauses the tree; correcting the input/package and restarting is required.
+There is no alternate texture or playable authored-only fallback on failure.
+The deferred **raw catalog JSON export inclusion and exported-build verification**
+requirement above remains in force; 3A adds no export preset.
+
+Construction refresh first clears old nodes, queries `get_deposits_in_area` through
+the same retention pages, and deduplicates deposit IDs. Compatible deposits visit
+only chunk coordinates overlapped by their logical footprint bounds, skipping
+chunks absent from the retained terrain dictionary. Each loaded chunk rectangle
+clips the **actual footprint** using all results from
+[`Geometry2D.intersect_polygons`](https://docs.godotengine.org/en/stable/classes/class_geometry2d.html#class-geometry2d-method-intersect-polygons).
+Concave notches are not filled with bounds/convex hulls; separate returned pieces
+each receive a Polygon2D with the existing resource highlight color. Accepted
+catalog masks have simple contours without holes. Construction-mode changes,
+neighborhood retirement and chunk completion refresh/clear normally; no offscreen
+highlight registry is retained. Point-based extraction and infinite uniform
+resource production remain unchanged.
+
+Focused offline checks now cover catalog PNG registration/integrity, bounded
+paging and identity lifecycle, padded-envelope retention, signed boundaries,
+mask-cell clipping coverage and a synthetic U-shaped multi-piece clipping
+contract. These are Python models and source checks, **not execution of GDScript
+or Geometry2D**. They do not establish Godot parsing/import, runtime clipping,
+gameplay, appearance, memory use or performance. No Godot process was launched
+by the agent. The owner's separate graphical/gameplay results are recorded below.
+
+Region queries still compute synchronously on cache miss, and the first nearby
+use of each texture loads synchronously. The bounded region FIFO can churn while
+paging large retention areas; construction refresh can repeat nearby queries
+while terrain completes. Shared textures remain cached after sprite retirement.
+These costs and measured memory impact require later owner observation and 3B
+hybrid preparation/lookahead/scheduling work. There is no stutter-free claim,
+performance probe or loading-screen implementation in 3A. Known repeated silver
+highlights/grain and regular concave rims remain nonblocking artistic limitations.
+
+### Original owner acceptance checklist — 3A
+
+1. Open/run the project locally; confirm no parser, import, catalog or texture
+   errors, and normal interior/exterior arrival and hatch return.
+2. Confirm the introductory field at `(128,128)..(768,512)`, its artwork,
+   discovery and guidance remain unchanged.
+3. Explore nearby generated fields: varied approved shapes/sizes, correct half
+   scale, shallow edges/terrain separation, no tint, stretching or duplicates.
+   Confirm Dave and machines draw above Ferrite.
+4. Enter Extractor construction: highlights follow concave logical footprints,
+   leave empty notches unhighlighted and stop on cancellation. Check pieces on
+   both sides of chunk edges; no decorative rim/shadow is highlighted.
+5. Check valid/invalid extraction-point placement and multiple Extractors on
+   one field. Verify output collection and recovery retain normal behavior.
+6. Traverse positive/negative chunk boundaries, 3,072-unit region boundaries and
+   their corners. Fields must stay whole until their entire image leaves
+   retention, with no duplicate shadows, flashes or identity changes on return.
+7. Leave/return repeatedly, including interior travel; check no missing/duplicate
+   deposits and that production continues independently of sprite lifetime.
+8. Observe ordinary movement and first encounters with each variant for new
+   noticeable stutter. Record qualitative observations only; no formal benchmark
+   or memory/performance acceptance is claimed by static PASS.
+
+### Final PR #127 owner graphical/gameplay acceptance — 2026-11-02
+
+The owner completed Godot graphical and gameplay testing of reviewed commit
+`7a2dd6e448777f3dba4cd2d6195c6e1f67db7e2f` on 2026-11-02
+(America/Chicago). **All eight acceptance checks PASSED; zero functional failures
+reported. Owner graphical and gameplay acceptance: APPROVED.**
+
+1. Godot startup, resource imports, exterior arrival and hatch return: PASS.
+2. Introductory Ferrite artwork, discovery and progression preservation: PASS.
+3. Generated Ferrite appearance, scale, variety and rendering layers: PASS.
+4. Exact construction highlighting, including concave notches: PASS.
+5. Extractor placement, production, collection and recovery: PASS.
+6. Cross-chunk/region presentation, including negative coordinates: PASS.
+7. Stable deposits across departure, return and indoor travel; production
+   independent of sprite lifetime: PASS.
+8. General stability without severe freezes or gameplay blockers: PASS.
+
+**Accepted nonblocking performance observation — investigate in Milestone 3B.**
+The owner observed slightly more noticeable stuttering during initial exterior
+discovery than before PR #127. The increase was modest and did not prevent normal
+gameplay. Milestone 3B must investigate this observation. Synchronous region
+generation, first-use texture loading and repeated presentation/highlight queries
+are potential contributors only: these are hypotheses, not established causes.
+No performance optimization, measured performance or stutter-free operation has
+been verified. Memory use and formal performance measurements remain unverified.
+
+These owner-reported results are separate from the previously completed agent
+static suite (**258/258 PASS**), focused Ferrite checks (**40/40 PASS**) and offline
+PNG checks. They do not establish exhaustive clipping/determinism, injected
+failure handling or exported-build compatibility. The deferred raw catalog JSON
+packaging and exported-build verification requirement above remains in force.
+
+This acceptance follow-up changes documentation only, preserving the reviewed
+implementation, generation/distribution, artwork/catalog, mining calculations
+and terrain. The agent did not launch Godot or run benchmarks. PR #127 is prepared
+for owner review and a normal **merge commit** through GitHub; no automatic merge
+is authorized or performed. Post-merge cleanup belongs in a separate conversation.
 
 ## Final owner runtime acceptance — 2026-11-02
 

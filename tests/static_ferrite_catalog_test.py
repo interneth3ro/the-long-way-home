@@ -106,9 +106,9 @@ class FerriteCatalogStaticTest(unittest.TestCase):
                     if path == ROOT/'scenes/world/ferrite_region_generator.gd':
                         source = path.read_text(encoding='utf-8')
                         self.assertIn('catalog_v1/catalog.json', source)
-                        for forbidden in ('Texture2D', 'Sprite2D', 'Image.', '.png"', 'load('):
+                        for forbidden in ('Texture2D', 'Sprite2D', 'Image.', 'load('):
                             self.assertNotIn(forbidden, source.replace('preload(', ''))
-                        continue  # Milestone 2 consumes geometry JSON only.
+                        continue  # Catalog metadata validation adds no image I/O.
                     self.assertNotIn('ferrite/catalog_v1', path.read_text(encoding='utf-8'))
 
 
