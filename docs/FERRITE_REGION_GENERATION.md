@@ -373,6 +373,25 @@ metadata and required textures, never speculative sprites. Owners sort by distan
 signed y/x coordinates; descriptor work sorts by stable ID. These orders do not
 change deterministic deposit generation or conflict resolution.
 
+The focused PR #128 safety correction makes preparation completion explicit:
+the exterior returns a readiness receipt bound to its arrival generation,
+Ferrite request, world state/seed/revision and player. The controller revalidates
+that receipt after preparation, physics registration and reveal/fade waits, before
+restoring input or reporting success. A failed/incomplete required arrival blocks
+opaquely with input locked and an error, independently of whether tree pause
+prevents an awaited callback from resuming. There is no authored-only fallback.
+Legacy synchronous interior facing hooks still return void.
+
+Quick cancellation before attachment returns to the ready source; cancellation
+during preparation rolls back while opaque and re-prepares a cached exterior
+source. Only successful source readiness permits unlocking; cancelled travel emits
+no destination success. A real asset/terrain failure remains blocking even when
+cancellation is requested. Controller generations bind deferred dispatch and all
+await continuations to the accepted request; exterior generations reject old
+preparations before they can clear a newer preparation's flags. A stale presenter
+step ends preparation as incomplete rather than spinning indefinitely. These are
+source contracts, not engine-verified cancellation/pause behavior.
+
 New requests discard stale pending tasks. Tokens, world/seed/revision checks,
 exterior detachment and explicit quick-transition cancellation prevent stale work
 from registering sprites. Completed bounded region/texture data may survive cached
@@ -389,6 +408,7 @@ are preserved.
 ### Validation limits and owner comparison
 
 Focused checks: `python -B -m unittest discover -s tests -p 'static_ferrite*test.py'`.
+Transition safety: `python -B -m unittest discover -s tests -p 'static_transition_safety_test.py'`.
 Full non-engine suite: `pwsh -NoProfile -File tools/run-local-tests.ps1 -Mode Static`.
 The 3B tests compare membership with the accepted generation oracle, exercise
 signed boundaries, work priority/draining, bounded owner retention, reversals and
@@ -421,7 +441,11 @@ necessarily a cold filesystem/GPU cache. Agent execution remains prohibited.
 8. Leave machines producing offscreen, travel indoors and return; verify continued
    production and stable presentation.
 9. Reenter in the same session: check fade/input/artwork/duplicates and cancellation
-   where practical.
+   where practical. Check early quick cancellation and rollback during preparation
+   where reachable: source readiness must precede input restoration, with no
+   destination completion/reveal progression. Any separately owner-controlled
+   failed-preparation check must keep input locked and emit no success; static
+   checks do not authorize fault injection or engine execution.
 10. Stop on severe freezes or instability; do not deliberately reproduce them.
 
 ```text

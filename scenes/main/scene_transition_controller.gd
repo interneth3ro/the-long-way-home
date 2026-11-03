@@ -26,6 +26,7 @@ var _quick_cancelled: bool = false
 var _quick_committed: bool = false
 var _quick_previous_mode: Node.ProcessMode
 var _arrival_world: Node2D
+var _transition_generation: int = 0
 
 
 func _ready() -> void:
@@ -53,6 +54,8 @@ func request_transition(source_scene: String, destination_scene: String,
 	if _busy or source_scene != _current_world.scene_file_path or destination_scene == source_scene:
 		return false
 	_busy = true
+	_transition_generation += 1
+	var transition := _transition_generation
 	if presentation == Presentation.QUICK_FADE:
 		_quick_active = true
 		_quick_cancelled = false
@@ -64,14 +67,17 @@ func request_transition(source_scene: String, destination_scene: String,
 		player.process_mode = Node.PROCESS_MODE_DISABLED
 	transition_started.emit()
 	# The interaction request originates in physics; defer all tree mutations.
-	_perform_transition.call_deferred(source_scene, destination_scene, spawn_name, presentation)
+	_perform_transition.call_deferred(source_scene, destination_scene, spawn_name, presentation, transition)
 	return true
 
 
 func _perform_transition(source_scene: String, destination_scene: String,
-		spawn_name: StringName, presentation: Presentation) -> void:
+		spawn_name: StringName, presentation: Presentation, transition: int) -> void:
+	var source := _current_world
+	if not _owns_transition(transition, source):
+		return
 	if presentation == Presentation.QUICK_FADE:
-		await _perform_quick_transition(source_scene, destination_scene, spawn_name)
+		await _perform_quick_transition(source_scene, destination_scene, spawn_name, transition)
 		return
 	var previous_process_mode := player.process_mode
 	player.get_node("InteractionDetector").clear_for_transition()
@@ -82,6 +88,8 @@ func _perform_transition(source_scene: String, destination_scene: String,
 		and not progression.first_exterior_reveal_completed
 	if first_reveal:
 		await _fade_to(1.0)
+		if not _owns_transition(transition, source):
+			return
 
 	# Load/instantiate only once obscured for the first reveal. Detached worlds
 	# retain authored scene state, but take no part in physics or processing.
@@ -105,6 +113,8 @@ func _perform_transition(source_scene: String, destination_scene: String,
 			destination.free()
 		if first_reveal:
 			await _fade_to(0.0)
+			if not _owns_transition(transition, source):
+				return
 		_finish_transition(previous_process_mode)
 		return
 
@@ -116,15 +126,22 @@ func _perform_transition(source_scene: String, destination_scene: String,
 	_current_world = destination
 	player.reparent(ground_objects)
 	player.global_position = spawn.global_position
+	var arrival_result: Variant = null
 	if destination.has_method("prepare_for_arrival"):
-		await destination.call("prepare_for_arrival", player, progression.planet)
+		arrival_result = await destination.call("prepare_for_arrival", player, progression.planet)
+	if not _validate_arrival(transition, destination, arrival_result):
+		return
 	# Camera processing is locked with Dave, so update before the reveal begins.
 	_reset_camera()
 	# Allow one physics frame for the destination's bodies to register before
 	# accepting interaction queries. Immediate transitions have no fade/timer.
 	await get_tree().physics_frame
+	if not _validate_arrival(transition, destination, arrival_result):
+		return
 	if first_reveal:
 		await _fade_to(0.0)
+		if not _validate_arrival(transition, destination, arrival_result):
+			return
 		progression.first_exterior_reveal_completed = true
 	_finish_transition(previous_process_mode)
 	if first_reveal:
@@ -144,11 +161,14 @@ func cancel_quick_transition() -> bool:
 
 
 func _perform_quick_transition(source_scene: String, destination_scene: String,
-		spawn_name: StringName) -> void:
+		spawn_name: StringName, transition: int) -> void:
+	var source := _current_world
 	_curtain.show()
 	await _fade_to(1.0, quick_fade_seconds)
+	if not _owns_transition(transition, source):
+		return
 	if _quick_cancelled:
-		await _finish_quick_transition()
+		await _finish_quick_transition(transition, source)
 		return
 
 	var destination: Node2D = _worlds.get(destination_scene)
@@ -170,10 +190,9 @@ func _perform_quick_transition(source_scene: String, destination_scene: String,
 		push_warning("Quick transition rejected: invalid environment or spawn: %s / %s" % [destination_scene, spawn_name])
 		if newly_created and destination != null:
 			destination.free()
-		await _finish_quick_transition()
+		await _finish_quick_transition(transition, source)
 		return
 
-	var source := _current_world
 	var source_position := player.global_position
 	player.reparent(world_host)
 	world_host.remove_child(source)
@@ -182,13 +201,32 @@ func _perform_quick_transition(source_scene: String, destination_scene: String,
 	_current_world = destination
 	player.reparent(ground_objects)
 	player.global_position = spawn.global_position
+	var arrival_result: Variant = null
 	if destination.has_method("prepare_for_arrival"):
 		_arrival_world = destination
-		await destination.call("prepare_for_arrival", player, progression.planet)
+		arrival_result = await destination.call("prepare_for_arrival", player, progression.planet)
+		if not _owns_transition(transition, destination):
+			return
 		_arrival_world = null
-	_reset_camera()
-	await get_tree().physics_frame
+	# Expected cancellation is recoverable; failed or unsolicited incomplete
+	# preparation is blocking. Never use tree pause as the completion contract.
+	if not _quick_cancelled:
+		if not _validate_arrival(transition, destination, arrival_result):
+			return
+		_reset_camera()
+		await get_tree().physics_frame
+		if not _owns_transition(transition, destination):
+			return
+	# Cancellation may recover an interrupted preparation, never an asset/terrain
+	# failure that has already blocked the session (including during physics wait).
+	if destination is PlanetExterior and not destination.terrain_failure().is_empty():
+		_validate_arrival(transition, destination, arrival_result)
+		return
+	if not _quick_cancelled and not _validate_arrival(transition, destination, arrival_result):
+		return
 	if _quick_cancelled:
+		if not _owns_transition(transition, destination):
+			return
 		# Roll back while still opaque, retaining the validated cached destination.
 		player.reparent(world_host)
 		world_host.remove_child(destination)
@@ -199,11 +237,16 @@ func _perform_quick_transition(source_scene: String, destination_scene: String,
 		# Detachment cancels exterior streaming. Re-arm the retained source before
 		# restoring input, including a rollback while preparation was still pending.
 		if source.has_method("prepare_for_arrival"):
-			await source.call("prepare_for_arrival", player, progression.planet)
+			arrival_result = await source.call("prepare_for_arrival", player, progression.planet)
+		if not _validate_arrival(transition, source, arrival_result):
+			return
 		_reset_camera()
 		await get_tree().physics_frame
+		if not _validate_arrival(transition, source, arrival_result):
+			return
 	_quick_committed = true
-	await _finish_quick_transition()
+	if not await _finish_quick_transition(transition, _current_world, arrival_result):
+		return
 	if not _quick_cancelled:
 		transition_completed.emit(source_scene, destination_scene)
 
@@ -215,12 +258,43 @@ func _reset_camera() -> void:
 	camera.force_update_scroll()
 
 
-func _finish_quick_transition() -> void:
+func _finish_quick_transition(transition: int, world: Node2D, arrival_result: Variant = null) -> bool:
+	# Early cancellation/rejection never detached the source. Revalidate an
+	# exterior source too, without requiring receipts from legacy interior hooks.
+	if world is PlanetExterior and arrival_result == null:
+		arrival_result = await world.call("prepare_for_arrival", player, progression.planet)
+	if not _validate_arrival(transition, world, arrival_result):
+		return false
 	await _fade_to(0.0, quick_fade_seconds)
+	if not _validate_arrival(transition, world, arrival_result):
+		return false
 	player.velocity = Vector2.ZERO
 	player.get_node("InteractionDetector").clear_for_transition()
 	_finish_transition(_quick_previous_mode)
 	_quick_active = false
+	return true
+
+
+func _owns_transition(transition: int, world: Node2D) -> bool:
+	return is_inside_tree() and _busy and transition == _transition_generation \
+		and is_instance_valid(world) and _current_world == world and world.is_inside_tree() \
+		and is_instance_valid(player) and world.is_ancestor_of(player)
+
+
+func _validate_arrival(transition: int, world: Node2D, arrival_result: Variant) -> bool:
+	if not _owns_transition(transition, world):
+		return false
+	# Existing interior hooks are synchronous facing-only hooks returning void.
+	if world is PlanetExterior and not world.arrival_is_ready(arrival_result):
+		_arrival_world = null
+		_quick_committed = true
+		_curtain.color.a = 1.0
+		_curtain.show()
+		player.process_mode = Node.PROCESS_MODE_DISABLED
+		push_error("Transition blocked: required exterior arrival incomplete; correct input and restart")
+		get_tree().paused = true
+		return false
+	return true
 
 
 func _fade_to(alpha: float, seconds: float = FADE_SECONDS) -> void:
@@ -237,6 +311,8 @@ func _finish_transition(previous_process_mode: Node.ProcessMode) -> void:
 
 
 func _exit_tree() -> void:
+	_transition_generation += 1
+	_arrival_world = null
 	if _quick_active and is_instance_valid(player):
 		player.velocity = Vector2.ZERO
 		player.process_mode = _quick_previous_mode

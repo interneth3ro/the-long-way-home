@@ -313,7 +313,7 @@ class AutomaticTransitionsStaticTest(unittest.TestCase):
                            'spawn == null or ground_objects == null']:
             self.assertLess(quick.index(validation), detach)
         self.assertLess(quick.index('await _fade_to(1.0'), detach)
-        self.assertIn('await _finish_quick_transition()\n\t\treturn', quick)
+        self.assertIn('await _finish_quick_transition(transition, source)\n\t\treturn', quick)
         self.assertIn('_worlds[destination_scene] = destination', quick)
 
     def test_cancellation_rollback_and_unlock_paths(self):

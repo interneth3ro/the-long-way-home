@@ -41,7 +41,7 @@ var _terrain_tokens: Dictionary[Vector2i, int] = {}
 
 # Transition hook: input stays locked and first arrival stays behind the fade.
 # Subsequent hatch visits already have the spawn neighborhood retained.
-func prepare_for_arrival(player: CharacterBody2D, state: PlanetWorldState) -> void:
+func prepare_for_arrival(player: CharacterBody2D, state: PlanetWorldState) -> Dictionary:
 	$GroundObjects/Hatch.prepare_for_arrival()
 	_arrival_generation += 1
 	var arrival := _arrival_generation
@@ -50,6 +50,8 @@ func prepare_for_arrival(player: CharacterBody2D, state: PlanetWorldState) -> vo
 	_configure_terrain_renderer()
 	_player = player
 	_state = state
+	var arrival_seed := state.seed_value
+	var arrival_revision := state.revision
 	if _ferrite_presenter == null:
 		_ferrite_presenter = FerriteDepositPresenter.new()
 		_ferrite_presenter.z_index = -5
@@ -75,12 +77,42 @@ func prepare_for_arrival(player: CharacterBody2D, state: PlanetWorldState) -> vo
 	_update_neighborhood()
 	while (not _pending.is_empty() or not _ferrite_presenter.required_ready(_ferrite_token)) \
 			and _terrain_failure.is_empty() and arrival == _arrival_generation:
-		_service_ferrite(true)
+		if not is_inside_tree() or not is_instance_valid(player) or not is_ancestor_of(player) \
+				or _state != state or state.seed_value != arrival_seed or state.revision != arrival_revision:
+			break
+		if not _service_ferrite(true):
+			break
 		_generate_budget()
 		_flush_highlights()
 		await get_tree().process_frame
-	if arrival == _arrival_generation:
-		_preparing = false
+	# An old await must not change flags belonging to a newer preparation.
+	if arrival != _arrival_generation:
+		return {"ok": false, "cancelled": true}
+	_preparing = false
+	if not _terrain_failure.is_empty():
+		return {"ok": false, "cancelled": false}
+	var result := {"ok": true, "generation": arrival, "ferrite_token": _ferrite_token,
+		"state": state, "player": player, "seed": arrival_seed, "revision": arrival_revision}
+	if not arrival_is_ready(result):
+		return {"ok": false, "cancelled": true}
+	return result
+
+
+# Rechecked by the controller after its own physics/fade awaits, not just when
+# preparation returns. A detached/replaced/cancelled receipt can never authorize input.
+func arrival_is_ready(result: Variant) -> bool:
+	return result is Dictionary and result.get("ok", false) \
+		and result.get("generation", -1) == _arrival_generation \
+		and result.get("state") == _state and result.get("player") == _player \
+		and _state != null and result.get("seed") == _state.seed_value \
+		and result.get("revision") == _state.revision \
+		and result.get("ferrite_token", -1) == _ferrite_token \
+		and is_inside_tree() and is_instance_valid(_player) and is_ancestor_of(_player) \
+		and not _preparing and not _arrival_cancelled and _terrain_failure.is_empty() \
+		and _pending.is_empty() and _ferrite_presenter != null \
+		and _ferrite_presenter.matches_context(_state) \
+		and _ferrite_presenter.required_ready(_ferrite_token) \
+		and _center == WorldCoordinates.world_to_chunk(to_local(_player.global_position))
 
 
 func cancel_arrival_preparation() -> void:
@@ -150,16 +182,18 @@ func _update_neighborhood() -> void:
 	_highlights_dirty = true
 
 
-func _service_ferrite(required_only: bool = false) -> void:
+func _service_ferrite(required_only: bool = false) -> bool:
 	if not _terrain_failure.is_empty():
-		return
+		return false
 	var presented := _ferrite_presenter.step(_state, _ferrite_token, required_only)
 	if not presented.ok:
 		_stop_terrain(presented)
 		push_error("Exterior Ferrite preparation blocked: " + str(presented))
 		get_tree().paused = true
+		return false
 	elif presented.changed:
 		_highlights_dirty = true
+	return not presented.get("stale", false)
 
 
 func _generate_budget() -> void:
