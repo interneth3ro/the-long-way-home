@@ -100,7 +100,9 @@ class TerrainC1(unittest.TestCase):
                     self.assertLessEqual(uv,.90+1e-9)
 
     def test_isolation_and_data_identity(self):
-        paths=subprocess.check_output(['git','diff','--name-only','fa410ed9b329ffd28a927e142d2362971d54584a'],cwd=ROOT,text=True).splitlines()
+        # Audit the immutable original C1 scope, not unrelated future main changes.
+        # Live resource, identity, dependency and production checks below still apply.
+        paths=subprocess.check_output(['git','diff','--name-only','fa410ed9b329ffd28a927e142d2362971d54584a','a4edb49720ebfa9be654353abb093c76740554e7'],cwd=ROOT,text=True).splitlines()
         allowed=('assets/experiments/terrain_c1/','scenes/experiments/terrain_c1/','docs/experiments/terrain_c1.md','tools/terrain-c1-author.py','tests/static_terrain_c1_test.py')
         self.assertTrue(all(path.startswith(allowed) for path in paths),paths)
         harness=(ROOT/'scenes/experiments/terrain_c1/harness.gd').read_text()

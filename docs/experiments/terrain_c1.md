@@ -54,7 +54,32 @@ Entry point: [terrain_c1.tscn](../../scenes/experiments/terrain_c1/terrain_c1.ts
 This scene has no production startup reference, construction-world group, gameplay
 collisions or persistent writes. Production source/resources remain unchanged.
 Only previews have `.gdignore`; live experimental sources/fields are importable
-later by the owner. No import metadata or generated Godot cache is committed.
+later by the owner. The preservation amendment below tracks only the approved
+import/UID metadata; no generated Godot cache is committed.
+
+### Durable preservation amendment — 2026-11-03 (pending merge)
+
+The original reviewed documentation checkpoint is
+`a4edb49720ebfa9be654353abb093c76740554e7`; its 24-path scope and original bytes
+remain recoverable independently of this amendment. The owner authorized retaining
+those paths and adding exactly ten existing C1 PNG import sidecars plus the shader
+and harness UID sidecars, preserving their bytes and identifiers.
+
+The scope assertion in [the offline test](../../tests/static_terrain_c1_test.py)
+now compares the fixed original base to that reviewed checkpoint, rather than to
+the current working tree. This keeps the original scope independently inspectable
+without treating future unrelated changes on `main` as C1 changes. The allowlist
+and all live runtime-identity, isolation, production-precedence and dependency
+assertions remain unchanged. This historical scope assertion does not approve
+future modifications; those require their own scoped review.
+
+Preservation validation uses Git inventories, byte hashes, syntax inspection and
+an independent Git-bundle recovery. The project-importing offline test is not run
+under the current nonexecuting-check restriction. No Godot, import, gameplay,
+graphical verification, benchmark or profiler is invoked. This amendment changes
+no rendering behavior or owner evaluation claims; production integration remains
+unapproved. Exact preservation refs, bundle identity and recovery results are
+recorded in the PR and the separate preservation receipt.
 
 ## Data flow and supported bounds
 
