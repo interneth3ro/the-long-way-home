@@ -103,6 +103,12 @@ class FerriteCatalogStaticTest(unittest.TestCase):
         for folder in ('scenes', 'construction', 'inventory'):
             for path in (ROOT/folder).rglob('*'):
                 if path.suffix in ('.gd', '.tscn', '.tres'):
+                    if path == ROOT/'scenes/world/ferrite_region_generator.gd':
+                        source = path.read_text(encoding='utf-8')
+                        self.assertIn('catalog_v1/catalog.json', source)
+                        for forbidden in ('Texture2D', 'Sprite2D', 'Image.', '.png"', 'load('):
+                            self.assertNotIn(forbidden, source.replace('preload(', ''))
+                        continue  # Milestone 2 consumes geometry JSON only.
                     self.assertNotIn('ferrite/catalog_v1', path.read_text(encoding='utf-8'))
 
 

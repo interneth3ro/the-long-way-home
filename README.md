@@ -2826,6 +2826,13 @@ depending on artwork or disposable terrain chunks. Deposits are infinite,
 uniform and nondepleting; existing Extractor production is unchanged.
 Definitions are shared immutable content; discovery belongs to PlaythroughState.
 
+Ferrite Milestone 2 adds [deterministic region data and bounded lookup](docs/FERRITE_REGION_GENERATION.md)
+on this feature branch, pending review and merge. get_deposits() remains
+authored-only for current highlights. Generated Ferrite resolves lazily through
+the existing identity/extraction-point APIs without an exterior node; new bounded
+queries prepare data for future presentation. No generated artwork is displayed.
+Validation is static/offline only; Godot execution and performance remain unverified.
+
 The mineral area is separate from the decorative outline. Two adjacent
 64 x 64 footprints at (192, 192) and (256, 192) fit inside it. The introductory
 invisible inspection region at (304, 280), radius 24, remains within mineral-bearing

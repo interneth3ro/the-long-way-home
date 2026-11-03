@@ -15,6 +15,7 @@ var revision: int = 0
 var _terrain_changes: Dictionary[Vector2i, Color] = {}
 var _removed_details: Dictionary[Vector2i, bool] = {}
 var _deposits: Array[ResourceDeposit] = [preload("res://scenes/world/introductory_ferrite.tres")]
+var _ferrite: FerriteRegionGenerator
 var _machines: Dictionary[int, Dictionary] = {}
 var _next_machine_id: int = 1
 var _machine_transaction: bool = false
@@ -23,7 +24,29 @@ var _recipe_change_pauses: Dictionary[int, RefCounted] = {}
 
 
 func get_deposits() -> Array[ResourceDeposit]:
+	# Authored-only legacy list: current exterior highlighting stays unchanged.
 	return _deposits.duplicate()
+
+
+func get_deposit_region(owner: Vector2i) -> Array:
+	return _ferrite.region(owner)
+
+
+# Broad-phase illustrated-envelope query for future bounded presentation.
+func query_deposit_descriptors(area: Rect2) -> Array:
+	return _ferrite.query(area)
+
+
+func get_deposits_in_area(area: Rect2) -> Array[ResourceDeposit]:
+	var result: Array[ResourceDeposit] = []
+	if not _ferrite.query_is_bounded(area):
+		return result
+	for deposit in _deposits:
+		if area.intersects(FerriteRegionGenerator._bounds(deposit.footprint), true):
+			result.append(deposit)
+	for descriptor in _ferrite.query(area):
+		result.append(_ferrite.resource(descriptor))
+	return result
 
 
 func get_machines() -> Array[Dictionary]:
@@ -463,7 +486,8 @@ func get_deposit(deposit_id: StringName) -> ResourceDeposit:
 	for deposit in _deposits:
 		if deposit.deposit_id == deposit_id:
 			return deposit
-	return null
+	var descriptor := _ferrite.descriptor_by_id(deposit_id)
+	return null if descriptor.is_empty() else _ferrite.resource(descriptor)
 
 
 # A future machine's designated extraction point can query this independently
@@ -472,11 +496,17 @@ func deposit_at(world_point: Vector2, resource_type: StringName) -> ResourceDepo
 	for deposit in _deposits:
 		if deposit.resource_type == resource_type and deposit.contains_point(world_point):
 			return deposit
+	if resource_type == &"ferrite" and world_point.is_finite():
+		for descriptor in _ferrite.query(Rect2(world_point, Vector2.ZERO)):
+			var deposit := _ferrite.resource(descriptor)
+			if deposit.contains_point(world_point):
+				return deposit
 	return null
 
 
 func _init(world_seed: int = 26026) -> void:
 	seed_value = world_seed
+	_ferrite = FerriteRegionGenerator.new(world_seed)
 
 
 func set_terrain_color(tile: Vector2i, color: Color) -> void:

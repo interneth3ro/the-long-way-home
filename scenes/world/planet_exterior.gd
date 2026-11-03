@@ -8,9 +8,7 @@ enum TerrainRenderer { LEGACY, ILLUSTRATED }
 @export_range(1, 2, 1) var retention_margin: int = 1
 @export_range(1, 8, 1) var chunks_per_frame: int = 2
 # Independent of visual scar polygons: ship, approach and initial factory/Ferrite clearing.
-@export var protected_gameplay := PackedVector2Array([
-	Vector2(-720, -544), Vector2(192, -544), Vector2(832, -128),
-	Vector2(832, 736), Vector2(-640, 736), Vector2(-896, 256)])
+@export var protected_gameplay := PackedVector2Array(CrashSiteProtection.GAMEPLAY)
 
 var _player: CharacterBody2D
 var _state: PlanetWorldState

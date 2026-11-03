@@ -1,9 +1,10 @@
 # Ferrite shape catalog v1
 
-Milestone 1 implementation on a feature branch, pending merge and **owner artistic
-acceptance**. This is an offline production-candidate library, not procedural
-placement or a runtime renderer. Accepted PR #123 artwork and PR #124 production
-integration remain unchanged.
+Milestone 1's ten-variant catalog was accepted and merged in PR #125. Its offline
+authoring/review scope is recorded below. The pending
+[Milestone 2 implementation](FERRITE_REGION_GENERATION.md) consumes geometry JSON
+for deterministic resource data; catalog images have no production renderer yet.
+Accepted PR #123 artwork and PR #124 production integration remain unchanged.
 
 ## Review package
 
@@ -104,7 +105,8 @@ Existing rectangular outputs remain preserved.
 Future worlds can pin `faceted_ferrite_catalog_v1` and reference explicit variant
 IDs. Array order is not identity. A future save must separately retain seed,
 world-generation version and selection-policy/configuration identity. No save
-system or region generator is introduced.
+system or region generator was introduced by Milestone 1. Milestone 2's pending
+data-only generator and compatibility rules are documented separately above.
 
 Once released, retain a catalog version's IDs, masks, geometry, registration and
 approved images. Changes affecting reconstruction require a new catalog version
@@ -147,7 +149,7 @@ Owner review must assess the delivered small field, broad large interiors and
 concave turns. Technical PASS is not artistic acceptance.
 
 No Godot import, graphical/gameplay verification or performance measurement is
-claimed. Region candidates, distribution, spacing, streaming, indexing,
+claimed by Milestone 1. Region candidates, distribution, spacing, streaming, indexing,
 presentation/preload/loading UI, distance progression and persistence are out of
 scope. ResourceDeposit's contract, terrain, crash-site clearing, introductory
 deposit, story and production mechanics remain unchanged.
