@@ -1,0 +1,126 @@
+{
+  "base_commit": "fa410ed9b329ffd28a927e142d2362971d54584a",
+  "seed": 26026,
+  "method": "Integer-bin box downsample; 8px opposite-edge crossfade; fixed-phase interior variants with .8 sine-squared envelope; current TLWH mask math for fixture concepts only",
+  "native_sources": {
+    "earth": [
+      1254,
+      1254
+    ],
+    "green": [
+      1254,
+      1254
+    ]
+  },
+  "input_sha256": {
+    "assets/experiments/terrain_fidelity_a1/sources/earth_generated.png": "9b3ffb827ee82cc870886ac7fa182dee8e9351acb7609997832b2c741f632e3c",
+    "assets/experiments/terrain_fidelity_a1/sources/green_generated.png": "fa2ac2b1d0b621a71650f57500aedf545f6a1ad76df49fcc7f8650f8d4fe4af6",
+    "assets/environment/exterior/ground_refined_v1/baseline_94.png": "36595f982ecadffc75ea2f7ca3498e6d44cbf9f3a7fe298f28268730161056e0",
+    "assets/environment/exterior/ground_refined_v1/interiors_bc.png": "d8c76f080226c93229be7b3947983776543d14f454a475d69700af3f7849c694",
+    "assets/experiments/native_terrain_47_96/baked_v2/mapping.json": "a51357f7b254ae28a10da4390c8cb4d81d6503226b94c7e604734d60b889a938"
+  },
+  "raw_128_opposite_edge_max_channel_difference": {
+    "earth": 43,
+    "green": 29
+  },
+  "candidate_edge_max_channel_difference": 0,
+  "checks": {
+    "self_and_variant_edges": 36,
+    "layout_adjacencies": 528
+  },
+  "unique_fixture_signatures": 15,
+  "outputs": {
+    "tiles/earth_A.png": {
+      "sha256": "0b61585d491c3dbc24413af89fd6a567806b54b2d65432c2ffb5907852724aa3",
+      "dimensions": [
+        128,
+        128
+      ]
+    },
+    "tiles/earth_B.png": {
+      "sha256": "a3e6f7da1e8e480fffde1977d3850135777a00ad13d510785c6e77eccf8fc72e",
+      "dimensions": [
+        128,
+        128
+      ]
+    },
+    "tiles/earth_C.png": {
+      "sha256": "9a9a1cdb07d3e789441c8126d1bfc0b152d792c964803b87406f58759f7a370e",
+      "dimensions": [
+        128,
+        128
+      ]
+    },
+    "tiles/green_A.png": {
+      "sha256": "6a794d27d4f154c6ccfa789a95fc57b8f3368bca5d1242b4149940b89380a39b",
+      "dimensions": [
+        128,
+        128
+      ]
+    },
+    "tiles/green_B.png": {
+      "sha256": "440ca98551a511753aa5dc937ff7c22cacd41775c65d4e10d3d3482f08c8f427",
+      "dimensions": [
+        128,
+        128
+      ]
+    },
+    "tiles/green_C.png": {
+      "sha256": "d1507852e2a472e6608e509367f48e0c70a1a7532f9cd8336ec58f861a59992c",
+      "dimensions": [
+        128,
+        128
+      ]
+    },
+    "previews/repeat_1x.png": {
+      "sha256": "f2ca8448ebcc640f6bafe8b36f306d139ba10f2e03d2884a954040d787cbe94a",
+      "dimensions": [
+        1584,
+        598
+      ]
+    },
+    "previews/repeat_1x_grid.png": {
+      "sha256": "872d8d8e2e72728c5adc2c43cb9844918330edf7559b3b2ddcc795e2a6b7000f",
+      "dimensions": [
+        1584,
+        598
+      ]
+    },
+    "previews/repeat_05x.png": {
+      "sha256": "ac51cc3ac01c4bb69159171850cd1afcb70f39e3b6585f65ea0c96cc3fb42fb5",
+      "dimensions": [
+        816,
+        342
+      ]
+    },
+    "previews/boundary_1x.png": {
+      "sha256": "b967db2259e50c6323aa1bfda5ee63c1dc205a49a573844feb467e7e904d6528",
+      "dimensions": [
+        2096,
+        854
+      ]
+    },
+    "previews/boundary_1x_grid.png": {
+      "sha256": "7216c0cc1e0d62abcaf36c647d0063a712ca045243ef8fc6df2d9a4e458378fe",
+      "dimensions": [
+        2096,
+        854
+      ]
+    },
+    "previews/boundary_05x.png": {
+      "sha256": "88d9f8165986e72d392247f9701b9061680ea4f96b5bb0f904c8b319544619b5",
+      "dimensions": [
+        1072,
+        470
+      ]
+    },
+    "previews/samples_128.png": {
+      "sha256": "92b28b01166eeef81d624f87f03c150bff600e8a82f5f7fafd6de8882775acdb",
+      "dimensions": [
+        880,
+        190
+      ]
+    }
+  },
+  "limits": "Offline pixels only; exact edge equality is not perceptual seamlessness. No runtime tint, Godot filtering, motion, determinism or performance verification."
+}

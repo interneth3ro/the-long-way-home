@@ -1,0 +1,30 @@
+{
+  "tool": "built-in image_gen",
+  "reference": {
+    "filename": "grassland.png",
+    "role": "Visual direction only; observed board, no pixels copied into candidates"
+  },
+  "prompts": {
+    "green": "Use case: stylized-concept. Create ONE new square game terrain material sample, grass only, for TLWH Stage A1. The supplied grassland concept board is art direction only, never crop or reproduce its layout. Strict orthographic overhead continuous low grass surface, no horizon, no rocks, flowers, ship, objects, text, borders, panels or shadows from offscreen objects. Lush natural moss/forest/olive greens, varied painterly short blades and small interwoven leaf cover, subtle shallow relief with soft upper-left diffuse light. This image will be reduced to a 128x128 tile displayed at 64x64 world units: use readable medium-sized strokes and quiet areas, no high-frequency photographic noise. Several irregular, low-contrast groups of short grass interleaved with quieter ground cover; no central tuft, no conspicuous isolated clump or radial pattern. Even detail density at all four borders, no vignette. Aim for seamless repeating texture with matching opposite sides, but do not draw a repeat board. Output only the single opaque square material. This is new art, not an edit of the concept board.",
+    "earth": "Use case: stylized-concept. Create ONE new square terrain material artwork for TLWH Stage A1, complementary exposed weathered earth to the supplied grassland art direction (reference only, do not crop the board). Strict orthographic overhead continuous shallow ground. Warm muted brown/ochre soil with soft irregular compacted patches, restrained shallow branching cracks, sparse tiny embedded stone fragments and subtle earthy tonal variation. Painterly illustrative game material, soft upper-left diffuse lighting, no deep relief, no boulders, grass, flowers, ship, debris, objects, labels, panels or border. Intended reduction to a 128x128 tile displayed at 64 world units; favor a few readable modest-scale material structures over photographic fine grain. Quiet areas, no central landmark, no distinctive large recurring stone or crack, no radial structure. Even detail at borders and no vignette. Aim for matching opposite edges for repetition, output only one opaque square source material, not a repeat board. This is original artwork, no historical assets."
+  },
+  "base": "fa410ed9b329ffd28a927e142d2362971d54584a",
+  "source_packaging": {
+    "earth": {
+      "provider_file_sha256": "1d696d3498915124f5c9c927801dd26489701725e3a44277248105ced0f5dd79",
+      "packaged_sha256": "9b3ffb827ee82cc870886ac7fa182dee8e9351acb7609997832b2c741f632e3c",
+      "method": "Removed ancillary PNG chunks only; compressed image data unchanged. Original provider file preserved outside checkout.",
+      "removed_chunk_types": [
+        "caBX"
+      ]
+    },
+    "green": {
+      "provider_file_sha256": "e49a3d40cebcf73fba1dbceeb5c73599a5498dfe901b3ac3ec068dd81c873217",
+      "packaged_sha256": "fa2ac2b1d0b621a71650f57500aedf545f6a1ad76df49fcc7f8650f8d4fe4af6",
+      "method": "Removed ancillary PNG chunks only; compressed image data unchanged. Original provider file preserved outside checkout.",
+      "removed_chunk_types": [
+        "caBX"
+      ]
+    }
+  }
+}

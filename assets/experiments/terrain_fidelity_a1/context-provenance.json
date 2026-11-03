@@ -1,0 +1,47 @@
+{
+  "world_scales": {
+    "ferrite": 0.5,
+    "shadow": 0.7,
+    "ship": 0.7
+  },
+  "reproduction": "Run author.py --write in a fresh output copy to recreate temporary grounds, then run this script. Fonts/GDI may affect encoded output across hosts.",
+  "dimensions": [
+    1456,
+    602
+  ],
+  "inputs": {
+    "baseline": {
+      "path": "artifacts/tmp/terrain_fidelity_a1/baseline.png",
+      "height": 1024,
+      "width": 1408,
+      "sha256": "77fe70ebbd32d93c8a698d42da459efd72a98523ce0adec1d36ae6337ea89999"
+    },
+    "shadow": {
+      "path": "assets/environment/exterior/crashed_ship_contact_shadow_prototype.png",
+      "height": 1127,
+      "width": 2014,
+      "sha256": "1cd8111595e11d8beb527f538188f38f8517f1d3365633c013b9a137ca601777"
+    },
+    "candidate": {
+      "path": "artifacts/tmp/terrain_fidelity_a1/candidate.png",
+      "height": 1024,
+      "width": 1408,
+      "sha256": "56ae8d0731e878951c440a17cd81a206502ea5c542a9a9bc304faf7e37bb1d3e"
+    },
+    "ship": {
+      "path": "assets/environment/exterior/crashed_exploration_ship_approved.png",
+      "height": 887,
+      "width": 1774,
+      "sha256": "80ae633c36242c1effdcebea38dc05cfef8eb586ca9ef3103f6b02be91564e5b"
+    },
+    "ferrite": {
+      "path": "assets/environment/exterior/ferrite/faceted_ferrite_10x6.png",
+      "height": 896,
+      "width": 1408,
+      "sha256": "82442d7e11eaf4483202ff22b22060efa4c2f638e66f30694d8b527dd1961c75"
+    }
+  },
+  "method": "System.Drawing offline composition, bilinear resizing; documented object scales; no runtime tint",
+  "zoom": 0.5,
+  "output_sha256": "a8ad16071238fc0fd6e3f82ccb506cf5886b6b9edfac442b8cef95a55041ded8"
+}
