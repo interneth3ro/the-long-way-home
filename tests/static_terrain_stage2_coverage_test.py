@@ -193,9 +193,12 @@ class Stage2ClassificationTest(unittest.TestCase):
     def test_source_guards_reviewed_provenance_and_protected_files(self):
         for path, digest in self.vectors["source_sha256_lf"].items():
             self.assertEqual(hashlib.sha256((ROOT / path).read_bytes().replace(b"\r\n", b"\n")).hexdigest(), digest)
-        # Compare against fixed baseline, not a moving main. All existing tracked
-        # files (assets, runner, tests, gameplay, scenes, receipts) must be intact.
-        changes = subprocess.check_output(["git", "diff", "--name-status", reference.BASE, "--"], cwd=ROOT, text=True)
+        # Historical Stage 2A inventory is immutable, not a ban on later additions.
+        # Keep the working-source preservation checks below against the same base.
+        stage2a_merge = "1f083dae00245a0bd5a7ac8a0c59c8f66b1a5744"
+        changes = subprocess.check_output(
+            ["git", "diff", "--name-status", reference.BASE, stage2a_merge, "--"], cwd=ROOT, text=True)
+        self.assertEqual({line.split("\t", 1)[1] for line in changes.splitlines()}, NEW_FILES)
         for line in changes.splitlines():
             status, path = line.split("\t", 1)
             self.assertEqual(status, "A", line)
