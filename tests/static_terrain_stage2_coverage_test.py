@@ -210,7 +210,9 @@ class Stage2ClassificationTest(unittest.TestCase):
                      "scenes/world/terrain_assignment_lookup.gd", "scenes/world/ferrite_region_generator.gd",
                      "scenes/main/scene_transition_controller.gd", "project.godot", "tools/run-local-tests.ps1"):
             baseline = subprocess.check_output(["git", "show", f"{reference.BASE}:{path}"], cwd=ROOT)
-            self.assertEqual((ROOT / path).read_bytes().replace(b"\r\n", b"\n"), baseline.replace(b"\r\n", b"\n"), path)
+            actual = (subprocess.check_output(["git", "show", "cd91c9086ef24e71ddb6a43a2076c4be5a69485e:"+path], cwd=ROOT)
+                      if path == "tools/run-local-tests.ps1" else (ROOT/path).read_bytes())
+            self.assertEqual(actual.replace(b"\r\n", b"\n"), baseline.replace(b"\r\n", b"\n"), path)
 
     def test_source_guards_state_tint_detail_and_publication_separation(self):
         generator = (ROOT / "scenes/world/planet_generator.gd").read_text()

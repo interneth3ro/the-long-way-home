@@ -1,7 +1,7 @@
 #requires -Version 7.0
 [CmdletBinding()]
 param(
-    [ValidateSet('Static', 'NativePlan', 'Native')][string]$Mode = 'Static'
+    [ValidateSet('Static', 'NativePlan', 'Native', 'MetadataSmoke')][string]$Mode = 'Static'
 )
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
@@ -109,7 +109,7 @@ function Assert-PinnedEngine {
 # Data only: callers cannot supply flags, scripts, scenes, deadlines or extra arguments.
 function New-NativeCommandPlan {
     [CmdletBinding()]
-    param([string]$Engine, [string]$EngineHash, $Stage, [switch]$Imported)
+    param([string]$Engine, [string]$EngineHash, $Stage, [switch]$Imported, [switch]$Metadata)
     Assert-PinnedEngine $Engine $EngineHash
     Assert-PlainPath $Stage.Directory
     $directory = [IO.Path]::GetFullPath($Stage.Directory)
@@ -121,11 +121,13 @@ function New-NativeCommandPlan {
         throw 'Only a fresh external input stage is permitted.'
     }
     $expected = @($Stage.Inputs.Path)
-    if ('project.godot' -cnotin $expected -or 'tests/fabricator_recipe_switching_test.gd' -cnotin $expected) {
+    if ($Metadata -and (Compare-Object -CaseSensitive $expected @(Get-MetadataStagePaths))) { throw 'Metadata staged inventory must match exact fixed closure.' }
+    $test = if ($Metadata) { 'tests/metadata_smoke_test.gd' } else { 'tests/fabricator_recipe_switching_test.gd' }
+    if ('project.godot' -cnotin $expected -or $test -cnotin $expected) {
         throw 'Required project/test input missing.'
     }
     foreach ($entry in $Stage.Inputs) {
-        if (-not (Test-ApprovedInput $entry.Path)) { throw 'Unapproved staged input.' }
+        if (-not (Test-ApprovedInput $entry.Path -Metadata:$Metadata)) { throw 'Unapproved staged input.' }
         $path = Join-Path $directory $entry.Path
         Assert-PlainPath $path
         if ((Get-FileHash -LiteralPath $path).Hash -ne $entry.Sha256) { throw 'Staged input changed.' }
@@ -158,7 +160,7 @@ function New-NativeCommandPlan {
         $arguments = if ($phase -eq 'Import') {
             @('--headless', '--editor', '--path', $directory, '--quit')
         } else {
-            @('--headless', '--path', $directory, '--script', 'res://tests/fabricator_recipe_switching_test.gd')
+            @('--headless', '--path', $directory, '--script', ('res://' + $test))
         }
         [pscustomobject]@{ Phase = $phase; Executable = $Engine; Sha256 = $EngineHash;
             Arguments = $arguments; Directory = $directory;
@@ -198,7 +200,7 @@ function Get-NativeSourceIdentity {
 }
 
 function Assert-NativeDispatchInputs {
-    param($Stage, $Identity, [bool]$Imported)
+    param($Stage, $Identity, [bool]$Imported, [switch]$Metadata)
     if (-not [IO.Path]::IsPathFullyQualified($Stage.Directory) -or
         -not [IO.Path]::IsPathFullyQualified($Stage.Source)) { throw 'Stage paths must be absolute.' }
     $directory = [IO.Path]::GetFullPath($Stage.Directory).TrimEnd('\', '/')
@@ -213,13 +215,14 @@ function Assert-NativeDispatchInputs {
     foreach ($key in @('Revision', 'Working', 'Index')) {
         if ($current.$key -cne $Identity.$key) { throw "Source changed: $key" }
     }
-    $approved = @($current.Tracked | Where-Object { Test-ApprovedInput $_ })
+    $approved = @(Get-ApprovedPaths $current.Tracked -Metadata:$Metadata)
     if ($approved.Count -ne $Stage.Inputs.Count -or
         @($approved | Select-Object -Unique).Count -ne $approved.Count) { throw 'Source inventory changed.' }
     foreach ($entry in $Stage.Inputs) {
         if ($entry.Path -cnotin $approved) { throw 'Unapproved source input.' }
         foreach ($root in @($Stage.Source, $Stage.Directory)) {
-            $path = Join-Path $root $entry.Path
+            $relative = if ($root -ceq $Stage.Source) { Get-InputSourcePath $entry.Path -Metadata:$Metadata } else { $entry.Path }
+            $path = Join-Path $root $relative
             Assert-PlainPath $path
             if ((Get-FileHash -LiteralPath $path -Algorithm SHA256).Hash -cne $entry.Sha256) {
                 throw "Source or staged input changed: $($entry.Path)"
@@ -283,31 +286,32 @@ function Save-NativeFailureEvidence {
 function Invoke-RestrictedNativeDispatch {
     [CmdletBinding()]
     param([string]$Source, [string]$Engine, [string]$EngineHash,
-          [ValidateSet('PASS', 'FAIL', 'NOT RUN')][string]$StaticStatus, $StaticSnapshot = $null)
+          [ValidateSet('PASS', 'FAIL', 'NOT RUN')][string]$StaticStatus, $StaticSnapshot = $null, [switch]$Metadata)
     $summary = [pscustomobject]@{ Static = $StaticStatus; Import = 'NOT RUN'; Native = 'NOT RUN';
         Reason = 'STATIC_NOT_PASS'; Revision = ''; Working = ''; Executable = $Engine; Sha256 = $EngineHash;
         StageDirectory = ''; Inputs = @(); Commands = @(); Diagnostic = ''; Evidence = ''; EvidenceError = '';
         Infrastructure = 'PASS'; Authorization = 'NOT RUN' }
     if ($StaticStatus -ne 'PASS') { return $summary }
+    $options = if ($Metadata) { @{ Metadata = $true } } else { @{} }
     $phase = 'Import'
     try {
         $summary.Authorization = 'FAIL'
-        Assert-NativeExecutionAuthorization
+        Assert-NativeExecutionAuthorization @options
         $summary.Authorization = 'PASS'
         Assert-PinnedEngine $Engine $EngineHash
         if ($null -eq $StaticSnapshot) { throw 'Actual static snapshot required.' }
         $identity = $StaticSnapshot.Identity
         $summary.Revision = $identity.Revision; $summary.Working = $identity.Working
-        Assert-ReviewedNativeRunner $Source $identity.Revision
+        Assert-ReviewedNativeRunner $Source $identity.Revision @options
         # Always create a fresh copy after actual static PASS. Never reuse a plan.
-        $stage = New-InputStage $Source (Get-NativeStageParent $Source) $identity.Tracked
+        $stage = New-InputStage $Source (Get-NativeStageParent $Source) $identity.Tracked @options
         $summary.StageDirectory = $stage.Directory; $summary.Inputs = $stage.Inputs
         if ((ConvertTo-Json -InputObject @($stage.Inputs) -Compress) -cne
             (ConvertTo-Json -InputObject @($StaticSnapshot.Inputs) -Compress)) {
             throw 'Working inputs changed since static-suite start.'
         }
-        Assert-NativeDispatchInputs $stage $identity $false
-        $commands = @(New-NativeCommandPlan $Engine $EngineHash $stage)
+        Assert-NativeDispatchInputs $stage $identity $false @options
+        $commands = @(New-NativeCommandPlan $Engine $EngineHash $stage @options)
         Assert-PlainPath (Join-Path $Source 'artifacts/logs')
         $git = @(Get-Command git -CommandType Application -ErrorAction Stop)[0].Source
         $ignored = Invoke-BoundedProcess $git @('check-ignore', '--quiet', '--',
@@ -317,24 +321,24 @@ function Invoke-RestrictedNativeDispatch {
         }
         foreach ($command in $commands) {
             $phase = $command.Phase
-            try { Assert-NativeExecutionAuthorization }
+            try { Assert-NativeExecutionAuthorization @options }
             catch { $summary.Authorization = 'FAIL'; throw }
-            Assert-ReviewedNativeRunner $Source $identity.Revision
-            Assert-NativeDispatchInputs $stage $identity ($phase -eq 'Native')
+            Assert-ReviewedNativeRunner $Source $identity.Revision @options
+            Assert-NativeDispatchInputs $stage $identity ($phase -eq 'Native') @options
             # Last check before the one synchronous bounded launch. No retries.
             Assert-PinnedEngine $Engine $EngineHash
             $summary.Commands += $command
             $summary.$phase = 'FAIL'
             $result = Invoke-BoundedProcess $command.Executable $command.Arguments $command.Directory `
                 -Seconds $command.Seconds -MaxBytes $command.MaxBytes -ExcerptBytes 4096
-            $outcome = Get-NativeOutcome $phase $result
+            $outcome = Get-NativeOutcome $phase $result @options
             $summary.$phase = $outcome.Status; $summary.Reason = $outcome.Reason
             $summary.Diagnostic = $outcome.Diagnostic
             if ($result.Status -ne 'PASS' -or -not $result.TerminationCertain) { $summary.Infrastructure = 'FAIL' }
             if ($outcome.Status -ne 'PASS') { break }
             # Detect edits during either process too, including the final test.
-            Assert-NativeDispatchInputs $stage $identity $true
-            Assert-ReviewedNativeRunner $Source $identity.Revision
+            Assert-NativeDispatchInputs $stage $identity $true @options
+            Assert-ReviewedNativeRunner $Source $identity.Revision @options
         }
     } catch {
         if (@($summary.Commands | Where-Object { $_.Phase -ceq $phase }).Count) { $summary.$phase = 'FAIL' }
@@ -353,18 +357,25 @@ function Invoke-RestrictedNativeDispatch {
 # Further use awaits owner review under AGENTS.md; no local approval machinery.
 function Assert-NativeExecutionAuthorization {
     [CmdletBinding()]
-    param()
+    param([switch]$Metadata)
+    # Workflow gate: the draft extension has no engine execution authorization.
+    if ($Metadata) { throw 'MetadataSmoke requires separate explicit owner execution authorization; draft recipe inactive.' }
 }
 
 function Assert-ReviewedNativeRunner {
-    param([string]$Source, [string]$Revision)
+    param([string]$Source, [string]$Revision, [switch]$Metadata)
     # Controls must match this run's captured revision; working resource edits
     # are allowed, but tools, policy, documentation and static tests require review.
     $git = @(Get-Command git -CommandType Application -ErrorAction Stop)[0].Source
     $head = Invoke-BoundedProcess $git @('rev-parse', 'HEAD') $Source
     if ($head.Status -ne 'PASS' -or $head.ExitCode -ne 0 -or -not $head.TerminationCertain -or
         $head.Stdout.Trim() -cne $Revision) { throw 'Reviewed runner source revision changed.' }
-    $r = Invoke-BoundedProcess $git @('diff', '--quiet', $Revision, '--', 'tools', 'AGENTS.md', 'docs/LOCAL_TESTING.md', 'tests/local_runner_fixture_test.ps1', 'tests/static_*test.py', 'tests/fabricator_recipe_switching_test.gd', 'tests/fabricator_recipe_switching_test.gd.uid') $Source
+    $arguments = @('diff', '--quiet', $Revision, '--', 'tools', 'AGENTS.md', 'docs/LOCAL_TESTING.md', 'tests/local_runner_fixture_test.ps1', 'tests/static_*test.py', 'tests/fabricator_recipe_switching_test.gd', 'tests/fabricator_recipe_switching_test.gd.uid')
+    if ($Metadata) {
+        $arguments += @('tests/metadata_smoke_test.gd', 'tests/metadata_smoke_test.gd.uid',
+            'tests/fixtures/metadata_smoke', 'tests/fixtures/terrain_stage2_classification_vectors.json')
+    }
+    $r = Invoke-BoundedProcess $git $arguments $Source
     if ($r.Status -ne 'PASS' -or $r.ExitCode -ne 0 -or -not $r.TerminationCertain) {
         throw 'Reviewed runner, policy or static suite has working changes.'
     }
@@ -375,7 +386,7 @@ function Assert-ReviewedNativeRunner {
 }
 
 function Get-NativeOutcome {
-    param([ValidateSet('Import', 'Native')][string]$Phase, $Result)
+    param([ValidateSet('Import', 'Native')][string]$Phase, $Result, [switch]$Metadata)
     $reason = 'OK'
     $output = $Result.Stdout + "`n" + $Result.Stderr
     if ($Result.Status -ne 'PASS') { $reason = $Result.Status }
@@ -385,8 +396,8 @@ function Get-NativeOutcome {
     elseif ($Result.ExitCode -cne 0) { $reason = 'ABNORMAL_EXIT' }
     elseif ($output -match '(?im)\b(ERROR|SCRIPT ERROR|parse error|assertion failed|assertion failure)\b') { $reason = 'ENGINE_ERROR' }
     elseif ($Phase -eq 'Native') {
-        $prefix = 'Fabricator recipe switching regression failures:'
-        $records = @([regex]::Matches($output, '(?m)^Fabricator recipe switching regression failures:.*$'))
+        $prefix = if ($Metadata) { 'TLWH_METADATA_SMOKE_V1 failures:' } else { 'Fabricator recipe switching regression failures:' }
+        $records = @([regex]::Matches($output, ('(?m)^' + [regex]::Escape($prefix) + '.*$')))
         $lines = @($Result.Stdout.TrimEnd().Split("`n"))
         if ($records.Count -ne 1 -or $records[0].Value.TrimEnd("`r") -cne "$prefix 0" -or
             $lines[-1].TrimEnd("`r") -cne "$prefix 0") {
@@ -442,8 +453,63 @@ function Assert-PlainPath {
     }
 }
 
+# Fixed metadata closure. No scene, artwork, catalog, art-import sidecar or cache inputs.
+# project.godot is copied from the reviewed minimal template, never the game project.
+function Get-MetadataStagePaths {
+    @(
+        'project.godot'
+        'tests/fixtures/metadata_smoke/geometry.json'
+        'tests/metadata_smoke_test.gd'
+        'tests/fixtures/terrain_stage2_classification_vectors.json'
+        'scenes/world/continuous_terrain_metadata.gd'
+        'scenes/world/planet_generator.gd'
+        'scenes/world/world_coordinates.gd'
+        'scenes/world/planet_world_state.gd'
+        'scenes/world/ferrite_region_generator.gd'
+        'scenes/world/crash_site_protection.gd'
+        'scenes/world/resource_deposit.gd'
+        'scenes/world/introductory_ferrite.tres'
+        'construction/placement_rules.gd'
+        'construction/machine_definition.gd'
+        'construction/recipe_definition.gd'
+        'construction/recipe_ingredient.gd'
+        'inventory/item_definition.gd'
+        'inventory/inventory_state.gd'
+        'scenes/world/planet_generator.gd.uid'
+        'scenes/world/world_coordinates.gd.uid'
+        'scenes/world/planet_world_state.gd.uid'
+        'scenes/world/ferrite_region_generator.gd.uid'
+        'scenes/world/crash_site_protection.gd.uid'
+        'scenes/world/resource_deposit.gd.uid'
+        'construction/placement_rules.gd.uid'
+        'construction/machine_definition.gd.uid'
+        'construction/recipe_definition.gd.uid'
+        'construction/recipe_ingredient.gd.uid'
+        'inventory/item_definition.gd.uid'
+        'inventory/inventory_state.gd.uid'
+        'scenes/world/continuous_terrain_metadata.gd.uid'
+        'tests/metadata_smoke_test.gd.uid'
+    )
+}
+
+function Get-InputSourcePath {
+    param([string]$Relative, [switch]$Metadata)
+    if ($Metadata -and $Relative -ceq 'project.godot') { return 'tests/fixtures/metadata_smoke/project.godot' }
+    if ($Metadata -and $Relative -ceq 'scenes/world/continuous_terrain_metadata.gd.uid') { return 'tests/fixtures/metadata_smoke/builder.gd.uid' }
+    return $Relative
+}
+
+function Get-ApprovedPaths {
+    param([string[]]$Tracked, [switch]$Metadata)
+    if (-not $Metadata) { return @($Tracked | Where-Object { Test-ApprovedInput $_ }) }
+    foreach ($relative in Get-MetadataStagePaths) {
+        if ((Get-InputSourcePath $relative -Metadata) -cnotin $Tracked) { throw "Missing tracked metadata input: $relative" }
+        $relative
+    }
+}
+
 function Test-ApprovedInput {
-    param([string]$Relative)
+    param([string]$Relative, [switch]$Metadata)
     if ($Relative -match '(^/|\\|:|[\x00-\x1f]|(^|/)\.{1,2}(/|$))') {
         throw "Unsafe input path: $Relative"
     }
@@ -455,6 +521,7 @@ function Test-ApprovedInput {
     }
     if ($Relative -match '(?i)(^|/)(\.[^/]+|artifacts|saves?|settings|credentials?)([./]|$)' -or
         $Relative -match '(?i)(secret|credential|\.env|export_presets)') { return $false }
+    if ($Metadata) { return $Relative -cin @(Get-MetadataStagePaths) }
     if ($Relative -ceq 'project.godot') { return $true }
     if ($Relative -cmatch '^tests/fabricator_recipe_switching_test\.gd(\.uid)?$') { return $true }
     # Owner-approved font compatibility only; no additional commands or file types.
@@ -464,7 +531,7 @@ function Test-ApprovedInput {
 }
 
 function New-InputStage {
-    param([string]$Source, [string]$Parent, [string[]]$Tracked)
+    param([string]$Source, [string]$Parent, [string[]]$Tracked, [switch]$Metadata)
     $Source = [IO.Path]::GetFullPath($Source).TrimEnd('\', '/')
     $Parent = [IO.Path]::GetFullPath($Parent).TrimEnd('\', '/')
     Assert-PlainPath $Source
@@ -475,21 +542,21 @@ function New-InputStage {
     }
     if (-not (Test-Path -LiteralPath $Parent -PathType Container)) { throw 'Stage parent must exist.' }
     # Validate the complete list before creating any output.
-    $inputs = foreach ($relative in $Tracked) {
-        if (Test-ApprovedInput $relative) {
-            $path = Join-Path $Source $relative
+    $inputs = foreach ($relative in (Get-ApprovedPaths $Tracked -Metadata:$Metadata)) {
+        if (Test-ApprovedInput $relative -Metadata:$Metadata) {
+            $path = Join-Path $Source (Get-InputSourcePath $relative -Metadata:$Metadata)
             Assert-PlainPath $path
             if (-not (Test-Path -LiteralPath $path -PathType Leaf)) { throw "Missing tracked input: $relative" }
             [pscustomobject]@{ Path = $relative; Sha256 = (Get-FileHash -LiteralPath $path -Algorithm SHA256).Hash }
         }
     }
-    if ('project.godot' -cnotin @($inputs.Path) -or
-        'tests/fabricator_recipe_switching_test.gd' -cnotin @($inputs.Path)) { throw 'Required project/test input missing.' }
+    $test = if ($Metadata) { 'tests/metadata_smoke_test.gd' } else { 'tests/fabricator_recipe_switching_test.gd' }
+    if ('project.godot' -cnotin @($inputs.Path) -or $test -cnotin @($inputs.Path)) { throw 'Required project/test input missing.' }
     $stage = Join-Path $Parent ('tlwh-native-plan-' + [Guid]::NewGuid().ToString('N'))
     $null = New-Item -ItemType Directory -Path $stage
     Write-Host "Stage created (retained even on failure): $stage"
     foreach ($entry in $inputs) {
-        $sourcePath = Join-Path $Source $entry.Path
+        $sourcePath = Join-Path $Source (Get-InputSourcePath $entry.Path -Metadata:$Metadata)
         Assert-PlainPath $sourcePath
         $destination = Join-Path $stage $entry.Path
         $null = [IO.Directory]::CreateDirectory([IO.Path]::GetDirectoryName($destination))
@@ -572,9 +639,11 @@ function New-NativePlanSummary {
 
 function Invoke-LocalTests {
     param([string]$Root, [string]$RequestedMode)
+    $metadata = $RequestedMode -eq 'MetadataSmoke'
+    $options = if ($metadata) { @{ Metadata = $true } } else { @{} }
     $static = 'NOT RUN'; $plan = 'NOT RUN'; $exitCode = 1
     try {
-        if ($RequestedMode -eq 'Native') { Assert-NativeExecutionAuthorization }
+        if ($RequestedMode -in @('Native', 'MetadataSmoke')) { Assert-NativeExecutionAuthorization @options }
         if (-not $IsWindows) { throw 'This entry point supports Windows PowerShell 7 only.' }
         Assert-PlainPath $Root
         $git = @(Get-Command git -CommandType Application -ErrorAction Stop)[0].Source
@@ -591,7 +660,7 @@ function Invoke-LocalTests {
         Write-Host "Source revision: $($revision.Excerpt.Trim())"
         Write-Host "Working status (untracked files are excluded from staging):`n$($changes.Excerpt.Trim())"
         # Configuration is checked without invoking the pinned binary, even for --version.
-        if ($RequestedMode -in @('NativePlan', 'Native')) {
+        if ($RequestedMode -in @('NativePlan', 'Native', 'MetadataSmoke')) {
             $pinned = Get-StandardGodotIdentity
             $Engine = $pinned.Path; $EngineHash = $pinned.Sha256
             Assert-PinnedEngine $Engine $EngineHash
@@ -601,11 +670,11 @@ function Invoke-LocalTests {
         if ($suite.Count -eq 0) { throw 'Static suite is missing.' }
         foreach ($file in $suite) { Assert-PlainPath $file.FullName }
         $snapshot = $null
-        if ($RequestedMode -in @('NativePlan', 'Native')) {
+        if ($RequestedMode -in @('NativePlan', 'Native', 'MetadataSmoke')) {
             $identity = Get-NativeSourceIdentity $Root
-            $inputs = @(foreach ($relative in $identity.Tracked) {
-                if (Test-ApprovedInput $relative) {
-                    $inputPath = Join-Path $Root $relative
+            $inputs = @(foreach ($relative in (Get-ApprovedPaths $identity.Tracked @options)) {
+                if (Test-ApprovedInput $relative @options) {
+                    $inputPath = Join-Path $Root (Get-InputSourcePath $relative @options)
                     Assert-PlainPath $inputPath
                     [pscustomobject]@{ Path = $relative; Sha256 = (Get-FileHash -LiteralPath $inputPath).Hash }
                 }
@@ -613,13 +682,14 @@ function Invoke-LocalTests {
             $snapshot = [pscustomobject]@{ Identity = $identity; Inputs = $inputs }
         }
         $static = 'FAIL'
-        $result = Invoke-BoundedProcess $python @('-B', '-m', 'unittest', 'discover', '-s', 'tests', '-p', 'static_*test.py') $Root
+        $staticSeconds = if ($metadata) { 360 } else { 60 }
+        $result = Invoke-BoundedProcess $python @('-B', '-m', 'unittest', 'discover', '-s', 'tests', '-p', 'static_*test.py') $Root -Seconds $staticSeconds
         $static = if ($result.Status -eq 'PASS' -and $result.ExitCode -eq 0 -and $result.TerminationCertain) { 'PASS' } else { 'FAIL' }
         Write-Host "Static: $static ($($result.Status), exit=$($result.ExitCode), bytes=$($result.Bytes))"
         Write-Host $result.Excerpt.Trim()
         if ($static -ne 'PASS') { throw 'Static suite failed; no subsequent phase permitted.' }
-        if ($RequestedMode -eq 'Native') {
-            $native = Invoke-RestrictedNativeDispatch $Root $Engine $EngineHash $static $snapshot
+        if ($RequestedMode -in @('Native', 'MetadataSmoke')) {
+            $native = Invoke-RestrictedNativeDispatch $Root $Engine $EngineHash $static $snapshot @options
             Write-Host ($native | ConvertTo-Json -Depth 10)
             Write-Host "Summary: static=$static; native import=$($native.Import); recipe test=$($native.Native); reason=$($native.Reason); evidence=$($native.Evidence); evidence error=$($native.EvidenceError)"
             return $(if ($native.Import -eq 'PASS' -and $native.Native -eq 'PASS' -and

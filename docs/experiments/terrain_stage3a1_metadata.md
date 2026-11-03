@@ -194,3 +194,65 @@ Rollback is to omit/revert this isolated addition and its exact guard extension;
 production behavior is unchanged. Preserve the approved architecture record
 unless the owner separately revises it. No merge, follow-on PR or cleanup is
 part of this task.
+
+## Stage 3A-2 fixed smoke recipe (draft, tested runtime scope passed)
+
+The third separately authorized invocation at
+`e0640b9ac867da2008a330c66f62a2da868ab789` passed the tested metadata runtime
+scope: complete static suite 352 PASS in 247.764 seconds, headless preparation
+PASS and smoke completion `TLWH_METADATA_SMOKE_V1 failures: 0`, overall exit 0.
+Actual builder execution, direct generator parity, supported/unsupported goldens
+and representative malformed-input rejection passed within the finite test
+scope. The gate is inactive again; all three grants are consumed. Returned data
+still has `runtime_certified=false`: strict-Earth/Green-center/GPU numerical
+certification remains unproven, and Stage 3B integration remains unauthorized.
+See the [third execution record](../LOCAL_TESTING.md#third-one-time-metadata-execution-result-2026-11-03).
+
+Earlier execution records (retained as historical results):
+
+The feature branch adds one `MetadataSmoke` recipe to the existing supervised
+local runner. Its metadata-only review controls leave Native's recipe-switching
+behavior unchanged. One separately owner-authorized invocation ran at activation
+revision `4f1dcaf8d565d657d354f8ba672fa6ed681fa072` on 2026-11-03. The complete
+Python suite passed 350 tests in 249.088 seconds and headless preparation passed.
+The smoke command failed to parse `tests/metadata_smoke_test.gd:43` because the
+`seed` variable's type could not be inferred. Actual metadata generation and
+malformed-input rejection were NOT REACHED. No fix or retry was attempted; the
+one-time authorization is consumed and the inactive gate is restored. Any further
+execution requires renewed explicit owner authorization.
+
+The [exact staging/commands and owner execution checklist](../LOCAL_TESTING.md#fixed-metadata-smoke-extension-draft-tested-runtime-scope-passed)
+freeze an asset-free 32-file dependency closure: complete production scripts/types,
+a texture-free resource, existing goldens, UID inputs, minimal project template
+and a production-authored geometry snapshot. Static drift checks compare the
+snapshot to scene/source text. Production methods, geometry, classifiers and
+fixture goldens are unchanged. World state is a parsing dependency through the
+generator's type signatures; it is never instantiated by the smoke script.
+
+Planned assertions exercise actual builder calls, signed int64 identities,
+row-major 34×34 byte IDs, direct classifier parity, halo overlap, negative
+ownership, envelope edges, deterministic repetition, copied geometry, explicit
+uncertified state and representative invalid-input rejection without partial
+payloads. Static checks and inert fixtures validate source/inventory/dispatch
+contracts only. They cannot establish engine parsing or runtime parity.
+Strict-Earth, Green-center margins and numerical enclosure remain unproven;
+Stage 3B remains blocked. A later separately approved smoke PASS would be a
+runtime regression milestone, not Stage 3A-2 numerical certification.
+
+The [one-time execution record](../LOCAL_TESTING.md#one-time-metadata-execution-result-2026-11-03)
+records the exact invocation, failure, retained stage/evidence and post-run
+preservation results. Preparation PASS does not establish successful parsing or
+execution of the metadata builder. This failure adds no runtime parity,
+malformed-input, numerical or production-integration acceptance.
+
+A second separately authorized invocation after the focused seed annotation ran
+at `a38ae0249495587213a945622b9aef2b2de5f6c2`. Static validation passed 350 tests
+in 246.382 seconds; preparation passed; the smoke script parsed and ran to
+completion with two `golden prepare` failures. Other metadata and representative
+malformed-input rejection assertions executed without reported failures, but
+**overall metadata runtime validation remains FAIL**. The failing vector/error
+identities are not retained by those diagnostics, so no cause is claimed or fixed.
+See the [second execution record](../LOCAL_TESTING.md#second-one-time-metadata-execution-result-2026-11-03)
+for the exact results and preserved new stage/evidence. No automatic retry occurred;
+the inactive gate is restored and both grants are consumed. Numerical certification
+and Stage 3B integration remain unproven and unauthorized.
