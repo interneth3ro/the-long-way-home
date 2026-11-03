@@ -229,7 +229,10 @@ def main():
     for name,raw in files.items():
         path=HERE/name
         if args.check:
-            assert path.read_bytes()==raw, 'Different output: '+name
+            actual = path.read_bytes()
+            if name == 'manifest.json':
+                actual = actual.replace(b'\r\n', b'\n')
+            assert actual==raw, 'Different output: '+name
         else:
             with path.open('xb') as stream:
                 stream.write(raw)

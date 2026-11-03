@@ -102,7 +102,8 @@ Focused checks performed:
 
 - **36** self/variant opposite-edge comparisons: exact RGB equality.
 - **528** candidate layout adjacencies: exact RGB equality at source resolution.
-- Regeneration check of **14** author outputs, including manifest: byte-identical.
+- Regeneration check of **14** author outputs: PNGs byte-identical; manifest exact
+  after LF normalization to accommodate Windows Git checkout line endings.
 - Context source/output hash check, changed-file scope, Markdown links and
   `git diff --check`; pre-existing sidecar preservation.
 
