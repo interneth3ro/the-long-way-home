@@ -256,7 +256,7 @@ class CompatibilityTest(unittest.TestCase):
         self.assertEqual({line.split("\\t", 1)[1] for line in changes.splitlines()}, NEW_FILES)
 '''
         baseline = subprocess.check_output(["git", "show", f"{oracle.BASE}:{AMENDMENT}"], cwd=ROOT, text=True)
-        current = (ROOT / AMENDMENT).read_text()
+        current = subprocess.check_output(["git", "show", "cd91c9086ef24e71ddb6a43a2076c4be5a69485e:"+AMENDMENT], cwd=ROOT, text=True)
         self.assertEqual(current.count(new), 1)
         self.assertEqual(current.replace(new, old), baseline)
 

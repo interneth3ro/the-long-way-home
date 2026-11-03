@@ -194,3 +194,30 @@ Rollback is to omit/revert this isolated addition and its exact guard extension;
 production behavior is unchanged. Preserve the approved architecture record
 unless the owner separately revises it. No merge, follow-on PR or cleanup is
 part of this task.
+
+## Stage 3A-2 fixed smoke recipe (draft, planned but unexecuted)
+
+The feature branch adds one `MetadataSmoke` recipe to the existing supervised
+local runner. Its metadata-only review controls leave Native's recipe-switching
+behavior unchanged. The draft authorization gate rejects it before any process
+or real stage; separate explicit owner approval and a reviewed activation
+amendment are required. **No Godot invocation, parsing, instantiation or actual
+metadata smoke execution has occurred in this task.**
+
+The [exact staging/commands and owner execution checklist](../LOCAL_TESTING.md#fixed-metadata-smoke-extension-draft-unexecuted)
+freeze an asset-free 32-file dependency closure: complete production scripts/types,
+a texture-free resource, existing goldens, UID inputs, minimal project template
+and a production-authored geometry snapshot. Static drift checks compare the
+snapshot to scene/source text. Production methods, geometry, classifiers and
+fixture goldens are unchanged. World state is a parsing dependency through the
+generator's type signatures; it is never instantiated by the smoke script.
+
+Planned assertions exercise actual builder calls, signed int64 identities,
+row-major 34×34 byte IDs, direct classifier parity, halo overlap, negative
+ownership, envelope edges, deterministic repetition, copied geometry, explicit
+uncertified state and representative invalid-input rejection without partial
+payloads. Static checks and inert fixtures validate source/inventory/dispatch
+contracts only. They cannot establish engine parsing or runtime parity.
+Strict-Earth, Green-center margins and numerical enclosure remain unproven;
+Stage 3B remains blocked. A later separately approved smoke PASS would be a
+runtime regression milestone, not Stage 3A-2 numerical certification.

@@ -65,6 +65,14 @@
   This adds no commands, executable types, tests or runner capabilities beyond
   those two input paths. PR #90 Native execution requires separate owner
   authorization; the standing routine exception does not authorize that run.
+- Stage 3A-2 adds a fixed `MetadataSmoke` recipe in draft form only. Its additional
+  assertion/fixture review controls apply only to that mode; existing `Native`
+  recipe-switching controls and standing authorization remain unchanged.
+  `MetadataSmoke` is inactive and rejects dispatch before any process or stage.
+  No metadata import, execution, real-stage creation, or numerical certification
+  is authorized by this implementation or its inert/static checks. Separate
+  explicit owner approval and a reviewed activation amendment are required;
+  see [the exact execution checklist](docs/LOCAL_TESTING.md#metadata-smoke-execution-approval-checklist).
 - Each authorized run requires actual Python static-suite PASS, unchanged reviewed
   controls, and a fresh unique copy of approved tracked working inputs under
   `D:\GameDev\Godot\TLWH-NativeStages`, outside the checkout. Working resource

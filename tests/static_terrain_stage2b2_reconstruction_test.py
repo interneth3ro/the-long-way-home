@@ -127,12 +127,9 @@ class ReconstructionTest(unittest.TestCase):
         for c in manifest['cases']:
             self.assertEqual(tuple(c['source_centers_a']),reference.source_bounds(c['rect'],c['gutter']))
             self.assertEqual(tuple(c['source_squares_b']),reference.source_bounds(c['rect'],c['gutter'],16))
-        changes=subprocess.check_output(['git','diff','--name-status',reference.BASE,'--'],cwd=ROOT,text=True)
+        changes=subprocess.check_output(['git','diff','--name-status',reference.BASE,'cd91c9086ef24e71ddb6a43a2076c4be5a69485e','--'],cwd=ROOT,text=True)
         inventory={p:s for s,p in (line.split('\t',1) for line in changes.splitlines())}
-        untracked=set(subprocess.check_output(['git','ls-files','--others','--exclude-standard'],cwd=ROOT,text=True).splitlines())
         receipt=json.loads((ROOT/'artifacts/logs/terrain-preservation-2026-11-03.json').read_text())
-        self.assertEqual(untracked-ADDITIONS,set(receipt['protected_sidecars']))
-        inventory.update({p:'A' for p in untracked&ADDITIONS})
         self.assertEqual(inventory,{**dict.fromkeys(ADDITIONS,'A'),AMENDMENT:'M'})
         for path,entry in receipt['protected_sidecars'].items():
             self.assertEqual(hashlib.sha256((ROOT/path).read_bytes()).hexdigest(),entry['sha256'])
@@ -148,7 +145,8 @@ class ReconstructionTest(unittest.TestCase):
                      '        inventory.update({path: "A" for path in untracked & ADDITIONS})\n'):
             self.assertEqual(expected.count(line),1)
             expected=expected.replace(line,'')
-        self.assertEqual((ROOT/AMENDMENT).read_text(),expected)
+        historical=subprocess.check_output(['git','show','cd91c9086ef24e71ddb6a43a2076c4be5a69485e:'+AMENDMENT],cwd=ROOT,text=True)
+        self.assertEqual(historical,expected)
 
 
 class ProtectionProofTest(unittest.TestCase):

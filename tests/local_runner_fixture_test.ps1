@@ -52,7 +52,8 @@ function NativeResult([string]$Stdout = '', [string]$Stderr = '',
 }
 # Exercise the real dispatcher with scoped, named non-Godot doubles only.
 # The production API has no injection parameters. Unexpected process calls throw.
-function Invoke-DispatchFixture([object[]]$Results, [string]$Mutation = '') {
+function Invoke-DispatchFixture([object[]]$Results, [string]$Mutation = '', [switch]$Metadata) {
+    $options = if ($Metadata) { @{ Metadata = $true } } else { @{} }
     $calls = [Collections.Generic.List[object]]::new()
     $state = @{ IdentityReads = 0; Stage = $null; ApprovalChecks = 0 }
     $stageFunction = (Get-Command New-InputStage).ScriptBlock
@@ -70,8 +71,8 @@ function Invoke-DispatchFixture([object[]]$Results, [string]$Mutation = '') {
             Tracked = $tracked }
     }
     function New-InputStage {
-        param($Source, $Parent, $Tracked)
-        $state.Stage = & $stageFunction $Source $fixture $Tracked
+        param($Source, $Parent, $Tracked, [switch]$Metadata)
+        $state.Stage = & $stageFunction $Source $fixture $Tracked -Metadata:$Metadata
         return $state.Stage
     }
     function Invoke-BoundedProcess {
@@ -94,10 +95,10 @@ function Invoke-DispatchFixture([object[]]$Results, [string]$Mutation = '') {
         if ($calls.Count -gt $Results.Count) { throw 'Unexpected retry' }
         return $Results[$calls.Count - 1]
     }
-    $preparedStage = New-InputStage $source $fixture $tracked
+    $preparedStage = New-InputStage $source $fixture $tracked @options
     $snapshot = [pscustomobject]@{ Identity = (Get-NativeSourceIdentity $source); Inputs = $preparedStage.Inputs }
     try {
-        $r = Invoke-RestrictedNativeDispatch $source $inertEngine $inertHash PASS $snapshot
+        $r = Invoke-RestrictedNativeDispatch $source $inertEngine $inertHash PASS $snapshot @options
         [pscustomobject]@{ Summary = $r; Calls = $calls; Reads = $state.IdentityReads; ApprovalChecks = $state.ApprovalChecks; PreparedDirectory = $preparedStage.Directory }
     } finally { [IO.File]::WriteAllText($inertEngine, 'inert identity fixture') }
 }
@@ -529,6 +530,27 @@ try {
         $review.Dirty = $false
         Reject { Assert-ReviewedNativeRunner $source ('a' * 40) } 'reviewed checkout runner'
     }
+    Check 'metadata alone adds reviewed assertion and fixture controls' {
+        $review = @{ Metadata = $false; Reads = 0 }
+        function Invoke-BoundedProcess {
+            param($Executable, $Arguments)
+            if ($Arguments[0] -ceq 'rev-parse') { return NativeResult ('a' * 40) }
+            $review.Reads++
+            $original = @('diff', '--quiet', ('a' * 40), '--', 'tools', 'AGENTS.md', 'docs/LOCAL_TESTING.md',
+                'tests/local_runner_fixture_test.ps1', 'tests/static_*test.py',
+                'tests/fabricator_recipe_switching_test.gd', 'tests/fabricator_recipe_switching_test.gd.uid')
+            $added = @('tests/metadata_smoke_test.gd', 'tests/metadata_smoke_test.gd.uid',
+                'tests/fixtures/metadata_smoke', 'tests/fixtures/terrain_stage2_classification_vectors.json')
+            $expected = if ($review.Metadata) { @($original) + $added } else { $original }
+            Require (($Arguments -join '|') -ceq ($expected -join '|')) 'Mode control scope mismatch'
+            return NativeResult
+        }
+        $root = Split-Path $PSScriptRoot -Parent
+        Assert-ReviewedNativeRunner $root ('a' * 40)
+        $review.Metadata = $true
+        Assert-ReviewedNativeRunner $root ('a' * 40) -Metadata
+        Require ($review.Reads -eq 2) 'Missing mode protection check'
+    }
     $approvalIdentity = [pscustomobject]@{ Revision = ('a' * 40); Working = ''; Index = 'fixture'; Tracked = $tracked }
     $approvalStage = New-InputStage $source $fixture $tracked
     Check 'source and working inputs changed since static-suite start deny dispatch' {
@@ -627,6 +649,54 @@ try {
         $encoded = [Convert]::ToBase64String([Text.Encoding]::Unicode.GetBytes($code))
         $r = Invoke-BoundedProcess $hostExe @('-NoProfile', '-EncodedCommand', $encoded) $fixture -Seconds 15
         Require ($r.Status -eq 'PASS' -and $r.ExitCode -eq 0 -and $r.TerminationCertain) 'Stage inaccessible or changed'
+    }
+    Check 'fixed metadata inventory template aliases byte preservation and command plan' {
+        $source = Join-Path $fixture 'metadata-source'
+        $tracked = @(Get-MetadataStagePaths | ForEach-Object { Get-InputSourcePath $_ -Metadata })
+        foreach ($relative in $tracked) {
+            $path = Join-Path $source $relative
+            $null = [IO.Directory]::CreateDirectory([IO.Path]::GetDirectoryName($path))
+            [IO.File]::WriteAllText($path, "# inert metadata fixture: $relative")
+        }
+        $stage = New-InputStage $source $fixture $tracked -Metadata
+        Require ($stage.Inputs.Count -eq 32) 'Incomplete metadata closure'
+        Require ([IO.File]::ReadAllText("$($stage.Directory)/project.godot") -match 'fixtures/metadata_smoke/project.godot') 'Game project staged'
+        $plan = @(New-NativeCommandPlan $inertEngine $inertHash $stage -Metadata)
+        Require ($plan.Count -eq 2 -and $plan[0].Seconds -eq 60 -and $plan[1].Seconds -eq 30) 'Wrong phases/limits'
+        Require (($plan[0].Arguments -join '|') -ceq "--headless|--editor|--path|$($stage.Directory)|--quit") 'Wrong prep command'
+        Require (($plan[1].Arguments -join '|') -ceq "--headless|--path|$($stage.Directory)|--script|res://tests/metadata_smoke_test.gd") 'Wrong smoke command'
+        foreach ($path in @('scenes/world/planet_exterior.tscn', 'assets/art.png', 'assets/art.png.import', 'tests/other.gd', '.godot/cache', 'assets/fonts/ibm-plex-sans/IBMPlexSans-Regular.ttf')) {
+            Require (-not (Test-ApprovedInput $path -Metadata)) "Metadata admitted $path"
+        }
+        Reject { Get-ApprovedPaths @($tracked | Select-Object -Skip 1) -Metadata } 'Missing tracked metadata input'
+        $incomplete = [pscustomobject]@{ Source = $stage.Source; Directory = $stage.Directory; Inputs = @($stage.Inputs | Select-Object -Skip 1) }
+        Reject { New-NativeCommandPlan $inertEngine $inertHash $incomplete -Metadata } 'exact fixed closure'
+        $success = Invoke-DispatchFixture @((NativeResult), (NativeResult 'TLWH_METADATA_SMOKE_V1 failures: 0')) -Metadata
+        Require ($success.Summary.Import -eq 'PASS' -and $success.Summary.Native -eq 'PASS' -and $success.Calls.Count -eq 2) 'Metadata dispatch failed'
+        foreach ($mutation in @('source', 'stage', 'extra', 'final-stage', 'revoked')) {
+            $r = Invoke-DispatchFixture @((NativeResult), (NativeResult 'TLWH_METADATA_SMOKE_V1 failures: 0')) $mutation -Metadata
+            Require ($r.Summary.Infrastructure -eq 'FAIL' -and $r.Calls.Count -le 2) "Metadata mutation accepted: $mutation"
+        }
+        $r = Invoke-DispatchFixture @((NativeResult '' 'SCRIPT ERROR: inert'), (NativeResult 'TLWH_METADATA_SMOKE_V1 failures: 0')) -Metadata
+        Require ($r.Calls.Count -eq 1 -and $r.Summary.Native -eq 'NOT RUN') 'Metadata continued after import failure'
+    }
+    Check 'metadata strict completion and inherited process failures' {
+        $good = 'TLWH_METADATA_SMOKE_V1 failures: 0'
+        Require ((Get-NativeOutcome Native (NativeResult $good) -Metadata).Status -eq 'PASS') 'Good completion rejected'
+        foreach ($result in @((NativeResult ''), (NativeResult "$good`n$good"), (NativeResult "$good`ntrailing"),
+            (NativeResult 'TLWH_METADATA_SMOKE_V1 failures: 1'), (NativeResult $completion),
+            (NativeResult $good 'ERROR: inert'), (NativeResult $good '' PASS 1),
+            (NativeResult $good '' TIMEOUT), (NativeResult $good '' OUTPUT_LIMIT), (NativeResult $good '' PASS 0 $false))) {
+            Require ((Get-NativeOutcome Native $result -Metadata).Status -eq 'FAIL') 'Metadata malformed result accepted'
+        }
+    }
+    Check 'metadata draft authorization blocks public dispatch before any process or stage' {
+        $calls = [Collections.Generic.List[string]]::new()
+        function Invoke-BoundedProcess { $calls.Add('process'); throw 'Unexpected process' }
+        function New-InputStage { $calls.Add('stage'); throw 'Unexpected stage' }
+        foreach ($modeName in @('MetadataSmoke', 'metadatasmoke', 'METADATASMOKE')) {
+            Require ((Invoke-LocalTests $source $modeName) -eq 1 -and $calls.Count -eq 0) 'Draft metadata gate bypassed'
+        }
     }
 } finally {
     # Only this freshly created, inert fixture tree. No project files or prior temp files.

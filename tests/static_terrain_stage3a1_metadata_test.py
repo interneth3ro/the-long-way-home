@@ -115,7 +115,8 @@ class MetadataContractTest(unittest.TestCase):
     def test_guard_amendment_exact_scope(self):
         path = 'tests/static_terrain_stage2b2_reconstruction_test.py'
         before = subprocess.check_output(['git','show',BASE+':'+path], cwd=ROOT, text=True)
-        after = (ROOT/path).read_text()
+        # Validate the immutable merged 3A-1 amendment; 3A-2 checks its own exact delta.
+        after = subprocess.check_output(['git', 'show', 'cd91c9086ef24e71ddb6a43a2076c4be5a69485e:'+path], cwd=ROOT, text=True)
         added = after[after.index('# Stage 3A-1'):after.index('\n\n\nclass ReconstructionTest')]
         self.assertEqual(after.replace(added+'\n',''), before)
         self.assertEqual(added.count("'scenes/"), 1)

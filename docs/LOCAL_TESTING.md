@@ -176,3 +176,132 @@ Actual import compatibility, Godot parsing/completion output, process containmen
 first-run host stability and graphical behavior require actual verification. A Godot
 import that rewrites tracked sidecars will correctly fail these preservation checks
 and needs review. A failed first invocation must not be retried automatically.
+
+## Fixed metadata smoke extension (draft, unexecuted)
+
+Stage 3A-2 adds `MetadataSmoke` to the existing runner on this feature branch,
+pending review/merge. **It is inactive:** the authorization gate rejects it
+before prerequisites, subprocesses or staging. Do not invoke it for this PR.
+A separate explicit owner execution approval and reviewed gate amendment are
+required. There is no override flag, environment switch or approval file.
+`Static`, `NativePlan` and `Native` keep their existing recipe-switching behavior,
+command arrays, allowlist and review controls. Metadata-specific review paths are
+appended only for `MetadataSmoke`.
+
+The metadata recipe uses the same identity capture, pre-static hashes, actual
+Python PASS requirement, reviewed-control checks, fresh external stage, sequential
+bounded supervisor, failure evidence, final identity checks and no-retry rules.
+Its only commands, **planned but NOT RUN**, are:
+
+| Phase | Exact arguments | Deadline | Combined output |
+| --- | --- | --- | --- |
+| Asset-free editor preparation | `["--headless","--editor","--path","<stage>","--quit"]` | 60 seconds | 1,048,576 bytes |
+| Metadata smoke, after preparation PASS | `["--headless","--path","<stage>","--script","res://tests/metadata_smoke_test.gd"]` | 30 seconds | 1,048,576 bytes |
+
+Both use `<stage>` as working directory and the pinned executable listed above.
+Preparation is intentional: import-free global script-class discovery has not
+been established. This task has not run even a version/help probe. Normal zero
+exit and no engine/script/parse/assertion errors are required in both phases.
+Smoke PASS additionally requires exactly one completion line, the final nonempty
+stdout line: `TLWH_METADATA_SMOKE_V1 failures: 0`. Missing, duplicate, malformed,
+nonzero or stderr-only completion fails. Diagnostics remain capped at 4096 bytes;
+failed evidence remains ignored, unique and bounded to 64 KiB.
+
+### Exact metadata staging and dependency closure
+
+The reviewed [input inventory](../tests/fixtures/metadata_smoke/inputs.json)
+contains exactly **32 source files**. The runner independently hardcodes the
+same inventory; static tests compare them. All 32 must be tracked regular inputs.
+Only two byte-preserving destination aliases exist:
+
+| Tracked source | Stage destination |
+| --- | --- |
+| `tests/fixtures/metadata_smoke/project.godot` | `project.godot` |
+| `tests/fixtures/metadata_smoke/builder.gd.uid` | `scenes/world/continuous_terrain_metadata.gd.uid` |
+
+All other destinations equal their source paths. The minimal project has no
+main scene or autoload. It never copies the gameplay project configuration.
+The 14 complete, unchanged-or-new script inputs are:
+
+- `tests/metadata_smoke_test.gd` (the sole new executable test script).
+- `scenes/world/continuous_terrain_metadata.gd`, `planet_generator.gd`,
+  `world_coordinates.gd`, `planet_world_state.gd`, `ferrite_region_generator.gd`,
+  `crash_site_protection.gd`, `resource_deposit.gd` (all under `scenes/world/`).
+- `construction/placement_rules.gd`, `machine_definition.gd`,
+  `recipe_definition.gd`, `recipe_ingredient.gd` (all under `construction/`).
+- `inventory/item_definition.gd`, `inventory_state.gd` (both under `inventory/`).
+
+The other 18 inputs are their 14 UID files, the minimal project template, the
+[production geometry fixture](../tests/fixtures/metadata_smoke/geometry.json),
+the unchanged [classification goldens](../tests/fixtures/terrain_stage2_classification_vectors.json),
+and `scenes/world/introductory_ferrite.tres` (texture-free ResourceDeposit).
+Existing production UID bytes are copied intact. The builder's stage-only UID
+comes from the fixture alias because it has no tracked production UID; the new
+test has its own UID. Neither alias modifies production files.
+
+Dependency rationale: metadata preloads the full generator, whose unused
+`sample_color`/`sample_detail` method signatures name `PlanetWorldState`. Its
+complete script requires ResourceDeposit, FerriteRegionGenerator,
+MachineDefinition, InventoryState and PlacementRules; MachineDefinition extends
+ItemDefinition and requires RecipeDefinition/RecipeIngredient. Ferrite's script
+requires CrashSiteProtection and preloads the texture-free introductory deposit.
+WorldCoordinates is shared by these types. Static checks inspect custom class
+references and preloads. No production method is stripped, stubbed or copied.
+The smoke script instantiates only the metadata builder's actual generator and a
+direct reference generator. It never constructs PlanetWorldState or
+FerriteRegionGenerator: Ferrite catalog I/O is confined to its unused constructor.
+The catalog and its artwork therefore are not staged. Actual engine parsing and
+global-class/circular-type compatibility remain unverified until approved execution.
+
+No `planet_exterior.tscn`, gameplay scene, PNG, font, `.png.import` sidecar, source
+`.godot` cache, owner save or settings file is admitted. Expected generated files
+are confined to the fresh stage's `.godot/` tree after preparation; every staged
+input, including UIDs, must remain unchanged. Any generated file elsewhere,
+rewritten UID/input, link or unexpected directory fails closed. Preserve the
+stage for inspection; never retry automatically or widen inventory after failure.
+
+Fixture geometry is a literal snapshot of production-authored crash-site polygon
+order/vertices/colors, 256-unit feathers, gameplay polygon and four ground-object
+anchors. Static checks compare it to current scene/source text and the existing
+geometry digest. The scene is read as text only, never staged or instantiated.
+The smoke assertions cover signed int64 seed identity, 34x34 row-major 1156-byte
+IDs 0–4, direct authoritative classifier parity, overlapping halos, negative
+ownership, all four supported-envelope corners/outer halos, repeatability, copied
+geometry, `runtime_certified=false`, existing offline golden expectations and
+representative malformed-input rejection with no partial result. Goldens remain
+unaltered; their comparison is a regression check, not a numerical enclosure.
+
+Historical inventory guards now inspect their immutable merged endpoint; their
+math and source pins are retained. Only old runner-source comparisons use the
+pre-extension bytes; all other production comparisons remain against current
+files. The new static test enforces this PR's exact additions/modifications and
+protected-sidecar hashes. Inert fixtures verify that Native retains its original
+review command and only MetadataSmoke receives the added controls.
+
+### Metadata smoke execution approval checklist
+
+Review all items before requesting or granting any engine run:
+
+- Approve the exact 32-file inventory, two aliases and dependency rationale above;
+  inspect the smoke assertions and unchanged production geometry/goldens.
+- Verify source HEAD/status/index, committed reviewed controls, all input hashes,
+  preservation references/sidecars, and actual Python static-suite PASS. Review
+  inert fixture PASS separately; neither is engine validation.
+- Verify the executable path and SHA-256 above without launching it, and again
+  immediately before each authorized launch. No executable/argument overrides.
+- Separately approve **one supervised invocation** after a reviewed metadata-only
+  activation amendment. Proposed entry point: `pwsh -NoProfile -File tools/run-local-tests.ps1 -Mode MetadataSmoke`.
+  Approval must name the reviewed revision; this draft does not activate it.
+- Use a fresh `tlwh-native-plan-<GUID>` under
+  `D:\GameDev\Godot\TLWH-NativeStages`; never reuse a stage or run in the checkout.
+  Review the exact two commands, 60/30-second deadlines, 1 MiB output caps,
+  4096-byte excerpts, completion line and expected `.godot/` outputs above.
+- Stop on any static failure, identity/index/input drift, unreviewed control or
+  dependency, unexpected generated path/link, engine/script/parse error,
+  assertion, missing/malformed/duplicate completion, abnormal exit, timeout,
+  overflow or uncertain termination. Preserve bounded failure evidence and stage;
+  no automatic retry, cleanup, graphics, benchmark or certification is included.
+
+Even a later smoke PASS will not certify strict-Earth protection, positive
+Green-center margins, Geometry2D/GPU numerical enclosure or Stage 3B integration.
+Those remain blocked/unproven and require separately authorized work.
