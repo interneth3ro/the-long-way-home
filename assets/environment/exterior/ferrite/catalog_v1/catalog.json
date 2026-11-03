@@ -1,0 +1,640 @@
+{
+  "catalog_version": "faceted_ferrite_catalog_v1",
+  "terrain_cell_world_units": 64,
+  "source_pixels_per_cell": 128,
+  "future_selection_targets": {
+    "shape_family": {
+      "rectangle": 0.2,
+      "l_shape": 0.2,
+      "stepped": 0.25,
+      "organic": 0.35
+    },
+    "size_class": {
+      "small": 0.1,
+      "medium": 0.5,
+      "large": 0.4
+    }
+  },
+  "variants": [
+    {
+      "id": "ferrite_v1_small_table",
+      "size_class": "small",
+      "shape_family": "rectangle",
+      "catalog_version": "faceted_ferrite_catalog_v1",
+      "mask_path": "assets/environment/exterior/ferrite/catalog_v1/masks/ferrite_v1_small_table.txt",
+      "width_cells": 4,
+      "height_cells": 3,
+      "occupied_cells": 12,
+      "logical_polygon_world_units": [
+        [
+          0,
+          0
+        ],
+        [
+          256,
+          0
+        ],
+        [
+          256,
+          192
+        ],
+        [
+          0,
+          192
+        ]
+      ],
+      "png_path": "assets/environment/exterior/ferrite/catalog_v1/ferrite_v1_small_table.png",
+      "logical_origin_source_pixels": [
+        64,
+        64
+      ],
+      "image_size_pixels": [
+        640,
+        512
+      ],
+      "display_scale": 0.5
+    },
+    {
+      "id": "ferrite_v1_medium_slab",
+      "size_class": "medium",
+      "shape_family": "rectangle",
+      "catalog_version": "faceted_ferrite_catalog_v1",
+      "mask_path": "assets/environment/exterior/ferrite/catalog_v1/masks/ferrite_v1_medium_slab.txt",
+      "width_cells": 7,
+      "height_cells": 5,
+      "occupied_cells": 35,
+      "logical_polygon_world_units": [
+        [
+          0,
+          0
+        ],
+        [
+          448,
+          0
+        ],
+        [
+          448,
+          320
+        ],
+        [
+          0,
+          320
+        ]
+      ],
+      "png_path": "assets/environment/exterior/ferrite/catalog_v1/ferrite_v1_medium_slab.png",
+      "logical_origin_source_pixels": [
+        64,
+        64
+      ],
+      "image_size_pixels": [
+        1024,
+        768
+      ],
+      "display_scale": 0.5
+    },
+    {
+      "id": "ferrite_v1_medium_elbow",
+      "size_class": "medium",
+      "shape_family": "l_shape",
+      "catalog_version": "faceted_ferrite_catalog_v1",
+      "mask_path": "assets/environment/exterior/ferrite/catalog_v1/masks/ferrite_v1_medium_elbow.txt",
+      "width_cells": 7,
+      "height_cells": 5,
+      "occupied_cells": 27,
+      "logical_polygon_world_units": [
+        [
+          0,
+          0
+        ],
+        [
+          192,
+          0
+        ],
+        [
+          192,
+          128
+        ],
+        [
+          448,
+          128
+        ],
+        [
+          448,
+          320
+        ],
+        [
+          0,
+          320
+        ]
+      ],
+      "png_path": "assets/environment/exterior/ferrite/catalog_v1/ferrite_v1_medium_elbow.png",
+      "logical_origin_source_pixels": [
+        64,
+        64
+      ],
+      "image_size_pixels": [
+        1024,
+        768
+      ],
+      "display_scale": 0.5
+    },
+    {
+      "id": "ferrite_v1_medium_offset",
+      "size_class": "medium",
+      "shape_family": "stepped",
+      "catalog_version": "faceted_ferrite_catalog_v1",
+      "mask_path": "assets/environment/exterior/ferrite/catalog_v1/masks/ferrite_v1_medium_offset.txt",
+      "width_cells": 6,
+      "height_cells": 5,
+      "occupied_cells": 22,
+      "logical_polygon_world_units": [
+        [
+          0,
+          0
+        ],
+        [
+          256,
+          0
+        ],
+        [
+          256,
+          128
+        ],
+        [
+          384,
+          128
+        ],
+        [
+          384,
+          320
+        ],
+        [
+          128,
+          320
+        ],
+        [
+          128,
+          192
+        ],
+        [
+          0,
+          192
+        ]
+      ],
+      "png_path": "assets/environment/exterior/ferrite/catalog_v1/ferrite_v1_medium_offset.png",
+      "logical_origin_source_pixels": [
+        64,
+        64
+      ],
+      "image_size_pixels": [
+        896,
+        768
+      ],
+      "display_scale": 0.5
+    },
+    {
+      "id": "ferrite_v1_medium_terraces",
+      "size_class": "medium",
+      "shape_family": "stepped",
+      "catalog_version": "faceted_ferrite_catalog_v1",
+      "mask_path": "assets/environment/exterior/ferrite/catalog_v1/masks/ferrite_v1_medium_terraces.txt",
+      "width_cells": 8,
+      "height_cells": 6,
+      "occupied_cells": 40,
+      "logical_polygon_world_units": [
+        [
+          128,
+          0
+        ],
+        [
+          512,
+          0
+        ],
+        [
+          512,
+          256
+        ],
+        [
+          384,
+          256
+        ],
+        [
+          384,
+          384
+        ],
+        [
+          0,
+          384
+        ],
+        [
+          0,
+          128
+        ],
+        [
+          128,
+          128
+        ]
+      ],
+      "png_path": "assets/environment/exterior/ferrite/catalog_v1/ferrite_v1_medium_terraces.png",
+      "logical_origin_source_pixels": [
+        64,
+        64
+      ],
+      "image_size_pixels": [
+        1152,
+        896
+      ],
+      "display_scale": 0.5
+    },
+    {
+      "id": "ferrite_v1_medium_crown",
+      "size_class": "medium",
+      "shape_family": "organic",
+      "catalog_version": "faceted_ferrite_catalog_v1",
+      "mask_path": "assets/environment/exterior/ferrite/catalog_v1/masks/ferrite_v1_medium_crown.txt",
+      "width_cells": 7,
+      "height_cells": 6,
+      "occupied_cells": 34,
+      "logical_polygon_world_units": [
+        [
+          128,
+          0
+        ],
+        [
+          384,
+          0
+        ],
+        [
+          384,
+          64
+        ],
+        [
+          448,
+          64
+        ],
+        [
+          448,
+          192
+        ],
+        [
+          384,
+          192
+        ],
+        [
+          384,
+          384
+        ],
+        [
+          128,
+          384
+        ],
+        [
+          128,
+          320
+        ],
+        [
+          0,
+          320
+        ],
+        [
+          0,
+          64
+        ],
+        [
+          128,
+          64
+        ]
+      ],
+      "png_path": "assets/environment/exterior/ferrite/catalog_v1/ferrite_v1_medium_crown.png",
+      "logical_origin_source_pixels": [
+        64,
+        64
+      ],
+      "image_size_pixels": [
+        1024,
+        896
+      ],
+      "display_scale": 0.5
+    },
+    {
+      "id": "ferrite_v1_large_elbow",
+      "size_class": "large",
+      "shape_family": "l_shape",
+      "catalog_version": "faceted_ferrite_catalog_v1",
+      "mask_path": "assets/environment/exterior/ferrite/catalog_v1/masks/ferrite_v1_large_elbow.txt",
+      "width_cells": 10,
+      "height_cells": 7,
+      "occupied_cells": 52,
+      "logical_polygon_world_units": [
+        [
+          0,
+          0
+        ],
+        [
+          256,
+          0
+        ],
+        [
+          256,
+          192
+        ],
+        [
+          640,
+          192
+        ],
+        [
+          640,
+          448
+        ],
+        [
+          0,
+          448
+        ]
+      ],
+      "png_path": "assets/environment/exterior/ferrite/catalog_v1/ferrite_v1_large_elbow.png",
+      "logical_origin_source_pixels": [
+        64,
+        64
+      ],
+      "image_size_pixels": [
+        1408,
+        1024
+      ],
+      "display_scale": 0.5
+    },
+    {
+      "id": "ferrite_v1_large_stair",
+      "size_class": "large",
+      "shape_family": "stepped",
+      "catalog_version": "faceted_ferrite_catalog_v1",
+      "mask_path": "assets/environment/exterior/ferrite/catalog_v1/masks/ferrite_v1_large_stair.txt",
+      "width_cells": 11,
+      "height_cells": 7,
+      "occupied_cells": 54,
+      "logical_polygon_world_units": [
+        [
+          320,
+          0
+        ],
+        [
+          704,
+          0
+        ],
+        [
+          704,
+          256
+        ],
+        [
+          576,
+          256
+        ],
+        [
+          576,
+          384
+        ],
+        [
+          384,
+          384
+        ],
+        [
+          384,
+          448
+        ],
+        [
+          0,
+          448
+        ],
+        [
+          0,
+          256
+        ],
+        [
+          128,
+          256
+        ],
+        [
+          128,
+          128
+        ],
+        [
+          320,
+          128
+        ]
+      ],
+      "png_path": "assets/environment/exterior/ferrite/catalog_v1/ferrite_v1_large_stair.png",
+      "logical_origin_source_pixels": [
+        64,
+        64
+      ],
+      "image_size_pixels": [
+        1536,
+        1024
+      ],
+      "display_scale": 0.5
+    },
+    {
+      "id": "ferrite_v1_large_basin",
+      "size_class": "large",
+      "shape_family": "organic",
+      "catalog_version": "faceted_ferrite_catalog_v1",
+      "mask_path": "assets/environment/exterior/ferrite/catalog_v1/masks/ferrite_v1_large_basin.txt",
+      "width_cells": 10,
+      "height_cells": 8,
+      "occupied_cells": 57,
+      "logical_polygon_world_units": [
+        [
+          192,
+          0
+        ],
+        [
+          448,
+          0
+        ],
+        [
+          448,
+          64
+        ],
+        [
+          512,
+          64
+        ],
+        [
+          512,
+          128
+        ],
+        [
+          576,
+          128
+        ],
+        [
+          576,
+          256
+        ],
+        [
+          640,
+          256
+        ],
+        [
+          640,
+          384
+        ],
+        [
+          576,
+          384
+        ],
+        [
+          576,
+          448
+        ],
+        [
+          512,
+          448
+        ],
+        [
+          512,
+          512
+        ],
+        [
+          256,
+          512
+        ],
+        [
+          256,
+          448
+        ],
+        [
+          192,
+          448
+        ],
+        [
+          192,
+          384
+        ],
+        [
+          64,
+          384
+        ],
+        [
+          64,
+          256
+        ],
+        [
+          0,
+          256
+        ],
+        [
+          0,
+          128
+        ],
+        [
+          64,
+          128
+        ],
+        [
+          64,
+          64
+        ],
+        [
+          192,
+          64
+        ]
+      ],
+      "png_path": "assets/environment/exterior/ferrite/catalog_v1/ferrite_v1_large_basin.png",
+      "logical_origin_source_pixels": [
+        64,
+        64
+      ],
+      "image_size_pixels": [
+        1408,
+        1152
+      ],
+      "display_scale": 0.5
+    },
+    {
+      "id": "ferrite_v1_large_sprawl",
+      "size_class": "large",
+      "shape_family": "organic",
+      "catalog_version": "faceted_ferrite_catalog_v1",
+      "mask_path": "assets/environment/exterior/ferrite/catalog_v1/masks/ferrite_v1_large_sprawl.txt",
+      "width_cells": 12,
+      "height_cells": 8,
+      "occupied_cells": 72,
+      "logical_polygon_world_units": [
+        [
+          128,
+          0
+        ],
+        [
+          512,
+          0
+        ],
+        [
+          512,
+          64
+        ],
+        [
+          640,
+          64
+        ],
+        [
+          640,
+          192
+        ],
+        [
+          768,
+          192
+        ],
+        [
+          768,
+          384
+        ],
+        [
+          640,
+          384
+        ],
+        [
+          640,
+          512
+        ],
+        [
+          256,
+          512
+        ],
+        [
+          256,
+          448
+        ],
+        [
+          128,
+          448
+        ],
+        [
+          128,
+          320
+        ],
+        [
+          0,
+          320
+        ],
+        [
+          0,
+          128
+        ],
+        [
+          128,
+          128
+        ]
+      ],
+      "png_path": "assets/environment/exterior/ferrite/catalog_v1/ferrite_v1_large_sprawl.png",
+      "logical_origin_source_pixels": [
+        64,
+        64
+      ],
+      "image_size_pixels": [
+        1664,
+        1152
+      ],
+      "display_scale": 0.5
+    }
+  ]
+}

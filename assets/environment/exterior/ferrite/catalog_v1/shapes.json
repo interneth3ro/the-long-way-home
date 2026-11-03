@@ -1,0 +1,68 @@
+{
+  "catalog_version": "faceted_ferrite_catalog_v1",
+  "future_selection_targets": {
+    "shape_family": {
+      "rectangle": 0.2,
+      "l_shape": 0.2,
+      "stepped": 0.25,
+      "organic": 0.35
+    },
+    "size_class": {
+      "small": 0.1,
+      "medium": 0.5,
+      "large": 0.4
+    }
+  },
+  "variants": [
+    {
+      "id": "ferrite_v1_small_table",
+      "size_class": "small",
+      "shape_family": "rectangle"
+    },
+    {
+      "id": "ferrite_v1_medium_slab",
+      "size_class": "medium",
+      "shape_family": "rectangle"
+    },
+    {
+      "id": "ferrite_v1_medium_elbow",
+      "size_class": "medium",
+      "shape_family": "l_shape"
+    },
+    {
+      "id": "ferrite_v1_medium_offset",
+      "size_class": "medium",
+      "shape_family": "stepped"
+    },
+    {
+      "id": "ferrite_v1_medium_terraces",
+      "size_class": "medium",
+      "shape_family": "stepped"
+    },
+    {
+      "id": "ferrite_v1_medium_crown",
+      "size_class": "medium",
+      "shape_family": "organic"
+    },
+    {
+      "id": "ferrite_v1_large_elbow",
+      "size_class": "large",
+      "shape_family": "l_shape"
+    },
+    {
+      "id": "ferrite_v1_large_stair",
+      "size_class": "large",
+      "shape_family": "stepped"
+    },
+    {
+      "id": "ferrite_v1_large_basin",
+      "size_class": "large",
+      "shape_family": "organic"
+    },
+    {
+      "id": "ferrite_v1_large_sprawl",
+      "size_class": "large",
+      "shape_family": "organic"
+    }
+  ]
+}

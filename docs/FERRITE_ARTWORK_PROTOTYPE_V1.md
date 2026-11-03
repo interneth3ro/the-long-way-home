@@ -1,5 +1,10 @@
 # Ferrite artwork prototype v1
 
+The separate [shape catalog v1](FERRITE_SHAPE_CATALOG_V1.md) reuses the preserved
+components and contour compositor for ten offline production candidates.
+That feature is pending merge and owner artistic acceptance; it changes none of
+this prototype's source, images or accepted production integration.
+
 Owner-accepted offline artwork prototype, merged in PR #123 at `87ca973`.
 The prototype itself involved no production integration or Godot execution.
 All images, including their earlier pending-acceptance captions, are preserved
