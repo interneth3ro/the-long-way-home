@@ -2842,11 +2842,15 @@ performance observation requiring Milestone 3B investigation**. Potential causes
 remain hypotheses; no optimization or stutter-free result is verified. Memory and
 measured performance remain unverified. Milestone 3B's
 [hybrid preparation and one-chunk lookahead](docs/FERRITE_REGION_GENERATION.md#milestone-3b-hybrid-preparation--feature-branch-pending-merge)
-are implemented on this feature branch, pending merge and owner acceptance.
+are implemented on this feature branch, pending merge, with owner acceptance
+**10/10 PASS** at `77f2615`.
 It deduplicates nearby owner visits, reuses highlight geometry, coalesces rebuilds,
 and drains required data/textures/sprites incrementally before arrival unlock.
-Godot has not been run for 3B; no performance improvement is measured. No loading
-screen is added. The deferred raw catalog
+The [final owner acceptance record](docs/FERRITE_REGION_GENERATION.md#final-pr-128-owner-acceptance)
+retains the considerable initial transition delay and slight residual stutter as
+accepted, nonblocking limitations. Chunk rendering remains an owner hypothesis
+for periodic stutter, not a confirmed cause. Codex did not run Godot; no measured
+speedup is claimed. No loading screen is added. The deferred raw catalog
 JSON packaging/exported-build verification requirement remains unchanged.
 
 The mineral area is separate from the decorative outline. Two adjacent

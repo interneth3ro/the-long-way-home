@@ -6,7 +6,8 @@ Uses the ten
 accepted variants from merged PR #125's [catalog](FERRITE_SHAPE_CATALOG_V1.md).
 Milestone 3A presentation/highlighting merged in PR #127 with owner
 graphical/gameplay acceptance (8/8 PASS). Milestone 3B hybrid preparation is
-implemented on the feature branch, pending merge and owner acceptance; see below.
+implemented on the feature branch, pending merge, with owner acceptance
+**10/10 PASS** at `77f2615`; see the exact tested SHA and observations below.
 Generated deposits have no discovery interactions. The introductory deposit, progression,
 machine calculations and terrain generation remain unchanged.
 
@@ -322,9 +323,10 @@ highlights/grain and regular concave rims remain nonblocking artistic limitation
 ## Milestone 3B hybrid preparation — feature branch, pending merge
 
 The owner authorized all four implementation slices with static-only agent
-validation. **Godot NOT RUN / OWNER ACCEPTANCE PENDING.** The PR #127 observation
-of modest initial-discovery stutter remains unexplained; no runtime improvement,
-memory measurement or frame-time guarantee is claimed.
+validation. **Owner acceptance: 10/10 PASS** at
+`77f2615b7d1db6135dbacdbfa8583294ee91f8e7`; merge remains owner-controlled.
+Codex did not execute Godot. The PR #127 observation remains separate historical
+evidence; no measured speedup, memory measurement or frame-time guarantee is claimed.
 
 ### Nearby snapshot and geometry reuse
 
@@ -389,8 +391,9 @@ no destination success. A real asset/terrain failure remains blocking even when
 cancellation is requested. Controller generations bind deferred dispatch and all
 await continuations to the accepted request; exterior generations reject old
 preparations before they can clear a newer preparation's flags. A stale presenter
-step ends preparation as incomplete rather than spinning indefinitely. These are
-source contracts, not engine-verified cancellation/pause behavior.
+step ends preparation as incomplete rather than spinning indefinitely. These source
+contracts have owner-reported quick cancellation/rollback acceptance below;
+exhaustive failure/pause injection is not established by that report.
 
 New requests discard stale pending tasks. Tokens, world/seed/revision checks,
 exterior detachment and explicit quick-transition cancellation prevent stale work
@@ -407,6 +410,9 @@ are preserved.
 
 ### Validation limits and owner comparison
 
+The following protocol is retained for comparison provenance; final owner results
+and accepted limitations are recorded below, separately from agent static checks.
+
 Focused checks: `python -B -m unittest discover -s tests -p 'static_ferrite*test.py'`.
 Transition safety: `python -B -m unittest discover -s tests -p 'static_transition_safety_test.py'`.
 Full non-engine suite: `pwsh -NoProfile -File tools/run-local-tests.ps1 -Mode Static`.
@@ -422,7 +428,7 @@ arrival wait are explicit tradeoffs. No threads, loading-screen UI, cache tuning
 export changes or simulation dependency on presentation are introduced.
 
 Owner comparison uses accepted baseline `ca83742507dadd499d338eb2a07740692cb90573`
-and the draft PR's exact candidate commit, on the same machine, renderer,
+and the owner-tested candidate commit, on the same machine, renderer,
 resolution, seed **26026** and recorded route. A fresh application session is not
 necessarily a cold filesystem/GPU cache. Agent execution remains prohibited.
 
@@ -458,6 +464,38 @@ Arrival delay observation | gameplay result | other notes
 Keep separate acceptance judgments for **stutter reduction**, **artwork appearing
 on time**, and **arrival-transition cost**. Subjective reports are not quantitative
 timing; only actual owner measurements support numeric performance claims.
+
+### Final PR #128 owner acceptance
+
+The owner ran Godot on implementation commit
+`77f2615b7d1db6135dbacdbfa8583294ee91f8e7` and reported **10/10 PASS**.
+Owner acceptance is **APPROVED**; PR #128 remains pending owner-controlled merge.
+This documentation-only finalization does not change the tested implementation.
+
+1. Startup and arrival — PASS.
+2. Introductory Ferrite — PASS.
+3. Exploration smoothness — PASS.
+4. Chunk and region boundaries — PASS.
+5. Construction highlighting — PASS.
+6. Extractor gameplay — PASS.
+7. Offscreen production — PASS.
+8. Exterior reentry — PASS.
+9. Quick cancellation and rollback — PASS.
+10. Performance and stability — PASS.
+
+The owner reported a **considerable initial exterior-transition delay**, accepted
+for now; **very slight stuttering just after reaching the exterior**; and **minor
+periodic stuttering farther from spawn**. Chunk rendering is an owner hypothesis
+for the latter, not a confirmed cause. All observed performance issues are accepted
+and nonblocking. The owner considers further optimization diminishing returns at
+this early stage. No functional failures or severe instability were reported.
+
+A future brief cutscene or on-screen text might mask the initial wait; this is an
+owner suggestion only, with no such UI authorized or implemented in this PR.
+No frame-time measurements, profiling or measured speedup were supplied. Acceptance
+does not mean stutter was eliminated or establish its cause. Codex performed no
+Godot execution or runtime performance measurement. PR #127's separate acceptance
+and initial-stutter observation below remain unchanged.
 
 ### Original owner acceptance checklist — 3A
 

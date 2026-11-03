@@ -302,7 +302,10 @@ The integration remains pending merge and does not change approved environmental
   Deterministic procedural distribution merged in PR #126 and nearby presentation
   in PR #127, using the ten approved connected grid-conforming variants. Pending
   [3B scheduling](FERRITE_REGION_GENERATION.md#milestone-3b-hybrid-preparation--feature-branch-pending-merge)
-  preserves that distribution and artwork; owner runtime acceptance remains pending.
+  preserves that distribution and artwork; owner acceptance is **10/10 PASS** at
+  `77f2615`, pending merge. The accepted arrival delay and residual stutter remain
+  [nonblocking limitations](FERRITE_REGION_GENERATION.md#final-pr-128-owner-acceptance),
+  with no measured performance gain claimed.
 - One guaranteed authored deposit near the ship introduces deliberate inspection,
   Dave's engineering deduction and guidance to locate the Extractor in the
   maintenance bay. Computer does not identify the mineral in this sequence.

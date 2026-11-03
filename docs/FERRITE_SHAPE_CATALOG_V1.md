@@ -12,7 +12,9 @@ nonblocking and requires Milestone 3B investigation; causes remain hypotheses.
 No catalog artwork or generation tuning changed. The pending
 [3B preparation implementation](FERRITE_REGION_GENERATION.md#milestone-3b-hybrid-preparation--feature-branch-pending-merge)
 uses only nearby required textures at arrival and bounded one-chunk lookahead;
-owner runtime acceptance remains pending and no measured gain is claimed.
+owner acceptance is **10/10 PASS** at `77f2615`, pending merge. The
+[final acceptance record](FERRITE_REGION_GENERATION.md#final-pr-128-owner-acceptance)
+retains the accepted initial wait and residual stutter; no measured gain is claimed.
 Accepted PR #123 artwork and PR #124 production integration remain unchanged.
 
 ## Review package
