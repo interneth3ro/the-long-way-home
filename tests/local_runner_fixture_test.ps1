@@ -597,6 +597,59 @@ try {
         }
         Require ((Invoke-LocalTests $source Native) -eq 0 -and $state.Dispatched) 'Static PASS not connected'
     }
+    Check 'static deadline is 360 only for MetadataSmoke with unchanged selection and PASS gate' {
+        # Scoped doubles only: no Python/Git/engine subprocess or real stage.
+        $state = @{ Seconds = 0; PythonCalls = 0; Stages = 0; Dispatches = 0;
+            Status = 'PASS'; ExitCode = 0; Certain = $true }
+        function Assert-NativeExecutionAuthorization { }
+        function Assert-PinnedEngine { }
+        function Get-NativeSourceIdentity { return $approvalIdentity }
+        function Get-ApprovedPaths { return @('project.godot') }
+        function Get-InputSourcePath { param($Relative); return $Relative }
+        function Get-NativeStageParent { return $fixture }
+        function New-InputStage { $state.Stages++; return [pscustomobject]@{ Directory = 'inert-plan' } }
+        function New-NativePlanSummary { return [pscustomobject]@{ Synthetic = $true } }
+        function Invoke-RestrictedNativeDispatch {
+            param($Source, $Engine, $EngineHash, $StaticStatus, $StaticSnapshot)
+            Require ($StaticStatus -ceq 'PASS' -and $StaticSnapshot.Identity.Revision -ceq $approvalIdentity.Revision -and
+                $StaticSnapshot.Inputs.Count -eq 1) 'Static proof or snapshot omitted'
+            $state.Dispatches++
+            [pscustomobject]@{ Import = 'PASS'; Native = 'PASS'; Infrastructure = 'PASS'; Authorization = 'PASS';
+                Reason = 'OK'; Evidence = ''; EvidenceError = '' }
+        }
+        function Invoke-BoundedProcess {
+            param($Executable, $Arguments, $Directory, [int]$Seconds = 60,
+                [int]$MaxBytes = 1048576, [int]$ExcerptBytes = 4096)
+            if ($Arguments[0] -ceq '-B') {
+                Require (($Arguments -join '|') -ceq '-B|-m|unittest|discover|-s|tests|-p|static_*test.py') 'Static selection changed'
+                Require ($MaxBytes -eq 1048576 -and $ExcerptBytes -eq 4096) 'Static output limits changed'
+                $state.PythonCalls++; $state.Seconds = $Seconds
+                return [pscustomobject]@{ Status = $state.Status; ExitCode = $state.ExitCode; Bytes = 0;
+                    Excerpt = 'synthetic static result'; TerminationCertain = $state.Certain }
+            }
+            Require ($Arguments[0] -in @('rev-parse', 'status')) 'Unexpected synthetic process request'
+            $value = if ($Arguments[0] -ceq 'rev-parse' -and $Arguments[1] -ceq '--show-toplevel') { $Directory } else { '' }
+            [pscustomobject]@{ Status = 'PASS'; ExitCode = 0; Bytes = 0; Excerpt = $value; TerminationCertain = $true }
+        }
+        foreach ($modeName in @('Static', 'NativePlan', 'Native', 'MetadataSmoke')) {
+            foreach ($outcome in @('PASS', 'NONZERO_EXIT', 'TIMEOUT', 'UNCERTAIN')) {
+                $state.Seconds = 0; $state.PythonCalls = 0; $state.Stages = 0; $state.Dispatches = 0
+                $state.Status = if ($outcome -in @('PASS', 'UNCERTAIN')) { 'PASS' } else { $outcome }
+                $state.ExitCode = if ($outcome -ceq 'NONZERO_EXIT') { 1 } else { 0 }
+                $state.Certain = $outcome -cne 'UNCERTAIN'
+                $code = Invoke-LocalTests $source $modeName
+                $expectedSeconds = if ($modeName -ceq 'MetadataSmoke') { 360 } else { 60 }
+                Require ($state.PythonCalls -eq 1 -and $state.Seconds -eq $expectedSeconds) "Wrong static deadline: $modeName"
+                if ($outcome -ceq 'PASS') {
+                    Require ($code -eq 0) "Static success rejected: $modeName"
+                    Require ($state.Stages -eq [int]($modeName -ceq 'NativePlan') -and
+                        $state.Dispatches -eq [int]($modeName -in @('Native', 'MetadataSmoke'))) 'Successful phase wiring changed'
+                } else {
+                    Require ($code -eq 1 -and $state.Stages -eq 0 -and $state.Dispatches -eq 0) "Static failure gate bypassed: $modeName/$outcome"
+                }
+            }
+        }
+    }
     Check 'public Native authorization withdrawal prevents prerequisites, staging or execution' {
         function Assert-NativeExecutionAuthorization { throw 'Synthetic owner withdrawal' }
         $gateCalls = [Collections.Generic.List[string]]::new()

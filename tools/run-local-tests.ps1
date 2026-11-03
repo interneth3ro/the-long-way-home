@@ -682,7 +682,8 @@ function Invoke-LocalTests {
             $snapshot = [pscustomobject]@{ Identity = $identity; Inputs = $inputs }
         }
         $static = 'FAIL'
-        $result = Invoke-BoundedProcess $python @('-B', '-m', 'unittest', 'discover', '-s', 'tests', '-p', 'static_*test.py') $Root
+        $staticSeconds = if ($metadata) { 360 } else { 60 }
+        $result = Invoke-BoundedProcess $python @('-B', '-m', 'unittest', 'discover', '-s', 'tests', '-p', 'static_*test.py') $Root -Seconds $staticSeconds
         $static = if ($result.Status -eq 'PASS' -and $result.ExitCode -eq 0 -and $result.TerminationCertain) { 'PASS' } else { 'FAIL' }
         Write-Host "Static: $static ($($result.Status), exit=$($result.ExitCode), bytes=$($result.Bytes))"
         Write-Host $result.Excerpt.Trim()

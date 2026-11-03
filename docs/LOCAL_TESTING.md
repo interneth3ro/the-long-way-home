@@ -188,6 +188,14 @@ required. There is no override flag, environment switch or approval file.
 command arrays, allowlist and review controls. Metadata-specific review paths are
 appended only for `MetadataSmoke`.
 
+The complete Python suite passed 350 tests in **259.024 seconds** during PR #139
+validation on 2026-11-03. MetadataSmoke therefore has a fixed **360-second**
+bounded Python static-suite deadline. `Static`, `NativePlan` and `Native` retain
+**60 seconds**. Test selection, actual PASS/zero-exit/termination-certainty
+requirements, output limits and the stop-before-staging/dispatch failure gate
+are unchanged. This deadline amendment does not activate MetadataSmoke. The
+planned Godot preparation/smoke deadlines remain **60/30 seconds**, respectively.
+
 The metadata recipe uses the same identity capture, pre-static hashes, actual
 Python PASS requirement, reviewed-control checks, fresh external stage, sequential
 bounded supervisor, failure evidence, final identity checks and no-retry rules.
