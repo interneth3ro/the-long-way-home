@@ -1,8 +1,56 @@
 # Stage 2B-2: paired offline reconstruction
 
-Status: offline implementation and bounded diagnostics complete, pending owner
-review. No artistic or production acceptance is implied. Baseline is PR #135 merge
+Status: owner-selected provisional reconstruction baseline recorded; PR #137
+is authorized for review readiness after documentation verification, pending merge.
+Final artistic and production acceptance remain outstanding. Baseline is PR #135 merge
 `1f4ac408c31b99be4ab7158960dab06adec93871`. Production remains unchanged.
+
+## Owner provisional selection — 2026-11-03
+
+The owner approves **Candidate A, sharpened smooth center-lattice interpolation
+with `a=5/32`, as the provisional reconstruction baseline**. Candidate B,
+midpoint-contour reconstruction with `w=16`, remains preserved as comparison
+evidence and a possible fallback. The unremapped A control, both algorithms,
+shared protection reference, all tests, original case definitions, diagnostic
+generator and historical evidence remain unchanged by this documentation update.
+
+The owner reports reviewing the following visual comparisons. The original
+directory is `artifacts/tmp/stage2b2-20261103-132958/`; original filenames have
+prefix `stage2b2-paired-v1-seeds-mixed-` and suffix
+`-a5of32-w16-scales05-1-15.png`. Refined files are in
+`artifacts/tmp/stage2b2-readable-v1-20261103-134527/`.
+
+| Reviewed evidence | File / case identity |
+| --- | --- |
+| Original pattern comparisons | Original `contact` sheet |
+| Original minimum-clearance comparisons | Original `minima` sheet |
+| Original production overview | Original `overview` sheet |
+| Original outside-crash comparisons | Original `outside` sheet |
+| Refined natural comparison | `stage2b2-r2-seed26026-natural-a5of32-vs-w16-step4-clean.png` |
+| Refined crash-site comparison with minimum-clearance inset | `stage2b2-r2-seed26026-crash-a5of32-vs-w16-step4-inset025-clean.png` |
+
+The two existing local provenance manifests retain exact filenames, sampling
+parameters and hashes. This records owner review of existing evidence, not a
+new agent visual acceptance test or permission to regenerate/publish artifacts.
+The separate overlay companion and other diagnostic sheets remain preserved;
+this decision does not assert an additional review result for them.
+
+Provisional algorithm selection does **not** establish final artistic acceptance,
+Godot/Vector2 or GPU numerical parity, filtering/mipmap correctness, production
+performance acceptance, or production renderer activation. Offline command
+timings are bounded diagnostic observations, not accepted engine performance.
+The conditional Python enclosure and its assumptions remain unchanged.
+
+Long-range repetition, grid rhythm, fine narrow-feature readability and eventual
+art integration remain review risks. The original overview/outside sheets are
+coarse, with anisotropic presentation in the original outside sheet; the refined
+natural crop corrects that presentation but covers only a localized contour.
+Nearest enlargement adds no samples. The .25-unit inset remains discrete evidence.
+
+The owner explicitly authorizes marking PR #137 ready for review after verifying
+this documentation-only update. That transition does not authorize merge,
+cleanup, a renderer swap, or any Stage 3 implementation. Documentation-sync
+requires no production or narrative document changes for this provisional choice.
 
 ## Numerical contract and one-sided enclosure
 
@@ -196,15 +244,16 @@ Documentation-sync reviewed README, GAME_VISION and related experiment reports.
 Their historical pending lifecycle labels remain untouched; this offline-only
 comparison changes no production behavior or narrative canon.
 
-Owner visual review must compare organic continuity, grid rhythm, diagonal
+The continuing visual checklist covers organic continuity, grid rhythm, diagonal
 wallpaper, scallops, diamond islands, checkerboard joins, narrow Green features,
-crash Earth readability, seams and scale readability. Both candidates may fail.
+crash Earth readability, seams and scale readability. Provisional selection does
+not close these final artistic questions.
 The generated pattern sheet exposes A's curved corner response and B's straight
 midpoint segments/checkerboard routing. The minimum-clearance crops show the
 shared narrow protection transition. Small coarse overview panels cannot settle
 fine organic quality, narrow-feature readability or grid-rhythm acceptance.
-No artistic winner is selected. Rollback is leaving
-the draft unmerged, or a separately reviewed revert; there is no runtime migration.
+The owner subsequently selected A provisionally, as recorded above. Rollback is
+leaving the PR unmerged, or a separately reviewed revert; there is no runtime migration.
 
 Neither enclosure certification nor runtime assumptions alone authorize generation.
 The original six-file scope, preservation requirements, test gate and diagnostic
@@ -327,8 +376,10 @@ and matched A/B framing. The fixed natural crop reveals a localized contour,
 not enough terrain to establish long-range repetition quality. Four-unit sample
 steps and nearest enlargement remain visible; no smooth-filter or engine claim
 is implied. The sub-unit inset is shared protection evidence, not a new artistic
-selection. No candidate winner is declared.
+selection. No candidate was selected during diagnostic generation; the subsequent
+owner provisional selection is recorded above.
 
 Documentation-sync confines this refinement to the experiment report. No
 production or narrative documentation changes are needed. Candidate preference
-is not artistic acceptance; no winner, engine parity or merge is approved.
+is not final artistic acceptance. The later provisional selection of A leaves
+engine parity and merge unapproved.
