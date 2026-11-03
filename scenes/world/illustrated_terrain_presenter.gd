@@ -91,6 +91,18 @@ func retire_chunk(coordinate: Vector2i, generation_token: int) -> Dictionary:
 	return _result(true, &"retired", coordinate, generation_token, "Owned region retired")
 
 
+# Read-only evidence of a complete write, never registration or retained pixels.
+# Detachment makes evidence unavailable; reattachment must be checked anew.
+func publication(coordinate: Vector2i, generation_token: int) -> Dictionary:
+	if not _current(coordinate, generation_token, false).ok \
+			or not _active[coordinate].presented or not is_inside_tree() \
+			or not _terrain.is_inside_tree() or _terrain.get_parent() != self \
+			or not _terrain.is_visible_in_tree():
+		return {}
+	return {"chunk": coordinate, "token": generation_token,
+		"presenter": get_instance_id(), "layer": _terrain.get_instance_id()}
+
+
 func _prepare(coordinate: Vector2i, token: int, sampler: Callable,
 		seed_value: int, rule_version: int) -> Dictionary:
 	var origin := coordinate * WIDTH
