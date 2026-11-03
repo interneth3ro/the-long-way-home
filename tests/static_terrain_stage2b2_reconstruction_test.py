@@ -17,6 +17,12 @@ ADDITIONS = {'docs/experiments/terrain_stage2b2_reconstruction.md',
              'tests/static_terrain_stage2b2_reconstruction_test.py',
              'tests/fixtures/terrain_stage2b2_cases.json', 'tools/terrain-stage2b2-diagnostics.py'}
 AMENDMENT = 'tests/static_terrain_stage2b_compatibility_test.py'
+# Stage 3A-1 adds only isolated preparation, its tests and two approved records.
+# Keep every historical inventory, mathematical and preservation assertion.
+ADDITIONS |= {'scenes/world/continuous_terrain_metadata.gd',
+              'tests/static_terrain_stage3a1_metadata_test.py',
+              'docs/experiments/terrain_stage3_architecture_decisions.md',
+              'docs/experiments/terrain_stage3a1_metadata.md'}
 
 
 class ReconstructionTest(unittest.TestCase):
