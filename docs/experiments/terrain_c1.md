@@ -49,6 +49,7 @@ natural grass/Earth without the 64-unit image repetition seen in A1? The supplie
 `grassland.png` board was visually reviewed as art direction, never sampled/cropped.
 No A1 art revision, FactoryGame input/reuse or production integration is included.
 [A1 remains preserved in draft PR #130](https://github.com/interneth3ro/the-long-way-home/pull/130).
+[Compact A1 failure evidence](../../assets/experiments/terrain_fidelity_a1/REPORT.md).
 
 Entry point: [terrain_c1.tscn](../../scenes/experiments/terrain_c1/terrain_c1.tscn).
 This scene has no production startup reference, construction-world group, gameplay
