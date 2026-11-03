@@ -1,0 +1,245 @@
+{
+  "schema": 1,
+  "baseline": "06666cc108d431294aba25d1ba0bd652d448c18b",
+  "classification_rule": "production-ground@06666cc108d431294aba25d1ba0bd652d448c18b",
+  "geometry_sha256": "5846d34ec602ba20d3a4f84c63c123b4cfd41104d4a943986df600174520b590",
+  "source_sha256_lf": {
+    "scenes/world/planet_generator.gd": "f586792777178e63515c781f8aebb73f65c43c313f14f5970ce74bed10ca9c49",
+    "scenes/world/world_coordinates.gd": "1337cfcf112d7f480b9e8525ef007d8f30d6abc5258c58d9f11734408d763213",
+    "scenes/world/crash_site_protection.gd": "d03d9121cb3a5c0f317740ffb737e6280e007733178c6f70235bfed22b4d4f09",
+    "scenes/world/planet_exterior.tscn": "721a7b3470b851b57b751b894c41c5c735533bdb0c9e151ef302936ecf71b6d1"
+  },
+  "numeric_provenance": "Exact rational arithmetic using 16/25 threshold and 9/50 coefficient, independently cross-checked with pre-existing binary64 model. Not Godot-generated. Tests separately recompute with an independent Fraction oracle; source guards pin production.",
+  "records": [
+    {
+      "seed": 26026,
+      "cell": [
+        44,
+        41
+      ],
+      "world_center": [
+        2848,
+        2656
+      ],
+      "material": 0,
+      "binary": 0,
+      "rationale": "Outside authored geometry; locks exact material 0",
+      "provenance": "independent exact Fraction calculation; cross-checked against pre-existing material_at",
+      "exact_cover": "1538544154106781751/2564940724081459200",
+      "subtype_hash_numerator": 792883209
+    },
+    {
+      "seed": 26026,
+      "cell": [
+        44,
+        40
+      ],
+      "world_center": [
+        2848,
+        2592
+      ],
+      "material": 1,
+      "binary": 1,
+      "rationale": "Outside authored geometry; locks exact material 1",
+      "provenance": "independent exact Fraction calculation; cross-checked against pre-existing material_at",
+      "exact_cover": "65599378676176823/94997804595609600",
+      "subtype_hash_numerator": 530930409
+    },
+    {
+      "seed": 26026,
+      "cell": [
+        45,
+        40
+      ],
+      "world_center": [
+        2912,
+        2592
+      ],
+      "material": 2,
+      "binary": 1,
+      "rationale": "Outside authored geometry; locks exact material 2",
+      "provenance": "independent exact Fraction calculation; cross-checked against pre-existing material_at",
+      "exact_cover": "62945104945792069/94997804595609600",
+      "subtype_hash_numerator": 847951324
+    },
+    {
+      "seed": 26026,
+      "cell": [
+        40,
+        40
+      ],
+      "world_center": [
+        2592,
+        2592
+      ],
+      "material": 3,
+      "binary": 1,
+      "rationale": "Outside authored geometry; locks exact material 3",
+      "provenance": "independent exact Fraction calculation; cross-checked against pre-existing material_at",
+      "exact_cover": "2937339113009597/3518437207244800",
+      "subtype_hash_numerator": 1489689290
+    },
+    {
+      "seed": 26026,
+      "cell": [
+        41,
+        40
+      ],
+      "world_center": [
+        2656,
+        2592
+      ],
+      "material": 4,
+      "binary": 1,
+      "rationale": "Outside authored geometry; locks exact material 4",
+      "provenance": "independent exact Fraction calculation; cross-checked against pre-existing material_at",
+      "exact_cover": "15758775418557913/18999560919121920",
+      "subtype_hash_numerator": 1805385809
+    },
+    {
+      "seed": 0,
+      "cell": [
+        -80,
+        -64
+      ],
+      "world_center": [
+        -5088,
+        -4064
+      ],
+      "material": 0,
+      "binary": 0,
+      "rationale": "Signed/zero/modulus seed and absolute boundary probe; no runtime envelope claim",
+      "provenance": "independent exact Fraction calculation; cross-checked against pre-existing material_at",
+      "exact_cover": "3736172483784259/5937362787225600",
+      "subtype_hash_numerator": 1285427681
+    },
+    {
+      "seed": -42,
+      "cell": [
+        -129,
+        128
+      ],
+      "world_center": [
+        -8224,
+        8224
+      ],
+      "material": 0,
+      "binary": 0,
+      "rationale": "Signed/zero/modulus seed and absolute boundary probe; no runtime envelope claim",
+      "provenance": "independent exact Fraction calculation; cross-checked against pre-existing material_at",
+      "exact_cover": "9821908168874227/64123518102036480",
+      "subtype_hash_numerator": 233002169
+    },
+    {
+      "seed": -1,
+      "cell": [
+        16384,
+        -16385
+      ],
+      "world_center": [
+        1048608,
+        -1048608
+      ],
+      "material": 2,
+      "binary": 1,
+      "rationale": "Signed/zero/modulus seed and absolute boundary probe; no runtime envelope claim",
+      "provenance": "independent exact Fraction calculation; cross-checked against pre-existing material_at",
+      "exact_cover": "1315383822697783/1759218603622400",
+      "subtype_hash_numerator": 996814380
+    },
+    {
+      "seed": 2147483647,
+      "cell": [
+        -16385,
+        16384
+      ],
+      "world_center": [
+        -1048608,
+        1048608
+      ],
+      "material": 0,
+      "binary": 0,
+      "rationale": "Signed/zero/modulus seed and absolute boundary probe; no runtime envelope claim",
+      "provenance": "independent exact Fraction calculation; cross-checked against pre-existing material_at",
+      "exact_cover": "537323451075757/879609301811200",
+      "subtype_hash_numerator": 1129839118
+    },
+    {
+      "seed": -2147483648,
+      "cell": [
+        128,
+        -129
+      ],
+      "world_center": [
+        8224,
+        -8224
+      ],
+      "material": 0,
+      "binary": 0,
+      "rationale": "Signed/zero/modulus seed and absolute boundary probe; no runtime envelope claim",
+      "provenance": "independent exact Fraction calculation; cross-checked against pre-existing material_at",
+      "exact_cover": "1382602070385349819/2564940724081459200",
+      "subtype_hash_numerator": 1409658625
+    },
+    {
+      "seed": 0,
+      "cell": [
+        0,
+        0
+      ],
+      "world_center": [
+        32,
+        32
+      ],
+      "material": 0,
+      "binary": 0,
+      "rationale": "Center (32,32) lies in gameplay interior",
+      "provenance": "hand-reviewed polygon interior; independent existing geometry oracle cross-check"
+    },
+    {
+      "seed": -42,
+      "cell": [
+        -6,
+        -3
+      ],
+      "world_center": [
+        -352,
+        -160
+      ],
+      "material": 0,
+      "binary": 0,
+      "rationale": "Ship neighborhood remains Earth independently of seed",
+      "provenance": "hand-reviewed polygon interior; independent existing geometry oracle cross-check"
+    },
+    {
+      "seed": 26026,
+      "cell": [
+        4,
+        4
+      ],
+      "world_center": [
+        288,
+        288
+      ],
+      "material": 0,
+      "binary": 0,
+      "rationale": "Introductory Ferrite surroundings remain Earth",
+      "provenance": "hand-reviewed polygon interior; independent existing geometry oracle cross-check"
+    },
+    {
+      "seed": 2147483647,
+      "cell": [
+        0,
+        -16
+      ],
+      "world_center": [
+        32,
+        -992
+      ],
+      "material": 0,
+      "binary": 0,
+      "rationale": "NorthRidge interior remains Earth",
+      "provenance": "hand-reviewed polygon interior; independent existing geometry oracle cross-check"
+    }
+  ]
+}
