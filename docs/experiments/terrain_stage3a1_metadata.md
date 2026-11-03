@@ -195,7 +195,20 @@ production behavior is unchanged. Preserve the approved architecture record
 unless the owner separately revises it. No merge, follow-on PR or cleanup is
 part of this task.
 
-## Stage 3A-2 fixed smoke recipe (draft, one-time execution failed)
+## Stage 3A-2 fixed smoke recipe (draft, tested runtime scope passed)
+
+The third separately authorized invocation at
+`e0640b9ac867da2008a330c66f62a2da868ab789` passed the tested metadata runtime
+scope: complete static suite 352 PASS in 247.764 seconds, headless preparation
+PASS and smoke completion `TLWH_METADATA_SMOKE_V1 failures: 0`, overall exit 0.
+Actual builder execution, direct generator parity, supported/unsupported goldens
+and representative malformed-input rejection passed within the finite test
+scope. The gate is inactive again; all three grants are consumed. Returned data
+still has `runtime_certified=false`: strict-Earth/Green-center/GPU numerical
+certification remains unproven, and Stage 3B integration remains unauthorized.
+See the [third execution record](../LOCAL_TESTING.md#third-one-time-metadata-execution-result-2026-11-03).
+
+Earlier execution records (retained as historical results):
 
 The feature branch adds one `MetadataSmoke` recipe to the existing supervised
 local runner. Its metadata-only review controls leave Native's recipe-switching
@@ -208,7 +221,7 @@ malformed-input rejection were NOT REACHED. No fix or retry was attempted; the
 one-time authorization is consumed and the inactive gate is restored. Any further
 execution requires renewed explicit owner authorization.
 
-The [exact staging/commands and owner execution checklist](../LOCAL_TESTING.md#fixed-metadata-smoke-extension-draft-one-time-execution-failed)
+The [exact staging/commands and owner execution checklist](../LOCAL_TESTING.md#fixed-metadata-smoke-extension-draft-tested-runtime-scope-passed)
 freeze an asset-free 32-file dependency closure: complete production scripts/types,
 a texture-free resource, existing goldens, UID inputs, minimal project template
 and a production-authored geometry snapshot. Static drift checks compare the

@@ -77,6 +77,10 @@
   consumed at `a38ae0249495587213a945622b9aef2b2de5f6c2`: preparation passed;
   the smoke ran but reported two `golden prepare` assertion failures. No fix or
   retry followed; the gate is inactive again. Neither grant permits another run.
+  The third separately authorized invocation against reviewed `d5c5789` passed
+  the tested metadata runtime scope at `e0640b9ac867da2008a330c66f62a2da868ab789`.
+  The gate was restored inactive; all three grants are consumed. Runtime smoke
+  PASS grants no further execution, numerical certification or Stage 3B authority.
   No metadata import, execution, real-stage creation, or numerical certification
   is authorized by this implementation or its inert/static checks. Separate
   explicit owner approval and a reviewed activation amendment are required;

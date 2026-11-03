@@ -177,13 +177,14 @@ first-run host stability and graphical behavior require actual verification. A G
 import that rewrites tracked sidecars will correctly fail these preservation checks
 and needs review. A failed first invocation must not be retried automatically.
 
-## Fixed metadata smoke extension (draft, one-time execution failed)
+## Fixed metadata smoke extension (draft, tested runtime scope passed)
 
 Stage 3A-2 adds `MetadataSmoke` to the existing runner on this feature branch,
-pending review/merge. **It is inactive again** following one owner-authorized
-invocation on 2026-11-03, recorded below. The authorization gate rejects it before
-prerequisites, subprocesses or staging. Any additional invocation requires new
-explicit owner execution approval and a reviewed gate amendment. There is no
+pending review/merge. The third separately authorized invocation passed its
+**tested metadata runtime scope** on 2026-11-03, recorded below. **The gate is
+inactive again and all three grants are consumed.** It rejects before prerequisites,
+subprocesses or staging. Any additional invocation requires new explicit owner
+execution approval and a reviewed gate amendment. There is no
 override flag, environment switch or approval file.
 `Static`, `NativePlan` and `Native` keep their existing recipe-switching behavior,
 command arrays, allowlist and review controls. Metadata-specific review paths are
@@ -200,7 +201,7 @@ planned Godot preparation/smoke deadlines remain **60/30 seconds**, respectively
 The metadata recipe uses the same identity capture, pre-static hashes, actual
 Python PASS requirement, reviewed-control checks, fresh external stage, sequential
 bounded supervisor, failure evidence, final identity checks and no-retry rules.
-The unchanged fixed commands used by the one-time invocation were:
+The unchanged fixed commands used by the authorized invocations were:
 
 | Phase | Exact arguments | Deadline | Combined output |
 | --- | --- | --- | --- |
@@ -471,3 +472,75 @@ This correction has non-engine static/inert validation only; exact results are
 recorded in PR #139. MetadataSmoke stays inactive. No Godot invocation or retry
 accompanies this change, and neither prior grant permits another run. Runtime
 success, numerical certification and Stage 3B integration remain unestablished.
+
+## Third one-time metadata execution result (2026-11-03)
+
+The owner authorized one additional supervised invocation against reviewed PR #139
+HEAD `d5c5789142c68b7ce09f25c19e178e13635f9107`. The only activation change was
+the metadata authorization branch, committed at
+`e0640b9ac867da2008a330c66f62a2da868ab789`. Exact source comparison and inert
+side-effect/AST checks passed. All reviewed inputs, assertions, inventory, two
+aliases, Native behavior and execution/preservation controls stayed unchanged.
+
+Exactly one invocation was made:
+
+```powershell
+pwsh -NoProfile -File tools/run-local-tests.ps1 -Mode MetadataSmoke
+```
+
+| Check | Actual result |
+| --- | --- |
+| Complete static suite under 360 seconds | PASS: 352 tests, 247.764 seconds, exit 0, 515 output bytes |
+| Pinned headless editor preparation under 60 seconds | PASS |
+| Metadata smoke command under 30 seconds | PASS |
+| Completion | Exactly one final stdout record: `TLWH_METADATA_SMOKE_V1 failures: 0` |
+| Overall runner | Exit 0; Static=PASS, Import=PASS, Native=PASS, Infrastructure=PASS, Authorization=PASS, Reason=OK |
+
+The reviewed golden-scope correction added two static guards, so the complete
+unchanged discovery command now runs 352 tests rather than the older 350-test
+baseline. No test was skipped or selection/PASS condition changed.
+
+Actual GDScript loading/parsing, production generator construction and metadata
+builder execution succeeded within the smoke's tested scope. Passing assertions
+cover six decimal-string signed seeds (including both int64 endpoints), eight
+owned chunks per seed (adjacent negative/origin owners and four envelope corners),
+34x34/1156-byte row-major IDs 0-4, direct production-classifier parity, overlapping
+halos, negative ownership, outer support, repeatability, copied geometry and
+`runtime_certified=false`. All 14 historical goldens are retained: the 12 supported
+owners pass metadata/material-byte checks; the two unsupported owners are rejected
+with `unsupported_chunk` and pass direct generator/material-ID comparisons.
+Representative malformed seed/chunk/geometry/overlay input rejection assertions
+also passed with no partial payload. This is finite runtime regression evidence,
+not exhaustive proof for every seed, coordinate, malformed value or numeric case.
+
+Both engine phases satisfied zero exit, no engine/script/assertion errors,
+bounded output and observed termination certainty. The commands and 60/30-second,
+1,048,576-byte output and 4096-byte excerpt limits were unchanged. The summary
+does not retain per-phase elapsed/output-byte totals; none are inferred.
+The fresh retained stage is
+`D:\GameDev\Godot\TLWH-NativeStages\tlwh-native-plan-6ef08cf483f4442cad850d02f18c99b5`,
+distinct from both previous stages. Its 32-input digest is
+`9517204CBADA45D2E36BD722BCABB8DA44419C3555F7E36309E722E57DFA0090`.
+Success returned empty Evidence/EvidenceError fields, as designed; no routine
+permanent success log was created. This execution record and PR #139 retain the
+meaningful result. All three stages and both earlier failure records are preserved.
+
+Post-run checks passed for unchanged source revision/status/index, exact 32
+source/stage hashes and digest, allowed generated paths (only stage `.godot/`
+additions), executable, 15 protected sidecar paths/sizes/hashes, A1 branch, three
+annotated tag objects/targets, backup bundle size/hash, frozen C1 rasters,
+original/refined diagnostic manifests and 7+3 output sizes/hashes, prior failure
+record SHA-256s and both earlier stage digests. All 309 tracked asset files
+(118,944,410 bytes, including artwork) matched a pre/post aggregate digest of
+`91d4f6c31cf28b2f1980a2213aaf0badb7c430d02668b6be56bac681303af4b5`.
+That aggregate hashes sorted relative paths, byte sizes and each file's SHA-256;
+no artwork was imported into the smoke stage or changed.
+
+The inactive gate is restored exactly to reviewed `d5c5789` source. All three
+one-time grants are consumed, with no automatic retry or standing execution
+authority. **PASS validates only the tested metadata runtime behavior.** It does
+not prove strict-Earth protection, positive Green-center margins, runtime/GPU
+numerical enclosure, GPU correctness, graphics, gameplay or performance. Stage
+3A-2 numerical certification and Stage 3B presenter integration remain unproven
+and unauthorized. No production renderer change, merge or repository cleanup
+occurred; the PR remains draft.
