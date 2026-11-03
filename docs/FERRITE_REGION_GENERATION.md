@@ -4,9 +4,9 @@ Owner-accepted local-development Milestone 2 merged in PR #126.
 Runtime acceptance is recorded below for reviewed commit `366378a`.
 Uses the ten
 accepted variants from merged PR #125's [catalog](FERRITE_SHAPE_CATALOG_V1.md).
-Milestone 3A presentation/highlighting is implemented on the feature branch,
-owner graphical/gameplay acceptance is approved (8/8 PASS), pending merge;
-see its scope and dated acceptance record below.
+Milestone 3A presentation/highlighting merged in PR #127 with owner
+graphical/gameplay acceptance (8/8 PASS). Milestone 3B hybrid preparation is
+implemented on the feature branch, pending merge and owner acceptance; see below.
 Generated deposits have no discovery interactions. The introductory deposit, progression,
 machine calculations and terrain generation remain unchanged.
 
@@ -243,6 +243,10 @@ screens, world maps and distance-based size progression are not added here.
 
 ## Milestone 3A presentation and highlighting — feature branch, pending merge
 
+This section records the accepted PR #127 implementation. Its synchronous query
+and refresh mechanics are superseded by the pending 3B section below; the dated
+owner acceptance remains historical evidence for 3A only.
+
 [FerriteDepositPresenter](../scenes/world/ferrite_deposit_presenter.gd) is a small
 disposable Node2D owned by the exterior. It queries generated descriptors only,
 deduplicates stable IDs across pages, and keeps one uncentered Sprite2D per nearby
@@ -310,10 +314,126 @@ Region queries still compute synchronously on cache miss, and the first nearby
 use of each texture loads synchronously. The bounded region FIFO can churn while
 paging large retention areas; construction refresh can repeat nearby queries
 while terrain completes. Shared textures remain cached after sprite retirement.
-These costs and measured memory impact require later owner observation and 3B
+These costs and memory impact require later owner observation and 3B
 hybrid preparation/lookahead/scheduling work. There is no stutter-free claim,
 performance probe or loading-screen implementation in 3A. Known repeated silver
 highlights/grain and regular concave rims remain nonblocking artistic limitations.
+
+## Milestone 3B hybrid preparation — feature branch, pending merge
+
+The owner authorized all four implementation slices with static-only agent
+validation. **Godot NOT RUN / OWNER ACCEPTANCE PENDING.** The PR #127 observation
+of modest initial-discovery stutter remains unexplained; no runtime improvement,
+memory measurement or frame-time guarantee is claimed.
+
+### Nearby snapshot and geometry reuse
+
+`FerriteRegionGenerator.query_owners(area)` exposes the existing bounded owner
+enumeration without generating regions. Existing `query()` uses that same helper.
+The presenter pages the presentation area and its one-chunk lookahead, unions
+owner coordinates before generation, and retains accepted immutable region arrays
+only within the current lookahead owner set. Page overlap no longer repeats region
+generation within a logical request. Overlapping completed owners survive movement;
+terrain revision, world identity or seed changes invalidate the snapshot.
+
+The reconstruction FIFO remains **32 regions** with unchanged eviction/generation
+policy. The separate active working set is spatially bounded, not a history of
+explored deposits: at maximum exported radius six, a 15x15-chunk lookahead covers
+at most 144 owner regions including the asymmetric lookup reach. Each owner holds
+at most six descriptors. Required/future descriptor lists and queues share this
+bound. At default arrival the required union covers 36 owners, rather than 64
+paged region visits. These are source-derived counts, not runtime measurements.
+
+Stable IDs are deduplicated before footprint reconstruction. Construction reads
+the presenter's exterior-only geometry view, with one cached resource per required
+ID. Mining still reconstructs authoritative geometry independently through state.
+Catalog metadata is copied privately once per encountered variant per world/seed;
+the generator's mutable catalog collections never escape. At most ten shared
+textures remain cached. No artwork/catalog/distribution inputs change.
+
+### Arrival and exploration scheduling
+
+`request(state, area)` replaces pending work and returns a generation token.
+`step(state, token, required_only)` services one owner generation, descriptor
+registration (possibly one synchronous texture load), or sprite registration per
+call. Bounded snapshot assembly and final readiness publication are separate steps.
+All required owners finish before required descriptor validation; all required
+registrations validate before new sprites are created. Required work always
+precedes speculative work. Only encountered variants whose complete illustrated
+envelopes intersect the required area are loaded during arrival; the ten textures
+are not eagerly preloaded.
+
+`prepare_for_arrival()` drains required Ferrite work and the existing terrain queue,
+yielding between iterations. The transition controller continues awaiting this
+hook before restoring input. The first arrival uses the existing opaque fade;
+later transition presentation rules remain unchanged. Once playable, `_process()`
+services the queue even if the neighborhood center/revision gate returns early.
+Lookahead extends exactly one chunk beyond presentation on every side and prepares
+metadata and required textures, never speculative sprites. Owners sort by distance,
+signed y/x coordinates; descriptor work sorts by stable ID. These orders do not
+change deterministic deposit generation or conflict resolution.
+
+New requests discard stale pending tasks. Tokens, world/seed/revision checks,
+exterior detachment and explicit quick-transition cancellation prevent stale work
+from registering sprites. Completed bounded region/texture data may survive cached
+world reattachment. Sprites retire only when their full padded illustrated envelope
+leaves the normal presentation area, with inclusive signed-boundary semantics.
+
+Highlight requests from neighborhood changes, snapshot readiness and terrain batches
+set a dirty flag; the exterior rebuilds once at the end of that frame's work when
+the required snapshot is ready. Construction switching/cancellation clears existing
+nodes immediately. Inactive construction performs no highlight deposit queries.
+Actual concave polygon clipping, all returned pieces and loaded-chunk filtering
+are preserved.
+
+### Validation limits and owner comparison
+
+Focused checks: `python -B -m unittest discover -s tests -p 'static_ferrite*test.py'`.
+Full non-engine suite: `pwsh -NoProfile -File tools/run-local-tests.ps1 -Mode Static`.
+The 3B tests compare membership with the accepted generation oracle, exercise
+signed boundaries, work priority/draining, bounded owner retention, reversals and
+cancelled/superseded schedules, and bind those models to source contracts. They
+do not execute GDScript, ResourceLoader, Geometry2D or a renderer.
+
+One region generation, texture load/upload, terrain chunk, snapshot assembly or
+highlight rebuild may still block a frame. The one-unit cap is a work cap only.
+Additional active descriptor/footprint memory and a potentially longer opaque
+arrival wait are explicit tradeoffs. No threads, loading-screen UI, cache tuning,
+export changes or simulation dependency on presentation are introduced.
+
+Owner comparison uses accepted baseline `ca83742507dadd499d338eb2a07740692cb90573`
+and the draft PR's exact candidate commit, on the same machine, renderer,
+resolution, seed **26026** and recorded route. A fresh application session is not
+necessarily a cold filesystem/GPU cache. Agent execution remains prohibited.
+
+1. First arrival: record fade/preparation delay, complete nearby artwork, and no
+   control before readiness; confirm normal input restoration.
+2. Starter `(128,128)..(768,512)`: unchanged discovery, musing, objectives and story.
+3. Approach unseen deposits: record stutter and late/missing artwork separately.
+4. Cross positive/negative 2048-unit chunk and 3072-unit region boundaries and
+   corners; reverse and revisit without shifting, duplicate or missing fields.
+5. Check small table; medium crown/elbow/offset/slab/terraces; large
+   basin/elbow/sprawl/stair. Unencountered variants remain **untested**.
+6. Enter/switch/cancel construction: exact concave notches, empty decorative rims,
+   multi-piece highlights and chunk-spanning placement.
+7. Valid/invalid extraction points, mining, collection, recovery and multiple
+   Extractors on a field retain behavior.
+8. Leave machines producing offscreen, travel indoors and return; verify continued
+   production and stable presentation.
+9. Reenter in the same session: check fade/input/artwork/duplicates and cancellation
+   where practical.
+10. Stop on severe freezes or instability; do not deliberately reproduce them.
+
+```text
+Baseline/candidate commit | fresh session/return | seed | renderer/resolution
+Route/coordinates | encountered variant | construction state | action
+Stutter: none/slight/obvious/severe | late/missing artwork: yes/no
+Arrival delay observation | gameplay result | other notes
+```
+
+Keep separate acceptance judgments for **stutter reduction**, **artwork appearing
+on time**, and **arrival-transition cost**. Subjective reports are not quantitative
+timing; only actual owner measurements support numeric performance claims.
 
 ### Original owner acceptance checklist — 3A
 

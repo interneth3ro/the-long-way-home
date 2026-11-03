@@ -5,11 +5,14 @@ authoring/review scope is recorded below. The merged
 [Milestone 2 implementation](FERRITE_REGION_GENERATION.md) consumes geometry JSON
 for deterministic resource data. Milestone 3A's
 [presentation/highlighting](FERRITE_REGION_GENERATION.md#milestone-3a-presentation-and-highlighting--feature-branch-pending-merge)
-uses these registered PNGs on the feature branch. Owner graphical/gameplay
+uses these registered PNGs and merged in PR #127. Owner graphical/gameplay
 [acceptance is approved, 8/8 PASS](FERRITE_REGION_GENERATION.md#final-pr-127-owner-graphicalgameplay-acceptance--2026-11-02),
-pending merge. Modestly increased initial-discovery stuttering is accepted as
+for that milestone. Modestly increased initial-discovery stuttering is accepted as
 nonblocking and requires Milestone 3B investigation; causes remain hypotheses.
-No catalog artwork or generation tuning changed; 3B preparation remains deferred.
+No catalog artwork or generation tuning changed. The pending
+[3B preparation implementation](FERRITE_REGION_GENERATION.md#milestone-3b-hybrid-preparation--feature-branch-pending-merge)
+uses only nearby required textures at arrival and bounded one-chunk lookahead;
+owner runtime acceptance remains pending and no measured gain is claimed.
 Accepted PR #123 artwork and PR #124 production integration remain unchanged.
 
 ## Review package

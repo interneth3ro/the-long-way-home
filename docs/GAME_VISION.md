@@ -299,9 +299,10 @@ The integration remains pending merge and does not change approved environmental
   restrained terrain and placeholder Extractor is an accepted temporary
   visual-cohesion limitation. Reevaluate after additional environmental and machine
   artwork; do not alter Ferrite solely to match current placeholders.
-  Procedural distribution remains
-  deferred and must support varied connected irregular grid-conforming deposits,
-  rather than only rectangles.
+  Deterministic procedural distribution merged in PR #126 and nearby presentation
+  in PR #127, using the ten approved connected grid-conforming variants. Pending
+  [3B scheduling](FERRITE_REGION_GENERATION.md#milestone-3b-hybrid-preparation--feature-branch-pending-merge)
+  preserves that distribution and artwork; owner runtime acceptance remains pending.
 - One guaranteed authored deposit near the ship introduces deliberate inspection,
   Dave's engineering deduction and guidance to locate the Extractor in the
   maintenance bay. Computer does not identify the mineral in this sequence.
