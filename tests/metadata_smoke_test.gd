@@ -40,7 +40,7 @@ func _initialize() -> void:
 	var geometry := {"overlays": overlays, "protected": points(raw.protected), "anchors": anchors}
 	# Decimal strings avoid JSON float truncation of signed int64 endpoints.
 	for text in ["-9223372036854775808", "-42", "-1", "0", "26026", "9223372036854775807"]:
-		var seed := text.to_int()
+		var seed: int = text.to_int()
 		var generator := Generator.new(seed, overlays, geometry.protected, anchors)
 		var shared := {}
 		for chunk in [Vector2i(-1, -1), Vector2i(0, -1), Vector2i(-1, 0), Vector2i.ZERO,

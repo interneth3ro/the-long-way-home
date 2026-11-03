@@ -367,3 +367,23 @@ No gameplay, graphics, benchmark, GPU/numerical certification, renderer integrat
 merge or repository cleanup occurred. Stage 3B remains blocked. Correcting the
 smoke-script typing issue and any subsequent execution require separate owner
 direction and renewed execution authorization.
+
+### Focused parse correction after the failed run (2026-11-03)
+
+At the owner's separate direction after HEAD
+`602d788a89582ed3d3eadb0ef3796118c1e18e82`, the smoke script's line 43 changes
+only `var seed := text.to_int()` to `var seed: int = text.to_int()`. The six
+original decimal-string signed-seed cases and every assertion remain unchanged.
+Inspection of the remaining inferred declarations found constructors, dictionary
+literals, explicitly typed call results or expressions with known operand types;
+no other inference correction was justified. This is a source inspection result,
+not a successful Godot parse.
+
+The failed activation revision, parse diagnostic, retained stage and ignored
+failure evidence above remain historical evidence unchanged. The one-time
+authorization is consumed, MetadataSmoke stays inactive, and no Godot invocation
+or retry accompanies this correction. Relevant Python metadata/static checks and
+the inert runner fixtures are the non-engine validation; exact command/results
+are recorded in PR #139. Runtime parsing, metadata generation and malformed-input
+rejection remain unverified until separately authorized execution. No numerical
+certification or Stage 3B integration is authorized by this correction.
