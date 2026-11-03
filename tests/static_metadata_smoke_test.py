@@ -97,6 +97,51 @@ class MetadataSmokeTest(unittest.TestCase):
         # Only dormant Ferrite initialization references the unstaged catalog.
         self.assertIn("func _init(world_seed: int)", read("scenes/world/ferrite_region_generator.gd"))
 
+    def test_golden_inventory_preserves_supported_and_unsupported_cases(self):
+        path = "tests/fixtures/terrain_stage2_classification_vectors.json"
+        # Retain every historical expected material, not just a selected subset.
+        self.assertEqual(read(path), before(path))
+        records = json.loads(read(path))["records"]
+        self.assertEqual(len(records), 14)
+        supported, unsupported = [], []
+        for record in records:
+            cell = tuple(record["cell"])
+            owner = tuple(n // 32 for n in cell)  # Independent floor ownership.
+            if all(-16 <= n <= 15 for n in owner):
+                supported.append(record)
+            else:
+                unsupported.append((cell, owner, record["material"]))
+        self.assertEqual(len(supported), 12)
+        self.assertEqual(unsupported, [((16384, -16385), (512, -513), 2),
+                                       ((-16385, 16384), (-513, 512), 0)])
+
+    def test_smoke_goldens_check_rejection_and_direct_classifier_outside_envelope(self):
+        source = read("tests/metadata_smoke_test.gd")
+        loop = source.split("\tfor record in vectors.records:\n", 1)[1].split(
+            "\tcheck(WorldCoordinates.world_to_terrain", 1)[0]
+        setup, branches = loop.split("\t\tif supported:\n", 1)
+        supported, unsupported = branches.split("\t\telse:\n", 1)
+        self.assertIn("var owner := WorldCoordinates.terrain_to_chunk(cell)", setup)
+        self.assertIn("var local := cell - owner * 32", setup)
+        self.assertIn("var result := build(int(record.seed), owner, geometry)", setup)
+        self.assertIn("var supported: bool = owner.x >= Metadata.MIN_CHUNK and owner.x <= Metadata.MAX_CHUNK", setup)
+        self.assertIn("and owner.y >= Metadata.MIN_CHUNK and owner.y <= Metadata.MAX_CHUNK", setup)
+        self.assertIn('check(result.get("ok", false), "golden prepare")', supported)
+        self.assertIn('if result.get("ok", false):', supported)
+        self.assertIn('check(result.materials[(local.y + 1) * 34 + local.x + 1] == int(record.material), "offline golden")', supported)
+        self.assertIn('check(result == {"ok": false, "error": "unsupported_chunk"}, "unsupported golden owner")', unsupported)
+        self.assertIn('var golden_generator := Generator.new(int(record.seed), overlays, geometry.protected, anchors)', unsupported)
+        self.assertIn('check(golden_generator.sample_ground_material(cell) == int(record.material), "unsupported offline golden")', unsupported)
+        self.assertNotIn("result.materials", unsupported)
+        self.assertNotIn("continue", loop)
+        # Assertions outside the golden loop are intentionally untouched.
+        base = "ec3d1911ba117f745aa680a3ebf4ae8380e6b694"
+        old = subprocess.check_output(["git", "show", base+":tests/metadata_smoke_test.gd"], cwd=ROOT, text=True)
+        start = "\tfor record in vectors.records:\n"
+        end = "\tcheck(WorldCoordinates.world_to_terrain"
+        self.assertEqual(source.split(start, 1)[0], old.split(start, 1)[0])
+        self.assertEqual(source.split(end, 1)[1], old.split(end, 1)[1])
+
     def test_historical_guard_amendments_only_scope_endpoints(self):
         path = "tests/static_terrain_stage2b2_reconstruction_test.py"
         expected = before(path).replace("['git','diff','--name-status',reference.BASE,'--']",

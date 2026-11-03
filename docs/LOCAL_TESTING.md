@@ -446,3 +446,28 @@ original/refined diagnostic manifests and 7+3 output hashes. The prior failure
 evidence SHA-256 and earlier stage's 32-file digest also remain unchanged.
 No gameplay, unrelated engine command, production modification, numerical/GPU
 certification, presenter integration, merge or repository cleanup occurred.
+
+### Golden-vector ownership correction after the second run (2026-11-03)
+
+Source inspection of all 14 unchanged golden records explains the two preparation
+failures: cells `(16384,-16385)` and `(-16385,16384)` have floor-owned chunks
+`(512,-513)` and `(-513,512)`, outside the metadata owner's `[-16,15]` range on
+each axis. Their historical expected materials remain 2 and 0. The generator can
+classify these cells; metadata preparation must reject their unsupported owners.
+The former smoke loop incorrectly required success for every golden.
+
+The corrected loop still visits every vector. For the 12 supported owners it
+requires metadata success and the original row-major material-byte comparison.
+For the two unsupported owners it requires exactly `ok=false` and
+`error="unsupported_chunk"`, with no partial payload, and independently compares
+the original material ID through the unchanged production generator using the
+same reviewed seed/overlays/protected polygon/anchors. The metadata envelope,
+production code, golden bytes and non-golden smoke assertions are unchanged.
+Focused static guards check the 12/2 partition, exact out-of-range cells/owners/IDs,
+both branches and retained direct classifier coverage.
+
+Both previous execution records, stages and failure evidence remain unchanged.
+This correction has non-engine static/inert validation only; exact results are
+recorded in PR #139. MetadataSmoke stays inactive. No Godot invocation or retry
+accompanies this change, and neither prior grant permits another run. Runtime
+success, numerical certification and Stage 3B integration remain unestablished.

@@ -74,9 +74,16 @@ func _initialize() -> void:
 		var owner := WorldCoordinates.terrain_to_chunk(cell)
 		var local := cell - owner * 32
 		var result := build(int(record.seed), owner, geometry)
-		check(result.get("ok", false), "golden prepare")
-		if result.get("ok", false):
-			check(result.materials[(local.y + 1) * 34 + local.x + 1] == int(record.material), "offline golden")
+		var supported: bool = owner.x >= Metadata.MIN_CHUNK and owner.x <= Metadata.MAX_CHUNK \
+			and owner.y >= Metadata.MIN_CHUNK and owner.y <= Metadata.MAX_CHUNK
+		if supported:
+			check(result.get("ok", false), "golden prepare")
+			if result.get("ok", false):
+				check(result.materials[(local.y + 1) * 34 + local.x + 1] == int(record.material), "offline golden")
+		else:
+			check(result == {"ok": false, "error": "unsupported_chunk"}, "unsupported golden owner")
+			var golden_generator := Generator.new(int(record.seed), overlays, geometry.protected, anchors)
+			check(golden_generator.sample_ground_material(cell) == int(record.material), "unsupported offline golden")
 	check(WorldCoordinates.world_to_terrain(Vector2(-0.25, -0.25)) == Vector2i(-1, -1), "negative world")
 	check(WorldCoordinates.terrain_to_chunk(Vector2i(-1, -1)) == Vector2i(-1, -1), "negative owner")
 	check(WorldCoordinates.terrain_to_local(Vector2i(-1, -1)) == Vector2i(31, 31), "negative local")
