@@ -5,7 +5,12 @@ received owner visual/architecture acceptance on 2026-11-02 at `1662a61`, includ
 6x4 and 10x6 rectangular examples and connected L-shaped, stepped and grid-cluster
 assembly proofs with documented limitations. PR #123 merged at `87ca973`.
 The [production integration](docs/FERRITE_ARTWORK_PROTOTYPE_V1.md#production-integration-feature-branch-pending-merge)
-is prepared on this feature branch; owner in-game acceptance remains pending.
+is prepared on this feature branch. Owner graphical acceptance is **PASS** at
+`2850c3b`: the artwork renders correctly and is accepted for production. Its
+contrast with the restrained terrain and placeholder Extractor is an accepted
+temporary visual-cohesion limitation. Reevaluate after further environmental and
+machine artwork; do not alter Ferrite solely to match current placeholders.
+Merge still requires explicit owner approval.
 
 Stage 2A repository housekeeping merged in PR #114. Historical evidence
 sanitization is prepared on this feature branch, pending owner acceptance and merge.

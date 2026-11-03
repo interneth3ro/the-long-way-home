@@ -319,7 +319,7 @@ execution is authorized for this milestone. Procedural distribution remains a
 future milestone requiring varied connected irregular grid-conforming deposits;
 no runtime compositor or procedural ore generator is introduced here.
 
-### Owner acceptance checklist (pending)
+### Owner acceptance checklist (reference)
 
 - Exterior loads and imports the new texture successfully.
 - Approved artwork appears at the intended location with no old placeholder.
@@ -332,4 +332,20 @@ no runtime compositor or procedural ore generator is introduced here.
 - Mining, production, ship access and nearby walking remain normal.
 - No obvious performance regression during ordinary play.
 
-Owner graphical/gameplay acceptance and explicit merge approval remain required.
+### Owner graphical acceptance: 2026-11-02
+
+The owner reports **PASS** for the integration at
+`2850c3b082ec39383967bd267b34c8059fa592c7`: the approved Faceted Ferrite artwork
+renders correctly and is accepted for production.
+
+Its high-detail illustrated appearance contrasts noticeably with the intentionally
+restrained terrain and placeholder Extractor. The owner accepts this as a
+**temporary visual-cohesion limitation**. Reevaluate after additional environmental
+and machine artwork is integrated; do not alter Ferrite solely to match the
+current placeholders.
+
+This records owner graphical acceptance, separately from the earlier agent offline
+checks. No individual gameplay checklist results, new performance measurements or
+agent engine execution are claimed. This documentation update changes no artwork,
+scene, resource geometry or gameplay. Explicit merge approval remains required;
+PR #124 remains draft and unmerged.

@@ -294,7 +294,12 @@ The integration remains pending merge and does not change approved environmental
   the irregular assemblies and their documented limitations. PR #123 merged.
   The [production integration](FERRITE_ARTWORK_PROTOTYPE_V1.md#production-integration-feature-branch-pending-merge)
   uses the unchanged approved large PNG with a separate rectangular resource
-  footprint. Owner in-game acceptance is pending. Procedural distribution remains
+  footprint. Owner graphical acceptance is **PASS** at `2850c3b`; the artwork
+  renders correctly and is accepted for production. Its contrast with the
+  restrained terrain and placeholder Extractor is an accepted temporary
+  visual-cohesion limitation. Reevaluate after additional environmental and machine
+  artwork; do not alter Ferrite solely to match current placeholders.
+  Procedural distribution remains
   deferred and must support varied connected irregular grid-conforming deposits,
   rather than only rectangles.
 - One guaranteed authored deposit near the ship introduces deliberate inspection,
