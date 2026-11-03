@@ -2136,5 +2136,119 @@
         1
       ]
     }
-  ]
+  ],
+  "readable_profile": {
+    "version": "readable-v1",
+    "cases": [
+      {
+        "id": "natural",
+        "seed": 26026,
+        "rect": [
+          2496,
+          2496,
+          3008,
+          2752
+        ],
+        "grid": [
+          129,
+          65
+        ],
+        "spacing": 4,
+        "display_scale": 4,
+        "gutter": 1,
+        "phase": "endpoints-inclusive",
+        "source_centers_a": [
+          38,
+          38,
+          47,
+          43
+        ],
+        "source_squares_b": [
+          38,
+          38,
+          46,
+          42
+        ]
+      },
+      {
+        "id": "crash",
+        "seed": 26026,
+        "rect": [
+          480,
+          -672,
+          736,
+          -416
+        ],
+        "grid": [
+          65,
+          65
+        ],
+        "spacing": 4,
+        "display_scale": 8,
+        "gutter": 1,
+        "phase": "endpoints-inclusive",
+        "source_centers_a": [
+          6,
+          -12,
+          12,
+          -6
+        ],
+        "source_squares_b": [
+          6,
+          -12,
+          11,
+          -7
+        ]
+      },
+      {
+        "id": "inset",
+        "seed": 26026,
+        "rect": [
+          604,
+          -548,
+          612,
+          -540
+        ],
+        "grid": [
+          33,
+          33
+        ],
+        "spacing": 0.25,
+        "display_scale": 8,
+        "gutter": 1,
+        "phase": "endpoints-inclusive",
+        "source_centers_a": [
+          8,
+          -10,
+          10,
+          -8
+        ],
+        "source_squares_b": [
+          8,
+          -10,
+          9,
+          -9
+        ]
+      }
+    ],
+    "canvases": {
+      "natural": [
+        1152,
+        384
+      ],
+      "crash": [
+        1152,
+        944
+      ]
+    },
+    "panels": {
+      "left_x": 24,
+      "right_x": 600,
+      "main_y": 64,
+      "inset_y": 640
+    },
+    "output_count": 3,
+    "original_directory": "artifacts/tmp/stage2b2-20261103-132958",
+    "sampling": "equal spacing on both axes; nearest display enlargement is not new detail"
+  }
 }

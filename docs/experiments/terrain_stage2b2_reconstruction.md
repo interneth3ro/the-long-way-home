@@ -237,3 +237,98 @@ scale. Grid resolution is unchanged between candidates and display scales.
 Use the contact sheet for pattern behavior, minima for sub-unit protection,
 probes/outside for production labels, and seams for signed absolute identities.
 These are small diagnostic panels; enlargement cannot recover unsampled detail.
+
+## Readable diagnostic refinement (owner-authorized follow-up)
+
+The `readable-v1` profile adds a presentation-only comparison to the original
+study. Its starting commit is `5761715e74e4ec274e579b681f4a97ac0973843c`.
+Only this report, the existing manifest and diagnostic generator change. All
+original 58 cases/seven groups, numerical references and existing tests remain
+unchanged. The original seven PNGs and their provenance are preserved. The owner
+separately authorized exactly three additional PNGs, making ten retained images;
+the 120-second inclusive command limit, 512 MiB observed memory cap, four million
+candidate evaluations, 32 MiB output cap and 3072x2048 size limit remain unchanged.
+
+Explicit command (one authorized invocation, no retries or density fallback):
+
+`python -B tools/terrain-stage2b2-diagnostics.py --generate --profile readable-v1`
+
+| Sample region, seed 26026 | Closed world rectangle | Grid / equal-axis spacing | Display |
+| --- | --- | --- | --- |
+| Natural | x 2496..3008, y 2496..2752 | 129x65 / 4 | 4x nearest |
+| Crash | x 480..736, y -672..-416 | 65x65 / 4 | 8x nearest |
+| Minimum-clearance detail | x 604..612, y -548..-540 | 33x33 / .25 | 8x nearest |
+
+Natural extends the original outside-crash rectangle by one terrain cell on each
+side and includes the frozen Earth/Green classification examples. Crash is
+centered on the known `(9,-9)` Green center. These fixed selections do not imply
+favorable artistic results. Each case retains a one-unit source gutter with
+derived A center/B square halos. Samples are endpoint-inclusive and dyadic.
+
+The natural clean comparison is 1152x384; crash clean and its separate line-map
+companion are each 1152x944. A (`a=5/32`) is left and B (`w=16`) right, at equal
+world/sample/display scale. The unremapped control is still computed by the
+unchanged reference and counted, but not displayed. The crash image places a
+separately labeled minimum-clearance inset below each main panel.
+
+Clean panels use black=0 Earth, white=1 Green and gray=partial coverage. The
+companion is a separate black-background white line map: solid sampled final .5
+crossings, dashed pre-protection .5 crossings, dotted strict-exclusion crossings,
+and plus signs at sampled canonical centers. Coincident lines can overlap;
+these discrete crossings are not exact analytic contour geometry. Clean samples
+are never replaced by markings. The companion reuses the same calculated arrays
+without additional reconstruction or protection calls.
+
+Nearest display enlargement makes the samples legible, not more detailed.
+Equal-axis spacing corrects the old outside sheet's anisotropic presentation.
+Four-unit spacing cannot resolve sub-unit protection; only the .25-unit inset
+addresses that scale, and it remains sampled evidence. Open the lossless PNG at
+native size rather than a compressed chat screenshot. Upload the two clean PNGs
+and new manifest for review; include the companion only to discuss geometry.
+
+Before any images, the generator validates the exact profile/layout/halos,
+unchanged original manifest fields and test/reference bytes, original seven
+image hashes, sidecars, preservation refs and backup identity, then runs all
+seven existing gate suites. It rechecks source identities and preservation after
+generation. The provenance records per-suite timings, candidate/sample/protection
+counts, extra exclusion calls, zero overlay reconstruction calls, output hashes
+and observed memory. The single authorized run completed successfully, without
+retry, in 44.8005 seconds including preflight and all seven gate suites. It used
+13,699 sampled positions, 41,097 candidate evaluations, 13,699 shared protection
+calls and 5,314 extra exclusion-predicate calls; the overlay made zero additional
+reconstruction calls. Peak observed memory was 48,021,504 bytes (45.80 MiB).
+Three PNGs plus the provenance manifest total 61,011 bytes.
+
+| Gate suite | Passed | Seconds including discovery |
+| --- | ---: | ---: |
+| Stage 2B-2 reconstruction/protection | 14 | 4.9440 |
+| Stage 2A classification | 11 | 3.5657 |
+| Stage 2B-1 compatibility | 16 | 19.8613 |
+| Ground rejection | 5 | 1.0546 |
+| Low Green | 4 | 0.6140 |
+| Ground publication | 10 | 0.6530 |
+| Transition safety | 10 | 0.0175 |
+
+Local ignored directory: `artifacts/tmp/stage2b2-readable-v1-20261103-134527/`.
+All three files have prefix `stage2b2-r2-seed26026-`:
+
+| Filename suffix | Dimensions | SHA-256 |
+| --- | --- | --- |
+| `natural-a5of32-vs-w16-step4-clean.png` | 1152x384 | `8059154de49c800b6c52ffd9b2dcfcdeec29a91efd3145bb547454a2b0fc0e64` |
+| `crash-a5of32-vs-w16-step4-inset025-clean.png` | 1152x944 | `d9625ff1b4494186e47b6e7fbffc13798b79131e403d205fed7d2a695ad07e69` |
+| `crash-a5of32-vs-w16-step4-inset025-overlay.png` | 1152x944 | `625b2ac12ceccef602cb2e202c94cb41baa76c27e18d84ca0daa73b482f1f440` |
+
+The new `manifest.json` records the exact source snapshot against starting HEAD,
+new profile and halos, counts/timings, image hashes, and hashes of the original
+seven PNGs and original manifest. The originals matched both preflight and final
+preservation checks. New images remain ignored and are not published in the PR.
+Image inspection confirmed readable labels, clean versus line-map separation
+and matched A/B framing. The fixed natural crop reveals a localized contour,
+not enough terrain to establish long-range repetition quality. Four-unit sample
+steps and nearest enlargement remain visible; no smooth-filter or engine claim
+is implied. The sub-unit inset is shared protection evidence, not a new artistic
+selection. No candidate winner is declared.
+
+Documentation-sync confines this refinement to the experiment report. No
+production or narrative documentation changes are needed. Candidate preference
+is not artistic acceptance; no winner, engine parity or merge is approved.
