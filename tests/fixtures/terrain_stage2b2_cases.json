@@ -1,0 +1,2140 @@
+{
+  "schema": 1,
+  "baseline": "1f4ac408c31b99be4ab7158960dab06adec93871",
+  "rule": "stage2b2-paired-v1",
+  "classification_rule": "production-ground@06666cc108d431294aba25d1ba0bd652d448c18b",
+  "geometry_sha256": "5846d34ec602ba20d3a4f84c63c123b4cfd41104d4a943986df600174520b590",
+  "epsilon": "1/10000",
+  "protection": "exact-rational-squared-surrogate-v1",
+  "parameters": {
+    "control": null,
+    "a": "5/32",
+    "w": 16,
+    "cap": 16,
+    "eta": "1/2"
+  },
+  "ceiling": 2097152,
+  "limits": {
+    "images": 7,
+    "width": 3072,
+    "height": 2048,
+    "bytes": 33554432,
+    "evaluations": 4000000,
+    "seconds": 120,
+    "memory_bytes": 536870912
+  },
+  "cases": [
+    {
+      "id": "PATTERN-0",
+      "kind": "pattern",
+      "seed": 0,
+      "rect": [
+        32,
+        32,
+        96,
+        96
+      ],
+      "grid": [
+        17,
+        17
+      ],
+      "phase": "endpoints-inclusive",
+      "gutter": 1,
+      "group": "contact",
+      "scales": [
+        0.5,
+        1,
+        1.5
+      ],
+      "pattern": 0,
+      "source_centers_a": [
+        -1,
+        -1,
+        2,
+        2
+      ],
+      "source_squares_b": [
+        -1,
+        -1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "PATTERN-1",
+      "kind": "pattern",
+      "seed": 0,
+      "rect": [
+        32,
+        32,
+        96,
+        96
+      ],
+      "grid": [
+        17,
+        17
+      ],
+      "phase": "endpoints-inclusive",
+      "gutter": 1,
+      "group": "contact",
+      "scales": [
+        0.5,
+        1,
+        1.5
+      ],
+      "pattern": 1,
+      "source_centers_a": [
+        -1,
+        -1,
+        2,
+        2
+      ],
+      "source_squares_b": [
+        -1,
+        -1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "PATTERN-2",
+      "kind": "pattern",
+      "seed": 0,
+      "rect": [
+        32,
+        32,
+        96,
+        96
+      ],
+      "grid": [
+        17,
+        17
+      ],
+      "phase": "endpoints-inclusive",
+      "gutter": 1,
+      "group": "contact",
+      "scales": [
+        0.5,
+        1,
+        1.5
+      ],
+      "pattern": 2,
+      "source_centers_a": [
+        -1,
+        -1,
+        2,
+        2
+      ],
+      "source_squares_b": [
+        -1,
+        -1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "PATTERN-3",
+      "kind": "pattern",
+      "seed": 0,
+      "rect": [
+        32,
+        32,
+        96,
+        96
+      ],
+      "grid": [
+        17,
+        17
+      ],
+      "phase": "endpoints-inclusive",
+      "gutter": 1,
+      "group": "contact",
+      "scales": [
+        0.5,
+        1,
+        1.5
+      ],
+      "pattern": 3,
+      "source_centers_a": [
+        -1,
+        -1,
+        2,
+        2
+      ],
+      "source_squares_b": [
+        -1,
+        -1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "PATTERN-4",
+      "kind": "pattern",
+      "seed": 0,
+      "rect": [
+        32,
+        32,
+        96,
+        96
+      ],
+      "grid": [
+        17,
+        17
+      ],
+      "phase": "endpoints-inclusive",
+      "gutter": 1,
+      "group": "contact",
+      "scales": [
+        0.5,
+        1,
+        1.5
+      ],
+      "pattern": 4,
+      "source_centers_a": [
+        -1,
+        -1,
+        2,
+        2
+      ],
+      "source_squares_b": [
+        -1,
+        -1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "PATTERN-5",
+      "kind": "pattern",
+      "seed": 0,
+      "rect": [
+        32,
+        32,
+        96,
+        96
+      ],
+      "grid": [
+        17,
+        17
+      ],
+      "phase": "endpoints-inclusive",
+      "gutter": 1,
+      "group": "contact",
+      "scales": [
+        0.5,
+        1,
+        1.5
+      ],
+      "pattern": 5,
+      "source_centers_a": [
+        -1,
+        -1,
+        2,
+        2
+      ],
+      "source_squares_b": [
+        -1,
+        -1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "PATTERN-6",
+      "kind": "pattern",
+      "seed": 0,
+      "rect": [
+        32,
+        32,
+        96,
+        96
+      ],
+      "grid": [
+        17,
+        17
+      ],
+      "phase": "endpoints-inclusive",
+      "gutter": 1,
+      "group": "contact",
+      "scales": [
+        0.5,
+        1,
+        1.5
+      ],
+      "pattern": 6,
+      "source_centers_a": [
+        -1,
+        -1,
+        2,
+        2
+      ],
+      "source_squares_b": [
+        -1,
+        -1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "PATTERN-7",
+      "kind": "pattern",
+      "seed": 0,
+      "rect": [
+        32,
+        32,
+        96,
+        96
+      ],
+      "grid": [
+        17,
+        17
+      ],
+      "phase": "endpoints-inclusive",
+      "gutter": 1,
+      "group": "contact",
+      "scales": [
+        0.5,
+        1,
+        1.5
+      ],
+      "pattern": 7,
+      "source_centers_a": [
+        -1,
+        -1,
+        2,
+        2
+      ],
+      "source_squares_b": [
+        -1,
+        -1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "PATTERN-8",
+      "kind": "pattern",
+      "seed": 0,
+      "rect": [
+        32,
+        32,
+        96,
+        96
+      ],
+      "grid": [
+        17,
+        17
+      ],
+      "phase": "endpoints-inclusive",
+      "gutter": 1,
+      "group": "contact",
+      "scales": [
+        0.5,
+        1,
+        1.5
+      ],
+      "pattern": 8,
+      "source_centers_a": [
+        -1,
+        -1,
+        2,
+        2
+      ],
+      "source_squares_b": [
+        -1,
+        -1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "PATTERN-9",
+      "kind": "pattern",
+      "seed": 0,
+      "rect": [
+        32,
+        32,
+        96,
+        96
+      ],
+      "grid": [
+        17,
+        17
+      ],
+      "phase": "endpoints-inclusive",
+      "gutter": 1,
+      "group": "contact",
+      "scales": [
+        0.5,
+        1,
+        1.5
+      ],
+      "pattern": 9,
+      "source_centers_a": [
+        -1,
+        -1,
+        2,
+        2
+      ],
+      "source_squares_b": [
+        -1,
+        -1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "PATTERN-10",
+      "kind": "pattern",
+      "seed": 0,
+      "rect": [
+        32,
+        32,
+        96,
+        96
+      ],
+      "grid": [
+        17,
+        17
+      ],
+      "phase": "endpoints-inclusive",
+      "gutter": 1,
+      "group": "contact",
+      "scales": [
+        0.5,
+        1,
+        1.5
+      ],
+      "pattern": 10,
+      "source_centers_a": [
+        -1,
+        -1,
+        2,
+        2
+      ],
+      "source_squares_b": [
+        -1,
+        -1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "PATTERN-11",
+      "kind": "pattern",
+      "seed": 0,
+      "rect": [
+        32,
+        32,
+        96,
+        96
+      ],
+      "grid": [
+        17,
+        17
+      ],
+      "phase": "endpoints-inclusive",
+      "gutter": 1,
+      "group": "contact",
+      "scales": [
+        0.5,
+        1,
+        1.5
+      ],
+      "pattern": 11,
+      "source_centers_a": [
+        -1,
+        -1,
+        2,
+        2
+      ],
+      "source_squares_b": [
+        -1,
+        -1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "PATTERN-12",
+      "kind": "pattern",
+      "seed": 0,
+      "rect": [
+        32,
+        32,
+        96,
+        96
+      ],
+      "grid": [
+        17,
+        17
+      ],
+      "phase": "endpoints-inclusive",
+      "gutter": 1,
+      "group": "contact",
+      "scales": [
+        0.5,
+        1,
+        1.5
+      ],
+      "pattern": 12,
+      "source_centers_a": [
+        -1,
+        -1,
+        2,
+        2
+      ],
+      "source_squares_b": [
+        -1,
+        -1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "PATTERN-13",
+      "kind": "pattern",
+      "seed": 0,
+      "rect": [
+        32,
+        32,
+        96,
+        96
+      ],
+      "grid": [
+        17,
+        17
+      ],
+      "phase": "endpoints-inclusive",
+      "gutter": 1,
+      "group": "contact",
+      "scales": [
+        0.5,
+        1,
+        1.5
+      ],
+      "pattern": 13,
+      "source_centers_a": [
+        -1,
+        -1,
+        2,
+        2
+      ],
+      "source_squares_b": [
+        -1,
+        -1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "PATTERN-14",
+      "kind": "pattern",
+      "seed": 0,
+      "rect": [
+        32,
+        32,
+        96,
+        96
+      ],
+      "grid": [
+        17,
+        17
+      ],
+      "phase": "endpoints-inclusive",
+      "gutter": 1,
+      "group": "contact",
+      "scales": [
+        0.5,
+        1,
+        1.5
+      ],
+      "pattern": 14,
+      "source_centers_a": [
+        -1,
+        -1,
+        2,
+        2
+      ],
+      "source_squares_b": [
+        -1,
+        -1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "PATTERN-15",
+      "kind": "pattern",
+      "seed": 0,
+      "rect": [
+        32,
+        32,
+        96,
+        96
+      ],
+      "grid": [
+        17,
+        17
+      ],
+      "phase": "endpoints-inclusive",
+      "gutter": 1,
+      "group": "contact",
+      "scales": [
+        0.5,
+        1,
+        1.5
+      ],
+      "pattern": 15,
+      "source_centers_a": [
+        -1,
+        -1,
+        2,
+        2
+      ],
+      "source_squares_b": [
+        -1,
+        -1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "TIE-B-5",
+      "kind": "pattern",
+      "seed": 26026,
+      "rect": [
+        -32,
+        32,
+        32,
+        96
+      ],
+      "grid": [
+        17,
+        17
+      ],
+      "phase": "endpoints-inclusive",
+      "gutter": 1,
+      "group": "contact",
+      "scales": [
+        0.5,
+        1,
+        1.5
+      ],
+      "pattern": 5,
+      "origin": [
+        -1,
+        0
+      ],
+      "source_centers_a": [
+        -2,
+        -1,
+        1,
+        2
+      ],
+      "source_squares_b": [
+        -2,
+        -1,
+        0,
+        1
+      ]
+    },
+    {
+      "id": "TIE-B-10",
+      "kind": "pattern",
+      "seed": 26026,
+      "rect": [
+        -32,
+        32,
+        32,
+        96
+      ],
+      "grid": [
+        17,
+        17
+      ],
+      "phase": "endpoints-inclusive",
+      "gutter": 1,
+      "group": "contact",
+      "scales": [
+        0.5,
+        1,
+        1.5
+      ],
+      "pattern": 10,
+      "origin": [
+        -1,
+        0
+      ],
+      "source_centers_a": [
+        -2,
+        -1,
+        1,
+        2
+      ],
+      "source_squares_b": [
+        -2,
+        -1,
+        0,
+        1
+      ]
+    },
+    {
+      "id": "ISLAND",
+      "kind": "island",
+      "seed": 0,
+      "rect": [
+        -128,
+        -128,
+        256,
+        256
+      ],
+      "grid": [
+        25,
+        25
+      ],
+      "phase": "endpoints-inclusive",
+      "gutter": 1,
+      "group": "arrangements",
+      "scales": [
+        0.5,
+        1,
+        1.5
+      ],
+      "source_centers_a": [
+        -3,
+        -3,
+        4,
+        4
+      ],
+      "source_squares_b": [
+        -3,
+        -3,
+        3,
+        3
+      ]
+    },
+    {
+      "id": "HOLE",
+      "kind": "hole",
+      "seed": 0,
+      "rect": [
+        -128,
+        -128,
+        256,
+        256
+      ],
+      "grid": [
+        25,
+        25
+      ],
+      "phase": "endpoints-inclusive",
+      "gutter": 1,
+      "group": "arrangements",
+      "scales": [
+        0.5,
+        1,
+        1.5
+      ],
+      "source_centers_a": [
+        -3,
+        -3,
+        4,
+        4
+      ],
+      "source_squares_b": [
+        -3,
+        -3,
+        3,
+        3
+      ]
+    },
+    {
+      "id": "HORIZONTAL",
+      "kind": "horizontal",
+      "seed": 0,
+      "rect": [
+        -128,
+        -128,
+        256,
+        256
+      ],
+      "grid": [
+        25,
+        25
+      ],
+      "phase": "endpoints-inclusive",
+      "gutter": 1,
+      "group": "arrangements",
+      "scales": [
+        0.5,
+        1,
+        1.5
+      ],
+      "source_centers_a": [
+        -3,
+        -3,
+        4,
+        4
+      ],
+      "source_squares_b": [
+        -3,
+        -3,
+        3,
+        3
+      ]
+    },
+    {
+      "id": "VERTICAL",
+      "kind": "vertical",
+      "seed": 0,
+      "rect": [
+        -128,
+        -128,
+        256,
+        256
+      ],
+      "grid": [
+        25,
+        25
+      ],
+      "phase": "endpoints-inclusive",
+      "gutter": 1,
+      "group": "arrangements",
+      "scales": [
+        0.5,
+        1,
+        1.5
+      ],
+      "source_centers_a": [
+        -3,
+        -3,
+        4,
+        4
+      ],
+      "source_squares_b": [
+        -3,
+        -3,
+        3,
+        3
+      ]
+    },
+    {
+      "id": "DIAGONAL",
+      "kind": "diagonal",
+      "seed": 0,
+      "rect": [
+        -128,
+        -128,
+        256,
+        256
+      ],
+      "grid": [
+        25,
+        25
+      ],
+      "phase": "endpoints-inclusive",
+      "gutter": 1,
+      "group": "arrangements",
+      "scales": [
+        0.5,
+        1,
+        1.5
+      ],
+      "source_centers_a": [
+        -3,
+        -3,
+        4,
+        4
+      ],
+      "source_squares_b": [
+        -3,
+        -3,
+        3,
+        3
+      ]
+    },
+    {
+      "id": "CORNER",
+      "kind": "corner",
+      "seed": 0,
+      "rect": [
+        -128,
+        -128,
+        256,
+        256
+      ],
+      "grid": [
+        25,
+        25
+      ],
+      "phase": "endpoints-inclusive",
+      "gutter": 1,
+      "group": "arrangements",
+      "scales": [
+        0.5,
+        1,
+        1.5
+      ],
+      "source_centers_a": [
+        -3,
+        -3,
+        4,
+        4
+      ],
+      "source_squares_b": [
+        -3,
+        -3,
+        3,
+        3
+      ]
+    },
+    {
+      "id": "T-JUNCTION",
+      "kind": "t-junction",
+      "seed": 0,
+      "rect": [
+        -128,
+        -128,
+        256,
+        256
+      ],
+      "grid": [
+        25,
+        25
+      ],
+      "phase": "endpoints-inclusive",
+      "gutter": 1,
+      "group": "arrangements",
+      "scales": [
+        0.5,
+        1,
+        1.5
+      ],
+      "source_centers_a": [
+        -3,
+        -3,
+        4,
+        4
+      ],
+      "source_squares_b": [
+        -3,
+        -3,
+        3,
+        3
+      ]
+    },
+    {
+      "id": "FOUR-WAY",
+      "kind": "four-way",
+      "seed": 0,
+      "rect": [
+        -128,
+        -128,
+        256,
+        256
+      ],
+      "grid": [
+        25,
+        25
+      ],
+      "phase": "endpoints-inclusive",
+      "gutter": 1,
+      "group": "arrangements",
+      "scales": [
+        0.5,
+        1,
+        1.5
+      ],
+      "source_centers_a": [
+        -3,
+        -3,
+        4,
+        4
+      ],
+      "source_squares_b": [
+        -3,
+        -3,
+        3,
+        3
+      ]
+    },
+    {
+      "id": "OVERVIEW-26026",
+      "kind": "production",
+      "seed": 26026,
+      "rect": [
+        -1536,
+        -1536,
+        1536,
+        1536
+      ],
+      "grid": [
+        33,
+        33
+      ],
+      "phase": "endpoints-inclusive",
+      "gutter": 1,
+      "group": "overview",
+      "scales": [
+        0.5,
+        1,
+        1.5
+      ],
+      "source_centers_a": [
+        -25,
+        -25,
+        24,
+        24
+      ],
+      "source_squares_b": [
+        -25,
+        -25,
+        23,
+        23
+      ]
+    },
+    {
+      "id": "OVERVIEW-0",
+      "kind": "production",
+      "seed": 0,
+      "rect": [
+        -1536,
+        -1536,
+        1536,
+        1536
+      ],
+      "grid": [
+        33,
+        33
+      ],
+      "phase": "endpoints-inclusive",
+      "gutter": 1,
+      "group": "overview",
+      "scales": [
+        0.5,
+        1,
+        1.5
+      ],
+      "source_centers_a": [
+        -25,
+        -25,
+        24,
+        24
+      ],
+      "source_squares_b": [
+        -25,
+        -25,
+        23,
+        23
+      ]
+    },
+    {
+      "id": "OVERVIEW--42",
+      "kind": "production",
+      "seed": -42,
+      "rect": [
+        -1536,
+        -1536,
+        1536,
+        1536
+      ],
+      "grid": [
+        33,
+        33
+      ],
+      "phase": "endpoints-inclusive",
+      "gutter": 1,
+      "group": "overview",
+      "scales": [
+        0.5,
+        1,
+        1.5
+      ],
+      "source_centers_a": [
+        -25,
+        -25,
+        24,
+        24
+      ],
+      "source_squares_b": [
+        -25,
+        -25,
+        23,
+        23
+      ]
+    },
+    {
+      "id": "MINIMUM-26026",
+      "kind": "production",
+      "seed": 26026,
+      "rect": [
+        604,
+        -548,
+        612,
+        -540
+      ],
+      "grid": [
+        33,
+        33
+      ],
+      "phase": "endpoints-inclusive",
+      "gutter": 1,
+      "group": "minima",
+      "scales": [
+        0.5,
+        1,
+        1.5
+      ],
+      "anchor": [
+        9,
+        -9
+      ],
+      "source_centers_a": [
+        8,
+        -10,
+        10,
+        -8
+      ],
+      "source_squares_b": [
+        8,
+        -10,
+        9,
+        -9
+      ]
+    },
+    {
+      "id": "PROBE-26026",
+      "kind": "production",
+      "seed": 26026,
+      "rect": [
+        992,
+        32,
+        1120,
+        160
+      ],
+      "grid": [
+        17,
+        17
+      ],
+      "phase": "endpoints-inclusive",
+      "gutter": 1,
+      "group": "probes",
+      "scales": [
+        0.5,
+        1,
+        1.5
+      ],
+      "anchor": [
+        16,
+        1
+      ],
+      "source_centers_a": [
+        14,
+        -1,
+        18,
+        3
+      ],
+      "source_squares_b": [
+        14,
+        -1,
+        17,
+        2
+      ]
+    },
+    {
+      "id": "MINIMUM-0",
+      "kind": "production",
+      "seed": 0,
+      "rect": [
+        -1124,
+        -484,
+        -1116,
+        -476
+      ],
+      "grid": [
+        33,
+        33
+      ],
+      "phase": "endpoints-inclusive",
+      "gutter": 1,
+      "group": "minima",
+      "scales": [
+        0.5,
+        1,
+        1.5
+      ],
+      "anchor": [
+        -18,
+        -8
+      ],
+      "source_centers_a": [
+        -19,
+        -9,
+        -17,
+        -7
+      ],
+      "source_squares_b": [
+        -19,
+        -9,
+        -18,
+        -8
+      ]
+    },
+    {
+      "id": "PROBE-0",
+      "kind": "production",
+      "seed": 0,
+      "rect": [
+        992,
+        32,
+        1120,
+        160
+      ],
+      "grid": [
+        17,
+        17
+      ],
+      "phase": "endpoints-inclusive",
+      "gutter": 1,
+      "group": "probes",
+      "scales": [
+        0.5,
+        1,
+        1.5
+      ],
+      "anchor": [
+        16,
+        1
+      ],
+      "source_centers_a": [
+        14,
+        -1,
+        18,
+        3
+      ],
+      "source_squares_b": [
+        14,
+        -1,
+        17,
+        2
+      ]
+    },
+    {
+      "id": "MINIMUM--42",
+      "kind": "production",
+      "seed": -42,
+      "rect": [
+        604,
+        -548,
+        612,
+        -540
+      ],
+      "grid": [
+        33,
+        33
+      ],
+      "phase": "endpoints-inclusive",
+      "gutter": 1,
+      "group": "minima",
+      "scales": [
+        0.5,
+        1,
+        1.5
+      ],
+      "anchor": [
+        9,
+        -9
+      ],
+      "source_centers_a": [
+        8,
+        -10,
+        10,
+        -8
+      ],
+      "source_squares_b": [
+        8,
+        -10,
+        9,
+        -9
+      ]
+    },
+    {
+      "id": "PROBE--42",
+      "kind": "production",
+      "seed": -42,
+      "rect": [
+        992,
+        32,
+        1120,
+        160
+      ],
+      "grid": [
+        17,
+        17
+      ],
+      "phase": "endpoints-inclusive",
+      "gutter": 1,
+      "group": "probes",
+      "scales": [
+        0.5,
+        1,
+        1.5
+      ],
+      "anchor": [
+        16,
+        1
+      ],
+      "source_centers_a": [
+        14,
+        -1,
+        18,
+        3
+      ],
+      "source_squares_b": [
+        14,
+        -1,
+        17,
+        2
+      ]
+    },
+    {
+      "id": "MINIMUM--1",
+      "kind": "production",
+      "seed": -1,
+      "rect": [
+        -996,
+        540,
+        -988,
+        548
+      ],
+      "grid": [
+        33,
+        33
+      ],
+      "phase": "endpoints-inclusive",
+      "gutter": 1,
+      "group": "minima",
+      "scales": [
+        0.5,
+        1,
+        1.5
+      ],
+      "anchor": [
+        -16,
+        8
+      ],
+      "source_centers_a": [
+        -17,
+        7,
+        -15,
+        9
+      ],
+      "source_squares_b": [
+        -17,
+        7,
+        -16,
+        8
+      ]
+    },
+    {
+      "id": "PROBE--1",
+      "kind": "production",
+      "seed": -1,
+      "rect": [
+        992,
+        32,
+        1120,
+        160
+      ],
+      "grid": [
+        17,
+        17
+      ],
+      "phase": "endpoints-inclusive",
+      "gutter": 1,
+      "group": "probes",
+      "scales": [
+        0.5,
+        1,
+        1.5
+      ],
+      "anchor": [
+        16,
+        1
+      ],
+      "source_centers_a": [
+        14,
+        -1,
+        18,
+        3
+      ],
+      "source_squares_b": [
+        14,
+        -1,
+        17,
+        2
+      ]
+    },
+    {
+      "id": "MINIMUM-2147483647",
+      "kind": "production",
+      "seed": 2147483647,
+      "rect": [
+        -1124,
+        -484,
+        -1116,
+        -476
+      ],
+      "grid": [
+        33,
+        33
+      ],
+      "phase": "endpoints-inclusive",
+      "gutter": 1,
+      "group": "minima",
+      "scales": [
+        0.5,
+        1,
+        1.5
+      ],
+      "anchor": [
+        -18,
+        -8
+      ],
+      "source_centers_a": [
+        -19,
+        -9,
+        -17,
+        -7
+      ],
+      "source_squares_b": [
+        -19,
+        -9,
+        -18,
+        -8
+      ]
+    },
+    {
+      "id": "PROBE-2147483647",
+      "kind": "production",
+      "seed": 2147483647,
+      "rect": [
+        992,
+        32,
+        1120,
+        160
+      ],
+      "grid": [
+        17,
+        17
+      ],
+      "phase": "endpoints-inclusive",
+      "gutter": 1,
+      "group": "probes",
+      "scales": [
+        0.5,
+        1,
+        1.5
+      ],
+      "anchor": [
+        16,
+        1
+      ],
+      "source_centers_a": [
+        14,
+        -1,
+        18,
+        3
+      ],
+      "source_squares_b": [
+        14,
+        -1,
+        17,
+        2
+      ]
+    },
+    {
+      "id": "MINIMUM-2147483648",
+      "kind": "production",
+      "seed": 2147483648,
+      "rect": [
+        -1124,
+        -356,
+        -1116,
+        -348
+      ],
+      "grid": [
+        33,
+        33
+      ],
+      "phase": "endpoints-inclusive",
+      "gutter": 1,
+      "group": "minima",
+      "scales": [
+        0.5,
+        1,
+        1.5
+      ],
+      "anchor": [
+        -18,
+        -6
+      ],
+      "source_centers_a": [
+        -19,
+        -7,
+        -17,
+        -5
+      ],
+      "source_squares_b": [
+        -19,
+        -7,
+        -18,
+        -6
+      ]
+    },
+    {
+      "id": "PROBE-2147483648",
+      "kind": "production",
+      "seed": 2147483648,
+      "rect": [
+        992,
+        32,
+        1120,
+        160
+      ],
+      "grid": [
+        17,
+        17
+      ],
+      "phase": "endpoints-inclusive",
+      "gutter": 1,
+      "group": "probes",
+      "scales": [
+        0.5,
+        1,
+        1.5
+      ],
+      "anchor": [
+        16,
+        1
+      ],
+      "source_centers_a": [
+        14,
+        -1,
+        18,
+        3
+      ],
+      "source_squares_b": [
+        14,
+        -1,
+        17,
+        2
+      ]
+    },
+    {
+      "id": "MINIMUM--2147483648",
+      "kind": "production",
+      "seed": -2147483648,
+      "rect": [
+        -996,
+        540,
+        -988,
+        548
+      ],
+      "grid": [
+        33,
+        33
+      ],
+      "phase": "endpoints-inclusive",
+      "gutter": 1,
+      "group": "minima",
+      "scales": [
+        0.5,
+        1,
+        1.5
+      ],
+      "anchor": [
+        -16,
+        8
+      ],
+      "source_centers_a": [
+        -17,
+        7,
+        -15,
+        9
+      ],
+      "source_squares_b": [
+        -17,
+        7,
+        -16,
+        8
+      ]
+    },
+    {
+      "id": "PROBE--2147483648",
+      "kind": "production",
+      "seed": -2147483648,
+      "rect": [
+        992,
+        32,
+        1120,
+        160
+      ],
+      "grid": [
+        17,
+        17
+      ],
+      "phase": "endpoints-inclusive",
+      "gutter": 1,
+      "group": "probes",
+      "scales": [
+        0.5,
+        1,
+        1.5
+      ],
+      "anchor": [
+        16,
+        1
+      ],
+      "source_centers_a": [
+        14,
+        -1,
+        18,
+        3
+      ],
+      "source_squares_b": [
+        14,
+        -1,
+        17,
+        2
+      ]
+    },
+    {
+      "id": "OUTSIDE-26026",
+      "kind": "production",
+      "seed": 26026,
+      "rect": [
+        2560,
+        2560,
+        2944,
+        2688
+      ],
+      "grid": [
+        17,
+        17
+      ],
+      "phase": "endpoints-inclusive",
+      "gutter": 1,
+      "group": "outside",
+      "scales": [
+        0.5,
+        1,
+        1.5
+      ],
+      "source_centers_a": [
+        39,
+        39,
+        46,
+        42
+      ],
+      "source_squares_b": [
+        39,
+        39,
+        45,
+        41
+      ]
+    },
+    {
+      "id": "OUTSIDE-0",
+      "kind": "production",
+      "seed": 0,
+      "rect": [
+        2560,
+        2560,
+        2944,
+        2688
+      ],
+      "grid": [
+        17,
+        17
+      ],
+      "phase": "endpoints-inclusive",
+      "gutter": 1,
+      "group": "outside",
+      "scales": [
+        0.5,
+        1,
+        1.5
+      ],
+      "source_centers_a": [
+        39,
+        39,
+        46,
+        42
+      ],
+      "source_squares_b": [
+        39,
+        39,
+        45,
+        41
+      ]
+    },
+    {
+      "id": "OUTSIDE--42",
+      "kind": "production",
+      "seed": -42,
+      "rect": [
+        2560,
+        2560,
+        2944,
+        2688
+      ],
+      "grid": [
+        17,
+        17
+      ],
+      "phase": "endpoints-inclusive",
+      "gutter": 1,
+      "group": "outside",
+      "scales": [
+        0.5,
+        1,
+        1.5
+      ],
+      "source_centers_a": [
+        39,
+        39,
+        46,
+        42
+      ],
+      "source_squares_b": [
+        39,
+        39,
+        45,
+        41
+      ]
+    },
+    {
+      "id": "OUTSIDE--1",
+      "kind": "production",
+      "seed": -1,
+      "rect": [
+        2560,
+        2560,
+        2944,
+        2688
+      ],
+      "grid": [
+        17,
+        17
+      ],
+      "phase": "endpoints-inclusive",
+      "gutter": 1,
+      "group": "outside",
+      "scales": [
+        0.5,
+        1,
+        1.5
+      ],
+      "source_centers_a": [
+        39,
+        39,
+        46,
+        42
+      ],
+      "source_squares_b": [
+        39,
+        39,
+        45,
+        41
+      ]
+    },
+    {
+      "id": "OUTSIDE-2147483647",
+      "kind": "production",
+      "seed": 2147483647,
+      "rect": [
+        2560,
+        2560,
+        2944,
+        2688
+      ],
+      "grid": [
+        17,
+        17
+      ],
+      "phase": "endpoints-inclusive",
+      "gutter": 1,
+      "group": "outside",
+      "scales": [
+        0.5,
+        1,
+        1.5
+      ],
+      "source_centers_a": [
+        39,
+        39,
+        46,
+        42
+      ],
+      "source_squares_b": [
+        39,
+        39,
+        45,
+        41
+      ]
+    },
+    {
+      "id": "OUTSIDE-2147483648",
+      "kind": "production",
+      "seed": 2147483648,
+      "rect": [
+        2560,
+        2560,
+        2944,
+        2688
+      ],
+      "grid": [
+        17,
+        17
+      ],
+      "phase": "endpoints-inclusive",
+      "gutter": 1,
+      "group": "outside",
+      "scales": [
+        0.5,
+        1,
+        1.5
+      ],
+      "source_centers_a": [
+        39,
+        39,
+        46,
+        42
+      ],
+      "source_squares_b": [
+        39,
+        39,
+        45,
+        41
+      ]
+    },
+    {
+      "id": "OUTSIDE--2147483648",
+      "kind": "production",
+      "seed": -2147483648,
+      "rect": [
+        2560,
+        2560,
+        2944,
+        2688
+      ],
+      "grid": [
+        17,
+        17
+      ],
+      "phase": "endpoints-inclusive",
+      "gutter": 1,
+      "group": "outside",
+      "scales": [
+        0.5,
+        1,
+        1.5
+      ],
+      "source_centers_a": [
+        39,
+        39,
+        46,
+        42
+      ],
+      "source_squares_b": [
+        39,
+        39,
+        45,
+        41
+      ]
+    },
+    {
+      "id": "NEGATIVE-JUNCTION",
+      "kind": "production",
+      "seed": 26026,
+      "rect": [
+        -2112,
+        -2112,
+        -1984,
+        -1984
+      ],
+      "grid": [
+        17,
+        17
+      ],
+      "phase": "endpoints-inclusive",
+      "gutter": 1,
+      "group": "seams",
+      "scales": [
+        0.5,
+        1,
+        1.5
+      ],
+      "source_centers_a": [
+        -34,
+        -34,
+        -31,
+        -31
+      ],
+      "source_squares_b": [
+        -34,
+        -34,
+        -32,
+        -32
+      ]
+    },
+    {
+      "id": "NEGATIVE-SEAM",
+      "kind": "production",
+      "seed": 26026,
+      "rect": [
+        -2112,
+        -64,
+        -1984,
+        64
+      ],
+      "grid": [
+        17,
+        17
+      ],
+      "phase": "endpoints-inclusive",
+      "gutter": 1,
+      "group": "seams",
+      "scales": [
+        0.5,
+        1,
+        1.5
+      ],
+      "source_centers_a": [
+        -34,
+        -2,
+        -31,
+        1
+      ],
+      "source_squares_b": [
+        -34,
+        -2,
+        -32,
+        0
+      ]
+    },
+    {
+      "id": "POSITIVE-JUNCTION",
+      "kind": "production",
+      "seed": 26026,
+      "rect": [
+        1984,
+        1984,
+        2112,
+        2112
+      ],
+      "grid": [
+        17,
+        17
+      ],
+      "phase": "endpoints-inclusive",
+      "gutter": 1,
+      "group": "seams",
+      "scales": [
+        0.5,
+        1,
+        1.5
+      ],
+      "source_centers_a": [
+        30,
+        30,
+        33,
+        33
+      ],
+      "source_squares_b": [
+        30,
+        30,
+        32,
+        32
+      ]
+    },
+    {
+      "id": "MINUS512",
+      "kind": "production",
+      "seed": 26026,
+      "rect": [
+        -1048640,
+        -1048640,
+        -1048512,
+        -1048512
+      ],
+      "grid": [
+        17,
+        17
+      ],
+      "phase": "endpoints-inclusive",
+      "gutter": 1,
+      "group": "seams",
+      "scales": [
+        0.5,
+        1,
+        1.5
+      ],
+      "source_centers_a": [
+        -16386,
+        -16386,
+        -16383,
+        -16383
+      ],
+      "source_squares_b": [
+        -16386,
+        -16386,
+        -16384,
+        -16384
+      ]
+    },
+    {
+      "id": "PLUS512",
+      "kind": "production",
+      "seed": 26026,
+      "rect": [
+        1048512,
+        1048512,
+        1048640,
+        1048640
+      ],
+      "grid": [
+        17,
+        17
+      ],
+      "phase": "endpoints-inclusive",
+      "gutter": 1,
+      "group": "seams",
+      "scales": [
+        0.5,
+        1,
+        1.5
+      ],
+      "source_centers_a": [
+        16382,
+        16382,
+        16385,
+        16385
+      ],
+      "source_squares_b": [
+        16382,
+        16382,
+        16384,
+        16384
+      ]
+    },
+    {
+      "id": "LONG-HORIZONTAL",
+      "kind": "horizontal",
+      "seed": 0,
+      "rect": [
+        -2048,
+        -96,
+        2048,
+        96
+      ],
+      "grid": [
+        33,
+        33
+      ],
+      "phase": "endpoints-inclusive",
+      "gutter": 1,
+      "group": "arrangements",
+      "scales": [
+        0.5,
+        1,
+        1.5
+      ],
+      "source_centers_a": [
+        -33,
+        -3,
+        32,
+        2
+      ],
+      "source_squares_b": [
+        -33,
+        -3,
+        31,
+        1
+      ]
+    },
+    {
+      "id": "LONG-VERTICAL",
+      "kind": "vertical",
+      "seed": 0,
+      "rect": [
+        -96,
+        -2048,
+        96,
+        2048
+      ],
+      "grid": [
+        33,
+        33
+      ],
+      "phase": "endpoints-inclusive",
+      "gutter": 1,
+      "group": "arrangements",
+      "scales": [
+        0.5,
+        1,
+        1.5
+      ],
+      "source_centers_a": [
+        -3,
+        -33,
+        2,
+        32
+      ],
+      "source_squares_b": [
+        -3,
+        -33,
+        1,
+        31
+      ]
+    },
+    {
+      "id": "LONG-DIAGONAL",
+      "kind": "diagonal",
+      "seed": 0,
+      "rect": [
+        -2048,
+        -96,
+        2048,
+        96
+      ],
+      "grid": [
+        33,
+        33
+      ],
+      "phase": "endpoints-inclusive",
+      "gutter": 1,
+      "group": "arrangements",
+      "scales": [
+        0.5,
+        1,
+        1.5
+      ],
+      "source_centers_a": [
+        -33,
+        -3,
+        32,
+        2
+      ],
+      "source_squares_b": [
+        -33,
+        -3,
+        31,
+        1
+      ]
+    }
+  ]
+}
