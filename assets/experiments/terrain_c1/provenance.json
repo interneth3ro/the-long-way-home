@@ -1,0 +1,30 @@
+{
+  "tool": "built-in image_gen",
+  "reference": "grassland.png; visually reviewed art direction only, no pixels copied",
+  "prompts": {
+    "green": "Use case: stylized-concept. Original experimental TLWH C1 grass MATERIAL artwork, not a terrain tile and not a concept board. Use the attached grassland board as visual direction only, never copy its pixels or composition. Output a single opaque square strictly top-down continuous grassy material, no objects, text, rocks, flowers, borders, paths or bare-earth zones. Painterly lush mixed forest/moss/olive greens with interwoven low grass and small leaf cover. Medium-scale clusters of short differently directed curved blades; avoid ALL parallel diagonal strokes, rows, radial signature tufts, isolated hero clumps and evenly spaced accents. Include substantial quiet low grass between subtly denser regions, but no dramatic lighting gradient or vignette. Soft fixed diffuse upper-left lighting and shallow painted relief. This large source will be sampled through overlapping interior windows across roughly 2048 world units, NOT shrunk into a repeating 128px tile. Structure must read in a 1.0x and 0.5x gameplay view; restrained fine detail, not photographic grain. No requirements to match opposite borders because sampling will stay inside them. No macro landmark, central composition, labels, reference-board panels or repeating swatch grid.",
+    "earth": "Use case: stylized-concept. Create ONE original experimental TLWH C1 exposed earth material source, opaque square, strictly overhead. Complement the supplied natural grassland art direction; reference only, no copied board pixels. Warm desaturated brown soil, interwoven quiet compacted areas and modest shallow granular patches, sparse small embedded grit, a few very faint short cracks. Painterly material with soft upper-left diffuse light and almost flat relief. No prominent stones or signature crack, no directional streaks or bands, no diagonal wallpaper, no central focal feature, no vignette. Broad natural low contrast changes; restrained fine detail, readable at 0.5x game zoom. This source will be sampled through overlapping interior windows over about 2048 world units; it is NOT a 128px tile. No requirement for opposite edge equality. No grass, flowers, objects, machinery, ship, text, borders, panels or repeating swatch grid. Single continuous material only."
+  },
+  "base": "fa410ed9b329ffd28a927e142d2362971d54584a",
+  "generation": "New C1 continuous-material sources; not A1 tiles or historical artwork",
+  "packaging": {
+    "earth": {
+      "provider_sha256": "a2d81bac2bd907d04e894eef88a206dd09b114ec8629892c5972a7664b8f7988",
+      "packaged_sha256": "1ab148b0f431cec954299ed4c85cc541df8b72abc7789d9ea1b00532e31eec3d",
+      "method": "Ancillary metadata stripped; compressed pixels unchanged; provider original preserved outside repository",
+      "dimensions": [
+        1254,
+        1254
+      ]
+    },
+    "green": {
+      "provider_sha256": "56613fc3b64a4a3b2be3258da176fa05bbefd3f5375111c313d0f0955fe902cb",
+      "packaged_sha256": "9a464eb3afa8795c366a9e1af7cd7939cd19e06d76da1169d7ad93df5ad70a79",
+      "method": "Ancillary metadata stripped; compressed pixels unchanged; provider original preserved outside repository",
+      "dimensions": [
+        1254,
+        1254
+      ]
+    }
+  }
+}
