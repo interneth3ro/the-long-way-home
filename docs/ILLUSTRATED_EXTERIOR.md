@@ -10,6 +10,116 @@ and evidence. PR #95 is the corrected exterior
 comparison baseline; the [PR #102/#103 acceptance record](PRODUCTION_TERRAIN_FIXTURE.md)
 applies only to its isolated fixture and remains unchanged.
 
+## Stage 1 ground publication (feature branch, pending merge)
+
+Stage 1 adds explicit illustrated publication authority to
+[`PlanetExterior`](../scenes/world/planet_exterior.gd). Previously, preparation
+drained the chunk queue and waited for Ferrite; readiness had no explicit evidence
+that the required ground had been published. Production artwork, renderer,
+material selection, tint and gameplay remain unchanged.
+
+The read-only `IllustratedTerrainPresenter.publication(coordinate, token)` query
+returns evidence only for the currently registered, completely presented token,
+with an attached, visible Terrain child. Evidence identifies the coordinate,
+token, presenter instance and TileMapLayer instance. The existing complete
+1,024-assignment validation and token-checked mutation methods remain unchanged.
+
+The exterior records evidence after the batch's tint upload and chunk attachment.
+Its receipt also identifies the state object, seed, revision, generator instance
+and attached TerrainChunk instance. Token identity covers publication generation;
+the existing arrival generation and player identity bind admission to the current
+transition. No separate session ID is needed: Main owns one PlanetWorldState per
+playthrough. Another state or seed stops the cached exterior before ground
+generation with `ground_context`; a fresh exterior is required. Revision edits
+continue to replace chunks through the existing queue.
+
+Lifecycle distinctions use existing work and receipts: **scheduled** is queue
+membership; **prepared** is configured tint/details and validated assignments;
+**published** requires a committed receipt matching live presenter evidence and
+the attached chunk. Starting replacement invalidates the old receipt while
+retaining old visuals. **Failed** work latches the existing terrain failure;
+**stale** tokens/context never match; **retired** work loses its token and receipt
+after successful retirement. **Retained-old** pixels or chunks cannot authorize
+arrival when their evidence or revision differs from current state. No retry or
+renderer fallback is introduced.
+
+Arrival requires every chunk in the existing Chebyshev loading square:
+`(2 * loading_radius + 1)^2`, **25 at radius 2**, excluding the optional retention
+margin. Queue-empty and Ferrite readiness remain necessary. The arrival result
+also binds center/radius; existing controller checks after physics/fade waits
+revalidate live ground. Missing evidence at preparation completion reports
+`ground_publication` with required center/radius and fails closed. There is no
+new polling loop.
+
+Detachment/cancellation invalidates the existing arrival generation. Receipts
+retain provenance across ship visits but confer no readiness while detached.
+A new arrival may reuse same-context retained ground after rechecking each
+required publication, chunk attachment and flushed tint, without repainting it.
+First arrival, hatch return/rollback and revision replacement still need owner
+testing for stalls, input lock or reveal timing. Ferrite's independent
+request/context/readiness checks remain required and unchanged.
+
+### Focused review: validity, recovery and legacy scope
+
+`publication()` already rejects invalid Terrain instances through its first
+condition: `_current()` calls `_guard()`, which checks
+`is_instance_valid(_terrain)`. Short-circuit evaluation prevents later layer
+queries on failure. These methods contain no suspension or external callback
+between validation and access. Detachment leaves the child alive but unavailable
+as publication evidence; failed initialization leaves the query guarded as well.
+No duplicate defensive guard is required by the current source contract.
+
+The unchanged-center/revision shortcut in `_update_neighborhood()` deliberately
+does not scan or reschedule receipts. Invalid old-revision receipts are reachable
+while replacements are pending: the shortcut preserves the existing queue,
+which `_generate_budget()` continues servicing. If required evidence is still
+missing or invalid after that queue drains, arrival fails closed; preparation
+reports `ground_publication`, while later readiness rechecks return false.
+Automatic reconstruction of an otherwise unqueued receipt is not a Stage 1
+guarantee. Supported replacement
+removes the old receipt and either commits its successor synchronously or latches
+a terrain failure. Successful retirement also removes its chunk. Revision or
+center changes replan, and detach/cancel invalidates Ferrite's active context,
+bypassing the shortcut on subsequent preparation. Normal retained reuse therefore
+does not create an unexplained missing receipt. External receipt deletion or
+presenter/layer replacement is outside the supported lifecycle and must not be
+silently certified or retried. No scheduler change is warranted by this review.
+
+Explicit publication guarantees apply **only to the illustrated renderer**.
+The locked Legacy fallback bypasses `_ground_is_current()` receipt validation
+and illustrated publication/retirement; it retains its existing generation-queue,
+Ferrite and transition gates. A true legacy ground check does not certify an
+illustrated publication. Production still defaults to illustrated rendering;
+there is no continuous renderer or general renderer authority contract.
+
+`python -B -m unittest discover -s tests -p 'static_ground_publication_test.py' -v`
+checks source contracts and finite authority models for complete/partial coverage,
+replacement failure, token ordering, context mismatches, retirement and re-entry.
+It also compares protected source/wiring with planning baseline `6a4a24b`.
+These checks do not execute GDScript, parse with Godot, inspect rendered cells or
+establish runtime/visual/performance/transition acceptance. Historical acceptance
+below does not certify Stage 1. No Godot execution is authorized by this section.
+
+Owner-run acceptance, after separately authorized Godot execution:
+
+- First actual Main → exterior arrival completes with correct fade/input behavior
+  and visible illustrated terrain.
+- Exterior hatch return and re-entry work; quick transition cancellation and
+  reattachment remain safe, including cancellation while chunks are pending.
+- Walking across chunk boundaries and chunk retirement/reload show no missing
+  ground or obvious visual changes.
+- Ferrite extraction/regions, placement/highlights, machine rotations and
+  decoration removal behave as before, including revision replacement.
+- No unexplained new stalls, readiness deadlocks, flicker or blank-ground reveal.
+
+No new destructive fault injection or automatic receipt-repair test is required
+from the owner. Normal illustrated arrival, retained return and cancellation
+must work without unexplained publication failures. Legacy receipt guarantees
+are excluded; an optional separately authorized Legacy smoke check covers only
+its existing fallback behavior.
+
+No merge or cleanup authorized; awaiting owner review and acceptance.
+
 ## Exterior hatch mechanical audio (feature branch, pending merge)
 
 Original, restrained industrial opening/closing audio accompanies the accepted

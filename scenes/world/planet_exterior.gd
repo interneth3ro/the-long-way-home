@@ -36,6 +36,9 @@ var _tint_slots: int = 0
 var _tint_dirty: bool = false
 var _terrain_generation: int = 0
 var _terrain_tokens: Dictionary[Vector2i, int] = {}
+var _ground_receipts: Dictionary[Vector2i, Dictionary] = {}
+var _ground_state: PlanetWorldState
+var _ground_seed: int
 @onready var _terrain_presenter: IllustratedTerrainPresenter = $IllustratedTerrainPresenter
 
 
@@ -74,6 +77,8 @@ func prepare_for_arrival(player: CharacterBody2D, state: PlanetWorldState) -> Di
 			if child is StaticBody2D:
 				object_anchors.append(child.position)
 		_generator = PlanetGenerator.new(state.seed_value, overlays, protected_gameplay, object_anchors)
+		_ground_state = state
+		_ground_seed = state.seed_value
 	_update_neighborhood()
 	while (not _pending.is_empty() or not _ferrite_presenter.required_ready(_ferrite_token)) \
 			and _terrain_failure.is_empty() and arrival == _arrival_generation:
@@ -91,8 +96,16 @@ func prepare_for_arrival(player: CharacterBody2D, state: PlanetWorldState) -> Di
 	_preparing = false
 	if not _terrain_failure.is_empty():
 		return {"ok": false, "cancelled": false}
+	if _state != state or state.seed_value != arrival_seed or state.revision != arrival_revision:
+		return {"ok": false, "cancelled": true}
 	var result := {"ok": true, "generation": arrival, "ferrite_token": _ferrite_token,
-		"state": state, "player": player, "seed": arrival_seed, "revision": arrival_revision}
+		"state": state, "player": player, "seed": arrival_seed, "revision": arrival_revision,
+		"ground_center": _center, "ground_radius": loading_radius}
+	if not _required_ground_is_current():
+		_stop_terrain({"ok": false, "code": &"ground_publication",
+			"message": "Required arrival ground lacks current attached publication",
+			"center": _center, "radius": loading_radius})
+		return {"ok": false, "cancelled": false}
 	if not arrival_is_ready(result):
 		return {"ok": false, "cancelled": true}
 	return result
@@ -106,6 +119,8 @@ func arrival_is_ready(result: Variant) -> bool:
 		and result.get("state") == _state and result.get("player") == _player \
 		and _state != null and result.get("seed") == _state.seed_value \
 		and result.get("revision") == _state.revision \
+		and result.get("ground_center") == _center and result.get("ground_radius") == loading_radius \
+		and _required_ground_is_current() \
 		and result.get("ferrite_token", -1) == _ferrite_token \
 		and is_inside_tree() and is_instance_valid(_player) and is_ancestor_of(_player) \
 		and not _preparing and not _arrival_cancelled and _terrain_failure.is_empty() \
@@ -144,6 +159,12 @@ func _process(_delta: float) -> void:
 func _update_neighborhood() -> void:
 	if not _terrain_failure.is_empty():
 		return
+	if _ground_state != _state or _ground_seed != _state.seed_value:
+		# A cached exterior belongs to one playthrough/world. Never relabel its
+		# generator, details or retained surfaces as a different world's output.
+		_stop_terrain({"ok": false, "code": &"ground_context",
+			"message": "Cached exterior world/seed changed; create a fresh exterior"})
+		return
 	var center := WorldCoordinates.world_to_chunk(to_local(_player.global_position))
 	if center == _center and _state.revision == _revision \
 			and _ferrite_presenter.matches_context(_state):
@@ -163,7 +184,7 @@ func _update_neighborhood() -> void:
 	_pending.clear()
 	# Keep old visuals until their replacement is ready, including retained chunks.
 	for coordinate in _chunks:
-		if _chunks[coordinate].state_revision != _revision:
+		if _chunks[coordinate].state_revision != _revision or not _ground_is_current(coordinate):
 			_pending.append(coordinate)
 	for y in range(-loading_radius, loading_radius + 1):
 		for x in range(-loading_radius, loading_radius + 1):
@@ -202,6 +223,7 @@ func _generate_budget() -> void:
 	if _pending.is_empty():
 		_flush_terrain_tint()
 		return
+	var committed: Array[Vector2i] = []
 	for index in range(mini(chunks_per_frame, _pending.size())):
 		var coordinate: Vector2i = _pending.pop_front()
 		var chunk := TerrainChunk.new()
@@ -222,8 +244,47 @@ func _generate_budget() -> void:
 			previous.queue_free()
 		add_child(chunk)
 		_chunks[coordinate] = chunk
+		committed.append(coordinate)
 	_flush_terrain_tint()
+	# Publication authority includes attached details and the flushed tint, not
+	# just successful TileMap writes. This commit boundary is synchronous.
+	if _effective_renderer == TerrainRenderer.ILLUSTRATED:
+		for coordinate in committed:
+			_ground_receipts[coordinate] = {"publication": _terrain_presenter.publication(
+				coordinate, _terrain_tokens[coordinate]), "state": _state,
+				"seed": _state.seed_value, "revision": _state.revision,
+				"generator": _generator.get_instance_id(), "chunk": _chunks[coordinate].get_instance_id()}
 	_highlights_dirty = true
+
+
+func _ground_is_current(coordinate: Vector2i) -> bool:
+	if _effective_renderer != TerrainRenderer.ILLUSTRATED:
+		return true # Preserve the explicit legacy fallback's existing contract.
+	if _state == null or _ground_state != _state or _ground_seed != _state.seed_value \
+			or not is_instance_valid(_generator) or not is_instance_valid(_terrain_presenter) \
+			or not is_ancestor_of(_terrain_presenter) or not _ground_receipts.has(coordinate) \
+			or not _terrain_tokens.has(coordinate) or not _chunks.has(coordinate):
+		return false
+	var chunk: TerrainChunk = _chunks[coordinate]
+	var receipt: Dictionary = _ground_receipts[coordinate]
+	return is_instance_valid(chunk) and chunk.is_inside_tree() and chunk.get_parent() == self \
+		and chunk.state_revision == _state.revision and receipt.get("state") == _state \
+		and receipt.get("seed") == _state.seed_value and receipt.get("revision") == _state.revision \
+		and receipt.get("generator") == _generator.get_instance_id() \
+		and receipt.get("chunk") == chunk.get_instance_id() \
+		and not receipt.get("publication", {}).is_empty() \
+		and receipt.publication == _terrain_presenter.publication(coordinate, _terrain_tokens[coordinate])
+
+
+func _required_ground_is_current() -> bool:
+	if not is_inside_tree() or _tint_dirty:
+		return false
+	# Match the existing loading square, excluding the optional retention margin.
+	for y in range(-loading_radius, loading_radius + 1):
+		for x in range(-loading_radius, loading_radius + 1):
+			if not _ground_is_current(_center + Vector2i(x, y)):
+				return false
+	return true
 
 
 func _configure_terrain_renderer() -> void:
@@ -305,6 +366,7 @@ func _present_illustrated_chunk(coordinate: Vector2i) -> bool:
 		return true
 	_terrain_generation += 1
 	var token := _terrain_generation
+	_ground_receipts.erase(coordinate)
 	var registered := _terrain_presenter.begin_generation(coordinate, token)
 	if not registered.ok:
 		_stop_terrain(registered)
@@ -325,6 +387,7 @@ func _retire_illustrated_chunk(coordinate: Vector2i) -> bool:
 	var result := _terrain_presenter.retire_chunk(coordinate, _terrain_tokens[coordinate])
 	if result.ok:
 		_terrain_tokens.erase(coordinate)
+		_ground_receipts.erase(coordinate)
 		_tint_image.fill_rect(Rect2i(_tint_slot(coordinate),
 			Vector2i.ONE * TerrainChunk.VERTEX_WIDTH), Color.WHITE)
 		_tint_dirty = true
