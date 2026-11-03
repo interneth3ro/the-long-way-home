@@ -282,18 +282,21 @@ The integration remains pending merge and does not change approved environmental
   oxidation and softly irregular, connected grid-conforming fields, including
   rectangular, L-shaped, stepped and asymmetrical clustered deposits. Avoid
   tall formations. Deposits remain infinite, uniformly rich and never deplete.
-- Approved future introductory geometry is 10x6 **64-unit terrain cells**
+- Approved introductory geometry is 10x6 **64-unit terrain cells**
   (640x384 world units / 20x12 construction cells), with a rectangular logical
-  footprint. Exact placement east/southeast of the ship is deferred to integration.
+  footprint. The pending production integration places it east/southeast of the
+  ship at logical bounds `(128,128)..(768,512)`.
   A 6x4 terrain-cell example is illustrative, not a procedural size class.
   Medium/large deposits should be common and small deposits relatively rare;
   procedural dimensions, weights and distribution remain undecided.
   The [offline artwork prototype](FERRITE_ARTWORK_PROTOTYPE_V1.md#owner-acceptance-2026-11-02)
   received owner visual/architecture acceptance on 2026-11-02 at `1662a61`, including
-  the irregular assemblies and their documented limitations. PR #123 remains draft
-  and unmerged; production integration and in-game verification remain deferred.
-  Current gameplay retains the authored oval polygon and
-  placeholder drawing; this artwork task does not implement the new geometry.
+  the irregular assemblies and their documented limitations. PR #123 merged.
+  The [production integration](FERRITE_ARTWORK_PROTOTYPE_V1.md#production-integration-feature-branch-pending-merge)
+  uses the unchanged approved large PNG with a separate rectangular resource
+  footprint. Owner in-game acceptance is pending. Procedural distribution remains
+  deferred and must support varied connected irregular grid-conforming deposits,
+  rather than only rectangles.
 - One guaranteed authored deposit near the ship introduces deliberate inspection,
   Dave's engineering deduction and guidance to locate the Extractor in the
   maintenance bay. Computer does not identify the mineral in this sequence.
