@@ -14,7 +14,7 @@ def authored_geometry():
     for raw in re.findall(r'polygon = PackedVector2Array\(([^)]+)\)', head):
         values = [float(v) for v in raw.split(',')]
         overlays.append((list(zip(values[::2], values[1::2])), 256.0))
-    source = (ROOT/'scenes/world/planet_exterior.gd').read_text().split('var _player:')[0]
+    source = (ROOT/'scenes/world/crash_site_protection.gd').read_text()
     protected = [(float(x),float(y)) for x,y in re.findall(r'Vector2\((-?\d+), (-?\d+)\)', source)]
     anchors = [(float(x),float(y)) for x,y in re.findall(
         r'\[node name="[^"]+" type="StaticBody2D"[^\]]*\]\s*.*?^position = Vector2\((-?\d+), (-?\d+)\)',

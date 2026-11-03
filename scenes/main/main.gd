@@ -20,6 +20,11 @@ const PLATE_GUIDANCE: ObjectiveDefinition = preload("res://objectives/restore_co
 
 
 func _ready() -> void:
+	if not $PlaythroughState.planet.is_resource_generation_ready():
+		# Catalog failure is a blocked session, never an authored-only fallback.
+		push_error("Session startup blocked: " + $PlaythroughState.planet.resource_generation_error())
+		get_tree().paused = true
+		return
 	$PlaythroughState.ferrite_discovery_completed.connect(_on_ferrite_discovered)
 	$PlaythroughState.extractor_recovery_completed.connect(_on_extractor_recovered)
 	$PlaythroughState.extractor_deployment_completed.connect(_refresh_objective_tracker)

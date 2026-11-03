@@ -150,7 +150,9 @@ class LowGreenStaticTest(unittest.TestCase):
             numbers = [float(v) for v in values.split(',')]
             overlays.append(list(zip(numbers[::2],numbers[1::2])))
         source = (ROOT/'scenes/world/planet_exterior.gd').read_text()
-        protected = [(float(x),float(y)) for x,y in re.findall(r'Vector2\((-?\d+), (-?\d+)\)', source.split('var _player:')[0])]
+        geometry = (ROOT/'scenes/world/crash_site_protection.gd').read_text()
+        self.assertIn('protected_gameplay := PackedVector2Array(CrashSiteProtection.GAMEPLAY)', source)
+        protected = [(float(x),float(y)) for x,y in re.findall(r'Vector2\((-?\d+), (-?\d+)\)', geometry)]
         self.assertEqual(len(overlays), 4)
         self.assertEqual(len(protected), 6)
         for y in range(-22,22):
