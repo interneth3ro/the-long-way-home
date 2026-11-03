@@ -45,6 +45,15 @@ func query_deposit_descriptors(area: Rect2) -> Array:
 	return _ferrite.query(area)
 
 
+# Planning only: no region generation or artwork I/O.
+func deposit_query_owners(area: Rect2) -> Array[Vector2i]:
+	return _ferrite.query_owners(area)
+
+
+func deposit_resource(descriptor: Dictionary) -> ResourceDeposit:
+	return _ferrite.resource(descriptor)
+
+
 # A copy of validated catalog registration; no textures or nodes in simulation.
 func get_deposit_variant(variant_id: String) -> Dictionary:
 	return _ferrite.variant_metadata(variant_id)

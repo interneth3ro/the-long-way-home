@@ -138,7 +138,9 @@ class IllustratedExteriorStaticTest(unittest.TestCase):
         for name in ('_generate_budget', '_update_neighborhood', '_configure_terrain_renderer'):
             self.assertIn('if not _terrain_failure.is_empty():\n\t\treturn', body(SOURCE, name))
         self.assertIn('not _terrain_failure.is_empty()', body(SOURCE, '_process'))
-        self.assertIn('while not _pending.is_empty() and _terrain_failure.is_empty():', body(SOURCE, 'prepare_for_arrival'))
+        arrival = body(SOURCE, 'prepare_for_arrival')
+        self.assertIn('not _pending.is_empty() or not _ferrite_presenter.required_ready(_ferrite_token)', arrival)
+        self.assertIn('and _terrain_failure.is_empty() and arrival == _arrival_generation:', arrival)
         self.assertIn('if _terrain_failure.is_empty():', body(SOURCE, '_stop_terrain'))
         self.assertIn('_terrain_failure.duplicate(true)', body(SOURCE, 'terrain_failure'))
         for name in ('_present_illustrated_chunk', '_retire_illustrated_chunk'):
@@ -265,7 +267,7 @@ class IllustratedExteriorStaticTest(unittest.TestCase):
         self.assertIn('if _tint_dirty:\n\t\t_tint_texture.update(_tint_image)\n\t\t_tint_dirty = false', SOURCE)
         budget = body(SOURCE, '_generate_budget')
         self.assertIn('if _pending.is_empty():\n\t\t_flush_terrain_tint()\n\t\treturn', budget)
-        self.assertLess(budget.index('if _pending.is_empty():'), budget.index('_refresh_highlights()'))
+        self.assertLess(budget.index('if _pending.is_empty():'), budget.index('_highlights_dirty = true'))
         self.assertIn('\n\t_flush_terrain_tint()', budget)
         self.assertEqual(SOURCE.count('func _process('), 1)
         self.assertNotIn('func _physics_process', SOURCE)
