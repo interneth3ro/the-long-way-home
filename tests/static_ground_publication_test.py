@@ -81,6 +81,73 @@ def filled():
 
 
 class GroundPublicationTest(unittest.TestCase):
+    def test_publication_validity_is_guarded_before_layer_access(self):
+        evidence = body(P, 'publication')
+        current = body(P, '_current')
+        guard = body(P, '_guard')
+        self.assertLess(evidence.index('not _current(coordinate, generation_token, false).ok'),
+                        evidence.index('_terrain.is_inside_tree()'))
+        self.assertIn('if _lookup == null or not is_instance_valid(_terrain):\n'
+                      '\t\treturn _result(false, &"uninitialized"', guard)
+        self.assertIn('var guard := _guard(coordinate, token)\n'
+                      '\tif not guard.ok:\n\t\treturn guard', current)
+        self.assertLess(current.index('if not guard.ok:'), current.index('_matches('))
+        # No suspension or external callback can invalidate the layer between
+        # the shared guard and the first layer query. Detach keeps nodes alive.
+        for method in (evidence, current, guard):
+            for forbidden in ('await ', '.call(', '.emit(', 'call_deferred('):
+                self.assertNotIn(forbidden, method)
+        self.assertEqual(P.count('_terrain = layer'), 1)
+
+    def test_unchanged_neighborhood_fails_closed_without_receipt_retry(self):
+        neighborhood = body(E, '_update_neighborhood')
+        early = ('if center == _center and _state.revision == _revision \\\n'
+                 '\t\t\tand _ferrite_presenter.matches_context(_state):\n\t\treturn')
+        self.assertIn(early, neighborhood)
+        self.assertLess(neighborhood.index(early), neighborhood.index('_pending.clear()'))
+        self.assertLess(neighborhood.index('_pending.clear()'),
+                        neighborhood.index('or not _ground_is_current(coordinate)'))
+        process = body(E, '_process')
+        self.assertLess(process.index('_update_neighborhood()'), process.index('_generate_budget()'))
+        for invalid in ('absent', 'mismatched'):
+            a = filled()
+            if invalid == 'absent':
+                a.receipts.pop((0, 0))
+            else:
+                a.receipts[(0, 0)] = replace(a.receipts[(0, 0)], presenter=-1)
+            # Drained queue and an unchanged neighborhood cannot repair or
+            # authorize this state. Missing evidence is not a retry request.
+            self.assertIn((0, 0), a.pixels)
+            self.assertFalse(a.ready(1), invalid)
+        arrival = body(E, 'prepare_for_arrival')
+        rejection = arrival[arrival.index('if not _required_ground_is_current():'):]
+        self.assertLess(rejection.index('_stop_terrain('), rejection.index('if not arrival_is_ready('))
+        self.assertIn('return {"ok": false, "cancelled": false}', rejection)
+        # Supported cancellation/reattachment invalidates the early-return
+        # predicate, so retained work is reconsidered on the next preparation.
+        ferrite = (ROOT/'scenes/world/ferrite_deposit_presenter.gd').read_text()
+        self.assertIn('_active and _state == state', body(ferrite, 'matches_context'))
+        self.assertIn('_active = false', body(ferrite, 'cancel'))
+        self.assertIn('cancel()', body(ferrite, '_exit_tree'))
+        self.assertIn('_ferrite_presenter.cancel()', body(E, 'cancel_arrival_preparation'))
+        # Receipt removal occurs only during synchronous replacement or
+        # successful retirement; failures stop before any later admission.
+        self.assertEqual(E.count('_ground_receipts.erase(coordinate)'), 2)
+        self.assertNotIn('await ', body(E, '_generate_budget'))
+        self.assertIn('_stop_terrain(result)', body(E, '_present_illustrated_chunk'))
+
+    def test_legacy_is_an_explicit_exception_to_illustrated_receipts(self):
+        current = body(E, '_ground_is_current')
+        self.assertIn('if _effective_renderer != TerrainRenderer.ILLUSTRATED:\n\t\treturn true', current)
+        self.assertLess(current.index('return true'), current.index('_ground_receipts.has(coordinate)'))
+        for name in ('_present_illustrated_chunk', '_retire_illustrated_chunk'):
+            method = body(E, name)
+            self.assertLess(method.index('return true'), method.index('_terrain_presenter.'))
+        budget = body(E, '_generate_budget')
+        self.assertIn('if _effective_renderer == TerrainRenderer.ILLUSTRATED:\n'
+                      '\t\tfor coordinate in committed:\n\t\t\t_ground_receipts[coordinate] =', budget)
+        self.assertIn('enum TerrainRenderer { LEGACY, ILLUSTRATED }', E)
+
     def test_complete_required_square_and_partial_missing_queue_drained(self):
         a = filled()
         self.assertEqual(len(a.receipts), 25)

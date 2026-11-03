@@ -59,6 +59,39 @@ First arrival, hatch return/rollback and revision replacement still need owner
 testing for stalls, input lock or reveal timing. Ferrite's independent
 request/context/readiness checks remain required and unchanged.
 
+### Focused review: validity, recovery and legacy scope
+
+`publication()` already rejects invalid Terrain instances through its first
+condition: `_current()` calls `_guard()`, which checks
+`is_instance_valid(_terrain)`. Short-circuit evaluation prevents later layer
+queries on failure. These methods contain no suspension or external callback
+between validation and access. Detachment leaves the child alive but unavailable
+as publication evidence; failed initialization leaves the query guarded as well.
+No duplicate defensive guard is required by the current source contract.
+
+The unchanged-center/revision shortcut in `_update_neighborhood()` deliberately
+does not scan or reschedule receipts. Invalid old-revision receipts are reachable
+while replacements are pending: the shortcut preserves the existing queue,
+which `_generate_budget()` continues servicing. If required evidence is still
+missing or invalid after that queue drains, arrival fails closed; preparation
+reports `ground_publication`, while later readiness rechecks return false.
+Automatic reconstruction of an otherwise unqueued receipt is not a Stage 1
+guarantee. Supported replacement
+removes the old receipt and either commits its successor synchronously or latches
+a terrain failure. Successful retirement also removes its chunk. Revision or
+center changes replan, and detach/cancel invalidates Ferrite's active context,
+bypassing the shortcut on subsequent preparation. Normal retained reuse therefore
+does not create an unexplained missing receipt. External receipt deletion or
+presenter/layer replacement is outside the supported lifecycle and must not be
+silently certified or retried. No scheduler change is warranted by this review.
+
+Explicit publication guarantees apply **only to the illustrated renderer**.
+The locked Legacy fallback bypasses `_ground_is_current()` receipt validation
+and illustrated publication/retirement; it retains its existing generation-queue,
+Ferrite and transition gates. A true legacy ground check does not certify an
+illustrated publication. Production still defaults to illustrated rendering;
+there is no continuous renderer or general renderer authority contract.
+
 `python -B -m unittest discover -s tests -p 'static_ground_publication_test.py' -v`
 checks source contracts and finite authority models for complete/partial coverage,
 replacement failure, token ordering, context mismatches, retirement and re-entry.
@@ -72,12 +105,18 @@ Owner-run acceptance, after separately authorized Godot execution:
 - First actual Main → exterior arrival completes with correct fade/input behavior
   and visible illustrated terrain.
 - Exterior hatch return and re-entry work; quick transition cancellation and
-  reattachment remain safe.
+  reattachment remain safe, including cancellation while chunks are pending.
 - Walking across chunk boundaries and chunk retirement/reload show no missing
   ground or obvious visual changes.
 - Ferrite extraction/regions, placement/highlights, machine rotations and
   decoration removal behave as before, including revision replacement.
 - No unexplained new stalls, readiness deadlocks, flicker or blank-ground reveal.
+
+No new destructive fault injection or automatic receipt-repair test is required
+from the owner. Normal illustrated arrival, retained return and cancellation
+must work without unexplained publication failures. Legacy receipt guarantees
+are excluded; an optional separately authorized Legacy smoke check covers only
+its existing fallback behavior.
 
 No merge or cleanup authorized; awaiting owner review and acceptance.
 
