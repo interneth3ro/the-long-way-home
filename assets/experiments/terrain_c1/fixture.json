@@ -1,0 +1,293 @@
+{
+  "seed": 26026,
+  "rule": "c1_fields_v1",
+  "art": "c1_materials_v1",
+  "chunk_size": 2048,
+  "field_step": 16,
+  "field_width": 137,
+  "gutter": 4,
+  "supported_chunks": [
+    [
+      -1,
+      -1
+    ],
+    [
+      0,
+      -1
+    ],
+    [
+      -1,
+      0
+    ],
+    [
+      0,
+      0
+    ]
+  ],
+  "coordinate_bounds": [
+    -2048,
+    2048
+  ],
+  "overlays": [
+    {
+      "polygon": [
+        [
+          -832.0,
+          -576.0
+        ],
+        [
+          -320.0,
+          -704.0
+        ],
+        [
+          192.0,
+          -512.0
+        ],
+        [
+          768.0,
+          -128.0
+        ],
+        [
+          832.0,
+          448.0
+        ],
+        [
+          384.0,
+          768.0
+        ],
+        [
+          -320.0,
+          704.0
+        ],
+        [
+          -832.0,
+          320.0
+        ]
+      ],
+      "color": [
+        0.32,
+        0.34,
+        0.29,
+        1.0
+      ],
+      "feather": 256
+    },
+    {
+      "polygon": [
+        [
+          -1024.0,
+          -768.0
+        ],
+        [
+          -864.0,
+          -864.0
+        ],
+        [
+          -224.0,
+          -384.0
+        ],
+        [
+          -192.0,
+          -128.0
+        ],
+        [
+          -512.0,
+          -192.0
+        ]
+      ],
+      "color": [
+        0.21,
+        0.22,
+        0.22,
+        1.0
+      ],
+      "feather": 256
+    },
+    {
+      "polygon": [
+        [
+          -1024.0,
+          -1024.0
+        ],
+        [
+          1024.0,
+          -1024.0
+        ],
+        [
+          1024.0,
+          -832.0
+        ],
+        [
+          384.0,
+          -896.0
+        ],
+        [
+          -64.0,
+          -768.0
+        ],
+        [
+          -704.0,
+          -896.0
+        ],
+        [
+          -1024.0,
+          -832.0
+        ]
+      ],
+      "color": [
+        0.22,
+        0.31,
+        0.34,
+        1.0
+      ],
+      "feather": 256
+    },
+    {
+      "polygon": [
+        [
+          -1024.0,
+          832.0
+        ],
+        [
+          -512.0,
+          896.0
+        ],
+        [
+          0.0,
+          832.0
+        ],
+        [
+          512.0,
+          960.0
+        ],
+        [
+          1024.0,
+          768.0
+        ],
+        [
+          1024.0,
+          1024.0
+        ],
+        [
+          -1024.0,
+          1024.0
+        ]
+      ],
+      "color": [
+        0.22,
+        0.31,
+        0.34,
+        1.0
+      ],
+      "feather": 256
+    }
+  ],
+  "anchors": [
+    [
+      -384.0,
+      -192.0
+    ],
+    [
+      -384.0,
+      -176.0
+    ],
+    [
+      -768.0,
+      384.0
+    ],
+    [
+      704.0,
+      -384.0
+    ]
+  ],
+  "gameplay": [
+    [
+      -720.0,
+      -544.0
+    ],
+    [
+      192.0,
+      -544.0
+    ],
+    [
+      832.0,
+      -128.0
+    ],
+    [
+      832.0,
+      736.0
+    ],
+    [
+      -640.0,
+      736.0
+    ],
+    [
+      -896.0,
+      256.0
+    ]
+  ],
+  "source_sha256_lf": {
+    "scenes/world/planet_exterior.tscn": "721a7b3470b851b57b751b894c41c5c735533bdb0c9e151ef302936ecf71b6d1",
+    "scenes/world/crash_site_protection.gd": "d03d9121cb3a5c0f317740ffb737e6280e007733178c6f70235bfed22b4d4f09",
+    "scenes/world/world_coordinates.gd": "1337cfcf112d7f480b9e8525ef007d8f30d6abc5258c58d9f11734408d763213",
+    "scenes/world/planet_generator.gd": "f586792777178e63515c781f8aebb73f65c43c313f14f5970ce74bed10ca9c49",
+    "scenes/world/terrain_chunk.gd": "531632bba6a5f2463dffa21a818d9c468409f4c1edb6a275528a2c04d3ca388e",
+    "tools/terrain-c1-author.py": "39a87efe7102045dab32679862598c4e5034dd858c6b8e22ef92239252ef6828"
+  },
+  "regions": [
+    {
+      "coord": [
+        -1,
+        -1
+      ],
+      "field": "fields/-1_-1_field.png",
+      "phase": "fields/-1_-1_phase.png",
+      "field_sha256": "45b6fb3fd618119ee608cfc0469f7e71173f52f6a39d6384a44d194f46c89103",
+      "phase_sha256": "798c03a1db8d8d30171b4e863098f8b192448264e925b33200e0a2e718145fc6",
+      "identity": "c1_fields_v1:c1_materials_v1:26026:-1:-1"
+    },
+    {
+      "coord": [
+        0,
+        -1
+      ],
+      "field": "fields/0_-1_field.png",
+      "phase": "fields/0_-1_phase.png",
+      "field_sha256": "4e30f4657ec410f55b2f4b7dad0c72991af29387bad7ac6d099cc17ec2d1ada5",
+      "phase_sha256": "ff05bf05d2f3df58e3c9290933ca39785f2e3b3538d231799982ee6c9553dfb6",
+      "identity": "c1_fields_v1:c1_materials_v1:26026:0:-1"
+    },
+    {
+      "coord": [
+        -1,
+        0
+      ],
+      "field": "fields/-1_0_field.png",
+      "phase": "fields/-1_0_phase.png",
+      "field_sha256": "197af7d10ae0af844888b1730a4edb77b6cd7ea16b03560d28227d32b85f97b0",
+      "phase_sha256": "f735d21383e8a88a3d3a87cda1af4fe7cdff4b04f8d1d9ce70262987e086ebce",
+      "identity": "c1_fields_v1:c1_materials_v1:26026:-1:0"
+    },
+    {
+      "coord": [
+        0,
+        0
+      ],
+      "field": "fields/0_0_field.png",
+      "phase": "fields/0_0_phase.png",
+      "field_sha256": "ac1c08b4c836f82695519dce816a070444a17d3d5ed10de08f2226933a3b24c8",
+      "phase_sha256": "b991b8ff56d97a085d309ab02c2568460dbca60d332bdeea5311110ed945d56d",
+      "identity": "c1_fields_v1:c1_materials_v1:26026:0:0"
+    }
+  ],
+  "materials": {
+    "earth": {
+      "path": "sources/earth.png",
+      "sha256": "1ab148b0f431cec954299ed4c85cc541df8b72abc7789d9ea1b00532e31eec3d"
+    },
+    "green": {
+      "path": "sources/green.png",
+      "sha256": "9a464eb3afa8795c366a9e1af7cd7939cd19e06d76da1169d7ad93df5ad70a79"
+    }
+  }
+}
