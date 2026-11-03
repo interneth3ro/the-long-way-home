@@ -227,14 +227,13 @@ class CompatibilityTest(unittest.TestCase):
         self.assertEqual(oracle.audit(feather, (0,))[0].outcome, oracle.UNRESOLVED)
 
     def test_stage2b_exact_scope_and_unchanged_sources(self):
-        changes = subprocess.check_output(["git", "diff", "--name-status", oracle.BASE, "--"], cwd=ROOT, text=True)
+        # Historical PR #135 inventory; current-tree scope belongs to Stage 2B-2.
+        stage2b_merge = "1f4ac408c31b99be4ab7158960dab06adec93871"
+        changes = subprocess.check_output(["git", "diff", "--name-status", oracle.BASE, stage2b_merge, "--"], cwd=ROOT, text=True)
         inventory = dict((path, status) for status, path in (line.split("\t", 1) for line in changes.splitlines()))
-        untracked = set(subprocess.check_output(["git", "ls-files", "--others", "--exclude-standard"], cwd=ROOT, text=True).splitlines())
         receipt = json.loads((ROOT / "artifacts/logs/terrain-preservation-2026-11-03.json").read_text())
         protected = set(receipt["protected_sidecars"])
         self.assertEqual(len(protected), 15)
-        self.assertEqual(untracked - ADDITIONS, protected)
-        inventory.update({path: "A" for path in untracked & ADDITIONS})
         self.assertEqual(inventory, {**dict.fromkeys(ADDITIONS, "A"), AMENDMENT: "M"})
         for path, entry in receipt["protected_sidecars"].items():
             self.assertEqual(hashlib.sha256((ROOT / path).read_bytes()).hexdigest(), entry["sha256"])
