@@ -177,16 +177,14 @@ first-run host stability and graphical behavior require actual verification. A G
 import that rewrites tracked sidecars will correctly fail these preservation checks
 and needs review. A failed first invocation must not be retried automatically.
 
-## Fixed metadata smoke extension (draft, unexecuted)
+## Fixed metadata smoke extension (draft, one-time execution failed)
 
 Stage 3A-2 adds `MetadataSmoke` to the existing runner on this feature branch,
-pending review/merge. On 2026-11-03 the owner authorized **one supervised
-MetadataSmoke invocation only**, after a metadata-only activation amendment based
-on `33ea31be2aee7f9aa07405e441d61a8b855437a7` and passing all preflight checks.
-The gate is temporarily open for that invocation; restore it inactive afterward.
-There is no standing metadata authorization, override flag, environment switch
-or approval file. Stop on failure without retry. No execution result is claimed
-by the activation amendment itself.
+pending review/merge. **It is inactive again** following one owner-authorized
+invocation on 2026-11-03, recorded below. The authorization gate rejects it before
+prerequisites, subprocesses or staging. Any additional invocation requires new
+explicit owner execution approval and a reviewed gate amendment. There is no
+override flag, environment switch or approval file.
 `Static`, `NativePlan` and `Native` keep their existing recipe-switching behavior,
 command arrays, allowlist and review controls. Metadata-specific review paths are
 appended only for `MetadataSmoke`.
@@ -196,13 +194,13 @@ validation on 2026-11-03. MetadataSmoke therefore has a fixed **360-second**
 bounded Python static-suite deadline. `Static`, `NativePlan` and `Native` retain
 **60 seconds**. Test selection, actual PASS/zero-exit/termination-certainty
 requirements, output limits and the stop-before-staging/dispatch failure gate
-are unchanged. The separate one-time authorization above does not expand them. The
+are unchanged. This deadline amendment does not activate MetadataSmoke. The
 planned Godot preparation/smoke deadlines remain **60/30 seconds**, respectively.
 
 The metadata recipe uses the same identity capture, pre-static hashes, actual
 Python PASS requirement, reviewed-control checks, fresh external stage, sequential
 bounded supervisor, failure evidence, final identity checks and no-retry rules.
-Its only authorized commands for the one-time invocation are:
+The unchanged fixed commands used by the one-time invocation were:
 
 | Phase | Exact arguments | Deadline | Combined output |
 | --- | --- | --- | --- |
@@ -211,7 +209,7 @@ Its only authorized commands for the one-time invocation are:
 
 Both use `<stage>` as working directory and the pinned executable listed above.
 Preparation is intentional: import-free global script-class discovery has not
-been established. No version/help probe is authorized. Normal zero
+been established. This task has not run even a version/help probe. Normal zero
 exit and no engine/script/parse/assertion errors are required in both phases.
 Smoke PASS additionally requires exactly one completion line, the final nonempty
 stdout line: `TLWH_METADATA_SMOKE_V1 failures: 0`. Missing, duplicate, malformed,
@@ -316,3 +314,56 @@ Review all items before requesting or granting any engine run:
 Even a later smoke PASS will not certify strict-Earth protection, positive
 Green-center margins, Geometry2D/GPU numerical enclosure or Stage 3B integration.
 Those remain blocked/unproven and require separately authorized work.
+
+## One-time metadata execution result (2026-11-03)
+
+The owner authorized one supervised invocation after a metadata-only activation
+amendment based on PR #139 HEAD `33ea31be2aee7f9aa07405e441d61a8b855437a7`.
+The activation revision was `4f1dcaf8d565d657d354f8ba672fa6ed681fa072`.
+All 60 activation inert fixtures passed; exact runner comparison confirmed that
+only the metadata authorization branch changed. Native behavior, the exact 32
+inputs, commands, deadlines, supervision, identity and evidence controls remained
+unchanged. The invocation was exactly:
+
+```powershell
+pwsh -NoProfile -File tools/run-local-tests.ps1 -Mode MetadataSmoke
+```
+
+| Check | Actual result |
+| --- | --- |
+| Complete Python static suite, 360-second bound | PASS: 350 tests, 249.088 seconds, exit 0, 513 output bytes |
+| Pinned headless editor preparation, 60-second bound | PASS |
+| Metadata script command, 30-second bound | FAIL: NONZERO_EXIT; GDScript parse error at `tests/metadata_smoke_test.gd:43` |
+| Actual metadata generation | NOT REACHED |
+| Actual malformed-input rejection assertions | NOT REACHED |
+| Required completion line | Not produced; no smoke PASS |
+| Overall runner | Exit 1; Static=PASS, Import=PASS, Native=FAIL, Infrastructure=FAIL, Authorization=PASS |
+
+The diagnostic was: `Cannot infer the type of "seed" variable because the value
+doesn't have a set type.` Godot reported failure to load the smoke script with
+Parse error. Preparation PASS does not establish that every production script or
+metadata call path parsed/executed successfully. The supervisor classified an
+observed nonzero child exit, not timeout/overflow/uncertain termination. The
+failure format retains that classification but not the numeric child exit code
+or per-phase elapsed time; neither is inferred here.
+
+Fresh retained external stage:
+`D:\GameDev\Godot\TLWH-NativeStages\tlwh-native-plan-561959bc40e045c08373debfb688aee8`.
+Bounded failure evidence remains local and ignored at
+`artifacts/logs/native-failure-4bed066295364d2591be929ba8136829.json`;
+evidence capture succeeded. It is not committed or republished as a raw log.
+Both commands used the pinned executable and the unchanged argument arrays above.
+The stage and evidence are preserved; no automatic retry or smoke-script fix
+was attempted. The one-time authorization is consumed and the inactive gate and
+its inert withdrawal tests are restored to the pre-activation reviewed bytes.
+
+Post-run read-only checks passed: exact 32 source/stage input hashes and allowed
+generated paths (only `.godot/` additions); source working-state and input digests
+match the failure record; pinned executable unchanged; tracked checkout/index
+unchanged by execution; all 15 protected sidecar paths/sizes/hashes; A1 branch,
+three annotated tag objects/peeled targets, backup bundle size/hash, frozen C1
+source rasters, original/refined diagnostic manifests and all 7+3 output hashes.
+No gameplay, graphics, benchmark, GPU/numerical certification, renderer integration,
+merge or repository cleanup occurred. Stage 3B remains blocked. Correcting the
+smoke-script typing issue and any subsequent execution require separate owner
+direction and renewed execution authorization.

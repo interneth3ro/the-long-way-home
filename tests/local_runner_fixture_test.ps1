@@ -743,16 +743,7 @@ try {
             Require ((Get-NativeOutcome Native $result -Metadata).Status -eq 'FAIL') 'Metadata malformed result accepted'
         }
     }
-    Check 'one-time metadata authorization gate has no process or staging side effects' {
-        $calls = [Collections.Generic.List[string]]::new()
-        function Invoke-BoundedProcess { $calls.Add('process'); throw 'Unexpected process' }
-        function New-InputStage { $calls.Add('stage'); throw 'Unexpected stage' }
-        Assert-NativeExecutionAuthorization
-        Assert-NativeExecutionAuthorization -Metadata
-        Require ($calls.Count -eq 0) 'Authorization gate performed work'
-    }
-    Check 'metadata authorization withdrawal blocks public dispatch before any process or stage' {
-        function Assert-NativeExecutionAuthorization { param([switch]$Metadata); if ($Metadata) { throw 'Synthetic metadata withdrawal' } }
+    Check 'metadata draft authorization blocks public dispatch before any process or stage' {
         $calls = [Collections.Generic.List[string]]::new()
         function Invoke-BoundedProcess { $calls.Add('process'); throw 'Unexpected process' }
         function New-InputStage { $calls.Add('stage'); throw 'Unexpected stage' }

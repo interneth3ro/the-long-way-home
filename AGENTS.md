@@ -68,14 +68,14 @@
 - Stage 3A-2 adds a fixed `MetadataSmoke` recipe in draft form only. Its additional
   assertion/fixture review controls apply only to that mode; existing `Native`
   recipe-switching controls and standing authorization remain unchanged.
-  On 2026-11-03 the owner separately authorized one supervised MetadataSmoke
-  invocation after a metadata-only activation amendment based on PR #139 HEAD
-  `33ea31be2aee7f9aa07405e441d61a8b855437a7`. Require complete Python PASS
-  under 360 seconds, the exact 32-file inventory, pinned executable, fresh external
-  stage and unchanged 60/30-second metadata preparation/smoke commands and controls.
-  Stop on any failure; no retry. This is not standing authorization. Restore the
-  inactive gate afterward. No gameplay, graphical, numerical/GPU certification,
-  presenter integration, renderer change, merge or repository cleanup is covered;
+  `MetadataSmoke` is inactive and rejects dispatch before any process or stage.
+  The separately approved one-time invocation on 2026-11-03 was consumed at
+  `4f1dcaf8d565d657d354f8ba672fa6ed681fa072`: preparation passed, but the smoke
+  script failed to parse. The inactive gate was restored without fixing/retrying
+  the test. Any further metadata invocation requires new explicit owner approval.
+  No metadata import, execution, real-stage creation, or numerical certification
+  is authorized by this implementation or its inert/static checks. Separate
+  explicit owner approval and a reviewed activation amendment are required;
   see [the exact execution checklist](docs/LOCAL_TESTING.md#metadata-smoke-execution-approval-checklist).
 - Each authorized run requires actual Python static-suite PASS, unchanged reviewed
   controls, and a fresh unique copy of approved tracked working inputs under

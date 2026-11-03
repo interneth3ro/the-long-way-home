@@ -195,17 +195,20 @@ production behavior is unchanged. Preserve the approved architecture record
 unless the owner separately revises it. No merge, follow-on PR or cleanup is
 part of this task.
 
-## Stage 3A-2 fixed smoke recipe (draft, planned but unexecuted)
+## Stage 3A-2 fixed smoke recipe (draft, one-time execution failed)
 
 The feature branch adds one `MetadataSmoke` recipe to the existing supervised
 local runner. Its metadata-only review controls leave Native's recipe-switching
-behavior unchanged. On 2026-11-03 the owner separately approved a metadata-only
-activation amendment based on `33ea31be2aee7f9aa07405e441d61a8b855437a7` and
-one supervised invocation after preflight. The gate is temporarily open for that
-invocation only and must be restored inactive afterward. No execution result is
-claimed by the activation amendment; stop on failure without retry.
+behavior unchanged. One separately owner-authorized invocation ran at activation
+revision `4f1dcaf8d565d657d354f8ba672fa6ed681fa072` on 2026-11-03. The complete
+Python suite passed 350 tests in 249.088 seconds and headless preparation passed.
+The smoke command failed to parse `tests/metadata_smoke_test.gd:43` because the
+`seed` variable's type could not be inferred. Actual metadata generation and
+malformed-input rejection were NOT REACHED. No fix or retry was attempted; the
+one-time authorization is consumed and the inactive gate is restored. Any further
+execution requires renewed explicit owner authorization.
 
-The [exact staging/commands and owner execution checklist](../LOCAL_TESTING.md#fixed-metadata-smoke-extension-draft-unexecuted)
+The [exact staging/commands and owner execution checklist](../LOCAL_TESTING.md#fixed-metadata-smoke-extension-draft-one-time-execution-failed)
 freeze an asset-free 32-file dependency closure: complete production scripts/types,
 a texture-free resource, existing goldens, UID inputs, minimal project template
 and a production-authored geometry snapshot. Static drift checks compare the
@@ -222,3 +225,9 @@ contracts only. They cannot establish engine parsing or runtime parity.
 Strict-Earth, Green-center margins and numerical enclosure remain unproven;
 Stage 3B remains blocked. A later separately approved smoke PASS would be a
 runtime regression milestone, not Stage 3A-2 numerical certification.
+
+The [one-time execution record](../LOCAL_TESTING.md#one-time-metadata-execution-result-2026-11-03)
+records the exact invocation, failure, retained stage/evidence and post-run
+preservation results. Preparation PASS does not establish successful parsing or
+execution of the metadata builder. This failure adds no runtime parity,
+malformed-input, numerical or production-integration acceptance.
