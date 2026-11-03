@@ -1,9 +1,46 @@
 # Terrain Visual Fidelity 2.0 — isolated Prototype C1
 
-Status: implemented for review on `codex/terrain-c1-continuous-prototype`, pending
-Godot import, shader compilation and owner visual acceptance. **No Godot has run.**
+Status: the owner evaluated the isolated C1 Godot scene and approved continuous,
+grid-independent terrain presentation as the preferred architectural direction.
+This is not production-integration acceptance. **Codex has not run Godot.**
 Base: `fa410ed9b329ffd28a927e142d2362971d54584a`. The draft PR and final chat identify
 the exact review HEAD; a commit cannot contain its own hash.
+
+## Owner Godot Evaluation / Architectural Direction — recorded 2026-11-03
+
+Source: the owner's C1 acceptance documentation handoff, for reviewed prototype
+HEAD `1e9c4d7bb61fda3f2d818a8ee1c37c0a4e4a7868`. This records owner-reported
+evaluation; Codex did not execute Godot or independently reproduce these observations.
+The recording date does not establish the date of the owner's Godot run.
+
+| Owner-confirmed scope | Reported observation |
+| --- | --- |
+| Overall visual impression | “Oh wow it looks so much better”; “It looks phenomenal, really”; later “It really is miles better.” |
+| Movement | Smooth, with no stuttering the owner could see |
+| Available zoom levels | Tried 1.0x, 0.5x and 1.5x, with a strongly positive assessment |
+| Chunk reload controls | Tried the controls and found the experience snappy and responsive |
+
+These are qualitative observations from the isolated harness, not quantitative
+benchmarks, measured frame-rate/memory results or performance guarantees. The reload
+report does not separately identify every control or validate each lifecycle guard.
+
+**Not explicitly confirmed:** every camera preset, diagnostic view, strict-Earth
+mask, four-way junction, reverse-order reconstruction individually, readiness/fade
+gating, GPU shader parity, or production Main-to-exterior arrival. Do not mark these
+PASS from the overall positive assessment. The detailed checklist below remains
+available for separately scoped verification; its full execution is not claimed.
+
+**Owner decision:** continuous, grid-independent terrain presentation is TLWH Terrain
+Visual Fidelity 2.0's preferred direction, based on C1's positive visual and
+responsiveness results. This approves a direction, not C1 production integration,
+deletion of the old TileSet, or suitability of the fixed four-chunk harness for an
+unbounded streamed exterior. PR #131 remains draft and unmerged; PR #130 is preserved.
+
+Retain the 32-unit construction grid, Ferrite coordinate/stable-ID contracts, world
+seed and gameplay ownership, crash-site gameplay protections and chunk lifecycle
+contracts. Future integration requires separate investigation, design, explicit
+authorization and acceptance. This documentation update grants no engine execution,
+benchmarking, cleanup or implementation authority.
 
 ## Question and isolation
 
@@ -64,9 +101,10 @@ Coverage is zero at every grid node within `sqrt(2)*16 + .001` units of the stri
 union. Thus all four bilinear footprint nodes around any strictly excluded point
 remain zero. Quantization rounds coverage downward. This proof assumes ordinary
 bilinear field sampling without mips; the shader explicitly uses `filter_linear`
-and no `source_color` conversion for numerical fields. Godot filtering itself is
-untested. The conservative guard slightly enlarges visible Earth outside the strict
-union; it never changes the gameplay polygon. Normalized global field samples,
+and no `source_color` conversion for numerical fields. Filtering-specific Godot
+acceptance is not explicitly confirmed. The conservative guard slightly enlarges
+visible Earth outside the strict union; it never changes the gameplay polygon.
+Normalized global field samples,
 including every overlapping gutter node, agree across regions.
 
 The fixed fixture is modestly Green-dominant: 35,830 of 65,536 interior grid nodes
@@ -142,13 +180,14 @@ Observed offline: the recovery is continuous instead of signature-scalloped and
 there is no 64-unit color-image phase in the candidate model. Larger grass forms
 remain recognizable, and broad window blending can soften material structure or
 make earthy/green transition bands muddy. The long view is supplied to expose
-recurrence rather than assert it has been eliminated. Naturalness, filtering,
-shimmer and readability remain owner questions. The concept's flowers/boulders
+recurrence rather than assert it has been eliminated. The owner subsequently gave a
+strongly positive overall visual assessment; targeted filtering, shimmer and
+readability checks are not explicitly confirmed. The concept's flowers/boulders
 are not added as background decorations or gameplay objects.
 
 ## Checks and limits
 
-Focused checks run without Godot:
+Historical Codex implementation checks, run without Godot at the reviewed prototype:
 
 - Eight `static_terrain_c1_test.py` tests: saved field pixels; all shared field and
   phase gutters; reconstructed crossings/negative coordinates; strict exclusions
@@ -161,10 +200,12 @@ Focused checks run without Godot:
   pre-existing sidecar hash preservation checked.
 
 CPU lifecycle tests reconstruct data and inspect harness authority guards. They do
-not execute GDScript, prove runtime token handling or compile scenes/shaders. No
-Godot/editor/import/game, broad test suite, benchmark, profiler, performance probe,
-GPU rendering, driver test or actual Main arrival was run. Actual draw calls,
-frame rate, residency, arrival cost and responsiveness are unknown. Eight material
+not execute GDScript, prove runtime token handling or compile scenes/shaders. Codex
+ran no Godot/editor/import/game, broad test suite, benchmark, profiler, performance
+probe, GPU rendering, driver test or actual Main arrival. The subsequent owner run
+is scoped above. Actual draw calls, frame rate, residency and production arrival
+cost remain unmeasured; isolated movement and reload responsiveness received the
+owner's positive qualitative assessment. Eight material
 samples plus metadata/field/tint reads are a design cost, not a performance result.
 
 ```powershell
@@ -178,10 +219,12 @@ Use only a fresh task-owned output copy for regeneration; preserve reviewed file
 The tools use Python's standard library and existing TLWH PNG/label helpers, never
 their production writers. No dependency or plugin was installed.
 
-## Later owner acceptance — instructions only, not executed
+## Detailed owner checklist — full execution not explicitly confirmed
 
-Requires separate approval for the exact Godot import and graphical run. The
-standing Native recipe-switching exception does not authorize this scene.
+The owner evaluation above does not establish completion of every item below.
+These instructions are retained for future scoped verification, not a claim of
+additional PASS results. Any further Codex Godot import or graphical run requires
+separate explicit approval; the standing Native exception does not authorize C1.
 
 Open `scenes/experiments/terrain_c1/terrain_c1.tscn` for a separately authorized F6
 run; production F5 remains unchanged. B toggles baseline/candidate, T neutral/normal
@@ -238,15 +281,19 @@ Future seed persistence must distinguish field/art revisions. No disk save workf
 exists here and no save compatibility is claimed.
 
 Rollback: B selects baseline for this fixture; production startup never selects C1.
-No deletion, PR cleanup or A1 modification is needed. Owner questions: Does the
-larger grass structure read naturally at 0.5x? Is organic recovery too diffuse?
-Do windows reveal repeated forms or directional rhythm? Does normal tint preserve
-the desired palette and foreground readability? Is scoped owner Godot verification
-desired? The prototype is ready for review, not accepted for integration.
+No deletion, PR cleanup or A1 modification is needed. Overall visual quality at all
+available zoom levels received the owner's positive assessment, and continuous
+presentation is the preferred direction. Remaining targeted questions include
+repeated material forms, recovery/mask behavior, tint-specific foreground readability
+and the individually unconfirmed checks above. Integration investigation, design,
+implementation and acceptance each require their own explicit scope. The prototype
+is not accepted for production integration.
 
 ## Exact changed-file inventory
 
-24 additions; no pre-existing tracked file modified:
+Original C1 implementation: 24 additions; no pre-existing tracked file modified.
+The 2026-11-03 acceptance follow-up changes only this report; the implementation
+inventory below is unchanged:
 
 ```text
 assets/experiments/terrain_c1/fixture.json
@@ -279,5 +326,7 @@ All 15 pre-existing untracked PNG import sidecars remain untracked with unchange
 hashes. Ignored A1 intermediates and provider originals were preserved. Publication
 review found no private paths/secrets in added text; generated-source ancillary
 metadata was removed. The documentation-sync review found no production behavior
-change to reconcile in README/GAME_VISION; this requested report documents the
-isolated experiment without changing production/design status claims.
+change to reconcile in README/GAME_VISION. The acceptance follow-up records the
+owner's preferred architectural direction here without changing production status.
+Only documentation/link/diff checks were performed for that follow-up; historical
+implementation tests and asset generation were not rerun.
