@@ -10,8 +10,17 @@
   checks.
 - Do not commit Godot-generated caches or temporary test artifacts.
 - Do not introduce third-party plugins without approval.
-- Do not begin unrelated development or access or modify the previous FactoryGame
-  project. This is a fresh implementation; do not reuse its files or architecture.
+- The previous FactoryGame project is a historical reference. When an
+  owner-approved task requires it, Codex may inspect its repository, source,
+  artwork, assets and documentation in read-only mode. Historical inspection
+  does not authorize modifications to the old project or copying, importing or
+  reusing its files, code or architecture in TLWH. Any reuse or adaptation requires
+  separate explicit owner approval, provenance/licensing review as applicable,
+  and a scoped implementation plan. Prefer the current TLWH architecture; avoid
+  reintroducing legacy complexity without demonstrated benefit. Preserve
+  historical files and repository state; do not clean up, migrate or destructively
+  alter them without explicit authorization. Historical inspection grants no
+  execution authorization. Do not begin unrelated historical-project work.
 - Use feature branches and pull requests for future development; do not rewrite
   existing history or merge without authorization.
 - Preserve user-authored artwork, saves, settings, and other project data.
