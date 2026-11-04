@@ -1,15 +1,60 @@
 class_name MachineVisual
 extends Node2D
 
-# Provisional, shared by deployed machines and the neutral placement ghost.
-var definition: MachineDefinition
-var turns: int = 0
+# Shared adapter for deployed machines and the neutral placement ghost.
+const EXTRACTOR_SCENE := preload("res://construction/extractor_visual.tscn")
+
+var definition: MachineDefinition:
+	set(value):
+		if definition == value:
+			return
+		definition = value
+		_refresh_presentation()
+var turns: int = 0:
+	set(value):
+		var direction := posmod(value, 4)
+		if turns == direction:
+			return
+		turns = direction
+		_refresh_presentation()
+# Set before entering the tree. Only the active tool uses ghost compositing.
+var is_ghost: bool = false
+var _extractor: ExtractorVisual
+var _art_container: Node2D
 var show_status: bool = false
 var status: PlanetWorldState.OperatingStatus = PlanetWorldState.OperatingStatus.INACTIVE
 
 
+func _ready() -> void:
+	_refresh_presentation()
+
+
+func _refresh_presentation() -> void:
+	if not is_node_ready():
+		return
+	var illustrated := definition != null and definition.item_id == &"extractor"
+	# CanvasGroup.self_modulate fades the completed composite, not its layers.
+	modulate = Color.WHITE if illustrated or not is_ghost else Color(1, 1, 1, 0.5)
+	if illustrated:
+		if _extractor == null:
+			if is_ghost:
+				var group := CanvasGroup.new()
+				group.self_modulate = Color(1, 1, 1, 0.5)
+				_art_container = group
+			else:
+				_art_container = Node2D.new()
+			add_child(_art_container)
+			_extractor = EXTRACTOR_SCENE.instantiate() as ExtractorVisual
+			_art_container.add_child(_extractor)
+		_art_container.show()
+		_extractor.configure(turns)
+	elif _art_container != null:
+		_art_container.hide()
+	queue_redraw()
+
+
 func _draw() -> void:
-	if definition == null:
+	if definition == null or definition.item_id == &"extractor":
 		return
 	var size := Vector2(definition.footprint_cells) * WorldCoordinates.CONSTRUCTION_SIZE
 	var origin := definition.rotated_point(Vector2.ZERO, turns)
@@ -18,8 +63,6 @@ func _draw() -> void:
 		_draw_smelter(size)
 	elif definition.item_id == &"fabricator":
 		_draw_fabricator(size)
-	else:
-		_draw_extractor(size)
 	if show_status:
 		var color := Color(0.55, 0.58, 0.59)
 		if status == PlanetWorldState.OperatingStatus.PRODUCING:
@@ -42,17 +85,6 @@ func _draw_smelter(size: Vector2) -> void:
 	draw_line(Vector2(23, 33), Vector2(size.x - 23, 33), Color(0.34, 0.38, 0.40), 2.0)
 	for x in [11.0, size.x - 11.0]:
 		draw_line(Vector2(x, 16), Vector2(x, size.y - 20), Color(0.66, 0.69, 0.70), 3.0)
-
-
-func _draw_extractor(size: Vector2) -> void:
-	draw_rect(Rect2(Vector2(4, 4), size - Vector2(8, 8)), Color(0.20, 0.25, 0.28))
-	draw_rect(Rect2(Vector2(8, 8), size - Vector2(16, 16)), Color(0.53, 0.58, 0.60))
-	draw_circle(size * 0.5, 16.0, Color(0.26, 0.31, 0.34))
-	draw_circle(size * 0.5, 9.0, Color(0.62, 0.66, 0.67))
-	# The north-facing arm makes every quarter turn readable, even on a square.
-	draw_rect(Rect2(Vector2(size.x * 0.5 - 5, 2), Vector2(10, 23)), Color(0.73, 0.63, 0.39))
-	draw_line(Vector2(12, size.y - 12), Vector2(size.x - 12, size.y - 12),
-		Color(0.12, 0.15, 0.17), 4.0)
 
 
 func _draw_fabricator(size: Vector2) -> void:

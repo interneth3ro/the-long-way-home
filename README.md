@@ -1,10 +1,16 @@
 # The Long Way Home
 
-Extractor footprint alignment is implemented on `codex/extractor-footprint-128`,
-pending owner F5 acceptance and merge: 4x4 construction cells (128x128 world
+Static directional Extractor artwork is implemented on
+`codex/extractor-static-artwork`, pending owner F5 acceptance and merge. Deployed
+and ghost Extractors share the 12 frozen directional PNGs with a raised,
+stationary barrel. See [provenance, validation limits and owner checklist](docs/EXTRACTOR_STATIC_ARTWORK.md).
+Godot import, runtime and graphical checks have not been performed for this work.
+
+Extractor footprint alignment merged in PR #153;
+owner F5 acceptance remains pending: 4x4 construction cells (128x128 world
 units), with centered extraction point (64,64), on the unchanged 32-unit grid.
 Production, recovery and center-based interaction ranges remain unchanged.
-Directional artwork is not integrated. See the
+Directional artwork was outside that footprint-only milestone. See the
 [scope, validation limits and owner checklist](docs/GAME_VISION.md#extractor-128x128-footprint-alignment-feature-branch-pending-merge).
 
 Computer restoration is prepared on `codex/computer-restoration`, **pending owner

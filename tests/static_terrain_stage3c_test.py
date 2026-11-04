@@ -46,6 +46,13 @@ class Stage3CTest(unittest.TestCase):
         self.assertEqual(len(inputs),plan['input_count'])
         self.assertEqual(sum(e['bytes'] for e in inputs.values()),plan['source_bytes'])
         historical_inputs = ('scenes/world/planet_exterior.gd', 'scenes/player/dave.tscn',
+                             # Static Extractor PR A replaces presentation only;
+                             # keep this consumed plan pinned to its original art.
+                             # Current art/gameplay contracts have separate guards.
+                             'construction/machine_visual.gd',
+                             # Merged PR #153 changed the Extractor footprint.
+                             # Its resource is protected by current baseline tests.
+                             'inventory/extractor.tres',
                              # PR #152 warning fixes preserve executable behavior;
                              # validate current presenter changes separately below.
                              'scenes/world/continuous_terrain_presenter.gd',

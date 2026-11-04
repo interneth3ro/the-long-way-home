@@ -37,7 +37,7 @@ var _requested_id: int = 0
 func _ready() -> void:
 	z_index = 10
 	_ghost = MachineVisual.new()
-	_ghost.modulate = Color(1, 1, 1, 0.5)
+	_ghost.is_ghost = true
 	_ghost.hide()
 	add_child(_ghost)
 	transitions.transition_started.connect(cancel)
