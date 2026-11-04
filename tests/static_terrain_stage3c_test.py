@@ -48,9 +48,9 @@ class Stage3CTest(unittest.TestCase):
         for path,entry in inputs.items():
             # The consumed Stage 3C plan stays sealed to its merged source.
             raw = (subprocess.check_output(['git','show','e5db8040d38bfd6b1ddb584d636af01052806b7c:'+path],cwd=ROOT)
-                   if path == 'scenes/world/planet_exterior.gd'
+                   if path in ('scenes/world/planet_exterior.gd', 'scenes/player/dave.tscn')
                    else (ROOT/path).read_bytes())
-            if path == 'scenes/world/planet_exterior.gd':
+            if path in ('scenes/world/planet_exterior.gd', 'scenes/player/dave.tscn'):
                 # Historical manifest pins the approved CRLF serialization.
                 raw = raw.replace(b'\r\n', b'\n').replace(b'\n', b'\r\n')
             self.assertEqual((len(raw),hashlib.sha256(raw).hexdigest()),(entry['bytes'],entry['sha256']),path)

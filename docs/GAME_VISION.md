@@ -41,7 +41,12 @@ Earlier milestone descriptions retain their historical scope and launch expectat
 - Owner-approved Dave exception: use the legacy helmeted pixel-art walking and
   idle sheets consistently across four directions. This does not change the
   broader environment direction or import legacy gameplay. Implementation is
-  merged in PR #25; runtime acceptance remains with the owner.
+  merged in PR #25. The owner-approved supplied-atlas rework retains the existing
+  AnimationPlayer, four-direction controls and physics, initially matching current
+  visual size with conservative transparency cleanup and shared foot registration.
+  Its six-frame idle/walk timing starts at 5/10 FPS. Implementation is on a feature
+  branch pending owner F5 acceptance and merge; legacy art remains preserved.
+  See the [integration and acceptance notes](../README.md#dave-supplied-atlas-rework-feature-branch-pending-acceptance-and-merge).
 
 ## Approved primary interior V2 visual comparison
 
