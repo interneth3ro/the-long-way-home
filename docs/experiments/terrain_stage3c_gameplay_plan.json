@@ -1,0 +1,1779 @@
+{
+  "status": "INACTIVE: separate explicit owner approval and reviewed activation amendment required",
+  "base_commit": "de09eeee2c07036ac50471bde12a716e173e3366",
+  "source_commit": "final Stage 3C commit named in owner approval",
+  "inputs": [
+    {
+      "path": "assets/audio/exterior_hatch/hatch_close.wav",
+      "bytes": 33644,
+      "sha256": "17dee920be23e8d96848124ee8a3fbab4e9b3bca6895d929df840e35ae450b6f"
+    },
+    {
+      "path": "assets/audio/exterior_hatch/hatch_close.wav.import",
+      "bytes": 519,
+      "sha256": "281d9eaa6576adab553dc685ecb915e000f7655422fe508667817d9dd333d35d"
+    },
+    {
+      "path": "assets/audio/exterior_hatch/hatch_open.wav",
+      "bytes": 28844,
+      "sha256": "20fe5cda88b672702f869921ad93a4c55f0906851b39142244a712ad13f13ea2"
+    },
+    {
+      "path": "assets/audio/exterior_hatch/hatch_open.wav.import",
+      "bytes": 516,
+      "sha256": "7140fe0738790d51f1a999e9d6b1c3e89ed457f715ace451faaff2b079838d97"
+    },
+    {
+      "path": "assets/characters/dave/character_idle.png",
+      "bytes": 7884,
+      "sha256": "8cd4187072d894391d03165b798c3d6d90368624eb0256a0d11e1e0af369f21e"
+    },
+    {
+      "path": "assets/characters/dave/character_idle.png.import",
+      "bytes": 968,
+      "sha256": "f297f232d7faab849585c2db97257a32eeb8a4db84311b678ae5907263672e90"
+    },
+    {
+      "path": "assets/characters/dave/character_walk.png",
+      "bytes": 10177,
+      "sha256": "425b952b6168fd6e3d6291d71d5b3f16e3c54911074e18f1963de65a4b8b5ccf"
+    },
+    {
+      "path": "assets/characters/dave/character_walk.png.import",
+      "bytes": 968,
+      "sha256": "e27b77a43ee5d0a5294aeaf71809406b9c491fd170c85868176d25289ca99dec"
+    },
+    {
+      "path": "assets/characters/dave/dave_idle_angled_overhead_pilot.png",
+      "bytes": 1600130,
+      "sha256": "bb1900160a12df194d817d5a8db815d8abca5dd4e0dc5a68a6d009d74c292cc0"
+    },
+    {
+      "path": "assets/characters/dave/dave_idle_angled_overhead_pilot.png.import",
+      "bytes": 1020,
+      "sha256": "f51d642ebefb7fac18d64f776b6e248998c486ee2b57fdefca0a9ee4991cba94"
+    },
+    {
+      "path": "assets/characters/dave/dave_idle_north.png",
+      "bytes": 741668,
+      "sha256": "df2c97edcd7fcc38929b025ffb3a7c753647b086978df8c3db7b23112fc69e53"
+    },
+    {
+      "path": "assets/characters/dave/dave_idle_north.png.import",
+      "bytes": 970,
+      "sha256": "d8598c024d642aac132a06f0cd8f770d2bc3db3e8a589f364d5dfec0a240f96d"
+    },
+    {
+      "path": "assets/characters/dave/dave_idle_south.png",
+      "bytes": 846466,
+      "sha256": "07f8353a3c225c4b547df055cd7e1d1620cdce9f5529eb4b24f399c3a733b99d"
+    },
+    {
+      "path": "assets/characters/dave/dave_idle_south.png.import",
+      "bytes": 970,
+      "sha256": "3c9d36e0656831b62a7ab2aea673597f3e1646af3ec100bd36b80cc5f46aaf5e"
+    },
+    {
+      "path": "assets/characters/dave/dave_static_approved_v2.png",
+      "bytes": 1627109,
+      "sha256": "1a80f0cff3a10ace6d0f4935dffd34069f08bdc9383898ed5c39b641f580c858"
+    },
+    {
+      "path": "assets/characters/dave/dave_static_approved_v2.png.import",
+      "bytes": 996,
+      "sha256": "dd5e548043fedbdfa931934bdd9c01f689fd85b9dce6e16cb69b23b910771dcc"
+    },
+    {
+      "path": "assets/characters/dave/dave_walk_north.png",
+      "bytes": 1134315,
+      "sha256": "17d8b3d999450e820ce368a905fbcdd548de62d7894197077430a75bf0aee39c"
+    },
+    {
+      "path": "assets/characters/dave/dave_walk_north.png.import",
+      "bytes": 970,
+      "sha256": "0c49f20c27c1277c17f8c5bd69dfcafc1c07fc01fa7ca8416d5a7a31dd7fda3d"
+    },
+    {
+      "path": "assets/characters/dave/dave_walk_north_atlas.png",
+      "bytes": 1188722,
+      "sha256": "48926c31befdcfa59c31299080ad9a92920c40ff0da06bd9fc96a2bd54098cee"
+    },
+    {
+      "path": "assets/characters/dave/dave_walk_north_atlas.png.import",
+      "bytes": 989,
+      "sha256": "e59bcac07d2524fa79edb257c19d64abaa01d1d3c17fbcaf6bd2281cb9904214"
+    },
+    {
+      "path": "assets/characters/dave/dave_walk_south_atlas.png",
+      "bytes": 1584125,
+      "sha256": "f525e335fc9af940eb6a03b914986708ed97438e066c335f00f9bca68ee4bde7"
+    },
+    {
+      "path": "assets/characters/dave/dave_walk_south_atlas.png.import",
+      "bytes": 989,
+      "sha256": "22a94672b67f47903aec44958d0d2c025bfb44914a510bc2dd71e0548551cbd5"
+    },
+    {
+      "path": "assets/characters/dave/dave_walking.png",
+      "bytes": 1549897,
+      "sha256": "02c9d474a90e7a6bd1f88bb2a954e88afb3df50c408f88dc1476596dcbf1a7a7"
+    },
+    {
+      "path": "assets/characters/dave/dave_walking.png.import",
+      "bytes": 961,
+      "sha256": "376cff1c14a125151d72f70ad760d22fd511ca114992fd3aceae48878c3be407"
+    },
+    {
+      "path": "assets/dialogue/portraits/computer_dialogue_portrait.png",
+      "bytes": 611060,
+      "sha256": "fa16376edbb9003970f23a91017f8020b61c05146f193dfa248c7b019a100e72"
+    },
+    {
+      "path": "assets/dialogue/portraits/computer_dialogue_portrait.png.import",
+      "bytes": 1007,
+      "sha256": "7c4afb1117efe6f87e5a3dc3ab4d52b02b1cd4efd1a7b5c50aa13028ef3bf508"
+    },
+    {
+      "path": "assets/dialogue/portraits/dave_dialogue_portrait.png",
+      "bytes": 702790,
+      "sha256": "0233cabd720b47de79d57634e3796f9740e7ad2da185d0761c27e6608c12b6bc"
+    },
+    {
+      "path": "assets/dialogue/portraits/dave_dialogue_portrait.png.import",
+      "bytes": 995,
+      "sha256": "1e2caade37415df4c847b7b052873c9bb1a236bb8bd8bac78e26b8cf7a63bd18"
+    },
+    {
+      "path": "assets/dialogue/portraits/marvin_dialogue_portrait.png",
+      "bytes": 566357,
+      "sha256": "76e4ae9627a51bdd054bddfa17a4dc5cf1474be41b08d9bc33447570e4b4eb63"
+    },
+    {
+      "path": "assets/dialogue/portraits/marvin_dialogue_portrait.png.import",
+      "bytes": 1001,
+      "sha256": "52936f2e0aa04be7cf775ac1feb91422694c47d84c071cdfb36f9c53a035c22e"
+    },
+    {
+      "path": "assets/environment/computer/computer_damaged_pilot.png",
+      "bytes": 1123687,
+      "sha256": "e72de0b79eee5495d7b22911f005709825331fed10f242d1b5172e377f48c2e8"
+    },
+    {
+      "path": "assets/environment/computer/computer_damaged_pilot.png.import",
+      "bytes": 998,
+      "sha256": "a27b23589a9614dba4168f1004187798cd1ba9cfe9d8098af81a2218b1fa51bf"
+    },
+    {
+      "path": "assets/environment/computer/computer_repaired_pilot.png",
+      "bytes": 1077884,
+      "sha256": "d82c20ce1ae1c4be4fe034b9d26d4f036170eaaf561c7613112a430fca2365d9"
+    },
+    {
+      "path": "assets/environment/computer/computer_repaired_pilot.png.import",
+      "bytes": 1000,
+      "sha256": "8709e73ad6181171bfb0a45569d662eb30e8e3f9ec652dc6882fa430818d3fa4"
+    },
+    {
+      "path": "assets/environment/exterior/01_weathered_earth_four_variants_v2.png",
+      "bytes": 3062475,
+      "sha256": "458e948d00b274f13bb6a35921b84f9f29cd469c030cd83d673ff0dc6b4a4b48"
+    },
+    {
+      "path": "assets/environment/exterior/01_weathered_earth_four_variants_v2.png.import",
+      "bytes": 1037,
+      "sha256": "bce81a48407aff548ccf948465a21f25c8bb21fc9faf57ff77f15fbcc01cb12c"
+    },
+    {
+      "path": "assets/environment/exterior/02_refined_crash_site_terrain_direction.png",
+      "bytes": 2972995,
+      "sha256": "f6c25ef1368b9ee89a6217136a624b4c564745ca99bd35467af09cdc30be2c4a"
+    },
+    {
+      "path": "assets/environment/exterior/02_refined_crash_site_terrain_direction.png.import",
+      "bytes": 1049,
+      "sha256": "55dbcfc5de77cf9464444f0ce910df288024dab1c479d505f58598ded02351ca"
+    },
+    {
+      "path": "assets/environment/exterior/approved_green_ground_study.png",
+      "bytes": 4288539,
+      "sha256": "8709b1f0016c109299c17648f23589864f435071bf1bc3153e8b77913b4e75f7"
+    },
+    {
+      "path": "assets/environment/exterior/crashed_exploration_ship_approved.png",
+      "bytes": 2164844,
+      "sha256": "80ae633c36242c1effdcebea38dc05cfef8eb586ca9ef3103f6b02be91564e5b"
+    },
+    {
+      "path": "assets/environment/exterior/crashed_exploration_ship_approved.png.import",
+      "bytes": 1031,
+      "sha256": "c2a7df3f399d83c28000dcfc2cb8d9c6c3599e90ebc06ca913bbdc21ff0b6582"
+    },
+    {
+      "path": "assets/environment/exterior/crashed_ship_contact_shadow_prototype.png",
+      "bytes": 129139,
+      "sha256": "1cd8111595e11d8beb527f538188f38f8517f1d3365633c013b9a137ca601777"
+    },
+    {
+      "path": "assets/environment/exterior/crashed_ship_contact_shadow_prototype.png.import",
+      "bytes": 1043,
+      "sha256": "4471ec01c612cc894a6d474d5841bd726bbd6bc2a7684a504ad2e32caa7f27d9"
+    },
+    {
+      "path": "assets/environment/exterior/ferrite/catalog_v1/catalog.json",
+      "bytes": 12492,
+      "sha256": "606e44b0401c279ac604b3984daa6b23c58cb8ea228ad8edcbeb150db8b71d9b"
+    },
+    {
+      "path": "assets/environment/exterior/ferrite/catalog_v1/ferrite_v1_large_basin.png",
+      "bytes": 2130080,
+      "sha256": "45fd51594c256c7118b048bd7ea3e0cbfd68e7f0cc4dc56007c1a77bf86fa1ff"
+    },
+    {
+      "path": "assets/environment/exterior/ferrite/catalog_v1/ferrite_v1_large_elbow.png",
+      "bytes": 1941975,
+      "sha256": "aacfe7cc6c97636142adc0aca505d3fafbcacd5f38f2fd41a0751a110d4f5dba"
+    },
+    {
+      "path": "assets/environment/exterior/ferrite/catalog_v1/ferrite_v1_large_sprawl.png",
+      "bytes": 2628521,
+      "sha256": "d3b28df18ccd7e4c8f565d5008f5c2f17ddfc56f05047f7b6722944cf11fec81"
+    },
+    {
+      "path": "assets/environment/exterior/ferrite/catalog_v1/ferrite_v1_large_stair.png",
+      "bytes": 2062541,
+      "sha256": "2f0ed7d9d567b0c4b162c8510a16cb105398eb015e0b042a94afab2f37eacc99"
+    },
+    {
+      "path": "assets/environment/exterior/ferrite/catalog_v1/ferrite_v1_medium_crown.png",
+      "bytes": 1288344,
+      "sha256": "539bbe88db4237abaf69bd86826ddcd59d7255dd595dfc89e56e8f04c6edbb3f"
+    },
+    {
+      "path": "assets/environment/exterior/ferrite/catalog_v1/ferrite_v1_medium_elbow.png",
+      "bytes": 1053345,
+      "sha256": "46333fbfba68707ab15a67c37a267ca1dce8a9f1d00ab66d67a6151da2a0ce42"
+    },
+    {
+      "path": "assets/environment/exterior/ferrite/catalog_v1/ferrite_v1_medium_offset.png",
+      "bytes": 873074,
+      "sha256": "60a0ac7f0b3870b4f63aaa32f5c312f86694438b456060d2fed50f6f29077827"
+    },
+    {
+      "path": "assets/environment/exterior/ferrite/catalog_v1/ferrite_v1_medium_slab.png",
+      "bytes": 1291131,
+      "sha256": "2d7dcb449df8cc50d90e007c490a04e6347d0b2b24aaa38fe2026862ef9de0db"
+    },
+    {
+      "path": "assets/environment/exterior/ferrite/catalog_v1/ferrite_v1_medium_terraces.png",
+      "bytes": 1489723,
+      "sha256": "f89a93bf070a9a52eb33c255b423864c9c4ab37677acfd897fb0f95d8e48b8de"
+    },
+    {
+      "path": "assets/environment/exterior/ferrite/catalog_v1/ferrite_v1_small_table.png",
+      "bytes": 484896,
+      "sha256": "8764dc820847c86ec5862b85f0c0b0aca0c9b35a09f60e8660ed926014e3c5b8"
+    },
+    {
+      "path": "assets/environment/exterior/ferrite/catalog_v1/masks/ferrite_v1_large_basin.txt",
+      "bytes": 96,
+      "sha256": "9bf18fa312c6003208666e3d48326e5d979f9ac600bc1a9715cdf0e45e2e377e"
+    },
+    {
+      "path": "assets/environment/exterior/ferrite/catalog_v1/masks/ferrite_v1_large_elbow.txt",
+      "bytes": 84,
+      "sha256": "f661f057e325038691db1a2822b1ea0fd8c6f7733bd74cc6063d9f0c826303a0"
+    },
+    {
+      "path": "assets/environment/exterior/ferrite/catalog_v1/masks/ferrite_v1_large_sprawl.txt",
+      "bytes": 112,
+      "sha256": "9f13cf7ec45b4cf2b6ec311e265d79b9575c1bdfc6280e6e9a09034caf903d4b"
+    },
+    {
+      "path": "assets/environment/exterior/ferrite/catalog_v1/masks/ferrite_v1_large_stair.txt",
+      "bytes": 91,
+      "sha256": "d297082f69cad0646c70a8b7c17fa5415702b42ca0d74aec374ea17b7ffd77a3"
+    },
+    {
+      "path": "assets/environment/exterior/ferrite/catalog_v1/masks/ferrite_v1_medium_crown.txt",
+      "bytes": 54,
+      "sha256": "843860a12ab4c08a593ce58a6397cfa96e2034e4fd24719de9bf99c2111bafdd"
+    },
+    {
+      "path": "assets/environment/exterior/ferrite/catalog_v1/masks/ferrite_v1_medium_elbow.txt",
+      "bytes": 45,
+      "sha256": "be5c29a65c770a39fd4350222fadc7601b1e19e61187a8a83d476cbdea1d607f"
+    },
+    {
+      "path": "assets/environment/exterior/ferrite/catalog_v1/masks/ferrite_v1_medium_offset.txt",
+      "bytes": 40,
+      "sha256": "0bf9504e3d1495c18b6eb9e46e79241afd74c8af633fc9bbd8ff1389fbb5d0da"
+    },
+    {
+      "path": "assets/environment/exterior/ferrite/catalog_v1/masks/ferrite_v1_medium_slab.txt",
+      "bytes": 45,
+      "sha256": "754c4dadabf5cff322537e529a5daa90a1da64c0195e987a6a24e292e64dafb3"
+    },
+    {
+      "path": "assets/environment/exterior/ferrite/catalog_v1/masks/ferrite_v1_medium_terraces.txt",
+      "bytes": 60,
+      "sha256": "51f4e5883c9c1b117397a7a069f5a568bc2f4316c1c34c652f2ee5c814aceb90"
+    },
+    {
+      "path": "assets/environment/exterior/ferrite/catalog_v1/masks/ferrite_v1_small_table.txt",
+      "bytes": 18,
+      "sha256": "b325f6eabc45a1dc777309dc8a8796f470ae788214ee22789a7f0ba75f9cedfd"
+    },
+    {
+      "path": "assets/environment/exterior/ferrite/catalog_v1/shapes.json",
+      "bytes": 1523,
+      "sha256": "ed0bbe9a36fc8a5753f2e5a2e77e0d9f931151e76fa4c54bddccef44b82123be"
+    },
+    {
+      "path": "assets/environment/exterior/ferrite/faceted_ferrite_10x6.png",
+      "bytes": 2243143,
+      "sha256": "82442d7e11eaf4483202ff22b22060efa4c2f638e66f30694d8b527dd1961c75"
+    },
+    {
+      "path": "assets/environment/exterior/ground_refined_v1/baseline_94.png",
+      "bytes": 352958,
+      "sha256": "36595f982ecadffc75ea2f7ca3498e6d44cbf9f3a7fe298f28268730161056e0"
+    },
+    {
+      "path": "assets/environment/exterior/ground_refined_v1/interiors_bc.png",
+      "bytes": 7717,
+      "sha256": "d8c76f080226c93229be7b3947983776543d14f454a475d69700af3f7849c694"
+    },
+    {
+      "path": "assets/environment/exterior/ground_refined_v1/terrain.tres",
+      "bytes": 42732,
+      "sha256": "08cee58e73c977fb97f2b0e068aff5484c2c038477224038da01edb4a5c0dd5a"
+    },
+    {
+      "path": "assets/environment/exterior/hatch_v2/door_leaf_opaque_v2.png",
+      "bytes": 34272,
+      "sha256": "7cccb9390beff971abd9e0f1c74455a35cf5b4cd05844f37887542ccea067e10"
+    },
+    {
+      "path": "assets/environment/exterior/hatch_v2/door_leaf_opaque_v2.png.import",
+      "bytes": 998,
+      "sha256": "b901493fb78f1af59023e9cb6c175f5d1bf91f6c7bc1ac880083690b57e0c6ec"
+    },
+    {
+      "path": "assets/environment/exterior/hatch_v2/recess_backing_black_light.png",
+      "bytes": 9806,
+      "sha256": "80aa066edd98fae9eb5392ee79bb061bd82c80d48dc41e854e7c31141a3872c6"
+    },
+    {
+      "path": "assets/environment/exterior/hatch_v2/recess_backing_black_light.png.import",
+      "bytes": 1019,
+      "sha256": "56eb25207fdd81f9bc46f351950b9164f2ca3a0e2fb36abeaeb54a53e95ef232"
+    },
+    {
+      "path": "assets/environment/exterior/low_green_ground_cover_provisional/a_balanced_cover.png",
+      "bytes": 39289,
+      "sha256": "85043ba1079be6fa1577312bcd2d0884b66efa5f0b7592bd7ccaeb96baae978d"
+    },
+    {
+      "path": "assets/environment/exterior/low_green_ground_cover_provisional/a_balanced_cover.png.import",
+      "bytes": 1015,
+      "sha256": "d378695d7a02091bc5838bee4f011a03e1c8a92de23c04dd4976adcb07cba9da"
+    },
+    {
+      "path": "assets/environment/exterior/low_green_ground_cover_provisional/b_moss_dominant.png",
+      "bytes": 38576,
+      "sha256": "38048cb8d8ca542df4a7f247b4a0c917e306d7b9c949a3d08ed3b3ef26f31ad3"
+    },
+    {
+      "path": "assets/environment/exterior/low_green_ground_cover_provisional/b_moss_dominant.png.import",
+      "bytes": 1012,
+      "sha256": "62659b9f9c3e09c108c11f7fe1b29ab5fd9c7672da7bb71132177cdb53dd2f84"
+    },
+    {
+      "path": "assets/environment/exterior/low_green_ground_cover_provisional/c_exposed_earth.png",
+      "bytes": 38865,
+      "sha256": "f5f81c6fcf6a906d96f6e8b7dfe9bdfad65deb83d327bcb2368f30c30032db5a"
+    },
+    {
+      "path": "assets/environment/exterior/low_green_ground_cover_provisional/c_exposed_earth.png.import",
+      "bytes": 1011,
+      "sha256": "0543bd11552f80f12bec43f75e49f87461d32bf523947b2c3415f1ba46f22c6f"
+    },
+    {
+      "path": "assets/environment/exterior/low_green_ground_cover_provisional/d_fine_grass.png",
+      "bytes": 38412,
+      "sha256": "dd50462374578046c3f6822f4e8f02d85f6d7e571dfee9a06fe43e0c7c090009"
+    },
+    {
+      "path": "assets/environment/exterior/low_green_ground_cover_provisional/d_fine_grass.png.import",
+      "bytes": 1003,
+      "sha256": "4cde675649f61d9f6337b0957f4c9a48c0c198eaca659af2ea47ee1744ef19f4"
+    },
+    {
+      "path": "assets/environment/exterior/low_green_mixed_8x6_reference.png",
+      "bytes": 858766,
+      "sha256": "139959d35a84be54ff522a52dd52f5ec12a3a265239bf46cdea483089e84a46b"
+    },
+    {
+      "path": "assets/environment/exterior/weathered_earth_provisional/a_base_soil.png",
+      "bytes": 8625,
+      "sha256": "1333e2fe5126193a8f283a2f4517f00dc6480f4ac579e91e4b88fb98c20d5042"
+    },
+    {
+      "path": "assets/environment/exterior/weathered_earth_provisional/a_base_soil.png.import",
+      "bytes": 993,
+      "sha256": "ca8756212cd260f37abfd8f57c150a4f29b532ba0dff22b821e20c4e1118c3e8"
+    },
+    {
+      "path": "assets/environment/exterior/weathered_earth_provisional/b_compacted_soil.png",
+      "bytes": 8705,
+      "sha256": "49b569da91c1caf3f7f62c7d3e70e206aeaeeaa38b4bb63d428ed66e97a2bf3f"
+    },
+    {
+      "path": "assets/environment/exterior/weathered_earth_provisional/b_compacted_soil.png.import",
+      "bytes": 1008,
+      "sha256": "05b75822e65c56e6bb8db2a0b1990114840b94ed740c455f9c348af126f607c1"
+    },
+    {
+      "path": "assets/environment/exterior/weathered_earth_provisional/c_dusty_patches.png",
+      "bytes": 8913,
+      "sha256": "dcb4e176f29f778abe6e1d193a578d3e8f971252da68317c4e5f6b848c1c2b51"
+    },
+    {
+      "path": "assets/environment/exterior/weathered_earth_provisional/c_dusty_patches.png.import",
+      "bytes": 1003,
+      "sha256": "491f6ccf5dd2c0e53bd54602a32b3c608954a82f10777ec29273d8860e91038f"
+    },
+    {
+      "path": "assets/environment/exterior/weathered_earth_provisional/d_subtle_gravel.png",
+      "bytes": 9806,
+      "sha256": "4db46c882bde7ee6377fe0648d9a6ca44c9ab5b163ba0a9c6c5758f9282c08c7"
+    },
+    {
+      "path": "assets/environment/exterior/weathered_earth_provisional/d_subtle_gravel.png.import",
+      "bytes": 1004,
+      "sha256": "152054982ae3965eb46de48b1a693775ad2996001fe8a5abc8a47d8328109594"
+    },
+    {
+      "path": "assets/environment/maintenance_bay_v2/machines/extractor_stationary.png",
+      "bytes": 2031103,
+      "sha256": "1640723731cb25a224ac797b1c0b5006ea82895507bba39e41e61f62e5abc9bb"
+    },
+    {
+      "path": "assets/environment/maintenance_bay_v2/machines/extractor_stationary.png.import",
+      "bytes": 1010,
+      "sha256": "0ff7f4f219cafef7aba8a63a801838fcfdb1a6ffa12765fcb806c4c8b414d6d1"
+    },
+    {
+      "path": "assets/environment/maintenance_bay_v2/machines/fabricator_stationary.png",
+      "bytes": 2305339,
+      "sha256": "b8639413684ed4ea90068ef9a330087dd4c48b696633b9f5f4a7040262e7ce12"
+    },
+    {
+      "path": "assets/environment/maintenance_bay_v2/machines/fabricator_stationary.png.import",
+      "bytes": 1013,
+      "sha256": "e76f75e09b9dc98dc7348f321b7f0bc2665da73c45588e8e76c2dacfcc16f4f8"
+    },
+    {
+      "path": "assets/environment/maintenance_bay_v2/machines/smelter_stationary.png",
+      "bytes": 2330735,
+      "sha256": "bf11742f8ca6fecc08ddf4a7a4b18b5a3fce1a57d4508524359dcd6d73a0f54d"
+    },
+    {
+      "path": "assets/environment/maintenance_bay_v2/machines/smelter_stationary.png.import",
+      "bytes": 1004,
+      "sha256": "56281b1985e2f862b229695b7a713780419ca32d2f7550239065c1b07cc0d225"
+    },
+    {
+      "path": "assets/environment/maintenance_bay_v2/maintenance_bay_v2_machine_free_background.png",
+      "bytes": 2746695,
+      "sha256": "968d4deca9e8df72bd5abb205a018d11a866b902de0ac0c1440750caa5ef99e1"
+    },
+    {
+      "path": "assets/environment/maintenance_bay_v2/maintenance_bay_v2_machine_free_background.png.import",
+      "bytes": 1069,
+      "sha256": "5b8ec4e61003730f3bd4e701a53dbd304275365aad4cc1112100a7b4aca386c8"
+    },
+    {
+      "path": "assets/environment/maintenance_bay_v2/manifest.json",
+      "bytes": 1529,
+      "sha256": "ef72c754d013abe84af42bb2a52cafe22b4d48fb95ed2caf96ebcec5e026ddec"
+    },
+    {
+      "path": "assets/environment/ship_interior_v2/approved_initial_composite_REFERENCE.png",
+      "bytes": 2288776,
+      "sha256": "c92c2d07645800b43d4db59421c1a3ed75e59e5058c6f2d65f4b60abd71a52b1"
+    },
+    {
+      "path": "assets/environment/ship_interior_v2/approved_initial_composite_REFERENCE.png.import",
+      "bytes": 1047,
+      "sha256": "2f08834b70410af60d70d260e44e0d1692215a86180f70948bc4a0911e4db5d3"
+    },
+    {
+      "path": "assets/environment/ship_interior_v2/computer_damaged_overlay.png",
+      "bytes": 7008,
+      "sha256": "0b47906ccb6bc8e935265b5194375fe8c4f6a8647a0b2f0f52c7c1d7dadd6ffe"
+    },
+    {
+      "path": "assets/environment/ship_interior_v2/computer_damaged_overlay.png.import",
+      "bytes": 1011,
+      "sha256": "972c4b29a8e4113629859d14b6d6c5421e5f1288f8bb7466deda88d8008cb2e7"
+    },
+    {
+      "path": "assets/environment/ship_interior_v2/computer_repaired_overlay.png",
+      "bytes": 7023,
+      "sha256": "58b59712d47900f5c38c60d7f2ad4e5d1e773de557b4fbf21931ca8e679db526"
+    },
+    {
+      "path": "assets/environment/ship_interior_v2/computer_repaired_overlay.png.import",
+      "bytes": 1014,
+      "sha256": "c914593296c4e5136d0f7ee700ed707b8a518a278d6953b8919e4183a8dc011f"
+    },
+    {
+      "path": "assets/environment/ship_interior_v2/exterior_closed_overlay.png",
+      "bytes": 6177,
+      "sha256": "64085d665f67f408b0cd67f69bebaa5a814b79eeed296c3d952e62988d7a440f"
+    },
+    {
+      "path": "assets/environment/ship_interior_v2/exterior_closed_overlay.png.import",
+      "bytes": 1008,
+      "sha256": "c4c6df74b179ea2a0c479236275d3daf886951d5d1e08aca7c48a386979a338b"
+    },
+    {
+      "path": "assets/environment/ship_interior_v2/exterior_open_overlay_DEFERRED.png",
+      "bytes": 6714,
+      "sha256": "66d405f38c605155c7393328524d186a9e028a06075cdf85bbce1f13f4f353e1"
+    },
+    {
+      "path": "assets/environment/ship_interior_v2/exterior_open_overlay_DEFERRED.png.import",
+      "bytes": 1029,
+      "sha256": "364e79598e205fb3cec1284ed7ddc473ced3d260cda6a178aadc8eab8ccfab49"
+    },
+    {
+      "path": "assets/environment/ship_interior_v2/maintenance_closed_overlay.png",
+      "bytes": 7345,
+      "sha256": "52382e8bd75d1c21de9def2a483a92378366d5059bc1a01a54dedf31024e033e"
+    },
+    {
+      "path": "assets/environment/ship_interior_v2/maintenance_closed_overlay.png.import",
+      "bytes": 1017,
+      "sha256": "8b36dff83a268456bec5f770da0380336b7e9b1e653b8a5a029a269a7b088deb"
+    },
+    {
+      "path": "assets/environment/ship_interior_v2/maintenance_open_overlay_DEFERRED.png",
+      "bytes": 6177,
+      "sha256": "64085d665f67f408b0cd67f69bebaa5a814b79eeed296c3d952e62988d7a440f"
+    },
+    {
+      "path": "assets/environment/ship_interior_v2/maintenance_open_overlay_DEFERRED.png.import",
+      "bytes": 1038,
+      "sha256": "2d21f89a3188203cc3492b0a9c34b3c49fa70f0c54fc8a7bdf7f3c984fce6643"
+    },
+    {
+      "path": "assets/environment/ship_interior_v2/manifest.json",
+      "bytes": 4428,
+      "sha256": "6d28d051e03fe4dc3a8b5eaa9780c33f07ef8e68dddc08a73155a3588d47d66c"
+    },
+    {
+      "path": "assets/environment/ship_interior_v2/ship_interior_background.png",
+      "bytes": 2472517,
+      "sha256": "8b766b93d7e0bf5e427ee013653164c9bd414518644784da5bd284ec3e3af857"
+    },
+    {
+      "path": "assets/environment/ship_interior_v2/ship_interior_background.png.import",
+      "bytes": 1011,
+      "sha256": "67c19a416e981769f66dbb8b9d556ab30cbe0df2d2e56fedf9521f39ce528f9b"
+    },
+    {
+      "path": "assets/environment/ship_interior_v2/wreckage_hidden_marvin.png",
+      "bytes": 571322,
+      "sha256": "ae1cb5e8556aa5e8262670109af281115bfda133450aeaf17acb59db048be71c"
+    },
+    {
+      "path": "assets/environment/ship_interior_v2/wreckage_hidden_marvin.png.import",
+      "bytes": 1005,
+      "sha256": "1965801d86efb781168904335b4b4e7eb3efedc8d4645bac47b9f85a23520fd3"
+    },
+    {
+      "path": "assets/experiments/terrain_c1/sources/earth.png",
+      "bytes": 2163698,
+      "sha256": "1ab148b0f431cec954299ed4c85cc541df8b72abc7789d9ea1b00532e31eec3d"
+    },
+    {
+      "path": "assets/experiments/terrain_c1/sources/earth.png.import",
+      "bytes": 956,
+      "sha256": "ae27a122b9076acdd902d9d5c222a72df8f6f242557ea352c7aac665d893639f"
+    },
+    {
+      "path": "assets/experiments/terrain_c1/sources/green.png",
+      "bytes": 2140339,
+      "sha256": "9a464eb3afa8795c366a9e1af7cd7939cd19e06d76da1169d7ad93df5ad70a79"
+    },
+    {
+      "path": "assets/experiments/terrain_c1/sources/green.png.import",
+      "bytes": 957,
+      "sha256": "7181618a453d7875b3acf10948782f4e351b1f31cf3850559313a0ea1530886c"
+    },
+    {
+      "path": "assets/fonts/ibm-plex-sans/IBMPlexSans-Italic.ttf",
+      "bytes": 207920,
+      "sha256": "a9c6ef9942c49e49d11e11a6dacc0b3a087978757e9b22a06b8ac22a6400fb15"
+    },
+    {
+      "path": "assets/fonts/ibm-plex-sans/IBMPlexSans-Italic.ttf.import",
+      "bytes": 805,
+      "sha256": "59dcbab3fc80589bdb874f68bfb1cd93e6d979fd96ff56787094500a56d62c20"
+    },
+    {
+      "path": "assets/fonts/ibm-plex-sans/IBMPlexSans-Medium.ttf",
+      "bytes": 202460,
+      "sha256": "331c8639d7598b2cde62a911a71db195e30cb655cd6bdf2e324a7e984955f907"
+    },
+    {
+      "path": "assets/fonts/ibm-plex-sans/IBMPlexSans-Medium.ttf.import",
+      "bytes": 806,
+      "sha256": "9f8e3f092041073c541c936ee14462aa7a50a5855fd9eb39ad1ebe4aab00199b"
+    },
+    {
+      "path": "assets/fonts/ibm-plex-sans/IBMPlexSans-Regular.ttf",
+      "bytes": 200500,
+      "sha256": "975dcda37d80f038dcd143c22e33ca2d97a0cc5a929aace1c749153b0fe1afa5"
+    },
+    {
+      "path": "assets/fonts/ibm-plex-sans/IBMPlexSans-Regular.ttf.import",
+      "bytes": 809,
+      "sha256": "fa421a87d57a19a841140f806be5d051fadc97a9cc301cb46eb55d92ec552d46"
+    },
+    {
+      "path": "assets/fonts/ibm-plex-sans/IBMPlexSans-SemiBold.ttf",
+      "bytes": 202632,
+      "sha256": "a20caf8286023a6a7a85e40b1d2a4ae9fc3e3b1f9eda8f4c542dd4986af67bb1"
+    },
+    {
+      "path": "assets/fonts/ibm-plex-sans/IBMPlexSans-SemiBold.ttf.import",
+      "bytes": 811,
+      "sha256": "bec2cf72d7fa2eba53b415c42da51d16bec5b557d0f3a15cb15d37e17c931e01"
+    },
+    {
+      "path": "assets/fonts/ibm-plex-sans/LICENSE.txt",
+      "bytes": 4456,
+      "sha256": "7e6b2818edbd8f6a01ae80641cc8f16a51080d08fb4e532be3a0b6f74adb07da"
+    },
+    {
+      "path": "assets/fonts/ibm-plex-sans/README.md",
+      "bytes": 2819,
+      "sha256": "4df21a586011ab1c7589dfba549fb568576658114397cb22b62ece1263715ff6"
+    },
+    {
+      "path": "assets/items/extractor.png",
+      "bytes": 101502,
+      "sha256": "3e4db4d251dbc0914dd4c9d68d2f771a52691176c147c68e89caf958047697ea"
+    },
+    {
+      "path": "assets/items/extractor.png.import",
+      "bytes": 943,
+      "sha256": "8e39e04f67ef8778153433c85f778140b8ff7f7dba7f97cee989bd4408e6419b"
+    },
+    {
+      "path": "assets/items/fabricator.png",
+      "bytes": 81824,
+      "sha256": "623ba4f0e119eec180d9a4c1245ec9e119c185861a16c771ab66a5304b9a31fd"
+    },
+    {
+      "path": "assets/items/fabricator.png.import",
+      "bytes": 946,
+      "sha256": "fe1894c3ec5a88fae5760dd1365f7f74c7470cae42d2ce0cc5b93990f052cc54"
+    },
+    {
+      "path": "assets/items/ferrite_ingot.png",
+      "bytes": 72570,
+      "sha256": "672e48eef6ac2ac8852fdaebd57bca3c7ffff119dad82def02bd08fec5b65335"
+    },
+    {
+      "path": "assets/items/ferrite_ingot.png.import",
+      "bytes": 955,
+      "sha256": "9d1d7b415948bb2591c5a49ce16c9048c16105370fe683160196c641521d7578"
+    },
+    {
+      "path": "assets/items/ferrite_ore.png",
+      "bytes": 89530,
+      "sha256": "8604e53c8a33d349c8335c35497aaaea7deaf083ef56724f41c2f6c7d87fdbd5"
+    },
+    {
+      "path": "assets/items/ferrite_ore.png.import",
+      "bytes": 949,
+      "sha256": "d09992212929177089351bd8c9e3298614a5c1cca0d97bd0a02a8fc87f2b51c9"
+    },
+    {
+      "path": "assets/items/ferrite_plate.png",
+      "bytes": 64090,
+      "sha256": "8bb7ed820b3f25d0cbe9ba8053311fc83f5e666611d82fdff9b1bc26151ebc64"
+    },
+    {
+      "path": "assets/items/ferrite_plate.png.import",
+      "bytes": 955,
+      "sha256": "94b1fb7688fb6be729b49c9fcd88554233e975162eabe4329f12e2c95f244a96"
+    },
+    {
+      "path": "assets/items/ferrite_plate.svg",
+      "bytes": 245,
+      "sha256": "d8f0cedf15ee534f70cac6bdcbb39001617d4ed4d8575613a93702849bc449aa"
+    },
+    {
+      "path": "assets/items/ferrite_plate.svg.import",
+      "bytes": 1053,
+      "sha256": "d778b87836f392c3ad764a543bba52ec9a0a2d4e7259e2d0aa2b298be737c84d"
+    },
+    {
+      "path": "assets/items/ferrite_rod.png",
+      "bytes": 68100,
+      "sha256": "be51d5a195e4df6c0d83d618e79ea3c72e500faafa68cc47c40b8caaa8f3b767"
+    },
+    {
+      "path": "assets/items/ferrite_rod.png.import",
+      "bytes": 949,
+      "sha256": "e4ee29171c9a9e6cc0618ee74aa0a11f9ca056b91ea75c6ce5bfaaca70f71b83"
+    },
+    {
+      "path": "assets/items/ferrite_rod.svg",
+      "bytes": 227,
+      "sha256": "9d9f01ce684de91e6c8c2a362eca40b88d3b61ab44d60b42d21f654296425338"
+    },
+    {
+      "path": "assets/items/ferrite_rod.svg.import",
+      "bytes": 1047,
+      "sha256": "fbb4f282f722225dd7dc5e1812ea6f3c3be1bcf8a5c70f22a75b646ca5073717"
+    },
+    {
+      "path": "assets/items/smelter.png",
+      "bytes": 84968,
+      "sha256": "461f5eecd9c0096bee40d5cbc20b53e9eb525e79ead538c422d82b72468b3e60"
+    },
+    {
+      "path": "assets/items/smelter.png.import",
+      "bytes": 937,
+      "sha256": "5a6cbd6819df8070b210ce0c137ec6d072cf1d1b3c47e8f9b5d742000cc96662"
+    },
+    {
+      "path": "assets/ui/TLWH_B2_ninepatch_96.png",
+      "bytes": 4491,
+      "sha256": "d15d83521781bd1f6c5fde49bf5bbd2881051c57fd91dc81f1595d5c4ba482e0"
+    },
+    {
+      "path": "assets/ui/TLWH_B2_ninepatch_96.png.import",
+      "bytes": 974,
+      "sha256": "d6530781bcfb3f062dbf3442bde6367db5c9fed27a142f70261cff45bce20ebc"
+    },
+    {
+      "path": "assets/ui/b1_panel.tres",
+      "bytes": 505,
+      "sha256": "a550177816f16ee12e3ba91a5639dbe5f6e1ff0a5c4316b80f8ff6728a420fc3"
+    },
+    {
+      "path": "assets/ui/b1_theme.tres",
+      "bytes": 7026,
+      "sha256": "81c693276e16c638bcaec37f5e3a4a4cf98256ed2408d990346570da81339729"
+    },
+    {
+      "path": "assets/ui/machine_actions.tres",
+      "bytes": 5036,
+      "sha256": "529ed6147fda65208259ab03fb010536aee818acdf70648eec727e6b7e1e7f07"
+    },
+    {
+      "path": "assets/ui/recipe_chooser.tres",
+      "bytes": 4203,
+      "sha256": "be4438a6264c61cae73e83359dec44b757ff0ea1d0b7f195a77bc601e4f0d721"
+    },
+    {
+      "path": "construction/construction_controller.gd",
+      "bytes": 10329,
+      "sha256": "a5a60f1a3bf4260a969e6071b85edae76c2792538630106b28def75fa51def9a"
+    },
+    {
+      "path": "construction/construction_controller.gd.uid",
+      "bytes": 20,
+      "sha256": "ff0aae1eb45deb287d9f63cd4a686089b2333348f7bcd1311437f3dd06d3c103"
+    },
+    {
+      "path": "construction/construction_controller.tscn",
+      "bytes": 1122,
+      "sha256": "0b12192b607470cc963955b3a8722a6e87d2db4d1da17cd51e87c1b8d6351aa6"
+    },
+    {
+      "path": "construction/deployed_machine.gd",
+      "bytes": 1434,
+      "sha256": "e31b0c6cc474dffde575d2c22f12e4f0f039fb0350fda6339dc1f4b3378967e5"
+    },
+    {
+      "path": "construction/deployed_machine.gd.uid",
+      "bytes": 20,
+      "sha256": "58de1b83b80c9dfb551b2f4b3929a5a12fe9a69d333305e79a30d8c19fc47a3b"
+    },
+    {
+      "path": "construction/machine_definition.gd",
+      "bytes": 2274,
+      "sha256": "240006ab9689f6914894555806a6dcfecec3553b3d9ee603d957e2074d42c353"
+    },
+    {
+      "path": "construction/machine_definition.gd.uid",
+      "bytes": 20,
+      "sha256": "689eed91d57948b6b0bb70e3dc5347f2557828544b2e3e5dc140998b8a7e41a4"
+    },
+    {
+      "path": "construction/machine_visual.gd",
+      "bytes": 3279,
+      "sha256": "935fb042487f43b11caa3c6bc187d12dfff6162c39dc37d3290e6da3935a7c0a"
+    },
+    {
+      "path": "construction/machine_visual.gd.uid",
+      "bytes": 20,
+      "sha256": "c4b8b46ac72d56c5f6fd7dc24c413c826688ac0633d6a353a871117ed3269862"
+    },
+    {
+      "path": "construction/placement_rules.gd",
+      "bytes": 2652,
+      "sha256": "58b528825b033a57a2dfbd4f8298e651e83396d9af253068557e811ca43e171c"
+    },
+    {
+      "path": "construction/placement_rules.gd.uid",
+      "bytes": 20,
+      "sha256": "96f0531e752e91000b88bb700326b93fd5b9c6aabf71ca7a23f4882518afeef8"
+    },
+    {
+      "path": "construction/recipe_definition.gd",
+      "bytes": 1180,
+      "sha256": "a5df0812e2aa9035cdd02b3e6bf615dbe370d6b74b5dae00294c0e604260709a"
+    },
+    {
+      "path": "construction/recipe_definition.gd.uid",
+      "bytes": 21,
+      "sha256": "50a7eed2bbe45364a759e3b4b62f5c21ce2f47101149bf747971cc6ac138161c"
+    },
+    {
+      "path": "construction/recipe_ingredient.gd",
+      "bytes": 261,
+      "sha256": "1388984302cefbb5f8581b22a08d43a31d3ea02d8b30f87f5e40a2e67c0daff0"
+    },
+    {
+      "path": "construction/recipe_ingredient.gd.uid",
+      "bytes": 21,
+      "sha256": "1d4b4560013c608d7089b53610413c37bb4144fa03fa7aa831d45df822cfcaa5"
+    },
+    {
+      "path": "construction/recipes/ferrite_plate.tres",
+      "bytes": 960,
+      "sha256": "2f15ce345bd0ff5b6e2566731dd03266d352bbad526c94d2e24c1eab43bdd10d"
+    },
+    {
+      "path": "construction/recipes/ferrite_rod.tres",
+      "bytes": 952,
+      "sha256": "532bd52a4b1b88873898a06c29efa975f4bbdc43e995b4f3da009b8da34d3cae"
+    },
+    {
+      "path": "dialogue/computer_opening.tres",
+      "bytes": 1425,
+      "sha256": "ef885982369654411d81b36122831caba5b8289cf7d1c5a0d183e958c2f7a8dc"
+    },
+    {
+      "path": "dialogue/dialogue_conversation.gd",
+      "bytes": 478,
+      "sha256": "bba839ea2dc21c614b2ceae7129a87747e2a4804dea6041163e5d7c5f6dc3d6c"
+    },
+    {
+      "path": "dialogue/dialogue_conversation.gd.uid",
+      "bytes": 21,
+      "sha256": "5e2882e80718258bd00db6dae37b2167a0d3646cbf745398e143052d61f3c0ea"
+    },
+    {
+      "path": "dialogue/dialogue_entry.gd",
+      "bytes": 460,
+      "sha256": "a6c427b502a8a9f5f74bdb96bc20977ec35daec147af62f51c3061d36123f87a"
+    },
+    {
+      "path": "dialogue/dialogue_entry.gd.uid",
+      "bytes": 21,
+      "sha256": "d65bc7fdf5d5cb3da69f8dc47079e46103f8967c974629c3a03774432de435d1"
+    },
+    {
+      "path": "dialogue/extractor_recovery.tres",
+      "bytes": 360,
+      "sha256": "c348a214c9dc171fae9410e28bba6253adc3ad9dc1fccdac564e5fbc27d2b330"
+    },
+    {
+      "path": "dialogue/ferrite_acquisition.tres",
+      "bytes": 347,
+      "sha256": "73f3119ec21ff92012e8c0497a73306354370b4c372ec7dc537b7ba4088de9f2"
+    },
+    {
+      "path": "dialogue/ferrite_discovery.tres",
+      "bytes": 399,
+      "sha256": "64eced8ee17e31cb73527045040a8fc3146e2f64fde3a5902fa1784d784a7a84"
+    },
+    {
+      "path": "dialogue/ferrite_ingot_acquisition.tres",
+      "bytes": 361,
+      "sha256": "964407fa05c10f3cdbf3731c2ec0c56d0885992b4cf7c43f1bfe58560a6ea592"
+    },
+    {
+      "path": "dialogue/musing_definition.gd",
+      "bytes": 156,
+      "sha256": "d7eb05ab86bcb647d233c9f85800416b6853c67e33d6090de9c340a2c2efa276"
+    },
+    {
+      "path": "dialogue/musing_definition.gd.uid",
+      "bytes": 20,
+      "sha256": "bb47c8a89a4cb1fd385c0055f70c8775b0bd14b8b91c57992dc496806a438f21"
+    },
+    {
+      "path": "inventory/extractor.tres",
+      "bytes": 599,
+      "sha256": "cb37eb9d398fca0fb38519e71e60c7730d1b25e1209128cb7b24e14d8ef5c98a"
+    },
+    {
+      "path": "inventory/fabricator.tres",
+      "bytes": 741,
+      "sha256": "b687989c0b99d2dbf2c5eb410d1f8f93ec45af158868d25a6247b3a2f49910b4"
+    },
+    {
+      "path": "inventory/ferrite_ingot.tres",
+      "bytes": 288,
+      "sha256": "c75137aee1dd8801a235499a793bcd1888adeca535f31c72b638d5dcb553c0b7"
+    },
+    {
+      "path": "inventory/ferrite_ore.tres",
+      "bytes": 284,
+      "sha256": "af68cdf771390230af07894c655ad02d194456c62485efe480183389b650865d"
+    },
+    {
+      "path": "inventory/ferrite_plate.tres",
+      "bytes": 275,
+      "sha256": "58e2830c500b86b7839756bff2e82867cef02df316c92aea8a74a363cb7b8722"
+    },
+    {
+      "path": "inventory/ferrite_rod.tres",
+      "bytes": 271,
+      "sha256": "2a2bffe5825e895700d68481f8c4c7b7024ad3ddb5e760c223e8fe7e2847c56b"
+    },
+    {
+      "path": "inventory/inventory_state.gd",
+      "bytes": 3491,
+      "sha256": "7ecd58453f05ad651f06dfc7d99a6b79d2db140987b6bf472f7e4fd0a11d7ea5"
+    },
+    {
+      "path": "inventory/inventory_state.gd.uid",
+      "bytes": 20,
+      "sha256": "b847b4ff60a37bcbf0ecad5c33ccfd36be0cfbebca6e6e3eaf2dbf16077cacc7"
+    },
+    {
+      "path": "inventory/item_definition.gd",
+      "bytes": 409,
+      "sha256": "47e8dd9009c6fabaec5736dd4c412e0a75c7cc3fa69878b86290fd858450ced3"
+    },
+    {
+      "path": "inventory/item_definition.gd.uid",
+      "bytes": 20,
+      "sha256": "3879011c72544f83e49cdda36555570cda3c8bba1f568b3ea4e073bd0c9156af"
+    },
+    {
+      "path": "inventory/smelter.tres",
+      "bytes": 721,
+      "sha256": "ac652ad1fabcc78a10fb3623c2f97ab6922767420c83474fc619605cdcc45088"
+    },
+    {
+      "path": "objectives/objective_controller.gd",
+      "bytes": 1998,
+      "sha256": "2ce858db6aeaa236c5efe6cad0d40f2655b2934eb26cf1736e7bda1af15eb090"
+    },
+    {
+      "path": "objectives/objective_controller.gd.uid",
+      "bytes": 21,
+      "sha256": "1c052ceaa141f020674cc1ce7c98b7cf5f351b5f055c70a356ddb12adbaa5d47"
+    },
+    {
+      "path": "objectives/objective_definition.gd",
+      "bytes": 359,
+      "sha256": "40292954d38554c1985713760c4bc6cc9392d57450046509bf874ad7962bd382"
+    },
+    {
+      "path": "objectives/objective_definition.gd.uid",
+      "bytes": 21,
+      "sha256": "41178ef98d468ee47b9fb9ee20b63fe91560350a503c07f5df95946283d620ad"
+    },
+    {
+      "path": "objectives/restore_computer.tres",
+      "bytes": 433,
+      "sha256": "180734de8f0ca571be757edd1cf317c378eabb9e89be905ab451136b465aaf52"
+    },
+    {
+      "path": "objectives/restore_computer_extractor.tres",
+      "bytes": 364,
+      "sha256": "0303199054ba049d86a7d6a1c9757fa7fd771ed111c8b7e7439f2bc9ed18c912"
+    },
+    {
+      "path": "objectives/restore_computer_fabricator.tres",
+      "bytes": 365,
+      "sha256": "ec4d7b17766700835c00c3bc1c5f71202112192626c57ac16b643a45422bf037"
+    },
+    {
+      "path": "objectives/restore_computer_ferrite.tres",
+      "bytes": 364,
+      "sha256": "9b0c991c779b15962432b9d91183ae6554d629a7e158c343d2118cc8b01418c5"
+    },
+    {
+      "path": "objectives/restore_computer_plate.tres",
+      "bytes": 342,
+      "sha256": "e40e332935a690e24d8054e53c6319b08788647a3a2143a8b3ebb4a4e6f46a5c"
+    },
+    {
+      "path": "objectives/restore_computer_production.tres",
+      "bytes": 359,
+      "sha256": "cf1a37046842918eefa5176b466d24cd41542e081c23d77bb0cd352184e4595e"
+    },
+    {
+      "path": "objectives/restore_computer_smelter.tres",
+      "bytes": 362,
+      "sha256": "8dfd5a2ac2442ea821bcf69426bc6078f5013a1e66fe733f7b81a889d4189927"
+    },
+    {
+      "path": "objectives/restore_computer_smelter_deployment.tres",
+      "bytes": 358,
+      "sha256": "d16de3aafd6f884d19bf41b0b5f3fd117466e531158b30d0fe805cf72fa61296"
+    },
+    {
+      "path": "objectives/restore_computer_smelting.tres",
+      "bytes": 360,
+      "sha256": "65379d9abfc9c6f1eeff7eb0569682b89444f28ffccc84e68b16a980adf105b1"
+    },
+    {
+      "path": "project.godot",
+      "bytes": 4952,
+      "sha256": "993aa7cf7ec6403720094f43f5b3522f9ee3a8e4557bf81e95b93a1fd70e4b96",
+      "staged_bytes": 5060,
+      "staged_sha256": "c57ccf98a3918aa4a8f4506be09d7ad6af24df7d8af6b330795f8df4aa5c42fa",
+      "transform": {
+        "find": "config/name=\"The Long Way Home\"",
+        "replace": "config/name=\"The Long Way Home\"\nconfig/use_custom_user_dir=true\nconfig/custom_user_dir_name=\"TLWH-Stage3C-8fe7fe8c0e594933b02e9581b8b51b11\""
+      }
+    },
+    {
+      "path": "scenes/interaction/automatic_doorway.gd",
+      "bytes": 1786,
+      "sha256": "590de2910bad523abd0d37669b29b589b6b49ddf9993a35c0372ab19b9099c6b"
+    },
+    {
+      "path": "scenes/interaction/automatic_doorway.gd.uid",
+      "bytes": 22,
+      "sha256": "d0e5d0889317d6efc97cc47cd716e9e37a9fb42f6f8cc9509561b1358bf6076d"
+    },
+    {
+      "path": "scenes/interaction/automatic_doorway.tscn",
+      "bytes": 446,
+      "sha256": "5a98685c17af268b74fa1cf6acc885f77852be794bf4dbe42ff5d5b426573b11"
+    },
+    {
+      "path": "scenes/interaction/exterior_boarding.gd",
+      "bytes": 4143,
+      "sha256": "cc0bcfd84e8bef779649481adb426a75f5c1c6b5e8ccd0237d3241cb56589728"
+    },
+    {
+      "path": "scenes/interaction/exterior_boarding.gd.uid",
+      "bytes": 21,
+      "sha256": "5a22dba14dacefe8426d9f15b5bffb434c617e744c561884e573e231aff40814"
+    },
+    {
+      "path": "scenes/interaction/exterior_hatch_audio.gd",
+      "bytes": 2287,
+      "sha256": "88bbe9de477e91a368feedd1d409985bc524a4b8c15de2f3ddc456ae7a332012"
+    },
+    {
+      "path": "scenes/interaction/exterior_hatch_audio.gd.uid",
+      "bytes": 21,
+      "sha256": "1fcfa61f7c3e0eb85f8c79bacf3c7c4e57b4cdd6a2a324ff09549103a74f9fa6"
+    },
+    {
+      "path": "scenes/interaction/exterior_hatch_visual.gd",
+      "bytes": 2935,
+      "sha256": "f1444ddebc2fead7a5d705b88c466e2cbb5d91189b4f0ba4166f51b5d2ff7196"
+    },
+    {
+      "path": "scenes/interaction/exterior_hatch_visual.gd.uid",
+      "bytes": 20,
+      "sha256": "65ab7cc8714d02a27b497b586d641c50fda34e042d10d2ac9f7f0d9454cdb290"
+    },
+    {
+      "path": "scenes/interaction/exterior_hatch_visual.tscn",
+      "bytes": 2087,
+      "sha256": "8100c71273e6b9e2dac26d1a183ed84e4ded506e7f0e37fd723eb2f9fb39c8cd"
+    },
+    {
+      "path": "scenes/interaction/extractor_rack.gd",
+      "bytes": 717,
+      "sha256": "2159c536de91c669f9e938f65776fe2a5b34f16ba272c56cd9efc70b3369dbf1"
+    },
+    {
+      "path": "scenes/interaction/extractor_rack.gd.uid",
+      "bytes": 20,
+      "sha256": "013259573e4e26b89a5ea455854b21baa0b6f3b39274d2582d72c7cee066eb6a"
+    },
+    {
+      "path": "scenes/interaction/fabricator_rack.gd",
+      "bytes": 760,
+      "sha256": "9db5006a4fdbb22d2907d58e8efe15443efc1029c0d9027142303c0fd352a746"
+    },
+    {
+      "path": "scenes/interaction/fabricator_rack.gd.uid",
+      "bytes": 21,
+      "sha256": "d644a36c37d6a74d23038c92786e9427f8f123608dc705b4127c881cf2c93474"
+    },
+    {
+      "path": "scenes/interaction/ferrite_inspection.gd",
+      "bytes": 1115,
+      "sha256": "c1433a10d19e9cfb08671d336373f41da59d3e9dd1f5755868cbfea4eb662511"
+    },
+    {
+      "path": "scenes/interaction/ferrite_inspection.gd.uid",
+      "bytes": 20,
+      "sha256": "4acba05b74b9d15fc991fc67abe47fcacd2d6fd53c296cb0340d8de62c56adf3"
+    },
+    {
+      "path": "scenes/interaction/scene_hatch.gd",
+      "bytes": 793,
+      "sha256": "f8d57003d082948b933a85ef8c54310611f3e32e2bfbe4b78ba04e12378319da"
+    },
+    {
+      "path": "scenes/interaction/scene_hatch.gd.uid",
+      "bytes": 21,
+      "sha256": "e75bd52ba7ae68dd94ef04b53ff85f3539c11cefacac7d2476133f51116afaca"
+    },
+    {
+      "path": "scenes/interaction/smelter_rack.gd",
+      "bytes": 742,
+      "sha256": "65e0fa25badbcf2cdc57b708f6272f43a1266a369cf930adc7ba367a3d89b854"
+    },
+    {
+      "path": "scenes/interaction/smelter_rack.gd.uid",
+      "bytes": 21,
+      "sha256": "9ec6e512f7cf8fafbe635382c4ea423dc20365cf980ce6d56a132d0681e4c8dc"
+    },
+    {
+      "path": "scenes/interaction/v2_extractor_recovery.gd",
+      "bytes": 656,
+      "sha256": "4c4dac87c77c624b9d8a96550c87b5226d0550476decc886e95acb05ff342ce9"
+    },
+    {
+      "path": "scenes/interaction/v2_extractor_recovery.gd.uid",
+      "bytes": 21,
+      "sha256": "47b35e49bd414e7d0639deac9476be878b801482d1629f9785b585fef4651233"
+    },
+    {
+      "path": "scenes/interaction/v2_fabricator_recovery.gd",
+      "bytes": 663,
+      "sha256": "5c0789704ea9971e94694e8345238f0466ee6591e9f5fe2483933a221ea9b164"
+    },
+    {
+      "path": "scenes/interaction/v2_fabricator_recovery.gd.uid",
+      "bytes": 22,
+      "sha256": "fac1155d41995263cd65ba80a3d28a3498ad3c4fa1734a5e1ac45a2181a3b222"
+    },
+    {
+      "path": "scenes/interaction/v2_smelter_recovery.gd",
+      "bytes": 648,
+      "sha256": "3eb441df6d31a623ca1169744a8f4983e2d5271eebdc731e0019b879577658f7"
+    },
+    {
+      "path": "scenes/interaction/v2_smelter_recovery.gd.uid",
+      "bytes": 19,
+      "sha256": "3c18c39e9b2dcb7643e9cf46ae6f456586fdf408e33d2dd299a1e34ce791d679"
+    },
+    {
+      "path": "scenes/interaction/world_interactable.gd",
+      "bytes": 841,
+      "sha256": "2ed080d81f58b09e8b856807734e9e36a612a09dbdd19c3e4f9d21b0e70bde6d"
+    },
+    {
+      "path": "scenes/interaction/world_interactable.gd.uid",
+      "bytes": 22,
+      "sha256": "190ed5404c9dd0998c47573ea508b4ceea4fee5ed2e05f6966e9b3d4e1391d67"
+    },
+    {
+      "path": "scenes/main/display_configuration.gd",
+      "bytes": 2338,
+      "sha256": "dca3ab0933b7752d100aea25124c372d429f687a892a2602e451e4d50dfeaa2c"
+    },
+    {
+      "path": "scenes/main/display_configuration.gd.uid",
+      "bytes": 22,
+      "sha256": "059a23acf31b75e4f3ce7d0c508a180a545fb11d58061aba8156cbf14f0751b1"
+    },
+    {
+      "path": "scenes/main/main.gd",
+      "bytes": 4927,
+      "sha256": "e05769250a757c89061cc4fabf9a3848005232a3d4f7e784ab83f861283aa32d"
+    },
+    {
+      "path": "scenes/main/main.gd.uid",
+      "bytes": 20,
+      "sha256": "261b2e6a9ac7e82047c1b74494441915c9fbd4b1f2fd6be77771cdcb1047545b"
+    },
+    {
+      "path": "scenes/main/main.tscn",
+      "bytes": 4757,
+      "sha256": "fe32c7d17cf2c54b0e67d5d74b20946a8efbcd457036ea4be8cd052d246bcdc4"
+    },
+    {
+      "path": "scenes/main/main_v2.gd",
+      "bytes": 1818,
+      "sha256": "989e26bd3cffb03f7fbeff763d3df371b4a268bd9fe06ec552e90d43a589305f"
+    },
+    {
+      "path": "scenes/main/main_v2.gd.uid",
+      "bytes": 18,
+      "sha256": "89b42eb35282e823da7a0f35d36468b241fc399f8bb87a613e45aad5bf0f10d5"
+    },
+    {
+      "path": "scenes/main/main_v2.tscn",
+      "bytes": 385,
+      "sha256": "a6476ae2861e12423ce35ca5eec08c7f7ebdb734ee8815dc8830f186d4cec105"
+    },
+    {
+      "path": "scenes/main/playthrough_state.gd",
+      "bytes": 6850,
+      "sha256": "b31dbfbf9be07eb8f9e1971dad643cbef80e93375519c0ed5b73416de3802c9f"
+    },
+    {
+      "path": "scenes/main/playthrough_state.gd.uid",
+      "bytes": 21,
+      "sha256": "7e7ae321b58fefaadea553c76c33fb036742924b6ea73d52c83198905ac6fb9f"
+    },
+    {
+      "path": "scenes/main/scene_transition_controller.gd",
+      "bytes": 12900,
+      "sha256": "ffabcc6608e30cdda13331f87eca30b85db5b5833a01f9da63dc0258023c8f0a"
+    },
+    {
+      "path": "scenes/main/scene_transition_controller.gd.uid",
+      "bytes": 21,
+      "sha256": "0bc9550e548800e36bcdd0cb0605e8bd5011f05ebe127ea9df929d8a0001ea69"
+    },
+    {
+      "path": "scenes/player/dave.gd",
+      "bytes": 1439,
+      "sha256": "3ba232f256c1b9655e2cbbb95d63346756bd95f497f866ec1b10e9cd8be12a6f"
+    },
+    {
+      "path": "scenes/player/dave.gd.uid",
+      "bytes": 21,
+      "sha256": "314ca2348be8a1548a2e1336e510b146e5d5a50cb56ce720a008b93418db9c98"
+    },
+    {
+      "path": "scenes/player/dave.tscn",
+      "bytes": 12551,
+      "sha256": "3984322148b2752933778c9e9721c7fe12aac70297d64b1220d2880a3d486262"
+    },
+    {
+      "path": "scenes/player/follow_camera.gd",
+      "bytes": 1858,
+      "sha256": "5c8be6aa888fd66042c9fff1f65a3403f3c16ba4faf22e8ee8a72fff09735c65"
+    },
+    {
+      "path": "scenes/player/follow_camera.gd.uid",
+      "bytes": 21,
+      "sha256": "8ab6e7e352d5aa6530acd29acdeab97a967095b45eb95cb2efc44cb776d23730"
+    },
+    {
+      "path": "scenes/player/interaction_detector.gd",
+      "bytes": 5363,
+      "sha256": "ad4c0e814536501a91f2c0395698cb9064ab6ee1f60b90b2b542d1b69b7598f4"
+    },
+    {
+      "path": "scenes/player/interaction_detector.gd.uid",
+      "bytes": 21,
+      "sha256": "77503e501961ad00dace0efbf57480e83d9d327f437c8ef59d19aa8c640188b3"
+    },
+    {
+      "path": "scenes/ui/b2_panel_frame.tscn",
+      "bytes": 662,
+      "sha256": "05ef91af486c4b5f8ecfb82eb5dd2e6242252522e855f9a6752c1bd31cbca2ce"
+    },
+    {
+      "path": "scenes/ui/cycle_gauge.gd",
+      "bytes": 2936,
+      "sha256": "774b537d1bbe8a8b7e140ff94e06f0c1a0cc9f0b3edc64608036059daef2fb98"
+    },
+    {
+      "path": "scenes/ui/cycle_gauge.gd.uid",
+      "bytes": 21,
+      "sha256": "64fca2d1352f95a9674c0bab86d2a0ec715342f386e58cb37390127893664644"
+    },
+    {
+      "path": "scenes/ui/developer_coordinates.gd",
+      "bytes": 539,
+      "sha256": "c8591f8b2a99714f4fd9520669134e364122ab6d04d370dea6038f11672748cc"
+    },
+    {
+      "path": "scenes/ui/developer_coordinates.gd.uid",
+      "bytes": 20,
+      "sha256": "b178d66e40bb4a963c830eec641439379d6fccd84ed8654acb67e1eb77a31469"
+    },
+    {
+      "path": "scenes/ui/developer_coordinates.tscn",
+      "bytes": 905,
+      "sha256": "6e75b255b1c0c03794f572e11c96f796ef613820f67c97f6afc2c9c8fbe5f809"
+    },
+    {
+      "path": "scenes/ui/dialogue_ui.gd",
+      "bytes": 5699,
+      "sha256": "eb3f5460b4767119b7ef90205a3836c6337c5253f08817c89534cb0815919f2c"
+    },
+    {
+      "path": "scenes/ui/dialogue_ui.gd.uid",
+      "bytes": 21,
+      "sha256": "8c0a09ffbed69897a398a85f03d4c592a3c762035e525f747ed26ad90a75dbed"
+    },
+    {
+      "path": "scenes/ui/dialogue_ui.tscn",
+      "bytes": 4333,
+      "sha256": "45580e7918658eaab3541f66061baa522698b18aa488f983a83bee705ef8b6f3"
+    },
+    {
+      "path": "scenes/ui/extractor_inspection.gd",
+      "bytes": 3385,
+      "sha256": "fe8c9de17a35fa7e0b65dad1587b5475f9828b8146e8f877cc8f1334a6f1dd2d"
+    },
+    {
+      "path": "scenes/ui/extractor_inspection.gd.uid",
+      "bytes": 21,
+      "sha256": "9d150a66dcc2ba56ca25974fedd4481e654c0dc500eb2c43ab47e9085f5976c6"
+    },
+    {
+      "path": "scenes/ui/extractor_inspection.tscn",
+      "bytes": 8764,
+      "sha256": "ac76492465108a42844a3882abbb173515d90ba4e77aa75f4ec5b54de24684b6"
+    },
+    {
+      "path": "scenes/ui/fabricator_inspection.gd",
+      "bytes": 9439,
+      "sha256": "556cce79e19954a4e3b8e0433103eda4e76082ee487ea18f2b71791004503b7c"
+    },
+    {
+      "path": "scenes/ui/fabricator_inspection.gd.uid",
+      "bytes": 21,
+      "sha256": "d8697d1c0470d516b13e7c40c5b3a5844b46fe9f00e0d3ccfa77a7348099f61a"
+    },
+    {
+      "path": "scenes/ui/fabricator_inspection.tscn",
+      "bytes": 14232,
+      "sha256": "ab9e12f127bf390d6009f6906864eebafede9b7f8ffc8011f539e1aeff411eac"
+    },
+    {
+      "path": "scenes/ui/hotbar_ui.gd",
+      "bytes": 7393,
+      "sha256": "a949a6cfaebc5559903e928b4f52f6c6561b2c387aba07dd11fb4118dad1faf6"
+    },
+    {
+      "path": "scenes/ui/hotbar_ui.gd.uid",
+      "bytes": 20,
+      "sha256": "a51195bb0a54f2a6cf0341ee77ea98304ceb1176a343eb0c99b2032bdb4f9d7c"
+    },
+    {
+      "path": "scenes/ui/hotbar_ui.tscn",
+      "bytes": 1360,
+      "sha256": "d4e31c0feccd303a6a23d1651f136311ca65e210d30a5b537400f2246413f1fd"
+    },
+    {
+      "path": "scenes/ui/interaction_ui.gd",
+      "bytes": 612,
+      "sha256": "4829e1be18a489fb6a16611249a9ae90c2bcf22370282e3ab964fa75bddd4d20"
+    },
+    {
+      "path": "scenes/ui/interaction_ui.gd.uid",
+      "bytes": 20,
+      "sha256": "a2733cd0cd408cd08fd5daeab63f0096aae5848442782594019b7891f901dae5"
+    },
+    {
+      "path": "scenes/ui/interaction_ui.tscn",
+      "bytes": 2437,
+      "sha256": "d9148c9454c09e0b881425ebb58e978543583b3597030698a1ce2fb990db0411"
+    },
+    {
+      "path": "scenes/ui/inventory_ui.gd",
+      "bytes": 10592,
+      "sha256": "e722cc236b77299ea3435ecf040f4f06797edf807de10f1f8f5314b7864b6704"
+    },
+    {
+      "path": "scenes/ui/inventory_ui.gd.uid",
+      "bytes": 20,
+      "sha256": "6bc65e435ac6c53f49bf218fbb50d49e8461b96654d0332915f1786fd27585ea"
+    },
+    {
+      "path": "scenes/ui/inventory_ui.tscn",
+      "bytes": 3548,
+      "sha256": "18771d0dc03ae4bf66d15c5d2bceaad57fde8722e77c142badc9a2920c76a5a4"
+    },
+    {
+      "path": "scenes/ui/item_presentation.gd",
+      "bytes": 2277,
+      "sha256": "ed7e25b444de2554fd640731e29daec7d51e89f8fe7e1448ed50b2eff86ce171"
+    },
+    {
+      "path": "scenes/ui/item_presentation.gd.uid",
+      "bytes": 20,
+      "sha256": "75c7333e06781fb470d957f8ef86f6d43b34600f3255ddaff9691a48b088c3d7"
+    },
+    {
+      "path": "scenes/ui/machine_ui.gd",
+      "bytes": 22663,
+      "sha256": "34efdfa40dec573f55e0670e1044cd3ec36bd4a5a3d51de2d5a0ba042687ea98"
+    },
+    {
+      "path": "scenes/ui/machine_ui.gd.uid",
+      "bytes": 21,
+      "sha256": "362bf6eb6d47a33744cffbd522aa8922c2ccaef1fe87533270be8298a6619a7f"
+    },
+    {
+      "path": "scenes/ui/machine_ui.tscn",
+      "bytes": 5332,
+      "sha256": "f40b4c221ecdd42de8ad8cac1e002dabce5b9dc8f51d8f7b974a9afb23df01f4"
+    },
+    {
+      "path": "scenes/ui/musing_ui.gd",
+      "bytes": 4105,
+      "sha256": "c8f63b9db1b05c452508cdc12383895aec8792604b603dc9ec13ceb9e701a14b"
+    },
+    {
+      "path": "scenes/ui/musing_ui.gd.uid",
+      "bytes": 20,
+      "sha256": "bef9ebc3d7bcdf8e38b3b654fef3e1001cdd5c07c309c95cdb6c1b962ad113c8"
+    },
+    {
+      "path": "scenes/ui/musing_ui.tscn",
+      "bytes": 2776,
+      "sha256": "ef8d5ff646bf74356a958e17bd6e65196048c5f2822380b5b1a2886b7e6834bd"
+    },
+    {
+      "path": "scenes/ui/objective_tracker.gd",
+      "bytes": 1899,
+      "sha256": "a22653dcc1a03db26028cdcb3fd11268321424e98a948b483eaca8da8428d206"
+    },
+    {
+      "path": "scenes/ui/objective_tracker.gd.uid",
+      "bytes": 21,
+      "sha256": "4cae59faf1b9ad5539568a25e9ca1aaa105b7a240a219898bb8ef874aa5c6f44"
+    },
+    {
+      "path": "scenes/ui/objective_tracker.tscn",
+      "bytes": 2842,
+      "sha256": "48a3cd08c0bb2854a24c5c879fd7e0f327e5d278b5de33b271c6b8efbf936dc7"
+    },
+    {
+      "path": "scenes/ui/recipe_card_content.gd",
+      "bytes": 3572,
+      "sha256": "abfb96f19a684729ee003ade123dabe82eac17c66a39617e462209bc6446fe65"
+    },
+    {
+      "path": "scenes/ui/recipe_card_content.gd.uid",
+      "bytes": 21,
+      "sha256": "86d85f0e7a3cce62592e55b4501a1b5fe131b08bc7fd314413c92c939cc253f3"
+    },
+    {
+      "path": "scenes/ui/smelter_inspection.gd",
+      "bytes": 5876,
+      "sha256": "0287e0d8bcf9030d8949e20e558979a687aeeff15b7ca8e88d4da5a64bf305eb"
+    },
+    {
+      "path": "scenes/ui/smelter_inspection.gd.uid",
+      "bytes": 21,
+      "sha256": "baf6ff82e755b5517c8e7ea03fe87ea8293b5204eace49976681a542c655f482"
+    },
+    {
+      "path": "scenes/ui/smelter_inspection.tscn",
+      "bytes": 12078,
+      "sha256": "b3673be2d66456397431df30d6678bb2f54708f7d7fa7ebb440b2be5245a9064"
+    },
+    {
+      "path": "scenes/ui/ui_scale_preview.gd",
+      "bytes": 1596,
+      "sha256": "18c3fd873dbd6016170db6ae9b29fe846865b516543c15ccaaee6fc555fd9e70"
+    },
+    {
+      "path": "scenes/ui/ui_scale_preview.gd.uid",
+      "bytes": 21,
+      "sha256": "f5b5897d315833c33f881ce39d9cf21423f952866844a27b1e519b44737091b1"
+    },
+    {
+      "path": "scenes/ui/ui_scale_root.gd",
+      "bytes": 2791,
+      "sha256": "62238e9a153aaea449603f2f2f5a5dcd028ac7fd394fe7ddcfe3fd0570ee7fd9"
+    },
+    {
+      "path": "scenes/ui/ui_scale_root.gd.uid",
+      "bytes": 21,
+      "sha256": "c0cd57835874690f871627cc5f46ade0648065f16910ce826b159cb342e4308c"
+    },
+    {
+      "path": "scenes/visuals/extractor_stationary.tscn",
+      "bytes": 1309,
+      "sha256": "859ece918c9a1ef058c56207ccbf6579420d9fa02f8cd23e8c476eb4e50e202f"
+    },
+    {
+      "path": "scenes/visuals/fabricator_stationary.tscn",
+      "bytes": 1311,
+      "sha256": "bf456a26e0378a4d5b661e66b99c086328ed61febe758216a2911661cadff8ea"
+    },
+    {
+      "path": "scenes/visuals/smelter_stationary.tscn",
+      "bytes": 1304,
+      "sha256": "1048faf86d3a65288cb99dd173c81438fdca2e7636bbe9b0084b51b808c25674"
+    },
+    {
+      "path": "scenes/world/continuous_terrain.gdshader",
+      "bytes": 3062,
+      "sha256": "014e32e272303c6c3884ae02fe1421aac39a68dd0761009fe7647337b77d61e7"
+    },
+    {
+      "path": "scenes/world/continuous_terrain_metadata.gd",
+      "bytes": 2884,
+      "sha256": "2c500850628fadc57c2ffacefe328655fdd0a72a863ac5e34063a4859ba0f119"
+    },
+    {
+      "path": "scenes/world/continuous_terrain_presenter.gd",
+      "bytes": 7686,
+      "sha256": "96c1f3512435a2b23511b987946aaf9b69425960408d3c401efb37741bb39e4c"
+    },
+    {
+      "path": "scenes/world/crash_site_protection.gd",
+      "bytes": 360,
+      "sha256": "3aff013898bf74bf47c2658efcfc5f17d31c56da78128cdccab98a67dbfcb852"
+    },
+    {
+      "path": "scenes/world/crash_site_protection.gd.uid",
+      "bytes": 20,
+      "sha256": "314247bcc0fd02bee975123d8e70fb1aa155ae33e04b504afa51fb9692dc3d03"
+    },
+    {
+      "path": "scenes/world/ferrite_deposit_presenter.gd",
+      "bytes": 11190,
+      "sha256": "736419ea8c3b284b89c68d8b5a14623f2dc5570836b251f59282205a866e12ab"
+    },
+    {
+      "path": "scenes/world/ferrite_deposit_presenter.gd.uid",
+      "bytes": 20,
+      "sha256": "54b3de2c83bdfc8d1deaccc655bb9bba08675dcb0e18c50bd2468fc9504247c2"
+    },
+    {
+      "path": "scenes/world/ferrite_region_generator.gd",
+      "bytes": 15118,
+      "sha256": "efb75cb04df11e43d5178e1f4d08bf73bcb2def02ff55000d37241726f34a9ce"
+    },
+    {
+      "path": "scenes/world/ferrite_region_generator.gd.uid",
+      "bytes": 20,
+      "sha256": "e284f22a6efc238ebcfdada9b6dd074fa58bb27f9c6d7e35c78689485b303bd5"
+    },
+    {
+      "path": "scenes/world/illustrated_terrain_presenter.gd",
+      "bytes": 10260,
+      "sha256": "15b9da683cf85f00c2e9142b194c2d145a7d2e1c3febcfc5083c0a37521bdfb0"
+    },
+    {
+      "path": "scenes/world/illustrated_terrain_presenter.gd.uid",
+      "bytes": 20,
+      "sha256": "156df5aed60fff0988b4a8f1ded8c8f806ea25d8c0c1b93f766ce5c8c60c77d5"
+    },
+    {
+      "path": "scenes/world/illustrated_terrain_tint.gdshader",
+      "bytes": 1036,
+      "sha256": "145dda75689c2e9410954f9a95d43283d0d051fd6361c20e9b50d7939d620814"
+    },
+    {
+      "path": "scenes/world/illustrated_terrain_tint.gdshader.uid",
+      "bytes": 21,
+      "sha256": "019e87664a0c77c014783655906906d9e851cb0bf8dd00496fa13907b6d311f3"
+    },
+    {
+      "path": "scenes/world/introductory_ferrite.tres",
+      "bytes": 443,
+      "sha256": "8d23e22b3193c587b438f84c4868b3163d5600bbbb2269ae52ca96a89a1ba29c"
+    },
+    {
+      "path": "scenes/world/maintenance_bay.tscn",
+      "bytes": 9242,
+      "sha256": "18caa84153f2aa290726744c4f41acac4bba1faab3dd950675bacf85d344df0b"
+    },
+    {
+      "path": "scenes/world/maintenance_bay_v2.tscn",
+      "bytes": 10488,
+      "sha256": "7faf2ab4c059e5a8f1cb7029441aeec40de5deaf99ee2353a70e39d4dd2e18ab"
+    },
+    {
+      "path": "scenes/world/planet_exterior.gd",
+      "bytes": 22846,
+      "sha256": "fde0f4edd02fcba19a93865092ce66b40f26924d24cf73600c2416ff0c53ddfa"
+    },
+    {
+      "path": "scenes/world/planet_exterior.gd.uid",
+      "bytes": 20,
+      "sha256": "574dbe159ca8d386eca78e1631f385b0a983fb09a228e43a45882cf7b61feef4"
+    },
+    {
+      "path": "scenes/world/planet_exterior.tscn",
+      "bytes": 8778,
+      "sha256": "eabc5fa257e534c69c3e16f1b3231aadcd0a9ae1a4bc86fb1354c6afc43ca38b",
+      "staged_bytes": 8799,
+      "staged_sha256": "d41d68fd9b48ec4526a780c21ce27932db0855b3007c2dca880b09c4f8e31aab",
+      "transform": {
+        "find": "script = ExtResource(\"2_world\")",
+        "replace": "script = ExtResource(\"2_world\")\nterrain_renderer = 2"
+      }
+    },
+    {
+      "path": "scenes/world/planet_generator.gd",
+      "bytes": 6712,
+      "sha256": "f0c4e52c359bfc1777ddb27dd1fabd2396c5efbef2cabe94f62b2a30f10f071f"
+    },
+    {
+      "path": "scenes/world/planet_generator.gd.uid",
+      "bytes": 20,
+      "sha256": "404f750c2091db8798d9e3679276f0e0ca5e5986cf881105b836fb9c05f946ec"
+    },
+    {
+      "path": "scenes/world/planet_world_state.gd",
+      "bytes": 22463,
+      "sha256": "1c256d5c93defb4927d5fcd0ad2a64916783ddd824ef3bec0c412639a58c9c1f"
+    },
+    {
+      "path": "scenes/world/planet_world_state.gd.uid",
+      "bytes": 20,
+      "sha256": "3e61e0327bf1c0642a5bb2002c8e68973bf225bbedda08aa4895b6ffd4e6bfd0"
+    },
+    {
+      "path": "scenes/world/production_maintenance_bay_v2.tscn",
+      "bytes": 4960,
+      "sha256": "240dc1541a42d8d32ed7cebbdcb5402ed9eece824356a29cce1720a86ceb6cbb"
+    },
+    {
+      "path": "scenes/world/production_ship_interior_v2.tscn",
+      "bytes": 2680,
+      "sha256": "91632c88f39d6a5c80a6086da7f987a4273a1340411ad49da79ffb47ee26bb7e"
+    },
+    {
+      "path": "scenes/world/resource_deposit.gd",
+      "bytes": 526,
+      "sha256": "f2b79d6e400ef7e8ba88076a7a439141854d33e528b1171752f9f3ad049d01ff"
+    },
+    {
+      "path": "scenes/world/resource_deposit.gd.uid",
+      "bytes": 20,
+      "sha256": "b4352d511f6506d8e23297550df4175ef5c67ccd833f457de2eaefb9806e9041"
+    },
+    {
+      "path": "scenes/world/ship_interior.tscn",
+      "bytes": 15100,
+      "sha256": "e694b73f7e7ba3bf0a7f544d93a1ce91548a0db2a6bd04f2eb77fae4470fe533"
+    },
+    {
+      "path": "scenes/world/ship_interior_v2.tscn",
+      "bytes": 13121,
+      "sha256": "367458010bfc3f4063b54d4f9964036eda8c5667aa580003a67549b7e100767d"
+    },
+    {
+      "path": "scenes/world/stationary_machine_presentation.gd",
+      "bytes": 2876,
+      "sha256": "35f98fc7c742db68b2bd21ae16a3360dd007e98b8b89dc1c2cf16b3ec6401423"
+    },
+    {
+      "path": "scenes/world/stationary_machine_presentation.gd.uid",
+      "bytes": 20,
+      "sha256": "b26d7365dd35974fcf2a98104eb58a3287412abb97cb21ba09749862c00982ff"
+    },
+    {
+      "path": "scenes/world/terrain_assignment_lookup.gd",
+      "bytes": 5185,
+      "sha256": "5416b46d7074fd227b8b4cc54ed4aa91456857f47b026d85379e8cde5e4a5d88"
+    },
+    {
+      "path": "scenes/world/terrain_assignment_lookup.gd.uid",
+      "bytes": 21,
+      "sha256": "43da2ca793e459aafa6854a9271189f2fb9ab6707326b606874ee0b42f787d7d"
+    },
+    {
+      "path": "scenes/world/terrain_chunk.gd",
+      "bytes": 5272,
+      "sha256": "abb0aa93fd3f013448f7cbf42dcc6b33945f261e2299d66f6bf85936a9c87767"
+    },
+    {
+      "path": "scenes/world/terrain_chunk.gd.uid",
+      "bytes": 20,
+      "sha256": "fea5c2a44d0b3ebc9296578bccbf1a9e80055b8092d4084cc7fdc21d6c4793aa"
+    },
+    {
+      "path": "scenes/world/terrain_resolver.gd",
+      "bytes": 2816,
+      "sha256": "dbbb103485ce933f0808ec7002d467431423a4b4eef14dbd23c81773ba89a8b3"
+    },
+    {
+      "path": "scenes/world/terrain_resolver.gd.uid",
+      "bytes": 21,
+      "sha256": "09baa406f79041171208d1f9e05516d49635c6a5e1c2592b0a9ceb32e1dd9408"
+    },
+    {
+      "path": "scenes/world/v2_room_arrival.gd",
+      "bytes": 811,
+      "sha256": "c434651b6685cf4c5c83a8147a5dcfffa2d679f12842b134b17b6bf34090f0a9"
+    },
+    {
+      "path": "scenes/world/v2_room_arrival.gd.uid",
+      "bytes": 19,
+      "sha256": "e4f8a8d7aaf8283f7ab1edb9f3923257e6ffc8c7b76c225c5b7c275d20970029"
+    },
+    {
+      "path": "scenes/world/world_coordinates.gd",
+      "bytes": 885,
+      "sha256": "af8face71dd7cabc672972f7347e160ebdcfb1630373124d5f2c40d54f86bb4d"
+    },
+    {
+      "path": "scenes/world/world_coordinates.gd.uid",
+      "bytes": 20,
+      "sha256": "942fc2c1617b0dc0cb3356aeff6c18c37e1657e7524cb9e6102e432b3d2ce7b9"
+    },
+    {
+      "path": "shaders/objective_silhouette.gdshader",
+      "bytes": 1501,
+      "sha256": "0535d25bd006fac251e3390b1417266ee8df6414148ce6754ac41dcdc1680e18"
+    },
+    {
+      "path": "shaders/objective_silhouette.gdshader.uid",
+      "bytes": 20,
+      "sha256": "3f4eca1d4bf74ff16e25d451ffe99d939e94c6647d56997b223861e0ce26b268"
+    }
+  ],
+  "input_count": 346,
+  "source_bytes": 67072017,
+  "user_directory_must_be_absent": "TLWH-Stage3C-8fe7fe8c0e594933b02e9581b8b51b11",
+  "engine_sha256": "AB1824F85BFD8E0E4128182C000C4003A3E042245B2967848D089B2A04B22424",
+  "phases": [
+    {
+      "arguments": [
+        "--headless",
+        "--path",
+        "<fresh-stage>",
+        "--editor",
+        "--import",
+        "--quit"
+      ],
+      "timeout_seconds": 60
+    },
+    {
+      "arguments": [
+        "--path",
+        "<fresh-stage>",
+        "--resolution",
+        "1280x720",
+        "res://scenes/main/main_v2.tscn"
+      ],
+      "timeout_seconds": 300
+    }
+  ],
+  "combined_output_limit_bytes": 1048576,
+  "diagnostic_excerpt_bytes": 4096,
+  "retries": 0
+}

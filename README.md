@@ -62,6 +62,12 @@ owner's post-reboot playable-game acceptance is **7/7 PASS**, with zero failures
 and zero untested checklist items. Minor initial exterior-loading stutter is an
 explicitly accepted, non-blocking limitation; no formal performance benchmarking
 was performed. See the [final acceptance record](docs/ILLUSTRATED_EXTERIOR.md#final-pr-104-acceptance-2026-11-01).
+The [Stage 3C continuous exterior](docs/experiments/terrain_stage3c_exterior.md)
+adds an explicit Continuous opt-in on this feature branch, pending merge. The
+authorized one-time gameplay run passed process checks and received owner-reported
+PASS for seven listed gameplay areas; the grant is consumed. Configuration, rollback,
+limits and the exact acceptance record are documented there. Performance budgets
+and numerical parity remain uncertified.
 Illustrated rendering is the default; the exterior's Terrain Renderer property
 selects Legacy before first initialization for rollback.
 

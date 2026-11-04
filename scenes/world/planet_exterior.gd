@@ -1,7 +1,7 @@
 class_name PlanetExterior
 extends Node2D
 
-enum TerrainRenderer { LEGACY, ILLUSTRATED }
+enum TerrainRenderer { LEGACY, ILLUSTRATED, CONTINUOUS }
 @export var terrain_renderer: TerrainRenderer = TerrainRenderer.ILLUSTRATED
 
 @export_range(1, 4, 1) var loading_radius: int = 2
@@ -39,6 +39,8 @@ var _terrain_tokens: Dictionary[Vector2i, int] = {}
 var _ground_receipts: Dictionary[Vector2i, Dictionary] = {}
 var _ground_state: PlanetWorldState
 var _ground_seed: int
+var _continuous_presenter: ContinuousTerrainPresenter
+var _continuous_job: Dictionary = {}
 @onready var _terrain_presenter: IllustratedTerrainPresenter = $IllustratedTerrainPresenter
 
 
@@ -46,6 +48,7 @@ var _ground_seed: int
 # Subsequent hatch visits already have the spawn neighborhood retained.
 func prepare_for_arrival(player: CharacterBody2D, state: PlanetWorldState) -> Dictionary:
 	$GroundObjects/Hatch.prepare_for_arrival()
+	_cancel_continuous()
 	_arrival_generation += 1
 	var arrival := _arrival_generation
 	_arrival_cancelled = false
@@ -136,11 +139,15 @@ func cancel_arrival_preparation() -> void:
 	_preparing = false
 	if _ferrite_presenter != null:
 		_ferrite_presenter.cancel()
+	_cancel_continuous()
 	_clear_highlights()
 
 
 func _exit_tree() -> void:
 	# Children cancel their own work on exit. Do not mutate the exiting tree.
+	if not _continuous_job.is_empty() and not _chunks.has(_continuous_job.coordinate):
+		_terrain_tokens.erase(_continuous_job.coordinate)
+	_continuous_job = {}
 	_arrival_generation += 1
 	_arrival_cancelled = true
 	_preparing = false
@@ -180,6 +187,7 @@ func _update_neighborhood() -> void:
 			remove_child(chunk)
 			chunk.queue_free()
 			_chunks.erase(coordinate)
+	_cancel_continuous()
 	# Replacing the queue discards stale requests after movement, bounding work.
 	_pending.clear()
 	# Keep old visuals until their replacement is ready, including retained chunks.
@@ -223,8 +231,12 @@ func _generate_budget() -> void:
 	if _pending.is_empty():
 		_flush_terrain_tint()
 		return
+	if _effective_renderer == TerrainRenderer.CONTINUOUS:
+		if not _step_continuous():
+			return
 	var committed: Array[Vector2i] = []
-	for index in range(mini(chunks_per_frame, _pending.size())):
+	var budget := 1 if _effective_renderer == TerrainRenderer.CONTINUOUS else chunks_per_frame
+	for index in range(mini(budget, _pending.size())):
 		var coordinate: Vector2i = _pending.pop_front()
 		var chunk := TerrainChunk.new()
 		chunk.configure(coordinate, _generator, _state, _effective_renderer == TerrainRenderer.LEGACY)
@@ -234,7 +246,7 @@ func _generate_budget() -> void:
 			# Preserve the request and stop; never spin or silently discard failure.
 			_pending.push_front(coordinate)
 			break
-		if _effective_renderer == TerrainRenderer.ILLUSTRATED:
+		if _effective_renderer != TerrainRenderer.LEGACY:
 			chunk.write_tint(_tint_image, _tint_slot(coordinate))
 			_sync_tint_borders(coordinate)
 			_tint_dirty = true
@@ -248,9 +260,9 @@ func _generate_budget() -> void:
 	_flush_terrain_tint()
 	# Publication authority includes attached details and the flushed tint, not
 	# just successful TileMap writes. This commit boundary is synchronous.
-	if _effective_renderer == TerrainRenderer.ILLUSTRATED:
+	if _effective_renderer != TerrainRenderer.LEGACY:
 		for coordinate in committed:
-			_ground_receipts[coordinate] = {"publication": _terrain_presenter.publication(
+			_ground_receipts[coordinate] = {"publication": _ground_publication(
 				coordinate, _terrain_tokens[coordinate]), "state": _state,
 				"seed": _state.seed_value, "revision": _state.revision,
 				"generator": _generator.get_instance_id(), "chunk": _chunks[coordinate].get_instance_id()}
@@ -258,7 +270,7 @@ func _generate_budget() -> void:
 
 
 func _ground_is_current(coordinate: Vector2i) -> bool:
-	if _effective_renderer != TerrainRenderer.ILLUSTRATED:
+	if _effective_renderer == TerrainRenderer.LEGACY:
 		return true # Preserve the explicit legacy fallback's existing contract.
 	if _state == null or _ground_state != _state or _ground_seed != _state.seed_value \
 			or not is_instance_valid(_generator) or not is_instance_valid(_terrain_presenter) \
@@ -273,7 +285,7 @@ func _ground_is_current(coordinate: Vector2i) -> bool:
 		and receipt.get("generator") == _generator.get_instance_id() \
 		and receipt.get("chunk") == chunk.get_instance_id() \
 		and not receipt.get("publication", {}).is_empty() \
-		and receipt.publication == _terrain_presenter.publication(coordinate, _terrain_tokens[coordinate])
+		and receipt.publication == _ground_publication(coordinate, _terrain_tokens[coordinate])
 
 
 func _required_ground_is_current() -> bool:
@@ -299,6 +311,7 @@ func _configure_terrain_renderer() -> void:
 			if not initialized.ok:
 				_stop_terrain(initialized)
 				return
+		if _effective_renderer != TerrainRenderer.LEGACY:
 			# Modulo slots are unique throughout the square retention window.
 			_tint_slots = 2 * (loading_radius + retention_margin) + 1
 			var width := _tint_slots * TerrainChunk.VERTEX_WIDTH
@@ -313,7 +326,16 @@ func _configure_terrain_renderer() -> void:
 			_tint_material.set_shader_parameter("tint_field", _tint_texture)
 			_tint_material.set_shader_parameter("slot_count", float(_tint_slots))
 			var layer := _terrain_presenter.get_node("Terrain") as TileMapLayer
-			layer.material = _tint_material
+			if _effective_renderer == TerrainRenderer.ILLUSTRATED:
+				layer.material = _tint_material
+			else:
+				_continuous_presenter = ContinuousTerrainPresenter.new()
+				_continuous_presenter.z_index = -11
+				add_child(_continuous_presenter)
+				var initialized := _continuous_presenter.initialize(_tint_texture, _tint_slots)
+				if not initialized.ok:
+					_stop_terrain(initialized)
+					return
 	if _tint_material != null:
 		# Inverse columns keep sampling in exterior space after reattachment.
 		var inverse := global_transform.affine_inverse()
@@ -329,6 +351,7 @@ func terrain_failure() -> Dictionary:
 func _stop_terrain(result: Dictionary) -> void:
 	if _terrain_failure.is_empty():
 		_terrain_failure = result.duplicate(true)
+		_cancel_continuous()
 		push_warning("Exterior terrain stopped; restart after correcting input: " + str(result))
 
 
@@ -380,11 +403,13 @@ func _present_illustrated_chunk(coordinate: Vector2i) -> bool:
 
 
 func _retire_illustrated_chunk(coordinate: Vector2i) -> bool:
-	if _effective_renderer != TerrainRenderer.ILLUSTRATED:
+	if _effective_renderer == TerrainRenderer.LEGACY:
 		return true
 	if not _terrain_tokens.has(coordinate):
 		return true
-	var result := _terrain_presenter.retire_chunk(coordinate, _terrain_tokens[coordinate])
+	var result := _continuous_presenter.retire_chunk(coordinate, _terrain_tokens[coordinate]) \
+		if _effective_renderer == TerrainRenderer.CONTINUOUS else \
+		_terrain_presenter.retire_chunk(coordinate, _terrain_tokens[coordinate])
 	if result.ok:
 		_terrain_tokens.erase(coordinate)
 		_ground_receipts.erase(coordinate)
@@ -478,3 +503,48 @@ func _refresh_highlights() -> void:
 
 func _distance(a: Vector2i, b: Vector2i) -> int:
 	return maxi(absi(a.x - b.x), absi(a.y - b.y))
+
+
+func _ground_publication(coordinate: Vector2i, token: int) -> Dictionary:
+	if _effective_renderer == TerrainRenderer.CONTINUOUS:
+		if not is_instance_valid(_continuous_presenter) or not is_ancestor_of(_continuous_presenter):
+			return {}
+		return _continuous_presenter.publication(coordinate, token)
+	return _terrain_presenter.publication(coordinate, token)
+
+
+func _cancel_continuous() -> void:
+	if not _continuous_job.is_empty() and not _chunks.has(_continuous_job.coordinate):
+		_terrain_tokens.erase(_continuous_job.coordinate)
+	if is_instance_valid(_continuous_presenter):
+		_continuous_presenter.cancel()
+	_continuous_job = {}
+
+
+func _step_continuous() -> bool:
+	var coordinate: Vector2i = _pending[0]
+	if _continuous_job.is_empty():
+		_terrain_generation += 1
+		var token := _terrain_generation
+		_ground_receipts.erase(coordinate)
+		var registered := _continuous_presenter.begin_generation(coordinate, token, _state.seed_value)
+		if not registered.ok:
+			_stop_terrain(registered)
+			return false
+		_terrain_tokens[coordinate] = token
+		_continuous_job = {"coordinate": coordinate, "token": token, "revision": _state.revision,
+			"state": _state, "seed": _state.seed_value, "arrival": _arrival_generation}
+	if _continuous_job.coordinate != coordinate or _continuous_job.state != _state \
+			or _continuous_job.revision != _state.revision or _continuous_job.seed != _state.seed_value \
+			or _continuous_job.arrival != _arrival_generation or _arrival_cancelled:
+		_cancel_continuous()
+		return false
+	var result := _continuous_presenter.step(coordinate, _continuous_job.token,
+		Callable(_generator, "sample_ground_material"))
+	if not result.ok:
+		_stop_terrain(result)
+		return false
+	if result.pending:
+		return false
+	_continuous_job = {}
+	return true

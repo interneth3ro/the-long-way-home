@@ -1072,3 +1072,18 @@ rerun was performed for this documentation update.
 No acceptance blocker remains in the agreed seven-item checklist. PR #104 is ready
 for owner merge consideration with the accepted initial-loading stutter. It stays
 draft; merge, further execution and cleanup require separate owner authorization.
+
+
+## Stage 3C continuous opt-in (feature branch, pending merge)
+
+[Stage 3C](experiments/terrain_stage3c_exterior.md) adds a sibling continuous
+presenter through the existing exterior queue, production tint and arrival
+receipts. Illustrated stays the default; continuous requires explicit selection
+before the exterior's first initialization. Existing gameplay classifications,
+Ferrite, authored geometry and boarding contracts remain unchanged. Failures
+latch and block arrival; rollback requires a fresh illustrated exterior.
+The authorized one-time Stage 3C run passed static, import and gameplay-process
+checks, with owner-reported PASS for seven listed gameplay areas. See the
+[exact acceptance record](experiments/terrain_stage3c_exterior.md#one-time-execution-and-owner-acceptance--2026-11-04).
+The execution grant is consumed; performance budgets and numerical parity remain
+uncertified, and illustrated remains the production default.

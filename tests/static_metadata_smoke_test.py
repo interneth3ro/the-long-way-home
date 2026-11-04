@@ -164,7 +164,8 @@ class MetadataSmokeTest(unittest.TestCase):
         # comparisons use pre-extension bytes; every other path remains current.
         for path in ("tests/static_ground_publication_test.py", "tests/static_terrain_stage2_coverage_test.py"):
             old = before(path)
-            current = read(path)
+            # Validate the immutable PR #139 guard amendment, not later Stage 3C contracts.
+            current = subprocess.check_output(["git", "show", "de09eeee2c07036ac50471bde12a716e173e3366:"+path], cwd=ROOT, text=True)
             actual = re.search(r"            actual = \(subprocess.check_output.*?else \(ROOT/path\).read_bytes\(\)\)\n", current, re.S)
             self.assertIsNotNone(actual)
             self.assertIn("if path == ", actual[0])

@@ -132,21 +132,21 @@ class GroundPublicationTest(unittest.TestCase):
         self.assertIn('_ferrite_presenter.cancel()', body(E, 'cancel_arrival_preparation'))
         # Receipt removal occurs only during synchronous replacement or
         # successful retirement; failures stop before any later admission.
-        self.assertEqual(E.count('_ground_receipts.erase(coordinate)'), 2)
+        self.assertEqual(E.count('_ground_receipts.erase(coordinate)'), 3)
         self.assertNotIn('await ', body(E, '_generate_budget'))
         self.assertIn('_stop_terrain(result)', body(E, '_present_illustrated_chunk'))
 
     def test_legacy_is_an_explicit_exception_to_illustrated_receipts(self):
         current = body(E, '_ground_is_current')
-        self.assertIn('if _effective_renderer != TerrainRenderer.ILLUSTRATED:\n\t\treturn true', current)
+        self.assertIn('if _effective_renderer == TerrainRenderer.LEGACY:\n\t\treturn true', current)
         self.assertLess(current.index('return true'), current.index('_ground_receipts.has(coordinate)'))
         for name in ('_present_illustrated_chunk', '_retire_illustrated_chunk'):
             method = body(E, name)
             self.assertLess(method.index('return true'), method.index('_terrain_presenter.'))
         budget = body(E, '_generate_budget')
-        self.assertIn('if _effective_renderer == TerrainRenderer.ILLUSTRATED:\n'
+        self.assertIn('if _effective_renderer != TerrainRenderer.LEGACY:\n'
                       '\t\tfor coordinate in committed:\n\t\t\t_ground_receipts[coordinate] =', budget)
-        self.assertIn('enum TerrainRenderer { LEGACY, ILLUSTRATED }', E)
+        self.assertIn('enum TerrainRenderer { LEGACY, ILLUSTRATED, CONTINUOUS }', E)
 
     def test_complete_required_square_and_partial_missing_queue_drained(self):
         a = filled()
@@ -215,7 +215,7 @@ class GroundPublicationTest(unittest.TestCase):
                        'receipt.get("generator") == _generator.get_instance_id()',
                        'receipt.get("chunk") == chunk.get_instance_id()',
                        'not receipt.get("publication", {}).is_empty()',
-                       'receipt.publication == _terrain_presenter.publication(coordinate, _terrain_tokens[coordinate])'):
+                       'receipt.publication == _ground_publication(coordinate, _terrain_tokens[coordinate])'):
             self.assertIn(marker, current)
         arrival = body(E, 'prepare_for_arrival')
         neighborhood = body(E, '_update_neighborhood')

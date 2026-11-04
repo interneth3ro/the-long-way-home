@@ -93,11 +93,11 @@ class IllustratedExteriorStaticTest(unittest.TestCase):
         self.assertEqual([configure.index(x) for x in order], sorted(configure.index(x) for x in order))
         self.assertEqual(SOURCE.count('_effective_renderer = terrain_renderer'), 1)
         self.assertNotIn('preload(', SOURCE)
-        for name in ('_present_illustrated_chunk', '_retire_illustrated_chunk'):
-            self.assertIn('if _effective_renderer != TerrainRenderer.ILLUSTRATED:\n\t\treturn true', body(SOURCE, name))
+        self.assertIn('if _effective_renderer != TerrainRenderer.ILLUSTRATED:\n\t\treturn true', body(SOURCE, '_present_illustrated_chunk'))
+        self.assertIn('if _effective_renderer == TerrainRenderer.LEGACY:\n\t\treturn true', body(SOURCE, '_retire_illustrated_chunk'))
         budget = body(SOURCE, '_generate_budget')
         self.assertIn('chunk.configure(coordinate, _generator, _state, _effective_renderer == TerrainRenderer.LEGACY)', budget)
-        self.assertIn('if _effective_renderer == TerrainRenderer.ILLUSTRATED:\n\t\t\tchunk.write_tint(', budget)
+        self.assertIn('if _effective_renderer != TerrainRenderer.LEGACY:\n\t\t\tchunk.write_tint(', budget)
         self.assertNotIn('initialize(', budget)
 
     def test_ground_only_gate_preserves_exact_draw_commands_and_details(self):
@@ -165,7 +165,7 @@ class IllustratedExteriorStaticTest(unittest.TestCase):
 
     def test_initial_25_revision_retention_movement_and_reload_model(self):
         for text in ('loading_radius: int = 2', 'retention_margin: int = 1', 'chunks_per_frame: int = 2',
-                     'range(mini(chunks_per_frame, _pending.size()))', '_pending.clear()',
+                     'range(mini(budget, _pending.size()))', '_pending.clear()',
                      '_chunks[coordinate].state_revision != _revision', '_distance(coordinate, center) > retained_radius'):
             self.assertIn(text, SOURCE)
         chunks = {}
