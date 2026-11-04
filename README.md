@@ -1769,10 +1769,9 @@ movement at the same 240 pixels per second as cardinal movement. Dave's local
 origin is his ground-contact position; artwork stays under `Visual`, aligned to
 that origin without changing the controller or camera.
 
-The following four Dave sections preserve historical artwork and calibration
-records. The legacy migration section supersedes their active presentation and
-playtest instructions (PR #25, merged).
-All newer artwork remains preserved as inactive assets.
+The following Dave baseline sections preserve historical artwork and calibration
+records. The candidate rework below supersedes their active presentation on its
+feature branch; previous artwork and import sidecars remain preserved.
 
 ### Dave static sprite baseline (PR #21, merged)
 
@@ -2100,6 +2099,101 @@ Verify collision, Y-sorting, camera follow/zoom, Computer interaction, dialogue
 completion and objective activation/tracker behavior. Check WASD and arrows,
 and confirm Shift does not change speed. Pixel-art integration, pose-height
 variation and per-frame anchor compensation require owner visual assessment.
+
+### Dave supplied atlas rework (feature branch, pending acceptance and merge)
+
+Baseline: `57b3d34e325acfffafe147d2500bf27dfc7587d7`. The owner-supplied
+`TLWH_Dave_Rework_Codex_Package.zip` provides the actual candidate PNG and JSON;
+the ignored older animation experiment is not an input. The stable pair lives at
+`assets/characters/dave/dave_idle_walk_4dir.{png,json}`. JSON is an authoritative
+integration reference, not a runtime loader. Its historical `draft.source`
+(`dave_idle_south.png`) and generation prompts remain unchanged; actual
+`meta.image` and frame records determine this integration. Those prompts are
+provenance, not additional implementation instructions or verified runtime claims.
+
+The 1086 x 1448 RGBA8888 atlas has 6 x 8 untrimmed 181-pixel cells. Rows are
+`idle_south`, `walk_south`, `idle_west`, `walk_west`, `idle_east`, `walk_east`,
+`idle_north`, `walk_north`; row `r` plays indices `6*r` through `6*r+5` forward.
+The existing `AnimationPlayer` and eight clip names remain. Idle keys are 0.2 s
+apart (1.2 s loop); walking keys are 0.1 s apart (0.6 s loop). RESET selects
+south idle frame 0. One fixed texture and offset replace the former sheet and
+offset tracks. Nearest filtering, lossless import and disabled mipmaps remain.
+
+At alpha >=128, actual silhouette heights are 163-172 pixels, rather than the
+181-pixel cell height. Uniform scale `91/172 = 0.529069767` gives approximately
+86.24-91 world units, comparable to the former 85.65-91. The shared source anchor
+is `(94,174)` with `centered=false` and offset `(-94,-174)`: X approximates the
+front/rear body center and Y the idle boot baseline. Idle lower edges span
+172-175, within about 1.06 world units of this anchor; walk lower edges span
+171-177. No selective registration corrections are justified by these small
+measurements alone. Walking asymmetry and boot lifting remain intact for owner
+assessment. This is an initial visual calibration, not a JSON-defined pivot or
+an accepted final scale. Controller bytes, non-sprite nodes, collision radii,
+camera, interaction, inputs, transitions and 240-unit movement speed are unchanged.
+
+Source PNG SHA-256:
+`45c10cce9a126fd5b87df0ece8a111748395202f3781a6820dabd8efcaddaa3d`.
+Unchanged JSON SHA-256:
+`216603c6a8163643ecfcbf69ff9e4fdeb1f999dab00740a63d1b4d7b6cea1cec`.
+Cleaned PNG SHA-256:
+`d008e4b4467fec2d83da65dd116d50ac275b0337827e63ee636197350d1bbf0d`.
+
+The owner separately authorized deterministic pixel cleanup. The image-editor
+candidate was rejected because it changed artwork. The integrated PNG instead
+changes **only alpha**, clearing 105,541 near-invisible exterior pixels originally
+at alpha 1-4/255. For each cell independently, protect every pixel within a
+three-pixel Chebyshev distance of any alpha >=16 pixel; clear alpha 1-4 only outside
+that protected area. No color filtering, RGB changes, resampling, frame movement,
+or removal of higher-alpha pixels occurs. All alpha >=5 values and all RGB bytes
+are unchanged; visible silhouettes are identical. Changes occur in all 48 cells,
+with atlas-wide bounding rectangle `[0,0,1086,1448)`. Per-frame changed counts,
+left to right, provide the cell distribution:
+
+| Row | Changed alpha pixels in frames 00-05 |
+| --- | --- |
+| idle_south | 2132, 2753, 2594, 2644, 2913, 2054 |
+| walk_south | 2307, 1773, 2279, 2263, 2378, 2082 |
+| idle_west | 1083, 1798, 1773, 2478, 1354, 1090 |
+| walk_west | 1822, 2212, 2040, 2104, 2178, 1682 |
+| idle_east | 2008, 2422, 1584, 2137, 1645, 1839 |
+| walk_east | 2201, 2605, 2184, 2715, 2808, 1581 |
+| idle_north | 2586, 1958, 2051, 3327, 3731, 2298 |
+| walk_north | 2430, 2562, 2004, 2262, 2455, 2362 |
+
+The original ZIP remains untouched; an exact extracted PNG reference is preserved
+locally in ignored `artifacts/tmp/dave-rework-preflight-20261104/original.png`
+through acceptance. Old tracked Dave assets and ignored experiments are retained.
+Gray-background source inspection shows that the transparent preview exaggerates
+low-alpha color residue. Ambiguous pixels near silhouettes remain protected;
+cell boundaries retain faint alpha up to 26/255, with no alpha >=128 boundary
+pixels. This is not a claim of perfect transparency or artistic acceptance.
+
+Focused checks: `python -B -m unittest discover -s tests -p static_dave_rework_test.py`.
+Full static suite: `python -B -m unittest discover -s tests -p 'static_*test.py'`.
+These check PNG CRCs/alpha/visible bounds, all 48 metadata records, animation
+mapping/timing, resource paths, import settings and preserved nonvisual contracts.
+The inactive Stage 3C plan check reads Dave from its sealed historical revision;
+its manifest and historical input hashes are unchanged by this rework.
+No Godot execution was performed. The unchanged Native runner allows 60 seconds
+for its static phase; the observed full suite takes about 279 seconds. Its limits
+were not changed and it was not dispatched. Engine import/playback remains
+unverified, and graphical acceptance belongs to the owner. Follow the
+[restricted testing policy](docs/LOCAL_TESTING.md).
+
+Owner F5 acceptance remains pending. Record PASS/FAIL and observations for:
+
+- [ ] Correct character design/details in ship interior and exterior; comparable size.
+- [ ] Four idle and four walking directions, correct order and natural cadence.
+- [ ] Prompt stop/start/direction changes without flicker, jumps or restarts.
+- [ ] Grounded idle feet and natural walking lift, without distracting sliding/jitter.
+- [ ] Clean edges on varied backgrounds; no clipped boots or frame bleed.
+- [ ] Camera/zoom, collision/obstacles, interaction ranges/prompts and controls.
+- [ ] Boarding and both hatch transitions; responsive normal gameplay.
+
+Scale or timing tuning requires owner observations. The first exterior transition
+delay remains separate in [issue #144](https://github.com/interneth3ro/the-long-way-home/issues/144).
+Keep the PR draft until acceptance; merge and later asset cleanup require separate
+owner action. No old Dave assets are deleted here.
 
 ### Existing environment and gameplay
 

@@ -1,0 +1,1099 @@
+{
+  "frames": {
+    "idle_south_00": {
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "sourceSize": {
+        "w": 181,
+        "h": 181
+      },
+      "duration": 200
+    },
+    "idle_south_01": {
+      "frame": {
+        "x": 181,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "sourceSize": {
+        "w": 181,
+        "h": 181
+      },
+      "duration": 200
+    },
+    "idle_south_02": {
+      "frame": {
+        "x": 362,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "sourceSize": {
+        "w": 181,
+        "h": 181
+      },
+      "duration": 200
+    },
+    "idle_south_03": {
+      "frame": {
+        "x": 543,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "sourceSize": {
+        "w": 181,
+        "h": 181
+      },
+      "duration": 200
+    },
+    "idle_south_04": {
+      "frame": {
+        "x": 724,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "sourceSize": {
+        "w": 181,
+        "h": 181
+      },
+      "duration": 200
+    },
+    "idle_south_05": {
+      "frame": {
+        "x": 905,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "sourceSize": {
+        "w": 181,
+        "h": 181
+      },
+      "duration": 200
+    },
+    "walk_south_00": {
+      "frame": {
+        "x": 0,
+        "y": 181,
+        "w": 181,
+        "h": 181
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "sourceSize": {
+        "w": 181,
+        "h": 181
+      },
+      "duration": 100
+    },
+    "walk_south_01": {
+      "frame": {
+        "x": 181,
+        "y": 181,
+        "w": 181,
+        "h": 181
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "sourceSize": {
+        "w": 181,
+        "h": 181
+      },
+      "duration": 100
+    },
+    "walk_south_02": {
+      "frame": {
+        "x": 362,
+        "y": 181,
+        "w": 181,
+        "h": 181
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "sourceSize": {
+        "w": 181,
+        "h": 181
+      },
+      "duration": 100
+    },
+    "walk_south_03": {
+      "frame": {
+        "x": 543,
+        "y": 181,
+        "w": 181,
+        "h": 181
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "sourceSize": {
+        "w": 181,
+        "h": 181
+      },
+      "duration": 100
+    },
+    "walk_south_04": {
+      "frame": {
+        "x": 724,
+        "y": 181,
+        "w": 181,
+        "h": 181
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "sourceSize": {
+        "w": 181,
+        "h": 181
+      },
+      "duration": 100
+    },
+    "walk_south_05": {
+      "frame": {
+        "x": 905,
+        "y": 181,
+        "w": 181,
+        "h": 181
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "sourceSize": {
+        "w": 181,
+        "h": 181
+      },
+      "duration": 100
+    },
+    "idle_west_00": {
+      "frame": {
+        "x": 0,
+        "y": 362,
+        "w": 181,
+        "h": 181
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "sourceSize": {
+        "w": 181,
+        "h": 181
+      },
+      "duration": 200
+    },
+    "idle_west_01": {
+      "frame": {
+        "x": 181,
+        "y": 362,
+        "w": 181,
+        "h": 181
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "sourceSize": {
+        "w": 181,
+        "h": 181
+      },
+      "duration": 200
+    },
+    "idle_west_02": {
+      "frame": {
+        "x": 362,
+        "y": 362,
+        "w": 181,
+        "h": 181
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "sourceSize": {
+        "w": 181,
+        "h": 181
+      },
+      "duration": 200
+    },
+    "idle_west_03": {
+      "frame": {
+        "x": 543,
+        "y": 362,
+        "w": 181,
+        "h": 181
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "sourceSize": {
+        "w": 181,
+        "h": 181
+      },
+      "duration": 200
+    },
+    "idle_west_04": {
+      "frame": {
+        "x": 724,
+        "y": 362,
+        "w": 181,
+        "h": 181
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "sourceSize": {
+        "w": 181,
+        "h": 181
+      },
+      "duration": 200
+    },
+    "idle_west_05": {
+      "frame": {
+        "x": 905,
+        "y": 362,
+        "w": 181,
+        "h": 181
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "sourceSize": {
+        "w": 181,
+        "h": 181
+      },
+      "duration": 200
+    },
+    "walk_west_00": {
+      "frame": {
+        "x": 0,
+        "y": 543,
+        "w": 181,
+        "h": 181
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "sourceSize": {
+        "w": 181,
+        "h": 181
+      },
+      "duration": 100
+    },
+    "walk_west_01": {
+      "frame": {
+        "x": 181,
+        "y": 543,
+        "w": 181,
+        "h": 181
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "sourceSize": {
+        "w": 181,
+        "h": 181
+      },
+      "duration": 100
+    },
+    "walk_west_02": {
+      "frame": {
+        "x": 362,
+        "y": 543,
+        "w": 181,
+        "h": 181
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "sourceSize": {
+        "w": 181,
+        "h": 181
+      },
+      "duration": 100
+    },
+    "walk_west_03": {
+      "frame": {
+        "x": 543,
+        "y": 543,
+        "w": 181,
+        "h": 181
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "sourceSize": {
+        "w": 181,
+        "h": 181
+      },
+      "duration": 100
+    },
+    "walk_west_04": {
+      "frame": {
+        "x": 724,
+        "y": 543,
+        "w": 181,
+        "h": 181
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "sourceSize": {
+        "w": 181,
+        "h": 181
+      },
+      "duration": 100
+    },
+    "walk_west_05": {
+      "frame": {
+        "x": 905,
+        "y": 543,
+        "w": 181,
+        "h": 181
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "sourceSize": {
+        "w": 181,
+        "h": 181
+      },
+      "duration": 100
+    },
+    "idle_east_00": {
+      "frame": {
+        "x": 0,
+        "y": 724,
+        "w": 181,
+        "h": 181
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "sourceSize": {
+        "w": 181,
+        "h": 181
+      },
+      "duration": 200
+    },
+    "idle_east_01": {
+      "frame": {
+        "x": 181,
+        "y": 724,
+        "w": 181,
+        "h": 181
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "sourceSize": {
+        "w": 181,
+        "h": 181
+      },
+      "duration": 200
+    },
+    "idle_east_02": {
+      "frame": {
+        "x": 362,
+        "y": 724,
+        "w": 181,
+        "h": 181
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "sourceSize": {
+        "w": 181,
+        "h": 181
+      },
+      "duration": 200
+    },
+    "idle_east_03": {
+      "frame": {
+        "x": 543,
+        "y": 724,
+        "w": 181,
+        "h": 181
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "sourceSize": {
+        "w": 181,
+        "h": 181
+      },
+      "duration": 200
+    },
+    "idle_east_04": {
+      "frame": {
+        "x": 724,
+        "y": 724,
+        "w": 181,
+        "h": 181
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "sourceSize": {
+        "w": 181,
+        "h": 181
+      },
+      "duration": 200
+    },
+    "idle_east_05": {
+      "frame": {
+        "x": 905,
+        "y": 724,
+        "w": 181,
+        "h": 181
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "sourceSize": {
+        "w": 181,
+        "h": 181
+      },
+      "duration": 200
+    },
+    "walk_east_00": {
+      "frame": {
+        "x": 0,
+        "y": 905,
+        "w": 181,
+        "h": 181
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "sourceSize": {
+        "w": 181,
+        "h": 181
+      },
+      "duration": 100
+    },
+    "walk_east_01": {
+      "frame": {
+        "x": 181,
+        "y": 905,
+        "w": 181,
+        "h": 181
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "sourceSize": {
+        "w": 181,
+        "h": 181
+      },
+      "duration": 100
+    },
+    "walk_east_02": {
+      "frame": {
+        "x": 362,
+        "y": 905,
+        "w": 181,
+        "h": 181
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "sourceSize": {
+        "w": 181,
+        "h": 181
+      },
+      "duration": 100
+    },
+    "walk_east_03": {
+      "frame": {
+        "x": 543,
+        "y": 905,
+        "w": 181,
+        "h": 181
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "sourceSize": {
+        "w": 181,
+        "h": 181
+      },
+      "duration": 100
+    },
+    "walk_east_04": {
+      "frame": {
+        "x": 724,
+        "y": 905,
+        "w": 181,
+        "h": 181
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "sourceSize": {
+        "w": 181,
+        "h": 181
+      },
+      "duration": 100
+    },
+    "walk_east_05": {
+      "frame": {
+        "x": 905,
+        "y": 905,
+        "w": 181,
+        "h": 181
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "sourceSize": {
+        "w": 181,
+        "h": 181
+      },
+      "duration": 100
+    },
+    "idle_north_00": {
+      "frame": {
+        "x": 0,
+        "y": 1086,
+        "w": 181,
+        "h": 181
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "sourceSize": {
+        "w": 181,
+        "h": 181
+      },
+      "duration": 200
+    },
+    "idle_north_01": {
+      "frame": {
+        "x": 181,
+        "y": 1086,
+        "w": 181,
+        "h": 181
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "sourceSize": {
+        "w": 181,
+        "h": 181
+      },
+      "duration": 200
+    },
+    "idle_north_02": {
+      "frame": {
+        "x": 362,
+        "y": 1086,
+        "w": 181,
+        "h": 181
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "sourceSize": {
+        "w": 181,
+        "h": 181
+      },
+      "duration": 200
+    },
+    "idle_north_03": {
+      "frame": {
+        "x": 543,
+        "y": 1086,
+        "w": 181,
+        "h": 181
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "sourceSize": {
+        "w": 181,
+        "h": 181
+      },
+      "duration": 200
+    },
+    "idle_north_04": {
+      "frame": {
+        "x": 724,
+        "y": 1086,
+        "w": 181,
+        "h": 181
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "sourceSize": {
+        "w": 181,
+        "h": 181
+      },
+      "duration": 200
+    },
+    "idle_north_05": {
+      "frame": {
+        "x": 905,
+        "y": 1086,
+        "w": 181,
+        "h": 181
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "sourceSize": {
+        "w": 181,
+        "h": 181
+      },
+      "duration": 200
+    },
+    "walk_north_00": {
+      "frame": {
+        "x": 0,
+        "y": 1267,
+        "w": 181,
+        "h": 181
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "sourceSize": {
+        "w": 181,
+        "h": 181
+      },
+      "duration": 100
+    },
+    "walk_north_01": {
+      "frame": {
+        "x": 181,
+        "y": 1267,
+        "w": 181,
+        "h": 181
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "sourceSize": {
+        "w": 181,
+        "h": 181
+      },
+      "duration": 100
+    },
+    "walk_north_02": {
+      "frame": {
+        "x": 362,
+        "y": 1267,
+        "w": 181,
+        "h": 181
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "sourceSize": {
+        "w": 181,
+        "h": 181
+      },
+      "duration": 100
+    },
+    "walk_north_03": {
+      "frame": {
+        "x": 543,
+        "y": 1267,
+        "w": 181,
+        "h": 181
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "sourceSize": {
+        "w": 181,
+        "h": 181
+      },
+      "duration": 100
+    },
+    "walk_north_04": {
+      "frame": {
+        "x": 724,
+        "y": 1267,
+        "w": 181,
+        "h": 181
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "sourceSize": {
+        "w": 181,
+        "h": 181
+      },
+      "duration": 100
+    },
+    "walk_north_05": {
+      "frame": {
+        "x": 905,
+        "y": 1267,
+        "w": 181,
+        "h": 181
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "sourceSize": {
+        "w": 181,
+        "h": 181
+      },
+      "duration": 100
+    }
+  },
+  "meta": {
+    "image": "dave_idle_walk_4dir.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 1086,
+      "h": 1448
+    },
+    "scale": "1",
+    "frameTags": [
+      {
+        "name": "idle_south",
+        "from": 0,
+        "to": 5,
+        "direction": "forward"
+      },
+      {
+        "name": "walk_south",
+        "from": 6,
+        "to": 11,
+        "direction": "forward"
+      },
+      {
+        "name": "idle_west",
+        "from": 12,
+        "to": 17,
+        "direction": "forward"
+      },
+      {
+        "name": "walk_west",
+        "from": 18,
+        "to": 23,
+        "direction": "forward"
+      },
+      {
+        "name": "idle_east",
+        "from": 24,
+        "to": 29,
+        "direction": "forward"
+      },
+      {
+        "name": "walk_east",
+        "from": 30,
+        "to": 35,
+        "direction": "forward"
+      },
+      {
+        "name": "idle_north",
+        "from": 36,
+        "to": 41,
+        "direction": "forward"
+      },
+      {
+        "name": "walk_north",
+        "from": 42,
+        "to": 47,
+        "direction": "forward"
+      }
+    ]
+  },
+  "draft": {
+    "source": "assets/characters/dave/dave_idle_south.png",
+    "columns": 6,
+    "rows": 8,
+    "cell_size": {
+      "w": 181,
+      "h": 181
+    },
+    "row_order": [
+      "idle_south",
+      "walk_south",
+      "idle_west",
+      "walk_west",
+      "idle_east",
+      "walk_east",
+      "idle_north",
+      "walk_north"
+    ],
+    "suggested_fps": {
+      "idle": 5,
+      "walk": 10
+    },
+    "status": "Generated draft; animation timing and frame registration have not been verified in-engine.",
+    "validation": "PNG size and RGBA format checked; sampled horizontal cell boundaries contain no pixels with alpha above 128. No Godot execution.",
+    "generation_tool": "Built-in image_gen",
+    "prompt": "Use case: identity-preserve.\nAsset type: transparent 2D game character animation spritesheet.\nInput image: the attached Dave sprite is the authoritative character identity, clothing, proportions, materials, and rendering style reference. Create a NEW animation sheet derived from this reference, not a change to the source file.\n\nCreate ONE precise regular spritesheet, 1536 pixels wide by 2048 pixels high, exactly 6 columns and 8 rows, 48 separate complete full-body sprites. Each cell is exactly 256x256 pixels, no spacing between cells, no border. All sprites centered horizontally in their own cell with a consistent foot ground line about 242 pixels from the top of that cell, and identical character scale about 224 pixels tall. Never let any sprite extend into another cell. Keep safe transparent margins. No text, no labels, no drawn grid, no legend, no background, no cast shadows.\n\nCharacter invariants: same rugged adult man, tousled spiky reddish-brown hair, brown beard, serious expression, broad muscular build and the original head/body proportions; orange shoulder armor, charcoal gray suit and vest, gray harness, two small red-and-cyan chest details on FRONT only, bare muscular forearms, heavy charcoal gloves, orange knee armor, orange/gray boots, brown side pouches. Keep silhouette, costume details, colors, pixel-textured polished sprite shading, consistent light direction, and camera elevation from reference. Do NOT turn into chibi or radically simplify. Left/right views must be true screen-left/screen-right facings, not diagonal. North is an anatomically coherent rear view with back of hair, no face, rear of gray/orange body armor and harness; do not invent a huge backpack or weapons.\n\nLayout, top to bottom, each row reads six sequential animation frames left to right:\nROW 1: IDLE SOUTH, facing viewer/down.\nROW 2: WALK SOUTH, facing viewer/down.\nROW 3: IDLE WEST, facing screen left.\nROW 4: WALK WEST, facing screen left.\nROW 5: IDLE EAST, facing screen right.\nROW 6: WALK EAST, facing screen right.\nROW 7: IDLE NORTH, facing away/up; strictly back view in all six frames.\nROW 8: WALK NORTH, facing away/up; strictly back view in all six frames.\n\nIdle rows: six frames form a quiet seamless breathing cycle, feet planted and same stance; torso/shoulders gently rise and settle by only 1-2 pixels; one brief blink in frame 4 where eyes are visible. Do not translate the whole character or change face/costume.\nWalk rows: six distinct, sequential walk-in-place poses, anatomically believable, alternating legs and opposing arm swing. Frames 1-3 advance from left-leg forward/right-leg back contact through the passing position to push-off; frames 4-6 mirror the gait phase with right-leg forward. Knees bend and boots lift naturally. Last frame transitions smoothly to first. Keep torso/head anchored with tiny natural vertical bob, constant scale, preserve both arms and both legs, no extra limbs, no costume variation.\nDeliver an actual RGBA image with genuine transparent alpha, not a checkerboard painted into the image. Sharp clean sprite edges, no captions, no watermark. Prioritize exact row count, exact column count, uniform grid placement and frame-to-frame identity.",
+    "transparency_refinement_prompt": "Use case: background-extraction.\nEdit target: image 1 is a 6-column, 8-row spritesheet containing 48 Dave animation sprites.\nPrimary request: clean up transparency ONLY. Remove ALL stray red, yellow, olive, green and colored speckles, tiny floating marks, edge halos, shadows and residual background around and between the characters. Every pixel not part of a character must have completely transparent alpha. Crisp clean cutout silhouettes. Opaque interiors, naturally antialiased edges.\nPreserve the existing 48 characters, their six-column/eight-row regular grid positions, costume, consistent scale, walking poses, expressions, shading, and eight animation rows exactly. Do not discard, replace or recolor the actual characters.\nRows top to bottom remain idle south, walk south, idle west, walk west, idle east, walk east, idle north, walk north. Six frames per row. All characters must be visible with full bodies and both boots. No text, no labels, no gridlines, no watermark. Output one clean transparent RGBA spritesheet."
+  }
+}
