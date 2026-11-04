@@ -2276,7 +2276,7 @@ acceptance does not authorize post-merge cleanup.
 
 East/west refinement, overall visual scale and cadence tuning remain separate work.
 
-### Dave east/west walking v2 (feature branch, pending owner acceptance and merge)
+### Dave east/west walking v2 (owner accepted, pending merge)
 
 `codex/dave-east-west-walk-v2` starts at merged PR #150 baseline
 `7fb9925c8d044be49bbf79901047bea3c3dcf717`. Only runtime atlas cells 30-35
@@ -2312,7 +2312,8 @@ Silhouettes are 165-166 atlas pixels high, compared with the old east walk's
 cell-mirrored west walk found retained costume detail, clear margins and no visible
 clipping or haze. Mirroring preserves ground-contact rows. It reflects the
 source anchor x=94 to x=87 within the 181-wide cell (seven atlas pixels, about
-3.70 world pixels); this small visual asymmetry is retained for owner assessment.
+3.70 world pixels); the owner found no noticeable visual or gameplay issue.
+No corrective offset adjustment is required.
 No compensating offset, physics-origin or collision change is introduced.
 
 Both `walk_east` and `walk_west` use frames 30-35 at the original 10 FPS.
@@ -2339,21 +2340,28 @@ flip states, original durations/idle indices, import metadata and exact scene
 preservation after removing only the intended tracks/remap. Controller, movement,
 camera, collision, interactions, world scenes and overall scale stay unchanged.
 No agent-run Godot import, headless test, graphical launch, playable scene or
-performance probe is claimed. Owner normal-F5 acceptance is **NOT RUN**; keep
-the PR draft until the owner records PASS/FAIL and observations for each check:
+performance probe is claimed. Owner normal-F5 acceptance on 2026-11-04 is
+**12/12 PASS** for implementation `7d0e2ed7d971478cd1f6197c5d624fb4bd74c3a6`.
+Observations: none. The implementation matches the approved scope; east/west
+share one authoritative six-frame animation, flipped only for west walking.
+No corrections are required. The existing 8 focused and 392 full static-test
+PASS results remain the automated validation; automated Godot verification was
+not performed. PR #151 is accepted to proceed to Ready for Review and normal
+merge. This acceptance records owner gameplay verification, not an agent engine
+run or a post-merge cleanup request.
 
-- [ ] East walking shows the corrected six-frame gait.
-- [ ] West walking uses the same gait mirrored horizontally.
-- [ ] Both directions animate smoothly at the existing playback rate.
-- [ ] East/west transitions work without flicker or jumping.
-- [ ] Stopping west restores the original west idle without an unwanted flip.
-- [ ] Stopping east restores the original east idle artwork.
-- [ ] North/south animations remain correctly oriented after horizontal movement.
-- [ ] Foot grounding, proportions and registration are acceptable, including mirrored alignment.
-- [ ] No clipping, transparency artifacts, halos or frame bleeding.
-- [ ] Dave remains approximately the same apparent size.
-- [ ] Movement, collisions, interactions, camera and controls remain unchanged.
-- [ ] Ship interior/exterior gameplay remains responsive.
+- [x] East walking shows the corrected six-frame gait.
+- [x] West walking uses the same gait mirrored horizontally.
+- [x] Both directions animate smoothly at the existing playback rate.
+- [x] East/west transitions work without flicker or jumping.
+- [x] Stopping west restores the original west idle without an unwanted flip.
+- [x] Stopping east restores the original east idle artwork.
+- [x] North/south animations remain correctly oriented after horizontal movement.
+- [x] Foot grounding, proportions and registration are acceptable, including mirrored alignment.
+- [x] No clipping, transparency artifacts, halos or frame bleeding.
+- [x] Dave remains approximately the same apparent size.
+- [x] Movement, collisions, interactions, camera and controls remain unchanged.
+- [x] Ship interior/exterior gameplay remains responsive.
 
 Idle mirroring, overall display scale and cadence tuning remain deferred.
 
