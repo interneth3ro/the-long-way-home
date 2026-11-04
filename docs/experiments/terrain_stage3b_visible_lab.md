@@ -1,6 +1,9 @@
 # Stage 3B — visible continuous terrain laboratory
 
-**2026-11-03; feature branch, pending merge and owner visual acceptance.**
+**2026-11-03; feature branch, pending merge. Isolated lab owner visual acceptance: PASS.**
+The one-time authorized execution is recorded at the end of this document; its
+grant is consumed. Preparation/proposal statements below retain their original
+review context and are not current execution authority.
 Implementation authority comes from the owner's Stage 3B handoff; execution
 authority does not. See the dated [architecture amendment](terrain_stage3_architecture_decisions.md#owner-amendment--2026-11-03-isolated-visible-stage-3b-laboratory).
 
@@ -423,3 +426,50 @@ passed normal stdout/stderr completion, a one-second timeout and a reduced-cap
 overflow check. Both forced-stop roots were confirmed absent; the helper still
 reported termination uncertain, as required. These checks create no stage and
 do not establish Godot GUI behavior, descendant containment or visual acceptance.
+
+## One-time execution and owner acceptance — 2026-11-03
+
+The owner explicitly authorized the exact procedure above against
+`4a9379b5b68b315fd90de22b355c98968615eb5c`. It ran once, without retries, from
+2026-11-04 00:40:42.4184475 UTC to 00:45:57.8422144 UTC (owner-local date
+2026-11-03). Both engine phases used the pinned standard executable and SHA-256.
+The source checkout was not used as the engine project.
+
+| Check or phase | Actual result |
+|---|---|
+| Preflight | Approved HEAD, clean tracked working tree/index, exact 15 protected untracked sidecars, 52-input byte pin and two aliases: PASS |
+| Complete Python static suite | PASS within the 360-second supervisor deadline; exit 0, termination certain and `OK` verified |
+| Cold headless preparation | One invocation, PASS within 60 seconds; exit 0, termination certain, output within 1,048,576 bytes; engine/script/parse/error scan clean |
+| Graphical lab | One invocation at 1280×720, PASS within 180 seconds; normal exit 0, termination certain, 172 combined output bytes; error scan clean |
+| Supervision/infrastructure | PASS; no timeout, overflow, forced kill, retry or failure evidence file |
+| Owner visual acceptance | **PASS — "Accepted; no issues observed"** |
+
+Runtime identified itself as `Godot Engine v4.7.2.stable.official.ed1daf0bf`.
+The graphical startup reported `OpenGL API 3.3.0 NVIDIA 610.88 - Compatibility`
+using `NVIDIA GeForce RTX 5070`. The owner was offered all three view presets,
+three zoom levels and F diagnostics, then supplied the acceptance above. No
+separate per-control coverage/count was supplied; do not invent one.
+
+The retained external stage is
+`D:\GameDev\Godot\TLWH-NativeStages\stage3b-fe733f2223f446bc804d4309cce6c186`.
+All 52 staged input hashes and original PNG import sidecars remained unchanged.
+Import generated only permitted `.godot/` data and the two specified lab
+script/shader UID sidecars outside the fixed input set. Post-visual verification
+passed for source revision/status/index, source/stage inputs, reviewed controls,
+15 protected sidecars, A1 branch, all three annotated tag objects and targets,
+backup bundle, both Stage 2B-2 manifests and ten PNGs, and PR #141's branch and
+six diagnostic files. A subsequent process-name check found zero standard Godot
+processes. The stage and all historical evidence remain preserved.
+
+The reviewed procedure retains only the final process result after success.
+Fresh static test count, per-phase elapsed times and preparation byte count were
+not retained; its checked PASS conditions above are the available results.
+No screenshots, routine successful-output log or additional evidence file was
+created. The final graphical diagnostic was just the engine/backend startup.
+
+This accepts the **isolated ground laboratory** only, with its documented absent
+production tint/overlays/objects and artwork mipmap limitation. It does not
+certify numerical GPU parity, performance budgets, production publication or
+renderer activation. The one-time grant is **consumed**; further engine execution
+requires a new explicit owner grant. No merge, cleanup, PR #141 change,
+production integration or Dave sprite work followed this evaluation.
