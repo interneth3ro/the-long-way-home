@@ -173,7 +173,13 @@ class FerriteIntegrationStaticTest(unittest.TestCase):
                      'construction/construction_controller.gd', 'scenes/world/planet_world_state.gd',
                      'scenes/player/interaction_detector.gd', 'scenes/ui/machine_ui.gd']:
             with self.subTest(path=path):
-                self.assertEqual(read(path), git_blob(base, path).decode().replace('\r\n', '\n'))
+                current = read(path)
+                if path == 'construction/construction_controller.gd':
+                    # PR A moves ghost opacity to the completed Extractor composite.
+                    # Every other byte of placement/recovery remains protected.
+                    current = current.replace('_ghost.is_ghost = true',
+                                              '_ghost.modulate = Color(1, 1, 1, 0.5)')
+                self.assertEqual(current, git_blob(base, path).decode().replace('\r\n', '\n'))
         for machine in ['smelter', 'fabricator']:
             self.assertIn('footprint_cells = Vector2i(2, 2)', read(f'inventory/{machine}.tres'))
 

@@ -514,6 +514,9 @@ and static-validation limits are recorded in the
 
 ## Extractor 128x128 footprint alignment (feature branch, pending merge)
 
+PR #153 subsequently merged at `0a00034`; owner F5 acceptance remains pending.
+The historical heading is retained for existing links.
+
 The owner approved Approach B2: `codex/extractor-footprint-128` changes only
 `inventory/extractor.tres` gameplay data from 2x2 cells / extraction point (32,32)
 to 4x4 cells / (64,64). The global construction grid remains 32 world units;
@@ -527,7 +530,11 @@ Only that point must qualify; full deposit containment is not required. The
 bottom-center anchor is footprint origin + (64,128). No shared placement,
 collision, production or recovery script changes are included. Production stays
 one ore/second into capacity 20; the packaged item identity remains unchanged.
-All four accepted directional artwork packages remain frozen and unintegrated.
+All four accepted directional artwork packages remained frozen and unintegrated
+at that footprint-only milestone. The subsequent [static artwork PR A](EXTRACTOR_STATIC_ARTWORK.md)
+shares their unchanged body, raised barrel and foreground layers between deployed
+and ghost Extractors, pending merge and owner F5 acceptance. It adds no animation
+or gameplay changes.
 
 Inspection and collection retain their 96-unit center-based range. Construction
 and B recovery retain their existing 160-unit nearest-footprint ranges. Larger

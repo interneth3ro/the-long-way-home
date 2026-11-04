@@ -1,0 +1,538 @@
+{
+  "scope": "Static directional integration PR A; no engine validation or animation authority",
+  "hash_provenance": "0 and 270: integration handoff pins; 90 and 180: baseline_90 and baseline_180 in the hash-pinned accepted 270 manifest, corroborated by preservation_validation.json",
+  "directions": [
+    {
+      "direction": 0,
+      "archive": "TLWH_Extractor_0_Prototype_v1.zip",
+      "archive_sha256": "59fd666a3206641172fb934766a9717e148333143468be5ffabbb57c617e81ef",
+      "manifest": "extractor/extractor_manifest.json",
+      "master": {
+        "size_px": [
+          1254,
+          1254
+        ],
+        "pixel_origin": "top_left",
+        "positive_axes": "x_right_y_down",
+        "anchor_px": [
+          632,
+          1139
+        ],
+        "anchor_world": [
+          0,
+          0
+        ],
+        "anchor_convention": "machine_local_bottom_center",
+        "source": "source/master_clean.png"
+      },
+      "scale": 0.11387900355871886,
+      "output_ports": [
+        {
+          "id": 1,
+          "orientation": 0,
+          "edge": "right",
+          "half": "upper",
+          "world_attachment_coordinates": null
+        },
+        {
+          "id": 2,
+          "orientation": 0,
+          "edge": "right",
+          "half": "lower",
+          "world_attachment_coordinates": null
+        }
+      ],
+      "assets": [
+        {
+          "path": "runtime/extractor_0_body.png",
+          "source_path": "source/layers/extractor_0_body_full.png",
+          "role": "body",
+          "orientation_degrees_clockwise": 0,
+          "shared_status": "0_degree_prototype_only",
+          "source_canvas_px": [
+            1254,
+            1254
+          ],
+          "crop_rect_px": [
+            66,
+            37,
+            1132,
+            1107
+          ],
+          "crop_padding_px": 4,
+          "exported_size_px": [
+            1132,
+            1107
+          ],
+          "anchor_relative_offset_px": [
+            -566,
+            -1102
+          ],
+          "draw_order": 0,
+          "movable": false,
+          "sha256": "781b64e99f76a77f32f195b7ba91ce25a335342d6a123820ddd4364e444cfb12",
+          "source_sha256": "018af64c38a8861835f5c5c2447bfc8a141dfe21ed3c24a4e0a245653163ba87"
+        },
+        {
+          "path": "runtime/extractor_0_barrel.png",
+          "source_path": "source/layers/extractor_0_barrel_full.png",
+          "role": "barrel",
+          "orientation_degrees_clockwise": 0,
+          "shared_status": "0_degree_prototype_only",
+          "source_canvas_px": [
+            1254,
+            1254
+          ],
+          "crop_rect_px": [
+            320,
+            274,
+            173,
+            418
+          ],
+          "crop_padding_px": 4,
+          "exported_size_px": [
+            173,
+            418
+          ],
+          "anchor_relative_offset_px": [
+            -312,
+            -865
+          ],
+          "draw_order": 1,
+          "movable": true,
+          "sha256": "6fe97e36cfc2a1630cf0e6ad531f876d2c4f5d493f7806318437d057dd3d0d62",
+          "source_sha256": "e3df9e11779301fd8ea09bb596a27a6688ca02a9cc915f00c556b28c801dbf10"
+        },
+        {
+          "path": "runtime/extractor_0_foreground.png",
+          "source_path": "source/layers/extractor_0_foreground_full.png",
+          "role": "foreground",
+          "orientation_degrees_clockwise": 0,
+          "shared_status": "0_degree_prototype_only",
+          "source_canvas_px": [
+            1254,
+            1254
+          ],
+          "crop_rect_px": [
+            296,
+            266,
+            238,
+            462
+          ],
+          "crop_padding_px": 4,
+          "exported_size_px": [
+            238,
+            462
+          ],
+          "anchor_relative_offset_px": [
+            -336,
+            -873
+          ],
+          "draw_order": 2,
+          "movable": false,
+          "sha256": "a2fe2f7f4495047f3b71cc6a6dfcff23d59e02ab15c434e13f68bd0098fa712d",
+          "source_sha256": "4da6dfc427d14c260cadabccb4cfbdfb14e6404ed746a6635e706242bef309cb"
+        }
+      ]
+    },
+    {
+      "direction": 90,
+      "archive": "TLWH_Extractor_90_Prototype_v1.zip",
+      "archive_sha256": "db8e1302e8696ee13dcf7f8d61f0c5d0920cea74a1b43ecaf08baa78cf62ad05",
+      "manifest": "extractor-90-prototype-v1/extractor_manifest.json",
+      "master": {
+        "size_px": [
+          1254,
+          1254
+        ],
+        "pixel_origin": "top_left",
+        "positive_axes": "x_right_y_down",
+        "anchor_px": [
+          632,
+          1139
+        ],
+        "anchor_world": [
+          0,
+          0
+        ],
+        "anchor_convention": "machine_local_bottom_center",
+        "source": "source/master_clean_90.png"
+      },
+      "scale": 0.11387900355871886,
+      "output_ports": [
+        {
+          "id": 1,
+          "orientation": 90,
+          "edge": "bottom",
+          "half": "right",
+          "world_attachment_coordinates": null
+        },
+        {
+          "id": 2,
+          "orientation": 90,
+          "edge": "bottom",
+          "half": "left",
+          "world_attachment_coordinates": null
+        }
+      ],
+      "assets": [
+        {
+          "path": "runtime/extractor_90_body.png",
+          "source_path": "source/layers/extractor_90_body_full.png",
+          "role": "body",
+          "orientation_degrees_clockwise": 90,
+          "shared_status": "90_degree_prototype_only",
+          "source_canvas_px": [
+            1254,
+            1254
+          ],
+          "crop_rect_px": [
+            149,
+            15,
+            966,
+            1128
+          ],
+          "crop_padding_px": 4,
+          "exported_size_px": [
+            966,
+            1128
+          ],
+          "anchor_relative_offset_px": [
+            -483,
+            -1124
+          ],
+          "draw_order": 0,
+          "movable": false,
+          "sha256": "551447ea9b8ab744809fbc66c9f99422e7155c6f8e54ece19f41a5690cb1c496",
+          "source_sha256": "00ec128997484d33ddb8b93a9cbe30c394cc9b8606740ebad6e8aa3b6312d326"
+        },
+        {
+          "path": "runtime/extractor_90_barrel.png",
+          "source_path": "source/layers/extractor_90_barrel_full.png",
+          "role": "barrel",
+          "orientation_degrees_clockwise": 90,
+          "shared_status": "90_degree_prototype_only",
+          "source_canvas_px": [
+            1254,
+            1254
+          ],
+          "crop_rect_px": [
+            588,
+            265,
+            185,
+            224
+          ],
+          "crop_padding_px": 4,
+          "exported_size_px": [
+            185,
+            224
+          ],
+          "anchor_relative_offset_px": [
+            -44,
+            -874
+          ],
+          "draw_order": 1,
+          "movable": true,
+          "sha256": "d3d9ef96cd30dd9c6e71466189b46635179e2f372916645b9a71255be63ef87f",
+          "source_sha256": "915d66bd821ab9d39a9cad914298770021c276589c0d891ba3edfd02ab40862b"
+        },
+        {
+          "path": "runtime/extractor_90_foreground.png",
+          "source_path": "source/layers/extractor_90_foreground_full.png",
+          "role": "foreground",
+          "orientation_degrees_clockwise": 90,
+          "shared_status": "90_degree_prototype_only",
+          "source_canvas_px": [
+            1254,
+            1254
+          ],
+          "crop_rect_px": [
+            276,
+            256,
+            706,
+            734
+          ],
+          "crop_padding_px": 4,
+          "exported_size_px": [
+            706,
+            734
+          ],
+          "anchor_relative_offset_px": [
+            -356,
+            -883
+          ],
+          "draw_order": 2,
+          "movable": false,
+          "sha256": "0dac6ad78a3bc752cd42313363f73dc8f0370d0366a35468fed79d07846868d4",
+          "source_sha256": "5bdecff7b3bd022c5f323ad614b77da337fadb3d75800d5937c3d3533ffb46ce"
+        }
+      ]
+    },
+    {
+      "direction": 180,
+      "archive": "TLWH_Extractor_180_Prototype_v1.zip",
+      "archive_sha256": "cb71fd45fbcf103e93853333fb740e4f0a93b932434896dae139439c92dc0647",
+      "manifest": "extractor-180-prototype-v1/extractor_manifest.json",
+      "master": {
+        "size_px": [
+          1254,
+          1254
+        ],
+        "pixel_origin": "top_left",
+        "positive_axes": "x_right_y_down",
+        "anchor_px": [
+          632,
+          1139
+        ],
+        "anchor_world": [
+          0,
+          0
+        ],
+        "anchor_convention": "machine_local_bottom_center",
+        "source": "source/master_clean_180.png"
+      },
+      "scale": 0.11387900355871886,
+      "output_ports": [
+        {
+          "id": 1,
+          "orientation": 180,
+          "edge": "left",
+          "half": "lower",
+          "world_attachment_coordinates": null
+        },
+        {
+          "id": 2,
+          "orientation": 180,
+          "edge": "left",
+          "half": "upper",
+          "world_attachment_coordinates": null
+        }
+      ],
+      "assets": [
+        {
+          "path": "runtime/extractor_180_body.png",
+          "source_path": "source/layers/extractor_180_body_full.png",
+          "role": "body",
+          "orientation_degrees_clockwise": 180,
+          "shared_status": "180_degree_prototype_only",
+          "source_canvas_px": [
+            1254,
+            1254
+          ],
+          "crop_rect_px": [
+            69,
+            21,
+            1127,
+            1122
+          ],
+          "crop_padding_px": 4,
+          "exported_size_px": [
+            1127,
+            1122
+          ],
+          "anchor_relative_offset_px": [
+            -563,
+            -1118
+          ],
+          "draw_order": 0,
+          "movable": false,
+          "sha256": "820cf5c41153529c8159628f99ef591f1436f9a4674f0cfa6f747a6f39358fad",
+          "source_sha256": "4d2163d6fdc2b62a31b32406fe6b53d77a425a46b61e54a8cfde89ba2def6dae"
+        },
+        {
+          "path": "runtime/extractor_180_barrel.png",
+          "source_path": "source/layers/extractor_180_barrel_full.png",
+          "role": "barrel",
+          "orientation_degrees_clockwise": 180,
+          "shared_status": "180_degree_prototype_only",
+          "source_canvas_px": [
+            1254,
+            1254
+          ],
+          "crop_rect_px": [
+            763,
+            253,
+            179,
+            425
+          ],
+          "crop_padding_px": 4,
+          "exported_size_px": [
+            179,
+            425
+          ],
+          "anchor_relative_offset_px": [
+            131,
+            -886
+          ],
+          "draw_order": 1,
+          "movable": true,
+          "sha256": "d86e7149e7b4b0eaea38a1f7084800f480771ca8173903839e17808d1454da81",
+          "source_sha256": "bbebec757c388fb35de054bcf6ac533a1e970d956a8c55c4bcfaab98f21ab71c"
+        },
+        {
+          "path": "runtime/extractor_180_foreground.png",
+          "source_path": "source/layers/extractor_180_foreground_full.png",
+          "role": "foreground",
+          "orientation_degrees_clockwise": 180,
+          "shared_status": "180_degree_prototype_only",
+          "source_canvas_px": [
+            1254,
+            1254
+          ],
+          "crop_rect_px": [
+            741,
+            241,
+            223,
+            463
+          ],
+          "crop_padding_px": 4,
+          "exported_size_px": [
+            223,
+            463
+          ],
+          "anchor_relative_offset_px": [
+            109,
+            -898
+          ],
+          "draw_order": 2,
+          "movable": false,
+          "sha256": "4c04de1a4c522b7d7f3fb08a432b8e882e3af0a846f4c94e44ff3c938b19a910",
+          "source_sha256": "7a3d6fcec5ba34639034e701d66d7c201a8a8c9ca7a6c30e10b9c932edba209d"
+        }
+      ]
+    },
+    {
+      "direction": 270,
+      "archive": "TLWH_Extractor_270_Prototype_v1.zip",
+      "archive_sha256": "021286d810d25fe5cd91d749cfa05d3440b7f61ccfb484aeb391d1923486f467",
+      "manifest": "extractor-270-prototype-v1/extractor_manifest.json",
+      "master": {
+        "size_px": [
+          1254,
+          1254
+        ],
+        "pixel_origin": "top_left",
+        "positive_axes": "x_right_y_down",
+        "anchor_px": [
+          632,
+          1139
+        ],
+        "anchor_world": [
+          0,
+          0
+        ],
+        "anchor_convention": "machine_local_bottom_center",
+        "source": "source/master_clean_270.png"
+      },
+      "scale": 0.11387900355871886,
+      "output_ports": [
+        {
+          "id": 1,
+          "orientation": 270,
+          "edge": "top",
+          "half": "left",
+          "world_attachment_coordinates": null
+        },
+        {
+          "id": 2,
+          "orientation": 270,
+          "edge": "top",
+          "half": "right",
+          "world_attachment_coordinates": null
+        }
+      ],
+      "assets": [
+        {
+          "path": "runtime/extractor_270_body.png",
+          "source_path": "source/layers/extractor_270_body_full.png",
+          "role": "body",
+          "orientation_degrees_clockwise": 270,
+          "shared_status": "270_degree_prototype_only",
+          "source_canvas_px": [
+            1254,
+            1254
+          ],
+          "crop_rect_px": [
+            107,
+            15,
+            1050,
+            1128
+          ],
+          "crop_padding_px": 4,
+          "exported_size_px": [
+            1050,
+            1128
+          ],
+          "anchor_relative_offset_px": [
+            -525,
+            -1124
+          ],
+          "draw_order": 0,
+          "movable": false,
+          "sha256": "ee492f80addc449ec89e19073ba8c971d746ab90aad440c8e8e6743eacaa6e5f",
+          "source_sha256": "f5b9ca7c258754a9ca9570c02d7abe34a471b14a00eb9f69616107325d22debf"
+        },
+        {
+          "path": "runtime/extractor_270_barrel.png",
+          "source_path": "source/layers/extractor_270_barrel_full.png",
+          "role": "barrel",
+          "orientation_degrees_clockwise": 270,
+          "shared_status": "270_degree_prototype_only",
+          "source_canvas_px": [
+            1254,
+            1254
+          ],
+          "crop_rect_px": [
+            534,
+            268,
+            206,
+            431
+          ],
+          "crop_padding_px": 4,
+          "exported_size_px": [
+            206,
+            431
+          ],
+          "anchor_relative_offset_px": [
+            -98,
+            -871
+          ],
+          "draw_order": 1,
+          "movable": true,
+          "sha256": "e09e57e1c5a1758fa96af9b52a9b52b2d86abc86cf2b86c46bf8af9a020f075e",
+          "source_sha256": "e761f5974d9bb3a4e6e4b7575173f789be4fb46949470b5ce9c56ed92618dd9c"
+        },
+        {
+          "path": "runtime/extractor_270_foreground.png",
+          "source_path": "source/layers/extractor_270_foreground_full.png",
+          "role": "foreground",
+          "orientation_degrees_clockwise": 270,
+          "shared_status": "270_degree_prototype_only",
+          "source_canvas_px": [
+            1254,
+            1254
+          ],
+          "crop_rect_px": [
+            436,
+            236,
+            368,
+            503
+          ],
+          "crop_padding_px": 4,
+          "exported_size_px": [
+            368,
+            503
+          ],
+          "anchor_relative_offset_px": [
+            -196,
+            -903
+          ],
+          "draw_order": 2,
+          "movable": false,
+          "sha256": "575a3d641985b9f635175676edd6d1407a48df435e672f8a7918aa72461e42e9",
+          "source_sha256": "56f61c3f1b5aee21bbef628a548f1550ff02e736b7205bfbc9266ff3ace89c73"
+        }
+      ]
+    }
+  ]
+}

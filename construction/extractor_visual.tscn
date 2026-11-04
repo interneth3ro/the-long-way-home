@@ -1,0 +1,18 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://construction/extractor_visual.gd" id="1_visual"]
+
+[node name="ExtractorVisual" type="Node2D"]
+texture_filter = 4
+position = Vector2(64, 128)
+scale = Vector2(0.11387900355871886, 0.11387900355871886)
+script = ExtResource("1_visual")
+
+[node name="Body" type="Sprite2D" parent="."]
+centered = false
+
+[node name="Barrel" type="Sprite2D" parent="."]
+centered = false
+
+[node name="Foreground" type="Sprite2D" parent="."]
+centered = false

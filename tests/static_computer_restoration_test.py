@@ -23,6 +23,9 @@ class ComputerRestorationStaticTest(unittest.TestCase):
             "scenes/main/scene_transition_controller.gd": [
                 (modal_guard.replace('return\n', 'return false\n'), '')],
             "construction/construction_controller.gd": [
+                # Static Extractor art fades the completed ghost composite.
+                # The separate PR A guard compares all other controller bytes.
+                ('_ghost.is_ghost = true', '_ghost.modulate = Color(1, 1, 1, 0.5)'),
                 ('return _detector.computer_modal_open() or transitions.is_transitioning()',
                  'return transitions.is_transitioning()')],
             "scenes/player/interaction_detector.gd": [
