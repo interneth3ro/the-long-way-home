@@ -25,12 +25,10 @@ MODIFIED = {'scenes/world/planet_exterior.gd', 'tests/static_terrain_stage3b_tes
 
 class Stage3CTest(unittest.TestCase):
     def test_exact_scope_and_protected_inputs(self):
-        delta = subprocess.check_output(['git','diff','--name-status',BASE,'--'],cwd=ROOT,text=True)
+        delta = subprocess.check_output(['git','diff','--name-status',BASE,'e5db8040d38bfd6b1ddb584d636af01052806b7c','--'],cwd=ROOT,text=True)
         inventory = dict((p,s) for s,p in (line.split('\t') for line in delta.splitlines()))
-        untracked = set(subprocess.check_output(['git','ls-files','--others','--exclude-standard'],cwd=ROOT,text=True).splitlines())
         receipt = json.loads((ROOT/'artifacts/logs/terrain-preservation-2026-11-03.json').read_text())
-        self.assertEqual(untracked-ADDED,set(receipt['protected_sidecars']))
-        inventory.update(dict.fromkeys(untracked & ADDED,'A'))
+        # Immutable PR #143 inventory; Stage 3D checks the current exact scope.
         self.assertEqual(inventory,{**dict.fromkeys(ADDED,'A'),**dict.fromkeys(MODIFIED,'M')})
         for path,entry in receipt['protected_sidecars'].items():
             self.assertEqual(hashlib.sha256((ROOT/path).read_bytes()).hexdigest(),entry['sha256'])
@@ -48,7 +46,13 @@ class Stage3CTest(unittest.TestCase):
         self.assertEqual(len(inputs),plan['input_count'])
         self.assertEqual(sum(e['bytes'] for e in inputs.values()),plan['source_bytes'])
         for path,entry in inputs.items():
-            raw = (ROOT/path).read_bytes()
+            # The consumed Stage 3C plan stays sealed to its merged source.
+            raw = (subprocess.check_output(['git','show','e5db8040d38bfd6b1ddb584d636af01052806b7c:'+path],cwd=ROOT)
+                   if path == 'scenes/world/planet_exterior.gd'
+                   else (ROOT/path).read_bytes())
+            if path == 'scenes/world/planet_exterior.gd':
+                # Historical manifest pins the approved CRLF serialization.
+                raw = raw.replace(b'\r\n', b'\n').replace(b'\n', b'\r\n')
             self.assertEqual((len(raw),hashlib.sha256(raw).hexdigest()),(entry['bytes'],entry['sha256']),path)
             if 'transform' in entry:
                 t = entry['transform']
@@ -65,8 +69,8 @@ class Stage3CTest(unittest.TestCase):
         self.assertEqual([p['timeout_seconds'] for p in plan['phases']],[60,300])
         self.assertEqual(plan['retries'],0)
 
-    def test_opt_in_default_and_no_failure_fallback(self):
-        self.assertIn('terrain_renderer: TerrainRenderer = TerrainRenderer.ILLUSTRATED',E)
+    def test_continuous_default_and_no_failure_fallback(self):
+        self.assertIn('terrain_renderer: TerrainRenderer = TerrainRenderer.CONTINUOUS',E)
         self.assertIn('enum TerrainRenderer { LEGACY, ILLUSTRATED, CONTINUOUS }',E)
         self.assertEqual(E.count('_effective_renderer = terrain_renderer'),1)
         config = body(E,'_configure_terrain_renderer')

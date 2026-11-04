@@ -62,14 +62,22 @@ owner's post-reboot playable-game acceptance is **7/7 PASS**, with zero failures
 and zero untested checklist items. Minor initial exterior-loading stutter is an
 explicitly accepted, non-blocking limitation; no formal performance benchmarking
 was performed. See the [final acceptance record](docs/ILLUSTRATED_EXTERIOR.md#final-pr-104-acceptance-2026-11-01).
-The [Stage 3C continuous exterior](docs/experiments/terrain_stage3c_exterior.md)
-adds an explicit Continuous opt-in on this feature branch, pending merge. The
+[Stage 3D](docs/experiments/terrain_stage3d_default.md) makes the accepted
+[Stage 3C continuous exterior](docs/experiments/terrain_stage3c_exterior.md)
+the production default on this feature branch, pending merge. The
 authorized one-time gameplay run passed process checks and received owner-reported
 PASS for seven listed gameplay areas; the grant is consumed. Configuration, rollback,
 limits and the exact acceptance record are documented there. Performance budgets
 and numerical parity remain uncertified.
-Illustrated rendering is the default; the exterior's Terrain Renderer property
-selects Legacy before first initialization for rollback.
+Illustrated remains an explicit rollback selection before a fresh exterior's
+first initialization; the production scene inherits Continuous (2). The owner
+confirms the final normal-F5 Stage 3D playtest PASS: correct continuous terrain and
+smooth exploration/new-chunk streaming without noticeable stuttering. The first
+interior-to-exterior transition was approximately 20 seconds, measured manually;
+this is accepted as deferred loading-performance/UX work in
+[Issue #144](https://github.com/interneth3ro/the-long-way-home/issues/144). See the
+[Stage 3D acceptance record](docs/experiments/terrain_stage3d_default.md#final-owner-gameplay-acceptance--2026-11-04).
+This documentation update runs no Godot; the prior agent-run plan remains inactive.
 
 The merged PR #103 shared presenter retains the accepted PR #102 isolated fixture
 as its default reference backend. Its historical acceptance remains separate.

@@ -85,7 +85,7 @@ class IllustratedExteriorStaticTest(unittest.TestCase):
             self.assertNotIn(forbidden,code)
 
     def test_default_selection_is_locked_once_and_legacy_does_no_illustrated_work(self):
-        self.assertIn('terrain_renderer: TerrainRenderer = TerrainRenderer.ILLUSTRATED', SOURCE)
+        self.assertIn('terrain_renderer: TerrainRenderer = TerrainRenderer.CONTINUOUS', SOURCE)
         configure = body(SOURCE, '_configure_terrain_renderer')
         order = ['if not _renderer_configured:', '_renderer_configured = true',
                  '_effective_renderer = terrain_renderer', 'if _effective_renderer == TerrainRenderer.ILLUSTRATED:',

@@ -693,13 +693,16 @@ graphical checks, merge and cleanup were not performed for this maintenance.
 
 ## Selection and rollback
 
-`PlanetExterior.terrain_renderer` defaults to `ILLUSTRATED`. Before the first
-`prepare_for_arrival()`, set it to `LEGACY` on the exterior instance, or set the
-root's Terrain Renderer Inspector property in
-[planet_exterior.tscn](../scenes/world/planet_exterior.tscn) to Legacy before
-starting a fresh playthrough. The equivalent serialized property is
-`terrain_renderer = 0` under the root node. Remove that explicit property to use
-the script's illustrated default again. A graphical launch still requires owner
+[Stage 3D](experiments/terrain_stage3d_default.md) changes
+`PlanetExterior.terrain_renderer` to default to `CONTINUOUS` (pending merge),
+with `ILLUSTRATED` retained as an explicit rollback selection. Before the first
+`prepare_for_arrival()`, set it to `ILLUSTRATED` on a fresh exterior instance, or
+set the root's Terrain Renderer property in
+[planet_exterior.tscn](../scenes/world/planet_exterior.tscn) to Illustrated (1)
+before a fresh playthrough. The production scene has no serialized override and
+inherits the script's Continuous default. An explicit Illustrated (1) scene
+selection overrides it; remove that property to use the script default again.
+Legacy (0) remains selectable. A graphical launch still requires owner
 authorization. Renderer selection is captured once; cached hatch revisits retain
 it. Stop and restart the playthrough to compare modes. There is no live hot toggle
 or automatic partial fallback.
@@ -1078,12 +1081,23 @@ draft; merge, further execution and cleanup require separate owner authorization
 
 [Stage 3C](experiments/terrain_stage3c_exterior.md) adds a sibling continuous
 presenter through the existing exterior queue, production tint and arrival
-receipts. Illustrated stays the default; continuous requires explicit selection
-before the exterior's first initialization. Existing gameplay classifications,
+receipts. Stage 3C retained Illustrated as default; the separately authorized
+[Stage 3D default change](experiments/terrain_stage3d_default.md) selects Continuous
+through the script default inherited by the production scene (pending merge).
+Select Illustrated explicitly
+before a fresh exterior's first initialization to roll back. Existing gameplay classifications,
 Ferrite, authored geometry and boarding contracts remain unchanged. Failures
 latch and block arrival; rollback requires a fresh illustrated exterior.
 The authorized one-time Stage 3C run passed static, import and gameplay-process
 checks, with owner-reported PASS for seven listed gameplay areas. See the
 [exact acceptance record](experiments/terrain_stage3c_exterior.md#one-time-execution-and-owner-acceptance--2026-11-04).
 The execution grant is consumed; performance budgets and numerical parity remain
-uncertified, and illustrated remains the production default.
+uncertified. The owner confirms the final normal-F5 Stage 3D playtest PASS:
+continuous terrain appeared correct and exploration/new-chunk streaming stayed
+smooth without noticeable stuttering. The first interior-to-exterior transition
+took approximately 20 seconds, measured manually, accepted as deferred
+loading-performance/UX work in
+[Issue #144](https://github.com/interneth3ro/the-long-way-home/issues/144).
+See the [Stage 3D acceptance record](experiments/terrain_stage3d_default.md#final-owner-gameplay-acceptance--2026-11-04)
+for provenance and coverage limits. No additional Godot run accompanies this
+acceptance documentation; the prior agent-supervised plan remains inactive.

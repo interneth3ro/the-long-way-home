@@ -2,7 +2,7 @@ class_name PlanetExterior
 extends Node2D
 
 enum TerrainRenderer { LEGACY, ILLUSTRATED, CONTINUOUS }
-@export var terrain_renderer: TerrainRenderer = TerrainRenderer.ILLUSTRATED
+@export var terrain_renderer: TerrainRenderer = TerrainRenderer.CONTINUOUS
 
 @export_range(1, 4, 1) var loading_radius: int = 2
 @export_range(1, 2, 1) var retention_margin: int = 1
