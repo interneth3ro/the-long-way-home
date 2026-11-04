@@ -1,0 +1,174 @@
+{
+  "frames": {
+    "walk_east_00": {
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "w": 512,
+        "h": 512
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 512,
+        "h": 512
+      },
+      "sourceSize": {
+        "w": 512,
+        "h": 512
+      },
+      "duration": 100
+    },
+    "walk_east_01": {
+      "frame": {
+        "x": 512,
+        "y": 0,
+        "w": 512,
+        "h": 512
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 512,
+        "h": 512
+      },
+      "sourceSize": {
+        "w": 512,
+        "h": 512
+      },
+      "duration": 100
+    },
+    "walk_east_02": {
+      "frame": {
+        "x": 1024,
+        "y": 0,
+        "w": 512,
+        "h": 512
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 512,
+        "h": 512
+      },
+      "sourceSize": {
+        "w": 512,
+        "h": 512
+      },
+      "duration": 100
+    },
+    "walk_east_03": {
+      "frame": {
+        "x": 0,
+        "y": 512,
+        "w": 512,
+        "h": 512
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 512,
+        "h": 512
+      },
+      "sourceSize": {
+        "w": 512,
+        "h": 512
+      },
+      "duration": 100
+    },
+    "walk_east_04": {
+      "frame": {
+        "x": 512,
+        "y": 512,
+        "w": 512,
+        "h": 512
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 512,
+        "h": 512
+      },
+      "sourceSize": {
+        "w": 512,
+        "h": 512
+      },
+      "duration": 100
+    },
+    "walk_east_05": {
+      "frame": {
+        "x": 1024,
+        "y": 512,
+        "w": 512,
+        "h": 512
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 512,
+        "h": 512
+      },
+      "sourceSize": {
+        "w": 512,
+        "h": 512
+      },
+      "duration": 100
+    }
+  },
+  "meta": {
+    "image": "dave_walk_east_v2.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 1536,
+      "h": 1024
+    },
+    "scale": "1",
+    "frameTags": [
+      {
+        "name": "walk_east",
+        "from": 0,
+        "to": 5,
+        "direction": "forward"
+      }
+    ]
+  },
+  "draft": {
+    "status": "East-only walking art draft for review; not installed in the game or tested in Godot.",
+    "source": "assets/characters/dave/dave_idle_walk_4dir.png",
+    "source_sha256": "25DBD629AA58927A54BFAB74AD2D50669554B18148176027DF01FB9D40AE1A8B",
+    "columns": 3,
+    "rows": 2,
+    "frame_order": "Left to right, top row then bottom row.",
+    "phase_intent": [
+      "Near-foot contact",
+      "Far-foot passing",
+      "Far-foot reach",
+      "Far-foot contact",
+      "Near-foot passing",
+      "Near-foot reach"
+    ],
+    "leg_identity": "Near leg is in the foreground; far leg is behind it.",
+    "suggested_fps": 10,
+    "west_usage": "Use the same animation with horizontal sprite flip. No separate west spritesheet was generated.",
+    "preview_anchor": {
+      "x": 256,
+      "y": 445
+    },
+    "preview_scale_for_91px_character": 0.22249388753056235,
+    "validation": "RGBA PNG is 1536x1024. Six complete silhouettes fit within 512x512 cells. Visible head tops range from y36 to y37; visible lowest pixels range from y444 to y446. Opposite legs contact in frames 0 and 3, with distinct passing and reach poses between. Browser art preview only; no Godot execution or movement-speed verification.",
+    "generation_tool": "Built-in image_gen",
+    "prompt": "Use case: identity-preserve.\nAsset type: corrected EAST / RIGHT WALK animation spritesheet for Dave, a 2D game character.\nReference image: use the fifth row (right-facing idle) for exact side-view character design and the whole sheet for consistent identity/materials. The sixth row's walk sequence is defective: several foot-bunched poses are repeated, then the legs jump abruptly. Do NOT copy that faulty gait. Only create the EAST / RIGHT animation. West will be obtained by horizontal flip later.\n\nOUTPUT: ONE transparent RGBA image, exactly 1536x1024 pixels, exactly THREE COLUMNS and TWO ROWS of 512x512 pixel cells. SIX distinct full-body sequential poses, reading left-to-right across the top row, then left-to-right across the bottom row. Each sprite about 400 pixels high, hair top near y28 in its cell, sole-ground baseline y430 in every cell. Pelvis/hips centered at x256 in every cell. No character touching a cell edge. No text, numbers, grid lines, shadows, ground, background, haze, props, or other content. True transparent alpha with opaque character interiors.\n\nCHARACTER INVARIANTS: rugged adult muscular man with tousled reddish-brown hair and short beard; orange shoulder plates, gray/charcoal padded body armor, small cyan/red chest details where visible in profile, bare muscular forearms, dark gloves, brown belt pouches, charcoal pants with orange knee/calf accents, heavy dark boots with orange trim. Preserve head/body proportions, costume geometry, silhouette, hair shape, beard, boot shape, crisp polished pixel-sprite shading and palette from reference. Consistent lighting and camera slightly above the character. Strict RIGHT-FACING PROFILE in ALL six frames; his nose and both toes point screen-right. Head and torso do not rotate toward or away from viewer during the cycle. Two arms, two legs. No extra limbs or fused legs. Use subtle shading to keep the FAR leg distinguishable behind the NEAR leg, not a different color costume.\n\nGAIT: a relaxed, grounded WALK IN PLACE, moving logically to the RIGHT. The NEAR leg is the anatomical right leg, drawn in the foreground. The FAR leg is the anatomical left leg, behind it. The near arm swings OPPOSITE the near leg. Keep a moderate natural stride, not running, lunging, marching or kicking. At least one foot supports the character in every frame. A planted boot slides from right to left RELATIVE TO THE BODY during stance, while the other boot lifts modestly and swings right. The swinging foot passes low under the pelvis, no high knee kick. Smooth progression, constant limb lengths, almost stable head/hips, no lateral body drift, only a tiny 2-4 px natural vertical bob.\n\nEXACT FRAME PLAN:\nFRAME 0 (top left) — NEAR-FOOT CONTACT: foreground/near leg reaches forward to screen-right, heel contacting the ground at about x320, toes about x360. Far leg trails to screen-left, toe pushing off around x195 and heel raised. Moderate open stride. Near arm swings backward/screen-left; far arm forward.\nFRAME 1 (top middle) — FAR-FOOT PASSING: near boot now planted approximately under the pelvis at x255, supporting weight. Far foot lifts only slightly and passes low forward beneath the hips, around x235 with boot 15-25 px above baseline, knee softly flexed. Legs close but distinct; no foot fusion. Near arm returns toward neutral.\nFRAME 2 (top right) — FAR-FOOT REACH: near stance leg has moved behind/screen-left, its heel lifting as toe pushes off around x195. Far leg extends ahead toward screen-right, heel around x315 just 8-12 pixels above ground, ready to land. Far boot toes forward, not curled back. Near arm swings forward. This is an active transition into frame 3, not a copy of frame 1.\nFRAME 3 (bottom left) — FAR-FOOT CONTACT: far leg now forward/screen-right and its heel contacts ground around x320. Near leg now behind/screen-left pushing off around x195. Spatial counterpart to frame 0, but the FOREGROUND leg is behind instead of ahead. Near arm swings forward/screen-right; far arm backward. Clearly reverse the leg roles.\nFRAME 4 (bottom middle) — NEAR-FOOT PASSING: far boot planted under the pelvis at x255 supporting weight; near foot lifts slightly and passes low beneath hips around x235 with 15-25 px ground clearance. Near knee softly flexed, no raised-knee march. Arms cross neutral opposite to frame 1.\nFRAME 5 (bottom right) — NEAR-FOOT REACH: far stance leg moves behind/screen-left pushing off around x195. Near leg extends forward/screen-right, heel about x315 just 8-12 px above ground, ready to land into frame 0. Near arm swings backward. Smooth last-to-first transition.\n\nCRITICAL: Frames 0 and 3 must show opposite legs in front. Frames 1 and 4 are distinct passing poses for opposite legs. Frames 2 and 5 extend opposite feet forward before contact. Do not repeat the same supporting leg throughout. Keep ground contact baseline consistent. Do not flip any frame leftward. Avoid soles facing viewer in this SIDE VIEW; boots stay in profile. Complete all six cells with deliberate temporal progression rather than six arbitrary walking pictures."
+  }
+}
