@@ -444,6 +444,11 @@ The source checkout was not used as the engine project.
 | Supervision/infrastructure | PASS; no timeout, overflow, forced kill, retry or failure evidence file |
 | Owner visual acceptance | **PASS — "Accepted; no issues observed"** |
 
+The owner subsequently confirmed the successful supervised execution and accepted
+the overall visual appearance and sharpness: the continuous terrain appeared
+sharp and visually consistent with the previously approved proof of concept.
+This is owner-reported visual acceptance of the isolated laboratory.
+
 Runtime identified itself as `Godot Engine v4.7.2.stable.official.ed1daf0bf`.
 The graphical startup reported `OpenGL API 3.3.0 NVIDIA 610.88 - Compatibility`
 using `NVIDIA GeForce RTX 5070`. The owner was offered all three view presets,
@@ -466,6 +471,8 @@ Fresh static test count, per-phase elapsed times and preparation byte count were
 not retained; its checked PASS conditions above are the available results.
 No screenshots, routine successful-output log or additional evidence file was
 created. The final graphical diagnostic was just the engine/backend startup.
+No screenshot was captured, and no visual evidence was invented or regenerated.
+The owner requested no additional graphical execution.
 
 This accepts the **isolated ground laboratory** only, with its documented absent
 production tint/overlays/objects and artwork mipmap limitation. It does not
@@ -473,3 +480,10 @@ certify numerical GPU parity, performance budgets, production publication or
 renderer activation. The one-time grant is **consumed**; further engine execution
 requires a new explicit owner grant. No merge, cleanup, PR #141 change,
 production integration or Dave sprite work followed this evaluation.
+
+Production tint, ordered overlays, gameplay and exterior integration remain
+**untested** by this isolated run. The illustrated renderer remains the production
+default. All existing preservation requirements remain in force, including the
+protected sidecars, frozen artwork, retained stage, historical evidence and
+PR #141. Ready-for-review status does not authorize execution, merge, cleanup,
+production integration or activation.
