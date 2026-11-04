@@ -1,0 +1,173 @@
+{
+  "frames": {
+    "walk_north_00": {
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "w": 512,
+        "h": 512
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 512,
+        "h": 512
+      },
+      "sourceSize": {
+        "w": 512,
+        "h": 512
+      },
+      "duration": 100
+    },
+    "walk_north_01": {
+      "frame": {
+        "x": 512,
+        "y": 0,
+        "w": 512,
+        "h": 512
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 512,
+        "h": 512
+      },
+      "sourceSize": {
+        "w": 512,
+        "h": 512
+      },
+      "duration": 100
+    },
+    "walk_north_02": {
+      "frame": {
+        "x": 1024,
+        "y": 0,
+        "w": 512,
+        "h": 512
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 512,
+        "h": 512
+      },
+      "sourceSize": {
+        "w": 512,
+        "h": 512
+      },
+      "duration": 100
+    },
+    "walk_north_03": {
+      "frame": {
+        "x": 0,
+        "y": 512,
+        "w": 512,
+        "h": 512
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 512,
+        "h": 512
+      },
+      "sourceSize": {
+        "w": 512,
+        "h": 512
+      },
+      "duration": 100
+    },
+    "walk_north_04": {
+      "frame": {
+        "x": 512,
+        "y": 512,
+        "w": 512,
+        "h": 512
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 512,
+        "h": 512
+      },
+      "sourceSize": {
+        "w": 512,
+        "h": 512
+      },
+      "duration": 100
+    },
+    "walk_north_05": {
+      "frame": {
+        "x": 1024,
+        "y": 512,
+        "w": 512,
+        "h": 512
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 512,
+        "h": 512
+      },
+      "sourceSize": {
+        "w": 512,
+        "h": 512
+      },
+      "duration": 100
+    }
+  },
+  "meta": {
+    "image": "dave_walk_north_v2_refined.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 1536,
+      "h": 1024
+    },
+    "scale": "1",
+    "frameTags": [
+      {
+        "name": "walk_north",
+        "from": 0,
+        "to": 5,
+        "direction": "forward"
+      }
+    ]
+  },
+  "draft": {
+    "status": "North walk pose draft for visual review; not installed in the game and not verified in Godot.",
+    "source": "assets/characters/dave/dave_idle_walk_4dir.png",
+    "source_sha256": "D008E4B4467FEC2D83DA65DD116D50AC275B0337827E63EE636197350D1BBF0D",
+    "columns": 3,
+    "rows": 2,
+    "frame_order": "Left to right, top row then bottom row.",
+    "phase_intent": [
+      "Left contact / right trails",
+      "Left support / right swings",
+      "Right passing",
+      "Right contact / left trails",
+      "Right support / left swings",
+      "Left passing"
+    ],
+    "suggested_fps": 10,
+    "preview_anchor": {
+      "x": 256,
+      "y": 430
+    },
+    "preview_scale_for_91px_character": 0.2263681592039801,
+    "validation": "RGBA PNG is 1536x1024. Six complete silhouettes fit inside their 512x512 cells. All heads remain within a one-pixel range vertically. Trailing foot reverses between frames 0 and 3; frames 2 and 5 now lower the passing boot and turn its sole away from the viewer. Browser art preview only; no Godot execution or movement-speed validation.",
+    "generation_tool": "Built-in image_gen",
+    "prompt": "Use case: identity-preserve.\nCreate a corrected NORTH / UP WALK animation for the exact armored character Dave in the reference image. Input image is a character identity and style reference, NOT a good gait reference: its bottom row is defective because the RIGHT foot trails in every frame. Correct that specific failure.\n\nOUTPUT: one transparent spritesheet containing EXACTLY SIX full-body sprites in a precisely uniform THREE-COLUMN by TWO-ROW grid. Read frame order left to right across top row, then left to right across bottom row. Target canvas 1152x768 pixels; 384x384 cells. No labels, numbers, separators, grid lines, floor, shadow, or other content. Real transparent alpha. Keep each complete silhouette inside its cell with generous margin. Consistent scale and camera, stable hip-center registration in the same location in all cells. Each sprite about 330 pixels tall; cell center x192. Ground reference y354. No cropping.\n\nIDENTITY: use the seventh row of the reference (back-facing idle) as the authoritative back design: tousled short reddish-brown hair, broad shoulders, muscular adult proportions, dark charcoal padded suit with orange shoulder armor and orange leg accents, gray armored back and harness with small orange details, bare forearms, charcoal gloves, brown hip pouches, thick dark boots with orange trim. Match this existing character, its proportions and its polished pixel-sprite shading. Strictly facing AWAY from viewer / screen-up throughout; no visible face, no front chest decorations on the back, no new backpack or props. Keep lighting, hair silhouette, armor geometry and boot design invariant across frames.\n\nANIMATION: create a complete, believable six-frame WALK-IN-PLACE cycle viewed from behind and slightly above, not running. The legs MUST trade roles between the first three and the last three frames. Dave's left leg is on the LEFT of the image, Dave's right leg on the RIGHT. A foot extended toward screen-up appears higher/smaller; a foot trailing toward camera appears lower. BOTH heels, soles and knees must be coherent. Keep legs apart enough to read their different poses.\nTOP ROW:\nFRAME 0 LEFT CONTACT: left boot steps ahead toward screen-up and bears weight; right leg extends behind toward screen-bottom, right heel lifts and toe pushes off. Right boot distinctly LOWER on the image than left. Left arm swings backward toward viewer, right arm forward.\nFRAME 1 LEFT SUPPORT / RIGHT SWING: body settles slightly onto left leg, left planted boot travels a little backward relative to hips; right knee bends, right boot lifts off ground and starts moving forward toward screen-up. Right sole visible due to lift, not merely a shorter leg. Opposite arm swing eases.\nFRAME 2 RIGHT PASSING: right knee swings forward past the supporting left leg; right lifted boot is near the left boot's vertical level but bent/floating, about to reach forward; left leg is extended under body. Arms cross neutral.\nBOTTOM ROW:\nFRAME 3 RIGHT CONTACT: opposite of frame 0. RIGHT boot now steps ahead toward screen-up and bears weight; LEFT leg now extends behind toward screen-bottom, LEFT heel lifts and toe pushes off. LEFT boot distinctly LOWER on the image than right. Right arm swings backward toward viewer, left arm forward.\nFRAME 4 RIGHT SUPPORT / LEFT SWING: opposite of frame 1. Right leg supports body; LEFT knee bends and LEFT boot lifts and moves forward. LEFT sole visible, right boot supports.\nFRAME 5 LEFT PASSING: opposite of frame 2. LEFT knee swings forward past supporting right leg; left lifted boot reaches near right boot level ready to land into frame 0. Arms cross neutral.\n\nCRITICAL REVIEW BEFORE DRAWING: compare frame 0 with frame 3: their LEGS MUST BE CLEARLY REVERSED. The low/trailing boot is RIGHT in frame 0 and LEFT in frame 3. The lifted/swinging boot is RIGHT in frames 1-2 and LEFT in frames 4-5. Do not output six copies of a right-foot-trailing pose. Give the pelvis only 2-3 pixels of vertical bob, keep torso and head shape stable. No sideways drifting, stretching legs, varying scale, duplicate legs, fused boots or malformed joints. Frame 5 must transition naturally to frame 0. Transparent outside clean opaque character silhouettes.",
+    "refinement_prompt": "Use case: precise-object-edit.\nEdit this SIX-FRAME north-walk spritesheet. Preserve the THREE-COLUMN by TWO-ROW layout, transparent background, exact character identity, body scale, head/torso/armor/arms positions, existing grid registration, and character design. Correct ONLY the lower-leg and boot poses in the THIRD COLUMN of BOTH ROWS (frames 2 and 5 in zero-based animation order). Keep columns 1 and 2 unchanged.\n\nProblem: in both third-column frames the raised foot still shows a large flat sole toward the viewer and is kicked too high behind Dave. That repeats the preceding backswing pose instead of providing a passing/reach pose, making the animation look like jogging or kicking. These two frames need a low, relaxed walking transition.\n\nTOP RIGHT (frame 2): Dave is facing away. His LEFT leg on screen-left supports him. His RIGHT leg on screen-right is swinging forward: lower the right boot to nearly the same screen height as the supporting left boot, with only a small ground clearance. Bring the swinging right ankle under the pelvis, close to the supporting leg, without overlapping/fusing the boots. Right knee gently bent, NOT kicked backward. The right toe points forward, away from camera toward screen-up, showing the back/side of the boot, NOT the broad underside. Both boots are near one another in vertical projection, like a normal passing pose, and ready to separate into the following right-contact frame.\nBOTTOM RIGHT (frame 5): exact left/right opposite. RIGHT leg on screen-right supports. LEFT leg on screen-left swings forward low beside it, ankle under the pelvis with a small clearance, toes pointing screen-up and no large visible sole. This must flow back into the first frame.\n\nThe stride still alternates: the low trailing boot remains RIGHT in top-left frame, LEFT in bottom-left frame. Do not change those contact poses. Do not introduce a high-stepping march or run. Stable hips/head, no bob added, no translation or scale changes. Keep all six complete characters on the same exact grid, genuine transparent alpha, no background haze/shadows, no text."
+  }
+}

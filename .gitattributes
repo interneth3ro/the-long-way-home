@@ -27,3 +27,6 @@ scenes/experiments/terrain_stage3b/lab.gd.uid -text
 scenes/world/continuous_terrain.gdshader.uid -text
 scenes/world/continuous_terrain_metadata.gd.uid -text
 scenes/world/continuous_terrain_presenter.gd.uid -text
+
+# Preserve the owner-supplied north-walk source metadata byte for byte.
+assets/characters/dave/source_art/north_walk_v2/dave_walk_north_v2.json -text whitespace=cr-at-eol
