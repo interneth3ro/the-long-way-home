@@ -79,6 +79,8 @@ func _input(event: InputEvent) -> void:
 
 
 func _toggle() -> void:
+	if (construction.get("player") as CharacterBody2D).get_node("InteractionDetector").computer_modal_open():
+		return
 	_assignment_menu.hide()
 	_panel.visible = not _panel.visible
 	if _panel.visible:

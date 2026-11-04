@@ -210,7 +210,11 @@ class Stage2ClassificationTest(unittest.TestCase):
                      "scenes/world/terrain_assignment_lookup.gd", "scenes/world/ferrite_region_generator.gd",
                      "scenes/main/scene_transition_controller.gd", "project.godot", "tools/run-local-tests.ps1"):
             baseline = subprocess.check_output(["git", "show", f"{reference.BASE}:{path}"], cwd=ROOT)
-            actual = (subprocess.check_output(["git", "show", "cd91c9086ef24e71ddb6a43a2076c4be5a69485e:"+path], cwd=ROOT)
+            # Preserve the terrain-era transition bytes; current Computer-only
+            # transition guard is covered by static_computer_restoration_test.py.
+            actual = (subprocess.check_output(["git", "show", "993ffc14c1fad1032227801870cd3a3fce50f7a5:"+path], cwd=ROOT)
+                      if path == "scenes/main/scene_transition_controller.gd" else
+                      subprocess.check_output(["git", "show", "cd91c9086ef24e71ddb6a43a2076c4be5a69485e:"+path], cwd=ROOT)
                       if path == "tools/run-local-tests.ps1" else
                       subprocess.check_output(["git", "show", "de09eeee2c07036ac50471bde12a716e173e3366:"+path], cwd=ROOT)
                       if path == "scenes/world/planet_exterior.gd" else (ROOT/path).read_bytes())

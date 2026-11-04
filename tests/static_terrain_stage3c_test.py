@@ -46,7 +46,15 @@ class Stage3CTest(unittest.TestCase):
         self.assertEqual(len(inputs),plan['input_count'])
         self.assertEqual(sum(e['bytes'] for e in inputs.values()),plan['source_bytes'])
         historical_inputs = ('scenes/world/planet_exterior.gd', 'scenes/player/dave.tscn',
-                             'dialogue/computer_opening.tres', 'objectives/restore_computer.tres')
+                             'dialogue/computer_opening.tres', 'objectives/restore_computer.tres',
+                             # Computer restoration extends these gameplay files;
+                             # keep the consumed Stage 3C plan and its hashes sealed.
+                             # Current source preservation has separate feature checks.
+                             'construction/construction_controller.gd', 'scenes/main/main.gd',
+                             'scenes/main/main.tscn', 'scenes/main/playthrough_state.gd',
+                             'scenes/main/scene_transition_controller.gd',
+                             'scenes/player/interaction_detector.gd', 'scenes/ui/dialogue_ui.gd',
+                             'scenes/ui/hotbar_ui.gd', 'scenes/ui/inventory_ui.gd')
         for path,entry in inputs.items():
             # The consumed Stage 3C plan stays sealed to its merged source.
             raw = (subprocess.check_output(['git','show','e5db8040d38bfd6b1ddb584d636af01052806b7c:'+path],cwd=ROOT)

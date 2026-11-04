@@ -202,10 +202,11 @@ class StationaryMachinesStaticTest(unittest.TestCase):
         self.assertIn('preload("res://dialogue/ferrite_ingot_acquisition.tres")', main)
         self.assertIn("duration_seconds = 7.0", read("dialogue/ferrite_ingot_acquisition.tres"))
         tracker = geometry.function(main, "_refresh_objective_tracker")
-        self.assertIn('if $PlaythroughState.ferrite_plate_acquired:\n\t\t\t# The acquisition stage is done; the overarching objective stays active.\n\t\t\tdefinition = null', tracker)
+        self.assertIn('if $PlaythroughState.ferrite_plate_acquired:\n\t\t\tdefinition = REPAIR_READY_GUIDANCE if $PlaythroughState.has_computer_materials() else REPAIR_MATERIAL_GUIDANCE', tracker)
         self.assertIn('elif $PlaythroughState.fabricator_recovered:\n\t\t\tdefinition = PLATE_GUIDANCE', tracker)
         self.assertNotIn("show_musing", tracker)
-        self.assertNotIn("complete_objective", main)
+        self.assertNotIn("complete_objective", geometry.function(main, "_on_ferrite_ingot_acquired"))
+        self.assertNotIn("complete_objective", tracker)
         self.assertNotIn("FABRICATOR_DEPLOYMENT", main)
         plate = read("objectives/restore_computer_plate.tres")
         self.assertIn('description = "Craft a Ferrite Plate."', plate)
@@ -235,11 +236,12 @@ class StationaryMachinesStaticTest(unittest.TestCase):
         for name in MACHINES:
             self.assertIn(f'"{name.lower()}": return _progression.{name.lower()}_recovered', recovered)
         # Every property checked in highlight precedence exists in Main's tracker,
-        # in the same order; no new objective IDs or mutable stage are introduced.
+        # in the same order. The post-Plate repair readiness query is not a
+        # factory highlight milestone; restoration has its own objective lifecycle.
         highlight = geometry.function(self.script, "_is_highlighted")
         fields = re.findall(r"_progression\.(\w+)", highlight)
         tracker = geometry.function(read("scenes/main/main.gd"), "_refresh_objective_tracker")
-        expected = re.findall(r"\$PlaythroughState\.(\w+)", tracker)
+        expected = re.findall(r"\$PlaythroughState\.(\w+)\b(?!\()", tracker)
         self.assertEqual(fields, expected)
         self.assertIn('_objectives.get_active_objective()', highlight)
         self.assertIn('active.objective_id != &"restore_computer"', highlight)

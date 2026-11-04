@@ -6,6 +6,11 @@ extends Area2D
 # Machine inspection has its own range, independent of construction/recovery.
 @export_range(1.0, 256.0, 1.0) var machine_interaction_range: float = 96.0
 var machine_panel: Node
+var computer_restoration: Node
+
+
+func computer_modal_open() -> bool:
+	return is_instance_valid(computer_restoration) and computer_restoration.interaction_blocked()
 
 @onready var _player: CharacterBody2D = get_parent()
 @onready var _range_shape: CircleShape2D = $CollisionShape2D.shape
@@ -31,7 +36,7 @@ func clear_for_transition() -> void:
 
 
 func _physics_process(_delta: float) -> void:
-	if _tool_active or dialogue_ui.is_conversation_open() \
+	if _tool_active or computer_modal_open() or dialogue_ui.is_conversation_open() \
 			or (machine_panel != null and machine_panel.interaction_blocked()):
 		_interaction_requested = false
 		interaction_ui.set_prompt("")
@@ -42,7 +47,9 @@ func _physics_process(_delta: float) -> void:
 		if is_instance_valid(_machine_target) and not interaction_ui.is_response_open():
 			machine_panel.open_machine(_machine_target.machine_id)
 		elif is_instance_valid(_target) and not interaction_ui.is_response_open():
-			if _target.has_valid_conversation():
+			if is_instance_valid(computer_restoration) and computer_restoration.handles(_target):
+				computer_restoration.interact_with(_target)
+			elif _target.has_valid_conversation():
 				dialogue_ui.show_conversation(_target.conversation)
 				interaction_ui.set_prompt("")
 			else:
@@ -53,7 +60,7 @@ func _physics_process(_delta: float) -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if _tool_active or event.is_echo():
+	if _tool_active or computer_modal_open() or event.is_echo():
 		return
 	if dialogue_ui.is_conversation_open():
 		if event.is_action_pressed("ui_cancel"):

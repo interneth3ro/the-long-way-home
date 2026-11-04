@@ -1,5 +1,13 @@
 # The Long Way Home
 
+Computer restoration is prepared on `codex/computer-restoration`, **pending owner
+normal-F5 acceptance and merge**. It adds the dedicated 4 Plate + 4 Rod repair
+panel, one-time inspection, locked automatic four-scene narrative and subsequent
+Restore the Ship objective. The approved 4+4 overrides the canonical story's
+historical 6+8. See [requirements, lifecycle, verification limits and the owner
+checklist](docs/COMPUTER_RESTORATION.md). Earlier milestone records below retain
+their historical scope. Godot runtime and graphical acceptance remain pending.
+
 [Ferrite artwork prototype v1](docs/FERRITE_ARTWORK_PROTOTYPE_V1.md#owner-acceptance-2026-11-02)
 received owner visual/architecture acceptance on 2026-11-02 at `1662a61`, including
 6x4 and 10x6 rectangular examples and connected L-shaped, stepped and grid-cluster

@@ -28,6 +28,7 @@ var _speaker_id: StringName = &""
 var _opening_tween: Tween
 var _portrait_tween: Tween
 var _layout_queued: bool = false
+var _automatic: bool = false
 
 
 func _ready() -> void:
@@ -68,7 +69,7 @@ func show_conversation(conversation: DialogueConversation) -> bool:
 
 
 func advance() -> void:
-	if not is_conversation_open():
+	if _automatic or not is_conversation_open():
 		return
 	if _entry_index == _conversation.entries.size() - 1:
 		var completed_id := _conversation.conversation_id
@@ -80,11 +81,28 @@ func advance() -> void:
 
 
 func dismiss() -> void:
-	if not is_conversation_open():
+	if _automatic or not is_conversation_open():
 		return
 	var dismissed_id := _conversation.conversation_id
 	_close()
 	conversation_dismissed.emit(dismissed_id)
+
+
+# Used only by the Computer's separate cinematic instance. Ordinary dialogue
+# retains manual completion/dismissal and its existing signals.
+func show_automatic_entry(entry: DialogueEntry) -> void:
+	_close()
+	var line := DialogueConversation.new()
+	line.conversation_id = &"computer_restoration_playback"
+	line.entries = [entry]
+	show_conversation(line)
+	_automatic = true
+	$HUD/Conversation/Content/Actions.hide()
+
+
+func close_automatic() -> void:
+	if _automatic:
+		_close()
 
 
 func _show_entry() -> void:
@@ -115,6 +133,8 @@ func _close() -> void:
 	_panel.hide()
 	_panel.modulate.a = 1.0
 	_conversation = null
+	_automatic = false
+	$HUD/Conversation/Content/Actions.show()
 	_entry_index = 0
 	_speaker_id = &""
 

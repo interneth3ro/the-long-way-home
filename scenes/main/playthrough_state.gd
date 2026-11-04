@@ -11,12 +11,16 @@ signal ferrite_ingot_acquisition_completed
 signal ferrite_plate_acquisition_completed
 signal fabricator_recovery_completed
 signal hotbar_changed
+signal computer_restoration_completed
+signal computer_cinematic_completed
 
 const EXTRACTOR: ItemDefinition = preload("res://inventory/extractor.tres")
 const FERRITE_ORE: ItemDefinition = preload("res://inventory/ferrite_ore.tres")
 const SMELTER: ItemDefinition = preload("res://inventory/smelter.tres")
 const FERRITE_INGOT: ItemDefinition = preload("res://inventory/ferrite_ingot.tres")
 const FERRITE_PLATE: ItemDefinition = preload("res://inventory/ferrite_plate.tres")
+const FERRITE_ROD: ItemDefinition = preload("res://inventory/ferrite_rod.tres")
+const COMPUTER_REPAIR_QUANTITY := 4
 const FABRICATOR: ItemDefinition = preload("res://inventory/fabricator.tres")
 
 # Session state only. A fresh Main instance is a new playthrough.
@@ -41,6 +45,14 @@ var _extractor_deployed: bool = false
 var ferrite_acquired: bool = false
 var ferrite_ingot_acquired: bool = false
 var ferrite_plate_acquired: bool = false
+var computer_opening_completed: bool = false
+var computer_inspection_completed: bool = false
+var computer_restored: bool:
+	get:
+		return _computer_restored
+var _computer_restored: bool = false
+var _restoring_computer: bool = false
+var computer_cinematic_finished: bool = false
 var smelter_recovered: bool:
 	get:
 		return _smelter_recovered
@@ -187,3 +199,44 @@ func recover_fabricator() -> bool:
 	_recovering_fabricator = false
 	fabricator_recovery_completed.emit()
 	return true
+
+
+func can_restore_computer() -> bool:
+	return not _computer_restored and not _restoring_computer \
+		and computer_opening_completed and computer_inspection_completed and ferrite_plate_acquired \
+		and has_computer_materials()
+
+
+func has_computer_materials() -> bool:
+	return FERRITE_PLATE.is_valid() and FERRITE_ROD.is_valid() \
+		and FERRITE_PLATE.section == ItemDefinition.Section.MATERIALS \
+		and FERRITE_ROD.section == ItemDefinition.Section.MATERIALS \
+		and inventory.get_items().has(FERRITE_PLATE) and inventory.get_items().has(FERRITE_ROD) \
+		and inventory.get_quantity(FERRITE_PLATE.item_id) >= COMPUTER_REPAIR_QUANTITY \
+		and inventory.get_quantity(FERRITE_ROD.item_id) >= COMPUTER_REPAIR_QUANTITY
+
+
+func restore_computer() -> bool:
+	if not can_restore_computer():
+		return false
+	# Batch removal stages private copies. No callback can observe half a repair.
+	_restoring_computer = true
+	if not inventory.remove_items([
+		{"definition": FERRITE_PLATE, "quantity": COMPUTER_REPAIR_QUANTITY},
+		{"definition": FERRITE_ROD, "quantity": COMPUTER_REPAIR_QUANTITY},
+	], false):
+		_restoring_computer = false
+		return false
+	_computer_restored = true
+	# Publish the committed milestone before inventory callbacks can reenter.
+	computer_restoration_completed.emit()
+	inventory.changed.emit()
+	_restoring_computer = false
+	return true
+
+
+func finish_computer_cinematic() -> void:
+	if not _computer_restored or computer_cinematic_finished:
+		return
+	computer_cinematic_finished = true
+	computer_cinematic_completed.emit()
