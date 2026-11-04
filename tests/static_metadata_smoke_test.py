@@ -36,12 +36,11 @@ def before(path):
 
 class MetadataSmokeTest(unittest.TestCase):
     def test_exact_change_scope_and_preserved_inputs(self):
-        delta = subprocess.check_output(["git", "diff", "--name-status", BASE, "--"], cwd=ROOT, text=True)
+        # PR #139 historical inventory; Stage 3B checks its own exact scope.
+        merged = "ee937c98aa5e5bcb087f99c5b0eb8c8960ecf4f0"
+        delta = subprocess.check_output(["git", "diff", "--name-status", BASE, merged, "--"], cwd=ROOT, text=True)
         inventory = {path: status for status, path in (line.split("\t", 1) for line in delta.splitlines())}
-        untracked = set(subprocess.check_output(["git", "ls-files", "--others", "--exclude-standard"], cwd=ROOT, text=True).splitlines())
         receipt = json.loads(read("artifacts/logs/terrain-preservation-2026-11-03.json"))
-        self.assertEqual(untracked-ADDED, set(receipt["protected_sidecars"]))
-        inventory.update({path: "A" for path in untracked & ADDED})
         self.assertEqual(inventory, {**dict.fromkeys(ADDED, "A"), **dict.fromkeys(MODIFIED, "M")})
         for path, entry in receipt["protected_sidecars"].items():
             self.assertEqual(hashlib.sha256((ROOT/path).read_bytes()).hexdigest(), entry["sha256"])

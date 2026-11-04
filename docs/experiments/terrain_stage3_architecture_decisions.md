@@ -14,6 +14,11 @@ Stage 2B-2 selected **Candidate A**, sharpened smooth four-center lattice interp
 
 ## Owner-approved decisions
 
+The original decisions below are retained as history. The dated Stage 3B
+amendment below supersedes only their continuous visual protection requirement
+and its geometry-enclosure prerequisite; consult it before applying items 1–3
+or the original stage boundaries.
+
 1. **Runtime strategy — Option A.** CPU-authoritative original material IDs and protection metadata; GPU evaluates Candidate A interpolation. Do not duplicate authoritative classification on GPU. This is the intended architecture, not yet an implemented or certified renderer.
 2. **Numerical protection — Option A.** Require a defensible conservative runtime numerical enclosure and positive certified Green-center margins **before renderer integration**. Strict Earth must remain zero; original Green centers must remain one. If certification fails, stop and seek a separate owner decision on an adaptive CPU mask. Never rebrand Python `epsilon=1/10000` as a Godot/GPU bound.
 3. **Sampling semantics — Option A.** Require exact **pointwise** coverage endpoints at evaluated positions; no coverage mipmaps or post-blend coverage blur. Evaluate pixel footprints, filtering, and raster appearance separately. Artwork filtering is distinct from authoritative coverage.
@@ -71,3 +76,30 @@ Stage 2B-2 selected **Candidate A**, sharpened smooth four-center lattice interp
 ## Change control
 
 These decisions were explicitly approved by the owner in ChatGPT on 2026-11-03. Future changes require a new explicit owner decision and a corresponding record update. Do not interpret this document as blanket authorization to implement later stages.
+
+## Owner amendment — 2026-11-03: isolated visible Stage 3B laboratory
+
+The owner-authorized Stage 3B handoff removes exact continuous visual strict-Earth
+protection around the crash site. The corresponding geometry-enclosure
+certification requirement in decision 2 and original 3A-2/3B boundaries is
+**superseded for that removed presentation mask**. Candidate A retains sharpened
+smooth four-center interpolation (`a=5/32`) and exact classified center endpoints
+as its reconstruction design objective, without multiplying by protection `P`.
+Organic interpolation between centers is allowed near the crash site; no
+replacement strict-Earth mask is authorized.
+
+Original `PlanetGenerator.sample_ground_material()` classification/exclusion
+predicates, original material IDs and gameplay protection remain unchanged.
+Historical reports, goldens and proofs above remain evidence of their original
+contracts, not requirements to recreate the removed mask. The adaptive CPU
+experiment is [unmerged negative PR #141](https://github.com/interneth3ro/the-long-way-home/pull/141)
+at `9a75949181349dbecc475bb12328cef69636ce92`; preserve its branch/report/diagnostics.
+Its box-cover/quadtree implementation is not part of this laboratory.
+
+This amendment authorizes the isolated [visual lab](terrain_stage3b_visible_lab.md)
+and focused draft PR only. It does not certify metadata encoding, GPU parity,
+resources, performance or production readiness. All other decisions persist:
+illustrated default, eventual narrow sibling presenter, `[-16,15]` owned-chunk
+study, bounded preparation/cache, failure closed and measured performance before
+activation. No production integration, Godot execution, merge or cleanup is
+authorized. Engine/visual inspection requires a separate exact execution approval.
