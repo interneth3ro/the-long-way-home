@@ -2365,6 +2365,79 @@ run or a post-merge cleanup request.
 
 Idle mirroring, overall display scale and cadence tuning remain deferred.
 
+### Dave visual scale 135% (feature branch, pending owner acceptance and merge)
+
+`codex/dave-visual-scale-115` starts from merged PR #151 at
+`151dc86d6bb20fd9328ba870723cb1eb3e43e14f`. Draft PR #152 initially implemented
+115% correctly at `3a68c1c25ca2fc4778dfc4ba87d0ae8de74cfadd`, using uniform
+`0.60843023205`. The owner visually evaluated that version and found Dave still
+looked too small relative to the ship interior. The revised approved experiment
+changes only `Visual/Sprite2D.scale` to uniform `0.71424418545`, exactly
+`0.529069767 * 1.35`: 135% of the original baseline on both axes, across all eight
+animations. This continues the same branch and PR; it is not a compounded increase.
+
+The body, Visual and sprite origins stay fixed. With `centered=false`, source
+registration `(94,174)` plus unchanged offset `(-94,-174)` is `(0,0)` before
+scaling: both old and new transforms map it to the same body/world origin.
+The offset must not be multiplied by 1.35. No parent correction is needed.
+Actual boot pixels retain their existing frame-dependent distances from that
+anchor, enlarged uniformly along with the artwork, including natural foot lifts.
+Existing west-walk mirroring and its accepted horizontal asymmetry remain; this
+is not per-frame pixel registration or a guarantee of identical boot silhouettes.
+The accepted north idle/walk size discrepancy remains unchanged proportionally.
+
+Atlas, mapping JSON and source artwork bytes, frame indices, eight clip names,
+flip tracks, 5 FPS idle / 10 FPS walking timing, 240-unit/second controller,
+collision, interaction and camera configuration remain unchanged. Cadence tuning
+and further art refinement are deferred.
+
+Focused offline checks use
+`python -B -m unittest discover -s tests -p static_dave_rework_test.py`.
+They check exact 135% scale, fixed registration and the complete PR #151 scene
+when reversing only the scale line; existing artwork, timing, mirroring and
+nonvisual preservation assertions remain. Full static checks use
+`python -B -m unittest discover -s tests -p 'static_*test.py'`.
+Historical 115% validation: focused **9/9 PASS** (14.263 s); full static suite
+**393/393 PASS** (292.790 s). Exact baseline reconstruction, atlas/JSON byte
+comparison, three-file scope and `git diff --check` also passed.
+Revised 135% static validation: focused **9/9 PASS** (13.898 s); full suite
+**393/393 PASS** (289.277 s). Baseline scene reconstruction, atlas/JSON byte
+comparison, three-file PR scope, unrelated README preservation and diff checks PASS.
+Godot import, headless runtime and graphical verification: **NOT TESTED**.
+Static checks do not establish visual acceptance. No execution safeguards change.
+
+The owner additionally authorized fixing the 11 preexisting debugger warnings in
+PR #152. Seven Ferrite presenter locals now use `region_owner`; the Computer
+restoration loop uses `presenter_name`, avoiding inherited Node properties.
+Three terrain grid-row calculations retain their integer arithmetic with
+statement-scoped `@warning_ignore("integer_division")` annotations and intent
+comments. Project warning settings and runtime behavior remain unchanged.
+Warning-fix static validation: **39/39 focused PASS** (Ferrite 11, Computer 9,
+terrain 9, ground publication 10); full suite **394/394 PASS** (290.286 s).
+Exact source reconstruction and diff checks PASS. Preservation assertions were
+updated only for the approved renames/annotations; historical plans stay sealed.
+Editor warning clearance is unverified;
+existing debugger history has not been cleared and no Godot run was performed.
+
+Owner normal-F5 acceptance for 135%: **PENDING**, all checks below **NOT TESTED**.
+Record PASS/FAIL and observations before requesting Ready for Review; keep the
+PR draft if any new defect appears.
+
+- [ ] Visual size: improved readability in the ship interior.
+- [ ] Environmental proportions: natural beside Computer, hatch, floor and machinery.
+- [ ] Exterior appearance: appropriate against terrain and exterior objects.
+- [ ] Directional consistency: uniform enlargement in all four directions.
+- [ ] Ground contact: feet align with the floor.
+- [ ] Transitions: no new idle/walk or direction-change jumps or offsets.
+- [ ] Mirrored walking: east/west and flip resets remain correct.
+- [ ] Collision: physical collision and navigation remain unchanged.
+- [ ] Interactions: Computer, hatch, machines and other interactions remain correct.
+- [ ] Camera: tracking and zoom remain unchanged.
+- [ ] Animation timing: walking and idle rates remain unchanged.
+- [ ] Movement: speed and responsiveness remain unchanged.
+- [ ] Visual artifacts: no new clipping, overlap or distracting inconsistencies.
+- [ ] Known north discrepancy: retained and not an acceptance blocker.
+
 ### Existing environment and gameplay
 
 The camera follows Dave's ground-contact origin independently of `Visual`.

@@ -49,6 +49,8 @@ func step(coordinate: Vector2i, token: int, sampler: Callable) -> Dictionary:
 	for unit in range(MAX_UNITS):
 		var cursor: int = _job.cursor
 		if cursor < 1156:
+			# Integer quotient selects the row of this flattened grid.
+			@warning_ignore("integer_division")
 			var cell := coordinate * 32 + Vector2i(cursor % 34 - 1, cursor / 34 - 1)
 			var id: Variant = sampler.call(cell)
 			if not id is int or id < 0 or id > 4:
@@ -56,6 +58,8 @@ func step(coordinate: Vector2i, token: int, sampler: Callable) -> Dictionary:
 			_job.ids[cursor] = id
 		elif cursor < 1156 + 18769:
 			var index := cursor - 1156
+			# Integer quotient selects the row of this flattened grid.
+			@warning_ignore("integer_division")
 			var point := Vector2(coordinate * 2048 + Vector2i(index % 137 - 4, index / 137 - 4) * 16)
 			# C1 red protection/coverage is absent. Preserve only macro/detail G/B.
 			_job.field[index * 3] = 0
@@ -63,6 +67,8 @@ func step(coordinate: Vector2i, token: int, sampler: Callable) -> Dictionary:
 			_job.field[index * 3 + 2] = roundi(255.0 * _noise(point / 370.0, 103, _job.seed))
 		elif cursor < 1156 + 18769 + 49:
 			var index := cursor - 1156 - 18769
+			# Integer quotient selects the row of this flattened grid.
+			@warning_ignore("integer_division")
 			var lattice := coordinate * 4 + Vector2i(index % 7 - 1, index / 7 - 1)
 			var key := "c1_fields_v1:c1_materials_v1:%d:%d:%d:material" % [_job.seed, lattice.x, lattice.y]
 			var digest := key.sha256_buffer()

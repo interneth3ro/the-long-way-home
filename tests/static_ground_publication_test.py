@@ -297,6 +297,10 @@ class GroundPublicationTest(unittest.TestCase):
                       if path in ('scenes/main/scene_transition_controller.gd', 'scenes/main/playthrough_state.gd') else
                       subprocess.check_output(['git', 'show', 'cd91c9086ef24e71ddb6a43a2076c4be5a69485e:'+path], cwd=ROOT)
                       if path == 'tools/run-local-tests.ps1' else (ROOT/path).read_bytes())
+            if path == 'scenes/world/ferrite_deposit_presenter.gd':
+                # PR #152 renames locals that shadow Node.owner; preserve the
+                # exact terrain-era behavior after reversing only that rename.
+                actual = actual.replace(b'region_owner', b'owner')
             self.assertEqual(actual.replace(b'\r\n', b'\n'),
                              expected.replace(b'\r\n', b'\n'), path)
         old = subprocess.check_output(['git', 'show', f'{BASE}:scenes/world/illustrated_terrain_presenter.gd'],
