@@ -45,12 +45,14 @@ class Stage3CTest(unittest.TestCase):
         inputs = {e['path']:e for e in plan['inputs']}
         self.assertEqual(len(inputs),plan['input_count'])
         self.assertEqual(sum(e['bytes'] for e in inputs.values()),plan['source_bytes'])
+        historical_inputs = ('scenes/world/planet_exterior.gd', 'scenes/player/dave.tscn',
+                             'dialogue/computer_opening.tres', 'objectives/restore_computer.tres')
         for path,entry in inputs.items():
             # The consumed Stage 3C plan stays sealed to its merged source.
             raw = (subprocess.check_output(['git','show','e5db8040d38bfd6b1ddb584d636af01052806b7c:'+path],cwd=ROOT)
-                   if path in ('scenes/world/planet_exterior.gd', 'scenes/player/dave.tscn')
+                   if path in historical_inputs
                    else (ROOT/path).read_bytes())
-            if path in ('scenes/world/planet_exterior.gd', 'scenes/player/dave.tscn'):
+            if path in historical_inputs:
                 # Historical manifest pins the approved CRLF serialization.
                 raw = raw.replace(b'\r\n', b'\n').replace(b'\n', b'\r\n')
             self.assertEqual((len(raw),hashlib.sha256(raw).hexdigest()),(entry['bytes'],entry['sha256']),path)

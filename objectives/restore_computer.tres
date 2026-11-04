@@ -6,4 +6,4 @@
 script = ExtResource("1_definition")
 objective_id = &"restore_computer"
 title = "Restore Computer"
-description = "Investigate the damage to Computer and determine what is needed to restore its systems."
+description = "Investigate the area outside the ship."

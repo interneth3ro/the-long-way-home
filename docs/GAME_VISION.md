@@ -24,9 +24,13 @@ launch or P8 runtime acceptance is claimed.
 
 **P7 Observation #1 (nonblocking missed implementation):** After the Computer's
 opening conversation, the player is not explicitly directed outside to investigate
-the Ferrite deposit. P7 owner rehearsal passed 6/6 phases despite this gap. A
-separate, later approved narrative/objective-guidance correction is needed; it is
-**excluded from P8** and remains unfixed.
+the Ferrite deposit. P7 owner rehearsal passed 6/6 phases despite this gap. The
+approved correction is implemented on `codex/opening-exterior-guidance`, pending
+owner normal-F5 acceptance and merge: two appended Computer/Dave lines direct
+Dave outside, reinforced by the initial objective description, `Investigate the
+area outside the ship.` Existing Ferrite and later progression remain unchanged.
+This correction remains **excluded from P8**; static checks do not establish
+runtime or graphical acceptance.
 
 See the [P8 scope and owner checklist](V2_PRODUCTION_HOST.md#p8-production-cutover-feature-branch-pending-merge).
 Earlier milestone descriptions retain their historical scope and launch expectations.
