@@ -3,8 +3,9 @@
 Status: feature branch, pending merge. Owner authorized this narrow default
 change on 2026-11-04 after PR #143 merged at
 `e5db8040d38bfd6b1ddb584d636af01052806b7c` and cleanup completed.
-Validation is static only; no Godot process, import, gameplay session or timing
-measurement is authorized or performed by this implementation.
+Implementation validation was static only. The owner subsequently confirmed the
+final normal-F5 Stage 3D playtest PASS on 2026-11-04, as recorded below. This
+acceptance update performs no Godot execution and grants no further execution.
 
 ## Selection and rollback
 
@@ -45,12 +46,45 @@ expect Continuous; historical scene/geometry guards remain unchanged. Stage 3C's
 inventory and consumed input-manifest checks use its immutable merged source
 for the changed script, retaining the
 original CRLF serialization and hashes. No historical manifest or receipt changes.
-Final test counts/results are recorded in the draft PR. Static PASS establishes
+Test counts/results and their provenance are recorded in PR #145. Static PASS establishes
 neither engine parsing, shader compilation, actual readiness nor visual quality.
+
+## Final owner gameplay acceptance — 2026-11-04
+
+The owner confirms that the final **normal-F5 Stage 3D playtest passed**, following
+implementation `89668b111833f40b23e72ccb78ce9ea2f5f149e4`. This is owner-reported
+acceptance of the normal production-default path, separate from the earlier
+inactive agent-supervised plan retained below.
+
+| Owner-reported observation | Result |
+|---|---|
+| Continuous terrain appearance | Correct; PASS |
+| Exploration and new-chunk streaming | Smooth, without noticeable stuttering; PASS |
+| First interior-to-exterior transition | Approximately 20 seconds, measured manually |
+
+The owner accepts the first-load wait as a deferred loading-performance/UX concern
+tracked in [Issue #144](https://github.com/interneth3ro/the-long-way-home/issues/144).
+It does not block this accepted default-selection change. The approximate manual
+measurement is not an instrumented benchmark or certification of a performance
+budget; no improvement/regression is inferred against Stage 3C's earlier estimate.
+Subsequent hatch-transition timings, detailed per-control results, backend/process
+logs and exhaustive test coverage were not supplied and are not inferred from
+the overall PASS. Numerical parity and formal performance budgets remain
+uncertified. No terrain, loading feedback or optimization change accompanies
+this acceptance record. Illustrated rollback remains available as described above.
+
+The acceptance update is documentation only. Non-engine validation and
+preservation results are recorded in PR #145. All 15 protected import sidecars
+remain untracked and unchanged; five additional untracked script/shader UID
+sidecars observed after the owner test are preserved without staging or deletion.
+No further Godot run, merge or cleanup is authorized by this record. PR #145 is
+ready for review; merge remains an explicit owner decision.
 
 ## Final gameplay and transition timing plan — inactive, separate approval
 
-This plan requests no execution now. A separate owner approval must name the
+This retained preparation-only plan was not used for the reported normal-F5
+playtest. Its table describes the unexecuted agent plan, not the owner results
+recorded above. It requests no execution now. A separate owner approval must name the
 final reviewed commit, this guide's SHA-256 and a reviewed activation/supervision
 amendment with exact commands, inputs and transforms. No stage, new runner or
 activation amendment is created in Stage 3D. Existing Native/MetadataSmoke modes
@@ -146,4 +180,5 @@ close normally; do not relaunch. Do not infer improvement from Stage 3C's estima
 or declare a performance budget achieved from this session. No comparative
 Illustrated session, alternate seeds, envelope-edge exploration, injected failure,
 benchmark, freeze reproduction, merge or cleanup is included. Owner acceptance
-of this final default path remains pending after review of the measured results.
+of the normal-F5 default path is recorded above; this agent-supervised plan
+remains inactive and grants no additional execution.

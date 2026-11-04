@@ -1092,5 +1092,12 @@ The authorized one-time Stage 3C run passed static, import and gameplay-process
 checks, with owner-reported PASS for seven listed gameplay areas. See the
 [exact acceptance record](experiments/terrain_stage3c_exterior.md#one-time-execution-and-owner-acceptance--2026-11-04).
 The execution grant is consumed; performance budgets and numerical parity remain
-uncertified. Stage 3D final gameplay checks and measured transition times remain
-pending separate approval; the Stage 3C grant does not authorize them.
+uncertified. The owner confirms the final normal-F5 Stage 3D playtest PASS:
+continuous terrain appeared correct and exploration/new-chunk streaming stayed
+smooth without noticeable stuttering. The first interior-to-exterior transition
+took approximately 20 seconds, measured manually, accepted as deferred
+loading-performance/UX work in
+[Issue #144](https://github.com/interneth3ro/the-long-way-home/issues/144).
+See the [Stage 3D acceptance record](experiments/terrain_stage3d_default.md#final-owner-gameplay-acceptance--2026-11-04)
+for provenance and coverage limits. No additional Godot run accompanies this
+acceptance documentation; the prior agent-supervised plan remains inactive.

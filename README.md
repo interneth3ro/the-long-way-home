@@ -70,8 +70,14 @@ PASS for seven listed gameplay areas; the grant is consumed. Configuration, roll
 limits and the exact acceptance record are documented there. Performance budgets
 and numerical parity remain uncertified.
 Illustrated remains an explicit rollback selection before a fresh exterior's
-first initialization; the production scene inherits Continuous (2). Stage 3D
-has static validation only; its final gameplay/timing plan requires separate approval.
+first initialization; the production scene inherits Continuous (2). The owner
+confirms the final normal-F5 Stage 3D playtest PASS: correct continuous terrain and
+smooth exploration/new-chunk streaming without noticeable stuttering. The first
+interior-to-exterior transition was approximately 20 seconds, measured manually;
+this is accepted as deferred loading-performance/UX work in
+[Issue #144](https://github.com/interneth3ro/the-long-way-home/issues/144). See the
+[Stage 3D acceptance record](docs/experiments/terrain_stage3d_default.md#final-owner-gameplay-acceptance--2026-11-04).
+This documentation update runs no Godot; the prior agent-run plan remains inactive.
 
 The merged PR #103 shared presenter retains the accepted PR #102 isolated fixture
 as its default reference backend. Its historical acceptance remains separate.
