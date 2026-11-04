@@ -287,7 +287,7 @@ func _check_fixed_machine_regression() -> void:
 	state.recover_machine(1, inventory, POINT, 160)
 	_check(inventory.get_quantity(smelter.item_id) == 1, "Smelter equipment recovery")
 	var extractor: MachineDefinition = preload("res://inventory/extractor.tres")
-	# Extraction point (288, 256) lies inside the authored introductory deposit.
+	# The 4x4 Extractor's center (320, 288) is inside the introductory deposit.
 	var cell := Vector2i(8, 7)
 	state._machines[2] = {"id": 2, "definition": extractor, "cell": cell,
 		"turns": 0, "output": 0, "cycle_progress": 0.0}
