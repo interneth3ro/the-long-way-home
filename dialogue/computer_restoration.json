@@ -1,0 +1,288 @@
+{
+  "provenance": "Owner-supplied TLWH_Computer_Restoration_Codex_Handoff.md, section 6; reproduced from the canonical story attached to issue #46. Spoken text and directions are locked. Repair quantities are separately overridden to 4 Plates + 4 Rods.",
+  "inspection": [
+    {
+      "speaker": "dave",
+      "text": "I've got some materials together. Tell me what you need."
+    },
+    {
+      "speaker": "computer",
+      "text": "Core restoration requires four Ferrite Plates and four Ferrite Rods."
+    },
+    {
+      "speaker": "dave",
+      "text": "All right. I'll see what I can do."
+    }
+  ],
+  "operational": [
+    {
+      "speaker": "computer",
+      "text": "Core systems operational. Manufacturing capability remains our immediate limitation."
+    }
+  ],
+  "scenes": [
+    {
+      "title": "Scene 1 — The Reunion",
+      "cues": [
+        {
+          "kind": "direction",
+          "text": "The screen fades in. Computer's restored display flickers, then stabilizes. A low electronic hum replaces the silence."
+        },
+        {
+          "kind": "line",
+          "speaker": "computer",
+          "text": "Core systems restored. Multiple subsystems remain offline."
+        },
+        {
+          "kind": "direction",
+          "text": "A brief pause."
+        },
+        {
+          "kind": "line",
+          "speaker": "computer",
+          "text": "Dave? Are you receiving me?"
+        },
+        {
+          "kind": "line",
+          "speaker": "dave",
+          "text": "Yeah. I'm here."
+        },
+        {
+          "kind": "line",
+          "speaker": "computer",
+          "text": "Your biometrics indicate elevated stress and physical exhaustion."
+        },
+        {
+          "kind": "line",
+          "speaker": "dave",
+          "text": "You should've seen me yesterday."
+        },
+        {
+          "kind": "line",
+          "speaker": "computer",
+          "text": "I am unable to account for the time I was offline. How long has it been?"
+        },
+        {
+          "kind": "line",
+          "speaker": "dave",
+          "text": "Long enough."
+        },
+        {
+          "kind": "direction",
+          "text": "Computer's display flickers briefly."
+        },
+        {
+          "kind": "line",
+          "speaker": "computer",
+          "text": "I see. Your efforts to restore my systems have not gone unnoticed, Dave."
+        },
+        {
+          "kind": "line",
+          "speaker": "dave",
+          "text": "Don't thank me yet. We've still got a long way to go."
+        },
+        {
+          "kind": "direction",
+          "text": "Dave looks toward the damaged ship interior."
+        },
+        {
+          "kind": "line",
+          "speaker": "dave",
+          "text": "I need a full damage assessment. Everything. Tell me what it'll take to get this ship home."
+        }
+      ]
+    },
+    {
+      "title": "Scene 2 — The Ship-Wide Assessment",
+      "cues": [
+        {
+          "kind": "direction",
+          "text": "Computer's display changes as diagnostic data begins scrolling across the screen."
+        },
+        {
+          "kind": "line",
+          "speaker": "computer",
+          "text": "Initiating ship-wide diagnostic. Stand by."
+        },
+        {
+          "kind": "direction",
+          "text": "A brief pause. Several damaged systems appear on the display."
+        },
+        {
+          "kind": "line",
+          "speaker": "computer",
+          "text": "Hull integrity is compromised. Primary propulsion is offline. Navigation and long-range communications are unavailable."
+        },
+        {
+          "kind": "line",
+          "speaker": "dave",
+          "text": "So we're not going anywhere."
+        },
+        {
+          "kind": "line",
+          "speaker": "computer",
+          "text": "Not in the ship's present condition."
+        },
+        {
+          "kind": "line",
+          "speaker": "dave",
+          "text": "What can we fix?"
+        },
+        {
+          "kind": "line",
+          "speaker": "computer",
+          "text": "The structural damage is manageable with sufficient materials. Restoring propulsion will be considerably more difficult."
+        },
+        {
+          "kind": "line",
+          "speaker": "dave",
+          "text": "Difficult how?"
+        },
+        {
+          "kind": "line",
+          "speaker": "computer",
+          "text": "Several critical components are beyond repair. They will need to be manufactured."
+        },
+        {
+          "kind": "line",
+          "speaker": "dave",
+          "text": "I've got a Fabricator running outside."
+        },
+        {
+          "kind": "line",
+          "speaker": "computer",
+          "text": "That is encouraging. Unfortunately, its present capabilities are insufficient for the components we require."
+        },
+        {
+          "kind": "line",
+          "speaker": "dave",
+          "text": "Then we improve them."
+        },
+        {
+          "kind": "line",
+          "speaker": "computer",
+          "text": "That would be the logical course of action."
+        }
+      ]
+    },
+    {
+      "title": "Scene 3 — The Navigation Discrepancy",
+      "cues": [
+        {
+          "kind": "direction",
+          "text": "The diagnostic display pauses. A navigation record briefly appears among the damaged system reports."
+        },
+        {
+          "kind": "line",
+          "speaker": "computer",
+          "text": "Dave. There is an irregularity in the surviving navigation records."
+        },
+        {
+          "kind": "line",
+          "speaker": "dave",
+          "text": "What kind of irregularity?"
+        },
+        {
+          "kind": "line",
+          "speaker": "computer",
+          "text": "Our final recorded course correction does not correspond with the assigned trajectory."
+        },
+        {
+          "kind": "line",
+          "speaker": "dave",
+          "text": "Could be damage from the crash."
+        },
+        {
+          "kind": "line",
+          "speaker": "computer",
+          "text": "That is possible. Several records are incomplete. I cannot determine whether the discrepancy predates the impact."
+        },
+        {
+          "kind": "line",
+          "speaker": "dave",
+          "text": "Then we'll deal with it when we can. Right now, I need this ship flying."
+        },
+        {
+          "kind": "line",
+          "speaker": "computer",
+          "text": "Understood. I will preserve the available records for further analysis."
+        },
+        {
+          "kind": "direction",
+          "text": "The navigation report disappears. Computer returns to the ship's damage assessment."
+        }
+      ]
+    },
+    {
+      "title": "Scene 4 — The Way Forward",
+      "cues": [
+        {
+          "kind": "direction",
+          "text": "Computer's display returns to the ship-wide diagnostic summary. Several critical systems remain marked offline."
+        },
+        {
+          "kind": "line",
+          "speaker": "dave",
+          "text": "All right. Where do we start?"
+        },
+        {
+          "kind": "line",
+          "speaker": "computer",
+          "text": "Our immediate limitation is manufacturing capability. The components required to restore propulsion exceed the tolerances of your current equipment."
+        },
+        {
+          "kind": "line",
+          "speaker": "dave",
+          "text": "So the Fabricator needs work."
+        },
+        {
+          "kind": "line",
+          "speaker": "computer",
+          "text": "Correct. We will need to determine which modifications are possible with the resources available to us."
+        },
+        {
+          "kind": "line",
+          "speaker": "dave",
+          "text": "And after that?"
+        },
+        {
+          "kind": "line",
+          "speaker": "computer",
+          "text": "We repair what we can. Restore the systems necessary for flight. Then we determine whether a return journey is possible."
+        },
+        {
+          "kind": "direction",
+          "text": "Dave studies the damaged ship interior for a moment."
+        },
+        {
+          "kind": "line",
+          "speaker": "dave",
+          "text": "It has to be possible."
+        },
+        {
+          "kind": "line",
+          "speaker": "computer",
+          "text": "I cannot promise that, Dave."
+        },
+        {
+          "kind": "direction",
+          "text": "A brief pause."
+        },
+        {
+          "kind": "line",
+          "speaker": "computer",
+          "text": "But I can help you find out."
+        },
+        {
+          "kind": "line",
+          "speaker": "dave",
+          "text": "Then let's get to work."
+        },
+        {
+          "kind": "direction",
+          "text": "Computer's display settles into a stable operational state. The cutscene ends and control returns to the player."
+        }
+      ]
+    }
+  ]
+}

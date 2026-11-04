@@ -1,0 +1,99 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://scenes/ui/computer_restoration.gd" id="1_script"]
+[ext_resource type="Script" path="res://scenes/ui/ui_scale_root.gd" id="2_scale"]
+[ext_resource type="Theme" path="res://assets/ui/b1_theme.tres" id="3_theme"]
+[ext_resource type="PackedScene" path="res://scenes/ui/b2_panel_frame.tscn" id="4_frame"]
+[ext_resource type="Theme" path="res://assets/ui/machine_actions.tres" id="5_actions"]
+[ext_resource type="FontFile" path="res://assets/fonts/ibm-plex-sans/IBMPlexSans-Italic.ttf" id="6_italic"]
+
+[node name="ComputerRestoration" type="CanvasLayer"]
+layer = 20
+script = ExtResource("1_script")
+
+[node name="HUD" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme = ExtResource("3_theme")
+script = ExtResource("2_scale")
+
+[node name="Panel" type="PanelContainer" parent="HUD"]
+visible = false
+offset_right = 420.0
+offset_bottom = 300.0
+
+[node name="Content" type="VBoxContainer" parent="HUD/Panel"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Title" type="Label" parent="HUD/Panel/Content"]
+layout_mode = 2
+theme_type_variation = &"B1Title"
+text = "COMPUTER RESTORATION"
+autowrap_mode = 3
+
+[node name="Status" type="Label" parent="HUD/Panel/Content"]
+layout_mode = 2
+text = "Primary systems offline. Console damaged."
+autowrap_mode = 3
+
+[node name="Plates" type="Label" parent="HUD/Panel/Content"]
+layout_mode = 2
+text = "Ferrite Plates: 0 / 4"
+
+[node name="Rods" type="Label" parent="HUD/Panel/Content"]
+layout_mode = 2
+text = "Ferrite Rods: 0 / 4"
+
+[node name="Restore" type="Button" parent="HUD/Panel/Content"]
+layout_mode = 2
+theme = ExtResource("5_actions")
+theme_type_variation = &"B1MachinePrimary"
+disabled = true
+text = "Restore Computer"
+
+[node name="NotYet" type="Button" parent="HUD/Panel/Content"]
+layout_mode = 2
+text = "Not yet"
+
+[node name="FrameBounds" type="Control" parent="HUD/Panel"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Frame" parent="HUD/Panel/FrameBounds" instance=ExtResource("4_frame")]
+layout_mode = 1
+offset_left = -20.0
+offset_top = -16.0
+offset_right = 20.0
+offset_bottom = 16.0
+
+[node name="Direction" type="Label" parent="HUD"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 100.0
+offset_top = 64.0
+offset_right = -100.0
+offset_bottom = 160.0
+mouse_filter = 2
+theme_override_fonts/font = ExtResource("6_italic")
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Curtain" type="ColorRect" parent="."]
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+color = Color(0, 0, 0, 0)
+
+[connection signal="pressed" from="HUD/Panel/Content/Restore" to="." method="_confirm_repair"]
+[connection signal="pressed" from="HUD/Panel/Content/NotYet" to="." method="close"]

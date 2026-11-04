@@ -51,6 +51,8 @@ func get_current_world() -> Node2D:
 
 func request_transition(source_scene: String, destination_scene: String,
 		spawn_name: StringName, presentation: Presentation) -> bool:
+	if player.get_node("InteractionDetector").computer_modal_open():
+		return false
 	if _busy or source_scene != _current_world.scene_file_path or destination_scene == source_scene:
 		return false
 	_busy = true

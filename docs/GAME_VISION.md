@@ -19,8 +19,10 @@ on `codex/p8-f5-production-cutover`, pending owner cutover acceptance and merge.
 **F6 / Run Current Scene** with that scene open also starts V2. For the explicit
 **legacy F6 fallback**, stop the game, open `scenes/main/main.tscn` and press F6.
 F5 stays configured for V2. This is an editor workflow, with no startup selector.
-Computer repair remains deferred. Agent validation is static only; no Godot
-launch or P8 runtime acceptance is claimed.
+Computer restoration is implemented on `codex/computer-restoration`, pending
+owner normal-F5 acceptance and merge; see the
+[approved requirements and acceptance checklist](COMPUTER_RESTORATION.md).
+Agent validation is static only; no Godot launch or P8 runtime acceptance is claimed.
 
 **P7 Observation #1 (nonblocking missed implementation):** After the Computer's
 opening conversation, the player is not explicitly directed outside to investigate
@@ -734,6 +736,25 @@ No Godot type checking, runtime or graphical verification is claimed.
 See [implementation and ordered owner checklist](../README.md#fabricator-production-pr-45-merged).
 Earlier Fabricator sections retain their milestone-specific historical scope;
 this approved production direction extends their formerly deferred behavior.
+
+## Computer restoration (feature branch, pending owner acceptance)
+
+After first Ferrite Plate acquisition, retain the opening conversation and unlock
+the approved one-time three-line inspection followed by a compact repair panel.
+Require current Materials inventory of **4 Ferrite Plates and 4 Ferrite Rods**;
+this newer owner decision supersedes the canonical story's historical **6+8**.
+Live guidance asks Dave to gather 4+4, then return to the ship, reverting readiness
+if he spends materials. Confirmed repair atomically consumes 4+4 once and completes
+`restore_computer`. Fade to black, switch to existing repaired Computer artwork,
+fade in, and automatically present the four locked narrative scenes verbatim.
+Full text appears immediately at provisional 15 characters/second, 2.5–8 seconds
+per line and 1.5 seconds between scenes, with no skip. Restore controls afterward
+and activate **Restore the Ship**: `Investigate how to improve manufacturing
+capabilities for ship repairs.` Contextual linear Computer dialogue follows.
+No saving, dialogue-choice framework, research or upgrade mechanics are added.
+
+This extends the earlier first-Plate milestone's formerly deferred repair scope.
+See [implementation, canonical provenance and verification limits](COMPUTER_RESTORATION.md).
 
 ## Unresolved design details
 

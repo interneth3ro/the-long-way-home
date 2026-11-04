@@ -290,7 +290,12 @@ class GroundPublicationTest(unittest.TestCase):
                      'scenes/main/scene_transition_controller.gd', 'scenes/main/playthrough_state.gd',
                      'project.godot', 'tools/run-local-tests.ps1'):
             expected = subprocess.check_output(['git', 'show', f'{BASE}:{path}'], cwd=ROOT)
-            actual = (subprocess.check_output(['git', 'show', 'cd91c9086ef24e71ddb6a43a2076c4be5a69485e:'+path], cwd=ROOT)
+            # These gameplay files now include Computer restoration. Keep this
+            # terrain-era comparison historical; current preservation is checked
+            # explicitly by static_computer_restoration_test.py.
+            actual = (subprocess.check_output(['git', 'show', '993ffc14c1fad1032227801870cd3a3fce50f7a5:'+path], cwd=ROOT)
+                      if path in ('scenes/main/scene_transition_controller.gd', 'scenes/main/playthrough_state.gd') else
+                      subprocess.check_output(['git', 'show', 'cd91c9086ef24e71ddb6a43a2076c4be5a69485e:'+path], cwd=ROOT)
                       if path == 'tools/run-local-tests.ps1' else (ROOT/path).read_bytes())
             self.assertEqual(actual.replace(b'\r\n', b'\n'),
                              expected.replace(b'\r\n', b'\n'), path)

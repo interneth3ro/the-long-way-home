@@ -93,6 +93,8 @@ func _process(delta: float) -> void:
 	_root.visible = not transitions.is_transitioning() and not _interaction.is_response_open()
 	if not _root.visible or _dialogue.is_conversation_open():
 		_clear_menu.hide()
+	if player.get_node("InteractionDetector").computer_modal_open():
+		_clear_menu.hide()
 	var active := construction.get_deployment_item_id()
 	if active != _active_item:
 		_active_item = active
@@ -113,6 +115,8 @@ func _unhandled_key_input(event: InputEvent) -> void:
 
 
 func _activate(slot: int) -> void:
+	if player.get_node("InteractionDetector").computer_modal_open():
+		return
 	if _dialogue.is_conversation_open():
 		return
 	var definition := progression.get_hotbar_assignment(slot)
@@ -126,6 +130,8 @@ func _activate(slot: int) -> void:
 
 
 func _slot_input(event: InputEvent, index: int, slot: Control) -> void:
+	if player.get_node("InteractionDetector").computer_modal_open():
+		return
 	if not event is InputEventMouseButton or not event.pressed \
 			or event.button_index != MOUSE_BUTTON_RIGHT:
 		return
@@ -139,9 +145,15 @@ func _slot_input(event: InputEvent, index: int, slot: Control) -> void:
 
 
 func _clear_assignment(_id: int) -> void:
+	if player.get_node("InteractionDetector").computer_modal_open():
+		return
 	if _dialogue.is_conversation_open():
 		return
 	progression.clear_hotbar(_clear_slot)
+
+
+func dismiss_context_menu() -> void:
+	_clear_menu.hide()
 
 
 func _refresh() -> void:

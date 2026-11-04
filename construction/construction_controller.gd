@@ -69,6 +69,10 @@ func get_deployment_item_id() -> StringName:
 	return _definition.item_id if _mode == Mode.CONSTRUCTION and _definition != null else &""
 
 
+func is_active() -> bool:
+	return _mode != Mode.NONE
+
+
 # Empty string means accepted. Reject before cancel() so a failed switch keeps
 # the current ghost, orientation and pending confirmation intact.
 func activate_hotbar(definition: MachineDefinition) -> String:
@@ -106,7 +110,7 @@ func _clear_confirmation() -> void:
 
 
 func _context_blocked(include_inventory: bool = true) -> bool:
-	return transitions.is_transitioning() or _dialogue.is_conversation_open() \
+	return _detector.computer_modal_open() or transitions.is_transitioning() or _dialogue.is_conversation_open() \
 		or _interaction.is_response_open() or (include_inventory and inventory_ui.is_open()) \
 		or (_detector.machine_panel != null and _detector.machine_panel.is_open())
 

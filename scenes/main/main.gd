@@ -13,6 +13,8 @@ const SMELTING_GUIDANCE: ObjectiveDefinition = preload("res://objectives/restore
 const FABRICATOR_GUIDANCE: ObjectiveDefinition = preload("res://objectives/restore_computer_fabricator.tres")
 const INGOT_MUSING: MusingDefinition = preload("res://dialogue/ferrite_ingot_acquisition.tres")
 const PLATE_GUIDANCE: ObjectiveDefinition = preload("res://objectives/restore_computer_plate.tres")
+const REPAIR_MATERIAL_GUIDANCE: ObjectiveDefinition = preload("res://objectives/restore_computer_materials.tres")
+const REPAIR_READY_GUIDANCE: ObjectiveDefinition = preload("res://objectives/restore_computer_ready.tres")
 
 @onready var _objectives: ObjectiveController = $ObjectiveController
 @onready var _tracker: ObjectiveTracker = $ObjectiveTracker
@@ -34,6 +36,9 @@ func _ready() -> void:
 	$PlaythroughState.ferrite_ingot_acquisition_completed.connect(_on_ferrite_ingot_acquired)
 	$PlaythroughState.fabricator_recovery_completed.connect(_refresh_objective_tracker)
 	$PlaythroughState.ferrite_plate_acquisition_completed.connect(_refresh_objective_tracker)
+	$PlaythroughState.inventory.changed.connect(_refresh_objective_tracker)
+	$PlaythroughState.computer_restoration_completed.connect(_on_computer_restored)
+	$PlaythroughState.computer_cinematic_completed.connect(_on_computer_cinematic_completed)
 	$SceneTransitions.transition_started.connect($MusingUI.dismiss)
 	$SceneTransitions.initialize()
 	_objectives.objective_state_changed.connect(_on_objective_state_changed)
@@ -54,8 +59,7 @@ func _refresh_objective_tracker() -> void:
 	var definition := _objectives.get_active_objective()
 	if definition != null and definition.objective_id == &"restore_computer":
 		if $PlaythroughState.ferrite_plate_acquired:
-			# The acquisition stage is done; the overarching objective stays active.
-			definition = null
+			definition = REPAIR_READY_GUIDANCE if $PlaythroughState.has_computer_materials() else REPAIR_MATERIAL_GUIDANCE
 		elif $PlaythroughState.fabricator_recovered:
 			definition = PLATE_GUIDANCE
 		elif $PlaythroughState.ferrite_ingot_acquired:
@@ -73,6 +77,14 @@ func _refresh_objective_tracker() -> void:
 		elif $PlaythroughState.ferrite_discovered:
 			definition = FERRITE_GUIDANCE
 	_tracker.show_objective(definition)
+
+
+func _on_computer_restored() -> void:
+	_objectives.complete_objective(&"restore_computer")
+
+
+func _on_computer_cinematic_completed() -> void:
+	_objectives.activate_objective(&"restore_ship")
 
 
 func _on_ferrite_discovered() -> void:

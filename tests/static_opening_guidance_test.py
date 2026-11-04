@@ -85,7 +85,7 @@ class OpeningGuidanceStaticTest(unittest.TestCase):
         self.assertEqual(re.findall(
             r'(?:if|elif) \$PlaythroughState\.(\w+):\n(?:\s*#[^\n]*\n)*\s*definition = (\w+)',
             tracker), [
-                ("ferrite_plate_acquired", "null"),
+                ("ferrite_plate_acquired", "REPAIR_READY_GUIDANCE"),
                 ("fabricator_recovered", "PLATE_GUIDANCE"),
                 ("ferrite_ingot_acquired", "FABRICATOR_GUIDANCE"),
                 ("smelter_deployed", "SMELTING_GUIDANCE"),
