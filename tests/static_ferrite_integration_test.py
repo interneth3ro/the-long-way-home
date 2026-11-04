@@ -1,5 +1,6 @@
 """Offline Ferrite geometry/registration contracts; no Godot or project execution."""
 import hashlib
+import math
 import re
 import struct
 import unittest
@@ -86,14 +87,15 @@ class FerriteIntegrationStaticTest(unittest.TestCase):
 
     def test_extraction_points_near_all_edges_rotations_and_adjacent_machines(self):
         definition = read('inventory/extractor.tres')
-        self.assertIn('footprint_cells = Vector2i(2, 2)',definition)
-        self.assertIn('extraction_point = Vector2(32, 32)',definition)
+        self.assertIn('footprint_cells = Vector2i(4, 4)',definition)
+        self.assertIn('extraction_point = Vector2(64, 64)',definition)
         self.assertIn('compatible_resources = Array[StringName]([&"ferrite"])',definition)
         # Source-bound independent membership examples. All rotations leave center fixed.
         for turns in range(4):
-            center = [(32,32), (64-32,32), (64-32,64-32), (32,64-32)][turns]
-            for cell, expected in [((4,4),True),((22,4),True),((4,14),True),((22,14),True),
-                                   ((2,4),False),((24,4),False),((4,2),False),((4,16),False)]:
+            center = [(64,64), (128-64,64), (128-64,128-64), (64,128-64)][turns]
+            self.assertEqual(center, (64,64))
+            for cell, expected in [((3,3),True),((21,3),True),((3,13),True),((21,13),True),
+                                   ((1,3),False),((23,3),False),((3,1),False),((3,15),False)]:
                 point = (cell[0]*32+center[0],cell[1]*32+center[1])
                 self.assertEqual(inside(point,self.points),expected,(turns,cell))
         # Closed polygon specification: centers on edges/corners qualify even
@@ -103,16 +105,77 @@ class FerriteIntegrationStaticTest(unittest.TestCase):
             self.assertEqual(edge_distance(point,self.points),0)
         for point in [(127.99,320),(768.01,320),(448,127.99),(448,512.01)]:
             self.assertFalse(inside(point,self.points))
-        # Two 64-wide footprints touching at x=192 share the same deposit.
-        for x in (128,192):
-            self.assertTrue(inside((x+32,160),self.points))
-        self.assertEqual(128+64,192)
+        # Two 128-wide footprints touching at x=256 share the same deposit.
+        for x in (128,256):
+            self.assertTrue(inside((x+64,192),self.points))
+        self.assertEqual(128+128,256)
         rules = read('construction/placement_rules.gd')
         self.assertIn('definition.rotated_point(definition.extraction_point, turns)', rules)
         self.assertIn('state.deposit_at(point, resource_type)', rules)
         self.assertIn('footprint.intersects(other.footprint(machine.cell, machine.turns))',rules)
         self.assertIn('Blocked by a solid obstacle',rules)
         self.assertIn('Out of construction range',rules)
+
+    def test_extractor_occupancy_grid_and_shared_geometry_contract(self):
+        definition = read('inventory/extractor.tres')
+        cells = tuple(map(int, re.search(
+            r'^footprint_cells = Vector2i\((\d+), (\d+)\)$', definition, re.M).group(1, 2)))
+        point = tuple(map(int, re.search(
+            r'^extraction_point = Vector2\((\d+), (\d+)\)$', definition, re.M).group(1, 2)))
+        coordinates = read('scenes/world/world_coordinates.gd')
+        grid = int(re.search(r'CONSTRUCTION_SIZE: int = (\d+)', coordinates)[1])
+        size = tuple(v * grid for v in cells)
+        self.assertEqual((grid, cells, size, point), (32, (4,4), (128,128), (64,64)))
+        # Independent occupancy oracle: a one-cell incursion overlaps, while
+        # four-cell separation touches exactly. Includes negative grid origins.
+        for cell in [(0,0), (-3,-5), (7,9)]:
+            occupied = {(cell[0]+x, cell[1]+y)
+                        for x in range(cells[0]) for y in range(cells[1])}
+            self.assertEqual(len(occupied), 16)
+            adjacent = {(x+4,y) for x,y in occupied}
+            overlapping = {(x+3,y) for x,y in occupied}
+            self.assertFalse(occupied & adjacent)
+            self.assertEqual(len(occupied & overlapping), 4)
+            origin = tuple(v * grid for v in cell)
+            center = tuple(origin[i]+point[i] for i in range(2))
+            anchor = (origin[0]+size[0]/2, origin[1]+size[1])
+            self.assertEqual(center, (origin[0]+64, origin[1]+64))
+            self.assertEqual(anchor, (origin[0]+64, origin[1]+128))
+        self.assertIn('floori(point.x / CONSTRUCTION_SIZE)', coordinates)
+        self.assertIn('floori(point.y / CONSTRUCTION_SIZE)', coordinates)
+        for world, expected in [(-32.01,-2), (-32,-1), (-0.01,-1), (0,0),
+                                (31.99,0), (32,1), (127.99,3), (128,4)]:
+            self.assertEqual(math.floor(world/grid), expected)
+        rules = read('construction/placement_rules.gd')
+        for contract in ['var footprint := definition.footprint(cell, turns)',
+                         'shape.size = footprint.size - Vector2.ONE * 0.02',
+                         'Transform2D(0.0, footprint.get_center())',
+                         'query.collision_mask = BLOCKING_LAYER',
+                         'query.collision_mask = player.collision_layer',
+                         'Dave is in the footprint']:
+            self.assertIn(contract, rules)
+        commit = function(read('scenes/world/planet_world_state.gd'), 'deploy_machine_instance')
+        self.assertIn('PlacementRules.rejection(self, definition, cell, turns', commit)
+        status = function(read('scenes/world/planet_world_state.gd'), 'machine_status')
+        self.assertIn('definition.rotated_point(definition.extraction_point, machine.turns)', status)
+        self.assertIn('deposit_at(point, resource_type)', status)
+
+    def test_footprint_change_preserves_other_definitions_and_gameplay(self):
+        base = '10b3ae89011efbd73118b9b86cf481b73df2c91c'
+        original = git_blob(base, 'inventory/extractor.tres').decode().replace('\r\n', '\n')
+        restored = read('inventory/extractor.tres').replace(
+            'footprint_cells = Vector2i(4, 4)', 'footprint_cells = Vector2i(2, 2)').replace(
+            'extraction_point = Vector2(64, 64)', 'extraction_point = Vector2(32, 32)')
+        self.assertEqual(restored, original)  # All production/item fields preserved.
+        for path in ['inventory/smelter.tres', 'inventory/fabricator.tres',
+                     'scenes/world/world_coordinates.gd', 'construction/machine_definition.gd',
+                     'construction/placement_rules.gd', 'construction/deployed_machine.gd',
+                     'construction/construction_controller.gd', 'scenes/world/planet_world_state.gd',
+                     'scenes/player/interaction_detector.gd', 'scenes/ui/machine_ui.gd']:
+            with self.subTest(path=path):
+                self.assertEqual(read(path), git_blob(base, path).decode().replace('\r\n', '\n'))
+        for machine in ['smelter', 'fabricator']:
+            self.assertIn('footprint_cells = Vector2i(2, 2)', read(f'inventory/{machine}.tres'))
 
     def test_other_exterior_nodes_and_resource_fields_are_unchanged(self):
         base = '87ca9733749e55e138361bab8ba0fb2ff08d0c7f'

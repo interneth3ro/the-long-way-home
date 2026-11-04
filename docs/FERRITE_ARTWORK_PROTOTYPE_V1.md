@@ -315,6 +315,10 @@ objective progression and interaction scripts are unchanged. Extractors remain
 2x2 construction cells with the existing designated extraction-point rule,
 rotations, overlap/solid/range checks and all production behavior. Full containment
 is not required. Adjacent nonoverlapping Extractors can share this deposit.
+These dimensions describe that historical integration. The later owner-approved
+[128x128 Extractor alignment](GAME_VISION.md#extractor-128x128-footprint-alignment-feature-branch-pending-merge)
+uses 4x4 construction cells and center (64,64), pending owner acceptance and
+merge; the point-only eligibility rule and this Ferrite artwork remain unchanged.
 
 Offline checks inspect exact geometry, image identity/header, registration,
 resource reachability, protected coverage, representative extraction-point cases,

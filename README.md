@@ -1,5 +1,12 @@
 # The Long Way Home
 
+Extractor footprint alignment is implemented on `codex/extractor-footprint-128`,
+pending owner F5 acceptance and merge: 4x4 construction cells (128x128 world
+units), with centered extraction point (64,64), on the unchanged 32-unit grid.
+Production, recovery and center-based interaction ranges remain unchanged.
+Directional artwork is not integrated. See the
+[scope, validation limits and owner checklist](docs/GAME_VISION.md#extractor-128x128-footprint-alignment-feature-branch-pending-merge).
+
 Computer restoration is prepared on `codex/computer-restoration`, **pending owner
 normal-F5 acceptance and merge**. It adds the dedicated 4 Plate + 4 Rod repair
 panel, one-time inspection, locked automatic four-scene narrative and subsequent

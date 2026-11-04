@@ -321,8 +321,11 @@ The integration remains pending merge and does not change approved environmental
   Dave's engineering deduction and guidance to locate the Extractor in the
   maintenance bay. Computer does not identify the mineral in this sequence.
 - Mineral-bearing ground is independent of decorative artwork and terrain chunks.
-  Approved Extractors occupy 2 x 2 independent 32-unit construction cells; their
-  designated extraction point must overlap compatible ground. Other parts may
+  Approved Extractors occupy 4 x 4 independent 32-unit construction cells
+  (128 x 128 world units), with designated extraction point (64,64); the
+  [alignment implementation](#extractor-128x128-footprint-alignment-feature-branch-pending-merge)
+  is pending owner acceptance and merge. This center point must overlap
+  compatible ground. Other parts may
   extend beyond the deposit. Machines may touch edges but footprints may not
   overlap. All valid points give the same rate. Construction mode highlights
   only compatible deposits; the deployment feature implements this pending
@@ -508,6 +511,55 @@ for approved dialogue, ownership and validation limits.
 Implementation is merged in PR #32. Controls, ranges, state ownership, exclusions
 and static-validation limits are recorded in the
 [implementation notes](../README.md#deploy-the-extractor-pr-32-merged).
+
+## Extractor 128x128 footprint alignment (feature branch, pending merge)
+
+The owner approved Approach B2: `codex/extractor-footprint-128` changes only
+`inventory/extractor.tres` gameplay data from 2x2 cells / extraction point (32,32)
+to 4x4 cells / (64,64). The global construction grid remains 32 world units;
+Smelter and Fabricator remain 2x2 (64x64). Earlier 2x2 Extractor records describe
+their historical milestones and are not revised acceptance evidence.
+
+Existing generic placement, overlap, blocking-solid and Dave collision queries
+consume the larger 128x128 rectangle. Its top-left snaps to any 32-unit cell;
+all four rotations retain the same square occupancy and centered mineral sample.
+Only that point must qualify; full deposit containment is not required. The
+bottom-center anchor is footprint origin + (64,128). No shared placement,
+collision, production or recovery script changes are included. Production stays
+one ore/second into capacity 20; the packaged item identity remains unchanged.
+All four accepted directional artwork packages remain frozen and unintegrated.
+
+Inspection and collection retain their 96-unit center-based range. Construction
+and B recovery retain their existing 160-unit nearest-footprint ranges. Larger
+occupancy intentionally affects adjacency, walking and near-edge mineral
+eligibility; corner inspection/collection reach is deferred to gameplay review.
+Use a fresh playthrough: current state is session-only, with no disk save/load
+workflow, and this change does not migrate or hot-resize existing live machines.
+
+Focused static checks use
+`python -B -m unittest discover -s tests -p static_ferrite_integration_test.py`.
+They inspect resource values, independent grid/occupancy examples, centered
+rotation cases, deposit membership and generic query wiring; baseline comparisons
+protect other machine definitions, production, recovery and interaction code.
+Static checks do not execute GDScript or certify physics, input or graphical
+behavior. The existing Extractor production/recovery fixture retains its test
+logic; only its now-outdated extraction-coordinate comment changes.
+Implementation static validation: Ferrite integration **9/9 PASS**, Ferrite region
+**9/9 PASS**, production terrain **8/8 PASS**. Changed documentation links,
+historical README content preservation, all four accepted artwork ZIP hashes and
+`git diff --check` also passed. The full static suite was not run for this focused
+change. Godot import, GDScript runtime tests and graphical checks remain NOT TESTED.
+No Godot import, headless test or graphical run is authorized by this change.
+
+Owner F5 acceptance remains pending; all checks below are NOT TESTED:
+
+- [ ] 4x4 placement preview, 32-unit snapping and all four R rotations.
+- [ ] Deposit-center eligibility, including inside/edge/outside positions.
+- [ ] Collision and placement rejection for Dave and blocking objects.
+- [ ] Adjacent Extractors and mixed Smelter/Fabricator placement; no overlap.
+- [ ] Inspection and collection from all sides and corners, including neighbors.
+- [ ] B-key recovery and redeployment, preserving equipment and stored output.
+- [ ] Existing Extractor production and Smelter/Fabricator regressions.
 
 ## Approved Ferrite Ore production direction
 
