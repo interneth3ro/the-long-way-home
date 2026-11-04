@@ -1082,5 +1082,8 @@ receipts. Illustrated stays the default; continuous requires explicit selection
 before the exterior's first initialization. Existing gameplay classifications,
 Ferrite, authored geometry and boarding contracts remain unchanged. Failures
 latch and block arrival; rollback requires a fresh illustrated exterior.
-Static inspection is distinct from the separately approvable gameplay plan;
-no Stage 3C Godot, visual, gameplay or performance acceptance is claimed.
+The authorized one-time Stage 3C run passed static, import and gameplay-process
+checks, with owner-reported PASS for seven listed gameplay areas. See the
+[exact acceptance record](experiments/terrain_stage3c_exterior.md#one-time-execution-and-owner-acceptance--2026-11-04).
+The execution grant is consumed; performance budgets and numerical parity remain
+uncertified, and illustrated remains the production default.

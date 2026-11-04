@@ -1,8 +1,10 @@
 # Stage 3C — opt-in continuous exterior
 
-Status: feature branch, pending merge and controlled gameplay validation.
-The owner authorized this implementation after PR #142's isolated appearance
-acceptance. No engine execution is authorized or reported here.
+Status: feature branch, pending merge; owner-reported gameplay acceptance PASS
+for the seven areas recorded below. The owner authorized this implementation
+after PR #142's isolated appearance acceptance. The separately authorized
+one-time Stage 3C execution is complete and its grant is consumed; further
+engine execution requires new explicit owner approval.
 
 ## Configuration and rollback
 
@@ -73,7 +75,9 @@ synchronous detail/tint cost, texture upload cost and GPU cost are unmeasured.
 The preserved PNG import settings disable artwork mipmaps; distant filtering
 quality remains a known limitation. Python float/model agreement cannot establish
 Godot float32 noise quantization, shader compilation, GPU parity or actual visuals.
-No runtime, graphical, gameplay or performance verification is claimed.
+The authorized execution record below supersedes the preparation-only absence
+of runtime/gameplay evidence. Numerical parity and performance budgets remain
+uncertified; the owner's acceptance is limited to the reported gameplay areas.
 
 ## Separately approvable gameplay execution plan
 
@@ -536,3 +540,87 @@ in the PR update. Preparation performs no source import, real-stage creation,
 Godot execution, graphics, gameplay, profiling, merge or cleanup. After approval,
 one attempted run consumes the one-time grant even on failure. The owner checklist
 above remains the acceptance scope; elapsed time is not acceptance or approval.
+
+
+## One-time execution and owner acceptance — 2026-11-04
+
+The owner explicitly authorized the exact procedure above once, at reviewed
+`8b027fa559195df9e1ae9f8dddf05d0aea0d2d9c`, with unchanged manifest SHA-256
+`a567d3b6abb39fdf28cc0b019f7280ad971a771d610db41f2e5c9f692997a7c8`.
+It executed in a fresh interactive Windows PowerShell 7 through the unchanged
+reviewed supervisor. The source checkout was not used as the engine project.
+The entire attempt ran from `2026-11-04T13:29:57.9954783Z` to
+`2026-11-04T13:37:07.5605289Z`. These are supervisor UTC timestamps, not isolated
+import/gameplay timings or performance measurements.
+
+| Phase/check | Actual result |
+|---|---|
+| Approved identity and preservation preflight | PASS: reviewed HEAD, clean tracked/index state, exact 15 protected untracked sidecars, 346 pinned source inputs, two staged-only transformations, frozen C1 and historical preservation identities |
+| Complete Python static suite | PASS: actual exit 0, certain termination, `OK` and exactly 367 tests verified within the 360-second deadline |
+| Cold headless import | Exactly one invocation; PASS within 60 seconds, exit 0, certain termination, combined output within 1,048,576 bytes and error scans clean |
+| Generated non-cache sidecars | Exactly 18: 15 PNG import sidecars and three script/shader UID sidecars; formats and destinations validated after import, then inventory/hash-pinned before gameplay |
+| Graphical gameplay | Exactly one invocation at 1280×720, PASS within 300 seconds; normal exit 0, certain termination, 172 combined output bytes and error scans clean |
+| Final identities/preservation | PASS: unchanged revision/status/index, all source and staged inputs, reviewed controls, protected sidecars, historical evidence/references and generated sidecars |
+| Supervisor | Infrastructure PASS; no timeout, overflow, uncertain termination, forced stop, retry or subsequent session |
+
+Both engine launches used only
+`D:\GameDev\Godot\Standard\Godot_v4.7.2-stable_win64.exe`, with pinned SHA-256
+`AB1824F85BFD8E0E4128182C000C4003A3E042245B2967848D089B2A04B22424`, rechecked
+at the documented boundaries. The retained graphical diagnostic identified
+`Godot Engine v4.7.2.stable.official.ed1daf0bf`, OpenGL API 3.3.0 NVIDIA 610.88,
+Compatibility backend, NVIDIA GeForce RTX 5070. Its output contained only the
+startup diagnostic. Per-phase elapsed times and import/static output byte counts
+were not retained separately; do not invent them from the whole-attempt window.
+The final summary's legacy `Authorization` label still says a separate grant is
+required: that is fixed procedure text, not an approval verdict. The owner's
+explicit authorization in this chat supplied the one-time grant.
+
+The fresh external stage remains at
+`D:\GameDev\Godot\TLWH-NativeStages\stage3c-e4f291b4ec1c4096aa51ef6fcac1c17e`.
+Its isolated user data remains under Windows application data with custom name
+`TLWH-Stage3C-8fe7fe8c0e594933b02e9581b8b51b11`; neither location was cleaned up.
+Only the two manifest transformations were applied, in the stage only. The
+illustrated production default and all source gameplay/resource bytes remained
+unchanged. The generated-sidecar inventory SHA-256 is
+`2a445a1a0296985f3e4499052465f070b4cac13f6b4010066139f6621ec631be`
+(ordinal `path|lowercase-sha256` rows joined with LF and one terminal LF).
+`.godot/` engine-owned cache was retained and traversed without following links;
+existing staged inputs/sidecars did not change.
+
+The owner replied **"PASS"** to one question explicitly listing these seven
+areas and requesting PASS/FAIL/UNTESTED plus errors, stalls or observations:
+
+| Owner-reported area | Result |
+|---|---|
+| Exterior arrival | PASS |
+| Terrain appearance | PASS |
+| Exploration/streaming | PASS |
+| Ferrite | PASS |
+| Construction | PASS |
+| Hatch transitions | PASS |
+| Responsiveness | PASS |
+
+This is aggregate owner-reported acceptance of those seven areas. No additional
+observations, individual action/control counts or route transcript were supplied.
+No listed area was reported FAIL or UNTESTED; detailed subactions were not
+individually enumerated, so no extra per-control or direction-by-direction
+coverage is inferred. Any subcheck not actually completed remains untested.
+Alternate seeds, coordinate-envelope edges, injected failure/cancellation,
+numerical CPU/GPU parity, minification-specific controls and formal profiling or
+performance-budget achievement were not established by this run. A responsiveness
+PASS is an owner gameplay observation, not a performance benchmark.
+
+Post-run independent read-only checks reconfirmed the exact manifest, all 346
+source and staged input hashes/sizes, both transformation results, all 15
+protected sidecars and the exact 18 generated-sidecar inventory hash. The final
+process-name check found zero Godot processes. The supervisor's final snapshot
+also checked frozen C1 artwork/metadata, A1 branch and three annotated tag objects
+and targets, backup bundle, both Stage 2B-2 manifests and ten PNGs, and PR #141's
+branch and six diagnostic files. All remain preserved. No failure evidence file,
+agent screenshot or routine successful-output log was created. No owner files,
+stages, branches, archives or prior evidence were deleted or retired.
+
+The **single-use grant is consumed**. No further execution, automatic retry,
+production-default activation, merge, cleanup, historical-branch closure or Dave
+sprite work is authorized by this PASS. Existing Native and MetadataSmoke modes
+remain unchanged. Final default activation requires a separate owner decision.
