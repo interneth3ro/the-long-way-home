@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="DialogueConversation" load_steps=6 format=3]
+[gd_resource type="Resource" script_class="DialogueConversation" load_steps=8 format=3]
 
 [ext_resource type="Script" uid="uid://cltwhconv0001" path="res://dialogue/dialogue_conversation.gd" id="1_conversation"]
 [ext_resource type="Script" uid="uid://cltwhentry001" path="res://dialogue/dialogue_entry.gd" id="2_entry"]
@@ -25,7 +25,21 @@ speaker_id = &"dave"
 speaker_display_name = "Dave"
 text = "Then we'd better figure out how to get you running again."
 
+[sub_resource type="Resource" id="Resource_computer_sensors"]
+script = ExtResource("2_entry")
+entry_id = &"computer_opening.computer_sensors"
+speaker_id = &"computer"
+speaker_display_name = "Computer"
+text = "External sensors are unreliable. I cannot assess the surrounding area."
+
+[sub_resource type="Resource" id="Resource_dave_outside"]
+script = ExtResource("2_entry")
+entry_id = &"computer_opening.dave_outside"
+speaker_id = &"dave"
+speaker_display_name = "Dave"
+text = "Then I'll take a look outside. See what we're dealing with."
+
 [resource]
 script = ExtResource("1_conversation")
 conversation_id = &"computer_opening"
-entries = Array[ExtResource("2_entry")]([SubResource("Resource_dave_question"), SubResource("Resource_computer_status"), SubResource("Resource_dave_response")])
+entries = Array[ExtResource("2_entry")]([SubResource("Resource_dave_question"), SubResource("Resource_computer_status"), SubResource("Resource_dave_response"), SubResource("Resource_computer_sensors"), SubResource("Resource_dave_outside")])
