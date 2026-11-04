@@ -211,7 +211,9 @@ class Stage2ClassificationTest(unittest.TestCase):
                      "scenes/main/scene_transition_controller.gd", "project.godot", "tools/run-local-tests.ps1"):
             baseline = subprocess.check_output(["git", "show", f"{reference.BASE}:{path}"], cwd=ROOT)
             actual = (subprocess.check_output(["git", "show", "cd91c9086ef24e71ddb6a43a2076c4be5a69485e:"+path], cwd=ROOT)
-                      if path == "tools/run-local-tests.ps1" else (ROOT/path).read_bytes())
+                      if path == "tools/run-local-tests.ps1" else
+                      subprocess.check_output(["git", "show", "de09eeee2c07036ac50471bde12a716e173e3366:"+path], cwd=ROOT)
+                      if path == "scenes/world/planet_exterior.gd" else (ROOT/path).read_bytes())
             self.assertEqual(actual.replace(b"\r\n", b"\n"), baseline.replace(b"\r\n", b"\n"), path)
 
     def test_source_guards_state_tint_detail_and_publication_separation(self):

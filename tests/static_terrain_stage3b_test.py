@@ -115,11 +115,9 @@ class Stage3BTest(unittest.TestCase):
 
     def test_frozen_inputs_preservation_and_exact_scope(self):
         receipt = json.loads(read('artifacts/logs/terrain-preservation-2026-11-03.json'))
-        delta = subprocess.check_output(['git','diff','--name-status',BASE,'--'],cwd=ROOT,text=True)
+        # Historical PR #142 inventory; Stage 3C owns the current exact scope.
+        delta = subprocess.check_output(['git','diff','--name-status',BASE,'de09eeee2c07036ac50471bde12a716e173e3366','--'],cwd=ROOT,text=True)
         inventory = {p:s for s,p in (line.split('\t',1) for line in delta.splitlines())}
-        untracked = set(subprocess.check_output(['git','ls-files','--others','--exclude-standard'],cwd=ROOT,text=True).splitlines())
-        self.assertEqual(untracked-ADDED,set(receipt['protected_sidecars']))
-        inventory.update({p:'A' for p in untracked & ADDED})
         self.assertEqual(inventory,{**dict.fromkeys(ADDED,'A'),**dict.fromkeys(MODIFIED,'M')})
         for p,entry in receipt['protected_sidecars'].items():
             self.assertEqual(hashlib.sha256((ROOT/p).read_bytes()).hexdigest(),entry['sha256'])
@@ -180,7 +178,8 @@ class Stage3BTest(unittest.TestCase):
                      '        inventory.update({path: "A" for path in untracked & ADDED})\n'):
             self.assertEqual(expected.count(line),1)
             expected=expected.replace(line,'')
-        self.assertEqual(read(path),expected)
+        historical = subprocess.check_output(['git','show','de09eeee2c07036ac50471bde12a716e173e3366:'+path],cwd=ROOT,text=True)
+        self.assertEqual(historical,expected)
 
 
 if __name__ == '__main__':

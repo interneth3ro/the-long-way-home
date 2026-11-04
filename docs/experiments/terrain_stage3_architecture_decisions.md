@@ -103,3 +103,18 @@ illustrated default, eventual narrow sibling presenter, `[-16,15]` owned-chunk
 study, bounded preparation/cache, failure closed and measured performance before
 activation. No production integration, Godot execution, merge or cleanup is
 authorized. Engine/visual inspection requires a separate exact execution approval.
+
+
+## Owner authorization — 2026-11-03: Stage 3C implementation
+
+Following merged PR #142 (`de09eeee2c07036ac50471bde12a716e173e3366`) and
+accepted isolated appearance/sharpness, the owner authorized the focused opt-in
+[exterior integration](terrain_stage3c_exterior.md) and one draft PR. This
+supersedes the earlier milestone's prohibition on implementation of production
+integration, within that request's scope only. The removal of the continuous
+crash-site protection multiplier persists; no numerical certification of that
+removed mask is required or claimed. Original CPU classifications/gameplay
+protection, Candidate A, frozen C1 artwork, production presentation precedence,
+illustrated default, bounded work, publication and fail-closed requirements
+remain. Godot execution, gameplay acceptance, default activation, performance
+optimization, merge and cleanup remain separate owner decisions.
