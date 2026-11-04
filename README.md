@@ -2203,6 +2203,79 @@ delay remains separate in [issue #144](https://github.com/interneth3ro/the-long-
 Keep the PR draft until acceptance; merge and later asset cleanup require separate
 owner action. No old Dave assets are deleted here.
 
+### Dave north walking v2 (owner accepted, pending merge)
+
+`codex/dave-north-walk-v2` replaces only atlas cells 42-47 using the owner's
+`artifacts/tmp/dave-north-walk-v2/dave_walk_north_v2_refined.png` and matching
+JSON. Exact supplied bytes are retained under
+`assets/characters/dave/source_art/north_walk_v2/`; `.gdignore` keeps these
+high-resolution references out of engine imports. Embedded prompts and preview
+measurements remain historical provenance, not runtime instructions. The active
+`dave_idle_walk_4dir.json` remains authoritative and unchanged.
+
+Source SHA-256 identities:
+
+- PNG: `f65cc6062cba1531b356a4dbc7a5103227f236eb308cb992d0319e2394207e34`.
+- JSON: `11363224ca798ebdf436ebf88e61fdf2a993ca89fa98d5e4537da23d93e82bb0`.
+
+The original runtime atlas remains in Git at baseline
+`b2e1c8fcce98e318620acfeaafd56905af58d874`, with SHA-256
+`d008e4b4467fec2d83da65dd116d50ac275b0337827e63ee636197350d1bbf0d`.
+An exact local backup also remains in ignored
+`artifacts/tmp/dave-north-walk-v2/original_runtime_atlas.png` through acceptance.
+Resulting atlas SHA-256:
+`25dbd629aa58927a54bfab74ad2d50669554b18148176027df01fb9d40ae1a8b`.
+
+Deterministic conversion used Python and Pillow 13.0.0, installed only in the
+ignored task directory. Read the six 512-square cells left to right, top then
+bottom. For each cell, preserve RGB and clear alpha 1-4 only outside a three-pixel
+Chebyshev neighborhood of any alpha >=16 source pixel (the previous atlas's
+conservative residue rule). Resize the entire RGBA cell to 210 x 210 using
+`Image.Resampling.LANCZOS`; Pillow's RGBA resampling uses premultiplied alpha.
+Crop `(11,2,192,183)` to obtain an exact 181 x 181 cell and paste without a mask
+at `(181*i,1267)` for source frame `i`. No per-frame registration, pose editing,
+independent axis scaling or generative artwork changes occur.
+
+Uniform artwork scale is `210/512 = 0.41015625`; source reference `(256,430)`
+lands at `(94,174.3671875)`, close to the established `(94,174)` anchor. This
+transform is derived from the existing 166-pixel north-walk contact height,
+not the source JSON's preview gameplay scale. Contact silhouettes are 165 pixels
+high; lifted-foot silhouettes are 155-157 pixels. Alpha >=128 bounds, as
+exclusive rectangles, are `(49,10,139,175)`, `(49,10,140,165)`,
+`(50,10,139,166)`, `(49,10,140,175)`, `(49,10,140,166)`, `(49,10,139,167)`.
+The artwork is slightly narrower than the previous north walk; supplied
+proportions are preserved. The owner accepted this minor difference and the
+idle/walk transition during normal F5 gameplay; it is not an acceptance blocker.
+No Sprite2D or gameplay scale was changed to compensate.
+
+The 1086 x 1448 atlas, all first 42 cells (including invisible RGB), runtime
+mapping, eight clip names, 100 ms walking frames, scale, offset, import metadata,
+controller, collision, camera and unrelated gameplay remain unchanged. The
+preserved first 42 cells' decoded RGBA SHA-256 is
+`baf4adb299fb5b95b70229b2e7c39cd4521b4ceb561b56f1175767c807437fe3`.
+The focused static test checks both exact source identities, grid/order/timing,
+replacement cell identities, untouched cells and existing nonvisual contracts.
+
+Static gray-background comparison of north idle, original walk and replacement
+walk found leg-role reversal, retained costume detail and no visible clipping or
+background haze. It is an image inspection, not graphical Godot verification.
+Faint edge residue in untouched frames remains as previously documented. No
+agent-run Godot import, headless run, playable scene or performance test was
+performed. Owner normal-F5 acceptance on 2026-11-04 is **10/10 PASS** at
+`4f3980d21a736f30d3a75f6a20881a339f30245e`, with no corrections required.
+All ten PR acceptance checks passed; the grouped record below reflects that
+owner report. The existing 389-test static PASS remains the automated validation
+result. PR #150 is accepted to proceed to Ready for Review and normal merge;
+acceptance does not authorize post-merge cleanup.
+
+- [x] Correct alternating stride, low passing poses and smooth six-frame loop.
+- [x] Stable north idle/walk transitions, apparent size and grounded foot anchor.
+- [x] No distracting sliding, bobbing, jumping, clipping, halos or frame bleed.
+- [x] All other animations, movement, collisions, camera and interactions unchanged.
+- [x] Responsive ship interior/exterior gameplay.
+
+East/west refinement, overall visual scale and cadence tuning remain separate work.
+
 ### Existing environment and gameplay
 
 The camera follows Dave's ground-contact origin independently of `Visual`.
