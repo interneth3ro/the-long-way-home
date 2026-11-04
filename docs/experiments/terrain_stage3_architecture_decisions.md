@@ -70,4 +70,11 @@ Stage 2B-2 selected **Candidate A**, sharpened smooth four-center lattice interp
 
 ## Change control
 
+The separately authorized [adaptive CPU offline prototype](terrain_adaptive_cpu_prototype.md)
+is prepared on a feature branch, pending review/merge. Its tested box-cover
+candidate is **NOT VIABLE** as a simpler replacement: conservative coverage in
+the declared exact geometry model comes with visible transition loss and leaves
+the production geometry enclosure unresolved. This negative result changes none
+of the eleven decisions or Stage 3A-2/3B gates and authorizes no execution.
+
 These decisions were explicitly approved by the owner in ChatGPT on 2026-11-03. Future changes require a new explicit owner decision and a corresponding record update. Do not interpret this document as blanket authorization to implement later stages.
