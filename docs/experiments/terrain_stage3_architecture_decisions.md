@@ -58,6 +58,10 @@ or the original stage boundaries.
 
 ## Preservation and review contracts
 
+The original contracts below record the Stage 3 preflight. The dated final
+housekeeping amendment supersedes only the untracked/staging requirement in the
+first bullet; its exact identity and preservation requirements remain in force.
+
 - Preserve all 15 known protected untracked exterior `.png.import` sidecars; compare exact inventory and hashes to the existing preservation receipt, never stage/delete/regenerate them. Treat **only** these verified files as the dirty-checkout exception.
 - Preserve A1 branch and three annotated A1/C1 tags, backup bundle/receipts, frozen C1 PNGs and provenance, all Stage 2A/2B reference implementations, goldens, original and refined diagnostic manifests/outputs, and historical tests/guards.
 - Existing illustrated renderer, original generator/classifications/exclusions, crash-site tint/overlays, Ferrite, construction, player, hatch/boarding, transitions, seed semantics and unrelated scenes remain unchanged by 3A-1.
@@ -127,10 +131,41 @@ authorized changing the production default to Continuous, retaining Illustrated
 as an explicitly selectable rollback. Only the script initializer changes; the
 production scene has no serialized override and inherits that default. This
 supersedes decision 11's Illustrated-default requirement and prior prohibitions
-on default activation for this narrow feature PR (pending merge). It does not
+on default activation for this narrow feature PR (merged as PR #145). It does not
 certify performance budgets or numerical parity. Terrain generation, material
 classifications, Candidate A, frozen C1 artwork, shaders, tint/overlays, chunk
 lifecycle, arrival readiness, Ferrite, construction and gameplay remain unchanged.
 The [Stage 3D guide](terrain_stage3d_default.md) records rollback and a separately
 approvable final gameplay/timing plan. No Godot execution, optimization, merge or
 cleanup is authorized by this implementation request.
+
+
+## Owner authorization — 2026-11-04: final terrain metadata housekeeping
+
+Status: implementation on the housekeeping feature branch, pending owner review
+and merge, based on PR #145 merge `27d14a3773f9f3cb047957ed7e648661e74c77fa`.
+The owner approved tracking the exact 15 protected exterior PNG import sidecars
+and five F5-generated script/shader UID sidecars identified in the audit. They
+are tracked in this change without rewriting their bytes or resource identities.
+Exact-path `-text` attributes preserve those bytes across Git staging/checkout.
+This supersedes the original instruction to leave those 15 files untracked and
+never stage them; it grants no regeneration, deletion or retirement authority.
+
+The [Stage 3D tests](../../tests/static_terrain_stage3d_test.py) retain the immutable
+PR #145 inventory against its merged commit and separately require all 20 reviewed
+metadata files to be tracked, hash-identical in working tree/index, unchanged by
+checkout conversion, and free of UID aliases. The original receipt and its 15
+path/hash records remain unchanged; the five UID hashes are pinned in that test.
+A clean current checkout no longer has a 15-file untracked exception. Additional
+F5 metadata requires review; blanket ignoring/acceptance is not authorized.
+The Stage 3B current lab-directory assertion adds only its two approved UID
+filenames; its immutable PR inventory and mathematical assertions remain intact.
+
+Earlier exact-15 preflight/results in Stage 3A/3B/3C and the original preservation
+receipt remain historical records. Consumed procedures are not current checkout
+instructions or renewed execution permission. The unused Stage 3D execution plan
+requires a new reviewed input/metadata inventory before any future activation.
+All mathematical assertions, goldens, C1 artwork/provenance, diagnostic outputs,
+backup bundles, branches/tags, stages, user data and caches remain preserved.
+No rendering, gameplay, shaders, generation or Dave assets change. Validation is
+static only; no Godot execution, import, merge or cleanup is authorized here.

@@ -1,5 +1,7 @@
 """Default-selection and exact production-diff contracts; no Godot execution."""
+import hashlib
 import json
+import re
 from pathlib import Path
 import subprocess
 import unittest
@@ -8,6 +10,19 @@ from static_illustrated_exterior_test import body
 
 ROOT = Path(__file__).resolve().parents[1]
 BASE = 'e5db8040d38bfd6b1ddb584d636af01052806b7c'
+MERGED = '27d14a3773f9f3cb047957ed7e648661e74c77fa'
+UID_SHA256 = {
+    'scenes/experiments/terrain_stage3b/continuous.gdshader.uid':
+        '1950da4e6f05abd23939f5acedfc59ce040ee76a62243e35cc5430f939a096c7',
+    'scenes/experiments/terrain_stage3b/lab.gd.uid':
+        'cc6e7f490bf329c47bb7000808ea8874c01b513f36721ac890b593ec93f786c8',
+    'scenes/world/continuous_terrain.gdshader.uid':
+        '4eb706153729ce2e89faa4591074220bed63f337f836cc1d8c28683e9dc13a17',
+    'scenes/world/continuous_terrain_metadata.gd.uid':
+        'c2943c83c21a28d729fd4894eed779b774ab3ad33a9111b59d644fc21f9d2bcb',
+    'scenes/world/continuous_terrain_presenter.gd.uid':
+        '5bd1b11db76a5a53450ffabdc9c8307cf848dbaae50fc5a8d4822249ef36a075',
+}
 ADDED = {'tests/static_terrain_stage3d_test.py',
          'docs/experiments/terrain_stage3d_default.md'}
 MODIFIED = {'scenes/world/planet_exterior.gd',
@@ -22,14 +37,45 @@ def git(*args):
 
 
 class Stage3DTest(unittest.TestCase):
-    def test_exact_scope_preserves_all_other_tracked_inputs(self):
+    def test_historical_pr145_exact_scope(self):
+        # Immutable PR #145 inventory, independent of later development/F5 metadata.
         inventory = {p: s for s, p in (line.split('\t') for line in
-                     git('diff', '--name-status', BASE, '--').splitlines())}
-        untracked = set(git('ls-files', '--others', '--exclude-standard').splitlines())
-        receipt = json.loads((ROOT/'artifacts/logs/terrain-preservation-2026-11-03.json').read_text())
-        self.assertEqual(untracked - ADDED, set(receipt['protected_sidecars']))
-        inventory.update(dict.fromkeys(untracked & ADDED, 'A'))
+                     git('diff', '--name-status', BASE, MERGED, '--').splitlines())}
         self.assertEqual(inventory, {**dict.fromkeys(ADDED, 'A'), **dict.fromkeys(MODIFIED, 'M')})
+
+    def test_current_reviewed_metadata_is_tracked_and_byte_preserved(self):
+        raw_receipt = (ROOT/'artifacts/logs/terrain-preservation-2026-11-03.json').read_bytes()
+        self.assertEqual(hashlib.sha256(raw_receipt).hexdigest(),
+                         '8eb39435fef15561e7024bdc0cc340a309acacbcf58e870f1e0eff0ea3a521a7')
+        receipt = json.loads(raw_receipt)
+        self.assertEqual(len(receipt['protected_sidecars']), 15)
+        expected = {p: e['sha256'] for p, e in receipt['protected_sidecars'].items()}
+        expected.update(UID_SHA256)
+        self.assertEqual(len(expected), 20)
+        tracked = set(git('ls-files').splitlines())
+        self.assertLessEqual(set(expected), tracked)
+        for path, digest in expected.items():
+            with self.subTest(path=path):
+                raw = (ROOT/path).read_bytes()
+                self.assertEqual(hashlib.sha256(raw).hexdigest(), digest)
+                indexed = subprocess.check_output(['git', 'show', ':'+path], cwd=ROOT)
+                self.assertEqual(indexed, raw)
+                attrs = git('check-attr', '-z', 'text', 'filter', 'working-tree-encoding',
+                            '--', path).split('\0')[2::3]
+                self.assertEqual(attrs, ['unset', 'unspecified', 'unspecified'])
+                checkout = subprocess.check_output(
+                    ['git', 'cat-file', '--filters', '--path='+path, ':'+path], cwd=ROOT)
+                self.assertEqual(checkout, raw)
+        # Reviewed identities must not alias another tracked resource.
+        owners = {}
+        for path in sorted(tracked):
+            if path.endswith(('.import', '.uid')):
+                for uid in set(re.findall(rb'uid://[a-z0-9]+', (ROOT/path).read_bytes())):
+                    owners.setdefault(uid, set()).add(path)
+        for path in expected:
+            uids = re.findall(rb'uid://[a-z0-9]+', (ROOT/path).read_bytes())
+            self.assertEqual(len(uids), 1, path)
+            self.assertEqual(owners[uids[0]], {path})
 
     def test_only_script_default_changes_and_scene_inherits_it(self):
         path = 'scenes/world/planet_exterior.gd'

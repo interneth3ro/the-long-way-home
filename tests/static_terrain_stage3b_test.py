@@ -104,7 +104,10 @@ class Stage3BTest(unittest.TestCase):
             self.assertIn(text,fail)
         for forbidden in ('PlanetWorldState.new','TerrainChunk.new','OS.execute','generate_mipmaps','set_terrain_color','change_scene','Thread'):
             self.assertNotIn(forbidden,source)
-        self.assertEqual({p.name for p in (ROOT/LAB).iterdir()}, {'lab.gd','lab.tscn','continuous.gdshader'})
+        # Current lab inventory includes the two owner-approved F5 UID sidecars.
+        self.assertEqual({p.name for p in (ROOT/LAB).iterdir()},
+                         {'lab.gd', 'lab.tscn', 'continuous.gdshader',
+                          'lab.gd.uid', 'continuous.gdshader.uid'})
         # The chosen natural and negative seam views actually include both classes.
         geometry = classification.load_geometry()
         for cx,cy in ((-1100,750),(0,-1700)):

@@ -4,3 +4,25 @@ assets/fonts/ibm-plex-sans/IBMPlexSans-SemiBold.ttf.import text eol=lf
 assets/fonts/ibm-plex-sans/IBMPlexSans-Italic.ttf.import text eol=lf
 docs/experiments/native_terrain_47_96/tlwh_47_pattern_mapping.csv -text whitespace=cr-at-eol
 docs/experiments/native_terrain_47_96/tlwh_47_pattern_mapping.md -text
+
+# Owner-approved terrain metadata: preserve exact historical/F5 bytes.
+assets/environment/exterior/approved_green_ground_study.png.import -text
+assets/environment/exterior/ferrite/catalog_v1/ferrite_v1_large_basin.png.import -text
+assets/environment/exterior/ferrite/catalog_v1/ferrite_v1_large_elbow.png.import -text
+assets/environment/exterior/ferrite/catalog_v1/ferrite_v1_large_sprawl.png.import -text
+assets/environment/exterior/ferrite/catalog_v1/ferrite_v1_large_stair.png.import -text
+assets/environment/exterior/ferrite/catalog_v1/ferrite_v1_medium_crown.png.import -text
+assets/environment/exterior/ferrite/catalog_v1/ferrite_v1_medium_elbow.png.import -text
+assets/environment/exterior/ferrite/catalog_v1/ferrite_v1_medium_offset.png.import -text
+assets/environment/exterior/ferrite/catalog_v1/ferrite_v1_medium_slab.png.import -text
+assets/environment/exterior/ferrite/catalog_v1/ferrite_v1_medium_terraces.png.import -text
+assets/environment/exterior/ferrite/catalog_v1/ferrite_v1_small_table.png.import -text
+assets/environment/exterior/ferrite/faceted_ferrite_10x6.png.import -text
+assets/environment/exterior/ground_refined_v1/baseline_94.png.import -text
+assets/environment/exterior/ground_refined_v1/interiors_bc.png.import -text
+assets/environment/exterior/low_green_mixed_8x6_reference.png.import -text
+scenes/experiments/terrain_stage3b/continuous.gdshader.uid -text
+scenes/experiments/terrain_stage3b/lab.gd.uid -text
+scenes/world/continuous_terrain.gdshader.uid -text
+scenes/world/continuous_terrain_metadata.gd.uid -text
+scenes/world/continuous_terrain_presenter.gd.uid -text
