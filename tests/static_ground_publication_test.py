@@ -301,7 +301,7 @@ class GroundPublicationTest(unittest.TestCase):
             # Ignore the new query's introductory comment following retire_chunk.
             self.assertEqual(body(P, method).split('# Read-only evidence')[0].rstrip(),
                              body(old, method).rstrip(), method)
-        self.assertIn('terrain_renderer: TerrainRenderer = TerrainRenderer.ILLUSTRATED', E)
+        self.assertIn('terrain_renderer: TerrainRenderer = TerrainRenderer.CONTINUOUS', E)
 
 
 if __name__ == '__main__':

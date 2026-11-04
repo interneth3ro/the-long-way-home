@@ -118,3 +118,19 @@ protection, Candidate A, frozen C1 artwork, production presentation precedence,
 illustrated default, bounded work, publication and fail-closed requirements
 remain. Godot execution, gameplay acceptance, default activation, performance
 optimization, merge and cleanup remain separate owner decisions.
+
+
+## Owner authorization — 2026-11-04: Stage 3D default activation
+
+After merged PR #143 and its accepted tested gameplay scope, the owner explicitly
+authorized changing the production default to Continuous, retaining Illustrated
+as an explicitly selectable rollback. Only the script initializer changes; the
+production scene has no serialized override and inherits that default. This
+supersedes decision 11's Illustrated-default requirement and prior prohibitions
+on default activation for this narrow feature PR (pending merge). It does not
+certify performance budgets or numerical parity. Terrain generation, material
+classifications, Candidate A, frozen C1 artwork, shaders, tint/overlays, chunk
+lifecycle, arrival readiness, Ferrite, construction and gameplay remain unchanged.
+The [Stage 3D guide](terrain_stage3d_default.md) records rollback and a separately
+approvable final gameplay/timing plan. No Godot execution, optimization, merge or
+cleanup is authorized by this implementation request.
