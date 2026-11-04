@@ -124,7 +124,7 @@ class DaveReworkStaticTest(unittest.TestCase):
         self.assertIn('"values": [0]', animations['Animation_RESET'])
         sprite = nodes(scene)['Visual/Sprite2D'][1]
         for value in ['hframes = 6', 'vframes = 8', 'centered = false', 'texture_filter = 1',
-                      'offset = Vector2(-94, -174)', 'scale = Vector2(0.60843023205, 0.60843023205)',
+                      'offset = Vector2(-94, -174)', 'scale = Vector2(0.71424418545, 0.71424418545)',
                       'texture = ExtResource("6_atlas")']:
             self.assertIn(value, sprite)
         self.assertIn(f'path="res://{ART}.png" id="6_atlas"', scene)
@@ -201,7 +201,7 @@ class DaveReworkStaticTest(unittest.TestCase):
                           else '"values": [false]', flip)
             self.assertNotIn('tracks/2/', body)
         # Reverse the approved uniform enlargement before historical reconstruction.
-        scene = scene.replace('scale = Vector2(0.60843023205, 0.60843023205)',
+        scene = scene.replace('scale = Vector2(0.71424418545, 0.71424418545)',
                               'scale = Vector2(0.529069767, 0.529069767)')
         # Undo only the nine flip tracks and the west frame remap; everything
         # else, including complete node properties and north timing, stays exact.
@@ -214,13 +214,13 @@ class DaveReworkStaticTest(unittest.TestCase):
         self.assertEqual(hashlib.sha256(restored.encode()).hexdigest(),
                          '8959a23140d2086f900129987b74d7dc3806b6b118eca7cdd9ebb7b283eaf2af')
 
-    def test_uniform_115_percent_scale_and_fixed_ground_anchor(self):
+    def test_uniform_135_percent_scale_and_fixed_ground_anchor(self):
         scene = read('scenes/player/dave.tscn')
         sprite = nodes(scene)['Visual/Sprite2D'][1]
         baseline = Decimal('0.529069767')
         scale = tuple(Decimal(v.strip()) for v in
                       re.search(r'^scale = Vector2\(([^)]+)\)$', sprite, re.M)[1].split(','))
-        self.assertEqual(scale, (baseline * Decimal('1.15'),) * 2)
+        self.assertEqual(scale, (baseline * Decimal('1.35'),) * 2)
         offset = tuple(Decimal(v.strip()) for v in
                        re.search(r'^offset = Vector2\(([^)]+)\)$', sprite, re.M)[1].split(','))
         # Uncentered source registration plus offset is zero before scaling.
@@ -234,7 +234,7 @@ class DaveReworkStaticTest(unittest.TestCase):
         self.assertNotRegex(sprite, r'(?m)^(position|rotation|transform|skew) =')
         # Reversing the scale line reproduces the complete merged PR #151 scene
         # (151dc86), including every animation, shape and node property.
-        restored = scene.replace('scale = Vector2(0.60843023205, 0.60843023205)',
+        restored = scene.replace('scale = Vector2(0.71424418545, 0.71424418545)',
                                  'scale = Vector2(0.529069767, 0.529069767)')
         self.assertEqual(hashlib.sha256(restored.encode()).hexdigest(),
                          'b64884f0f55d6c3d93b34eaf768f29bf76ff1b046399802628c10c458b874f7a')
