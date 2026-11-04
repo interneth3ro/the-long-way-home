@@ -2276,6 +2276,87 @@ acceptance does not authorize post-merge cleanup.
 
 East/west refinement, overall visual scale and cadence tuning remain separate work.
 
+### Dave east/west walking v2 (feature branch, pending owner acceptance and merge)
+
+`codex/dave-east-west-walk-v2` starts at merged PR #150 baseline
+`7fb9925c8d044be49bbf79901047bea3c3dcf717`. Only runtime atlas cells 30-35
+are replaced with the owner's `artifacts/tmp/dave-east-walk-v2/` PNG and JSON.
+Original source bytes are preserved together under
+`assets/characters/dave/source_art/east_walk_v2/`, excluded from Godot imports
+by `.gdignore`. Embedded prompts, preview anchor and preview scale are provenance,
+not runtime instructions. Source SHA-256:
+
+- PNG: `2d59b08aacda305e468e0673f224b9dc1219f9b8a538d0f8928755e38b8b9c9a`.
+- JSON: `b89d3c75a08aacf7c61ac73b7cbfc6994b99539b61f9242f10d25c05cfcd621c`.
+
+The 1536 x 1024 RGBA source has six 512-square cells in row-major order,
+100 ms each. Alpha >=128 silhouettes have tops at 36-37 and bottoms at 443-445
+inclusive. Transparency is present; maximum source alpha is 254. The existing
+atlas JSON stays byte-identical as source-layout metadata; the AnimationPlayer
+scene defines the west-walk runtime override below.
+
+Conversion uses Pillow 13.0.0 from the existing ignored north-walk task-local
+dependency directory. Following the north refinement's conservative residue rule,
+preserve RGB and clear alpha 1-4 only outside a three-pixel Chebyshev neighborhood
+of source alpha >=16. Uniformly resize each complete cell to 208 x 208 with
+`Image.Resampling.LANCZOS` (premultiplied-alpha RGBA resampling). Crop
+`(10,7,191,188)` and paste the resulting 181-square cell without a mask at
+`(181*i,905)`. No pose generation, per-frame movement or independent axis scaling
+is used. Source `(256,445)` maps to `(94,173.78125)`, matching the established
+side-walk height and ground anchor without changing runtime scale or offset.
+
+New alpha >=128 bounds, exclusive: `(46,8,149,174)`, `(56,8,120,174)`,
+`(40,8,146,174)`, `(45,8,150,173)`, `(56,8,120,173)`, `(39,8,146,173)`.
+Silhouettes are 165-166 atlas pixels high, compared with the old east walk's
+163-166. Static gray-background comparison of old idle/walk, new east walk and
+cell-mirrored west walk found retained costume detail, clear margins and no visible
+clipping or haze. Mirroring preserves ground-contact rows. It reflects the
+source anchor x=94 to x=87 within the 181-wide cell (seven atlas pixels, about
+3.70 world pixels); this small visual asymmetry is retained for owner assessment.
+No compensating offset, physics-origin or collision change is introduced.
+
+Both `walk_east` and `walk_west` use frames 30-35 at the original 10 FPS.
+Each of the eight animations and RESET has a discrete time-zero `Sprite2D:flip_h`
+track: only `walk_west` sets true, all others set false. The existing controller
+already advances a newly selected animation by zero before rendering. All idle
+indices remain unchanged. The old west-walk row 18-23 stays physically present
+and unused; there is no mirrored PNG. North artwork, timing and indices remain
+unchanged; its new false flip track only prevents leaked horizontal flip state.
+
+Baseline atlas SHA-256:
+`25dbd629aa58927a54bfab74ad2d50669554b18148176027df01fb9d40ae1a8b`.
+Resulting atlas SHA-256:
+`6ca7d1eb6d341847216c4eccf9c6b39958b451823cda21b3150cfeeeaf0c2766`.
+The baseline remains available in Git at the revision above and in the ignored
+task-local `baseline_runtime_atlas.png`. All 42 unrelated cells, including hidden
+RGB and accepted north frames 42-47, stay pixel-identical. Their concatenated
+RGBA bytes (rows 0-4 followed by rows 6-7) have SHA-256
+`c19045abab51692e598219c0d7fce1c24b5bfe0df31e4770e54635124cd25c52`.
+
+Focused offline regression checks cover source identity/grid/order/timing, six
+replacement identities, all untouched RGBA bytes, margins/grounding, explicit
+flip states, original durations/idle indices, import metadata and exact scene
+preservation after removing only the intended tracks/remap. Controller, movement,
+camera, collision, interactions, world scenes and overall scale stay unchanged.
+No agent-run Godot import, headless test, graphical launch, playable scene or
+performance probe is claimed. Owner normal-F5 acceptance is **NOT RUN**; keep
+the PR draft until the owner records PASS/FAIL and observations for each check:
+
+- [ ] East walking shows the corrected six-frame gait.
+- [ ] West walking uses the same gait mirrored horizontally.
+- [ ] Both directions animate smoothly at the existing playback rate.
+- [ ] East/west transitions work without flicker or jumping.
+- [ ] Stopping west restores the original west idle without an unwanted flip.
+- [ ] Stopping east restores the original east idle artwork.
+- [ ] North/south animations remain correctly oriented after horizontal movement.
+- [ ] Foot grounding, proportions and registration are acceptable, including mirrored alignment.
+- [ ] No clipping, transparency artifacts, halos or frame bleeding.
+- [ ] Dave remains approximately the same apparent size.
+- [ ] Movement, collisions, interactions, camera and controls remain unchanged.
+- [ ] Ship interior/exterior gameplay remains responsive.
+
+Idle mirroring, overall display scale and cadence tuning remain deferred.
+
 ### Existing environment and gameplay
 
 The camera follows Dave's ground-contact origin independently of `Visual`.
