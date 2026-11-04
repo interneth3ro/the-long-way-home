@@ -2203,7 +2203,7 @@ delay remains separate in [issue #144](https://github.com/interneth3ro/the-long-
 Keep the PR draft until acceptance; merge and later asset cleanup require separate
 owner action. No old Dave assets are deleted here.
 
-### Dave north walking v2 (feature branch, pending owner acceptance and merge)
+### Dave north walking v2 (owner accepted, pending merge)
 
 `codex/dave-north-walk-v2` replaces only atlas cells 42-47 using the owner's
 `artifacts/tmp/dave-north-walk-v2/dave_walk_north_v2_refined.png` and matching
@@ -2244,9 +2244,9 @@ high; lifted-foot silhouettes are 155-157 pixels. Alpha >=128 bounds, as
 exclusive rectangles, are `(49,10,139,175)`, `(49,10,140,165)`,
 `(50,10,139,166)`, `(49,10,140,175)`, `(49,10,140,166)`, `(49,10,139,167)`.
 The artwork is slightly narrower than the previous north walk; supplied
-proportions are preserved. Whether this difference and the idle/walk transition
-are acceptable remains an owner visual decision. No Sprite2D or gameplay scale
-was changed to compensate.
+proportions are preserved. The owner accepted this minor difference and the
+idle/walk transition during normal F5 gameplay; it is not an acceptance blocker.
+No Sprite2D or gameplay scale was changed to compensate.
 
 The 1086 x 1448 atlas, all first 42 cells (including invisible RGB), runtime
 mapping, eight clip names, 100 ms walking frames, scale, offset, import metadata,
@@ -2260,14 +2260,19 @@ Static gray-background comparison of north idle, original walk and replacement
 walk found leg-role reversal, retained costume detail and no visible clipping or
 background haze. It is an image inspection, not graphical Godot verification.
 Faint edge residue in untouched frames remains as previously documented. No
-Godot import, headless run, playable scene or performance test was performed.
-Keep the PR draft for owner normal-F5 acceptance:
+agent-run Godot import, headless run, playable scene or performance test was
+performed. Owner normal-F5 acceptance on 2026-11-04 is **10/10 PASS** at
+`4f3980d21a736f30d3a75f6a20881a339f30245e`, with no corrections required.
+All ten PR acceptance checks passed; the grouped record below reflects that
+owner report. The existing 389-test static PASS remains the automated validation
+result. PR #150 is accepted to proceed to Ready for Review and normal merge;
+acceptance does not authorize post-merge cleanup.
 
-- [ ] Correct alternating stride, low passing poses and smooth six-frame loop.
-- [ ] Stable north idle/walk transitions, apparent size and grounded foot anchor.
-- [ ] No distracting sliding, bobbing, jumping, clipping, halos or frame bleed.
-- [ ] All other animations, movement, collisions, camera and interactions unchanged.
-- [ ] Responsive ship interior/exterior gameplay; record PASS/FAIL and observations.
+- [x] Correct alternating stride, low passing poses and smooth six-frame loop.
+- [x] Stable north idle/walk transitions, apparent size and grounded foot anchor.
+- [x] No distracting sliding, bobbing, jumping, clipping, halos or frame bleed.
+- [x] All other animations, movement, collisions, camera and interactions unchanged.
+- [x] Responsive ship interior/exterior gameplay.
 
 East/west refinement, overall visual scale and cadence tuning remain separate work.
 
