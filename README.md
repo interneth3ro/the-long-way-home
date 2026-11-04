@@ -2406,6 +2406,19 @@ comparison, three-file PR scope, unrelated README preservation and diff checks P
 Godot import, headless runtime and graphical verification: **NOT TESTED**.
 Static checks do not establish visual acceptance. No execution safeguards change.
 
+The owner additionally authorized fixing the 11 preexisting debugger warnings in
+PR #152. Seven Ferrite presenter locals now use `region_owner`; the Computer
+restoration loop uses `presenter_name`, avoiding inherited Node properties.
+Three terrain grid-row calculations retain their integer arithmetic with
+statement-scoped `@warning_ignore("integer_division")` annotations and intent
+comments. Project warning settings and runtime behavior remain unchanged.
+Warning-fix static validation: **39/39 focused PASS** (Ferrite 11, Computer 9,
+terrain 9, ground publication 10); full suite **394/394 PASS** (290.286 s).
+Exact source reconstruction and diff checks PASS. Preservation assertions were
+updated only for the approved renames/annotations; historical plans stay sealed.
+Editor warning clearance is unverified;
+existing debugger history has not been cleared and no Godot run was performed.
+
 Owner normal-F5 acceptance for 135%: **PENDING**, all checks below **NOT TESTED**.
 Record PASS/FAIL and observations before requesting Ready for Review; keep the
 PR draft if any new defect appears.

@@ -46,6 +46,10 @@ class Stage3CTest(unittest.TestCase):
         self.assertEqual(len(inputs),plan['input_count'])
         self.assertEqual(sum(e['bytes'] for e in inputs.values()),plan['source_bytes'])
         historical_inputs = ('scenes/world/planet_exterior.gd', 'scenes/player/dave.tscn',
+                             # PR #152 warning fixes preserve executable behavior;
+                             # validate current presenter changes separately below.
+                             'scenes/world/continuous_terrain_presenter.gd',
+                             'scenes/world/ferrite_deposit_presenter.gd',
                              'dialogue/computer_opening.tres', 'objectives/restore_computer.tres',
                              # Computer restoration extends these gameplay files;
                              # keep the consumed Stage 3C plan and its hashes sealed.
@@ -78,6 +82,20 @@ class Stage3CTest(unittest.TestCase):
                          {'project.godot','scenes/world/planet_exterior.tscn'})
         self.assertEqual([p['timeout_seconds'] for p in plan['phases']],[60,300])
         self.assertEqual(plan['retries'],0)
+
+    def test_warning_fixes_preserve_presenter_behavior(self):
+        baseline = '7f65d42e7647d1bfff17ad83a88463ff275067ba'
+        ferrite = (ROOT/'scenes/world/ferrite_deposit_presenter.gd').read_text()
+        terrain = (ROOT/'scenes/world/continuous_terrain_presenter.gd').read_text()
+        annotation = ('\t\t\t# Integer quotient selects the row of this flattened grid.\n'
+                      '\t\t\t@warning_ignore("integer_division")\n')
+        self.assertEqual(terrain.count(annotation), 3)
+        for path, restored in [
+            ('scenes/world/ferrite_deposit_presenter.gd', ferrite.replace('region_owner', 'owner')),
+            ('scenes/world/continuous_terrain_presenter.gd', terrain.replace(annotation, '')),
+        ]:
+            self.assertEqual(restored, subprocess.check_output(
+                ['git', 'show', baseline+':'+path], cwd=ROOT, text=True))
 
     def test_continuous_default_and_no_failure_fallback(self):
         self.assertIn('terrain_renderer: TerrainRenderer = TerrainRenderer.CONTINUOUS',E)

@@ -243,8 +243,8 @@ func _lock_presentation() -> void:
 	_detector.clear_for_transition()
 	_player.process_mode = Node.PROCESS_MODE_DISABLED
 	# Hide and suspend persistent competing presenters, preserving preferences.
-	for name in ["InventoryUI", "MachineUI", "Construction", "HotbarUI", "ObjectiveTracker", "MusingUI", "UIScalePreview"]:
-		var node := _main.get_node_or_null(name)
+	for presenter_name in ["InventoryUI", "MachineUI", "Construction", "HotbarUI", "ObjectiveTracker", "MusingUI", "UIScalePreview"]:
+		var node := _main.get_node_or_null(presenter_name)
 		if node == null:
 			continue
 		var canvas := node as CanvasLayer

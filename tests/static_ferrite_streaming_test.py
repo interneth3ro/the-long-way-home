@@ -119,7 +119,7 @@ class FerriteStreamingStaticTest(unittest.TestCase):
         self.assertEqual(len(owners(retained((-1,-1),3))), 36)
         self.assertIn('MAX_SNAPSHOT_REGIONS: int = 144', PRESENTER)
         self.assertIn('_lookahead = area.grow(WorldCoordinates.CHUNK_SIZE)', PRESENTER)
-        self.assertIn('unique[owner] = true', function(PRESENTER, '_owners'))
+        self.assertIn('unique[region_owner] = true', function(PRESENTER, '_owners'))
         self.assertNotIn('get_deposit_region', function(PRESENTER, '_owners'))
         self.assertIn('CACHE_LIMIT: int = 32', GENERATOR)
 
@@ -183,7 +183,7 @@ class FerriteStreamingStaticTest(unittest.TestCase):
                 initial = model.sprites.copy()
         self.assertEqual(initial,model.sprites)
         request = function(PRESENTER, 'request')
-        self.assertIn('_regions.erase(owner)',request)
+        self.assertIn('_regions.erase(region_owner)',request)
         self.assertIn('area.intersects(_envelopes[identity], true)',request)
 
     def test_cancel_and_superseding_request_reject_every_old_phase(self):

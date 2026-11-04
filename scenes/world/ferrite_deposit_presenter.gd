@@ -59,8 +59,8 @@ func _owners(state: PlanetWorldState, area: Rect2) -> Array[Vector2i]:
 		var owners := state.deposit_query_owners(page)
 		if owners.is_empty():
 			return []
-		for owner in owners:
-			unique[owner] = true
+		for region_owner in owners:
+			unique[region_owner] = true
 	var result: Array[Vector2i] = []
 	result.assign(unique.keys())
 	var center := FerriteRegionGenerator.owner_at(_area.get_center())
@@ -97,15 +97,15 @@ func request(state: PlanetWorldState, area: Rect2) -> Dictionary:
 	if _required_owners.is_empty() or _future_owners.is_empty() \
 			or _future_owners.size() > MAX_SNAPSHOT_REGIONS:
 		return _failure("Ferrite owner plan exceeds bounds")
-	for owner in _regions.keys():
-		if not _future_owners.has(owner):
-			_regions.erase(owner)
-	for owner in _required_owners:
-		if not _regions.has(owner):
-			_required_pending.append(owner)
-	for owner in _future_owners:
-		if not _regions.has(owner) and not _required_owners.has(owner):
-			_future_pending.append(owner)
+	for region_owner in _regions.keys():
+		if not _future_owners.has(region_owner):
+			_regions.erase(region_owner)
+	for region_owner in _required_owners:
+		if not _regions.has(region_owner):
+			_required_pending.append(region_owner)
+	for region_owner in _future_owners:
+		if not _regions.has(region_owner) and not _required_owners.has(region_owner):
+			_future_pending.append(region_owner)
 	# Retire only by complete illustrated envelope, without waiting for new work.
 	for identity: String in _sprites.keys():
 		if not area.intersects(_envelopes[identity], true):
@@ -124,8 +124,8 @@ func step(state: PlanetWorldState, token: int, required_only: bool = false) -> D
 	if token != _token or not matches_context(state) or not is_inside_tree():
 		return {"ok": true, "changed": false, "stale": true}
 	if not _required_pending.is_empty():
-		var owner: Vector2i = _required_pending.pop_front()
-		_regions[owner] = state.get_deposit_region(owner)
+		var region_owner: Vector2i = _required_pending.pop_front()
+		_regions[region_owner] = state.get_deposit_region(region_owner)
 		return {"ok": true, "changed": false}
 	if not _collected:
 		_nearby = _collect(_required_owners, _area)
@@ -170,8 +170,8 @@ func step(state: PlanetWorldState, token: int, required_only: bool = false) -> D
 	if required_only:
 		return {"ok": true, "changed": false}
 	if not _future_pending.is_empty():
-		var owner: Vector2i = _future_pending.pop_front()
-		_regions[owner] = state.get_deposit_region(owner)
+		var region_owner: Vector2i = _future_pending.pop_front()
+		_regions[region_owner] = state.get_deposit_region(region_owner)
 		return {"ok": true, "changed": false}
 	if not _future_collected:
 		_future = _collect(_future_owners, _lookahead)
@@ -190,8 +190,8 @@ func step(state: PlanetWorldState, token: int, required_only: bool = false) -> D
 
 func _collect(owners: Array[Vector2i], area: Rect2) -> Dictionary:
 	var nearby: Dictionary = {}
-	for owner in owners:
-		for descriptor in _regions[owner]:
+	for region_owner in owners:
+		for descriptor in _regions[region_owner]:
 			if area.intersects(descriptor.illustrated_envelope, true):
 				nearby[descriptor.deposit_id] = descriptor
 	return nearby
