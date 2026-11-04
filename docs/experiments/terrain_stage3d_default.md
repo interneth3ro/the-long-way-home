@@ -1,6 +1,7 @@
 # Stage 3D — continuous terrain production default
 
-Status: feature branch, pending merge. Owner authorized this narrow default
+Status: merged in PR #145 at `27d14a3773f9f3cb047957ed7e648661e74c77fa`.
+Owner authorized this narrow default
 change on 2026-11-04 after PR #143 merged at
 `e5db8040d38bfd6b1ddb584d636af01052806b7c` and cleanup completed.
 Implementation validation was static only. The owner subsequently confirmed the
@@ -28,7 +29,8 @@ artwork replacement or shader change is needed.
 The accepted [Stage 3C implementation and limits](terrain_stage3c_exterior.md)
 remain unchanged: original generation/material IDs, Candidate A, frozen C1 art,
 shaders, tint/overlays, chunk lifecycle, fail-closed arrival readiness, Ferrite,
-construction and gameplay. The 15 protected untracked sidecars, historical
+construction and gameplay. The 15 protected sidecars (tracked by the pending
+[housekeeping amendment](terrain_stage3_architecture_decisions.md#owner-authorization--2026-11-04-final-terrain-metadata-housekeeping)), historical
 evidence and preservation references remain protected. Stage 3C's consumed
 manifest/procedure and acceptance record remain historical, not permission for
 another run. Its estimated 10–15 second first exterior wait was **not measured**;
@@ -39,7 +41,8 @@ loading feedback/investigation remains deferred in
 
 `python -B -m unittest discover -s tests -p 'static_*test.py'` checks source,
 resource text, independent models and preservation without executing Godot or
-GDScript. The focused Stage 3D test requires the exact feature inventory and
+GDScript. The focused Stage 3D test requires the immutable PR #145 feature
+inventory against its merged commit, independently of current checkout additions, and
 reconstructs the sole allowed production change from merged PR #143 and requires
 the unchanged production scene to inherit it. Existing default assertions now
 expect Continuous; historical scene/geometry guards remain unchanged. Stage 3C's
@@ -48,6 +51,11 @@ for the changed script, retaining the
 original CRLF serialization and hashes. No historical manifest or receipt changes.
 Test counts/results and their provenance are recorded in PR #145. Static PASS establishes
 neither engine parsing, shader compilation, actual readiness nor visual quality.
+
+The pending final housekeeping change separately checks the 15 receipt-pinned
+PNG imports and five audit-pinned F5 UIDs as tracked current metadata. It verifies
+exact working/index bytes, identity-preserving Git attributes/checkout behavior and
+UID uniqueness. No historical receipt, golden or mathematical assertion changes.
 
 ## Final owner gameplay acceptance — 2026-11-04
 
@@ -74,11 +82,13 @@ uncertified. No terrain, loading feedback or optimization change accompanies
 this acceptance record. Illustrated rollback remains available as described above.
 
 The acceptance update is documentation only. Non-engine validation and
-preservation results are recorded in PR #145. All 15 protected import sidecars
-remain untracked and unchanged; five additional untracked script/shader UID
-sidecars observed after the owner test are preserved without staging or deletion.
-No further Godot run, merge or cleanup is authorized by this record. PR #145 is
-ready for review; merge remains an explicit owner decision.
+preservation results are recorded in PR #145. At that acceptance, all 15 protected
+import sidecars remained untracked and unchanged; five additional untracked
+script/shader UID sidecars observed after the owner test were preserved without
+staging or deletion. PR #145 subsequently merged at the commit recorded above.
+The separately approved pending housekeeping change tracks these exact 20 files;
+the earlier untracked state remains historical. This acceptance record grants no
+further Godot run or cleanup.
 
 ## Final gameplay and transition timing plan — inactive, separate approval
 
@@ -90,6 +100,13 @@ amendment with exact commands, inputs and transforms. No stage, new runner or
 activation amendment is created in Stage 3D. Existing Native/MetadataSmoke modes
 must not be repurposed. The Stage 3C grant is consumed.
 
+Housekeeping preflight amendment: the former exact-15 untracked exception is
+superseded by the 20 tracked metadata checks above. The old 346-input closure and
+generated-sidecar counts below describe the retained proposal only; they are not a
+current staging allowlist. Any new activation must review the tracked metadata
+closure and revise generated expectations without changing the consumed Stage 3C
+manifest. Nothing in housekeeping activates or expands the plan.
+
 Proposed bounded scope: one cold import followed only on PASS by one supervised
 fresh V2 playthrough at seed 26026, 1280×720, using the production default without
 any staged renderer override. Measure natural loading/transitions during this
@@ -97,14 +114,15 @@ functional session; no profiling, stress loop, optimization or freeze reproducti
 
 Preparation to review before execution:
 
-1. Require complete Python static-suite PASS, clean tracked/index state and only
-   the exact 15 protected untracked sidecars. Capture revision, status/index,
+1. Require complete Python static-suite PASS, clean tracked/index state, no
+   unexplained untracked metadata, and the 20 reviewed metadata files tracked with
+   their expected identities. Capture revision, status/index,
    source/input hashes and controls. Recheck the existing preservation receipt,
    C1 artwork/metadata, A1 branch, all annotated tag objects/targets, backup bundle,
    both Stage 2B-2 manifests/ten PNGs and PR #141 branch/six diagnostics.
 2. Use the 346 paths in the immutable
    [Stage 3C manifest](terrain_stage3c_gameplay_plan.json) as the proposed input
-   closure, excluding protected untracked sidecars, caches, tools, tests and
+   historical closure, excluding the then-untracked protected sidecars, caches, tools, tests and
    evidence. Its raw SHA-256 remains
    `a567d3b6abb39fdf28cc0b019f7280ad971a771d610db41f2e5c9f692997a7c8`.
    Verify the other 345 source records unchanged. Replace only this source
