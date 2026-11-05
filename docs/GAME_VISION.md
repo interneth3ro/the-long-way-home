@@ -668,6 +668,36 @@ Implementation is merged in PR #39. Agent validation was static only; evidence
 and limitations are recorded in the
 [implementation notes](../README.md#deploy-the-smelter-pr-39-merged).
 
+## Static directional Smelter artwork (feature branch, pending merge)
+
+Owner-authorized on November 5, 2026, with decisions 1A/2A/3A: retain the status
+dot, use local mipmapped linear filtering, and keep accepted idle illumination in
+every operating state. Implemented on `codex/smelter-static-artwork`, pending
+owner F5 acceptance and merge, from PR #156's merged 4x4 footprint baseline
+`65564d5d95502fcc0368a2b5396d1855311c5806`.
+
+The dedicated Smelter presenter replaces only deployed procedural artwork and its
+placement ghost. Ten frozen PNGs retain four independent illustrations, directional
+ground anchors, exact crop offsets, source-over layer order and uniform 4/29 scale
+at footprint-local (64,128). The 0-degree view keeps its cold interior and fixed
+foreground; illumination is hidden for all views regardless of production state.
+Warm metal reflections and permanent painted/amber accents remain authored pixels.
+
+The existing status dot retains its colors, radius and direction-dependent logical
+position in a foreground sibling outside the artwork scale; ghosts omit it. Ghost
+layers composite before a single 0.5 fade. Deployed machines retain their existing
+bottom-center Y-sort ownership, collision and 128x128 footprint. Visual overhang
+adds no occupancy or interaction geometry. Production, buffers, 96-unit
+center-based inspection/transfers, accepted diagonal-corner reach limitation,
+160-unit nearest-footprint B recovery and retained travel state remain unchanged.
+Extractor animation, Fabricator, Dave and stationary Smelter remain unchanged.
+
+The [implementation and owner checklist](SMELTER_STATIC_ARTWORK.md) distinguish
+static source/asset checks from unperformed Godot and graphical verification.
+Thermal animation, production-driven illumination, physical ports and conduits
+remain outside this milestone. The footprint-only record below retains its
+historical scope and acceptance results.
+
 ## Smelter 4x4 footprint (feature branch, pending merge)
 
 Prepared on `codex/smelter-footprint-128`; PR #156 has owner F5 acceptance

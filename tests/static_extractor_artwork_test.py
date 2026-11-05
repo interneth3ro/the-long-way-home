@@ -73,13 +73,17 @@ class ExtractorArtworkStaticTest(unittest.TestCase):
         refresh = function(visual, "_refresh_presentation")
         self.assertIn('definition.item_id == &"extractor"', refresh)
         self.assertIn("if is_ghost:", refresh)
-        self.assertEqual(refresh.count("CanvasGroup.new()"), 1)
+        # Smelter gets its own ghost-only composite; Extractor's branch is intact.
+        extractor = refresh.split('if definition != null and definition.item_id == &"extractor":', 1)[1].split(
+            'if definition != null and definition.item_id == &"smelter":', 1)[0]
+        self.assertEqual(extractor.count("CanvasGroup.new()"), 1)
         self.assertIn("group.self_modulate = Color(1, 1, 1, 0.5)", refresh)
         self.assertIn("modulate = Color.WHITE if illustrated or not is_ghost", refresh)
         self.assertIn("_art_container.hide()", refresh)
         self.assertIn("_extractor.configure(turns)", refresh)
         self.assertNotIn("func _process", visual)
-        self.assertIn('if definition == null or definition.item_id == &"extractor":', function(visual, "_draw"))
+        self.assertIn('if definition == null or definition.item_id in [&"extractor", &"smelter"]:',
+                      function(visual, "_draw"))
         for script in ["construction/deployed_machine.gd", "construction/construction_controller.gd"]:
             self.assertIn("MachineVisual.new()", read(script))
         controller = read("construction/construction_controller.gd")
@@ -108,5 +112,8 @@ class ExtractorArtworkStaticTest(unittest.TestCase):
                                         b"footprint_cells = Vector2i(2, 2)")
                 self.assertEqual(data, original)
         old = git_blob(BASE, "construction/machine_visual.gd").decode().replace("\r\n", "\n")
-        for method in ["_draw_smelter", "_draw_fabricator"]:
+        # Smelter's procedural art is replaced under separate owner authorization.
+        # Its replacement contracts live in static_smelter_artwork_test.
+        self.assertNotIn("func _draw_smelter(", read("construction/machine_visual.gd"))
+        for method in ["_draw_fabricator"]:
             self.assertEqual(function(read("construction/machine_visual.gd"), method).strip(), function(old, method).strip())

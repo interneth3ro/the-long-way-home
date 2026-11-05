@@ -118,7 +118,9 @@ class SmelterFootprintStaticTest(unittest.TestCase):
         for path in ["inventory/extractor.tres", "inventory/fabricator.tres",
                      "construction/machine_definition.gd", "construction/placement_rules.gd",
                      "construction/construction_controller.gd", "construction/deployed_machine.gd",
-                     "construction/machine_visual.gd", "construction/extractor_visual.gd",
+                     # Shared adapter gets the separately authorized static art;
+                     # preserve its interfaces/Fabricator below, all gameplay here.
+                     "construction/extractor_visual.gd",
                      "construction/extractor_visual.tscn", "scenes/world/world_coordinates.gd",
                      "scenes/world/planet_world_state.gd", "scenes/world/planet_exterior.gd",
                      "scenes/world/planet_exterior.tscn", "scenes/player/dave.gd",
@@ -132,3 +134,14 @@ class SmelterFootprintStaticTest(unittest.TestCase):
             with self.subTest(path=path):
                 self.assertEqual(normalized(path, (ROOT / path).read_bytes()),
                                  normalized(path, git_blob(BASE, path)))
+        path = "construction/machine_visual.gd"
+        current, original = read(path), git_blob(BASE, path).decode().replace("\r\n", "\n")
+        declarations = current.split("func _ready()", 1)[0]
+        for addition in ['const SMELTER_SCENE := preload("res://construction/smelter_visual.tscn")\n',
+                         'var _smelter: SmelterVisual\n', 'var _smelter_art_container: Node2D\n',
+                         'var _smelter_status: Node2D\n']:
+            self.assertEqual(declarations.count(addition), 1)
+            declarations = declarations.replace(addition, "")
+        self.assertEqual(declarations, original.split("func _ready()", 1)[0])
+        for method in ("_ready", "_exit_tree", "_draw_fabricator"):
+            self.assertEqual(function(current, method).strip(), function(original, method).strip())
