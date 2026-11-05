@@ -670,7 +670,8 @@ and limitations are recorded in the
 
 ## Smelter 4x4 footprint (feature branch, pending merge)
 
-Prepared on `codex/smelter-footprint-128`, pending owner F5 acceptance and merge.
+Prepared on `codex/smelter-footprint-128`; PR #156 has owner F5 acceptance
+**10/10 PASS**, with no observations or blocking defects, pending review and merge.
 Only `inventory/smelter.tres` production data changes: its explicit footprint
 becomes 4x4 construction cells, or 128x128 world units on the unchanged 32-unit
 grid. All four orientations retain 16 occupied cells. Shared snapping, ghosts,
@@ -721,11 +722,46 @@ unchanged historical plans/evidence and `git diff --check` also passed. The full
 static suite was not run for this focused milestone.
 
 Static checks do not execute GDScript, verify engine physics or establish gameplay
-or graphical PASS. Godot was not executed for this implementation. Owner F5
-acceptance remains pending; use a fresh playthrough, since machine state is
-session-only and live machines are not migrated or hot-resized.
+or graphical PASS. The agent did not execute Godot for implementation or this
+acceptance update. The owner separately completed normal-F5 gameplay acceptance
+on **November 5, 2026**, against implementation commit
+`ddf2dcd2a34853bdcc6b8d8283ddfdadfcea3550`: **10/10 PASS**, no observations and
+no blocking defects. This owner-observed result is separate from the original
+46/46 static results above; those results and implementation history are preserved.
+Machine state remains session-only; live machines are not migrated or hot-resized.
 
-Owner F5 checklist — all items NOT TESTED:
+### PR #156 owner F5 acceptance — November 5, 2026
+
+All ten checks below passed at the accepted implementation commit above.
+
+| # | Owner-observed check | Result |
+| --- | --- | --- |
+| 1 | Fresh playthrough, Extractor progression and stationary Smelter E recovery | PASS |
+| 2 | Four orientations, 4x4 footprint and grid snapping | PASS |
+| 3 | Valid/invalid placement, Dave/obstacle rejection, adjacency and overlap | PASS |
+| 4 | Collision around all sides and corners | PASS |
+| 5 | Cardinal inspection and accepted diagonal-corner reach limitation | PASS |
+| 6 | Ore transfers, production, capacities and ingot collection | PASS |
+| 7 | B recovery with both buffers populated and exact inventory returns | PASS |
+| 8 | Redeployment and resumed production | PASS |
+| 9 | Exterior/interior travel and retained machine state | PASS |
+| 10 | Extractor and Fabricator gameplay regression | PASS |
+
+The original detailed checklist is retained below as implementation history.
+The accepted diagonal-corner reach limitation remains unchanged. Directional
+artwork and thermal illumination remain outside PR #156. Review and explicit
+owner merge authorization remain required; this acceptance does not merge the PR.
+
+Documentation-update validation: changed Markdown links/anchors, preservation of
+the original static results and historical checklist, unchanged gameplay/resources,
+tests/artwork and historical plans/evidence, and `git diff --check` passed. The
+five owner-authorized Extractor import sidecars were inspected and found already
+byte-identical to the accepted commit; their contents were preserved.
+Focused static rechecks also passed: Smelter footprint **5/5**, Extractor animation
+**6/6** and current preservation **4/4** (15 total). No tests were modified and
+the full static suite was not rerun for this acceptance update.
+
+Original owner F5 checklist (now accepted above):
 
 1. Start a fresh F5 playthrough; complete the normal opening, recover/deploy the
    Extractor, acquire ore, then use E to recover the stationary Smelter. Check its

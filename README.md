@@ -1,7 +1,9 @@
 # The Long Way Home
 
 Deployed Smelter footprint conversion is prepared on `codex/smelter-footprint-128`,
-pending owner F5 acceptance and merge: 4x4 construction cells (128x128 world units)
+accepted by the owner on November 5, 2026: **10/10 F5 PASS**, no observations
+or blocking defects; pending review and merge. Accepted implementation:
+`ddf2dcd2a34853bdcc6b8d8283ddfdadfcea3550`. The footprint is 4x4 cells (128x128 units)
 on the unchanged 32-unit grid. Existing procedural presentation and production
 remain; inspection/transfers retain 96-unit center-based reach and B recovery
 retains 160-unit nearest-footprint reach. Directional artwork, thermal illumination
