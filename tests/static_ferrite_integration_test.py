@@ -174,6 +174,11 @@ class FerriteIntegrationStaticTest(unittest.TestCase):
                      'scenes/player/interaction_detector.gd', 'scenes/ui/machine_ui.gd']:
             with self.subTest(path=path):
                 current = read(path)
+                if path == 'inventory/smelter.tres':
+                    # Authorized Smelter footprint milestone; preserve every other field.
+                    self.assertEqual(current.count('footprint_cells = Vector2i(4, 4)'), 1)
+                    current = current.replace('footprint_cells = Vector2i(4, 4)',
+                                              'footprint_cells = Vector2i(2, 2)')
                 if path == 'construction/deployed_machine.gd':
                     # PR B only resamples presentation status on tree entry.
                     current = current.replace(function(current, '_enter_tree'), '')
@@ -183,8 +188,8 @@ class FerriteIntegrationStaticTest(unittest.TestCase):
                     current = current.replace('_ghost.is_ghost = true',
                                               '_ghost.modulate = Color(1, 1, 1, 0.5)')
                 self.assertEqual(current, git_blob(base, path).decode().replace('\r\n', '\n'))
-        for machine in ['smelter', 'fabricator']:
-            self.assertIn('footprint_cells = Vector2i(2, 2)', read(f'inventory/{machine}.tres'))
+        for machine, cells in [('smelter', 4), ('fabricator', 2)]:
+            self.assertIn(f'footprint_cells = Vector2i({cells}, {cells})', read(f'inventory/{machine}.tres'))
 
     def test_other_exterior_nodes_and_resource_fields_are_unchanged(self):
         base = '87ca9733749e55e138361bab8ba0fb2ff08d0c7f'
