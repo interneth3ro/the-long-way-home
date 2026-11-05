@@ -1,5 +1,17 @@
 # The Long Way Home
 
+Static directional Smelter artwork is implemented on `codex/smelter-static-artwork`,
+**pending owner F5 acceptance and merge**. It starts from merged PR #156
+(`65564d5d95502fcc0368a2b5396d1855311c5806`) and retains its 4x4 footprint on the
+32-unit construction grid. Ten byte-identical frozen PNGs provide four authored
+views, shared deployed/ghost registration, composite ghost transparency and local
+mipmapped linear filtering. The existing operating-status dot stays above deployed
+artwork; every direction stays in its accepted idle thermal state. Gameplay,
+Extractor animation, Fabricator, Dave and stationary Smelter presentation remain
+unchanged. Agent validation is static only; Godot was not run. See the
+[provenance, implementation limits and 15-item owner F5 checklist](docs/SMELTER_STATIC_ARTWORK.md).
+Earlier milestone records below retain their historical scope.
+
 Deployed Smelter footprint conversion is prepared on `codex/smelter-footprint-128`,
 accepted by the owner on November 5, 2026: **10/10 F5 PASS**, no observations
 or blocking defects; pending review and merge. Accepted implementation:

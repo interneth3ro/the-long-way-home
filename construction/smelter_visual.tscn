@@ -1,0 +1,23 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://construction/smelter_visual.gd" id="1_visual"]
+
+[node name="SmelterVisual" type="Node2D"]
+texture_filter = 4
+position = Vector2(64, 128)
+; Exact source/world calibration is 4/29, independent of the Extractor's scale.
+scale = Vector2(0.13793103448275862, 0.13793103448275862)
+script = ExtResource("1_visual")
+
+[node name="Body" type="Sprite2D" parent="."]
+centered = false
+
+[node name="Interior" type="Sprite2D" parent="."]
+centered = false
+
+[node name="Illumination" type="Sprite2D" parent="."]
+visible = false
+centered = false
+
+[node name="Foreground" type="Sprite2D" parent="."]
+centered = false

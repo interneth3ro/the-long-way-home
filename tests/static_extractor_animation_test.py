@@ -85,6 +85,14 @@ class ExtractorAnimationStaticTest(unittest.TestCase):
         self.assertIn("if not is_node_ready() or not is_inside_tree():", refresh)
         self.assertIn("_extractor.set_producing(not is_ghost and status == PlanetWorldState.OperatingStatus.PRODUCING)", refresh)
         self.assertIn("_extractor.set_producing(false)\n\t\t_art_container.hide()", refresh)
+        # The new Smelter branch must not alter the existing Extractor lifecycle.
+        original_refresh = function(git_blob("65564d5d95502fcc0368a2b5396d1855311c5806",
+                                            "construction/machine_visual.gd").decode().replace("\r\n", "\n"),
+                                    "_refresh_presentation")
+        current_extractor = refresh.split('if definition != null and definition.item_id == &"extractor":', 1)[1].split(
+            'if definition != null and definition.item_id == &"smelter":', 1)[0].rstrip()
+        original_extractor = original_refresh.split("if illustrated:", 1)[1].split("\tqueue_redraw()", 1)[0].rstrip()
+        self.assertEqual(current_extractor, original_extractor)
         self.assertIn("request_ready()", function(script, "_exit_tree"))
         self.assertNotRegex(script, r"func _(?:physics_)?process|machine_status\(|create_tween|FileAccess|ImageTexture")
         # Other statuses all map to false; no gameplay enums or resources added.

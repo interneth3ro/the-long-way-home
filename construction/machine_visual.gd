@@ -3,6 +3,7 @@ extends Node2D
 
 # Shared adapter for deployed machines and the neutral placement ghost.
 const EXTRACTOR_SCENE := preload("res://construction/extractor_visual.tscn")
+const SMELTER_SCENE := preload("res://construction/smelter_visual.tscn")
 
 var definition: MachineDefinition:
 	set(value):
@@ -21,6 +22,9 @@ var turns: int = 0:
 var is_ghost: bool = false
 var _extractor: ExtractorVisual
 var _art_container: Node2D
+var _smelter: SmelterVisual
+var _smelter_art_container: Node2D
+var _smelter_status: Node2D
 var show_status: bool = false
 var status: PlanetWorldState.OperatingStatus = PlanetWorldState.OperatingStatus.INACTIVE:
 	set(value):
@@ -42,10 +46,10 @@ func _exit_tree() -> void:
 func _refresh_presentation() -> void:
 	if not is_node_ready() or not is_inside_tree():
 		return
-	var illustrated := definition != null and definition.item_id == &"extractor"
+	var illustrated := definition != null and definition.item_id in [&"extractor", &"smelter"]
 	# CanvasGroup.self_modulate fades the completed composite, not its layers.
 	modulate = Color.WHITE if illustrated or not is_ghost else Color(1, 1, 1, 0.5)
-	if illustrated:
+	if definition != null and definition.item_id == &"extractor":
 		if _extractor == null:
 			if is_ghost:
 				var group := CanvasGroup.new()
@@ -62,41 +66,65 @@ func _refresh_presentation() -> void:
 	elif _art_container != null:
 		_extractor.set_producing(false)
 		_art_container.hide()
+	if definition != null and definition.item_id == &"smelter":
+		if _smelter == null:
+			if is_ghost:
+				var group := CanvasGroup.new()
+				group.self_modulate = Color(1, 1, 1, 0.5)
+				_smelter_art_container = group
+			else:
+				_smelter_art_container = Node2D.new()
+			add_child(_smelter_art_container)
+			_smelter = SMELTER_SCENE.instantiate() as SmelterVisual
+			_smelter_art_container.add_child(_smelter)
+		_smelter_art_container.show()
+		_smelter.configure(turns)
+	elif _smelter_art_container != null:
+		_smelter_art_container.hide()
+	_refresh_smelter_status()
 	queue_redraw()
 
 
+func _refresh_smelter_status() -> void:
+	var visible_status := definition != null and definition.item_id == &"smelter" and show_status and not is_ghost
+	if visible_status:
+		if _smelter_status == null:
+			# Last sibling: above the art, outside its scale and ghost composite.
+			_smelter_status = Node2D.new()
+			_smelter_status.draw.connect(_draw_smelter_status)
+			add_child(_smelter_status)
+		var size := Vector2(definition.footprint_cells) * WorldCoordinates.CONSTRUCTION_SIZE
+		_smelter_status.position = definition.rotated_point(size - Vector2(13, 13), turns)
+		_smelter_status.show()
+		_smelter_status.queue_redraw()
+	elif _smelter_status != null:
+		_smelter_status.hide()
+
+
+func _draw_smelter_status() -> void:
+	_smelter_status.draw_circle(Vector2.ZERO, 3.5, _status_color())
+
+
+func _status_color() -> Color:
+	if status == PlanetWorldState.OperatingStatus.PRODUCING:
+		return Color(0.35, 0.78, 0.46)
+	if status == PlanetWorldState.OperatingStatus.OUTPUT_FULL:
+		return Color(0.94, 0.69, 0.28)
+	if status == PlanetWorldState.OperatingStatus.INPUT_EMPTY:
+		return Color(0.35, 0.60, 0.90)
+	return Color(0.55, 0.58, 0.59)
+
+
 func _draw() -> void:
-	if definition == null or definition.item_id == &"extractor":
+	if definition == null or definition.item_id in [&"extractor", &"smelter"]:
 		return
 	var size := Vector2(definition.footprint_cells) * WorldCoordinates.CONSTRUCTION_SIZE
 	var origin := definition.rotated_point(Vector2.ZERO, turns)
 	draw_set_transform(origin, posmod(turns, 4) * PI / 2.0)
-	if definition.item_id == &"smelter":
-		_draw_smelter(size)
-	elif definition.item_id == &"fabricator":
+	if definition.item_id == &"fabricator":
 		_draw_fabricator(size)
 	if show_status:
-		var color := Color(0.55, 0.58, 0.59)
-		if status == PlanetWorldState.OperatingStatus.PRODUCING:
-			color = Color(0.35, 0.78, 0.46)
-		elif status == PlanetWorldState.OperatingStatus.OUTPUT_FULL:
-			color = Color(0.94, 0.69, 0.28)
-		elif status == PlanetWorldState.OperatingStatus.INPUT_EMPTY:
-			color = Color(0.35, 0.60, 0.90)
-		draw_circle(Vector2(size.x - 13, size.y - 13), 3.5, color)
-
-
-func _draw_smelter(size: Vector2) -> void:
-	# Cold furnace chamber and side framing; the top vent makes rotation readable.
-	draw_rect(Rect2(Vector2(4, 6), size - Vector2(8, 10)), Color(0.20, 0.25, 0.28))
-	draw_rect(Rect2(Vector2(8, 10), size - Vector2(16, 18)), Color(0.45, 0.49, 0.51))
-	draw_rect(Rect2(Vector2(size.x * 0.5 - 10, 2), Vector2(20, 12)), Color(0.28, 0.32, 0.34))
-	draw_rect(Rect2(Vector2(17, 18), size - Vector2(34, 36)), Color(0.12, 0.15, 0.17))
-	draw_rect(Rect2(Vector2(17, 18), size - Vector2(34, 36)), Color(0.62, 0.66, 0.67), false, 3.0)
-	draw_line(Vector2(23, 25), Vector2(size.x - 23, 25), Color(0.34, 0.38, 0.40), 2.0)
-	draw_line(Vector2(23, 33), Vector2(size.x - 23, 33), Color(0.34, 0.38, 0.40), 2.0)
-	for x in [11.0, size.x - 11.0]:
-		draw_line(Vector2(x, 16), Vector2(x, size.y - 20), Color(0.66, 0.69, 0.70), 3.0)
+		draw_circle(Vector2(size.x - 13, size.y - 13), 3.5, _status_color())
 
 
 func _draw_fabricator(size: Vector2) -> void:
