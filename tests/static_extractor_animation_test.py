@@ -9,6 +9,16 @@ BASE = "c5729c00f8d4055ac900e1b6221fe32a3e1ad5e6"
 
 
 class ExtractorAnimationStaticTest(unittest.TestCase):
+    def test_property_setters_have_declaration_colons(self):
+        # Narrow syntax tripwire: an indented setter needs a property block.
+        # This is not a replacement for authorized Godot parsing.
+        for path in ("construction/machine_visual.gd", "construction/extractor_visual.gd"):
+            lines = read(path).splitlines()
+            for index, line in enumerate(lines):
+                if line.startswith("\tset("):
+                    with self.subTest(path=path, line=index + 1):
+                        self.assertTrue(lines[index - 1].rstrip().endswith(":"))
+
     def test_barrel_only_source_pixel_tween(self):
         script = read("construction/extractor_visual.gd")
         self.assertIn("const STROKE_PX := [8.0, 8.0, 6.0, 6.0]", script)

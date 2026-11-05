@@ -211,6 +211,7 @@ references, not artistic acceptance or fractional-pixel filtering behavior.
 | Focused static checks | PASS: 12 tests via `python -B -m unittest discover -s tests -p 'static_extractor*test.py'` |
 | Full static suite (before entry-guard correction, `53df809`) | PASS: 406/406 in 292.214 seconds via `python -B -m unittest discover -s tests -p 'static_*test.py'` |
 | Entry-guard correction | PASS: 12 Extractor, 9 Ferrite integration and 9 Stage 3C static tests; full suite not rerun for this two-line guard |
+| Status-setter syntax correction | Added the missing property-declaration colon reported by the owner's debugger; new check fails before and passes after the fix. Of 13 focused Extractor tests, 12 pass; the unchanged metadata-preservation test reports five pre-existing local UID differences. All 12 local sidecars are preserved and excluded from the correction. Full suite not rerun; agent Godot verification remains NOT VERIFIED. |
 | Documentation hygiene | PASS: 126 local Markdown targets, documentation-sync and `git diff --check` |
 | Godot import / parse / runtime / F5 / performance / actual filtering | NOT VERIFIED: no engine invocation authorized or performed |
 

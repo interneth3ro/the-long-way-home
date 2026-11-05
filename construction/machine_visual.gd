@@ -22,7 +22,7 @@ var is_ghost: bool = false
 var _extractor: ExtractorVisual
 var _art_container: Node2D
 var show_status: bool = false
-var status: PlanetWorldState.OperatingStatus = PlanetWorldState.OperatingStatus.INACTIVE
+var status: PlanetWorldState.OperatingStatus = PlanetWorldState.OperatingStatus.INACTIVE:
 	set(value):
 		if status == value:
 			return
