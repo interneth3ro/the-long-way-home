@@ -33,14 +33,52 @@ const OFFSETS := [
 ]
 
 @onready var _layers: Array[Sprite2D] = [$Body, $Barrel, $Foreground]
+# Provisional presentation choices, independent of ore-production timing.
+const STROKE_PX := [8.0, 8.0, 6.0, 6.0]
+const HALF_STROKE_SECONDS := 0.8
 var _turns: int = -1
+var _producing: bool = false
+var _motion: Tween
 
 
 func configure(quarter_turns: int) -> void:
 	var direction := posmod(quarter_turns, 4)
 	if direction == _turns:
 		return
+	_stop_motion()
 	_turns = direction
 	for index in range(_layers.size()):
 		_layers[index].texture = TEXTURES[direction][index]
 		_layers[index].position = OFFSETS[direction][index]
+	_start_motion()
+
+
+func set_producing(producing: bool) -> void:
+	if _producing == producing:
+		return
+	_producing = producing
+	_stop_motion()
+	_start_motion()
+
+
+func _start_motion() -> void:
+	if not _producing or not is_inside_tree() or _turns < 0 or _motion != null:
+		return
+	var raised: Vector2 = OFFSETS[_turns][1]
+	_motion = create_tween().set_loops()
+	_motion.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	_motion.tween_property($Barrel, "position", raised + Vector2(0, STROKE_PX[_turns]), HALF_STROKE_SECONDS)
+	_motion.tween_property($Barrel, "position", raised, HALF_STROKE_SECONDS)
+
+
+func _stop_motion() -> void:
+	if _motion != null:
+		_motion.kill()
+		_motion = null
+	if _turns >= 0:
+		$Barrel.position = OFFSETS[_turns][1]
+
+
+func _exit_tree() -> void:
+	_producing = false
+	_stop_motion()

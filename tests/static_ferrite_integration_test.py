@@ -174,6 +174,9 @@ class FerriteIntegrationStaticTest(unittest.TestCase):
                      'scenes/player/interaction_detector.gd', 'scenes/ui/machine_ui.gd']:
             with self.subTest(path=path):
                 current = read(path)
+                if path == 'construction/deployed_machine.gd':
+                    # PR B only resamples presentation status on tree entry.
+                    current = current.replace(function(current, '_enter_tree'), '')
                 if path == 'construction/construction_controller.gd':
                     # PR A moves ghost opacity to the completed Extractor composite.
                     # Every other byte of placement/recovery remains protected.

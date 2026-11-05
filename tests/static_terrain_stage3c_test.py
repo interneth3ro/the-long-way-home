@@ -50,6 +50,10 @@ class Stage3CTest(unittest.TestCase):
                              # keep this consumed plan pinned to its original art.
                              # Current art/gameplay contracts have separate guards.
                              'construction/machine_visual.gd',
+                             # PR B adds only a presentation status resample on
+                             # entry; static_extractor_animation_test protects
+                             # the current presenter against the PR A baseline.
+                             'construction/deployed_machine.gd',
                              # Merged PR #153 changed the Extractor footprint.
                              # Its resource is protected by current baseline tests.
                              'inventory/extractor.tres',

@@ -56,7 +56,7 @@ class ExtractorArtworkStaticTest(unittest.TestCase):
             for actual, value in zip(world, expected):
                 self.assertAlmostEqual(actual, value)
 
-    def test_direction_identity_and_no_dynamic_art(self):
+    def test_direction_identity_and_no_dynamic_resources(self):
         records = json.loads(INVENTORY.read_text())["directions"]
         for record, edge, halves in zip(records, ["right", "bottom", "left", "top"],
                                        [("upper", "lower"), ("right", "left"), ("lower", "upper"), ("left", "right")]):
@@ -65,7 +65,8 @@ class ExtractorArtworkStaticTest(unittest.TestCase):
         script = read("construction/extractor_visual.gd")
         self.assertIn("posmod(quarter_turns, 4)", script)
         self.assertIn("if direction == _turns:", script)
-        self.assertNotRegex(script, r"func _(?:physics_)?process|Tween|AnimationPlayer|ImageTexture|JSON|FileAccess|status|rotation|flip_[hv]")
+        # PR B permits one barrel Tween; resource creation and polling stay forbidden.
+        self.assertNotRegex(script, r"func _(?:physics_)?process|AnimationPlayer|ImageTexture|JSON|FileAccess|status|rotation|flip_[hv]")
 
     def test_shared_adapter_and_composite_ghost(self):
         visual = read("construction/machine_visual.gd")
@@ -89,7 +90,7 @@ class ExtractorArtworkStaticTest(unittest.TestCase):
     def test_simulation_placement_other_machines_and_stationary_preserved(self):
         for path in ["inventory/extractor.tres", "inventory/smelter.tres", "inventory/fabricator.tres",
                      "construction/machine_definition.gd", "construction/placement_rules.gd",
-                     "construction/deployed_machine.gd", "scenes/world/planet_world_state.gd",
+                     "scenes/world/planet_world_state.gd",
                      "scenes/world/world_coordinates.gd", "scenes/world/planet_exterior.gd",
                      "scenes/world/planet_exterior.tscn", "scenes/player/dave.tscn",
                      "scenes/player/interaction_detector.gd", "scenes/ui/machine_ui.gd",

@@ -533,8 +533,12 @@ one ore/second into capacity 20; the packaged item identity remains unchanged.
 All four accepted directional artwork packages remained frozen and unintegrated
 at that footprint-only milestone. The subsequent [static artwork PR A](EXTRACTOR_STATIC_ARTWORK.md)
 shares their unchanged body, raised barrel and foreground layers between deployed
-and ghost Extractors, pending merge and owner F5 acceptance. It adds no animation
-or gameplay changes.
+and ghost Extractors; PR #154 merged without gameplay changes. The subsequent
+[PR B barrel animation](EXTRACTOR_STATIC_ARTWORK.md#barrel-animation-pr-b-pending-merge)
+is pending review, owner F5 acceptance and merge. Only producing deployed
+Extractors reciprocate; ghosts and nonproducing machines stay raised. Animation
+does not drive production or inventory. Its 8/8/6/6-source-pixel amplitudes and
+1.6-second sine-eased cycle are provisional; no engine execution is claimed.
 
 Inspection and collection retain their 96-unit center-based range. Construction
 and B recovery retain their existing 160-unit nearest-footprint ranges. Larger

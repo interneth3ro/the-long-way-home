@@ -1,10 +1,12 @@
 # The Long Way Home
 
-Static directional Extractor artwork is implemented on
-`codex/extractor-static-artwork`, pending owner F5 acceptance and merge. Deployed
-and ghost Extractors share the 12 frozen directional PNGs with a raised,
-stationary barrel. See [provenance, validation limits and owner checklist](docs/EXTRACTOR_STATIC_ARTWORK.md).
-Godot import, runtime and graphical checks have not been performed for this work.
+Directional Extractor artwork merged in PR #154 after the footprint PR #153.
+Visual-only barrel animation is prepared on `codex/extractor-barrel-animation`,
+pending review, owner F5 acceptance and merge. Producing deployed Extractors use
+provisional 8/8/6/6-source-pixel strokes; ghosts stay raised and stationary.
+The 12 frozen PNGs and gameplay timing remain unchanged. See
+[provenance, animation lifecycle, validation limits and owner checklist](docs/EXTRACTOR_STATIC_ARTWORK.md).
+No Godot import, runtime or graphical checks were run for the animation work.
 
 Extractor footprint alignment merged in PR #153;
 owner F5 acceptance remains pending: 4x4 construction cells (128x128 world

@@ -23,14 +23,24 @@ var _extractor: ExtractorVisual
 var _art_container: Node2D
 var show_status: bool = false
 var status: PlanetWorldState.OperatingStatus = PlanetWorldState.OperatingStatus.INACTIVE
+	set(value):
+		if status == value:
+			return
+		status = value
+		_refresh_presentation()
 
 
 func _ready() -> void:
 	_refresh_presentation()
 
 
+func _exit_tree() -> void:
+	# Children stop on exit; refresh after their next entry/ready, too.
+	request_ready()
+
+
 func _refresh_presentation() -> void:
-	if not is_node_ready():
+	if not is_node_ready() or not is_inside_tree():
 		return
 	var illustrated := definition != null and definition.item_id == &"extractor"
 	# CanvasGroup.self_modulate fades the completed composite, not its layers.
@@ -48,7 +58,9 @@ func _refresh_presentation() -> void:
 			_art_container.add_child(_extractor)
 		_art_container.show()
 		_extractor.configure(turns)
+		_extractor.set_producing(not is_ghost and status == PlanetWorldState.OperatingStatus.PRODUCING)
 	elif _art_container != null:
+		_extractor.set_producing(false)
 		_art_container.hide()
 	queue_redraw()
 
