@@ -6,6 +6,15 @@ from static_automatic_transitions_test import function
 from static_extractor_artwork_test import read
 
 BASE = "c5729c00f8d4055ac900e1b6221fe32a3e1ad5e6"
+# Owner-run Godot 4.7.2 canonicalized text while preserving numeric identity.
+# Only these five exact replacements are admitted; every other byte stays pinned.
+CANONICAL_TEXTURE_UIDS = {
+    "extractor_0_barrel.png.import": ("b9553028581b", "ca553028581b"),
+    "extractor_90_body.png.import": ("bb5dbe9b0a32", "bb5dbfab0a32"),
+    "extractor_90_barrel.png.import": ("b073c49412a2", "b073c5a412a2"),
+    "extractor_180_body.png.import": ("bb4e10e3493f", "bb4e10e35a3f"),
+    "extractor_180_foreground.png.import": ("bfd19198db79", "bfd2a2a8db8a"),
+}
 
 
 class ExtractorAnimationStaticTest(unittest.TestCase):
@@ -87,4 +96,21 @@ class ExtractorAnimationStaticTest(unittest.TestCase):
                   for d in (0, 90, 180, 270) for role in ("body", "barrel", "foreground")]
         for path in paths:
             with self.subTest(path=path):
-                self.assertEqual(read(path), git_blob(BASE, path).decode().replace("\r\n", "\n"))
+                current = read(path)
+                pair = CANONICAL_TEXTURE_UIDS.get(path.rsplit("/", 1)[-1])
+                if pair is not None:
+                    old, canonical = pair
+                    # ResourceUID text_to_id uses base 34, a..z -> 0..25,
+                    # 0..9 -> 25..34; id_to_text emits a..y and 0..8.
+                    # https://github.com/godotengine/godot/blob/4.7.2-stable/core/io/resource_uid.cpp
+                    def identity(text):
+                        value = 0
+                        for c in text:
+                            value = value * 34 + (ord(c) - ord("a") if c.isalpha() else int(c) + 25)
+                        return value & 0x7fffffffffffffff
+                    self.assertEqual(identity(old), identity(canonical))
+                    self.assertNotRegex(canonical, r"[z9]")
+                    old_line, new_line = f'uid="uid://{old}"', f'uid="uid://{canonical}"'
+                    self.assertEqual(current.count(new_line), 1)
+                    current = current.replace(new_line, old_line)
+                self.assertEqual(current, git_blob(BASE, path).decode().replace("\r\n", "\n"))

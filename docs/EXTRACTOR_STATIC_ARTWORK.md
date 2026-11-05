@@ -3,8 +3,9 @@
 Static artwork merged in PR #154 at `c5729c00f8d4055ac900e1b6221fe32a3e1ad5e6`,
 after footprint PR #153 at `0a0003444be0ba4b67e7ab6c8fa678abbf740b34`.
 The PR B handoff records the four directional treatments as owner-accepted.
-Animation on `codex/extractor-barrel-animation` remains pending review, owner F5
-acceptance and merge. Earlier PR A verification below retains its historical scope.
+Animation on `codex/extractor-barrel-animation` has final owner F5 acceptance:
+**16/16 PASS, zero blocking defects**, reported 2026-11-04. PR #155 remains
+unmerged, pending review. Earlier PR A verification below retains its historical scope.
 
 ## Provenance and immutable inputs
 
@@ -156,8 +157,9 @@ bytes, import settings, output mapping and the 4x4 footprint remain unchanged.
 
 `STROKE_PX` is presentation-only and provisional. The provisional implementation
 uses 0.8 seconds down and 0.8 seconds up, sine transition with in/out easing:
-a restrained smooth reversal without sharp impacts. The owner has not approved
-an exact playback rate. This 1.6-second loop has no relationship to the one-second
+a restrained smooth reversal without sharp impacts. Owner F5 acceptance covers
+the observed implementation; timing and amplitude retain their provisional
+presentation designation. This 1.6-second loop has no relationship to the one-second
 ore cycle. Package checkpoints are 0/8/3/0 for 0 and 90, and 0/6/3/0 for 180 and
 270, confirmed from the actual manifests; they are comparison poses, not timed
 runtime keyframes. No sound, particles or new gameplay states are added.
@@ -213,7 +215,7 @@ references, not artistic acceptance or fractional-pixel filtering behavior.
 | Entry-guard correction | PASS: 12 Extractor, 9 Ferrite integration and 9 Stage 3C static tests; full suite not rerun for this two-line guard |
 | Status-setter syntax correction | Added the missing property-declaration colon reported by the owner's debugger; new check fails before and passes after the fix. Of 13 focused Extractor tests, 12 pass; the unchanged metadata-preservation test reports five pre-existing local UID differences. All 12 local sidecars are preserved and excluded from the correction. Full suite not rerun; agent Godot verification remains NOT VERIFIED. |
 | Documentation hygiene | PASS: 126 local Markdown targets, documentation-sync and `git diff --check` |
-| Godot import / parse / runtime / F5 / performance / actual filtering | NOT VERIFIED: no engine invocation authorized or performed |
+| Agent Godot import / parse / runtime / F5 / performance / actual filtering | NOT VERIFIED by the agent: no engine invocation performed; subsequent owner F5 results are recorded separately below |
 
 PR B narrowly amends the PR A no-animation guard to permit Tween while retaining
 resource/polling prohibitions. Its deployed-presenter byte guard moves to a new
@@ -225,29 +227,101 @@ its original deployed presenter from Git, like its existing MachineVisual snapsh
 the historical plan/receipt bytes and hash pins remain unchanged. Execution
 controls remain unchanged.
 
-## Owner F5 animation acceptance checklist
+## Final owner F5 acceptance — 2026-11-04
 
-Every item is initially **NOT TESTED**; no F5 or performance run is authorized here.
+The owner reports **16/16 PASS, zero blocking defects** for PR #155 after the
+initialization-guard (`4483dd8`) and status-setter syntax (`7205599`) corrections.
+These are owner-observed F5 results, separate from the agent's static validation.
+No agent Godot execution or formal performance benchmark is claimed.
 
-- [ ] 0 degrees: clean producing motion; right-edge output identities preserved.
-- [ ] 90 degrees: clean motion/occlusion; bottom-edge output identities preserved.
-- [ ] 180 degrees: clean motion/occlusion; left-edge output identities preserved.
-- [ ] 270 degrees: clean motion/occlusion; top-edge identities and socket readability.
-- [ ] Raised/return: no seam, transparency hole, double collar, floating head or concealed continuation.
-- [ ] Producing: starts correctly; extraction rate and output quantity unchanged.
-- [ ] Inactive: raised and stationary.
-- [ ] Output full: raised and stationary; collection restarts motion only when producing.
-- [ ] Ghost: always raised/stationary; composite opacity and validity outline correct.
-- [ ] Rotation: all four selections, correct offsets, no drift/spin or animation ghost artifacts.
-- [ ] Recovery/redeployment: no stuck motion/orphan Tween; equipment and stored ore conserved.
-- [ ] Exterior exit/re-entry: stop/reset; resume from authoritative state; production unchanged.
-- [ ] Zoom 0.5/1.0/1.5: record whether provisional 6/8-pixel motion is perceptible.
-- [ ] Sorting/rendering: Dave and adjacent machines; no mipmap shimmer, ghost halo or filtering artifacts.
-- [ ] Performance: arrival, multiple active Extractors and repeated placement/recovery; record counts/conditions.
-- [ ] Regression: Smelter, Fabricator, stationary Extractor, Ferrite production/collection, interaction and recovery.
+| Acceptance check | Owner result |
+| --- | --- |
+| 0-degree animation | PASS |
+| 90-degree animation | PASS |
+| 180-degree animation | PASS |
+| 270-degree animation | PASS |
+| Layer continuity | PASS |
+| Producing state | PASS |
+| Inactive state | PASS |
+| Output-full transition | PASS |
+| Placement ghost | PASS |
+| Rotation | PASS |
+| Recovery and redeployment | PASS |
+| Exterior exit and re-entry | PASS |
+| Zoom readability | PASS |
+| Sorting and rendering | PASS |
+| Performance | PASS |
+| Gameplay regressions | PASS |
 
-Carry forward the nonblocking 270-degree socket-readability concern. Do not alter
-frozen artwork preemptively. Record subtle motion as a usability observation;
-do not silently increase provisional stroke amplitudes.
-Merge and any engine execution require separate owner authorization. No cleanup
-or changes to simulation, grid, definitions, Dave or stationary artwork are included.
+Animation is extremely subtle and barely perceptible at maximum zoom-out. The
+owner explicitly accepts this as a **nonblocking visual limitation**. The owner
+confirms animation functions, performance is unaffected in observed gameplay,
+and no rendering or gameplay regressions were observed. The accepted
+asset-production and integration process is considered successful. No measured
+counts, timings or benchmark results were supplied. The prior nonblocking
+270-degree socket-readability observation remains historical context, not a
+request to edit frozen artwork. The 8/8/6/6-pixel strokes and 1.6-second loop stay
+unchanged and provisional.
+
+Additional output-full verification is **PASS**: the barrel stopped when the
+buffer reached capacity, matching the machine information panel's state; it did
+not restart while full, including after entering the ship and returning outside.
+Restart after output collection was not separately documented and is not inferred
+from this acceptance record.
+
+## Owner-import sidecar audit — 2026-11-04
+
+Read-only inspection used the existing owner-generated files against PR HEAD
+`7205599`; no Godot launch, reimport, cache regeneration or metadata reconstruction
+was performed. At preflight all 12 Extractor PNG sidecars were reported modified,
+with no untracked nonignored files. Five have only the UID text changes below;
+the other seven have only line-ending differences. No other tracked import
+metadata had content changes. All twelve frozen PNG hashes match the unchanged
+[provenance inventory](experiments/extractor_static_artwork.json).
+
+| Included sidecar under `assets/machines/extractor/` | Previous UID text | Owner-generated canonical UID text |
+| --- | --- | --- |
+| `extractor_0_barrel.png.import` | `b9553028581b` | `ca553028581b` |
+| `extractor_90_body.png.import` | `bb5dbe9b0a32` | `bb5dbfab0a32` |
+| `extractor_90_barrel.png.import` | `b073c49412a2` | `b073c5a412a2` |
+| `extractor_180_body.png.import` | `bb4e10e3493f` | `bb4e10e35a3f` |
+| `extractor_180_foreground.png.import` | `bfd19198db79` | `bfd2a2a8db8a` |
+
+For each pair, offline decoding confirms **the same numeric resource ID**, and
+the new text is canonical under [Godot 4.7.2's ResourceUID encoding](https://github.com/godotengine/godot/blob/4.7.2-stable/core/io/resource_uid.cpp#L38-L102).
+The five portable sidecars are included to preserve the owner's canonical import
+metadata on another checkout and avoid repeated text rewrites. These are not new
+resource identities. Every other normalized metadata byte matches the committed
+version: source paths, generated cache paths, compression mode 0, mipmap generation,
+alpha-border/premultiplication settings and all other parameters remain unchanged.
+No filtering, transparency or performance-setting change requires acceptance.
+Numeric IDs are unique across the twelve textures and do not collide with other
+tracked resource declarations. The preservation test admits only these five exact
+UID replacements and still compares every other metadata byte to PR A.
+
+The seven excluded sidecars are 0 body/foreground, 90 foreground, 180 barrel,
+and all three 270 layers. Their existing working bytes remain untouched; no
+line-ending-only change is committed. All twelve current sidecar byte hashes
+were captured and rechecked during closeout. Four relevant script UID files
+(`extractor_visual`, `machine_visual`, `deployed_machine`, `construction_controller`)
+and the shared scene match HEAD. Texture preloads and scene/script references
+remain path-based and unchanged; no new UID files or scene/resource edits are
+needed. There are no unexpected untracked or ignored sidecars in the Extractor
+asset or construction directories.
+
+The existing ignored `.godot/imported/` inventory contains 12 Extractor `.ctex`
+and 12 matching `.md5` files. These and the rest of `.godot/` are local generated
+cache, excluded from the PR and preserved. Inspection of existing metadata/cache
+paths is not fresh engine-import verification.
+
+Closeout validation: **13/13 PASS** via
+`python -B -m unittest discover -s tests -p 'static_extractor*test.py'`;
+**127 local Markdown targets PASS**, documentation-sync and `git diff --check`
+PASS. The offline audit above also passed PNG identities, exact UID-only metadata
+comparison, numeric-ID parity/uniqueness, tracked declaration collision checks,
+and unchanged scene/script UID checks. These are static/read-only checks, not
+engine import verification. The earlier full 406-test run belongs to
+`53df809`; it was not rerun after the later guard or syntax corrections or this
+documentation/UID-only closeout. Earlier archive/raster checks retain their
+original scope. No animation, gameplay, source artwork or execution control is
+changed by closeout. PR #155 remains unmerged; no cleanup is included.

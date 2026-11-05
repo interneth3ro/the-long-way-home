@@ -535,10 +535,13 @@ at that footprint-only milestone. The subsequent [static artwork PR A](EXTRACTOR
 shares their unchanged body, raised barrel and foreground layers between deployed
 and ghost Extractors; PR #154 merged without gameplay changes. The subsequent
 [PR B barrel animation](EXTRACTOR_STATIC_ARTWORK.md#barrel-animation-pr-b-pending-merge)
-is pending review, owner F5 acceptance and merge. Only producing deployed
+has final owner F5 acceptance (16/16 PASS, zero blocking defects), pending review
+and merge. Barely perceptible motion at maximum zoom-out is an accepted
+nonblocking limitation. Only producing deployed
 Extractors reciprocate; ghosts and nonproducing machines stay raised. Animation
 does not drive production or inventory. Its 8/8/6/6-source-pixel amplitudes and
-1.6-second sine-eased cycle are provisional; no engine execution is claimed.
+1.6-second sine-eased cycle remain provisional. Owner-observed F5 acceptance is
+separate from agent static checks; no agent engine execution is claimed.
 
 Inspection and collection retain their 96-unit center-based range. Construction
 and B recovery retain their existing 160-unit nearest-footprint ranges. Larger

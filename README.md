@@ -2,11 +2,13 @@
 
 Directional Extractor artwork merged in PR #154 after the footprint PR #153.
 Visual-only barrel animation is prepared on `codex/extractor-barrel-animation`,
-pending review, owner F5 acceptance and merge. Producing deployed Extractors use
+accepted by the owner: 16/16 F5 PASS, zero blocking defects; pending review and
+merge. Producing deployed Extractors use
 provisional 8/8/6/6-source-pixel strokes; ghosts stay raised and stationary.
 The 12 frozen PNGs and gameplay timing remain unchanged. See
 [provenance, animation lifecycle, validation limits and owner checklist](docs/EXTRACTOR_STATIC_ARTWORK.md).
-No Godot import, runtime or graphical checks were run for the animation work.
+The extremely subtle motion at maximum zoom-out is an accepted nonblocking
+limitation. Owner F5 results are separate from static checks; the agent ran no Godot.
 
 Extractor footprint alignment merged in PR #153;
 owner F5 acceptance remains pending: 4x4 construction cells (128x128 world
