@@ -99,7 +99,7 @@ def different(a, b):
     return sum(a[i:i + 4] != b[i:i + 4] for i in range(0, len(a), 4))
 
 
-def verify_archives(directory):
+def verify_archives(directory, motion=False):
     records = json.loads(INVENTORY.read_text())["directions"]
     configured = configured_layers()
     for direction_index, record in enumerate(records):
@@ -141,11 +141,46 @@ def verify_archives(directory):
                 count = different(reconstructed, expected)
                 print(f'{record["direction"]} degrees / {reference}: {count} differing RGBA pixels')
                 assert count == 0
+            if motion:
+                verify_motion(z, prefix, manifest, configured[direction_index * 3:direction_index * 3 + 3])
         assert hashlib.sha256(archive.read_bytes()).hexdigest() == before
         print(f'{record["direction"]} degrees: archive CRC, identity, 3 byte-identical PNGs and full layers PASS')
+
+
+def verify_motion(archive, prefix, manifest, layers):
+    """Integer source-space poses, not filtered rendering or artistic acceptance."""
+    direction = manifest["output_ports"][0]["orientation"]
+    maximum = 8 if direction in (0, 90) else 6
+    assert manifest["motion"]["axis"] == "master_positive_y_is_down"
+    poses = manifest["motion"]["representative_positions"]
+    assert [(p["name"], p["y_offset_px"]) for p in poses] == [
+        ("raised", 0), ("downstroke", maximum), ("return", 3)]
+    decoded = [(decode_png((ROOT / path).read_bytes()), offset) for path, offset in layers]
+    raised_alpha = None
+    for stroke in range(maximum + 1):
+        composite = bytearray(1254 * 1254 * 4)
+        for index, ((w, h, pixels), (x, y)) in enumerate(decoded):
+            # place() rejects canvas clipping; fixed body/foreground never move.
+            place(pixels, w, h, (x + 632, y + 1139 + (stroke if index == 1 else 0)), composite)
+        alpha = composite[3::4]
+        if raised_alpha is None:
+            raised_alpha = alpha
+        holes = sum(a == 255 and b == 0 for a, b in zip(raised_alpha, alpha))
+        print(f'{direction} degrees / stroke {stroke}: {holes} formerly opaque pixels now transparent')
+        assert holes == 0, "new fully transparent hole relative to raised silhouette"
+        for pose in poses:
+            if pose["y_offset_px"] != stroke:
+                continue
+            w, h, expected = decode_png(archive.read(prefix + f'previews/reconstructed_{pose["name"]}.png'))
+            assert (w, h) == (1254, 1254)
+            count = different(composite, expected)
+            print(f'{direction} degrees / {pose["name"]}: {count} differing RGBA pixels')
+            assert count == 0, "pose differs from accepted reference (including concealed continuation)"
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--packages", type=Path, required=True)
-    verify_archives(parser.parse_args().packages)
+    parser.add_argument("--motion", action="store_true", help="also check integer barrel strokes and package pose references")
+    args = parser.parse_args()
+    verify_archives(args.packages, args.motion)
