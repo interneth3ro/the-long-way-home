@@ -1,5 +1,16 @@
 # The Long Way Home
 
+Deployed Smelter footprint conversion is prepared on `codex/smelter-footprint-128`,
+accepted by the owner on November 5, 2026: **10/10 F5 PASS**, no observations
+or blocking defects; pending review and merge. Accepted implementation:
+`ddf2dcd2a34853bdcc6b8d8283ddfdadfcea3550`. The footprint is 4x4 cells (128x128 units)
+on the unchanged 32-unit grid. Existing procedural presentation and production
+remain; inspection/transfers retain 96-unit center-based reach and B recovery
+retains 160-unit nearest-footprint reach. Directional artwork, thermal illumination
+and physical ports remain future work. See the
+[scope, static validation limits and owner F5 checklist](docs/GAME_VISION.md#smelter-4x4-footprint-feature-branch-pending-merge).
+Historical implementation records below retain their original milestone scope.
+
 Directional Extractor artwork merged in PR #154 after the footprint PR #153.
 Visual-only barrel animation is prepared on `codex/extractor-barrel-animation`,
 accepted by the owner: 16/16 F5 PASS, zero blocking defects; pending review and

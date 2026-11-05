@@ -57,6 +57,10 @@ class Stage3CTest(unittest.TestCase):
                              # Merged PR #153 changed the Extractor footprint.
                              # Its resource is protected by current baseline tests.
                              'inventory/extractor.tres',
+                             # Smelter 4x4 milestone: retain the consumed plan's
+                             # original bytes/hashes; current resource and shared
+                             # geometry are guarded by static_smelter_footprint_test.
+                             'inventory/smelter.tres',
                              # PR #152 warning fixes preserve executable behavior;
                              # validate current presenter changes separately below.
                              'scenes/world/continuous_terrain_presenter.gd',

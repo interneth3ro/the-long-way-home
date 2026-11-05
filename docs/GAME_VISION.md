@@ -520,7 +520,9 @@ The historical heading is retained for existing links.
 The owner approved Approach B2: `codex/extractor-footprint-128` changes only
 `inventory/extractor.tres` gameplay data from 2x2 cells / extraction point (32,32)
 to 4x4 cells / (64,64). The global construction grid remains 32 world units;
-Smelter and Fabricator remain 2x2 (64x64). Earlier 2x2 Extractor records describe
+At that milestone Smelter and Fabricator remained 2x2 (64x64); the subsequent
+[Smelter footprint milestone](#smelter-4x4-footprint-feature-branch-pending-merge)
+extends Smelter only. Earlier 2x2 Extractor records describe
 their historical milestones and are not revised acceptance evidence.
 
 Existing generic placement, overlap, blocking-solid and Dave collision queries
@@ -638,6 +640,10 @@ are recorded in the
 
 ## Approved Smelter deployment direction
 
+This section preserves PR #39's original deployment milestone. The subsequent
+[4x4 footprint milestone](#smelter-4x4-footprint-feature-branch-pending-merge)
+updates deployed geometry; production is described separately below.
+
 - Reuse the packaged Smelter identity and existing construction system: click
   Equipment to deploy, 2×2 construction cells (64×64 units), R quarter turns,
   neutral ghost, validity footprint and ordinary range/obstacle/occupancy rules.
@@ -661,6 +667,126 @@ are recorded in the
 Implementation is merged in PR #39. Agent validation was static only; evidence
 and limitations are recorded in the
 [implementation notes](../README.md#deploy-the-smelter-pr-39-merged).
+
+## Smelter 4x4 footprint (feature branch, pending merge)
+
+Prepared on `codex/smelter-footprint-128`; PR #156 has owner F5 acceptance
+**10/10 PASS**, with no observations or blocking defects, pending review and merge.
+Only `inventory/smelter.tres` production data changes: its explicit footprint
+becomes 4x4 construction cells, or 128x128 world units on the unchanged 32-unit
+grid. All four orientations retain 16 occupied cells. Shared snapping, ghosts,
+overlap/obstacle/Dave checks, collision and lifecycle derive from that definition.
+The interaction center is origin + (64,64); the bottom-center presentation anchor
+is origin + (64,128). MachineVisual's existing procedural drawing remains in use.
+Extractor remains 4x4 and Fabricator remains 2x2; the shared definition default
+remains 2x2. The inherited extraction point (32,32) stays unchanged and is neither
+a Smelter interaction anchor nor a physical port.
+
+Owner-selected Option A preserves **96-unit center-based inspection and material
+transfer reach**. Cardinal side access remains possible. Dave may be slightly
+outside reach at diagonal corner contact; this is an accepted limitation, with
+no compensating range or policy change. B recovery retains **160-unit distance
+from the nearest footprint point**. Production remains 1 Ferrite Ore -> 1 Ferrite
+Ingot per 2 seconds, with independent 20-item input and output buffers. UI,
+transfers, production simulation and world-state ownership are unchanged.
+
+The separate stationary maintenance-bay Smelter retains its presentation and
+E-key recovery route. Static directional artwork integration and production-driven
+thermal illumination are separate, unauthorized milestones. Physical material
+ports and conduits remain unimplemented; no frozen artwork is integrated here.
+
+Validation uses Python static resource/source contracts, independent geometry
+examples and exact baseline comparisons. Historical Stage 3C input-plan hashes
+and provenance remain sealed to their original source; only its Smelter input
+lookup gains a narrow historical exception, with current state checked separately.
+Extractor artwork and Ferrite guards admit only the Smelter footprint line change.
+The Extractor animation shared-adapter protections remain unchanged.
+
+Focused commands (run from the repository root):
+
+```powershell
+python -B -m unittest discover -s tests -p static_smelter_footprint_test.py
+python -B -m unittest discover -s tests -p static_ferrite_integration_test.py
+python -B -m unittest discover -s tests -p static_extractor_artwork_test.py
+python -B -m unittest discover -s tests -p static_extractor_animation_test.py
+python -B -m unittest discover -s tests -p static_terrain_stage3c_test.py
+python -B -m unittest discover -s tests -p static_v2_stationary_machines_test.py
+python -B -m unittest discover -s tests -p static_current_preservation_test.py
+```
+
+Implementation results: Smelter **5/5**, Ferrite integration **9/9**, Extractor
+artwork **5/5**, Extractor animation **6/6**, Stage 3C **9/9**, stationary machines
+**8/8** and current preservation **4/4 PASS** (46 total). Changed Markdown links
+and anchors, original README byte preservation, exact production-change scope,
+unchanged historical plans/evidence and `git diff --check` also passed. The full
+static suite was not run for this focused milestone.
+
+Static checks do not execute GDScript, verify engine physics or establish gameplay
+or graphical PASS. The agent did not execute Godot for implementation or this
+acceptance update. The owner separately completed normal-F5 gameplay acceptance
+on **November 5, 2026**, against implementation commit
+`ddf2dcd2a34853bdcc6b8d8283ddfdadfcea3550`: **10/10 PASS**, no observations and
+no blocking defects. This owner-observed result is separate from the original
+46/46 static results above; those results and implementation history are preserved.
+Machine state remains session-only; live machines are not migrated or hot-resized.
+
+### PR #156 owner F5 acceptance — November 5, 2026
+
+All ten checks below passed at the accepted implementation commit above.
+
+| # | Owner-observed check | Result |
+| --- | --- | --- |
+| 1 | Fresh playthrough, Extractor progression and stationary Smelter E recovery | PASS |
+| 2 | Four orientations, 4x4 footprint and grid snapping | PASS |
+| 3 | Valid/invalid placement, Dave/obstacle rejection, adjacency and overlap | PASS |
+| 4 | Collision around all sides and corners | PASS |
+| 5 | Cardinal inspection and accepted diagonal-corner reach limitation | PASS |
+| 6 | Ore transfers, production, capacities and ingot collection | PASS |
+| 7 | B recovery with both buffers populated and exact inventory returns | PASS |
+| 8 | Redeployment and resumed production | PASS |
+| 9 | Exterior/interior travel and retained machine state | PASS |
+| 10 | Extractor and Fabricator gameplay regression | PASS |
+
+The original detailed checklist is retained below as implementation history.
+The accepted diagonal-corner reach limitation remains unchanged. Directional
+artwork and thermal illumination remain outside PR #156. Review and explicit
+owner merge authorization remain required; this acceptance does not merge the PR.
+
+Documentation-update validation: changed Markdown links/anchors, preservation of
+the original static results and historical checklist, unchanged gameplay/resources,
+tests/artwork and historical plans/evidence, and `git diff --check` passed. The
+five owner-authorized Extractor import sidecars were inspected and found already
+byte-identical to the accepted commit; their contents were preserved.
+Focused static rechecks also passed: Smelter footprint **5/5**, Extractor animation
+**6/6** and current preservation **4/4** (15 total). No tests were modified and
+the full static suite was not rerun for this acceptance update.
+
+Original owner F5 checklist (now accepted above):
+
+1. Start a fresh F5 playthrough; complete the normal opening, recover/deploy the
+   Extractor, acquire ore, then use E to recover the stationary Smelter. Check its
+   unchanged presentation, unlock and one-time recovery behavior.
+2. Deploy the Smelter in each of four R orientations, recovering/redeploying as
+   needed. Confirm a 4x4 preview, 128x128 occupied area and 32-unit top-left
+   snapping at positive and negative coordinates.
+3. Place on clear ground; reject Dave, ship/solid obstacles and occupied cells.
+   Check exact edge adjacency with Smelter/Extractor/Fabricator and rejection of
+   one-cell incursions. Invalid placement must preserve packaged equipment.
+4. Walk Dave around every side and corner; verify collision blocks the whole
+   footprint without trapping him or leaving unexpected gaps.
+5. Inspect from north, east, south and west. Confirm the unchanged 96-unit center
+   reach and accepted diagonal-corner limitation; approach a side to interact.
+   Check transfer/collection availability when entering/leaving reach.
+6. Transfer ore, observe unchanged 1:1 / 2-second production and 20/20 capacities,
+   then collect ingots. Check Input Empty/Producing/Output Full and partial work.
+7. Close the panel, populate both input and output buffers, then use B recovery.
+   Confirm packaged Smelter plus all stored ore/ingots return exactly once, no
+   inventory loss/duplication, and the unchanged 160-unit nearest-footprint reach.
+8. Redeploy, load ore and resume production; verify geometry, rotation and guidance.
+9. Leave a deployed Smelter with materials, travel exterior -> interior -> exterior,
+   and verify position, orientation, collision, buffers, production and inspection.
+10. Check Extractor deployment, animation, ore collection and recovery; check
+    Fabricator 2x2 placement, recipes, transfer, production, collection and recovery.
 
 ## Approved Ferrite Ingot production direction
 
