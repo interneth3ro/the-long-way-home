@@ -35,6 +35,8 @@ func configure(machine: Dictionary, state: PlanetWorldState) -> void:
 
 
 func _enter_tree() -> void:
+	if _state == null or _visual == null:
+		return
 	# Parent entry precedes child readiness, including retained exterior re-entry.
 	_visual.status = _state.machine_status(_state.get_machine(machine_id))
 

@@ -164,8 +164,9 @@ runtime keyframes. No sound, particles or new gameplay states are added.
 
 `DeployedMachine` retains its exact existing `_process` status poll, including
 the changed-status guard. Its new `_enter_tree` samples the authoritative record
-before child readiness. This covers already-producing creation and retained
-exterior re-entry, including a status change while detached. Scalar Extractor
+before child readiness, skipping the entry sample if `configure()` has not yet
+initialized both state and visual. This covers already-producing creation and
+retained exterior re-entry, including a status change while detached. Scalar Extractor
 output-full transitions therefore do not depend on recipe notifications.
 `MachineVisual.status` forwards changes through its existing presentation adapter:
 only PRODUCING and non-ghost enables `set_producing(true)`. INACTIVE, OUTPUT_FULL,
@@ -208,7 +209,8 @@ references, not artistic acceptance or fractional-pixel filtering behavior.
 | No duplication / gameplay preservation | PASS static: one Tween creation site; no new process callback; simulation, placement, recovery, other machines and stationary art unchanged |
 | Offline geometry | PASS: 32 bounded integer poses, zero new fully transparent holes, 12 exact package pose comparisons |
 | Focused static checks | PASS: 12 tests via `python -B -m unittest discover -s tests -p 'static_extractor*test.py'` |
-| Full static suite | PASS: 406/406 in 292.214 seconds via `python -B -m unittest discover -s tests -p 'static_*test.py'` |
+| Full static suite (before entry-guard correction, `53df809`) | PASS: 406/406 in 292.214 seconds via `python -B -m unittest discover -s tests -p 'static_*test.py'` |
+| Entry-guard correction | PASS: 12 Extractor, 9 Ferrite integration and 9 Stage 3C static tests; full suite not rerun for this two-line guard |
 | Documentation hygiene | PASS: 126 local Markdown targets, documentation-sync and `git diff --check` |
 | Godot import / parse / runtime / F5 / performance / actual filtering | NOT VERIFIED: no engine invocation authorized or performed |
 

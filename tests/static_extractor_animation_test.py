@@ -47,6 +47,8 @@ class ExtractorAnimationStaticTest(unittest.TestCase):
         script = read(path)
         entry = function(script, "_enter_tree")
         self.assertEqual(entry.strip(), '''func _enter_tree() -> void:
+	if _state == null or _visual == null:
+		return
 	# Parent entry precedes child readiness, including retained exterior re-entry.
 	_visual.status = _state.machine_status(_state.get_machine(machine_id))''')
         # Narrow guard amendment: all polling, configure, collisions stay byte-identical.
