@@ -739,8 +739,8 @@ grid. All four orientations retain 16 occupied cells. Shared snapping, ghosts,
 overlap/obstacle/Dave checks, collision and lifecycle derive from that definition.
 The interaction center is origin + (64,64); the bottom-center presentation anchor
 is origin + (64,128). MachineVisual's existing procedural drawing remains in use.
-Extractor remains 4x4 and Fabricator remains 2x2; the shared definition default
-remains 2x2. The inherited extraction point (32,32) stays unchanged and is neither
+At the Smelter milestone, Extractor remained 4x4 and Fabricator remained 2x2;
+the shared definition default remains 2x2. The inherited extraction point (32,32) stays unchanged and is neither
 a Smelter interaction anchor nor a physical port.
 
 Owner-selected Option A preserves **96-unit center-based inspection and material
@@ -903,6 +903,33 @@ ownership and validation limits are in the
 Implementation is merged in PR #42. Agent validation was static only and the
 standalone regression checks remain unexecuted under the Godot restriction. See
 the [implementation notes](../README.md#recover-the-fabricator-pr-42-merged).
+
+## Deployed Fabricator 4x4 footprint (feature branch, pending merge)
+
+`codex/fabricator-4x4-footprint` implements the approved 4x4 construction-cell
+footprint (128x128 world units on the 32-unit grid). The top-left placement origin
+stays grid-aligned; center is origin + (64,64), bottom-center anchor is origin +
+(64,128), and all four clockwise quarter turns retain square bounds. Shared
+placement, occupancy, collision and construction ghosts derive from the resource.
+The inherited extraction point is unchanged; this machine does not sample mineral
+ground and that value is neither a material port nor an interaction anchor.
+
+Inspection and transfer use 96-unit center distance. The accepted Smelter diagonal
+corner limitation applies without increasing reach. Construction and deployed
+recovery use 160 units from the nearest footprint point. The initial configuration
+exception remains available after successful deployment, without authorizing
+out-of-range transfer or ordinary recipe switching. Recipes, capacities, pause
+leases, transactions and exterior state ownership remain unchanged. The standalone
+maintenance-bay Fabricator keeps its own assets, collider and 45-unit recovery cap;
+Extractor and Smelter are unchanged. On November 9, 2026, the owner reported
+**acceptance PASS** for PR #160 at implementation commit
+`1ac525ed70ebc8eb45e95fb6e8e5b74ebc3a26f7`. This is the owner's overall result;
+no itemized checklist results were supplied. Agent validation remains static
+(440 tests passed); the agent did not run Godot or execute the Godot regression
+scripts. The implementation is owner accepted and pending review and merge in
+[PR #160](https://github.com/interneth3ro/the-long-way-home/pull/160).
+
+The earlier milestone records below describe the original 2x2 implementation.
 
 ## Approved Fabricator deployment and initial configuration
 

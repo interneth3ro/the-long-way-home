@@ -174,8 +174,8 @@ class FerriteIntegrationStaticTest(unittest.TestCase):
                      'scenes/player/interaction_detector.gd', 'scenes/ui/machine_ui.gd']:
             with self.subTest(path=path):
                 current = read(path)
-                if path == 'inventory/smelter.tres':
-                    # Authorized Smelter footprint milestone; preserve every other field.
+                if path in ('inventory/smelter.tres', 'inventory/fabricator.tres'):
+                    # Authorized Smelter/Fabricator footprint milestones; preserve every other field.
                     self.assertEqual(current.count('footprint_cells = Vector2i(4, 4)'), 1)
                     current = current.replace('footprint_cells = Vector2i(4, 4)',
                                               'footprint_cells = Vector2i(2, 2)')
@@ -188,7 +188,7 @@ class FerriteIntegrationStaticTest(unittest.TestCase):
                     current = current.replace('_ghost.is_ghost = true',
                                               '_ghost.modulate = Color(1, 1, 1, 0.5)')
                 self.assertEqual(current, git_blob(base, path).decode().replace('\r\n', '\n'))
-        for machine, cells in [('smelter', 4), ('fabricator', 2)]:
+        for machine, cells in [('smelter', 4), ('fabricator', 4)]:
             self.assertIn(f'footprint_cells = Vector2i({cells}, {cells})', read(f'inventory/{machine}.tres'))
 
     def test_other_exterior_nodes_and_resource_fields_are_unchanged(self):

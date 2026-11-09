@@ -61,6 +61,9 @@ class Stage3CTest(unittest.TestCase):
                              # original bytes/hashes; current resource and shared
                              # geometry are guarded by static_smelter_footprint_test.
                              'inventory/smelter.tres',
+                             # Fabricator 4x4: preserve the consumed plan bytes;
+                             # current definition is pinned by static_fabricator_footprint_test.
+                             'inventory/fabricator.tres',
                              # PR #152 warning fixes preserve executable behavior;
                              # validate current presenter changes separately below.
                              'scenes/world/continuous_terrain_presenter.gd',

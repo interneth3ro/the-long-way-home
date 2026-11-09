@@ -252,7 +252,14 @@ class SmelterArtworkStaticTest(unittest.TestCase):
                      "assets/environment/maintenance_bay_v2/machines/smelter_stationary.png.import",
                      "docs/experiments/extractor_static_artwork.json", "project.godot"]:
             with self.subTest(path=path):
-                self.assertEqual(normalized(path, (ROOT / path).read_bytes()), normalized(path, git_blob(BASE, path)))
+                # Authorized Fabricator 4x4 amendment: restore only this exact
+                # field for comparison against the unchanged historical baseline.
+                current = normalized(path, (ROOT / path).read_bytes())
+                if path == "inventory/fabricator.tres":
+                    self.assertEqual(current.count(b"footprint_cells = Vector2i(4, 4)"), 1)
+                    current = current.replace(b"footprint_cells = Vector2i(4, 4)",
+                                              b"footprint_cells = Vector2i(2, 2)")
+                self.assertEqual(current, normalized(path, git_blob(BASE, path)))
         self.assertIn("footprint_cells = Vector2i(4, 4)", read("inventory/smelter.tres"))
         self.assertIn("CONSTRUCTION_SIZE: int = 32", read("scenes/world/world_coordinates.gd"))
         path = "construction/machine_visual.gd"

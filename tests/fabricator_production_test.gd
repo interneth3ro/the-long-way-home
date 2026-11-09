@@ -8,7 +8,7 @@ const INGOT: ItemDefinition = preload("res://inventory/ferrite_ingot.tres")
 const ORE: ItemDefinition = preload("res://inventory/ferrite_ore.tres")
 const PLATE: ItemDefinition = preload("res://inventory/ferrite_plate.tres")
 const ROD: ItemDefinition = preload("res://inventory/ferrite_rod.tres")
-const POINT := Vector2(32, 32)
+const POINT := Vector2(64, 64)
 const Status = PlanetWorldState.OperatingStatus
 var _failures: int = 0
 
