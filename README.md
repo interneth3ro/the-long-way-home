@@ -1,13 +1,21 @@
 # The Long Way Home
 
-Fabricator four-orientation static artwork is implemented on
-`codex/fabricator-four-orientation-static-artwork`, **pending owner normal-F5
-acceptance and merge** (Decision 36, Option A). Four byte-identical frozen PNGs
+Fabricator front mechanical animation is implemented on
+`codex/fabricator-front-animation`, **pending owner normal-F5 acceptance and merge**
+(Decision 62, Option A). Five unchanged frozen layers implement the approved three
+five-second patterns, controlled startup/shutdown and stable machine-ID variation.
+Only deployed 0 degrees animates; ghosts and other orientations remain static.
+Validation is offline only; see the
+[implementation and owner checklist](docs/FABRICATOR_FRONT_ANIMATION.md).
+
+Fabricator four-orientation static artwork **merged in PR #161** (Decision 36,
+Option A); the owner reports all seven graphical acceptance groups passed.
+Four byte-identical frozen PNGs
 replace the procedural deployed/ghost body through the existing `MachineVisual`
 contract, retaining accepted per-view registration, the 4x4 footprint and the
 unscaled status dot. Gameplay, stationary artwork, Extractor animation and Smelter
 thermal behavior remain unchanged. Agent validation is offline/static only;
-no Godot execution or Fabricator animation is included. See the
+no agent Godot execution or Fabricator animation was included in that milestone. See the
 [provenance, validation and owner F5 checklist](docs/FABRICATOR_STATIC_ARTWORK.md).
 Earlier milestone entries below retain their historical scope.
 

@@ -21,6 +21,7 @@ var turns: int = 0:
 		_refresh_presentation()
 # Set before entering the tree. Only the active tool uses ghost compositing.
 var is_ghost: bool = false
+var presentation_machine_id: int = 0
 var _extractor: ExtractorVisual
 var _art_container: Node2D
 var _smelter: SmelterVisual
@@ -97,10 +98,13 @@ func _refresh_presentation() -> void:
 				_fabricator_art_container = Node2D.new()
 			add_child(_fabricator_art_container)
 			_fabricator = FABRICATOR_SCENE.instantiate() as FabricatorVisual
+			_fabricator.set_presentation_identity(presentation_machine_id)
 			_fabricator_art_container.add_child(_fabricator)
-		_fabricator_art_container.show()
 		_fabricator.configure(turns)
+		_fabricator.set_operating_status(status, not is_ghost)
+		_fabricator_art_container.show()
 	elif _fabricator_art_container != null:
+		_fabricator.set_operating_status(status, false)
 		_fabricator_art_container.hide()
 	_refresh_smelter_status()
 	_refresh_fabricator_status()

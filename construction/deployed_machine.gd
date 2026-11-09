@@ -25,6 +25,7 @@ func configure(machine: Dictionary, state: PlanetWorldState) -> void:
 	collision.position = Vector2(0, -footprint.size.y / 2.0)
 	add_child(collision)
 	var visual := MachineVisual.new()
+	visual.presentation_machine_id = machine_id
 	visual.definition = definition
 	visual.turns = machine.turns
 	visual.position = Vector2(-footprint.size.x / 2.0, -footprint.size.y)

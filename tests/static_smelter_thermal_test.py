@@ -5,6 +5,7 @@ import unittest
 
 from current_preservation import ROOT, git_blob, normalized
 from static_automatic_transitions_test import function
+from static_fabricator_animation_test import without_presentation_identity
 
 BASE = "ca18cfa4c9f16ab934968aed4fa764f9c1e2b58d"
 
@@ -197,6 +198,8 @@ class SmelterThermalStaticTest(unittest.TestCase):
             with self.subTest(path=path):
                 # Authorized Fabricator 4x4 amendment; every other byte stays pinned.
                 current = normalized(path, (ROOT / path).read_bytes())
+                if path == "construction/deployed_machine.gd":
+                    current = without_presentation_identity(current.decode()).encode()
                 if path == "inventory/fabricator.tres":
                     self.assertEqual(current.count(b"footprint_cells = Vector2i(4, 4)"), 1)
                     current = current.replace(b"footprint_cells = Vector2i(4, 4)",
