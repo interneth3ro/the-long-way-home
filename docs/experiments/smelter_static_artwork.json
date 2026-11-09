@@ -1,0 +1,342 @@
+{
+  "scope": "Owner-authorized static idle Smelter presentation; draft PR, F5 pending; no engine execution or thermal-animation authority",
+  "baseline": "65564d5d95502fcc0368a2b5396d1855311c5806",
+  "acceptance": "All four packages frozen and accepted by the owner in the November 5, 2026 implementation authorization. Historical pending labels in external manifests remain unchanged.",
+  "hash_provenance": "All four manifest SHA-256 identities pinned by the owner implementation authorization; each manifest pins its runtime PNGs. Source packages remain external and unchanged.",
+  "source_to_world_ratio": [
+    4,
+    29
+  ],
+  "footprint_world": [
+    128,
+    128
+  ],
+  "art_root_position": [
+    64,
+    128
+  ],
+  "directions": [
+    {
+      "direction": 0,
+      "package": "smelter_0_prototype_v1",
+      "manifest": "smelter_0_manifest.json",
+      "manifest_sha256": "7138460485af27067d33b8f0fa562e904c9857829f08c26fb41a19dad741e7d0",
+      "master_size_px": [
+        1254,
+        1254
+      ],
+      "ground_anchor_px": [
+        608,
+        1096
+      ],
+      "idle_preview_sha256": "b9e79892cf594a35b9330bdb9c98c764980a5b052a7b8de4f5d81a2c9d63c7f2",
+      "idle_rgba_sha256": "3e679ed07e8ab45d3cfe1e56d5fbfcdb3f512394db55ee095a6d4d6bb70f06de",
+      "assets": [
+        {
+          "role": "body",
+          "path": "assets/machines/smelter/smelter_0_body.png",
+          "package_path": "runtime/smelter_0_body.png",
+          "sha256": "22ef39828ea9b31fc7c893183674ab9c83d81db6f5838440712edd90ce3f50f9",
+          "bytes": 2026238,
+          "size_px": [
+            1188,
+            1008
+          ],
+          "rgba_sha256": "1b33e45773576c23cbc016d5a3aa664baba3a9a874d71fa3b92f2bd21a7ecaaf",
+          "crop_rect_px": [
+            37,
+            97,
+            1188,
+            1008
+          ],
+          "anchor_relative_offset_px": [
+            -571,
+            -999
+          ],
+          "draw_order": 0,
+          "blend": "normal_source_over",
+          "source_master_sha256": "87ed272aa4faca243fecfe1142c0dde9bb76b7e43d18ca18f0430b16198763ce"
+        },
+        {
+          "role": "interior",
+          "path": "assets/machines/smelter/smelter_0_interior.png",
+          "package_path": "runtime/smelter_0_interior.png",
+          "sha256": "81c62cb2b4872554440f4d58b769c4446460b5a60a5064d1897859ef7844d8b3",
+          "bytes": 82962,
+          "size_px": [
+            229,
+            281
+          ],
+          "rgba_sha256": "ca472035791a12f2555afa11f47a5b23ff2c030045bb55b0a6b4b0cdb35b24a0",
+          "crop_rect_px": [
+            600,
+            657,
+            229,
+            281
+          ],
+          "anchor_relative_offset_px": [
+            -8,
+            -439
+          ],
+          "draw_order": 1,
+          "blend": "normal_source_over",
+          "source_master_sha256": "d06a47d8a2b8ca6e2635375de1b25ed9b458b2f380bf150750dff9cea6d61c42"
+        },
+        {
+          "role": "illumination",
+          "path": "assets/machines/smelter/smelter_0_illumination.png",
+          "package_path": "runtime/smelter_0_illumination.png",
+          "sha256": "ce148c6e9319b2efb852010bc6ce73e0c0e2124f60385ac21ae7145186ecf58f",
+          "bytes": 146063,
+          "size_px": [
+            621,
+            829
+          ],
+          "rgba_sha256": "335ed01e708575131a1ebf9a7caa51b995d7ca75ff1ec87882d09274a574fef6",
+          "crop_rect_px": [
+            208,
+            109,
+            621,
+            829
+          ],
+          "anchor_relative_offset_px": [
+            -400,
+            -987
+          ],
+          "draw_order": 2,
+          "blend": "normal_source_over",
+          "source_master_sha256": "b0d061e6a0535a5768c3996282f6a432cf772dcd42d9cf782c0e03d9e9e94a46"
+        },
+        {
+          "role": "foreground",
+          "path": "assets/machines/smelter/smelter_0_foreground.png",
+          "package_path": "runtime/smelter_0_foreground.png",
+          "sha256": "73a3d1b52e051fda2158f26602868010ac6132f1a028773af6b7ac8d8d9d6397",
+          "bytes": 111776,
+          "size_px": [
+            353,
+            315
+          ],
+          "rgba_sha256": "5db7b72f6c4f69ec599ba502b0427a8140533a306b68a286bf6c227629dc7e1b",
+          "crop_rect_px": [
+            536,
+            636,
+            353,
+            315
+          ],
+          "anchor_relative_offset_px": [
+            -72,
+            -460
+          ],
+          "draw_order": 3,
+          "blend": "normal_source_over",
+          "source_master_sha256": "f38efd67cc5ced10e0d97de97f6e66894493475b80ff66a58d20bb0f5635b8fe"
+        }
+      ]
+    },
+    {
+      "direction": 90,
+      "package": "smelter_90_stage2b_v1",
+      "manifest": "smelter_90_manifest.json",
+      "manifest_sha256": "fd1632155ab1fddca29e341697f2cb3261f4bcb419bd8abb42c6951a24c5d1c4",
+      "master_size_px": [
+        1254,
+        1254
+      ],
+      "ground_anchor_px": [
+        628,
+        1158
+      ],
+      "idle_preview_sha256": "ec34819b72a8c7e29f15756583356c6062c4cd110b1bb406d4525a68856a7162",
+      "idle_rgba_sha256": "7cf7b452acb7841489b746ba0be95206f758832080e61f40fc57b2dcb07b8e42",
+      "assets": [
+        {
+          "role": "body",
+          "path": "assets/machines/smelter/smelter_90_body.png",
+          "package_path": "runtime/smelter_90_body.png",
+          "sha256": "a50374aa29900b863c931c4853b4ec0b6223559a854eae908c5d8351b7f1070f",
+          "bytes": 2221254,
+          "size_px": [
+            934,
+            1156
+          ],
+          "rgba_sha256": "7f62eb1de3526c77d64eb49174cb80443c25bb9c5b9f7ae9bea418c56b08ed99",
+          "crop_rect_px": [
+            161,
+            14,
+            934,
+            1156
+          ],
+          "anchor_relative_offset_px": [
+            -467,
+            -1144
+          ],
+          "draw_order": 0,
+          "blend": "normal_source_over",
+          "source_master_sha256": "ec34819b72a8c7e29f15756583356c6062c4cd110b1bb406d4525a68856a7162"
+        },
+        {
+          "role": "illumination",
+          "path": "assets/machines/smelter/smelter_90_illumination.png",
+          "package_path": "runtime/smelter_90_illumination.png",
+          "sha256": "5e34c50f1055296a311240e283f1d66c5d279e3d78af97f49153c6f1ec47b538",
+          "bytes": 40501,
+          "size_px": [
+            200,
+            320
+          ],
+          "rgba_sha256": "b2d6345bf1433b35d02236574fe3df24ee4664d5e62d580b8c5a77db39fd5a56",
+          "crop_rect_px": [
+            556,
+            28,
+            200,
+            320
+          ],
+          "anchor_relative_offset_px": [
+            -72,
+            -1130
+          ],
+          "draw_order": 1,
+          "blend": "normal_source_over",
+          "source_master_sha256": "148e1f6ebb437c3c550099b1bccd973f78e27200d33223c1926b8e0981cddc34"
+        }
+      ]
+    },
+    {
+      "direction": 180,
+      "package": "smelter_180_stage3b_v1",
+      "manifest": "smelter_180_manifest.json",
+      "manifest_sha256": "530847fd5413fd5cd3c12972068e9366a9e08ad8a16a5ab629ec313c6cb34166",
+      "master_size_px": [
+        1254,
+        1254
+      ],
+      "ground_anchor_px": [
+        634,
+        1128
+      ],
+      "idle_preview_sha256": "9a0e35597411b8aab98964fa295422240347dab1a16e658db38ebca39f0681a5",
+      "idle_rgba_sha256": "f4c68ea296187872b2a5f4e6ec0081bb33cb2f358c8f0c09a65a655a0deaeea3",
+      "assets": [
+        {
+          "role": "body",
+          "path": "assets/machines/smelter/smelter_180_body.png",
+          "package_path": "runtime/smelter_180_body.png",
+          "sha256": "9a6d4b4d3236e6d1d902920864bfdeb3171873fe50c8df4e46877d14e9539b05",
+          "bytes": 2898441,
+          "size_px": [
+            1170,
+            1048
+          ],
+          "rgba_sha256": "f94d5af5dd653b566cddfd53b8097e0479f6ed9223d1f611fc7eeaad86df502b",
+          "crop_rect_px": [
+            38,
+            89,
+            1170,
+            1048
+          ],
+          "anchor_relative_offset_px": [
+            -596,
+            -1039
+          ],
+          "draw_order": 0,
+          "blend": "normal_source_over",
+          "source_master_sha256": "9a0e35597411b8aab98964fa295422240347dab1a16e658db38ebca39f0681a5"
+        },
+        {
+          "role": "illumination",
+          "path": "assets/machines/smelter/smelter_180_illumination.png",
+          "package_path": "runtime/smelter_180_illumination.png",
+          "sha256": "391c692f08adcd0a395c169de034ab536f015a45002ca9a318724b42b3086fb4",
+          "bytes": 30801,
+          "size_px": [
+            172,
+            104
+          ],
+          "rgba_sha256": "4279bbd850ee13d98901142bdb772e2b09a2201e075f2610f21c103b2a0730d6",
+          "crop_rect_px": [
+            890,
+            107,
+            172,
+            104
+          ],
+          "anchor_relative_offset_px": [
+            256,
+            -1021
+          ],
+          "draw_order": 1,
+          "blend": "normal_source_over",
+          "source_master_sha256": "828602a5dc6c2a36abcfe8c9931ec5e7b981ee2f883114f991fdbed99c2d1085"
+        }
+      ]
+    },
+    {
+      "direction": 270,
+      "package": "smelter_270_stage4b_v1",
+      "manifest": "smelter_270_manifest.json",
+      "manifest_sha256": "67164aa4317d7a6551b96aeb51e74c6cabaa8e4ac53b29250ba07176bee64338",
+      "master_size_px": [
+        1254,
+        1254
+      ],
+      "ground_anchor_px": [
+        625,
+        1172
+      ],
+      "idle_preview_sha256": "3b090610d976ea4f31b7580268103f55b98341f87c820c601bc44964fcbb3509",
+      "idle_rgba_sha256": "b737a53146439274c4a6eef70cdbf32ff74b62cc1aada90965a5cd1b0e1ad398",
+      "assets": [
+        {
+          "role": "body",
+          "path": "assets/machines/smelter/smelter_270_body.png",
+          "package_path": "runtime/smelter_270_body.png",
+          "sha256": "a3673227279850f84fdbeb4af548cc32a9a92184b203893e7b3225706b4806bb",
+          "bytes": 2567409,
+          "size_px": [
+            925,
+            1115
+          ],
+          "rgba_sha256": "47d0551576abf4fd0c4699aa283e13af127bccf0bf13d155f47a9286e356a73d",
+          "crop_rect_px": [
+            162,
+            72,
+            925,
+            1115
+          ],
+          "anchor_relative_offset_px": [
+            -463,
+            -1100
+          ],
+          "draw_order": 0,
+          "blend": "normal_source_over",
+          "source_master_sha256": "3b090610d976ea4f31b7580268103f55b98341f87c820c601bc44964fcbb3509"
+        },
+        {
+          "role": "illumination",
+          "path": "assets/machines/smelter/smelter_270_illumination.png",
+          "package_path": "runtime/smelter_270_illumination.png",
+          "sha256": "329ba5256f4286f151a24bf27bac8527b9d4106fd951c83a3fb97ec7a266c3fd",
+          "bytes": 38248,
+          "size_px": [
+            206,
+            359
+          ],
+          "rgba_sha256": "f071ab94fef034069d0082a246160ae42557341e31c3190c0ed0ebe89fc5434d",
+          "crop_rect_px": [
+            524,
+            275,
+            206,
+            359
+          ],
+          "anchor_relative_offset_px": [
+            -101,
+            -897
+          ],
+          "draw_order": 1,
+          "blend": "normal_source_over",
+          "source_master_sha256": "476242a71fa8f0405e3bdaeb970ed841bc9759b077bccf863a9c448093a7bc90"
+        }
+      ]
+    }
+  ]
+}
