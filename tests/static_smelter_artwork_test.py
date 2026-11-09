@@ -8,6 +8,7 @@ import unittest
 from current_preservation import ROOT, git_blob, normalized
 from extractor_artwork_offline import decode_png, place
 from static_automatic_transitions_test import function, nodes, vectors
+from static_fabricator_animation_test import without_presentation_identity
 
 BASE = "65564d5d95502fcc0368a2b5396d1855311c5806"
 MANIFESTS = [
@@ -255,6 +256,8 @@ class SmelterArtworkStaticTest(unittest.TestCase):
                 # Authorized Fabricator 4x4 amendment: restore only this exact
                 # field for comparison against the unchanged historical baseline.
                 current = normalized(path, (ROOT / path).read_bytes())
+                if path == "construction/deployed_machine.gd":
+                    current = without_presentation_identity(current.decode()).encode()
                 if path == "inventory/fabricator.tres":
                     self.assertEqual(current.count(b"footprint_cells = Vector2i(4, 4)"), 1)
                     current = current.replace(b"footprint_cells = Vector2i(4, 4)",

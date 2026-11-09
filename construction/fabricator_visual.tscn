@@ -1,6 +1,11 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=7 format=3]
 
 [ext_resource type="Script" path="res://construction/fabricator_visual.gd" id="1_visual"]
+[ext_resource type="Texture2D" path="res://assets/machines/fabricator/fabricator_0_body.png" id="2_body"]
+[ext_resource type="Texture2D" path="res://assets/machines/fabricator/fabricator_0_gantry.png" id="3_gantry"]
+[ext_resource type="Texture2D" path="res://assets/machines/fabricator/fabricator_0_tool.png" id="4_tool"]
+[ext_resource type="Texture2D" path="res://assets/machines/fabricator/fabricator_0_carriage.png" id="5_carriage"]
+[ext_resource type="Texture2D" path="res://assets/machines/fabricator/fabricator_0_foreground.png" id="6_foreground"]
 
 [node name="FabricatorVisual" type="Node2D"]
 texture_filter = 4
@@ -8,4 +13,38 @@ position = Vector2(64, 128)
 script = ExtResource("1_visual")
 
 [node name="Body" type="Sprite2D" parent="."]
+centered = false
+
+[node name="FrontAssembly" type="Node2D" parent="."]
+visible = false
+
+[node name="BodyLayer" type="Sprite2D" parent="FrontAssembly"]
+position = Vector2(-559, -957)
+texture = ExtResource("2_body")
+centered = false
+
+[node name="GantryY" type="Node2D" parent="FrontAssembly"]
+
+[node name="Gantry" type="Sprite2D" parent="FrontAssembly/GantryY"]
+position = Vector2(-211, -514)
+texture = ExtResource("3_gantry")
+centered = false
+
+[node name="CarriageX" type="Node2D" parent="FrontAssembly/GantryY"]
+
+[node name="ToolZ" type="Node2D" parent="FrontAssembly/GantryY/CarriageX"]
+
+[node name="Tool" type="Sprite2D" parent="FrontAssembly/GantryY/CarriageX/ToolZ"]
+position = Vector2(-34, -512)
+texture = ExtResource("4_tool")
+centered = false
+
+[node name="Carriage" type="Sprite2D" parent="FrontAssembly/GantryY/CarriageX"]
+position = Vector2(-67, -546)
+texture = ExtResource("5_carriage")
+centered = false
+
+[node name="Foreground" type="Sprite2D" parent="FrontAssembly"]
+position = Vector2(-250, -312)
+texture = ExtResource("6_foreground")
 centered = false

@@ -4,6 +4,7 @@ import unittest
 from current_preservation import git_blob
 from static_automatic_transitions_test import function
 from static_extractor_artwork_test import read
+from static_fabricator_animation_test import without_presentation_identity
 
 BASE = "c5729c00f8d4055ac900e1b6221fe32a3e1ad5e6"
 # Owner-run Godot 4.7.2 canonicalized text while preserving numeric identity.
@@ -71,7 +72,7 @@ class ExtractorAnimationStaticTest(unittest.TestCase):
 	# Parent entry precedes child readiness, including retained exterior re-entry.
 	_visual.status = _state.machine_status(_state.get_machine(machine_id))''')
         # Narrow guard amendment: all polling, configure, collisions stay byte-identical.
-        self.assertEqual(script.replace(entry, ""),
+        self.assertEqual(without_presentation_identity(script).replace(entry, ""),
                          git_blob(BASE, path).decode().replace("\r\n", "\n"))
         poll = function(script, "_process")
         self.assertIn("if status == _visual.status:", poll)

@@ -5,6 +5,7 @@ import unittest
 
 from current_preservation import ROOT, git_blob, normalized
 from static_automatic_transitions_test import function
+from static_fabricator_animation_test import without_presentation_identity
 
 BASE = "461950a2c379ae3039b30d682b530180de645f72"
 
@@ -135,6 +136,8 @@ class SmelterFootprintStaticTest(unittest.TestCase):
                 # Authorized Fabricator 4x4 amendment: restore only this exact
                 # field for comparison against the unchanged historical baseline.
                 current = normalized(path, (ROOT / path).read_bytes())
+                if path == "construction/deployed_machine.gd":
+                    current = without_presentation_identity(current.decode()).encode()
                 if path == "inventory/fabricator.tres":
                     self.assertEqual(current.count(b"footprint_cells = Vector2i(4, 4)"), 1)
                     current = current.replace(b"footprint_cells = Vector2i(4, 4)",
@@ -149,7 +152,7 @@ class SmelterFootprintStaticTest(unittest.TestCase):
                          'var _smelter_status: Node2D\n',
                          'const FABRICATOR_SCENE := preload("res://construction/fabricator_visual.tscn")\n',
                          'var _fabricator: FabricatorVisual\n', 'var _fabricator_art_container: Node2D\n',
-                         'var _fabricator_status: Node2D\n']:
+                         'var _fabricator_status: Node2D\n', 'var presentation_machine_id: int = 0\n']:
             self.assertEqual(declarations.count(addition), 1)
             declarations = declarations.replace(addition, "")
         self.assertEqual(declarations, original.split("func _ready()", 1)[0])

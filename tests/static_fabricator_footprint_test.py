@@ -6,6 +6,7 @@ import unittest
 
 from current_preservation import ROOT, git_blob
 from static_automatic_transitions_test import function
+from static_fabricator_animation_test import LAYER_PATHS, without_presentation_identity
 
 BASE = "249dd92411db6d70d1f08da809305c7f6c720385"
 
@@ -120,7 +121,12 @@ class FabricatorFootprintStaticTest(unittest.TestCase):
                      "fabricator_180_body.png", "fabricator_270_body.png"):
             artwork.update(("assets/machines/fabricator/" + name,
                             "assets/machines/fabricator/" + name + ".import"))
-        self.assertEqual(set(changed) - artwork, {"inventory/fabricator.tres"})
+        # Decision 62 adds exactly five runtime layers and one identity assignment.
+        artwork.update(LAYER_PATHS + [p + ".import" for p in LAYER_PATHS])
+        self.assertEqual(set(changed) - artwork, {"inventory/fabricator.tres", "construction/deployed_machine.gd"})
+        path = "construction/deployed_machine.gd"
+        self.assertEqual(without_presentation_identity(read(path)),
+                         git_blob(BASE, path).decode().replace("\r\n", "\n"))
         stationary = read("scenes/world/production_maintenance_bay_v2.tscn")
         self.assertIn("max_interaction_distance = 45.0", stationary)
 

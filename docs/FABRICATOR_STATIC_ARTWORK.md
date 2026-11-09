@@ -1,8 +1,12 @@
 # Fabricator four-orientation static artwork
 
-Decision 36, Option A authorizes this static integration on
-`codex/fabricator-four-orientation-static-artwork`, **pending owner normal-F5
-acceptance and merge**. Clean local and remote `main` were both
+Decision 36, Option A authorized this static integration, **merged in PR #161**.
+The owner reports merge, cleanup and PASS across all seven graphical acceptance
+groups. The original agent validation and checklist below retain their historical
+scope. Decision 62 now separately authorizes
+[front mechanical animation](FABRICATOR_FRONT_ANIMATION.md), pending its own
+normal-F5 acceptance and merge; the four static PNGs and this milestone's frozen
+inventory remain unchanged. Clean local and remote `main` for the static PR were both
 `4b37fc97ff2bbdb24e1fee600245c2329055982d`, unchanged from Decision 35 preflight.
 Decisions 33/34 retain authoritative machine rotation and the existing
 `MachineVisual` architecture. No gameplay or artwork-production change is included.
@@ -161,7 +165,7 @@ No Godot graphical/headless launch, native harness, performance probe or benchma
 was run. Front animation, gantry/carriage/tool movement, timing/easing and any PR B
 work remain deferred to separate authorization.
 
-## Owner normal-F5 acceptance — pending
+## Original owner normal-F5 checklist — historical
 
 None of these runtime checks is claimed as passed by the agent.
 
@@ -184,5 +188,6 @@ None of these runtime checks is claimed as passed by the agent.
 9. Travel interior/exterior and check retained presentation/state; confirm
    Extractor barrel animation and Smelter thermal behavior still work.
 
-Owner acceptance and PR review are the next gate. Merge, cleanup and the animation
-milestone are separate decisions.
+At the static implementation handoff, owner acceptance and PR review were the next
+gate. The owner subsequently reported PR #161 merged, cleaned up and accepted
+across all seven graphical groups. The separate animation acceptance remains pending.

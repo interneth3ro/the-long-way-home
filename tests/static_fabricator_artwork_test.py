@@ -16,6 +16,7 @@ import unittest
 from current_preservation import ROOT, git_blob
 from extractor_artwork_offline import decode_png
 from static_automatic_transitions_test import function, nodes, vectors
+from static_fabricator_animation_test import LAYER_PATHS, without_presentation_identity
 
 BASE = "4b37fc97ff2bbdb24e1fee600245c2329055982d"
 MANIFESTS = [
@@ -43,6 +44,7 @@ OFFSETS = [(-627, -1080), (-659, -1044), (-586, -1001), (-672, -971)]
 ARTWORK_PATHS = PATHS + [p + ".import" for p in PATHS] + [
     "construction/fabricator_visual.gd", "construction/fabricator_visual.gd.uid",
     "construction/fabricator_visual.tscn", "construction/machine_visual.gd"]
+ANIMATION_PATHS = LAYER_PATHS + [p + ".import" for p in LAYER_PATHS] + ["construction/deployed_machine.gd"]
 
 
 def read(path):
@@ -89,7 +91,8 @@ class FabricatorArtworkStaticTest(unittest.TestCase):
                 self.assertIn(0, rgba[3::4])
                 self.assertIn(255, rgba[3::4])
         self.assertEqual({p.name for p in (ROOT / "assets/machines/fabricator").iterdir()},
-                         set(NAMES + [name + ".import" for name in NAMES]))
+                         set(NAMES + [name + ".import" for name in NAMES] +
+                             [Path(p).name for p in LAYER_PATHS] + [Path(p).name + ".import" for p in LAYER_PATHS]))
 
     def test_import_paths_settings_and_unique_canonical_uids(self):
         new_uids = []
@@ -167,16 +170,16 @@ class FabricatorArtworkStaticTest(unittest.TestCase):
         for assignment in ("_body.texture = TEXTURES[_turns]", "_body.position = OFFSETS[_turns]",
                            "scale = Vector2.ONE * SCALES[_turns]", "_applied_turns = _turns"):
             self.assertIn(assignment, configure)
-        self.assertTrue(configure.rstrip().endswith("_applied_turns = _turns"))
+        self.assertLess(configure.index("_applied_turns = _turns"), configure.index("_refresh_view()"))
         textures, _, _ = configured()
         for supplied, direction in [(-9, 3), (-4, 0), (-1, 3), (0, 0), (1, 1),
                                     (2, 2), (3, 3), (4, 0), (9, 1), (1002, 2)]:
             self.assertEqual(textures[supplied % 4], PATHS[direction])
 
-    def test_minimal_uncentered_scene_no_animation_or_second_transform(self):
+    def test_static_body_registration_preserved_alongside_front_assembly(self):
         scene = read("construction/fabricator_visual.tscn")
         entries = nodes(scene)
-        self.assertEqual(list(entries), ["FabricatorVisual", "Body"])
+        self.assertEqual(list(entries)[:3], ["FabricatorVisual", "Body", "FrontAssembly"])
         self.assertIn('type="Node2D"', entries["FabricatorVisual"][0])
         self.assertIn('type="Sprite2D" parent="."', entries["Body"][0])
         self.assertEqual(vectors(entries["FabricatorVisual"][1]), [(64, 128)])
@@ -184,12 +187,13 @@ class FabricatorArtworkStaticTest(unittest.TestCase):
         self.assertEqual(entries["Body"][1].strip(), "centered = false")
         script = read("construction/fabricator_visual.gd")
         self.assertEqual(script.count("scale ="), 1)
-        self.assertEqual(script.count(".position ="), 1)
+        self.assertEqual(script.count("_body.position ="), 1)
         self.assertNotRegex(script + scene,
-                            r"rotation|flip_[hv]|translate\(|Tween|Animation|Timer|Light2D|material|shader|"
+                            r"rotation|flip_[hv]|translate\(|AnimationPlayer|Timer|Light2D|material|shader|"
                             r"z_index|y_sort_enabled|clip_children|func _(?:physics_)?process|"
-                            r"FileAccess|JSON|ImageTexture|recipe|inventory|OperatingStatus|set_producing")
-        self.assertEqual(re.findall(r'^func (\w+)', script, re.M), ["_ready", "configure"])
+                            r"FileAccess|JSON|ImageTexture|recipe|inventory|set_producing")
+        # Decision 62's separate animation suite pins every added node/transform.
+        self.assertIn("var layered := _enabled and _turns == 0", function(script, "_refresh_view"))
 
     def test_shared_adapter_ghost_and_deployed_selection(self):
         visual = read("construction/machine_visual.gd")
@@ -205,7 +209,7 @@ class FabricatorArtworkStaticTest(unittest.TestCase):
                          "_fabricator = FABRICATOR_SCENE.instantiate() as FabricatorVisual",
                          "_fabricator_art_container.add_child(_fabricator)",
                          "_fabricator_art_container.show()", "_fabricator.configure(turns)",
-                         "elif _fabricator_art_container != null:\n\t\t_fabricator_art_container.hide()"):
+                         "elif _fabricator_art_container != null:\n\t\t_fabricator.set_operating_status(status, false)\n\t\t_fabricator_art_container.hide()"):
             self.assertIn(contract, branch)
         self.assertEqual(branch.count("instantiate()"), 1)
         self.assertLess(branch.index("_fabricator.configure(turns)"), branch.index("_refresh_fabricator_status()"))
@@ -238,7 +242,7 @@ class FabricatorArtworkStaticTest(unittest.TestCase):
         declarations = visual.split("func _ready()", 1)[0]
         for addition in ['const FABRICATOR_SCENE := preload("res://construction/fabricator_visual.tscn")\n',
                          'var _fabricator: FabricatorVisual\n', 'var _fabricator_art_container: Node2D\n',
-                         'var _fabricator_status: Node2D\n']:
+                         'var _fabricator_status: Node2D\n', 'var presentation_machine_id: int = 0\n']:
             self.assertEqual(declarations.count(addition), 1)
             declarations = declarations.replace(addition, "")
         self.assertEqual(declarations, old.split("func _ready()", 1)[0])
@@ -260,7 +264,10 @@ class FabricatorArtworkStaticTest(unittest.TestCase):
             "git", "diff", "--name-only", BASE, "--", "inventory", "construction", "scenes", "assets",
             "objectives", "dialogue", "project.godot", "tools", "AGENTS.md", "docs/LOCAL_TESTING.md",
         ], cwd=ROOT, text=True).splitlines()
-        self.assertFalse(set(changed) - set(ARTWORK_PATHS), changed)
+        self.assertFalse(set(changed) - set(ARTWORK_PATHS + ANIMATION_PATHS), changed)
+        path = "construction/deployed_machine.gd"
+        self.assertEqual(without_presentation_identity(read(path)),
+                         git_blob(BASE, path).decode().replace("\r\n", "\n"))
         self.assertIn("footprint_cells = Vector2i(4, 4)", read("inventory/fabricator.tres"))
 
     @unittest.skipUnless(os.environ.get("TLWH_FABRICATOR_FROZEN_ROOTS"),

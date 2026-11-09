@@ -9,6 +9,7 @@ from static_automatic_transitions_test import ROOT, nodes, vectors, function
 from static_low_green_ground_test import inside, edge_distance
 from static_ground_rejection_test import authored_geometry
 from current_preservation import git_blob
+from static_fabricator_animation_test import without_presentation_identity
 
 
 ART = 'assets/environment/exterior/ferrite/faceted_ferrite_10x6.png'
@@ -180,6 +181,7 @@ class FerriteIntegrationStaticTest(unittest.TestCase):
                     current = current.replace('footprint_cells = Vector2i(4, 4)',
                                               'footprint_cells = Vector2i(2, 2)')
                 if path == 'construction/deployed_machine.gd':
+                    current = without_presentation_identity(current)
                     # PR B only resamples presentation status on tree entry.
                     current = current.replace(function(current, '_enter_tree'), '')
                 if path == 'construction/construction_controller.gd':
