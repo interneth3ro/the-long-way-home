@@ -1,5 +1,22 @@
 # The Long Way Home
 
+Deployed Fabricator footprint expansion is implemented on
+`codex/fabricator-4x4-footprint` (**pending merge and owner F5 acceptance**).
+It uses 4x4 construction cells / 128x128 world units on the unchanged 32-unit
+grid, with the existing top-left origin, center at origin + (64,64) and
+bottom-center anchor at origin + (64,128). All four quarter turns remain square.
+Inspection and material transfer retain 96-unit center-based reach; diagonal
+corner contact can remain outside that reach, matching the accepted Smelter
+limitation. Construction and deployed recovery retain 160-unit distance from
+the nearest footprint point. Initial post-deployment configuration can still open
+outside inspection reach; ordinary recipe switching and transfers require range.
+Only `inventory/fabricator.tres` production data changes. Recipes, buffers,
+transactions, provisional procedural presentation, standalone maintenance-bay
+assets/collision and its independent 45-unit recovery cap, Extractor and Smelter
+remain unchanged. Validation is static only; no Godot execution or runtime
+acceptance is claimed. Historical footprint descriptions below retain their
+milestone scope. The Draft PR contains the pending owner F5 checklist.
+
 Production-state-driven Smelter thermal illumination is implemented on
 `codex/smelter-thermal-illumination`, **owner F5 accepted; pending review and merge**.
 On November 9, 2026, the owner reported **19/19 F5 PASS** against

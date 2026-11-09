@@ -91,6 +91,58 @@ func _check_material_transactions() -> void:
 	_check(PlanetWorldState.new().get_machines().is_empty(), "Fresh session resets machinery")
 
 
+# Direct engine regression assertions, prepared for a separately authorized run.
+func _check_footprint_geometry() -> void:
+	_check(WorldCoordinates.world_to_construction(Vector2(159.9, 223.9)) == Vector2i(4, 6),
+		"Positive snapping retains top-left grid origin")
+	_check(WorldCoordinates.world_to_construction(Vector2(-0.1, -32.1)) == Vector2i(-1, -2),
+		"Negative snapping floors both axes")
+	for turns in range(4):
+		var cell := Vector2i(-3, 7)
+		var area := FABRICATOR.footprint(cell, turns)
+		_check(area == Rect2(Vector2(-96, 224), Vector2(128, 128)), "Square bounds in every orientation")
+		var state := PlanetWorldState.new()
+		_seed(state)
+		state._machines[1].cell = cell
+		state._machines[1].turns = turns
+		for x in range(4):
+			for y in range(4):
+				_check(state.machine_at(area.position + Vector2(x * 32 + 16, y * 32 + 16)).id == 1,
+					"Every one of sixteen cells is occupied")
+		_check(state.machine_at(area.end + Vector2.ONE).is_empty(), "Outside bounds remains empty")
+		_check(not area.intersects(FABRICATOR.footprint(cell + Vector2i(4, 0), turns)),
+			"Exact edge adjacency allowed")
+		_check(area.intersects(FABRICATOR.footprint(cell + Vector2i(3, 0), turns)),
+			"Partial overlap includes newly occupied cells")
+		var presenter := DeployedMachine.new()
+		presenter.configure(state.get_machine(1), state)
+		var collision := presenter.get_child(0) as CollisionShape2D
+		_check((collision.shape as RectangleShape2D).size == area.size, "Collision matches 128x128")
+		_check(presenter.position == area.position + Vector2(64, 128), "Bottom anchor follows origin")
+		_check(presenter.position + presenter.interaction_point == area.get_center(), "Interaction stays centered")
+		_check(presenter._visual.definition == FABRICATOR and presenter._visual.turns == turns,
+			"Presenter retains definition and orientation")
+		presenter.free()
+		var inventory := InventoryState.new()
+		_check(state.select_initial_recipe(1, &"ferrite_plate"), "Geometry fixture configures")
+		inventory.add_item(INGOT, 2)
+		var center := area.get_center()
+		_check(not state.transfer_input(1, inventory, center - Vector2(96.01, 0), 96),
+			"Transfer rejects immediately beyond center reach")
+		_check(state.transfer_input(1, inventory, center - Vector2(96, 0), 96),
+			"Transfer accepts exact center reach")
+		state.advance_production(3.0)
+		_check(not state.collect_output(1, inventory, center - Vector2(74, 74), 96),
+			"Diagonal corner limitation applies to collection")
+		_check(state.collect_output(1, inventory, center - Vector2(96, 0), 96),
+			"Collection accepts exact center reach")
+		var edge_reach := Vector2(area.position.x - 160, center.y)
+		_check(not state.recover_machine(1, inventory, edge_reach - Vector2(0.01, 0), 160),
+			"Recovery rejects beyond nearest-edge reach")
+		_check(state.recover_machine(1, inventory, edge_reach, 160),
+			"Recovery accepts nearest-edge reach even beyond center reach")
+
+
 func _check_multi_material_atomicity() -> void:
 	# Synthetic recipe tests future keyed storage without adding player content.
 	var recipe := RecipeDefinition.new()
@@ -271,7 +323,7 @@ func _check_recipe_switching_ui(panel: MachineUI, state: PlaythroughState, cell:
 	panel.player.global_position = center + Vector2(500, 500)
 	panel._process(0.0)
 	_check(not panel.is_open() and not state.planet.is_recipe_change_paused(id), "Leaving range closes and releases")
-	panel.player.global_position = center - Vector2(70, 0)
+	panel.player.global_position = center - Vector2(80, 0)
 	panel.open_machine(id)
 	panel._change_recipe()
 	# An unrelated machine is unaffected when this panel opens a different target.
@@ -373,14 +425,15 @@ func _check_fabricator_output(panel: MachineUI, state: PlaythroughState, cell: V
 
 
 func _run() -> void:
-	_check(FABRICATOR.is_valid() and FABRICATOR.footprint_cells == Vector2i(2, 2),
-		"Deployable 64x64 Fabricator")
+	_check(FABRICATOR.is_valid() and FABRICATOR.footprint_cells == Vector2i(4, 4),
+		"Deployable 128x128 Fabricator")
 	_check(FABRICATOR.recipes.size() == 2 and not FABRICATOR.has_production(), "Two recipes use recipe-specific production")
 	for recipe in FABRICATOR.recipes:
 		_check(recipe.is_valid() and recipe.ingredients.size() == 1, "Valid starter recipe")
 		_check(recipe.ingredients[0].item == INGOT and recipe.ingredients[0].quantity == 1, "One ingot input")
 	_check(FABRICATOR.get_recipe(&"ferrite_plate").output_quantity == 1, "One plate output")
 	_check(FABRICATOR.get_recipe(&"ferrite_rod").output_quantity == 2, "Two rods output")
+	_check_footprint_geometry()
 	_check_material_transactions()
 	_check_multi_material_atomicity()
 
@@ -432,7 +485,18 @@ func _run() -> void:
 	panel.close()
 	panel.open_machine(1)
 	_check(not panel.is_open(), "Normal inspection range unchanged")
-	construction.player.global_position = center - Vector2(70, 0)
+	construction.player.global_position = center - Vector2(96.01, 0)
+	panel.open_machine(1)
+	_check(not panel.is_open(), "Inspection rejects immediately beyond 96-unit center reach")
+	construction.player.global_position = center - Vector2(74, 74)
+	panel.open_machine(1)
+	_check(not panel.is_open(), "Accepted diagonal-corner inspection limitation")
+	construction.player.global_position = center - Vector2(96, 0)
+	panel.open_machine(1)
+	_check(panel.is_open(), "Inspection accepts exact 96-unit center reach")
+	panel.close()
+	# 16 units outside the edge clears Dave's 10-unit feet collider.
+	construction.player.global_position = center - Vector2(80, 0)
 	panel.open_machine(1)
 	_check(panel.is_open() and panel._recipe_summary.visible, "Reopening preserves selected recipe")
 	_check_panel_refresh(panel, true, true)
@@ -449,6 +513,9 @@ func _run() -> void:
 	_check(construction.begin_deployment(FABRICATOR), "Redeployment starts")
 	_confirm(construction, world, cell)
 	_check(observed == [1, 2] and panel._machine_id == 2, "Redeployment has fresh ID")
+	var redeployed := state.planet.get_machine(2)
+	_check(FABRICATOR.footprint(redeployed.cell, redeployed.turns) == Rect2(Vector2(cell) * 32, Vector2(128, 128)),
+		"Recovery/redeployment retains expanded geometry")
 	_check(state.planet.get_machine(2).recipe_id == &"" and state.planet.get_machine(2).inputs.is_empty(),
 		"Redeployment resets recipe and storage")
 	panel.close()

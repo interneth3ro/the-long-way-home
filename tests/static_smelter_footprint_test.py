@@ -132,7 +132,14 @@ class SmelterFootprintStaticTest(unittest.TestCase):
                      "assets/environment/maintenance_bay_v2/machines/smelter_stationary.png",
                      "scenes/main/playthrough_state.gd", "project.godot"]:
             with self.subTest(path=path):
-                self.assertEqual(normalized(path, (ROOT / path).read_bytes()),
+                # Authorized Fabricator 4x4 amendment: restore only this exact
+                # field for comparison against the unchanged historical baseline.
+                current = normalized(path, (ROOT / path).read_bytes())
+                if path == "inventory/fabricator.tres":
+                    self.assertEqual(current.count(b"footprint_cells = Vector2i(4, 4)"), 1)
+                    current = current.replace(b"footprint_cells = Vector2i(4, 4)",
+                                              b"footprint_cells = Vector2i(2, 2)")
+                self.assertEqual(current,
                                  normalized(path, git_blob(BASE, path)))
         path = "construction/machine_visual.gd"
         current, original = read(path), git_blob(BASE, path).decode().replace("\r\n", "\n")

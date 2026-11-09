@@ -105,7 +105,7 @@ class ExtractorArtworkStaticTest(unittest.TestCase):
                 data, original = (ROOT / path).read_bytes(), git_blob(BASE, path)
                 if not path.endswith(".png"):
                     data, original = data.replace(b"\r\n", b"\n"), original.replace(b"\r\n", b"\n")
-                if path == "inventory/smelter.tres":
+                if path in ("inventory/smelter.tres", "inventory/fabricator.tres"):
                     # Only the separately authorized 4x4 footprint may differ.
                     self.assertEqual(data.count(b"footprint_cells = Vector2i(4, 4)"), 1)
                     data = data.replace(b"footprint_cells = Vector2i(4, 4)",

@@ -186,7 +186,13 @@ class SmelterThermalStaticTest(unittest.TestCase):
                      "scenes/ui/machine_ui.gd", "scenes/ui/smelter_inspection.gd",
                      "scenes/visuals/smelter_stationary.tscn", "scenes/world/stationary_machine_presentation.gd"):
             with self.subTest(path=path):
-                self.assertEqual(normalized(path, (ROOT / path).read_bytes()),
+                # Authorized Fabricator 4x4 amendment; every other byte stays pinned.
+                current = normalized(path, (ROOT / path).read_bytes())
+                if path == "inventory/fabricator.tres":
+                    self.assertEqual(current.count(b"footprint_cells = Vector2i(4, 4)"), 1)
+                    current = current.replace(b"footprint_cells = Vector2i(4, 4)",
+                                              b"footprint_cells = Vector2i(2, 2)")
+                self.assertEqual(current,
                                  normalized(path, git_blob(BASE, path)))
 
 
