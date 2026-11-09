@@ -1,7 +1,7 @@
 # Smelter thermal illumination
 
-Implemented on `codex/smelter-thermal-illumination`, **pending merge and owner
-F5 acceptance**, from PR #157 merge `ca18cfa4c9f16ab934968aed4fa764f9c1e2b58d`.
+Implemented on `codex/smelter-thermal-illumination`, **owner F5 accepted; pending
+review and merge**, from PR #157 merge `ca18cfa4c9f16ab934968aed4fa764f9c1e2b58d`.
 The November 9, 2026 owner authorization approves Thermal Decisions 1A–10A.
 This is presentation only: no gameplay temperature, production delay or saved heat.
 The [PR #157 static artwork acceptance](SMELTER_STATIC_ARTWORK.md#owner-normal-f5-acceptance)
@@ -90,32 +90,45 @@ identities, imports, frozen idle reconstruction, geometry, status dot and gamepl
 Text comparisons use existing LF/CRLF normalization; PNGs remain exact bytes.
 Only superseded artwork-test assertions are amended; Extractor animation tests
 remain unchanged. No Godot import, headless/graphical execution, benchmark or
-performance probe was performed. Parsing, rendered transitions and lifecycle
-behavior require owner F5 acceptance. Expected incremental cost is one existing
+performance probe was performed by the agent. Owner F5 results below cover parsing,
+rendered transitions and lifecycle behavior separately. Expected incremental cost is one existing
 heat sprite and one tween per active/cooling machine; performance is unmeasured.
 
-## Owner normal-F5 acceptance — pending
+Acceptance-update revalidation on November 9, 2026: the same focused command
+passed **68/68** again. All ten PNG hashes and ten import sidecars match the
+accepted implementation; code, tests, manifests and artwork are unchanged.
+Changed documentation links, historical-content preservation, exact three-document
+scope and `git diff --check` passed. No Godot execution was performed by the agent.
 
-Run ordinary owner F5 against the feature commit. Report observations and any new
-import, parser or runtime errors. Items remain unchecked until actual owner
-results are supplied; keep the PR draft until acceptance.
+## Owner normal-F5 acceptance
 
-1. [ ] Deploy cold Smelters in all four directions; verify registration.
-2. [ ] Transfer ore and inspect 0.5-second cold warm-up in every direction.
-3. [ ] Review smooth 3.6-second full pulse, intensity and no endpoint dwell.
-4. [ ] Check readability at zoom 0.5×, 1.0× and 1.5×.
-5. [ ] Deplete input: immediate blue dot, 1.0-second cooldown to cold.
-6. [ ] Fill output: immediate amber dot, 1.0-second cooldown, no warm hold.
-7. [ ] Collect with input remaining: immediate production and smooth heat resumption.
-8. [ ] Collect without input: input-empty status and cold/cooling illumination.
-9. [ ] Interrupt warm-up/cooling repeatedly, including resumption above/below 0.82: no flash, jump or stale restart.
-10. [ ] B-recover while illuminated: exact item returns, cold redeployment, no stale heat.
-11. [ ] Travel exterior → interior → exterior while producing: nominal heat on return, no warm-up replay or duplicates.
-12. [ ] Become input-empty or output-full indoors: return immediately cold with correct status.
-13. [ ] Observe mixed-direction Smelters with independent statuses during ordinary play.
-14. [ ] Rotate/switch ghosts among all three machines: no ghost heat/dot, unchanged composite transparency and no hidden animation.
-15. [ ] Check dot colors, radius, visibility and directional positions.
-16. [ ] Check 0° foreground, Dave/neighbour sorting, overhang and unchanged collision/placement.
-17. [ ] Confirm one ore → one ingot per two seconds, capacities 20/20, inspection, transfers, collection and recovery.
-18. [ ] Recheck Extractor animation/artwork, Fabricator, Dave and stationary Smelter/E recovery.
-19. [ ] Confirm no new Godot import, parser or runtime errors.
+On **November 9, 2026**, the owner reported **19/19 PASS**, with no observations,
+defects or blocking concerns, against accepted implementation commit
+`8d6e2db79c204ed334372447ca801771351e378b` in PR #159. All checklist items below
+passed, including no new Godot import, parser or runtime errors. These are
+owner-observed gameplay and graphical results, separate from the original
+68/68 agent static results above. The agent did not execute Godot.
+
+This documentation-only acceptance update preserves the accepted implementation,
+animation parameters, frozen assets/import settings, historical manifests and
+tests. PR #159 may proceed to review; merge requires explicit owner authorization.
+
+1. [x] Deploy cold Smelters in all four directions; verify registration.
+2. [x] Transfer ore and inspect 0.5-second cold warm-up in every direction.
+3. [x] Review smooth 3.6-second full pulse, intensity and no endpoint dwell.
+4. [x] Check readability at zoom 0.5×, 1.0× and 1.5×.
+5. [x] Deplete input: immediate blue dot, 1.0-second cooldown to cold.
+6. [x] Fill output: immediate amber dot, 1.0-second cooldown, no warm hold.
+7. [x] Collect with input remaining: immediate production and smooth heat resumption.
+8. [x] Collect without input: input-empty status and cold/cooling illumination.
+9. [x] Interrupt warm-up/cooling repeatedly, including resumption above/below 0.82: no flash, jump or stale restart.
+10. [x] B-recover while illuminated: exact item returns, cold redeployment, no stale heat.
+11. [x] Travel exterior → interior → exterior while producing: nominal heat on return, no warm-up replay or duplicates.
+12. [x] Become input-empty or output-full indoors: return immediately cold with correct status.
+13. [x] Observe mixed-direction Smelters with independent statuses during ordinary play.
+14. [x] Rotate/switch ghosts among all three machines: no ghost heat/dot, unchanged composite transparency and no hidden animation.
+15. [x] Check dot colors, radius, visibility and directional positions.
+16. [x] Check 0° foreground, Dave/neighbour sorting, overhang and unchanged collision/placement.
+17. [x] Confirm one ore → one ingot per two seconds, capacities 20/20, inspection, transfers, collection and recovery.
+18. [x] Recheck Extractor animation/artwork, Fabricator, Dave and stationary Smelter/E recovery.
+19. [x] Confirm no new Godot import, parser or runtime errors.

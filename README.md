@@ -1,12 +1,15 @@
 # The Long Way Home
 
 Production-state-driven Smelter thermal illumination is implemented on
-`codex/smelter-thermal-illumination`, **pending merge and owner F5 acceptance**.
+`codex/smelter-thermal-illumination`, **owner F5 accepted; pending review and merge**.
+On November 9, 2026, the owner reported **19/19 F5 PASS** against
+`8d6e2db79c204ed334372447ca801771351e378b`, with no observations, defects,
+or blocking concerns and no new Godot import, parser or runtime errors.
 Local presentation tweens use the approved 0.5-second cold warm-up,
 0.82-1.00 / 3.6-second pulse and 1.0-second input-empty/output-full cooldown.
 Ghosts stay cold; retained-world re-entry initializes from authoritative status.
-Artwork, status dots, gameplay and simulation are unchanged. No Godot execution.
-See the [thermal behavior, static validation and owner F5 checklist](docs/SMELTER_THERMAL_ILLUMINATION.md).
+Artwork, status dots, gameplay and simulation are unchanged. The agent did not run Godot.
+See the [thermal behavior, original static validation and completed owner F5 acceptance](docs/SMELTER_THERMAL_ILLUMINATION.md).
 
 Static directional Smelter artwork **merged in PR #157** at
 `ca18cfa4c9f16ab934968aed4fa764f9c1e2b58d`. Owner F5 acceptance was reported on

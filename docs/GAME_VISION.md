@@ -671,7 +671,7 @@ and limitations are recorded in the
 ## Smelter thermal illumination (feature branch, pending merge)
 
 Owner Thermal Decisions 1A–10A, approved November 9, 2026, are implemented on
-`codex/smelter-thermal-illumination`; merge and owner F5 acceptance remain pending.
+`codex/smelter-thermal-illumination`; owner F5 accepted, pending review and merge.
 The presenter consumes existing operating-status updates and owns one local tween:
 cold production warms to 0.82 in 0.5 seconds, then pulses between 0.82 and 1.00
 over 3.6 seconds. Input-empty/output-full cool over 1.0 second without a hold;
@@ -680,7 +680,12 @@ Direction changes preserve animation phase. Ghosts/deactivated subtrees reset
 cold. Retained-world re-entry initializes producing at 0.82 and all other states
 cold, including unchanged status. No thermal state enters simulation. Frozen
 assets, registration, dot, gameplay, other presenters and stationary machinery
-are unchanged. See [behavior, static results and pending F5 checklist](SMELTER_THERMAL_ILLUMINATION.md).
+are unchanged. On November 9, 2026, the owner reported **19/19 F5 PASS** against
+`8d6e2db79c204ed334372447ca801771351e378b`, with no observations, defects or
+blocking concerns and no new Godot import, parser or runtime errors. The
+[behavior, static results and completed owner acceptance](SMELTER_THERMAL_ILLUMINATION.md)
+record preserves the original 68/68 static results separately from owner
+gameplay/graphical observations. No agent Godot execution or merge is authorized.
 
 ## Static directional Smelter artwork (feature branch, pending merge)
 
