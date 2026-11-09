@@ -921,8 +921,13 @@ exception remains available after successful deployment, without authorizing
 out-of-range transfer or ordinary recipe switching. Recipes, capacities, pause
 leases, transactions and exterior state ownership remain unchanged. The standalone
 maintenance-bay Fabricator keeps its own assets, collider and 45-unit recovery cap;
-Extractor and Smelter are unchanged. Static checks do not establish runtime or
-visual acceptance; owner F5 acceptance remains pending in the Draft PR.
+Extractor and Smelter are unchanged. On November 9, 2026, the owner reported
+**acceptance PASS** for PR #160 at implementation commit
+`1ac525ed70ebc8eb45e95fb6e8e5b74ebc3a26f7`. This is the owner's overall result;
+no itemized checklist results were supplied. Agent validation remains static
+(440 tests passed); the agent did not run Godot or execute the Godot regression
+scripts. The implementation is owner accepted and pending review and merge in
+[PR #160](https://github.com/interneth3ro/the-long-way-home/pull/160).
 
 The earlier milestone records below describe the original 2x2 implementation.
 
