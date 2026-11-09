@@ -672,8 +672,8 @@ and limitations are recorded in the
 
 Owner-authorized on November 5, 2026, with decisions 1A/2A/3A: retain the status
 dot, use local mipmapped linear filtering, and keep accepted idle illumination in
-every operating state. Implemented on `codex/smelter-static-artwork`, pending
-owner F5 acceptance and merge, from PR #156's merged 4x4 footprint baseline
+every operating state. Implemented on `codex/smelter-static-artwork`, owner F5
+accepted and pending review/merge, from PR #156's merged 4x4 footprint baseline
 `65564d5d95502fcc0368a2b5396d1855311c5806`.
 
 The dedicated Smelter presenter replaces only deployed procedural artwork and its
@@ -692,8 +692,16 @@ center-based inspection/transfers, accepted diagonal-corner reach limitation,
 160-unit nearest-footprint B recovery and retained travel state remain unchanged.
 Extractor animation, Fabricator, Dave and stationary Smelter remain unchanged.
 
-The [implementation and owner checklist](SMELTER_STATIC_ARTWORK.md) distinguish
-static source/asset checks from unperformed Godot and graphical verification.
+Owner F5 acceptance was reported November 9, 2026 against implementation commit
+`36a5214761ea66398dd78b5077f6062ed84e96d3`: **15/15 PASS**, no observations,
+defects or blocking concerns. Coverage includes all directional/ghost views,
+zoom/filtering, overhang/collision, sorting, multiple-machine responsiveness,
+status/idle state, inspection/transfers/production/collection, recovery and
+redeployment, travel retention, other-machine/Dave regressions and no new Godot
+import, parser or runtime errors. The
+[implementation and acceptance record](SMELTER_STATIC_ARTWORK.md) preserves the
+original 55/55 static results separately from owner observations. The agent did
+not execute Godot for either implementation or this documentation update.
 Thermal animation, production-driven illumination, physical ports and conduits
 remain outside this milestone. The footprint-only record below retains its
 historical scope and acceptance results.

@@ -1,7 +1,7 @@
 # Static directional Smelter artwork
 
-Implemented on `codex/smelter-static-artwork`, **pending owner F5 acceptance and
-merge**, from PR #156 merge `65564d5d95502fcc0368a2b5396d1855311c5806`.
+Implemented on `codex/smelter-static-artwork`, **owner F5 accepted; pending
+review and merge**, from PR #156 merge `65564d5d95502fcc0368a2b5396d1855311c5806`.
 The November 5, 2026 owner authorization approves static integration and decisions
 1A/2A/3A: retain the operating-status dot, local linear filtering with mipmaps,
 and accepted idle illumination in every production state. It authorizes no Godot
@@ -39,8 +39,8 @@ Import sidecars were authored offline using the existing Extractor texture
 conventions: lossless `compress/mode=0`, mipmaps enabled, no size limit, straight
 alpha and unchanged channel mapping. Their cache references use the resource-path
 MD5 convention and unique canonical ResourceUID text. No imported `.ctex` cache
-or engine-generated metadata was committed. Godot import and UID registration
-remain unverified until owner F5 testing.
+or engine-generated metadata was committed. Owner F5 acceptance reported no new
+Godot import, parser or runtime errors; the agent did not run an import test.
 
 ## Presentation and registration
 
@@ -110,7 +110,8 @@ DeployedMachine stays bottom-center anchored under exterior `GroundObjects` with
 Y-sorting enabled, alongside Dave. The art subtree is locally unsorted, with
 default Z=0. The 0-degree foreground occludes its own interior but cannot jump
 above other Y-sorted objects. Interaction, collision and recovery use existing
-logical geometry, not alpha bounds. Actual overhang sorting needs owner F5 review.
+logical geometry, not alpha bounds. Overhang sorting with Dave and neighboring
+machines passed the owner F5 checks recorded below.
 
 ## Status dot and filtering
 
@@ -130,8 +131,9 @@ The scene uses local `LINEAR_WITH_MIPMAPS` (4), matching Extractor conventions.
 Global rendering, camera and filtering are unchanged. The ten RGBA8 textures
 contain 5,380,938 pixels: approximately 20.53 MiB base / 27.37 MiB with a full mip
 chain, estimates rather than measured GPU allocation. Resources are shared across
-instances; only the active ghost needs compositing. Import cost, texture edges,
-fine-detail readability and responsiveness remain owner acceptance items.
+instances; only the active ghost needs compositing. Texture edges, readability
+and ordinary multiple-machine responsiveness passed owner F5 acceptance. No
+runtime memory measurements, benchmark or stress-test results are claimed.
 
 ## Static validation and exclusions
 
@@ -149,33 +151,49 @@ machines 8, current preservation 4, preservation guards 1, Stage 3C 9.
 These are Python source/resource contracts and offline pixel comparisons only.
 They do not execute GDScript or certify engine parsing, rendering or gameplay.
 
+Acceptance-update revalidation on November 9, 2026: the same focused command
+passed **55/55** again. Preservation checks confirmed all ten PNG hashes and ten
+import configurations match the accepted implementation, with no code, test,
+manifest or historical-evidence changes. Documentation links, original README
+historical-content preservation and `git diff --check` passed. Only this document,
+GAME_VISION and README changed. The original implementation results above remain.
+
 Only invalidated presentation assertions in the three authorized existing test
 files were amended. Shared property setters/readiness, exact Extractor lifecycle,
 Fabricator drawing and all existing gameplay preservation remain checked.
 Historical hashes, execution manifests, tools, safety policy, production state,
 inventory, collision, inspection, recovery and stationary presentation are unchanged.
-No Godot import, headless test, graphical launch or runtime performance probe was
-performed. Thermal timers/tweens, production-driven illumination, particles,
+The agent performed no Godot import, headless test, graphical launch or runtime
+performance probe. Owner F5 observations are recorded separately below.
+Thermal timers/tweens, production-driven illumination, particles,
 shaders, physical material ports and conduits are excluded.
 
-## Owner normal-F5 acceptance (pending)
+## Owner normal-F5 acceptance
 
-Record actual gameplay observations separately from static PASS. Keep the PR
-draft until owner acceptance; merge requires explicit authorization. The agent
-must not launch Godot under this implementation authorization.
+The owner reported completion of all 15 gameplay and graphical checks on
+**November 9, 2026**, against accepted implementation commit
+`36a5214761ea66398dd78b5077f6062ed84e96d3`. Result: **15/15 PASS**. No
+observations, defects or blocking concerns were reported. The owner also reported
+no new Godot import, parser or runtime errors. These are owner-observed F5
+results, separate from the original 55/55 agent static results above.
 
-1. [ ] Recover/deploy the Smelter and inspect all four independent directional illustrations.
-2. [ ] Confirm stable bottom-center registration and 4x4 grid alignment in every direction.
-3. [ ] Rotate placement ghosts through repeated complete cycles, including negative-world cells.
-4. [ ] Compare ghost/deployed silhouettes and registration; check composite transparency and switching among all three machine types.
-5. [ ] Review scale beside Dave and readability at zoom 0.5, 1.0 and 1.5.
-6. [ ] Inspect transparent edges, seams and local mipmapped filtering on light/dark terrain.
-7. [ ] Check overhang remains visible while collision/placement retain the logical footprint and exact-edge adjacency.
-8. [ ] Walk Dave in front of/behind each direction; check sorting beside neighboring machines.
-9. [ ] Deploy several mixed-direction Smelters and check ordinary movement, camera, placement and UI responsiveness; no benchmark/stress test implied.
-10. [ ] Confirm the dot is visible above deployed art, hidden on ghosts, correctly positioned and correctly colored for input-empty/producing/output-full states.
-11. [ ] Confirm every production state retains idle illumination; 0-degree cold interior and foreground remain intact, with authored warm details unchanged.
-12. [ ] Inspect, transfer ore and collect ingots; check unchanged rates, capacities and 96-unit center-based reach, including accepted corner limitations.
-13. [ ] Use B recovery and redeploy; packaged machine and stored materials return exactly once, with unchanged nearest-footprint reach.
-14. [ ] Travel exterior -> interior -> exterior; confirm retained direction, status, buffers and artwork without duplicates.
-15. [ ] Recheck Extractor artwork/animation, Fabricator, Dave and stationary Smelter presentation/E recovery.
+All checklist items below passed. The documentation-only acceptance update
+preserves the accepted implementation, all ten frozen PNGs, all ten import
+configurations, manifests and tests. The agent did not execute Godot. PR #157
+may proceed to review; merging still requires explicit owner authorization.
+
+1. [x] Recover/deploy the Smelter and inspect all four independent directional illustrations.
+2. [x] Confirm stable bottom-center registration and 4x4 grid alignment in every direction.
+3. [x] Rotate placement ghosts through repeated complete cycles, including negative-world cells.
+4. [x] Compare ghost/deployed silhouettes and registration; check composite transparency and switching among all three machine types.
+5. [x] Review scale beside Dave and readability at zoom 0.5, 1.0 and 1.5.
+6. [x] Inspect transparent edges, seams and local mipmapped filtering on light/dark terrain.
+7. [x] Check overhang remains visible while collision/placement retain the logical footprint and exact-edge adjacency.
+8. [x] Walk Dave in front of/behind each direction; check sorting beside neighboring machines.
+9. [x] Deploy several mixed-direction Smelters and check ordinary movement, camera, placement and UI responsiveness; no benchmark/stress test implied.
+10. [x] Confirm the dot is visible above deployed art, hidden on ghosts, correctly positioned and correctly colored for input-empty/producing/output-full states.
+11. [x] Confirm every production state retains idle illumination; 0-degree cold interior and foreground remain intact, with authored warm details unchanged.
+12. [x] Inspect, transfer ore and collect ingots; check unchanged rates, capacities and 96-unit center-based reach, including accepted corner limitations.
+13. [x] Use B recovery and redeploy; packaged machine and stored materials return exactly once, with unchanged nearest-footprint reach.
+14. [x] Travel exterior -> interior -> exterior; confirm retained direction, status, buffers and artwork without duplicates.
+15. [x] Recheck Extractor artwork/animation, Fabricator, Dave and stationary Smelter presentation/E recovery.
