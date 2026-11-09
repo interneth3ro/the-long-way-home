@@ -1,0 +1,183 @@
+{
+  "scope": "Decision 36 Option A: four-orientation static artwork; pending owner F5 acceptance and merge; no Godot execution",
+  "baseline": "4b37fc97ff2bbdb24e1fee600245c2329055982d",
+  "footprint_cells": [
+    4,
+    4
+  ],
+  "footprint_world": [
+    128,
+    128
+  ],
+  "art_root_position": [
+    64,
+    128
+  ],
+  "frozen_inventory_scheme": "SHA-256 of UTF-8 JSON mapping every relative file path to [byte count, SHA-256], sorted keys, compact separators; includes freeze metadata",
+  "directions": [
+    {
+      "direction": 0,
+      "manifest_sha256": "c2f8441a7706169d62b96d9c4d3b6b0821765b65939f6fb9f0ef42cbf3d2d0df",
+      "package_path": "payload/previews/fabricator_0_resting.png",
+      "sha256": "8230ff568218379c754d409fdf1bf568d90d00c71ccc677feee435e11999dd7e",
+      "canvas": [
+        1254,
+        1254
+      ],
+      "ground_anchor": [
+        627,
+        1080
+      ],
+      "scale_ratio": [
+        8,
+        65
+      ],
+      "crop": [
+        0,
+        0,
+        1254,
+        1254
+      ],
+      "offset": [
+        -627,
+        -1080
+      ],
+      "package": "fabricator_0_frozen_v1",
+      "manifest": "freeze/manifest.json",
+      "receipt": "freeze/receipt.md",
+      "receipt_sha256": "2b81c4bd36bd5e4be6231a23d79e78de803645b11b103046be13025eb9e374e6",
+      "path": "assets/machines/fabricator/fabricator_0_resting.png",
+      "bytes": 2699990,
+      "size_px": [
+        1254,
+        1254
+      ],
+      "rgba_sha256": "996fef457b0c89d2fc74bed33e215f7eb1f666801374c1fd95a15c6889c31cdb",
+      "frozen_file_count": 81,
+      "frozen_inventory_sha256": "43ad78d3fed9308feb006024481822d1694cb96668d82e57470ceb0f040c777a"
+    },
+    {
+      "direction": 90,
+      "manifest_sha256": "32266dfdba5687571ab31b28aa305d6e24c7886ca1b6f79330df656df92db433",
+      "package_path": "accepted_prototype/runtime/fabricator_90_body.png",
+      "sha256": "789a5600cc396b11b18579aa7ac7dd50d3abfe458733c8c980f4a91a74c30c0d",
+      "canvas": [
+        1536,
+        1536
+      ],
+      "ground_anchor": [
+        768,
+        1370
+      ],
+      "scale_ratio": [
+        32,
+        305
+      ],
+      "crop": [
+        109,
+        326,
+        1316,
+        1075
+      ],
+      "offset": [
+        -659,
+        -1044
+      ],
+      "package": "fabricator_90_frozen_v1",
+      "manifest": "freeze/manifest.json",
+      "receipt": "freeze/acceptance_receipt.md",
+      "receipt_sha256": "4b8afa2b2103b0ac0841d18a534d8fe7ce293eaf795abddfca5f86d5fc21c83e",
+      "path": "assets/machines/fabricator/fabricator_90_body.png",
+      "bytes": 2860310,
+      "size_px": [
+        1316,
+        1075
+      ],
+      "rgba_sha256": "b8a9c9ef826b1bec86f1d456edd9e93b9bc525dc5ddf55360e26b8a0ae06afe7",
+      "frozen_file_count": 40,
+      "frozen_inventory_sha256": "17959cc10e62552f195a3dcef48adb8c552d4a2a6c5f155d91538c3f2fd0d1a3"
+    },
+    {
+      "direction": 180,
+      "manifest_sha256": "6a68b6ea0a2dad155259eb0f019c726b3403b3e238c1599af325b77ba62e6280",
+      "package_path": "accepted_prototype/runtime/fabricator_180_body.png",
+      "sha256": "cb17fff5627c03ee5034a37ecac420d1ae4f8192ce5d8759feb4069f0256eca3",
+      "canvas": [
+        1280,
+        1280
+      ],
+      "ground_anchor": [
+        640,
+        1123
+      ],
+      "scale_ratio": [
+        32,
+        265
+      ],
+      "crop": [
+        54,
+        122,
+        1171,
+        1022
+      ],
+      "offset": [
+        -586,
+        -1001
+      ],
+      "package": "fabricator_180_frozen_v1",
+      "manifest": "freeze/manifest.json",
+      "receipt": "freeze/acceptance_receipt.md",
+      "receipt_sha256": "3092404e11050be024a081cfb626bd98591f616d710bf8303ac1139dbb8a6118",
+      "path": "assets/machines/fabricator/fabricator_180_body.png",
+      "bytes": 2923490,
+      "size_px": [
+        1171,
+        1022
+      ],
+      "rgba_sha256": "4fd115229054e61574d89bc59cca4cd5496701166781b1080cf0b1c566f38cd1",
+      "frozen_file_count": 29,
+      "frozen_inventory_sha256": "490c81f52f05544da6855e502ada630a0065d3707c27f3955b0f14e07213ae9a"
+    },
+    {
+      "direction": 270,
+      "manifest_sha256": "a4c405caaeca6331d2cacceb345b775fc29ccc64437af767d1cc9fe1c30f553d",
+      "package_path": "accepted_prototype/runtime/fabricator_270_body.png",
+      "sha256": "1344c9c217e197da11c7e74b4a626714f2424f5b6ea95b9b82a10860d33f64f0",
+      "canvas": [
+        1536,
+        1536
+      ],
+      "ground_anchor": [
+        768,
+        1255
+      ],
+      "scale_ratio": [
+        16,
+        155
+      ],
+      "crop": [
+        96,
+        284,
+        1339,
+        993
+      ],
+      "offset": [
+        -672,
+        -971
+      ],
+      "package": "fabricator_270_frozen_v1",
+      "manifest": "freeze/manifest.json",
+      "receipt": "freeze/acceptance_receipt.md",
+      "receipt_sha256": "7d4e782a640744635c455862292ef71590fd6423cd435b3d2ea2904e817ffb01",
+      "path": "assets/machines/fabricator/fabricator_270_body.png",
+      "bytes": 2985531,
+      "size_px": [
+        1339,
+        993
+      ],
+      "rgba_sha256": "eb018640c136d884fa19ee3d9caf1fd04dae2ab1494be93baf88a17c73244e80",
+      "frozen_file_count": 33,
+      "frozen_inventory_sha256": "6850d74a8d71cfac753aa642cc7357a0ae6efb9b5daf5a645dc4677f6a17c5ab"
+    }
+  ]
+}

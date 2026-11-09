@@ -119,7 +119,7 @@ class SmelterFootprintStaticTest(unittest.TestCase):
                      "construction/machine_definition.gd", "construction/placement_rules.gd",
                      "construction/construction_controller.gd", "construction/deployed_machine.gd",
                      # Shared adapter gets the separately authorized static art;
-                     # preserve its interfaces/Fabricator below, all gameplay here.
+                     # preserve its interfaces below, all gameplay here.
                      "construction/extractor_visual.gd",
                      "construction/extractor_visual.tscn", "scenes/world/world_coordinates.gd",
                      "scenes/world/planet_world_state.gd", "scenes/world/planet_exterior.gd",
@@ -146,9 +146,14 @@ class SmelterFootprintStaticTest(unittest.TestCase):
         declarations = current.split("func _ready()", 1)[0]
         for addition in ['const SMELTER_SCENE := preload("res://construction/smelter_visual.tscn")\n',
                          'var _smelter: SmelterVisual\n', 'var _smelter_art_container: Node2D\n',
-                         'var _smelter_status: Node2D\n']:
+                         'var _smelter_status: Node2D\n',
+                         'const FABRICATOR_SCENE := preload("res://construction/fabricator_visual.tscn")\n',
+                         'var _fabricator: FabricatorVisual\n', 'var _fabricator_art_container: Node2D\n',
+                         'var _fabricator_status: Node2D\n']:
             self.assertEqual(declarations.count(addition), 1)
             declarations = declarations.replace(addition, "")
         self.assertEqual(declarations, original.split("func _ready()", 1)[0])
-        for method in ("_ready", "_exit_tree", "_draw_fabricator"):
+        for method in ("_ready", "_exit_tree"):
             self.assertEqual(function(current, method).strip(), function(original, method).strip())
+        self.assertNotIn("func _draw_fabricator(", current)
+        self.assertIn("_fabricator.configure(turns)", current)

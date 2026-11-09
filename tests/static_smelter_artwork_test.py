@@ -192,7 +192,7 @@ class SmelterArtworkStaticTest(unittest.TestCase):
         visual = read("construction/machine_visual.gd")
         refresh = function(visual, "_refresh_presentation")
         self.assertIn('preload("res://construction/smelter_visual.tscn")', visual)
-        self.assertIn('var illustrated := definition != null and definition.item_id in [&"extractor", &"smelter"]', refresh)
+        self.assertIn('var illustrated := definition != null and definition.item_id in [&"extractor", &"smelter", &"fabricator"]', refresh)
         self.assertIn("modulate = Color.WHITE if illustrated or not is_ghost else Color(1, 1, 1, 0.5)", refresh)
         branch = refresh.split('if definition != null and definition.item_id == &"smelter":', 1)[1]
         for contract in ("if _smelter == null:", "if is_ghost:", "var group := CanvasGroup.new()",
@@ -232,7 +232,7 @@ class SmelterArtworkStaticTest(unittest.TestCase):
         self.assertEqual([(115, 115), (128 - 115, 115), (128 - 115, 128 - 115), (115, 128 - 115)],
                          [(115, 115), (13, 115), (13, 13), (115, 13)])
         draw = function(script, "_draw")
-        self.assertIn('definition.item_id in [&"extractor", &"smelter"]', draw)
+        self.assertIn('definition.item_id in [&"extractor", &"smelter", &"fabricator"]', draw)
         self.assertIn("draw_circle(Vector2(size.x - 13, size.y - 13), 3.5, _status_color())", draw)
 
     def test_gameplay_other_presenters_and_stationary_preserved(self):
@@ -263,5 +263,7 @@ class SmelterArtworkStaticTest(unittest.TestCase):
         self.assertIn("footprint_cells = Vector2i(4, 4)", read("inventory/smelter.tres"))
         self.assertIn("CONSTRUCTION_SIZE: int = 32", read("scenes/world/world_coordinates.gd"))
         path = "construction/machine_visual.gd"
-        old = git_blob(BASE, path).decode().replace("\r\n", "\n")
-        self.assertEqual(function(read(path), "_draw_fabricator"), function(old, "_draw_fabricator"))
+        # Decision 36 replaces only Fabricator presentation; its own suite pins
+        # the new artwork, registration, ghost and unscaled status overlay.
+        self.assertNotIn("func _draw_fabricator(", read(path))
+        self.assertIn("_fabricator.configure(turns)", read(path))
