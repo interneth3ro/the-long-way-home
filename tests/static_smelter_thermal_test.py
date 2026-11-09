@@ -164,14 +164,23 @@ class SmelterThermalStaticTest(unittest.TestCase):
                 self.assertEqual(normalized(path, (ROOT / path).read_bytes()),
                                  normalized(path, git_blob(BASE, path)))
 
-    def test_shared_adapter_changes_only_two_smelter_calls(self):
+    def test_shared_smelter_branch_changes_only_two_thermal_calls(self):
         path = "construction/machine_visual.gd"
         current = read(path)
         for addition in ("\t\t_smelter.set_operating_status(status, not is_ghost)\n",
                          "\t\t_smelter.reset_thermal()\n"):
             self.assertEqual(current.count(addition), 1)
             current = current.replace(addition, "")
-        self.assertEqual(current, git_blob(BASE, path).decode().replace("\r\n", "\n"))
+        old = git_blob(BASE, path).decode().replace("\r\n", "\n")
+        # Decision 36 adds the separate Fabricator branch; retain the exact
+        # Extractor/Smelter branches and all existing status/lifecycle functions.
+        start = 'if definition != null and definition.item_id == &"extractor":'
+        current_branch = function(current, "_refresh_presentation").split(start, 1)[1].split(
+            '\tif definition != null and definition.item_id == &"fabricator":', 1)[0]
+        old_branch = function(old, "_refresh_presentation").split(start, 1)[1].split('\t_refresh_smelter_status()', 1)[0]
+        self.assertEqual(current_branch, old_branch)
+        for method in ("_ready", "_exit_tree", "_refresh_smelter_status", "_draw_smelter_status", "_status_color"):
+            self.assertEqual(function(current, method).strip(), function(old, method).strip())
 
     def test_recovery_redeployment_and_gameplay_sources_unchanged(self):
         # Entire simulation, collision, transfer, recovery, other presenters and

@@ -1,5 +1,16 @@
 # The Long Way Home
 
+Fabricator four-orientation static artwork is implemented on
+`codex/fabricator-four-orientation-static-artwork`, **pending owner normal-F5
+acceptance and merge** (Decision 36, Option A). Four byte-identical frozen PNGs
+replace the procedural deployed/ghost body through the existing `MachineVisual`
+contract, retaining accepted per-view registration, the 4x4 footprint and the
+unscaled status dot. Gameplay, stationary artwork, Extractor animation and Smelter
+thermal behavior remain unchanged. Agent validation is offline/static only;
+no Godot execution or Fabricator animation is included. See the
+[provenance, validation and owner F5 checklist](docs/FABRICATOR_STATIC_ARTWORK.md).
+Earlier milestone entries below retain their historical scope.
+
 Deployed Fabricator footprint expansion is implemented on
 `codex/fabricator-4x4-footprint` (**owner accepted; pending review and merge**).
 It uses 4x4 construction cells / 128x128 world units on the unchanged 32-unit

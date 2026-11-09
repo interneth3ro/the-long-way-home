@@ -108,14 +108,19 @@ class FabricatorFootprintStaticTest(unittest.TestCase):
                       read("construction/placement_rules.gd"))
 
     def test_protected_gameplay_art_and_execution_controls_unchanged(self):
-        # This milestone permits exactly one production data line. Whole-tree
-        # diff protects recipes, simulation/transactions, standalone geometry,
-        # other machines, every asset and the execution policy/runner.
+        # Footprint milestone permits one data line. Decision 36 additionally
+        # permits these exact presentation paths; no gameplay/runner exemption.
         changed = subprocess.check_output(
             ["git", "diff", "--name-only", BASE, "--", "inventory", "construction",
              "scenes", "assets", "project.godot", "tools", "AGENTS.md",
              "docs/LOCAL_TESTING.md"], cwd=ROOT, text=True).splitlines()
-        self.assertEqual(changed, ["inventory/fabricator.tres"])
+        artwork = {"construction/machine_visual.gd", "construction/fabricator_visual.gd",
+                   "construction/fabricator_visual.gd.uid", "construction/fabricator_visual.tscn"}
+        for name in ("fabricator_0_resting.png", "fabricator_90_body.png",
+                     "fabricator_180_body.png", "fabricator_270_body.png"):
+            artwork.update(("assets/machines/fabricator/" + name,
+                            "assets/machines/fabricator/" + name + ".import"))
+        self.assertEqual(set(changed) - artwork, {"inventory/fabricator.tres"})
         stationary = read("scenes/world/production_maintenance_bay_v2.tscn")
         self.assertIn("max_interaction_distance = 45.0", stationary)
 
@@ -142,7 +147,7 @@ class FabricatorFootprintStaticTest(unittest.TestCase):
         self.assertIn("construction_range: float = 160.0",
                       read("construction/construction_controller.gd"))
 
-    def test_initial_configuration_and_procedural_ghost_remain_definition_driven(self):
+    def test_initial_configuration_and_illustrated_ghost_remain_definition_driven(self):
         ui = read("scenes/ui/machine_ui.gd")
         placed = function(ui, "_open_placed_machine")
         self.assertIn("_show_machine(machine_id, machine, true)", placed)
@@ -150,13 +155,14 @@ class FabricatorFootprintStaticTest(unittest.TestCase):
         for method in ("open_machine", "_change_recipe", "_transfer", "_collect"):
             self.assertIn("not _in_range(machine)", function(ui, method))
         visual = read("construction/machine_visual.gd")
-        draw = function(visual, "_draw")
+        status = function(visual, "_refresh_fabricator_status")
         for contract in ["Vector2(definition.footprint_cells) * WorldCoordinates.CONSTRUCTION_SIZE",
-                         "definition.rotated_point(Vector2.ZERO, turns)",
-                         "draw_set_transform(origin, posmod(turns, 4) * PI / 2.0)",
-                         "_draw_fabricator(size)",
-                         "draw_circle(Vector2(size.x - 13, size.y - 13), 3.5, _status_color())"]:
-            self.assertIn(contract, draw)
+                         "definition.rotated_point(size - Vector2(13, 13), turns)"]:
+            self.assertIn(contract, status)
+        self.assertIn("_fabricator.configure(turns)", function(visual, "_refresh_presentation"))
+        self.assertIn("draw_circle(Vector2.ZERO, 3.5, _status_color())",
+                      function(visual, "_draw_fabricator_status"))
+        self.assertNotIn("func _draw_fabricator(", visual)
         controller = read("construction/construction_controller.gd")
         self.assertIn("_ghost.definition = definition", controller)
         fixture = read("tests/fabricator_deployment_test.gd")

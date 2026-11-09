@@ -4,6 +4,7 @@ extends Node2D
 # Shared adapter for deployed machines and the neutral placement ghost.
 const EXTRACTOR_SCENE := preload("res://construction/extractor_visual.tscn")
 const SMELTER_SCENE := preload("res://construction/smelter_visual.tscn")
+const FABRICATOR_SCENE := preload("res://construction/fabricator_visual.tscn")
 
 var definition: MachineDefinition:
 	set(value):
@@ -25,6 +26,9 @@ var _art_container: Node2D
 var _smelter: SmelterVisual
 var _smelter_art_container: Node2D
 var _smelter_status: Node2D
+var _fabricator: FabricatorVisual
+var _fabricator_art_container: Node2D
+var _fabricator_status: Node2D
 var show_status: bool = false
 var status: PlanetWorldState.OperatingStatus = PlanetWorldState.OperatingStatus.INACTIVE:
 	set(value):
@@ -46,7 +50,7 @@ func _exit_tree() -> void:
 func _refresh_presentation() -> void:
 	if not is_node_ready() or not is_inside_tree():
 		return
-	var illustrated := definition != null and definition.item_id in [&"extractor", &"smelter"]
+	var illustrated := definition != null and definition.item_id in [&"extractor", &"smelter", &"fabricator"]
 	# CanvasGroup.self_modulate fades the completed composite, not its layers.
 	modulate = Color.WHITE if illustrated or not is_ghost else Color(1, 1, 1, 0.5)
 	if definition != null and definition.item_id == &"extractor":
@@ -83,7 +87,23 @@ func _refresh_presentation() -> void:
 	elif _smelter_art_container != null:
 		_smelter.reset_thermal()
 		_smelter_art_container.hide()
+	if definition != null and definition.item_id == &"fabricator":
+		if _fabricator == null:
+			if is_ghost:
+				var group := CanvasGroup.new()
+				group.self_modulate = Color(1, 1, 1, 0.5)
+				_fabricator_art_container = group
+			else:
+				_fabricator_art_container = Node2D.new()
+			add_child(_fabricator_art_container)
+			_fabricator = FABRICATOR_SCENE.instantiate() as FabricatorVisual
+			_fabricator_art_container.add_child(_fabricator)
+		_fabricator_art_container.show()
+		_fabricator.configure(turns)
+	elif _fabricator_art_container != null:
+		_fabricator_art_container.hide()
 	_refresh_smelter_status()
+	_refresh_fabricator_status()
 	queue_redraw()
 
 
@@ -107,6 +127,26 @@ func _draw_smelter_status() -> void:
 	_smelter_status.draw_circle(Vector2.ZERO, 3.5, _status_color())
 
 
+func _refresh_fabricator_status() -> void:
+	var visible_status := definition != null and definition.item_id == &"fabricator" and show_status and not is_ghost
+	if visible_status:
+		if _fabricator_status == null:
+			# Last sibling: above the art, outside its scale and ghost composite.
+			_fabricator_status = Node2D.new()
+			_fabricator_status.draw.connect(_draw_fabricator_status)
+			add_child(_fabricator_status)
+		var size := Vector2(definition.footprint_cells) * WorldCoordinates.CONSTRUCTION_SIZE
+		_fabricator_status.position = definition.rotated_point(size - Vector2(13, 13), turns)
+		_fabricator_status.show()
+		_fabricator_status.queue_redraw()
+	elif _fabricator_status != null:
+		_fabricator_status.hide()
+
+
+func _draw_fabricator_status() -> void:
+	_fabricator_status.draw_circle(Vector2.ZERO, 3.5, _status_color())
+
+
 func _status_color() -> Color:
 	if status == PlanetWorldState.OperatingStatus.PRODUCING:
 		return Color(0.35, 0.78, 0.46)
@@ -118,23 +158,10 @@ func _status_color() -> Color:
 
 
 func _draw() -> void:
-	if definition == null or definition.item_id in [&"extractor", &"smelter"]:
+	if definition == null or definition.item_id in [&"extractor", &"smelter", &"fabricator"]:
 		return
 	var size := Vector2(definition.footprint_cells) * WorldCoordinates.CONSTRUCTION_SIZE
 	var origin := definition.rotated_point(Vector2.ZERO, turns)
 	draw_set_transform(origin, posmod(turns, 4) * PI / 2.0)
-	if definition.item_id == &"fabricator":
-		_draw_fabricator(size)
 	if show_status:
 		draw_circle(Vector2(size.x - 13, size.y - 13), 3.5, _status_color())
-
-
-func _draw_fabricator(size: Vector2) -> void:
-	# A teal assembly bed with a transverse gantry; no physical port promises.
-	draw_rect(Rect2(Vector2(4, 4), size - Vector2(8, 8)), Color(0.15, 0.27, 0.29))
-	draw_rect(Rect2(Vector2(9, 10), size - Vector2(18, 20)), Color(0.35, 0.53, 0.54))
-	draw_rect(Rect2(Vector2(17, 17), size - Vector2(34, 32)), Color(0.13, 0.20, 0.23))
-	for x in [12.0, size.x - 12.0]:
-		draw_line(Vector2(x, 10), Vector2(x, size.y - 10), Color(0.65, 0.73, 0.73), 4.0)
-	draw_rect(Rect2(Vector2(7, 18), Vector2(size.x - 14, 9)), Color(0.73, 0.63, 0.39))
-	draw_rect(Rect2(Vector2(size.x / 2.0 - 5, 21), Vector2(10, 15)), Color(0.62, 0.70, 0.71))

@@ -82,7 +82,7 @@ class ExtractorArtworkStaticTest(unittest.TestCase):
         self.assertIn("_art_container.hide()", refresh)
         self.assertIn("_extractor.configure(turns)", refresh)
         self.assertNotIn("func _process", visual)
-        self.assertIn('if definition == null or definition.item_id in [&"extractor", &"smelter"]:',
+        self.assertIn('if definition == null or definition.item_id in [&"extractor", &"smelter", &"fabricator"]:',
                       function(visual, "_draw"))
         for script in ["construction/deployed_machine.gd", "construction/construction_controller.gd"]:
             self.assertIn("MachineVisual.new()", read(script))
@@ -111,9 +111,8 @@ class ExtractorArtworkStaticTest(unittest.TestCase):
                     data = data.replace(b"footprint_cells = Vector2i(4, 4)",
                                         b"footprint_cells = Vector2i(2, 2)")
                 self.assertEqual(data, original)
-        old = git_blob(BASE, "construction/machine_visual.gd").decode().replace("\r\n", "\n")
-        # Smelter's procedural art is replaced under separate owner authorization.
-        # Its replacement contracts live in static_smelter_artwork_test.
+        # Both procedural bodies have separately authorized illustrated replacements;
+        # their contracts live in the corresponding static artwork suites.
         self.assertNotIn("func _draw_smelter(", read("construction/machine_visual.gd"))
-        for method in ["_draw_fabricator"]:
-            self.assertEqual(function(read("construction/machine_visual.gd"), method).strip(), function(old, method).strip())
+        self.assertNotIn("func _draw_fabricator(", read("construction/machine_visual.gd"))
+        self.assertIn("_fabricator.configure(turns)", read("construction/machine_visual.gd"))

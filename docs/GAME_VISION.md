@@ -904,6 +904,20 @@ Implementation is merged in PR #42. Agent validation was static only and the
 standalone regression checks remain unexecuted under the Godot restriction. See
 the [implementation notes](../README.md#recover-the-fabricator-pr-42-merged).
 
+## Fabricator static directional artwork (feature branch, pending acceptance)
+
+Decision 36, Option A integrates the four accepted frozen Fabricator views on
+`codex/fabricator-four-orientation-static-artwork`, pending owner normal-F5
+acceptance and merge. Existing authoritative quarter turns select front/right/rear/
+left through a minimal `MachineVisual` presenter. Independent accepted scales and
+anchors are preserved, including the full-canvas front resting composite; there
+is no mechanical texture rotation, mirroring or apparent-height normalization.
+The 4x4 footprint, ghost conventions, unscaled status dot, sorting, gameplay and
+stationary-bay artwork remain unchanged. Extractor barrel animation and Smelter
+thermal behavior remain unchanged. Validation is offline/static only; no Godot
+execution or runtime acceptance is claimed. Fabricator animation/timing is deferred.
+See [source identities, implementation and owner F5 checks](FABRICATOR_STATIC_ARTWORK.md).
+
 ## Deployed Fabricator 4x4 footprint (feature branch, pending merge)
 
 `codex/fabricator-4x4-footprint` implements the approved 4x4 construction-cell
