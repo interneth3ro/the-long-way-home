@@ -79,7 +79,9 @@ func _refresh_presentation() -> void:
 			_smelter_art_container.add_child(_smelter)
 		_smelter_art_container.show()
 		_smelter.configure(turns)
+		_smelter.set_operating_status(status, not is_ghost)
 	elif _smelter_art_container != null:
+		_smelter.reset_thermal()
 		_smelter_art_container.hide()
 	_refresh_smelter_status()
 	queue_redraw()

@@ -668,12 +668,35 @@ Implementation is merged in PR #39. Agent validation was static only; evidence
 and limitations are recorded in the
 [implementation notes](../README.md#deploy-the-smelter-pr-39-merged).
 
+## Smelter thermal illumination (feature branch, pending merge)
+
+Owner Thermal Decisions 1A–10A, approved November 9, 2026, are implemented on
+`codex/smelter-thermal-illumination`; owner F5 accepted, pending review and merge.
+The presenter consumes existing operating-status updates and owns one local tween:
+cold production warms to 0.82 in 0.5 seconds, then pulses between 0.82 and 1.00
+over 3.6 seconds. Input-empty/output-full cool over 1.0 second without a hold;
+inactive resets immediately. Rapid transitions retarget from displayed opacity.
+Direction changes preserve animation phase. Ghosts/deactivated subtrees reset
+cold. Retained-world re-entry initializes producing at 0.82 and all other states
+cold, including unchanged status. No thermal state enters simulation. Frozen
+assets, registration, dot, gameplay, other presenters and stationary machinery
+are unchanged. On November 9, 2026, the owner reported **19/19 F5 PASS** against
+`8d6e2db79c204ed334372447ca801771351e378b`, with no observations, defects or
+blocking concerns and no new Godot import, parser or runtime errors. The
+[behavior, static results and completed owner acceptance](SMELTER_THERMAL_ILLUMINATION.md)
+record preserves the original 68/68 static results separately from owner
+gameplay/graphical observations. No agent Godot execution or merge is authorized.
+
 ## Static directional Smelter artwork (feature branch, pending merge)
+
+Historical milestone: PR #157 merged at
+`ca18cfa4c9f16ab934968aed4fa764f9c1e2b58d`. The idle-only behavior below describes
+its accepted baseline; the thermal feature above extends that presentation.
 
 Owner-authorized on November 5, 2026, with decisions 1A/2A/3A: retain the status
 dot, use local mipmapped linear filtering, and keep accepted idle illumination in
 every operating state. Implemented on `codex/smelter-static-artwork`, owner F5
-accepted and pending review/merge, from PR #156's merged 4x4 footprint baseline
+accepted and merged in PR #157, from PR #156's merged 4x4 footprint baseline
 `65564d5d95502fcc0368a2b5396d1855311c5806`.
 
 The dedicated Smelter presenter replaces only deployed procedural artwork and its
