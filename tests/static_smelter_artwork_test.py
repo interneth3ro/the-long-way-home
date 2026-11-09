@@ -135,16 +135,17 @@ class SmelterArtworkStaticTest(unittest.TestCase):
                                  [offsets[d][slot][i] + ANCHORS[d][i] for i in range(2)])
                 self.assertEqual(a["crop_rect_px"][2:], a["size_px"])
 
-    def test_turn_normalization_and_static_idle_configuration(self):
+    def test_turn_normalization_and_preserved_layer_configuration(self):
         script = read("construction/smelter_visual.gd")
         configure = function(script, "configure")
         self.assertIn("var direction := posmod(quarter_turns, 4)", configure)
         self.assertIn("if direction == _turns:\n\t\treturn", configure)
         self.assertIn("_layers[index].texture = TEXTURES[direction][index]", configure)
         self.assertIn("_layers[index].position = OFFSETS[direction][index]", configure)
-        self.assertIn("_layers[index].visible = TEXTURES[direction][index] != null and index != 2", configure)
+        self.assertIn("if index != 2:\n\t\t\t_layers[index].visible = TEXTURES[direction][index] != null", configure)
+        self.assertNotRegex(configure, r"_thermal|_cancel_thermal|_start_pulse|_set_heat|self_modulate")
         self.assertIn("[$Body, $Interior, $Illumination, $Foreground]", script)
-        self.assertNotRegex(script, r"func _(?:physics_)?process|Tween|AnimationPlayer|status|FileAccess|JSON|ImageTexture|rotation|flip_[hv]|material")
+        self.assertNotRegex(script, r"func _(?:physics_)?process|AnimationPlayer|FileAccess|JSON|ImageTexture|rotation|flip_[hv]|material")
         textures, _ = configured()
         # Independent modulo examples bound to the exact posmod selection above.
         for turns, direction in [(-9, 3), (-4, 0), (-1, 3), (0, 0), (1, 1),
@@ -198,7 +199,8 @@ class SmelterArtworkStaticTest(unittest.TestCase):
                          "group.self_modulate = Color(1, 1, 1, 0.5)", "_smelter_art_container = Node2D.new()",
                          "_smelter = SMELTER_SCENE.instantiate() as SmelterVisual",
                          "_smelter_art_container.add_child(_smelter)", "_smelter.configure(turns)",
-                         "elif _smelter_art_container != null:\n\t\t_smelter_art_container.hide()"):
+                         "_smelter.set_operating_status(status, not is_ghost)",
+                         "elif _smelter_art_container != null:\n\t\t_smelter.reset_thermal()\n\t\t_smelter_art_container.hide()"):
             self.assertIn(contract, branch)
         self.assertIn("_extractor.set_producing(false)\n\t\t_art_container.hide()", refresh)
         self.assertLess(refresh.index("_smelter_art_container.add_child(_smelter)"), refresh.index("_refresh_smelter_status()"))

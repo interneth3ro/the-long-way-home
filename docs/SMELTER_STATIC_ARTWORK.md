@@ -1,7 +1,12 @@
 # Static directional Smelter artwork
 
-Implemented on `codex/smelter-static-artwork`, **owner F5 accepted; pending
-review and merge**, from PR #156 merge `65564d5d95502fcc0368a2b5396d1855311c5806`.
+Implemented on `codex/smelter-static-artwork`, **owner F5 accepted; merged in
+PR #157** at `ca18cfa4c9f16ab934968aed4fa764f9c1e2b58d`, from PR #156 merge
+`65564d5d95502fcc0368a2b5396d1855311c5806`.
+This document preserves that milestone's static implementation and acceptance.
+The subsequent [thermal illumination feature](SMELTER_THERMAL_ILLUMINATION.md)
+extends the idle-only behavior under separate November 9 owner authorization;
+its graphical acceptance is pending. Historical results below are unchanged.
 The November 5, 2026 owner authorization approves static integration and decisions
 1A/2A/3A: retain the operating-status dot, local linear filtering with mipmaps,
 and accepted idle illumination in every production state. It authorizes no Godot

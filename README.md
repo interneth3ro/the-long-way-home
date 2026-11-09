@@ -1,14 +1,22 @@
 # The Long Way Home
 
-Static directional Smelter artwork is implemented on `codex/smelter-static-artwork`,
-**owner F5 accepted, pending review and merge**. Acceptance was reported on
+Production-state-driven Smelter thermal illumination is implemented on
+`codex/smelter-thermal-illumination`, **pending merge and owner F5 acceptance**.
+Local presentation tweens use the approved 0.5-second cold warm-up,
+0.82-1.00 / 3.6-second pulse and 1.0-second input-empty/output-full cooldown.
+Ghosts stay cold; retained-world re-entry initializes from authoritative status.
+Artwork, status dots, gameplay and simulation are unchanged. No Godot execution.
+See the [thermal behavior, static validation and owner F5 checklist](docs/SMELTER_THERMAL_ILLUMINATION.md).
+
+Static directional Smelter artwork **merged in PR #157** at
+`ca18cfa4c9f16ab934968aed4fa764f9c1e2b58d`. Owner F5 acceptance was reported on
 November 9, 2026 against `36a5214761ea66398dd78b5077f6062ed84e96d3`:
 **15/15 PASS**, no observations, defects or blocking concerns. It starts from merged PR #156
 (`65564d5d95502fcc0368a2b5396d1855311c5806`) and retains its 4x4 footprint on the
 32-unit construction grid. Ten byte-identical frozen PNGs provide four authored
 views, shared deployed/ghost registration, composite ghost transparency and local
 mipmapped linear filtering. The existing operating-status dot stays above deployed
-artwork; every direction stays in its accepted idle thermal state. Gameplay,
+artwork; at that milestone every direction stayed in its accepted idle thermal state. Gameplay,
 Extractor animation, Fabricator, Dave and stationary Smelter presentation remain
 unchanged. Agent validation remains static only; the agent did not run Godot.
 Owner gameplay/graphical acceptance is recorded separately. See the
