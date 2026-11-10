@@ -25,11 +25,13 @@ Exit quits normally. The static background reuses accepted ship artwork.
 Pause Menu Foundation merged in PR #167 after owner 18/18 F5 PASS: Escape opens
 the overlay after existing interfaces handle it; Resume restores prior pause
 state; Main Menu and Exit Game require confirmation. Save Game, Load Game and Settings remain disabled.
-Milestone 3 exterior preparation is implemented on `codex/initial-exterior-preparation`,
-pending owner F5 acceptance and merge: New Game prepares and retains all 49 starting
-chunks before control inside the ship, reusing them on first exit. Loading UI and
-persistence remain separate milestones; see
-[application ownership and owner acceptance](APPLICATION_SHELL.md#initial-exterior-preparation--milestone-3-pending-acceptance-and-merge).
+Milestone 3 exterior preparation merged in PR #169 after owner F5 acceptance:
+New Game prepares and retains all 49 starting chunks before control inside the
+ship, reusing them on first exit. Milestone 4 shared loading presentation with
+real 0-51 progress and explicit failure return is implemented on
+`codex/shared-loading-screen`, pending owner F5 acceptance and merge. Persistence
+remains separate; see
+[application ownership and owner acceptance](APPLICATION_SHELL.md#shared-loading-screen--milestone-4-pending-acceptance-and-merge).
 Computer restoration is implemented on `codex/computer-restoration`, pending
 owner normal-F5 acceptance and merge; see the
 [approved requirements and acceptance checklist](COMPUTER_RESTORATION.md).

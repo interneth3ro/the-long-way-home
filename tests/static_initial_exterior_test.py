@@ -177,8 +177,8 @@ class InitialExteriorTests(unittest.TestCase):
         for marker in ('_chunks.clear', '_ground_receipts.clear', '_terrain_tokens.clear'):
             self.assertNotIn(marker, exit_tree)
         shell = function(A, '_start_new_game')
-        self.assertLess(shell.index('add_child(_session)'), shell.index('await _session.get_node("SceneTransitions").prepare_initial_exterior()'))
-        self.assertLess(shell.index('prepare_initial_exterior()'), shell.index('_starting = false'))
+        self.assertLess(shell.index('add_child(_session)'), shell.index('await transitions.prepare_initial_exterior(true)'))
+        self.assertLess(shell.index('prepare_initial_exterior(true)'), shell.index('_starting = false'))
 
     def test_existing_gameplay_and_publication_methods_are_exactly_preserved(self):
         for path in ('scenes/world/planet_exterior.gd', 'scenes/main/scene_transition_controller.gd'):
