@@ -3,6 +3,7 @@
 Models specify admission, not pixels, engine parsing, scheduling or performance.
 Existing presenter/transition suites exercise their other source-bound contracts.
 """
+from application_shell_preservation import without_application_startup
 from dataclasses import dataclass, replace
 from pathlib import Path
 import subprocess
@@ -301,6 +302,8 @@ class GroundPublicationTest(unittest.TestCase):
                 # PR #152 renames locals that shadow Node.owner; preserve the
                 # exact terrain-era behavior after reversing only that rename.
                 actual = actual.replace(b'region_owner', b'owner')
+            if path == "project.godot":
+                actual = without_application_startup(actual)
             self.assertEqual(actual.replace(b'\r\n', b'\n'),
                              expected.replace(b'\r\n', b'\n'), path)
         old = subprocess.check_output(['git', 'show', f'{BASE}:scenes/world/illustrated_terrain_presenter.gd'],

@@ -1,4 +1,5 @@
 """Stage 3C offline contracts/models only; no engine or GDScript execution."""
+from application_shell_preservation import without_application_startup
 import hashlib
 import json
 from pathlib import Path
@@ -85,6 +86,10 @@ class Stage3CTest(unittest.TestCase):
             if path in historical_inputs:
                 # Historical manifest pins the approved CRLF serialization.
                 raw = raw.replace(b'\r\n', b'\n').replace(b'\n', b'\r\n')
+            if path == 'project.godot':
+                # Preserve the consumed plan bytes; validate the exact startup
+                # amendment independently without changing historical hashes.
+                raw = without_application_startup(raw)
             self.assertEqual((len(raw),hashlib.sha256(raw).hexdigest()),(entry['bytes'],entry['sha256']),path)
             if 'transform' in entry:
                 t = entry['transform']

@@ -1,4 +1,5 @@
 """Frozen static art contracts; no engine execution or graphical acceptance."""
+from application_shell_preservation import without_application_startup
 import hashlib
 import json
 import re
@@ -157,6 +158,8 @@ class ExtractorArtworkStaticTest(unittest.TestCase):
                     self.assertEqual(data.count(b"footprint_cells = Vector2i(4, 4)"), 1)
                     data = data.replace(b"footprint_cells = Vector2i(4, 4)",
                                         b"footprint_cells = Vector2i(2, 2)")
+                if path == "project.godot":
+                    data = without_application_startup(data)
                 self.assertEqual(data, original)
         # Both procedural bodies have separately authorized illustrated replacements;
         # their contracts live in the corresponding static artwork suites.

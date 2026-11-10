@@ -4,6 +4,7 @@ TLWH_FABRICATOR_FRONT_FROZEN_ROOT optionally enables complete external inventory
 byte equality and all 17 frozen pose comparisons. No package scripts are executed.
 Independent math and control-flow tripwires do not certify GDScript or rendering.
 """
+from application_shell_preservation import verified_application_paths
 from fractions import Fraction
 from functools import lru_cache
 import hashlib
@@ -401,6 +402,7 @@ class FabricatorAnimationStaticTest(unittest.TestCase):
         verify_smelter_artifacts()
         allowed.update(SMELTER_BODIES)
         allowed.add(SMELTER_INVENTORY.relative_to(ROOT).as_posix())
+        allowed.update(verified_application_paths())
         self.assertFalse(set(changed) - allowed, changed)
         # Explicit immutable files/trees also protect dirty working data before staging.
         protected = subprocess.check_output(["git", "ls-tree", "-r", "--name-only", BASE, "--",

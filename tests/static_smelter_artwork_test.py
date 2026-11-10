@@ -1,4 +1,5 @@
 """Frozen artwork/source contracts and offline composites; never runs Godot."""
+from application_shell_preservation import without_application_startup
 from functools import lru_cache
 import hashlib
 import json
@@ -289,6 +290,8 @@ class SmelterArtworkStaticTest(unittest.TestCase):
                 # Authorized Fabricator 4x4 amendment: restore only this exact
                 # field for comparison against the unchanged historical baseline.
                 current = normalized(path, (ROOT / path).read_bytes())
+                if path == "project.godot":
+                    current = without_application_startup(current)
                 if path == "construction/deployed_machine.gd":
                     current = without_presentation_identity(current.decode()).encode()
                 if path == "inventory/fabricator.tres":
