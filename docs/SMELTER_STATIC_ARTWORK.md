@@ -1,12 +1,89 @@
 # Static directional Smelter artwork
 
+## Port-free runtime bodies v1 (pending merge)
+
+On November 10, 2026, the owner authorized the reviewed fourteen-path integration
+on `codex/smelter-port-free-runtime-v1`, based on
+`39ad7c09b0bbd5c01f63bede7d376c3e4baf170c`. Four independently accepted and frozen
+port-free masters now supply the four active body PNGs through the original fixed
+crop rectangles below. Every cropped RGBA byte, including transparent RGB, is
+preserved. Encoding uses PNG RGBA8, no interlace, row filter 0 and zlib level 9;
+there is no resize, rotation, repaint, premultiplication or alpha cleanup.
+
+The [derivative provenance](experiments/smelter_port_free_runtime_v1.json) records
+archive/receipt/manifest/master identities, original and active runtime hashes,
+exact crop RGBA identities, measured alpha bounds and unchanged supporting layers.
+The [read-only verifier](../tests/smelter_artwork_offline.py) checks active identities
+and historical Git bodies; `--freeze-dir` additionally verifies all four preservation
+formats, exact source crops, all 129 original-source files and the 270-degree
+source aliases. It reads ZIP members without extracting or running package scripts.
+Private source locations and raw receipts remain outside the repository.
+
+All ten import sidecars, four illumination PNGs, 0-degree interior/foreground,
+Smelter presenter/UID/scene and shared machine presenter remain unchanged. Original
+registration, independent direction slots, ghost transparency, status dot,
+footprint, collision, interaction ranges and all gameplay sources are preserved.
+The accepted [thermal behavior](SMELTER_THERMAL_ILLUMINATION.md) continues unchanged.
+The original inventory and acceptance records below describe historical artwork;
+they do not certify the active port-free derivatives in Godot.
+
+Offline composites at illumination opacity 0, 0.82 and 1 match full-master
+compositions exactly. Static tests preserve the original idle reconstruction and
+original four-edge alpha bounds, separately pin the new measured body bounds,
+and compare the unchanged thermal contribution in every RGBA channel.
+
+Run from the repository root:
+
+```powershell
+python -B tests/smelter_artwork_offline.py --active
+python -B tests/smelter_artwork_offline.py --freeze-dir '<owner-local-freeze-directory>'
+python -B -m unittest discover -s tests -p 'static_smelter*test.py'
+python -B -m unittest discover -s tests -p 'static_*test.py'
+```
+
+Static results: Smelter 28/28, Extractor 16/16; Fabricator 34 passed and two
+optional external-package checks skipped. Full suite: 473 tests, 471 passed, two
+skipped, zero failures/errors. Both Smelter helper modes and the active Extractor
+helper passed. Details are recorded in the derivative provenance. No Godot,
+headless import, native runner, graphical interaction, benchmark or stress test
+was executed. **Owner graphical acceptance remains pending.** Static PASS does
+not establish engine parsing, imports, rendered filtering or runtime behavior.
+
+### Owner F5 checklist for port-free v1
+
+All items are pending owner review against this feature's implementation commit.
+
+1. [ ] Start normally with F5; confirm imports and startup have no new errors.
+2. [ ] Inspect all four orientations at zoom 0.5x, 1x and 1.5x.
+3. [ ] Check registration, silhouettes, overhang, seams, sorting and clipping.
+4. [ ] Cycle ghost orientations and machine types; confirm stable registration,
+   composite transparency and hidden heat/status dot.
+5. [ ] Check cold and inactive illumination, including immediate inactive hiding.
+6. [ ] Check approximately 0.5-second warmup, 3.6-second pulse, 1-second cooldown
+   and interrupted transitions restarting from current opacity.
+7. [ ] Exercise input-empty and output-full transitions and resumed production.
+8. [ ] Recover and redeploy; confirm cold presentation and exact material returns.
+9. [ ] Travel exterior/interior/exterior; confirm state retention and nominal heat
+   initialization from the current operating state.
+10. [ ] Check independent mixed-orientation machines and 0-degree interior,
+    illumination and foreground layering. Direction-change thermal continuity is
+    source-contract-only unless the existing workflow permits changing direction
+    on the same live heated presenter; ghost rotation/redeployment is not that test.
+11. [ ] Check placement, occupancy, collision, rotation and existing interaction ranges.
+12. [ ] Check production, input/output buffers and material transfers.
+13. [ ] Recheck Extractor, Fabricator, terrain, Dave, stationary machinery and
+    unrelated artwork during ordinary play.
+
+## Historical static artwork milestone
+
 Implemented on `codex/smelter-static-artwork`, **owner F5 accepted; merged in
 PR #157** at `ca18cfa4c9f16ab934968aed4fa764f9c1e2b58d`, from PR #156 merge
 `65564d5d95502fcc0368a2b5396d1855311c5806`.
 This document preserves that milestone's static implementation and acceptance.
 The subsequent [thermal illumination feature](SMELTER_THERMAL_ILLUMINATION.md)
 extends the idle-only behavior under separate November 9 owner authorization;
-its graphical acceptance is pending. Historical results below are unchanged.
+its November 9 owner acceptance is recorded in that document. Historical results
+below are unchanged.
 The November 5, 2026 owner authorization approves static integration and decisions
 1A/2A/3A: retain the operating-status dot, local linear filtering with mipmaps,
 and accepted idle illumination in every production state. It authorizes no Godot

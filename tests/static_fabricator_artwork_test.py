@@ -15,6 +15,8 @@ import unittest
 
 from current_preservation import ROOT, git_blob
 from extractor_artwork_offline import BODY_PATHS, decode_png, verify_active_artifacts
+from smelter_artwork_offline import (BODY_PATHS as SMELTER_BODIES,
+                                     verify_active_artifacts as verify_smelter_artifacts)
 from static_automatic_transitions_test import function, nodes, vectors
 from static_fabricator_animation_test import LAYER_PATHS, without_presentation_identity
 
@@ -266,7 +268,9 @@ class FabricatorArtworkStaticTest(unittest.TestCase):
         ], cwd=ROOT, text=True).splitlines()
         # Decision 2A leaves every other machine asset and import protected.
         verify_active_artifacts()
-        self.assertFalse(set(changed) - set(ARTWORK_PATHS + ANIMATION_PATHS) - set(BODY_PATHS), changed)
+        verify_smelter_artifacts()
+        self.assertFalse(set(changed) - set(ARTWORK_PATHS + ANIMATION_PATHS)
+                         - set(BODY_PATHS) - set(SMELTER_BODIES), changed)
         path = "construction/deployed_machine.gd"
         self.assertEqual(without_presentation_identity(read(path)),
                          git_blob(BASE, path).decode().replace("\r\n", "\n"))

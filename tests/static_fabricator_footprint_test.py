@@ -6,6 +6,8 @@ import unittest
 
 from current_preservation import ROOT, git_blob
 from extractor_artwork_offline import BODY_PATHS, verify_active_artifacts
+from smelter_artwork_offline import (BODY_PATHS as SMELTER_BODIES,
+                                     verify_active_artifacts as verify_smelter_artifacts)
 from static_automatic_transitions_test import function
 from static_fabricator_animation_test import LAYER_PATHS, without_presentation_identity
 
@@ -127,6 +129,8 @@ class FabricatorFootprintStaticTest(unittest.TestCase):
         # Decision 2A: exact active identities protect only four Extractor bodies.
         verify_active_artifacts()
         artwork.update(BODY_PATHS)
+        verify_smelter_artifacts()
+        artwork.update(SMELTER_BODIES)
         self.assertEqual(set(changed) - artwork, {"inventory/fabricator.tres", "construction/deployed_machine.gd"})
         path = "construction/deployed_machine.gd"
         self.assertEqual(without_presentation_identity(read(path)),

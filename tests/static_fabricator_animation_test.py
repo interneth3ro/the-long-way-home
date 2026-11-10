@@ -17,6 +17,9 @@ import unittest
 
 from current_preservation import ROOT, git_blob, normalized
 from extractor_artwork_offline import ACTIVE_INVENTORY, BODY_PATHS, decode_png, place, verify_active_artifacts
+from smelter_artwork_offline import (ACTIVE_INVENTORY as SMELTER_INVENTORY,
+                                     BODY_PATHS as SMELTER_BODIES,
+                                     verify_active_artifacts as verify_smelter_artifacts)
 from static_automatic_transitions_test import function, nodes, vectors
 
 BASE = "fd1f3347ad14a3735f5ffcc22b05730421b16212"
@@ -394,13 +397,17 @@ class FabricatorAnimationStaticTest(unittest.TestCase):
         verify_active_artifacts()
         allowed.update(BODY_PATHS)
         allowed.add(ACTIVE_INVENTORY.relative_to(ROOT).as_posix())
+        # Port-free Smelter v1: four verified bodies and one exact provenance path.
+        verify_smelter_artifacts()
+        allowed.update(SMELTER_BODIES)
+        allowed.add(SMELTER_INVENTORY.relative_to(ROOT).as_posix())
         self.assertFalse(set(changed) - allowed, changed)
         # Explicit immutable files/trees also protect dirty working data before staging.
         protected = subprocess.check_output(["git", "ls-tree", "-r", "--name-only", BASE, "--",
             "assets/machines", "inventory", "construction", "scenes/world/planet_world_state.gd",
             "docs/experiments/fabricator_static_artwork.json"], cwd=ROOT, text=True).splitlines()
         for path in protected:
-            if path in BODY_PATHS:
+            if path in BODY_PATHS or path in SMELTER_BODIES:
                 continue  # Exact active and historical identities checked above.
             if path not in (SCRIPT, SCENE, "construction/machine_visual.gd", "construction/deployed_machine.gd"):
                 self.assertEqual(normalized(path, (ROOT / path).read_bytes()), normalized(path, git_blob(BASE, path)), path)
