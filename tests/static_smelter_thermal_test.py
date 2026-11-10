@@ -4,6 +4,7 @@ import re
 import unittest
 
 from current_preservation import ROOT, git_blob, normalized
+from smelter_artwork_offline import BODY_PATHS, verify_active_artifacts
 from static_automatic_transitions_test import function
 from static_fabricator_animation_test import without_presentation_identity
 
@@ -159,7 +160,10 @@ class SmelterThermalStaticTest(unittest.TestCase):
                  for p in (ROOT / "assets/machines/smelter").iterdir()]
         self.assertEqual(len(paths), 20)
         paths += ["construction/smelter_visual.tscn", "docs/experiments/smelter_static_artwork.json"]
+        verify_active_artifacts()  # Only the four pinned body derivatives may differ.
         for path in paths:
+            if path in BODY_PATHS:
+                continue
             with self.subTest(path=path):
                 # Match repository text checkout conventions; PNGs remain exact bytes.
                 self.assertEqual(normalized(path, (ROOT / path).read_bytes()),

@@ -1,0 +1,445 @@
+{
+  "version": 1,
+  "purpose": "Owner-authorized fixed-crop runtime derivatives of four independently accepted port-free Smelter bodies; presentation only; pending merge and owner F5",
+  "historical_git_revision": "39ad7c09b0bbd5c01f63bede7d376c3e4baf170c",
+  "encoding": {
+    "tool": "Python standard library struct/zlib; no image-library conversion",
+    "python_version": "3.14.7",
+    "zlib_build_version": "1.3.1.zlib-ng",
+    "zlib_runtime_version": "1.3.1.zlib-ng",
+    "method": "Exact RGBA row slices; PNG filter 0 per row; zlib.compress(scanlines, 9); IHDR/IDAT/IEND with CRC32; no ancillary chunks. No resize, rotation, repaint, premultiplication or alpha cleanup.",
+    "settings": {
+      "bit_depth": 8,
+      "color_type": 6,
+      "interlace": 0,
+      "row_filter": 0,
+      "compression_level": 9,
+      "premultiply": false
+    },
+    "decoder": "tests/extractor_artwork_offline.py decode_png, independent source and written-output CRC/RGBA decoding"
+  },
+  "bodies": [
+    {
+      "direction": 0,
+      "freeze": {
+        "archive": "TLWH_Smelter_0_PortFree_Artwork_v1.zip",
+        "bytes": 49543998,
+        "entry_count": 74,
+        "sha256": "1cae74ab0dce259bcacb4d53ede293a1a9d53172fffe218fb4c4db41f429bd3a",
+        "receipt": "TLWH_Smelter_0_PortFree_Artwork_v1.receipt.json",
+        "receipt_sha256": "200c903433c1298c8beb62cd905e98201a84dc280399525e484362185fc48a8e",
+        "manifest_entry": "TLWH_Smelter_0_PortFree_Artwork_v1/preservation_manifest.json",
+        "manifest_sha256": "09708d2f5d8eb6b40d7895757eb931158ac3028c594e958d7681ac371d98471f",
+        "original_manifest_entry": "TLWH_Smelter_0_PortFree_Artwork_v1/original_source/smelter_0_manifest.json",
+        "original_manifest_sha256": "7138460485af27067d33b8f0fa562e904c9857829f08c26fb41a19dad741e7d0",
+        "original_source_files": 31
+      },
+      "source_path": "TLWH_Smelter_0_PortFree_Artwork_v1/accepted_prototype/source/smelter_0_body_port_free_master.png",
+      "source_sha256": "67b0635894398db3d38ddc0e5fb781e0f92800748f8fa506ac523270181c48d9",
+      "source_rgba_sha256": "04de66dd5ccdfc9698a03a66ae6187f71ca20ae2bba7f6f045933344fee2e44b",
+      "canvas_px": [
+        1254,
+        1254
+      ],
+      "crop_rect_px": [
+        37,
+        97,
+        1188,
+        1008
+      ],
+      "path": "assets/machines/smelter/smelter_0_body.png",
+      "dimensions_px": [
+        1188,
+        1008
+      ],
+      "offset_px": [
+        -571,
+        -999
+      ],
+      "bytes": 2752077,
+      "png_sha256": "25f6bafda4129913180be164ae92548f6c57492f34757408e25095656ed81c8e",
+      "rgba_sha256": "a4abd7aaa90a34dd7c1a0aedf38a960da0fa0f59a4b0411870691d29c1c1cde5",
+      "source_crop_rgba_sha256": "a4abd7aaa90a34dd7c1a0aedf38a960da0fa0f59a4b0411870691d29c1c1cde5",
+      "alpha_bounds_px": [
+        12,
+        4,
+        1175,
+        1004
+      ],
+      "original_runtime_sha256": "22ef39828ea9b31fc7c893183674ab9c83d81db6f5838440712edd90ce3f50f9",
+      "original_source_sha256": "87ed272aa4faca243fecfe1142c0dde9bb76b7e43d18ca18f0430b16198763ce",
+      "pixel_equality": "PASS",
+      "offline_composites": [
+        {
+          "illumination_opacity": 0,
+          "rgba_sha256": "ae4e78fc33af995d6e2fc0916b7c5dfaa44fd0f1f75d85070c0421198e4bf414",
+          "full_master_equality": "PASS"
+        },
+        {
+          "illumination_opacity": 0.82,
+          "rgba_sha256": "b2d2be11ea440a97071bd3f9d683d66315b31fc2461b7482d21f8e65d81ad5ee",
+          "full_master_equality": "PASS"
+        },
+        {
+          "illumination_opacity": 1,
+          "rgba_sha256": "8b28f3d0c9cd144b19b0b2cd98b5f0632045744f036d3f8b3261d2a4cc36c9f9",
+          "full_master_equality": "PASS"
+        }
+      ]
+    },
+    {
+      "direction": 90,
+      "freeze": {
+        "archive": "TLWH_Smelter_90_PortFree_Artwork_v1.zip",
+        "bytes": 63579284,
+        "entry_count": 66,
+        "sha256": "1dd773744ce28af1da57141e3890c43d7a105644da69a99e0932734263228bea",
+        "receipt": "TLWH_Smelter_90_PortFree_Artwork_v1.receipt.json",
+        "receipt_sha256": "ef9f17cf3dc4619dcb498c67d0b447e8ddf21823eabd14b27c8ed503fe42ea84",
+        "manifest_entry": "TLWH_Smelter_90_PortFree_Artwork_v1/preservation_manifest.json",
+        "manifest_sha256": "1d7d16a814329b41e6c9809abd1b85850d8447f840e336fafebce298af82c873",
+        "original_manifest_entry": "TLWH_Smelter_90_PortFree_Artwork_v1/original_90/smelter_90_manifest.json",
+        "original_manifest_sha256": "fd1632155ab1fddca29e341697f2cb3261f4bcb419bd8abb42c6951a24c5d1c4",
+        "original_source_files": 27
+      },
+      "source_path": "TLWH_Smelter_90_PortFree_Artwork_v1/accepted_prototype/source/smelter_90_body_port_free_master.png",
+      "source_sha256": "ffa369c3c55357498e7c30df5052095e62f6dec872dd4c8b8bb2e02918d7a1ea",
+      "source_rgba_sha256": "a1eb34f5fe9f9e9eb918d205635dbe9bddac497f4e8c40792b2eaff6698159a3",
+      "canvas_px": [
+        1254,
+        1254
+      ],
+      "crop_rect_px": [
+        161,
+        14,
+        934,
+        1156
+      ],
+      "path": "assets/machines/smelter/smelter_90_body.png",
+      "dimensions_px": [
+        934,
+        1156
+      ],
+      "offset_px": [
+        -467,
+        -1144
+      ],
+      "bytes": 2165271,
+      "png_sha256": "a2cde3e730c17c72fecc64d22710449436bccc51120aaca3ba488c8832ee17f0",
+      "rgba_sha256": "f0fc63ae28b77187b43c0348dd75e6c5f090810b5914313d1f3fb4b059b870e3",
+      "source_crop_rgba_sha256": "f0fc63ae28b77187b43c0348dd75e6c5f090810b5914313d1f3fb4b059b870e3",
+      "alpha_bounds_px": [
+        4,
+        4,
+        930,
+        1145
+      ],
+      "original_runtime_sha256": "a50374aa29900b863c931c4853b4ec0b6223559a854eae908c5d8351b7f1070f",
+      "original_source_sha256": "ec34819b72a8c7e29f15756583356c6062c4cd110b1bb406d4525a68856a7162",
+      "pixel_equality": "PASS",
+      "offline_composites": [
+        {
+          "illumination_opacity": 0,
+          "rgba_sha256": "a1eb34f5fe9f9e9eb918d205635dbe9bddac497f4e8c40792b2eaff6698159a3",
+          "full_master_equality": "PASS"
+        },
+        {
+          "illumination_opacity": 0.82,
+          "rgba_sha256": "9c104a79aa5f15d5ee4f131db3bdb8648eb2b0c0703facd6b77b317f9a04c138",
+          "full_master_equality": "PASS"
+        },
+        {
+          "illumination_opacity": 1,
+          "rgba_sha256": "c1041fee92f590683b6b520ff6267526654df2035a51876a98e7ea3115ceabcd",
+          "full_master_equality": "PASS"
+        }
+      ]
+    },
+    {
+      "direction": 180,
+      "freeze": {
+        "archive": "TLWH_Smelter_180_PortFree_Artwork_v1.zip",
+        "bytes": 68772349,
+        "entry_count": 87,
+        "sha256": "b35916eef53a06bc0df55bb61584441028d55bb90da2c88bab938b5899cc81d1",
+        "receipt": "TLWH_Smelter_180_PortFree_Artwork_v1.receipt.json",
+        "receipt_sha256": "3e0d02d59a35fe137e091e975bb2e2a54c89ea885ca995e0b4437334098061cb",
+        "manifest_entry": "TLWH_Smelter_180_PortFree_Artwork_v1/preservation/aggregate_manifest.json",
+        "manifest_sha256": "8d70208386cd31118523a0d4a9f2ec18ce944d25d510c0683d25b826968704fb",
+        "original_manifest_entry": "TLWH_Smelter_180_PortFree_Artwork_v1/original_source/smelter_180_manifest.json",
+        "original_manifest_sha256": "530847fd5413fd5cd3c12972068e9366a9e08ad8a16a5ab629ec313c6cb34166",
+        "original_source_files": 31
+      },
+      "source_path": "TLWH_Smelter_180_PortFree_Artwork_v1/accepted_derivative/artwork/smelter_180_port_free_body_master.png",
+      "source_sha256": "d7d5c7bb2bd7824146ef5fec957032a9b95ad9bd0697b92ebc5cc44b585c8b23",
+      "source_rgba_sha256": "b5bd9759b5c31b5dba991a9753b00273a2af2fd87c8b6608fcb65faf74042854",
+      "canvas_px": [
+        1254,
+        1254
+      ],
+      "crop_rect_px": [
+        38,
+        89,
+        1170,
+        1048
+      ],
+      "path": "assets/machines/smelter/smelter_180_body.png",
+      "dimensions_px": [
+        1170,
+        1048
+      ],
+      "offset_px": [
+        -596,
+        -1039
+      ],
+      "bytes": 2843693,
+      "png_sha256": "7361280fb4b78f7719ea1dd2692070205d2fb73d2a1b8640a88282f930104aad",
+      "rgba_sha256": "ac90fe20b1d71471426bcabe3a828abd55fa879a3026a04dc5888e7ef241bc1c",
+      "source_crop_rgba_sha256": "ac90fe20b1d71471426bcabe3a828abd55fa879a3026a04dc5888e7ef241bc1c",
+      "alpha_bounds_px": [
+        14,
+        4,
+        1156,
+        1044
+      ],
+      "original_runtime_sha256": "9a6d4b4d3236e6d1d902920864bfdeb3171873fe50c8df4e46877d14e9539b05",
+      "original_source_sha256": "9a0e35597411b8aab98964fa295422240347dab1a16e658db38ebca39f0681a5",
+      "pixel_equality": "PASS",
+      "offline_composites": [
+        {
+          "illumination_opacity": 0,
+          "rgba_sha256": "1bad66a1a8cf5df5af55e69a16ec6d9a7f051e82174ba87a113c66b7b683a403",
+          "full_master_equality": "PASS"
+        },
+        {
+          "illumination_opacity": 0.82,
+          "rgba_sha256": "dad8d92a41f7be67c066c3a14c92a189a936ebfe2f78cb3ba841285c85c6484f",
+          "full_master_equality": "PASS"
+        },
+        {
+          "illumination_opacity": 1,
+          "rgba_sha256": "72d2256594b9ca6efcc56e298bc77c1866ee6cb0cd63f3809f7243ce1082c919",
+          "full_master_equality": "PASS"
+        }
+      ]
+    },
+    {
+      "direction": 270,
+      "freeze": {
+        "archive": "TLWH_Smelter_270_PortFree_Artwork_v1.zip",
+        "bytes": 44720002,
+        "entry_count": 86,
+        "sha256": "72553e1c602e0a7924ef16983c66dbe2095e56e94181fefedff23b4a4b35d671",
+        "receipt": "TLWH_Smelter_270_PortFree_Artwork_v1.receipt.json",
+        "receipt_sha256": "9366f0749f350059b1c745e064b4f83eec9eae7f9183eaf86e7d0b8eab0a02e3",
+        "manifest_entry": "TLWH_Smelter_270_PortFree_Artwork_v1/preservation/aggregate_manifest.json",
+        "manifest_sha256": "a74a73ae169e3a0fdf1dfbd6223a44a9ed55f55bc8f56b5176a2ab472c95176a",
+        "original_manifest_entry": "TLWH_Smelter_270_PortFree_Artwork_v1/original/smelter_270_manifest.json",
+        "original_manifest_sha256": "67164aa4317d7a6551b96aeb51e74c6cabaa8e4ac53b29250ba07176bee64338",
+        "original_source_files": 40
+      },
+      "source_path": "TLWH_Smelter_270_PortFree_Artwork_v1/artwork/smelter_270_body_port_free_master.png",
+      "source_sha256": "a66b6c25bd9412f89a5a541256fb99367a7fed54ef83bf010a333e5e16a242c2",
+      "source_rgba_sha256": "4bc8f7e627e84b5fe66879d28bcd3d4f7cdc72571b536dd7668dc3e610accc52",
+      "canvas_px": [
+        1254,
+        1254
+      ],
+      "crop_rect_px": [
+        162,
+        72,
+        925,
+        1115
+      ],
+      "path": "assets/machines/smelter/smelter_270_body.png",
+      "dimensions_px": [
+        925,
+        1115
+      ],
+      "offset_px": [
+        -463,
+        -1100
+      ],
+      "bytes": 2493563,
+      "png_sha256": "c363971c6e5e8309b144d17a6eb73633243e86cc8880ee7ea27f504d6e41a9c0",
+      "rgba_sha256": "4280cdcf3a5af163022c7a3dc0c7fb71f6f6ee6f2853ab9bf44bd67597436952",
+      "source_crop_rgba_sha256": "4280cdcf3a5af163022c7a3dc0c7fb71f6f6ee6f2853ab9bf44bd67597436952",
+      "alpha_bounds_px": [
+        4,
+        4,
+        921,
+        1104
+      ],
+      "original_runtime_sha256": "a3673227279850f84fdbeb4af548cc32a9a92184b203893e7b3225706b4806bb",
+      "original_source_sha256": "3b090610d976ea4f31b7580268103f55b98341f87c820c601bc44964fcbb3509",
+      "pixel_equality": "PASS",
+      "offline_composites": [
+        {
+          "illumination_opacity": 0,
+          "rgba_sha256": "4bc8f7e627e84b5fe66879d28bcd3d4f7cdc72571b536dd7668dc3e610accc52",
+          "full_master_equality": "PASS"
+        },
+        {
+          "illumination_opacity": 0.82,
+          "rgba_sha256": "888a226cfa03e88c48a5e386f425dda5aa73f04ea3937bfc29d374761dd118d4",
+          "full_master_equality": "PASS"
+        },
+        {
+          "illumination_opacity": 1,
+          "rgba_sha256": "c8c6421cd8193e0f8f46c1577d89ac1415e6e100976e351b775f2a00b50fece5",
+          "full_master_equality": "PASS"
+        }
+      ]
+    }
+  ],
+  "preserved_supporting_layers": [
+    {
+      "path": "assets/machines/smelter/smelter_0_interior.png",
+      "sha256": "81c62cb2b4872554440f4d58b769c4446460b5a60a5064d1897859ef7844d8b3"
+    },
+    {
+      "path": "assets/machines/smelter/smelter_0_illumination.png",
+      "sha256": "ce148c6e9319b2efb852010bc6ce73e0c0e2124f60385ac21ae7145186ecf58f"
+    },
+    {
+      "path": "assets/machines/smelter/smelter_0_foreground.png",
+      "sha256": "73a3d1b52e051fda2158f26602868010ac6132f1a028773af6b7ac8d8d9d6397"
+    },
+    {
+      "path": "assets/machines/smelter/smelter_90_illumination.png",
+      "sha256": "5e34c50f1055296a311240e283f1d66c5d279e3d78af97f49153c6f1ec47b538"
+    },
+    {
+      "path": "assets/machines/smelter/smelter_180_illumination.png",
+      "sha256": "391c692f08adcd0a395c169de034ab536f015a45002ca9a318724b42b3086fb4"
+    },
+    {
+      "path": "assets/machines/smelter/smelter_270_illumination.png",
+      "sha256": "329ba5256f4286f151a24bf27bac8527b9d4106fd951c83a3fb97ec7a266c3fd"
+    }
+  ],
+  "preserved_imports": [
+    {
+      "path": "assets/machines/smelter/smelter_0_body.png.import",
+      "lf_sha256": "0d3accac1e131ad155515b93db2c3dab1ac07809f5f9b2b16def5c747fc37124"
+    },
+    {
+      "path": "assets/machines/smelter/smelter_0_interior.png.import",
+      "lf_sha256": "6036bd9cae3569dfae5c1621be15fa1db9b46f84ff1faae017aca507e918ddc1"
+    },
+    {
+      "path": "assets/machines/smelter/smelter_0_illumination.png.import",
+      "lf_sha256": "584bc6802dde23d660295e7f65b76650bb321767c7e730dbafb5b418202ce593"
+    },
+    {
+      "path": "assets/machines/smelter/smelter_0_foreground.png.import",
+      "lf_sha256": "33161be4c92c35e8a343ba661c654606f35366c7af91abecfb000e29c6a9382d"
+    },
+    {
+      "path": "assets/machines/smelter/smelter_90_body.png.import",
+      "lf_sha256": "5dd5c0cec05950fe9cc735bf6f54ad9764f8bd237661332b9f8340f59d6564bc"
+    },
+    {
+      "path": "assets/machines/smelter/smelter_90_illumination.png.import",
+      "lf_sha256": "59d25b2b7048b70f310fbbf8b6e6ee2d431fed8ee4c583e7ef590dc632ff75b2"
+    },
+    {
+      "path": "assets/machines/smelter/smelter_180_body.png.import",
+      "lf_sha256": "129f597d8ba8617179461a6663a83c4e836096b6087978eff97667f7d475b27d"
+    },
+    {
+      "path": "assets/machines/smelter/smelter_180_illumination.png.import",
+      "lf_sha256": "c723dbb13017bd9bdc33396eea4d665becd2331eed530f95b7a558e84e511f66"
+    },
+    {
+      "path": "assets/machines/smelter/smelter_270_body.png.import",
+      "lf_sha256": "ca4cc04e6ac220f0639d773996eb8f7361ac5efd4bd1047e00ee627ef6303109"
+    },
+    {
+      "path": "assets/machines/smelter/smelter_270_illumination.png.import",
+      "lf_sha256": "8563b7234fc1f1d1967d7dd74dc7ba5e314175d8d45076a32a23a79e1eba7b74"
+    }
+  ],
+  "preserved_presentation": [
+    {
+      "path": "construction/smelter_visual.gd",
+      "lf_sha256": "cd5258d755f2f9c1f0b30988bacfb6d34cfebcb9a427afda777213af8d5caa3b"
+    },
+    {
+      "path": "construction/smelter_visual.gd.uid",
+      "lf_sha256": "daf01ed76937d8722e1eee621f8fd1cebf5c907bc7f8c30c1b3ce5cc8f9eb6fa"
+    },
+    {
+      "path": "construction/smelter_visual.tscn",
+      "lf_sha256": "f8a45675ef428d547ebed1de67f4f0b86da39ecb9b0d6eda3ee1d98b1b32db2b"
+    },
+    {
+      "path": "construction/machine_visual.gd",
+      "lf_sha256": "afcd2a6eb01974162c1e800739609b93fee475a24e217dbf8a22e51cdf1f9f75"
+    },
+    {
+      "path": "docs/experiments/smelter_static_artwork.json",
+      "lf_sha256": "da4bc71dd16416118a34b5acefd02044ec79ad8ad2d8502f2762c980a657924d"
+    }
+  ],
+  "verification": {
+    "frozen_inputs": "PASS: all four archive, receipt, manifest and accepted-master identities; exact member inventory and CRCs; all 129 original-source files and historical runtime/full-layer reconstruction; 270-degree aliases resolved",
+    "derivative_pixels": "PASS: exact fixed-crop RGBA equality including transparent RGB; zero RGBA discarded outside crop; independently measured alpha bounds and at least four transparent pixels of padding",
+    "static_offline_tests": {
+      "result": "PASS",
+      "focused_smelter": {
+        "tests": 28,
+        "passed": 28,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "command": "python -B -m unittest discover -s tests -p 'static_smelter*test.py'"
+      },
+      "focused_extractor": {
+        "tests": 16,
+        "passed": 16,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "command": "python -B -m unittest discover -s tests -p 'static_extractor*test.py'"
+      },
+      "focused_fabricator": {
+        "tests": 36,
+        "passed": 34,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 2,
+        "command": "python -B -m unittest discover -s tests -p 'static_fabricator*test.py'"
+      },
+      "full_static": {
+        "tests": 473,
+        "passed": 471,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 2,
+        "seconds": 338.364,
+        "command": "python -B -m unittest discover -s tests -p 'static_*test.py'"
+      },
+      "skip_reason": "Optional external Fabricator static and front package roots were not supplied; repository identity and preservation checks ran.",
+      "active_smelter": "PASS: python -B tests/smelter_artwork_offline.py --active",
+      "frozen_smelter": "PASS: python -B tests/smelter_artwork_offline.py --freeze-dir <owner-local-freeze-directory>; 129 original-source files unchanged",
+      "active_extractor": "PASS: python -B tests/extractor_artwork_offline.py --active; no external Extractor source reconstruction claimed",
+      "preservation_audit": "PASS: exactly 14 authorized paths (12 modified, two added); 635 protected production/asset/execution-policy paths checked, 631 unchanged and four authorized body replacements; all ten import sidecars exact baseline Git bytes; unchanged presentation text uses existing checkout LF/CRLF conventions",
+      "documentation": "PASS: documentation-sync within the three authorized Markdown paths; five changed local links/anchors; historical acceptance records preserved verbatim; no private workstation paths; git diff --check",
+      "scope": "Python static source/resource/pixel checks only; no Godot, project-code runtime, native runner, MetadataSmoke, graphical interaction, performance probe or stress test",
+      "staged_cross_machine_guards": {
+        "result": "PASS",
+        "tests": 3,
+        "passed": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "working_directory": "tests",
+        "command": "python -B -m unittest -v static_fabricator_footprint_test.FabricatorFootprintStaticTest.test_protected_gameplay_art_and_execution_controls_unchanged static_fabricator_artwork_test.FabricatorArtworkStaticTest.test_gameplay_existing_artwork_and_execution_controls_preserved static_fabricator_animation_test.FabricatorAnimationStaticTest.test_all_other_production_artwork_gameplay_and_execution_controls_preserved",
+        "scope": "Repeated after all 14 paths were staged; includes exact new provenance path. Frozen input/crop verification also repeated after staging; all four archives/receipts and 129 original-source files unchanged."
+      }
+    },
+    "godot_engine": "NOT RUN",
+    "owner_f5": "PENDING"
+  }
+}

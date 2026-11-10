@@ -672,6 +672,20 @@ Implementation is merged in PR #39. Agent validation was static only; evidence
 and limitations are recorded in the
 [implementation notes](../README.md#deploy-the-smelter-pr-39-merged).
 
+## Smelter port-free runtime bodies v1 (feature branch, pending merge)
+
+The November 10, 2026 owner-authorized integration on
+`codex/smelter-port-free-runtime-v1` replaces exactly four runtime bodies with
+lossless fixed crops of independently accepted and frozen port-free masters.
+Original paths, imports, registration, supporting layers, thermal behavior,
+ghost/status presentation and gameplay remain unchanged. Static/offline
+verification separates historical artwork identities from active derivatives;
+owner F5 acceptance is pending and the agent has not executed Godot. See the
+[provenance, verification scope and owner checklist](SMELTER_STATIC_ARTWORK.md#port-free-runtime-bodies-v1-pending-merge).
+The historical artwork and thermal acceptance records below remain unchanged.
+This artwork milestone changes no research progression, narrative, Conduit
+Adapters or logistics design.
+
 ## Smelter thermal illumination (feature branch, pending merge)
 
 Owner Thermal Decisions 1A–10A, approved November 9, 2026, are implemented on

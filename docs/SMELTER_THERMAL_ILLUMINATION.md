@@ -1,5 +1,15 @@
 # Smelter thermal illumination
 
+The November 10 port-free body integration on `codex/smelter-port-free-runtime-v1`
+is pending merge and owner graphical acceptance. It changes only four body PNGs;
+all thermal source, constants, transitions, lifecycle behavior, illumination,
+0-degree supporting layers, imports and registration remain unchanged. Offline
+composites at opacity 0, 0.82 and 1 preserve the thermal contribution; all 13
+thermal source/envelope contracts remain in place. See the
+[active derivative provenance and pending F5 checklist](SMELTER_STATIC_ARTWORK.md#port-free-runtime-bodies-v1-pending-merge).
+The acceptance and ten-PNG preservation statements below retain their original
+thermal milestone scope and do not constitute acceptance of the new body artwork.
+
 Implemented on `codex/smelter-thermal-illumination`, **owner F5 accepted; pending
 review and merge**, from PR #157 merge `ca18cfa4c9f16ab934968aed4fa764f9c1e2b58d`.
 The November 9, 2026 owner authorization approves Thermal Decisions 1A–10A.

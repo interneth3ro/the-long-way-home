@@ -7,6 +7,8 @@ import unittest
 
 from current_preservation import ROOT, git_blob, normalized
 from extractor_artwork_offline import decode_png, place
+from smelter_artwork_offline import (BODY_PATHS, alpha_bounds, composite, historical_bytes,
+                                     verify_active_artifacts)
 from static_automatic_transitions_test import function, nodes, vectors
 from static_fabricator_animation_test import without_presentation_identity
 
@@ -55,8 +57,8 @@ def inventory():
 
 
 @lru_cache(maxsize=None)
-def decoded(path):
-    return decode_png((ROOT / path).read_bytes())
+def decoded(path, historical=False):
+    return decode_png(historical_bytes(path) if historical else (ROOT / path).read_bytes())
 
 
 def configured():
@@ -86,10 +88,10 @@ class SmelterArtworkStaticTest(unittest.TestCase):
         uids = set()
         for asset in assets:
             path = asset["path"]
-            raw = (ROOT / path).read_bytes()
+            raw = historical_bytes(path) if path in BODY_PATHS else (ROOT / path).read_bytes()
             self.assertEqual((len(raw), hashlib.sha256(raw).hexdigest()),
                              (asset["bytes"], asset["sha256"]))
-            w, h, rgba = decoded(path)  # Includes chunk CRCs, RGBA8 and zlib decode.
+            w, h, rgba = decoded(path, historical=path in BODY_PATHS)  # Includes chunk CRCs, RGBA8 and zlib decode.
             self.assertEqual([w, h], asset["size_px"])
             self.assertEqual(hashlib.sha256(rgba).hexdigest(), asset["rgba_sha256"])
             alpha = rgba[3::4]
@@ -110,6 +112,37 @@ class SmelterArtworkStaticTest(unittest.TestCase):
             uids.add(uid)
             expected_paths.update((path.rsplit("/", 1)[1], path.rsplit("/", 1)[1] + ".import"))
         self.assertEqual({p.name for p in (ROOT / "assets/machines/smelter").iterdir()}, expected_paths)
+
+    def test_active_derivatives_exact_identities_and_measured_alpha(self):
+        active = verify_active_artifacts()
+        textures, offsets = configured()
+        for index, body in enumerate(active["bodies"]):
+            self.assertEqual(textures[index][0], body["path"])
+            self.assertEqual(list(offsets[index][0]), body["offset_px"])
+            w, h, rgba = decoded(body["path"])
+            self.assertEqual(alpha_bounds(w, h, rgba), body["alpha_bounds_px"])
+            # Active bounds are independently pinned; historical four-edge bounds
+            # above remain exact and apply to historical originals only.
+            self.assertEqual(hashlib.sha256(rgba).hexdigest(), body["source_crop_rgba_sha256"])
+
+    def test_active_thermal_composites_preserve_supporting_layer_response(self):
+        for body, record in zip(verify_active_artifacts()["bodies"], inventory()["directions"]):
+            active_rgba = decoded(body["path"])[2]
+            original_rgba = decoded(body["path"], historical=True)[2]
+            cold = composite(record, active_rgba, 0)
+            old_cold = composite(record, original_rgba, 0)
+            self.assertEqual([r["illumination_opacity"] for r in body["offline_composites"]], [0, .82, 1])
+            for check in body["offline_composites"]:
+                opacity = check["illumination_opacity"]
+                current = composite(record, active_rgba, opacity)
+                self.assertEqual(hashlib.sha256(current).hexdigest(), check["rgba_sha256"])
+                self.assertEqual(current[3::4], cold[3::4])
+                if opacity:
+                    original = composite(record, original_rgba, opacity)
+                    # Every channel's thermal contribution remains identical,
+                    # including at the 0-degree interior/foreground boundaries.
+                    self.assertTrue(all(a - b == c - d for a, b, c, d in
+                                        zip(current, cold, original, old_cold)))
 
     def test_directional_slots_order_crops_and_anchors(self):
         textures, offsets = configured()
@@ -175,14 +208,14 @@ class SmelterArtworkStaticTest(unittest.TestCase):
         self.assertIn("y_sort_enabled = true", nodes(read("scenes/world/planet_exterior.tscn"))["GroundObjects"][1])
         self.assertIn("$GroundObjects.add_child(presenter)", read("scenes/world/planet_exterior.gd"))
 
-    def test_runtime_crops_reconstruct_frozen_idle_pixels(self):
+    def test_historical_crops_reconstruct_frozen_idle_pixels(self):
         textures, offsets = configured()
         for d, record in enumerate(inventory()["directions"]):
             composite = bytearray(1254 * 1254 * 4)
             for slot, path in enumerate(textures[d]):
                 if path is None or slot == 2:
                     continue
-                w, h, rgba = decoded(path)
+                w, h, rgba = decoded(path, historical=path in BODY_PATHS)
                 origin = tuple(offsets[d][slot][i] + ANCHORS[d][i] for i in range(2))
                 place(rgba, w, h, origin, composite)
             digest = hashlib.sha256(composite).hexdigest()
