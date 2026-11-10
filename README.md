@@ -1,12 +1,12 @@
 # The Long Way Home
 
-Application shell/title Milestone 1 is implemented on
-`codex/application-shell-title-screen`, **pending owner F5 acceptance and merge**.
-F5 opens the title screen; New Game creates a fresh production MainV2 session.
-Load Game and Settings are disabled; Exit quits normally. The independent static
-background reuses the accepted damaged-ship PNG. Agent verification is static only.
-Loading UI, exterior preparation, persistence and pause remain future milestones.
-See [startup ownership and owner checklist](docs/APPLICATION_SHELL.md).
+Application shell/title Milestone 1 merged in [PR #166](https://github.com/interneth3ro/the-long-way-home/pull/166).
+Pause Menu Foundation (Milestone 2) is implemented on `codex/pause-menu-foundation`,
+**pending owner F5 acceptance and merge**. Escape after existing gameplay interfaces
+have handled it opens a dimmed gameplay overlay. Resume restores prior pause state;
+Main Menu and Exit Game require confirmation. Save Game, Load Game and Settings
+remain disabled. No persistence, preloading or loading screen is added.
+Agent verification is static only. See [ownership and owner checklist](docs/APPLICATION_SHELL.md).
 
 Fabricator front mechanical animation is implemented on
 `codex/fabricator-front-animation`, **pending owner normal-F5 acceptance and merge**

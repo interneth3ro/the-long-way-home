@@ -16,13 +16,17 @@ continuous six-phase rehearsal, **6/6 PASS (owner-reported)**. P8 is implemented
 on `codex/p8-f5-production-cutover`, pending owner cutover acceptance and merge.
 
 **F5 / Run Project** opens the application title screen on
-`codex/application-shell-title-screen` (pending owner acceptance and merge).
+the merged Milestone 1 shell (PR #166).
 New Game creates a fresh V2 Primary session through `scenes/main/main_v2.tscn`.
 **F6 / Run Current Scene** with that scene open also starts V2. For the explicit
 **legacy F6 fallback**, stop the game, open `scenes/main/main.tscn` and press F6.
 F5 stays configured for the title screen. Load Game and Settings are disabled;
 Exit quits normally. The static background reuses accepted ship artwork.
-Loading UI, exterior preparation, persistence and pause remain separate milestones;
+Pause Menu Foundation is implemented on `codex/pause-menu-foundation`, pending
+owner F5 acceptance and merge: Escape opens the overlay after existing interfaces
+handle it; Resume restores prior pause state; Main Menu and Exit Game require
+confirmation. Save Game, Load Game and Settings remain disabled.
+Loading UI, exterior preparation and persistence remain separate milestones;
 see [application ownership and owner acceptance](APPLICATION_SHELL.md).
 Computer restoration is implemented on `codex/computer-restoration`, pending
 owner normal-F5 acceptance and merge; see the
