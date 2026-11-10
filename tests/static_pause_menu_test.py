@@ -12,7 +12,7 @@ class PauseMenuTests(unittest.TestCase):
         shell = read("scenes/application/application.gd")
         self.assertIn("process_mode = 3", nodes(read("scenes/application/application.tscn"))["Application"][1])
         start = function(shell, "_start_new_game")
-        self.assertLess(start.index("_session.process_mode = Node.PROCESS_MODE_PAUSABLE"),
+        self.assertLess(start.index("_session.process_mode = Node.PROCESS_MODE_DISABLED"),
                         start.index("add_child(_session)"))
         self.assertNotIn("paused =", start)
         pause = function(shell, "_unhandled_input")

@@ -4,6 +4,8 @@ import subprocess
 
 ROOT = Path(__file__).resolve().parents[1]
 APPLICATION_FILES = {
+    "scenes/application/loading_screen.gd",
+    "scenes/application/loading_screen.tscn",
     "scenes/application/application.gd",
     "scenes/application/application.gd.uid",
     "scenes/application/application.tscn",

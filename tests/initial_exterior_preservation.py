@@ -28,6 +28,11 @@ def without_initial_preparation(path, raw):
                             "WorldCoordinates.world_to_chunk(to_local(_player.global_position))",
                             "var center := WorldCoordinates.world_to_chunk(to_local(_player.global_position))", 1)
     elif path == "scenes/main/scene_transition_controller.gd":
+        text = text.replace("var _startup_activation_pending: bool = false\n"
+                            "var _startup_player_mode: Node.ProcessMode\n"
+                            "var _startup_progression_mode: Node.ProcessMode\n"
+                            "var _startup_state: PlanetWorldState\n"
+                            "var _startup_seed: int\nvar _startup_revision: int\n", "", 1)
         text = text.replace("signal initial_preparation_progress(completed: int, total: int)\n", "", 1)
         text = text.replace("var _initial_generation: int = 0\nvar _initial_world: PlanetExterior\n"
                             "var initial_exterior_initialized: bool = false\n", "", 1)

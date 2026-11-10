@@ -31,6 +31,12 @@ var _transition_generation: int = 0
 var _initial_generation: int = 0
 var _initial_world: PlanetExterior
 var initial_exterior_initialized: bool = false
+var _startup_activation_pending: bool = false
+var _startup_player_mode: Node.ProcessMode
+var _startup_progression_mode: Node.ProcessMode
+var _startup_state: PlanetWorldState
+var _startup_seed: int
+var _startup_revision: int
 
 
 func _ready() -> void:
@@ -47,7 +53,7 @@ func initialize() -> void:
 
 # MainV2 has finished synchronous interior spawn setup before the shell calls this.
 # Only this controller owns the staged and later detached exterior instance.
-func prepare_initial_exterior() -> bool:
+func prepare_initial_exterior(defer_activation: bool = false) -> bool:
 	if _busy or initial_exterior_initialized or _worlds.has(EXTERIOR_SCENE):
 		return false
 	_busy = true
@@ -107,8 +113,35 @@ func prepare_initial_exterior() -> bool:
 	exterior.preparation_progress.disconnect(_report_initial_progress)
 	_initial_world = null
 	initial_exterior_initialized = true
+	if defer_activation:
+		_startup_activation_pending = true
+		_startup_player_mode = previous_player_mode
+		_startup_progression_mode = previous_progression_mode
+		_startup_state = state
+		_startup_seed = seed_value
+		_startup_revision = revision
+		# Application owns the reveal; keep busy and both gameplay locks held.
+		_curtain.color.a = 0.0
+		_curtain.hide()
+		return true
 	progression.process_mode = previous_progression_mode
 	_finish_transition(previous_player_mode)
+	return true
+
+
+# Startup-only handoff. Ordinary hatch fades never use this path.
+func activate_initial_session() -> bool:
+	var exterior: Node2D = _worlds.get(EXTERIOR_SCENE)
+	if not is_inside_tree() or not _busy or not _startup_activation_pending \
+			or not initial_exterior_initialized or not is_instance_valid(exterior) \
+			or exterior.get_parent() != null or progression.planet != _startup_state \
+			or _startup_state.seed_value != _startup_seed or _startup_state.revision != _startup_revision \
+			or not is_instance_valid(player) or not is_instance_valid(_current_world) \
+			or not _current_world.is_ancestor_of(player):
+		return false
+	_startup_activation_pending = false
+	progression.process_mode = _startup_progression_mode
+	_finish_transition(_startup_player_mode)
 	return true
 
 
@@ -128,6 +161,7 @@ func _owns_initial_preparation(generation: int, exterior: PlanetExterior,
 
 
 func cancel_initial_preparation() -> void:
+	_startup_activation_pending = false
 	_initial_generation += 1
 	initial_exterior_initialized = false
 	if is_instance_valid(_initial_world):

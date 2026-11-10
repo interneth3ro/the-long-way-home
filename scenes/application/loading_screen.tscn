@@ -1,0 +1,84 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://scenes/application/loading_screen.gd" id="1_loading"]
+[ext_resource type="FontFile" path="res://assets/fonts/ibm-plex-sans/IBMPlexSans-Regular.ttf" id="2_font"]
+[ext_resource type="FontFile" path="res://assets/fonts/ibm-plex-sans/IBMPlexSans-Medium.ttf" id="3_heading"]
+
+[sub_resource type="StyleBoxFlat" id="Track"]
+bg_color = Color(0.12, 0.13, 0.13, 1)
+
+[sub_resource type="StyleBoxFlat" id="Fill"]
+bg_color = Color(0.72, 0.48, 0.22, 1)
+
+[sub_resource type="StyleBoxEmpty" id="Empty"]
+
+[node name="LoadingScreen" type="CanvasLayer"]
+process_mode = 3
+layer = 120
+script = ExtResource("1_loading")
+
+[node name="Overlay" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.018, 0.024, 0.028, 1)
+
+[node name="Center" type="CenterContainer" parent="Overlay"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Content" type="VBoxContainer" parent="Overlay/Center"]
+custom_minimum_size = Vector2(540, 0)
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Title" type="Label" parent="Overlay/Center/Content"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.72, 0.48, 0.22, 1)
+theme_override_fonts/font = ExtResource("3_heading")
+theme_override_font_sizes/font_size = 28
+horizontal_alignment = 1
+
+[node name="Status" type="Label" parent="Overlay/Center/Content"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.78, 0.81, 0.81, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 24
+horizontal_alignment = 1
+
+[node name="Progress" type="ProgressBar" parent="Overlay/Center/Content"]
+custom_minimum_size = Vector2(0, 5)
+layout_mode = 2
+mouse_filter = 2
+theme_override_styles/background = SubResource("Track")
+theme_override_styles/fill = SubResource("Fill")
+show_percentage = false
+
+[node name="Detail" type="Label" parent="Overlay/Center/Content"]
+custom_minimum_size = Vector2(540, 64)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.56, 0.61, 0.62, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 18
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="Return" type="Button" parent="Overlay/Center/Content"]
+visible = false
+layout_mode = 2
+text = "Return to Main Menu"
+theme_override_fonts/font = ExtResource("3_heading")
+theme_override_font_sizes/font_size = 24
+theme_override_colors/font_color = Color(0.72, 0.48, 0.22, 1)
+theme_override_colors/font_hover_color = Color(0.94, 0.74, 0.43, 1)
+theme_override_colors/font_focus_color = Color(0.94, 0.74, 0.43, 1)
+theme_override_styles/normal = SubResource("Empty")
+theme_override_styles/hover = SubResource("Empty")
+theme_override_styles/pressed = SubResource("Empty")

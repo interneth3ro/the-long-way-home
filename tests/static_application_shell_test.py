@@ -30,7 +30,7 @@ class ApplicationShellTests(unittest.TestCase):
                    "add_child(_session)", "_starting = false"]
         indices = [start.index(text) for text in ordered]
         self.assertEqual(indices, sorted(indices))
-        self.assertIn("await get_tree().process_frame\n\tremove_child", start)
+        self.assertLess(start.index("await get_tree().process_frame"), start.index("remove_child"))
         self.assertIn("set_input_as_handled()", geometry.function(code, "_input"))
         self.assertNotIn("paused = false", code)
         self.assertIn("get_tree().quit()", geometry.function(code, "_quit"))

@@ -2,13 +2,16 @@
 
 Application shell/title Milestone 1 merged in [PR #166](https://github.com/interneth3ro/the-long-way-home/pull/166).
 Pause Menu Foundation merged in [PR #167](https://github.com/interneth3ro/the-long-way-home/pull/167)
-after owner 18/18 F5 PASS. Milestone 3 initial exterior preparation is implemented
-on `codex/initial-exterior-preparation`, **pending owner F5 acceptance and merge**.
+after owner 18/18 F5 PASS. Milestone 3 initial exterior preparation merged in
+[PR #169](https://github.com/interneth3ro/the-long-way-home/pull/169) after owner F5 acceptance.
 New Game prepares and retains the 49-chunk crash-site neighborhood before Dave
 gains control inside the ship. First exit reuses it; normal exploration streams
-beyond it. No loading UI or persistence is added. Save Game, Load Game and Settings
-remain disabled. Agent verification is static only; Godot was not executed.
-See [ownership, limitations and owner checklist](docs/APPLICATION_SHELL.md#initial-exterior-preparation--milestone-3-pending-acceptance-and-merge).
+beyond it. Milestone 4 adds shared loading presentation and real 0–51 startup
+progress on `codex/shared-loading-screen`, **pending owner F5 acceptance and merge**.
+Gameplay remains locked through reveal; failures offer Return to Main Menu.
+Save Game, Load Game and Settings remain disabled; persistence is separate.
+Agent verification is static only; Godot was not executed.
+See [ownership, limitations and owner checklist](docs/APPLICATION_SHELL.md#shared-loading-screen--milestone-4-pending-acceptance-and-merge).
 
 Fabricator front mechanical animation is implemented on
 `codex/fabricator-front-animation`, **pending owner normal-F5 acceptance and merge**
