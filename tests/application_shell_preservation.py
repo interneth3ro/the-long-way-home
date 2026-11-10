@@ -11,6 +11,9 @@ APPLICATION_FILES = {
     "scenes/application/title_screen.gd",
     "scenes/application/title_screen.gd.uid",
     "scenes/application/title_screen.tscn",
+    "scenes/application/pause_menu.gd",
+    "scenes/application/pause_menu.gd.uid",
+    "scenes/application/pause_menu.tscn",
 }
 
 
