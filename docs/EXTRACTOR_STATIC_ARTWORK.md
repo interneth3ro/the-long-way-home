@@ -4,8 +4,84 @@ Static artwork merged in PR #154 at `c5729c00f8d4055ac900e1b6221fe32a3e1ad5e6`,
 after footprint PR #153 at `0a0003444be0ba4b67e7ab6c8fa678abbf740b34`.
 The PR B handoff records the four directional treatments as owner-accepted.
 Animation on `codex/extractor-barrel-animation` has final owner F5 acceptance:
-**16/16 PASS, zero blocking defects**, reported 2026-11-04. PR #155 remains
-unmerged, pending review. Earlier PR A verification below retains its historical scope.
+**16/16 PASS, zero blocking defects**, reported 2026-11-04. PR #155 merged at
+`461950a2c379ae3039b30d682b530180de645f72`. Earlier PR A/B verification below
+retains its historical scope; it does not accept the new port-free body integration.
+
+## Port-free runtime bodies v1 — feature branch, pending merge
+
+Owner Decision 2A authorizes four exact fixed-crop derivatives of the artistically
+accepted `TLWH_Extractor_PortFree_Artwork_v1.zip`. On
+`codex/extractor-port-free-runtime-v1`, only the four active body PNGs are replaced.
+All eight original barrel/foreground PNGs, all twelve import sidecars, presenter
+scripts/scenes, registration, animation, footprint and gameplay remain unchanged.
+Godot execution is **NOT RUN**; owner F5 acceptance of this integration is **PENDING**.
+
+The [new derivative record](experiments/extractor_port_free_runtime_v1.json)
+pins the ZIP (`35d8dc1d2e9c88ff7634c2403a864efa968e6a39829ced524dda76c5f27fe8d3`),
+aggregate manifest, receipt, four approved full-canvas sources, exact output PNG
+and decoded RGBA identities, original body identities and eight preserved layers.
+External absolute source locations are not published. Original prototype archives,
+acceptance records and the historical inventory below remain immutable.
+
+The 1254x1254 approved bodies are cropped with the existing body rectangles in
+the presentation table below. Exact RGBA row slices, including transparent RGB,
+are encoded using Python 3.14.7 standard-library struct/zlib, zlib runtime
+`1.3.1.zlib-ng`, filter 0 and compression level 9, with IHDR/IDAT/IEND only.
+Every written PNG independently decodes to the exact approved crop. No nonzero
+RGBA pixels lie outside those fixed rectangles. There is no alpha trimming,
+resampling, recoloring, new crop geometry or registration adjustment.
+
+Historical checks read original runtime bytes from fixed Git revision
+`1a3d3dcc1b4503585a2e49f4bf5832d650f600de`; missing history fails explicitly.
+The original package/master/pose comparisons keep their original expected hashes.
+Active artifact checks use the new record; complete source reconstruction also
+requires the frozen ZIP and receipt. The three Fabricator preservation guards
+admit exactly the four body paths, plus this derivative JSON where needed, while
+checking exact active identities. No directory-wide exception is introduced.
+
+Read-only offline commands (no Godot, extraction, or image writes):
+
+```powershell
+python -B tests/extractor_artwork_offline.py --active
+python -B tests/extractor_artwork_offline.py --freeze <port-free-ZIP> --receipt <port-free-receipt>
+python -B tests/extractor_artwork_offline.py --packages <original-ZIP-directory> --motion
+python -B -m unittest discover -s tests -p 'static_*test.py'
+```
+
+`--active` alone verifies committed artifact identities and explicitly reports
+source reconstruction NOT RUN. It never substitutes local body bytes for missing
+historical Git blobs. The frozen archive's retained 32-pose PASS remains historical
+evidence; its embedded verifier is not executed by these commands. New derivative
+identity/pixel checks do not establish Godot importing, filtering, fractional
+animation rendering, performance, or graphical acceptance. The original 16/16
+owner animation acceptance below remains evidence for that earlier milestone.
+
+Stage 2 offline validation: **16/16 focused Extractor tests PASS** and the full
+static suite **471 tests, OK (2 optional external Fabricator-package tests skipped)**
+in 309.256 seconds. Active artifact identities, all four exact frozen-source crop
+comparisons, and the original-package historical reconstruction/32 integer poses
+PASS. The protected tracked-file audit and all twelve import byte identities PASS;
+the three added/changed local Markdown links and `git diff --check` PASS.
+These results do not establish engine or owner runtime acceptance.
+
+### Owner F5 acceptance — all PENDING
+
+1. Inspect construction ghosts in all four orientations.
+2. Verify approved bodies, stable anchors and ghost transparency.
+3. Deploy all four orientations and verify footprint alignment.
+4. Confirm production animation completes its unchanged 1.6-second cycle.
+5. Check barrel/foreground occlusion at raised, lowered and intermediate positions.
+6. Verify inactive and output-full machines stop with the barrel raised.
+7. Rotate ghosts and inspect deployed machines at different camera zoom levels.
+8. Check continuous fractional-position motion for shimmer, seams, halos, clipping or drift.
+9. Walk Dave around machines; inspect Y sorting and neighboring-machine overlap.
+10. Verify extraction, ore collection, output capacity, recovery and redeployment.
+11. Re-enter the exterior and verify presentation and animation lifecycle.
+12. Check ordinary-play responsiveness, visual artifacts and debugger/import errors.
+
+These checks are for the owner after PR review. No benchmark or prolonged runtime
+test is included, and no owner result is inferred from static checks.
 
 ## Provenance and immutable inputs
 
@@ -25,8 +101,8 @@ executed, copied into the repository or regenerated.
 | 270 | `021286d810d25fe5cd91d749cfa05d3440b7f61ccfb484aeb391d1923486f467` |
 
 The [complete SHA-256 and manifest inventory](experiments/extractor_static_artwork.json)
-records all 12 PNG identities, source-layer hashes, crop sizes, offsets, anchor,
-scale and output identities. The runtime PNGs are byte-identical copies, with
+records the historical 12 PNG identities, source-layer hashes, crop sizes, offsets,
+anchor, scale and output identities. At PR A the runtime PNGs were byte-identical copies, with
 lossless mipmapped `.png.import` metadata authored offline using existing texture
 import conventions. No engine-generated cache is included. Import behavior has
 not been verified by Godot.
@@ -140,7 +216,7 @@ assertions and staging inventory remain unchanged. Static success grants no
 engine permission. See [execution policy](../AGENTS.md#godot-execution-safety) and
 [local testing](LOCAL_TESTING.md).
 
-## Barrel animation (PR B, pending merge)
+## Barrel animation (PR B)
 
 Only the Barrel Sprite2D receives tweened `position` values, from its unchanged
 raised offset to that offset plus positive local Y. Positive Y is down in all
@@ -324,4 +400,4 @@ engine import verification. The earlier full 406-test run belongs to
 `53df809`; it was not rerun after the later guard or syntax corrections or this
 documentation/UID-only closeout. Earlier archive/raster checks retain their
 original scope. No animation, gameplay, source artwork or execution control is
-changed by closeout. PR #155 remains unmerged; no cleanup is included.
+changed by closeout. At that closeout PR #155 remained unmerged; no cleanup was included.

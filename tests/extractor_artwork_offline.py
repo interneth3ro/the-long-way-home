@@ -9,11 +9,99 @@ import json
 from pathlib import Path
 import re
 import struct
+import subprocess
 import zipfile
 import zlib
 
 ROOT = Path(__file__).resolve().parents[1]
 INVENTORY = ROOT / "docs/experiments/extractor_static_artwork.json"
+ACTIVE_INVENTORY = ROOT / "docs/experiments/extractor_port_free_runtime_v1.json"
+HISTORICAL_REF = "1a3d3dcc1b4503585a2e49f4bf5832d650f600de"
+# Decision 2A authorizes only these four replacements. Fabricator guards reuse
+# this exact boundary and verify the recorded active identities before allowing it.
+BODY_PATHS = (
+    "assets/machines/extractor/extractor_0_body.png",
+    "assets/machines/extractor/extractor_90_body.png",
+    "assets/machines/extractor/extractor_180_body.png",
+    "assets/machines/extractor/extractor_270_body.png",
+)
+
+
+def historical_bytes(path):
+    """Fail explicitly on missing history; never fall back to current artwork."""
+    try:
+        return subprocess.check_output(["git", "show", f"{HISTORICAL_REF}:{path}"], cwd=ROOT)
+    except subprocess.CalledProcessError as error:
+        raise AssertionError(f"Required historical artwork unavailable: {HISTORICAL_REF}:{path}") from error
+
+
+def verify_active_artifacts():
+    """Committed artifact identities only; does not claim external source verification."""
+    active = json.loads(ACTIVE_INVENTORY.read_text())
+    original = json.loads(INVENTORY.read_text())["directions"]
+    assert active["historical_git_revision"] == HISTORICAL_REF
+    assert tuple(r["path"] for r in active["bodies"]) == BODY_PATHS
+    configured = configured_layers()
+    preserved = []
+    for index, (body, old) in enumerate(zip(active["bodies"], original)):
+        asset = old["assets"][0]
+        assert body["direction"] == old["direction"]
+        assert body["canvas_px"] == old["master"]["size_px"] == [1254, 1254]
+        assert body["crop_rect_px"] == asset["crop_rect_px"]
+        assert body["dimensions_px"] == asset["exported_size_px"]
+        assert body["offset_px"] == asset["anchor_relative_offset_px"]
+        path, offset = configured[index * 3]
+        assert (path, list(offset)) == (body["path"], body["offset_px"])
+        assert body["original_runtime_sha256"] == asset["sha256"]
+        assert hashlib.sha256(historical_bytes(path)).hexdigest() == asset["sha256"]
+        raw = (ROOT / path).read_bytes()
+        assert hashlib.sha256(raw).hexdigest() == body["png_sha256"], path
+        w, h, pixels = decode_png(raw)
+        assert [w, h] == body["dimensions_px"]
+        assert hashlib.sha256(pixels).hexdigest() == body["rgba_sha256"] == body["source_crop_rgba_sha256"]
+        for layer in old["assets"][1:]:
+            path = "assets/machines/extractor/" + Path(layer["path"]).name
+            assert hashlib.sha256((ROOT / path).read_bytes()).hexdigest() == layer["sha256"]
+            preserved.append({"path": path, "sha256": layer["sha256"]})
+    assert active["preserved_barrel_foreground"] == preserved
+    return active
+
+
+def verify_active_source(archive, receipt):
+    """Read frozen ZIP directly and compare every crop RGBA byte; no writes."""
+    active = verify_active_artifacts()
+    freeze = active["freeze"]
+    assert freeze["sha256"] == "35d8dc1d2e9c88ff7634c2403a864efa968e6a39829ced524dda76c5f27fe8d3"
+    assert freeze["manifest_sha256"] == "34be409f4d446455f924994c280d79a078b27a47246f844fd6648c8a5951cf74"
+    assert freeze["receipt_sha256"] == "3eee58a4e5d93fb80ae52ea70ee11326b40cce4a822c53b416d6ee629adf94b8"
+    assert archive.stat().st_size == freeze["bytes"] == 20368022
+    assert hashlib.sha256(archive.read_bytes()).hexdigest() == freeze["sha256"]
+    assert hashlib.sha256(receipt.read_bytes()).hexdigest() == freeze["receipt_sha256"]
+    with zipfile.ZipFile(archive) as z:
+        assert len(z.infolist()) == len(set(z.namelist())) == freeze["entry_count"] == 43
+        assert z.testzip() is None
+        manifest_raw = z.read(freeze["manifest_entry"])
+        assert hashlib.sha256(manifest_raw).hexdigest() == freeze["manifest_sha256"]
+        contract = json.loads(manifest_raw)["artwork_contract"]
+        prefix = freeze["manifest_entry"].rsplit("/", 1)[0] + "/"
+        for body, frozen in zip(active["bodies"], contract["directions"]):
+            assert body["direction"] == frozen["direction"]
+            assert body["source_path"] == prefix + frozen["approved_body"]["path"]
+            raw = z.read(body["source_path"])
+            assert hashlib.sha256(raw).hexdigest() == body["source_sha256"] == frozen["approved_body"]["sha256"]
+            w, h, full = decode_png(raw)
+            assert [w, h] == body["canvas_px"]
+            x, y, cw, ch = body["crop_rect_px"]
+            for row in range(h):
+                data = full[row * w * 4:(row + 1) * w * 4]
+                assert not any(data if row < y or row >= y + ch else data[:x * 4] + data[(x + cw) * 4:])
+            crop = b"".join(full[((y + row) * w + x) * 4:((y + row) * w + x + cw) * 4] for row in range(ch))
+            _, _, output = decode_png((ROOT / body["path"]).read_bytes())
+            assert output == crop, body["path"]
+            assert hashlib.sha256(crop).hexdigest() == body["source_crop_rgba_sha256"]
+            print(f'{body["direction"]} degrees: frozen source identity and exact fixed-crop RGBA equality PASS')
+    assert hashlib.sha256(archive.read_bytes()).hexdigest() == freeze["sha256"]
+    assert hashlib.sha256(receipt.read_bytes()).hexdigest() == freeze["receipt_sha256"]
 
 
 def decode_png(data):
@@ -117,7 +205,7 @@ def verify_archives(directory, motion=False):
             reconstructed = bytearray(1254 * 1254 * 4)
             for index, asset in enumerate(manifest["assets"]):
                 path, offset = configured[direction_index * 3 + index]
-                data = (ROOT / path).read_bytes()
+                data = historical_bytes(path)
                 assert data == z.read(prefix + asset["path"])
                 assert hashlib.sha256(data).hexdigest() == asset["sha256"]
                 assert list(offset) == asset["anchor_relative_offset_px"]
@@ -155,7 +243,7 @@ def verify_motion(archive, prefix, manifest, layers):
     poses = manifest["motion"]["representative_positions"]
     assert [(p["name"], p["y_offset_px"]) for p in poses] == [
         ("raised", 0), ("downstroke", maximum), ("return", 3)]
-    decoded = [(decode_png((ROOT / path).read_bytes()), offset) for path, offset in layers]
+    decoded = [(decode_png(historical_bytes(path)), offset) for path, offset in layers]
     raised_alpha = None
     for stroke in range(maximum + 1):
         composite = bytearray(1254 * 1254 * 4)
@@ -180,7 +268,22 @@ def verify_motion(archive, prefix, manifest, layers):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--packages", type=Path, required=True)
+    parser.add_argument("--packages", type=Path, help="original four prototype ZIPs; verified against fixed historical Git bytes")
+    parser.add_argument("--active", action="store_true", help="verify committed active artifact identities without external source claims")
+    parser.add_argument("--freeze", type=Path, help="port-free ZIP for exact active source reconstruction")
+    parser.add_argument("--receipt", type=Path, help="external port-free receipt (required with --freeze)")
     parser.add_argument("--motion", action="store_true", help="also check integer barrel strokes and package pose references")
     args = parser.parse_args()
-    verify_archives(args.packages, args.motion)
+    if bool(args.freeze) != bool(args.receipt):
+        parser.error("--freeze and --receipt must be supplied together")
+    if args.motion and not args.packages:
+        parser.error("--motion requires --packages for historical pose references")
+    if not (args.active or args.freeze or args.packages):
+        parser.error("supply --active, --freeze with --receipt, or --packages")
+    if args.packages:
+        verify_archives(args.packages, args.motion)
+    if args.freeze:
+        verify_active_source(args.freeze, args.receipt)
+    elif args.active:
+        verify_active_artifacts()
+        print("Active artifact identities PASS; frozen-source reconstruction NOT RUN (no --freeze/--receipt supplied)")

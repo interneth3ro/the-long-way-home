@@ -16,7 +16,7 @@ import subprocess
 import unittest
 
 from current_preservation import ROOT, git_blob, normalized
-from extractor_artwork_offline import decode_png, place
+from extractor_artwork_offline import ACTIVE_INVENTORY, BODY_PATHS, decode_png, place, verify_active_artifacts
 from static_automatic_transitions_test import function, nodes, vectors
 
 BASE = "fd1f3347ad14a3735f5ffcc22b05730421b16212"
@@ -390,12 +390,18 @@ class FabricatorAnimationStaticTest(unittest.TestCase):
             "AGENTS.md", "docs/LOCAL_TESTING.md", "docs/experiments"], cwd=ROOT, text=True).splitlines()
         allowed = {SCRIPT, SCENE, "construction/machine_visual.gd", "construction/deployed_machine.gd",
                    *LAYER_PATHS, *(p + ".import" for p in LAYER_PATHS)}
+        # Decision 2A: four exact identities, plus their one derivative record.
+        verify_active_artifacts()
+        allowed.update(BODY_PATHS)
+        allowed.add(ACTIVE_INVENTORY.relative_to(ROOT).as_posix())
         self.assertFalse(set(changed) - allowed, changed)
         # Explicit immutable files/trees also protect dirty working data before staging.
         protected = subprocess.check_output(["git", "ls-tree", "-r", "--name-only", BASE, "--",
             "assets/machines", "inventory", "construction", "scenes/world/planet_world_state.gd",
             "docs/experiments/fabricator_static_artwork.json"], cwd=ROOT, text=True).splitlines()
         for path in protected:
+            if path in BODY_PATHS:
+                continue  # Exact active and historical identities checked above.
             if path not in (SCRIPT, SCENE, "construction/machine_visual.gd", "construction/deployed_machine.gd"):
                 self.assertEqual(normalized(path, (ROOT / path).read_bytes()), normalized(path, git_blob(BASE, path)), path)
 
