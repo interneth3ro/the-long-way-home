@@ -221,7 +221,7 @@ class GroundPublicationTest(unittest.TestCase):
         arrival = body(E, 'prepare_for_arrival')
         neighborhood = body(E, '_update_neighborhood')
         self.assertIn('if _ground_state != _state or _ground_seed != _state.seed_value:', neighborhood)
-        self.assertLess(neighborhood.index('&"ground_context"'), neighborhood.index('var center :='))
+        self.assertLess(neighborhood.index('&"ground_context"'), neighborhood.index('var center: Vector2i ='))
         self.assertIn('&"ground_publication"', arrival)
 
     def test_revision_replacement_requires_all_current_but_keeps_pixels(self):

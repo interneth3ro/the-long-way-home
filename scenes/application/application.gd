@@ -66,8 +66,12 @@ func _start_new_game() -> void:
 	_session.process_mode = Node.PROCESS_MODE_PAUSABLE
 	_pause_before_session = get_tree().paused
 	add_child(_session)
-	# add_child completes MainV2's existing synchronous ready/spawn setup.
-	# Preserve any startup failure pause set by Main itself.
+	# MainV2 completes interior setup synchronously. Exterior work has its own
+	# explicit completion contract; a global pause never authorizes activation.
+	if not _session.get_node("PlaythroughState").planet.is_resource_generation_ready():
+		return
+	if not await _session.get_node("SceneTransitions").prepare_initial_exterior():
+		return
 	_starting = false
 	# The shell owns the session child; normal tree teardown frees it and its state.
 

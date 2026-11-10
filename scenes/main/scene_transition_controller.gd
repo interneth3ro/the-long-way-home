@@ -4,6 +4,7 @@ extends Node
 # A future cinematic/musing presenter can listen without owning progression.
 signal first_exterior_reveal_completed
 signal transition_completed(source_scene: String, destination_scene: String)
+signal initial_preparation_progress(completed: int, total: int)
 signal transition_started
 
 enum Presentation { IMMEDIATE, FIRST_EXTERIOR_REVEAL, QUICK_FADE }
@@ -27,6 +28,9 @@ var _quick_committed: bool = false
 var _quick_previous_mode: Node.ProcessMode
 var _arrival_world: Node2D
 var _transition_generation: int = 0
+var _initial_generation: int = 0
+var _initial_world: PlanetExterior
+var initial_exterior_initialized: bool = false
 
 
 func _ready() -> void:
@@ -39,6 +43,97 @@ func initialize() -> void:
 	_worlds[_current_world.scene_file_path] = _current_world
 	player.reparent(_current_world.get_node("GroundObjects"))
 	_reset_camera()
+
+
+# MainV2 has finished synchronous interior spawn setup before the shell calls this.
+# Only this controller owns the staged and later detached exterior instance.
+func prepare_initial_exterior() -> bool:
+	if _busy or initial_exterior_initialized or _worlds.has(EXTERIOR_SCENE):
+		return false
+	_busy = true
+	_initial_generation += 1
+	var generation := _initial_generation
+	var state := progression.planet
+	var seed_value := state.seed_value
+	var revision := state.revision
+	var previous_player_mode := player.process_mode
+	var previous_progression_mode := progression.process_mode
+	player.velocity = Vector2.ZERO
+	player.process_mode = Node.PROCESS_MODE_DISABLED
+	progression.process_mode = Node.PROCESS_MODE_DISABLED
+	_curtain.color.a = 1.0
+	_curtain.show()
+	var packed := load(EXTERIOR_SCENE) as PackedScene
+	if packed == null:
+		push_error("Startup blocked: missing exterior scene")
+		return false
+	var instance := packed.instantiate()
+	_initial_world = instance as PlanetExterior
+	if _initial_world == null:
+		instance.free()
+		push_error("Startup blocked: invalid exterior scene")
+		return false
+	var exterior := _initial_world
+	# Preparation is caller-driven; disable incidental world/child processing.
+	exterior.process_mode = Node.PROCESS_MODE_DISABLED
+	exterior.preparation_progress.connect(_report_initial_progress)
+	world_host.add_child(exterior)
+	var result := await exterior.prepare_initial_neighborhood(state)
+	if not _owns_initial_preparation(generation, exterior, state, seed_value, revision):
+		return false
+	if not exterior.preparation_is_ready(result):
+		push_error("Startup blocked: initial exterior incomplete; correct input and restart")
+		return false
+	# Polling controls must not receive held loading input when Dave is activated.
+	await get_tree().process_frame
+	while Input.is_anything_pressed():
+		if not _owns_initial_preparation(generation, exterior, state, seed_value, revision):
+			return false
+		await get_tree().process_frame
+	await get_tree().process_frame
+	if not _owns_initial_preparation(generation, exterior, state, seed_value, revision) \
+			or not exterior.preparation_is_ready(result):
+		return false
+	# Validate while attached. Exit invalidates arrival authority, but keeps the
+	# completed terrain tokens, receipts, surfaces and chunk instances intact.
+	_worlds[EXTERIOR_SCENE] = exterior
+	world_host.remove_child(exterior)
+	# Exit signals can cancel/replace the session. Ownership must still match
+	# after detachment; the cache already owns the candidate on either outcome.
+	if not _owns_initial_preparation(generation, exterior, state, seed_value, revision, false) \
+			or exterior.get_parent() != null:
+		return false
+	exterior.process_mode = Node.PROCESS_MODE_INHERIT
+	exterior.preparation_progress.disconnect(_report_initial_progress)
+	_initial_world = null
+	initial_exterior_initialized = true
+	progression.process_mode = previous_progression_mode
+	_finish_transition(previous_player_mode)
+	return true
+
+
+func _report_initial_progress(completed: int, total: int) -> void:
+	initial_preparation_progress.emit(completed, total)
+
+
+func _owns_initial_preparation(generation: int, exterior: PlanetExterior,
+		state: PlanetWorldState, seed_value: int, revision: int, require_attachment: bool = true) -> bool:
+	return is_inside_tree() and _busy and generation == _initial_generation \
+		and is_instance_valid(exterior) and _initial_world == exterior \
+		and (not require_attachment or exterior.is_inside_tree()) \
+		and is_instance_valid(progression) and progression.planet == state \
+		and state.seed_value == seed_value and state.revision == revision \
+		and is_instance_valid(player) and is_instance_valid(_current_world) \
+		and _current_world.is_ancestor_of(player)
+
+
+func cancel_initial_preparation() -> void:
+	_initial_generation += 1
+	initial_exterior_initialized = false
+	if is_instance_valid(_initial_world):
+		_initial_world.cancel_arrival_preparation()
+	# Cancellation never unlocks a partially initialized session. Its owner may
+	# retire Main normally; the curtain and explicit busy state remain blocking.
 
 
 func is_transitioning() -> bool:
@@ -313,6 +408,10 @@ func _finish_transition(previous_process_mode: Node.ProcessMode) -> void:
 
 
 func _exit_tree() -> void:
+	# Staged children cancel their own work on exit; do not mutate exiting trees.
+	_initial_generation += 1
+	initial_exterior_initialized = false
+	_initial_world = null
 	_transition_generation += 1
 	_arrival_world = null
 	if _quick_active and is_instance_valid(player):

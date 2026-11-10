@@ -1,12 +1,14 @@
 # The Long Way Home
 
 Application shell/title Milestone 1 merged in [PR #166](https://github.com/interneth3ro/the-long-way-home/pull/166).
-Pause Menu Foundation (Milestone 2) is implemented on `codex/pause-menu-foundation`,
-**pending owner F5 acceptance and merge**. Escape after existing gameplay interfaces
-have handled it opens a dimmed gameplay overlay. Resume restores prior pause state;
-Main Menu and Exit Game require confirmation. Save Game, Load Game and Settings
-remain disabled. No persistence, preloading or loading screen is added.
-Agent verification is static only. See [ownership and owner checklist](docs/APPLICATION_SHELL.md).
+Pause Menu Foundation merged in [PR #167](https://github.com/interneth3ro/the-long-way-home/pull/167)
+after owner 18/18 F5 PASS. Milestone 3 initial exterior preparation is implemented
+on `codex/initial-exterior-preparation`, **pending owner F5 acceptance and merge**.
+New Game prepares and retains the 49-chunk crash-site neighborhood before Dave
+gains control inside the ship. First exit reuses it; normal exploration streams
+beyond it. No loading UI or persistence is added. Save Game, Load Game and Settings
+remain disabled. Agent verification is static only; Godot was not executed.
+See [ownership, limitations and owner checklist](docs/APPLICATION_SHELL.md#initial-exterior-preparation--milestone-3-pending-acceptance-and-merge).
 
 Fabricator front mechanical animation is implemented on
 `codex/fabricator-front-animation`, **pending owner normal-F5 acceptance and merge**

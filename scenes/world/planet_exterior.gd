@@ -1,6 +1,11 @@
 class_name PlanetExterior
 extends Node2D
 
+signal preparation_progress(completed: int, total: int)
+
+const INITIAL_RADIUS: int = 3
+const INITIAL_CHUNK_COUNT: int = 49
+
 enum TerrainRenderer { LEGACY, ILLUSTRATED, CONTINUOUS }
 @export var terrain_renderer: TerrainRenderer = TerrainRenderer.CONTINUOUS
 
@@ -58,30 +63,7 @@ func prepare_for_arrival(player: CharacterBody2D, state: PlanetWorldState) -> Di
 	_state = state
 	var arrival_seed := state.seed_value
 	var arrival_revision := state.revision
-	if _ferrite_presenter == null:
-		_ferrite_presenter = FerriteDepositPresenter.new()
-		_ferrite_presenter.z_index = -5
-		add_child(_ferrite_presenter)
-	if not _state.machines_changed.is_connected(_queue_machine_sync):
-		_state.machines_changed.connect(_queue_machine_sync)
-	_sync_machines()
-	if _highlights == null:
-		_highlights = Node2D.new()
-		_highlights.z_index = -4
-		add_child(_highlights)
-	if _generator == null:
-		var overlays: Array[Dictionary] = []
-		for child in $AuthoredCrashSite.get_children():
-			var polygon := child as Polygon2D
-			if polygon != null:
-				overlays.append({"polygon": polygon.polygon, "color": polygon.color, "feather": 256.0})
-		var object_anchors := PackedVector2Array()
-		for child in $GroundObjects.get_children():
-			if child is StaticBody2D:
-				object_anchors.append(child.position)
-		_generator = PlanetGenerator.new(state.seed_value, overlays, protected_gameplay, object_anchors)
-		_ground_state = state
-		_ground_seed = state.seed_value
+	_initialize_world(state)
 	_update_neighborhood()
 	while (not _pending.is_empty() or not _ferrite_presenter.required_ready(_ferrite_token)) \
 			and _terrain_failure.is_empty() and arrival == _arrival_generation:
@@ -112,6 +94,115 @@ func prepare_for_arrival(player: CharacterBody2D, state: PlanetWorldState) -> Di
 	if not arrival_is_ready(result):
 		return {"ok": false, "cancelled": true}
 	return result
+
+
+# Shared setup uses the same generator, presenters and publication path as arrival.
+func _initialize_world(state: PlanetWorldState) -> void:
+	if _ferrite_presenter == null:
+		_ferrite_presenter = FerriteDepositPresenter.new()
+		_ferrite_presenter.z_index = -5
+		add_child(_ferrite_presenter)
+	if not _state.machines_changed.is_connected(_queue_machine_sync):
+		_state.machines_changed.connect(_queue_machine_sync)
+	_sync_machines()
+	if _highlights == null:
+		_highlights = Node2D.new()
+		_highlights.z_index = -4
+		add_child(_highlights)
+	if _generator == null:
+		var overlays: Array[Dictionary] = []
+		for child in $AuthoredCrashSite.get_children():
+			var polygon := child as Polygon2D
+			if polygon != null:
+				overlays.append({"polygon": polygon.polygon, "color": polygon.color, "feather": 256.0})
+		var object_anchors := PackedVector2Array()
+		for child in $GroundObjects.get_children():
+			if child is StaticBody2D:
+				object_anchors.append(child.position)
+		_generator = PlanetGenerator.new(state.seed_value, overlays, protected_gameplay, object_anchors)
+		_ground_state = state
+		_ground_seed = state.seed_value
+
+
+# Player-independent startup contract. The caller stages this visible in-tree
+# behind an opaque curtain; detachment is permitted only after this validates.
+func prepare_initial_neighborhood(state: PlanetWorldState) -> Dictionary:
+	_cancel_continuous()
+	_arrival_generation += 1
+	var generation := _arrival_generation
+	_arrival_cancelled = false
+	_preparing = true
+	_player = null
+	_state = state
+	var seed_value := state.seed_value
+	var revision := state.revision
+	_configure_terrain_renderer()
+	_initialize_world(state)
+	var spawn := get_node("Spawns/FromShip") as Marker2D
+	var center := WorldCoordinates.world_to_chunk(to_local(spawn.global_position))
+	_update_neighborhood(center)
+	# Extend only this request, never the normal arrival/exploration radius.
+	for y in range(-INITIAL_RADIUS, INITIAL_RADIUS + 1):
+		for x in range(-INITIAL_RADIUS, INITIAL_RADIUS + 1):
+			var coordinate := center + Vector2i(x, y)
+			if not _chunks.has(coordinate) and not _pending.has(coordinate):
+				_pending.append(coordinate)
+	while (not _pending.is_empty() or not _ferrite_presenter.required_ready(_ferrite_token)) \
+			and _terrain_failure.is_empty() and generation == _arrival_generation:
+		if not is_inside_tree() or _state != state or state.seed_value != seed_value \
+				or state.revision != revision or _arrival_cancelled:
+			break
+		if not _service_ferrite(true):
+			break
+		_generate_budget()
+		_flush_highlights()
+		preparation_progress.emit(_initial_completed(center), INITIAL_CHUNK_COUNT + 1)
+		if not is_inside_tree() or generation != _arrival_generation:
+			return {"ok": false, "cancelled": true}
+		await get_tree().process_frame
+	if generation != _arrival_generation:
+		return {"ok": false, "cancelled": true}
+	_preparing = false
+	var result := {"ok": true, "generation": generation, "state": state,
+		"seed": seed_value, "revision": revision, "center": center,
+		"ferrite_token": _ferrite_token}
+	if not preparation_is_ready(result):
+		if is_inside_tree() and not _arrival_cancelled and _state == state \
+				and state.seed_value == seed_value and state.revision == revision:
+			_stop_terrain({"ok": false, "code": &"initial_publication",
+				"message": "Initial exterior lacks required current publication"})
+		return {"ok": false, "cancelled": _terrain_failure.is_empty()}
+	return result
+
+
+func _initial_completed(center: Vector2i) -> int:
+	var completed := 0
+	for y in range(-INITIAL_RADIUS, INITIAL_RADIUS + 1):
+		for x in range(-INITIAL_RADIUS, INITIAL_RADIUS + 1):
+			var coordinate := center + Vector2i(x, y)
+			if _chunks.has(coordinate) and is_instance_valid(_chunks[coordinate]) \
+					and _chunks[coordinate].get_parent() == self and _chunks[coordinate].is_inside_tree() \
+					and _chunks[coordinate].state_revision == _state.revision \
+					and _ground_is_current(coordinate) and not _tint_dirty:
+				completed += 1
+	if _ferrite_presenter != null and _ferrite_presenter.matches_context(_state) \
+			and _ferrite_presenter.required_ready(_ferrite_token):
+		completed += 1
+	return completed
+
+
+func preparation_is_ready(result: Variant) -> bool:
+	return result is Dictionary and result.get("ok", false) \
+		and is_inside_tree() and not _preparing and not _arrival_cancelled \
+		and _terrain_failure.is_empty() and _pending.is_empty() and _continuous_job.is_empty() \
+		and result.get("generation", -1) == _arrival_generation \
+		and _state != null and result.get("state") == _state \
+		and result.get("seed") == _state.seed_value and result.get("revision") == _state.revision \
+		and _ground_state == _state and _ground_seed == _state.seed_value \
+		and result.get("center") == _center \
+		and _center == WorldCoordinates.world_to_chunk(to_local($Spawns/FromShip.global_position)) \
+		and result.get("ferrite_token", -1) == _ferrite_token \
+		and _initial_completed(_center) == INITIAL_CHUNK_COUNT + 1
 
 
 # Rechecked by the controller after its own physics/fade awaits, not just when
@@ -163,7 +254,7 @@ func _process(_delta: float) -> void:
 	_flush_highlights()
 
 
-func _update_neighborhood() -> void:
+func _update_neighborhood(preparation_center: Variant = null) -> void:
 	if not _terrain_failure.is_empty():
 		return
 	if _ground_state != _state or _ground_seed != _state.seed_value:
@@ -172,7 +263,8 @@ func _update_neighborhood() -> void:
 		_stop_terrain({"ok": false, "code": &"ground_context",
 			"message": "Cached exterior world/seed changed; create a fresh exterior"})
 		return
-	var center := WorldCoordinates.world_to_chunk(to_local(_player.global_position))
+	var center: Vector2i = preparation_center if preparation_center is Vector2i else \
+		WorldCoordinates.world_to_chunk(to_local(_player.global_position))
 	if center == _center and _state.revision == _revision \
 			and _ferrite_presenter.matches_context(_state):
 		return

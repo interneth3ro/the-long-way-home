@@ -21,7 +21,8 @@ class ComputerRestorationStaticTest(unittest.TestCase):
             "scenes/main/playthrough_state.gd": [],
             "inventory/inventory_state.gd": [],
             "scenes/main/scene_transition_controller.gd": [
-                (modal_guard.replace('return\n', 'return false\n'), '')],
+                (modal_guard.replace('return\n', 'return false\n'), ''),
+                ('\t_initial_generation += 1\n\tinitial_exterior_initialized = false\n\t_initial_world = null\n', '')],
             "construction/construction_controller.gd": [
                 # Static Extractor art fades the completed ghost composite.
                 # The separate PR A guard compares all other controller bytes.

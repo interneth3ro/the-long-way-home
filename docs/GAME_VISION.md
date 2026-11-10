@@ -22,12 +22,14 @@ New Game creates a fresh V2 Primary session through `scenes/main/main_v2.tscn`.
 **legacy F6 fallback**, stop the game, open `scenes/main/main.tscn` and press F6.
 F5 stays configured for the title screen. Load Game and Settings are disabled;
 Exit quits normally. The static background reuses accepted ship artwork.
-Pause Menu Foundation is implemented on `codex/pause-menu-foundation`, pending
-owner F5 acceptance and merge: Escape opens the overlay after existing interfaces
-handle it; Resume restores prior pause state; Main Menu and Exit Game require
-confirmation. Save Game, Load Game and Settings remain disabled.
-Loading UI, exterior preparation and persistence remain separate milestones;
-see [application ownership and owner acceptance](APPLICATION_SHELL.md).
+Pause Menu Foundation merged in PR #167 after owner 18/18 F5 PASS: Escape opens
+the overlay after existing interfaces handle it; Resume restores prior pause
+state; Main Menu and Exit Game require confirmation. Save Game, Load Game and Settings remain disabled.
+Milestone 3 exterior preparation is implemented on `codex/initial-exterior-preparation`,
+pending owner F5 acceptance and merge: New Game prepares and retains all 49 starting
+chunks before control inside the ship, reusing them on first exit. Loading UI and
+persistence remain separate milestones; see
+[application ownership and owner acceptance](APPLICATION_SHELL.md#initial-exterior-preparation--milestone-3-pending-acceptance-and-merge).
 Computer restoration is implemented on `codex/computer-restoration`, pending
 owner normal-F5 acceptance and merge; see the
 [approved requirements and acceptance checklist](COMPUTER_RESTORATION.md).

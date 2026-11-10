@@ -280,7 +280,8 @@ class IllustratedExteriorStaticTest(unittest.TestCase):
         sample = body(generator,'sample_color')
         self.assertLess(sample.index('_noise('), sample.index('state.terrain_color('))
         self.assertLess(sample.index('state.terrain_color('), sample.index('for overlay in _overlays:'))
-        self.assertIn('"feather": 256.0', arrival)
+        self.assertIn('_initialize_world(state)', arrival)
+        self.assertIn('"feather": 256.0', body(SOURCE, '_initialize_world'))
         self.assertIn('1.0 - smoothstep(0.0, feather, _edge_distance(point, polygon))', generator)
 
     def test_scene_draw_order_and_resource_references(self):
