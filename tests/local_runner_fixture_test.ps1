@@ -385,7 +385,7 @@ try {
             'project.godot' -cin $identity.Tracked -and $identity.Index.Length -gt 0) 'Incomplete source identity'
         Require ($identity.Working -is [string]) 'Working status omitted'
     }
-    Check 'synthetic generated reparse point and stage source overlap rejected' {
+    Check 'synthetic generated reparse point rejects exact and differing Windows path casing' {
         $stage = New-InputStage $source $fixture $tracked
         $identity = [pscustomobject]@{ Revision = 'fixture'; Working = ''; Index = ''; Tracked = $tracked }
         function Get-NativeSourceIdentity { return $identity }
@@ -393,16 +393,34 @@ try {
         $null = New-Item -ItemType Directory -Path $cache
         $link = Join-Path $cache 'external'
         $null = New-Item -ItemType Directory -Path $link
+        $mock = @{ Path = $link; Hits = 0 }
         # No junction privilege needed: expose synthetic link metadata to the
         # real path validator; it must reject before enumerating the child.
         function Get-Item {
             param([switch]$Force, [string]$LiteralPath)
-            if ($LiteralPath -ceq $link) {
+            if ($LiteralPath.Equals($mock.Path, [StringComparison]::OrdinalIgnoreCase)) {
+                $mock.Hits++
                 return [pscustomobject]@{ Attributes = [IO.FileAttributes]::ReparsePoint }
             }
             Microsoft.PowerShell.Management\Get-Item -Force:$Force -LiteralPath $LiteralPath
         }
-        Reject { Assert-NativeDispatchInputs $stage $identity $true } 'Reparse point'
+        $enumerated = (Microsoft.PowerShell.Management\Get-Item -LiteralPath $link).FullName
+        Require ($enumerated.ToUpperInvariant() -cne $enumerated.ToLowerInvariant()) 'Casing regression missing'
+        foreach ($mockPath in @($enumerated, $enumerated.ToUpperInvariant(), $enumerated.ToLowerInvariant())) {
+            $mock.Path = $mockPath
+            Require ($mockPath.Equals($enumerated, [StringComparison]::OrdinalIgnoreCase)) 'Fixture path identity changed'
+            $mock.Hits = 0
+            Require (((Get-Item -LiteralPath $enumerated).Attributes -band [IO.FileAttributes]::ReparsePoint) -ne 0) 'Mock did not inject ReparsePoint'
+            Require ($mock.Hits -eq 1) 'Mock injection was not observed'
+            $mock.Hits = 0
+            Reject { Assert-NativeDispatchInputs $stage $identity $true } 'Reparse point'
+            Require ($mock.Hits -gt 0) 'Validator did not encounter the mocked reparse point'
+        }
+    }
+    Check 'stage source overlap rejected independently of reparse point mock' {
+        $stage = New-InputStage $source $fixture $tracked
+        $identity = [pscustomobject]@{ Revision = 'fixture'; Working = ''; Index = ''; Tracked = $tracked }
+        function Get-NativeSourceIdentity { return $identity }
         $stage.Directory = $source
         Reject { Assert-NativeDispatchInputs $stage $identity $false } 'identity|separation'
     }

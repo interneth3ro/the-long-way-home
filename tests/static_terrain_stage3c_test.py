@@ -24,7 +24,44 @@ MODIFIED = {'scenes/world/planet_exterior.gd', 'tests/static_terrain_stage3b_tes
             'README.md', 'tests/static_metadata_smoke_test.py', 'tests/static_terrain_stage2_coverage_test.py'}
 
 
+def historical_checkout_bytes(path, raw):
+    """Reconstruct only the two LF text inputs in the consumed plan."""
+    if path == 'project.godot':
+        # Validate the exact current startup amendment before reversing it.
+        raw = without_application_startup(raw)
+    if path in ('project.godot', 'assets/audio/exterior_hatch/hatch_close.wav.import'):
+        raw = raw.replace(b'\r\n', b'\n')
+    return raw
+
+
 class Stage3CTest(unittest.TestCase):
+    def test_historical_lf_and_crlf_checkout_serialization(self):
+        plan = json.loads((ROOT/'docs/experiments/terrain_stage3c_gameplay_plan.json').read_text())
+        inputs = {e['path']: e for e in plan['inputs']}
+        for path in ('project.godot', 'assets/audio/exterior_hatch/hatch_close.wav.import'):
+            entry = inputs[path]
+            lf = (ROOT/path).read_bytes().replace(b'\r\n', b'\n')
+            for ending, checkout in (('LF', lf), ('CRLF', lf.replace(b'\n', b'\r\n'))):
+                with self.subTest(path=path, checkout=ending):
+                    raw = historical_checkout_bytes(path, checkout)
+                    self.assertEqual((len(raw), hashlib.sha256(raw).hexdigest()),
+                                     (entry['bytes'], entry['sha256']))
+                    if 'transform' in entry:
+                        t = entry['transform']
+                        self.assertEqual(raw.count(t['find'].encode()), 1)
+                        staged = raw.replace(t['find'].encode(), t['replace'].encode())
+                        self.assertEqual((len(staged), hashlib.sha256(staged).hexdigest()),
+                                         (entry['staged_bytes'], entry['staged_sha256']))
+
+    def test_historical_serialization_is_narrow_and_checks_startup(self):
+        raw = b'\x00\xff\r\nunchanged\r\n'
+        for path in ('assets/audio/exterior_hatch/hatch_close.wav', 'unrelated.import', 'unrelated.gd'):
+            self.assertEqual(historical_checkout_bytes(path, raw), raw)
+        current = (ROOT/'project.godot').read_bytes()
+        for invalid in (current.replace(b'application.tscn', b'other.tscn'), current + current):
+            with self.assertRaises(AssertionError):
+                historical_checkout_bytes('project.godot', invalid)
+
     def test_exact_scope_and_protected_inputs(self):
         delta = subprocess.check_output(['git','diff','--name-status',BASE,'e5db8040d38bfd6b1ddb584d636af01052806b7c','--'],cwd=ROOT,text=True)
         inventory = dict((p,s) for s,p in (line.split('\t') for line in delta.splitlines()))
@@ -86,10 +123,7 @@ class Stage3CTest(unittest.TestCase):
             if path in historical_inputs:
                 # Historical manifest pins the approved CRLF serialization.
                 raw = raw.replace(b'\r\n', b'\n').replace(b'\n', b'\r\n')
-            if path == 'project.godot':
-                # Preserve the consumed plan bytes; validate the exact startup
-                # amendment independently without changing historical hashes.
-                raw = without_application_startup(raw)
+            raw = historical_checkout_bytes(path, raw)
             self.assertEqual((len(raw),hashlib.sha256(raw).hexdigest()),(entry['bytes'],entry['sha256']),path)
             if 'transform' in entry:
                 t = entry['transform']
