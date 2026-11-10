@@ -14,7 +14,7 @@ import subprocess
 import unittest
 
 from current_preservation import ROOT, git_blob
-from extractor_artwork_offline import decode_png
+from extractor_artwork_offline import BODY_PATHS, decode_png, verify_active_artifacts
 from static_automatic_transitions_test import function, nodes, vectors
 from static_fabricator_animation_test import LAYER_PATHS, without_presentation_identity
 
@@ -264,7 +264,9 @@ class FabricatorArtworkStaticTest(unittest.TestCase):
             "git", "diff", "--name-only", BASE, "--", "inventory", "construction", "scenes", "assets",
             "objectives", "dialogue", "project.godot", "tools", "AGENTS.md", "docs/LOCAL_TESTING.md",
         ], cwd=ROOT, text=True).splitlines()
-        self.assertFalse(set(changed) - set(ARTWORK_PATHS + ANIMATION_PATHS), changed)
+        # Decision 2A leaves every other machine asset and import protected.
+        verify_active_artifacts()
+        self.assertFalse(set(changed) - set(ARTWORK_PATHS + ANIMATION_PATHS) - set(BODY_PATHS), changed)
         path = "construction/deployed_machine.gd"
         self.assertEqual(without_presentation_identity(read(path)),
                          git_blob(BASE, path).decode().replace("\r\n", "\n"))

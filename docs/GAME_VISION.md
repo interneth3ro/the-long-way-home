@@ -534,11 +534,15 @@ collision, production or recovery script changes are included. Production stays
 one ore/second into capacity 20; the packaged item identity remains unchanged.
 All four accepted directional artwork packages remained frozen and unintegrated
 at that footprint-only milestone. The subsequent [static artwork PR A](EXTRACTOR_STATIC_ARTWORK.md)
-shares their unchanged body, raised barrel and foreground layers between deployed
-and ghost Extractors; PR #154 merged without gameplay changes. The subsequent
-[PR B barrel animation](EXTRACTOR_STATIC_ARTWORK.md#barrel-animation-pr-b-pending-merge)
-has final owner F5 acceptance (16/16 PASS, zero blocking defects), pending review
-and merge. Barely perceptible motion at maximum zoom-out is an accepted
+shared their original body, raised barrel and foreground layers between deployed
+and ghost Extractors; PR #154 merged without gameplay changes. Owner Decision 2A
+now authorizes the [port-free runtime body integration](EXTRACTOR_STATIC_ARTWORK.md#port-free-runtime-bodies-v1--feature-branch-pending-merge),
+prepared on `codex/extractor-port-free-runtime-v1`, pending merge and owner F5.
+Only four fixed-crop body derivatives change; the original barrel/foreground
+layers, imports, registration and gameplay remain unchanged. Before this integration,
+[PR B barrel animation](EXTRACTOR_STATIC_ARTWORK.md#barrel-animation-pr-b)
+merged in PR #155 with final owner F5 acceptance (16/16 PASS, zero blocking defects)
+for that earlier artwork. Barely perceptible motion at maximum zoom-out is an accepted
 nonblocking limitation. Only producing deployed
 Extractors reciprocate; ghosts and nonproducing machines stay raised. Animation
 does not drive production or inventory. Its 8/8/6/6-source-pixel amplitudes and

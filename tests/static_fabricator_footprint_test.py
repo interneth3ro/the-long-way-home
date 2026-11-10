@@ -5,6 +5,7 @@ import subprocess
 import unittest
 
 from current_preservation import ROOT, git_blob
+from extractor_artwork_offline import BODY_PATHS, verify_active_artifacts
 from static_automatic_transitions_test import function
 from static_fabricator_animation_test import LAYER_PATHS, without_presentation_identity
 
@@ -123,6 +124,9 @@ class FabricatorFootprintStaticTest(unittest.TestCase):
                             "assets/machines/fabricator/" + name + ".import"))
         # Decision 62 adds exactly five runtime layers and one identity assignment.
         artwork.update(LAYER_PATHS + [p + ".import" for p in LAYER_PATHS])
+        # Decision 2A: exact active identities protect only four Extractor bodies.
+        verify_active_artifacts()
+        artwork.update(BODY_PATHS)
         self.assertEqual(set(changed) - artwork, {"inventory/fabricator.tres", "construction/deployed_machine.gd"})
         path = "construction/deployed_machine.gd"
         self.assertEqual(without_presentation_identity(read(path)),

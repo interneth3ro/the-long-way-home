@@ -4,9 +4,11 @@ import json
 import re
 import struct
 import unittest
+from unittest.mock import patch
 
 from current_preservation import git_blob
-from extractor_artwork_offline import ROOT, INVENTORY, configured_layers
+from extractor_artwork_offline import (ROOT, INVENTORY, ACTIVE_INVENTORY, HISTORICAL_REF,
+                                      configured_layers, historical_bytes, verify_active_artifacts)
 from static_automatic_transitions_test import function, nodes
 
 BASE = "0a0003444be0ba4b67e7ab6c8fa678abbf740b34"
@@ -28,8 +30,11 @@ class ExtractorArtworkStaticTest(unittest.TestCase):
             self.assertEqual([a["role"] for a in record["assets"]], ["body", "barrel", "foreground"])
             for i, asset in enumerate(record["assets"]):
                 path, offset = configured[d * 3 + i]
-                data = (ROOT / path).read_bytes()
+                # Historical identities remain pinned even though four active bodies changed.
+                data = historical_bytes(path)
                 self.assertEqual(hashlib.sha256(data).hexdigest(), asset["sha256"])
+                if asset["role"] != "body":
+                    self.assertEqual((ROOT / path).read_bytes(), data)
                 self.assertEqual(struct.unpack(">IIBB", data[16:26]), (*asset["exported_size_px"], 8, 6))
                 self.assertEqual(list(offset), asset["anchor_relative_offset_px"])
                 self.assertEqual([offset[0] + 632, offset[1] + 1139], asset["crop_rect_px"][:2])
@@ -40,6 +45,48 @@ class ExtractorArtworkStaticTest(unittest.TestCase):
                 for setting in ["compress/mode=0", "mipmaps/generate=true", "process/size_limit=0",
                                 f'source_file="res://{path}"']:
                     self.assertIn(setting, metadata)
+
+    def test_active_port_free_artifact_identities_and_registration(self):
+        active = verify_active_artifacts()
+        self.assertEqual([b["png_sha256"] for b in active["bodies"]], [
+            "8826298801a19f2d0c329a4bd990395900df077c781f41c76a0f05348cb71021",
+            "8920cd17683ee860de3ce6f5a6eafac2f624e87a9eb48a6feebc21b75134e3bb",
+            "a8db892c66596aec9fc2d7db8e93c7ea65bb2580ff48186f98cf23101071d9c2",
+            "1511ecffee2fdbd6fb05088233b729d3e8247e4f0198202afb33e65dd580f55a",
+        ])
+        self.assertEqual(active["historical_git_revision"], HISTORICAL_REF)
+        # Immutable inventory and every presenter/import byte stay at the approved baseline.
+        paths = ["docs/experiments/extractor_static_artwork.json", "construction/extractor_visual.gd",
+                 "construction/extractor_visual.tscn", "construction/machine_visual.gd",
+                 "construction/deployed_machine.gd", "inventory/extractor.tres"]
+        paths += [path + ".import" for path, _ in configured_layers()]
+        for path in paths:
+            with self.subTest(path=path):
+                self.assertEqual((ROOT / path).read_bytes().replace(b"\r\n", b"\n"),
+                                 historical_bytes(path).replace(b"\r\n", b"\n"))
+
+    def test_missing_history_fails_without_current_body_fallback(self):
+        import subprocess
+        with patch("extractor_artwork_offline.subprocess.check_output",
+                   side_effect=subprocess.CalledProcessError(128, "git show")):
+            with self.assertRaisesRegex(AssertionError, "Required historical artwork unavailable"):
+                historical_bytes("assets/machines/extractor/extractor_0_body.png")
+
+    def test_active_identity_rejects_historical_body_and_changed_record(self):
+        from pathlib import Path
+        body = ROOT / "assets/machines/extractor/extractor_0_body.png"
+        original_read = Path.read_bytes
+        old = historical_bytes(body.relative_to(ROOT).as_posix())
+        with patch.object(Path, "read_bytes", lambda path: old if path == body else original_read(path)):
+            with self.assertRaises(AssertionError):
+                verify_active_artifacts()
+        active = json.loads(ACTIVE_INVENTORY.read_text())
+        active["bodies"][0]["crop_rect_px"][0] += 1
+        original_text = Path.read_text
+        with patch.object(Path, "read_text", lambda path, *a, **kw:
+                          json.dumps(active) if path == ACTIVE_INVENTORY else original_text(path, *a, **kw)):
+            with self.assertRaises(AssertionError):
+                verify_active_artifacts()
 
     def test_anchor_scale_and_local_layer_sorting(self):
         scene = read("construction/extractor_visual.tscn")
