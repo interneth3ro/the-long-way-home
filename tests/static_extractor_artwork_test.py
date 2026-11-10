@@ -1,3 +1,4 @@
+from initial_exterior_preservation import without_initial_preparation
 """Frozen static art contracts; no engine execution or graphical acceptance."""
 from application_shell_preservation import without_application_startup
 import hashlib
@@ -150,7 +151,7 @@ class ExtractorArtworkStaticTest(unittest.TestCase):
                      "project.godot", "assets/environment/maintenance_bay_v2/machines/extractor_stationary.png",
                      "assets/environment/maintenance_bay_v2/machines/extractor_stationary.png.import"]:
             with self.subTest(path=path):
-                data, original = (ROOT / path).read_bytes(), git_blob(BASE, path)
+                data, original = without_initial_preparation(path, (ROOT / path).read_bytes()), git_blob(BASE, path)
                 if not path.endswith(".png"):
                     data, original = data.replace(b"\r\n", b"\n"), original.replace(b"\r\n", b"\n")
                 if path in ("inventory/smelter.tres", "inventory/fabricator.tres"):

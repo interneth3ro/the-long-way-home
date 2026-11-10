@@ -1,3 +1,4 @@
+from initial_exterior_preservation import verified_initial_paths
 """Offline pause ownership, input routing and preservation contracts; no Godot execution."""
 import subprocess
 import unittest
@@ -98,7 +99,7 @@ class PauseMenuTests(unittest.TestCase):
                      "AGENTS.md", "docs/LOCAL_TESTING.md", "docs/experiments"]
         changed = subprocess.check_output(["git", "diff", "--name-only",
             "f92e8111b2fdcb0d88b4ebe336ca25c2f849c4d1", "--", *protected], cwd=ROOT, text=True)
-        self.assertEqual(changed, "")
+        self.assertFalse(set(changed.splitlines()) - verified_initial_paths(), changed)
 
 
 if __name__ == "__main__":

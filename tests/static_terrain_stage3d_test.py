@@ -1,3 +1,4 @@
+from initial_exterior_preservation import without_initial_preparation
 """Default-selection and exact production-diff contracts; no Godot execution."""
 import hashlib
 import json
@@ -82,7 +83,7 @@ class Stage3DTest(unittest.TestCase):
         before = git('show', BASE+':'+path)
         old = '@export var terrain_renderer: TerrainRenderer = TerrainRenderer.ILLUSTRATED'
         self.assertEqual(before.count(old), 1)
-        current = (ROOT/path).read_text()
+        current = without_initial_preparation(path, (ROOT/path).read_bytes()).decode()
         self.assertEqual(current, before.replace(old, old.replace('= TerrainRenderer.ILLUSTRATED',
                                                                  '= TerrainRenderer.CONTINUOUS')))
         path = 'scenes/world/planet_exterior.tscn'

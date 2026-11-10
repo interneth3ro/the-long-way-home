@@ -1,3 +1,4 @@
+from initial_exterior_preservation import without_initial_preparation
 """Smelter resource/source contracts and offline geometry examples; no Godot execution."""
 from application_shell_preservation import without_application_startup
 import math
@@ -136,7 +137,7 @@ class SmelterFootprintStaticTest(unittest.TestCase):
             with self.subTest(path=path):
                 # Authorized Fabricator 4x4 amendment: restore only this exact
                 # field for comparison against the unchanged historical baseline.
-                current = normalized(path, (ROOT / path).read_bytes())
+                current = normalized(path, without_initial_preparation(path, (ROOT / path).read_bytes()))
                 if path == "project.godot":
                     current = without_application_startup(current)
                 if path == "construction/deployed_machine.gd":
