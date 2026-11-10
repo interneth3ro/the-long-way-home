@@ -103,7 +103,9 @@ class OpeningGuidanceStaticTest(unittest.TestCase):
                       read("objectives/restore_computer_ferrite.tres"))
 
     def test_normal_f5_inherits_progression_authority(self):
-        self.assertIn('run/main_scene="res://scenes/main/main_v2.tscn"', read("project.godot"))
+        self.assertIn('run/main_scene="res://scenes/application/application.tscn"', read("project.godot"))
+        self.assertIn('preload("res://scenes/main/main_v2.tscn")',
+                      read("scenes/application/application.gd"))
         self.assertIn('path="res://scenes/main/main.tscn"', read("scenes/main/main_v2.tscn"))
         v2 = read("scenes/main/main_v2.gd")
         self.assertTrue(v2.startswith('extends "res://scenes/main/main.gd"'))

@@ -2,6 +2,7 @@
 
 Never imports GDScript, invokes Godot, regenerates artwork or writes fixtures.
 """
+from application_shell_preservation import without_application_startup
 from fractions import Fraction
 import hashlib
 import json
@@ -218,6 +219,8 @@ class Stage2ClassificationTest(unittest.TestCase):
                       if path == "tools/run-local-tests.ps1" else
                       subprocess.check_output(["git", "show", "de09eeee2c07036ac50471bde12a716e173e3366:"+path], cwd=ROOT)
                       if path == "scenes/world/planet_exterior.gd" else (ROOT/path).read_bytes())
+            if path == "project.godot":
+                actual = without_application_startup(actual)
             self.assertEqual(actual.replace(b"\r\n", b"\n"), baseline.replace(b"\r\n", b"\n"), path)
 
     def test_source_guards_state_tint_detail_and_publication_separation(self):

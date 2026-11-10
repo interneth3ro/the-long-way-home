@@ -8,10 +8,15 @@ P6 Fabricator recovery merged in PR #64; the verified post-P6 baseline is
 continuous six-phase rehearsal, **6/6 PASS (owner-reported)**. P8 is implemented
 on `codex/p8-f5-production-cutover`, pending owner cutover acceptance and merge.
 
-**F5 / Run Project** now starts V2 Primary through `scenes/main/main_v2.tscn`.
+**Current launch change:** the [application shell](APPLICATION_SHELL.md) is
+implemented on `codex/application-shell-title-screen`, pending owner F5 acceptance
+and merge. F5 opens its title; New Game creates a fresh MainV2 session. The P1-P8
+records/checklists below retain their historical milestone scope.
+
+**Historical P8 behavior:** F5 started V2 Primary through `scenes/main/main_v2.tscn`.
 **F6 / Run Current Scene** with that scene open also starts V2. For the explicit
 **legacy F6 fallback**, stop the game, open `scenes/main/main.tscn` and press F6.
-F5 stays configured for V2. This is an editor workflow, with no startup selector.
+Current F5 stays configured for the title screen; F6 bypasses it.
 Computer repair remains deferred. Agent validation is static only; no Godot
 launch or P8 runtime acceptance is claimed.
 

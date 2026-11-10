@@ -4,6 +4,7 @@ Set TLWH_FABRICATOR_FROZEN_ROOTS to a JSON array of the four external package
 directories (0/90/180/270) to also recheck their complete frozen inventories.
 No external package code is executed, and no files are written.
 """
+from application_shell_preservation import verified_application_paths
 from fractions import Fraction
 import hashlib
 import json
@@ -270,7 +271,7 @@ class FabricatorArtworkStaticTest(unittest.TestCase):
         verify_active_artifacts()
         verify_smelter_artifacts()
         self.assertFalse(set(changed) - set(ARTWORK_PATHS + ANIMATION_PATHS)
-                         - set(BODY_PATHS) - set(SMELTER_BODIES), changed)
+                         - set(BODY_PATHS) - set(SMELTER_BODIES) - verified_application_paths(), changed)
         path = "construction/deployed_machine.gd"
         self.assertEqual(without_presentation_identity(read(path)),
                          git_blob(BASE, path).decode().replace("\r\n", "\n"))

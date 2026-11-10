@@ -1,5 +1,13 @@
 # The Long Way Home
 
+Application shell/title Milestone 1 is implemented on
+`codex/application-shell-title-screen`, **pending owner F5 acceptance and merge**.
+F5 opens the title screen; New Game creates a fresh production MainV2 session.
+Load Game and Settings are disabled; Exit quits normally. The independent static
+background reuses the accepted damaged-ship PNG. Agent verification is static only.
+Loading UI, exterior preparation, persistence and pause remain future milestones.
+See [startup ownership and owner checklist](docs/APPLICATION_SHELL.md).
+
 Fabricator front mechanical animation is implemented on
 `codex/fabricator-front-animation`, **pending owner normal-F5 acceptance and merge**
 (Decision 62, Option A). Five unchanged frozen layers implement the approved three
@@ -390,9 +398,9 @@ adds only the three required IBM Plex Sans `.ttf` paths and their matching
 `.ttf.import` metadata sidecars to asset staging.
 See the guide for the fixed scope, limits and verification requirements.
 
-**F5** starts production V2 (P8 merged in PR #65). F6 with
+**F5** opens the title screen; New Game starts production V2. F6 with
 `scenes/main/main_v2.tscn` open also starts V2. For the legacy fallback, stop,
-open `scenes/main/main.tscn` and press **F6**. F5 stays configured for V2.
+open `scenes/main/main.tscn` and press **F6**. F5 stays configured for the title screen.
 From a terminal in the project root:
 
 ```sh
@@ -1724,7 +1732,8 @@ P1-P6 merged in PRs #59-#64; the verified post-P6 baseline is
 continuous six-phase rehearsal, **6/6 PASS (owner-reported)**. P8 is implemented
 on `codex/p8-f5-production-cutover`, pending owner cutover acceptance and merge.
 
-**F5 / Run Project** now starts V2 Primary through `scenes/main/main_v2.tscn`.
+**Historical P8 launch behavior, superseded by the [application shell](docs/APPLICATION_SHELL.md):**
+F5 started V2 Primary through `scenes/main/main_v2.tscn`.
 **F6 / Run Current Scene** with that scene open also starts V2. For the explicit
 **legacy F6 fallback**, stop the game, open `scenes/main/main.tscn` and press F6.
 F5 stays configured for V2. This is an editor workflow, with no startup selector.
@@ -1753,7 +1762,7 @@ The four linked preview guides retain geometry, art provenance, design decisions
 and owner findings. Their retired-source links point to the exact pre-retirement
 commit, not missing checkout files.
 
-Current **F5** runs production `scenes/main/main_v2.tscn`; **F6** with
+Current **F5** opens the title screen; New Game creates production MainV2. **F6** with
 `scenes/main/main.tscn` open runs the legacy fallback. Developer coordinates
 (`scenes/ui/developer_coordinates.*`) remain an approved feature.
 

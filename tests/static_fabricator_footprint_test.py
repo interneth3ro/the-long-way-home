@@ -1,4 +1,5 @@
 """Fabricator source contracts and independent geometry models; no Godot execution."""
+from application_shell_preservation import verified_application_paths
 import math
 import re
 import subprocess
@@ -131,6 +132,7 @@ class FabricatorFootprintStaticTest(unittest.TestCase):
         artwork.update(BODY_PATHS)
         verify_smelter_artifacts()
         artwork.update(SMELTER_BODIES)
+        artwork.update(verified_application_paths())
         self.assertEqual(set(changed) - artwork, {"inventory/fabricator.tres", "construction/deployed_machine.gd"})
         path = "construction/deployed_machine.gd"
         self.assertEqual(without_presentation_identity(read(path)),

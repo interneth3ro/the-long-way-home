@@ -63,14 +63,18 @@ def tracked_metadata_uid(path, text):
     return uid
 
 class V2ProductionHostStaticTest(unittest.TestCase):
-    def test_f5_v2_host_and_independent_legacy_f6_scene(self):
+    def test_f5_shell_v2_session_and_independent_legacy_f6_scene(self):
         project = read("project.godot")
         self.assertEqual(re.findall(r'^[ \t]*run/main_scene[ \t]*=(.*)$', project, re.M),
-                         ['"res://scenes/main/main_v2.tscn"'])
+                         ['"res://scenes/application/application.tscn"'])
         configured = re.search(r'^run/main_scene="res://([^"]+)"$', project, re.M)[1]
         self.assertTrue((ROOT / configured).is_file())
-        self.assertIn('[node name="MainV2" instance=ExtResource("1_main")]', read(configured))
-        self.assertIn('path="res://scenes/main/main_v2.gd"', read(configured))
+        self.assertIn('path="res://scenes/application/application.gd"', read(configured))
+        shell = read("scenes/application/application.gd")
+        self.assertIn('preload("res://scenes/main/main_v2.tscn")', shell)
+        host = read("scenes/main/main_v2.tscn")
+        self.assertIn('[node name="MainV2" instance=ExtResource("1_main")]', host)
+        self.assertIn('path="res://scenes/main/main_v2.gd"', host)
         legacy = read("scenes/main/main.tscn")
         self.assertIn('[node name="Main" type="Node2D"]', legacy)
         self.assertIn('path="res://scenes/main/main.gd"', legacy)
