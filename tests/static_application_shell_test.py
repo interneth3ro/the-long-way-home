@@ -1,5 +1,6 @@
 """Offline startup contracts; does not execute GDScript or establish UI behavior."""
 import unittest
+import subprocess
 from unittest.mock import patch
 
 import application_shell_preservation as preservation
@@ -8,6 +9,59 @@ from static_v2_production_host_test import read
 
 
 class ApplicationShellTests(unittest.TestCase):
+    def test_loading_screen_uid_exception_is_exact_and_matches_approved_commit(self):
+        path = "scenes/application/loading_screen.gd.uid"
+        approved = subprocess.check_output([
+            "git", "show", "0b8d14544ada1693aaf25f91d286c1e589f8fe3c:" + path
+        ], cwd=preservation.ROOT)
+        self.assertEqual(preservation.LOADING_SCREEN_UID, path)
+        self.assertEqual(preservation.verify_loading_screen_uid(approved), {path})
+        self.assertEqual(preservation.verify_loading_screen_uid(approved.replace(b"\n", b"\r\n")), {path})
+        allowed = preservation.verified_application_paths()
+        self.assertEqual(allowed - preservation.APPLICATION_FILES - {"project.godot"}, {path})
+        self.assertNotIn("scenes/application/unapproved.gd.uid", allowed)
+        self.assertNotIn("scenes/world/unapproved.gd.uid", allowed)
+        for bad in (b"", approved[:-1], approved + b"extra\n",
+                    approved.replace(b"cqbd6damin78b", b"different"), b"\xef\xbb\xbf" + approved):
+            with self.subTest(uid=bad), self.assertRaises(AssertionError):
+                preservation.verify_loading_screen_uid(bad)
+        real_read = preservation.Path.read_bytes
+
+        def changed_uid(file):
+            return b"uid://different\n" if file == preservation.ROOT / path else real_read(file)
+
+        with patch.object(preservation.Path, "read_bytes", changed_uid), self.assertRaises(AssertionError):
+            preservation.verified_application_paths()
+
+    def test_uid_amendment_keeps_historical_preservation_consumers_closed(self):
+        names = (
+            'static_fabricator_animation_test.FabricatorAnimationStaticTest.'
+            'test_all_other_production_artwork_gameplay_and_execution_controls_preserved',
+            'static_fabricator_artwork_test.FabricatorArtworkStaticTest.'
+            'test_gameplay_existing_artwork_and_execution_controls_preserved',
+            'static_fabricator_footprint_test.FabricatorFootprintStaticTest.'
+            'test_protected_gameplay_art_and_execution_controls_unchanged',
+        )
+        real_output = subprocess.check_output
+        for unexpected in ('scenes/application/unapproved.gd.uid', 'scenes/world/planet_world_state.gd',
+                           'assets/machines/unapproved.png', 'tools/unapproved.ps1'):
+            def changed_paths(args, *a, **kw):
+                actual = real_output(args, *a, **kw)
+                if list(args[:3]) == ['git', 'diff', '--name-only']:
+                    return actual.rstrip('\n') + '\n' + unexpected + '\n'
+                return actual
+
+            for name in names:
+                with self.subTest(path=unexpected, consumer=name):
+                    result = unittest.TestResult()
+                    case = unittest.TestLoader().loadTestsFromName(name)
+                    with patch('subprocess.check_output', side_effect=changed_paths):
+                        case.run(result)
+                    self.assertEqual(result.testsRun, 1)
+                    self.assertFalse(result.errors, result.errors)
+                    self.assertEqual(len(result.failures), 1, 'Unexpected path was accepted')
+                    self.assertIn(unexpected, result.failures[0][1])
+
     def test_historical_projection_rejects_unrelated_configuration_changes(self):
         raw = (preservation.ROOT / "project.godot").read_bytes()
         preservation.verified_application_paths()

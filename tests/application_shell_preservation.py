@@ -17,6 +17,13 @@ APPLICATION_FILES = {
     "scenes/application/pause_menu.gd.uid",
     "scenes/application/pause_menu.tscn",
 }
+LOADING_SCREEN_UID = "scenes/application/loading_screen.gd.uid"
+
+
+def verify_loading_screen_uid(raw):
+    """PR #175's exact identity; no other UID path or content is exempted."""
+    assert raw.replace(b"\r\n", b"\n") == b"uid://cqbd6damin78b\n", "Approved loading-screen UID changed"
+    return {LOADING_SCREEN_UID}
 
 
 def without_application_startup(raw):
@@ -32,4 +39,5 @@ def verified_application_paths():
     ], cwd=ROOT)
     actual = without_application_startup((ROOT / "project.godot").read_bytes())
     assert actual.replace(b"\r\n", b"\n") == baseline.replace(b"\r\n", b"\n")
-    return APPLICATION_FILES | {"project.godot"}
+    uid = verify_loading_screen_uid((ROOT / LOADING_SCREEN_UID).read_bytes())
+    return APPLICATION_FILES | {"project.godot"} | uid

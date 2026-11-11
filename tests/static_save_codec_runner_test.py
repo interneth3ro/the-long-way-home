@@ -35,6 +35,81 @@ def function(name):
                      RUNNER, re.M | re.S)[0]
 
 
+def verify_codec_documentation(doc):
+    """Historical PASS is not present execution permission. Inspect named sections."""
+    def section(title):
+        matches = re.findall(rf'^## {re.escape(title)}\n(.*?)(?=^## |\Z)', doc, re.M | re.S)
+        assert len(matches) == 1, f'Missing or duplicate documentation section: {title}'
+        return matches[0]
+
+    def require(text, statement):
+        assert statement in ' '.join(text.split()), f'Missing authorization/history contract: {statement}'
+
+    historical = section('Historical M5-42 validation and restoration')
+    rows = re.findall(r'^\| ([^|]+?) \| ([^|]+?) \|$', historical, re.M)
+    expected = {
+        'Preflight': 'PASS',
+        'Static validation': '515 tests; 513 passed, two optional skips',
+        'Static duration': '320.473 seconds',
+        'Isolated cold import': 'PASS',
+        'Godot codec runtime': '261 checks, zero failures',
+        'Independent file reopening': 'PASS',
+        'One-time authorization': 'CONSUMED',
+    }
+    for phase, result in expected.items():
+        assert [value for key, value in rows if key == phase] == [result], phase
+    require(historical, 'Completion: `SAVE_FILE_CODEC: PASS checks=261 failures=0`.')
+    require(historical, 'This validates the standalone synthetic codec scope, not gameplay save/load or performance.')
+    require(doc.split('\n## ', 1)[0],
+            'The merged runner returns `PREPARED`; the only historical codec runtime grant is consumed.')
+    require(historical, '**Current authorization: none for codec execution.** The grant is consumed; '
+            'fresh explicit owner approval and a newly reviewed activation are required '
+            'before any future import or codec runtime attempt.')
+    require(historical, "M5-43 restored `return 'PREPARED'` in")
+    for revision in ('8ae6e6fb040a10c7384d01f62b7b60751326c531',
+                     'd544160b92bd488cd29374e505051b1cbb9e64a2'):
+        require(historical, f'[`{revision}`](https://github.com/interneth3ro/the-long-way-home/commit/{revision})')
+    require(historical, '`5f02aec5194413a4bc917b84edb1f151bce67394`.')
+    require(historical, '`codex/m5-codec-one-time-activation`; they were not rewritten into the merged PRs.')
+    require(historical, 'Preserve the consumption record, stage and retained runtime evidence. '
+            'Do not delete, reset or reuse them.')
+    for evidence in (
+        r'D:\GameDev\Godot\TLWH-NativeStages\codec-grant-5f02aec5194413a4bc917b84edb1f151bce67394.consumed.json',
+        r'D:\GameDev\Godot\TLWH-NativeStages\tlwh-codec-1994fd3302d64e2784d698ddbcadb1c6',
+    ):
+        require(historical, '`' + evidence + '`')
+
+    gate = section('Entry points and inactive gate')
+    require(gate, 'Default invocation and `-Mode Run` both return exit 1 and explicit '
+            '`AUTHORIZATION_DENIED` **before source preflight, any process, stage, profile or evidence creation**')
+    require(gate, 'Preparing, passing static tests, pushing or merging these PRs **does not authorize execution**.')
+    workflow = section('Proposed fixed workflow after separate activation')
+    require(workflow, '**Static bound: 600 seconds.**')
+    require(workflow, 'Only after clean import may the codec phase run. Any failure stops the sequence; '
+            'there are no automatic retries and at most one attempt at each command.')
+    require(workflow, '| Cold import | `--headless --editor --path <fresh-stage> --quit` | 60 seconds |')
+    require(workflow, '| Codec, only after clean import | `--headless --path <fresh-stage> --script '
+            'res://tests/save_file_codec_test.gd` | 30 seconds |')
+    require(workflow, '`D:\\GameDev\\Godot\\Standard\\Godot_v4.7.2-stable_win64.exe`')
+    require(workflow, '`AB1824F85BFD8E0E4128182C000C4003A3E042245B2967848D089B2A04B22424`.')
+    limits = section('Results, limits and evidence')
+    require(limits, 'Every process has a **1,048,576-byte combined stdout/stderr limit**.')
+    require(limits, 'Retained diagnostics are at most **4,096 UTF-8 bytes**, without splitting code points.')
+    require(limits, 'Uncertain termination is always failure; no later engine phase is allowed.')
+    require(limits, 'Codec success additionally requires exactly one completion record across both '
+            'streams, as the last nonempty stdout line, matching exactly:')
+    require(limits, 'SAVE_FILE_CODEC: PASS checks=<positive decimal integer> failures=0')
+    procedure = section('M5-40 one-time activation procedure — not authorized now')
+    require(procedure, 'Four approvals are distinct: preparation approval permits this inactive code; '
+            'source activation approval permits only the reviewed transition commit; actual '
+            'Godot execution approval names one invocation and scope; merge approval permits '
+            'only merging a specific PR. None implies another. Do not schedule or retry runs.')
+    require(procedure, '| Restored | The source returns `PREPARED` again; restoration and denial '
+            'are independently verified. Tombstone and evidence remain preserved. |')
+    require(procedure, 'The owner must separately authorize the exact invocation '
+            '`pwsh -NoProfile -File tools/run-save-codec-tests.ps1 -Mode Run` at reviewed A.')
+
+
 class SaveCodecRunnerStaticTests(unittest.TestCase):
     def test_historical_runner_exception_is_hash_pinned_and_rejects_other_changes(self):
         self.assertEqual(verified_codec_runner_paths(), {'tools/run-save-codec-tests.ps1'})
@@ -142,9 +217,35 @@ class SaveCodecRunnerStaticTests(unittest.TestCase):
 
     def test_documentation_keeps_activation_separate(self):
         doc = (ROOT / 'docs/SAVE_CODEC_RUNNER.md').read_text(encoding='utf-8')
-        for term in ('NOT RUN — OWNER AUTHORIZATION REQUIRED', '600 seconds', '335', '1,048,576',
-                     '4,096', 'c048787', 'codex/m5-sav-codec', 'does not authorize execution'):
-            self.assertIn(term, doc)
+        verify_codec_documentation(doc)
+
+    def test_documentation_rejects_incorrect_history_or_current_permission(self):
+        doc = (ROOT / 'docs/SAVE_CODEC_RUNNER.md').read_text(encoding='utf-8')
+        changes = (
+            ('| Godot codec runtime | 261 checks, zero failures |', '| Godot codec runtime | NOT RUN |'),
+            ('| One-time authorization | CONSUMED |', '| One-time authorization | AVAILABLE |'),
+            ('Current authorization: none for codec execution.', 'Current authorization: execution granted.'),
+            ('M5-43 restored `return \'PREPARED\'` in', 'M5-43 restored `return \'AUTHORIZED_FOREVER\'` in'),
+            ('fresh explicit owner approval and a newly reviewed activation are required',
+             'historical approval can be reused'),
+            ('d544160b92bd488cd29374e505051b1cbb9e64a2', '0' * 40),
+            ('codec-grant-5f02aec5194413a4bc917b84edb1f151bce67394.consumed.json', 'missing.json'),
+            ('1,048,576-byte combined stdout/stderr limit', 'unbounded stdout/stderr'),
+            ('4,096 UTF-8 bytes', 'unbounded UTF-8 bytes'),
+            ('--script res://tests/save_file_codec_test.gd', '--script res://unreviewed.gd'),
+            ('| 60 seconds |', '| 600 seconds |'),
+            ('| 30 seconds |', '| 300 seconds |'),
+            ('**Static bound: 600 seconds.**', '**Static bound: unlimited.**'),
+            ('None implies another. Do not schedule or retry runs.', 'All approvals imply execution.'),
+            ('Uncertain termination is always failure;', 'Uncertain termination is accepted;'),
+        )
+        for before, after in changes:
+            self.assertIn(before, doc)
+            with self.subTest(changed=before), self.assertRaises(AssertionError):
+                verify_codec_documentation(doc.replace(before, after))
+        duplicate = doc + '\n## Historical M5-42 validation and restoration\nUnapproved history\n'
+        with self.assertRaises(AssertionError):
+            verify_codec_documentation(duplicate)
 
 
 if __name__ == '__main__':
