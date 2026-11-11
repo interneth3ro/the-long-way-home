@@ -6,9 +6,117 @@ $ErrorActionPreference = 'Stop'
 # Dot-sourcing the existing helper library must not replace our requested mode.
 $codecInvocationMode = $Mode
 . "$PSScriptRoot/run-local-tests.ps1"
+$script:CodecGrantContext = $null
+
+function Get-CodecGrantTransition {
+    return 'PREPARED'
+}
+
+function Get-CodecGrantedRevision {
+    $transition = Get-CodecGrantTransition
+    if ($transition -cnotmatch '\AAUTHORIZED_ONCE:([0-9a-f]{40})\z') {
+        throw 'AUTHORIZATION_DENIED: codec grant is PREPARED; separate owner execution approval and reviewed source activation required.'
+    }
+    $Matches[1]
+}
+
+function Get-CodecConsumptionPath([string]$ReviewedRevision) {
+    if ($ReviewedRevision -cnotmatch '\A[0-9a-f]{40}\z') { throw 'AUTHORIZATION_DENIED: invalid reviewed revision.' }
+    Join-Path 'D:\GameDev\Godot\TLWH-NativeStages' ("codec-grant-$ReviewedRevision.consumed.json")
+}
+
+function Get-CodecGrantBinding([string]$ReviewedRevision) {
+    if ((Get-CodecGrantedRevision) -cne $ReviewedRevision) { throw 'AUTHORIZATION_DENIED: grant source changed.' }
+    $source = Split-Path $PSScriptRoot -Parent
+    $snapshot = Get-CodecSnapshot $source
+    $head = $snapshot.Identity.Revision
+    $parents = (Invoke-CodecGit $source @('rev-list', '--parents', '-n', '1', $head)).Trim().Split(' ')
+    if ($parents.Count -ne 2 -or $parents[0] -cne $head -or $parents[1] -cne $ReviewedRevision) {
+        throw 'AUTHORIZATION_DENIED: activation must be the single direct child of the reviewed preparation revision.'
+    }
+    $runner = 'tools/run-save-codec-tests.ps1'
+    $changed = (Invoke-CodecGit $source @('diff', '--name-only', $ReviewedRevision, $head)).Trim()
+    if ($changed -cne $runner) { throw 'AUTHORIZATION_DENIED: activation changed more than the runner transition.' }
+    $prepared = Invoke-CodecGit $source @('show', ($ReviewedRevision + ':' + $runner))
+    $current = [Text.Encoding]::UTF8.GetString((Get-CodecSourceBytes (Join-Path $source $runner)).Bytes)
+    $activeLine = "    return 'AUTHORIZED_ONCE:$ReviewedRevision'"
+    $inactiveLine = "    return 'PREPARED'"
+    if (@([regex]::Matches($current, ('(?m)^' + [regex]::Escape($activeLine) + '$'))).Count -ne 1 -or
+        $current.Replace($activeLine, $inactiveLine) -cne $prepared) {
+        throw 'AUTHORIZATION_DENIED: activated runner differs from the exact reviewed source beyond one transition line.'
+    }
+    [pscustomobject]@{ ReviewedRevision = $ReviewedRevision; ActivationRevision = $head;
+        IdentitySha256 = (Get-CodecHash ([Text.Encoding]::UTF8.GetBytes(($snapshot | ConvertTo-Json -Depth 8 -Compress)))) }
+}
+
+function Start-CodecInvocation {
+    # PREPARED rejects before any process, filesystem lookup or consumption record.
+    $reviewed = Get-CodecGrantedRevision
+    if ($null -ne $script:CodecGrantContext) { throw 'AUTHORIZATION_DENIED: an invocation already owns this process.' }
+    $path = Get-CodecConsumptionPath $reviewed
+    Assert-PlainPath $path
+    if (Test-Path -LiteralPath $path) { throw 'AUTHORIZATION_DENIED: grant already consumed; preserve its record and obtain fresh owner authorization.' }
+    $parent = [IO.Path]::GetDirectoryName($path)
+    if (-not (Test-Path -LiteralPath $parent -PathType Container)) { throw 'AUTHORIZATION_DENIED: consumption parent unavailable; no execution permitted.' }
+    $stream = $null
+    try {
+        # Exclusive, non-authorizing tombstone: existing/empty/partial records deny.
+        # Keep the handle for the invocation; never overwrite or remove the record.
+        $stream = [IO.FileStream]::new($path, [IO.FileMode]::CreateNew, [IO.FileAccess]::ReadWrite,
+            [IO.FileShare]::None, 4096, [IO.FileOptions]::WriteThrough)
+        $stream.Flush($true) # Even a binding failure/interruption leaves a denial.
+        $binding = Get-CodecGrantBinding $reviewed
+        $record = [ordered]@{ Workflow = 'TLWH_SAVE_CODEC_ONCE_V1'; State = 'CONSUMED';
+            ReviewedRevision = $reviewed; ActivationRevision = $binding.ActivationRevision;
+            IdentitySha256 = $binding.IdentitySha256; BeganUtc = [DateTime]::UtcNow.ToString('o') }
+        $bytes = [Text.Encoding]::UTF8.GetBytes(($record | ConvertTo-Json -Compress))
+        if ($bytes.Length -gt 4096) { throw 'Consumption record exceeds bound.' }
+        $stream.Write($bytes, 0, $bytes.Length)
+        $stream.Flush($true)
+        $stream.Position = 0
+        $readback = [byte[]]::new($bytes.Length)
+        if ($stream.Read($readback, 0, $readback.Length) -ne $bytes.Length -or (Get-CodecHash $readback) -cne (Get-CodecHash $bytes)) {
+            throw 'Consumption readback failed.'
+        }
+        $script:CodecGrantContext = [pscustomobject]@{ Binding = $binding; Path = $path; Stream = $stream;
+            RecordSha256 = (Get-CodecHash $bytes); NextStep = 'Dispatch' }
+    } catch {
+        if ($null -ne $stream) { $stream.Dispose() }
+        throw (Get-CodecDiagnostic ("AUTHORIZATION_DENIED: consumption could not be recorded and verified; treat this grant as consumed, restore PREPARED, and do not retry. " + [string]$_))
+    }
+}
 
 function Assert-CodecAuthorization {
-    throw 'AUTHORIZATION_DENIED: codec runner is inactive; separate owner approval and reviewed source activation required.'
+    param([ValidateSet('Inspect', 'Dispatch', 'Stage', 'Import', 'Codec')][string]$Step = 'Inspect')
+    $reviewed = Get-CodecGrantedRevision
+    $context = $script:CodecGrantContext
+    if ($null -eq $context -or -not $context.Stream.CanRead -or -not $context.Stream.CanWrite) {
+        throw 'AUTHORIZATION_DENIED: no live consumed invocation owns this process.'
+    }
+    $binding = Get-CodecGrantBinding $reviewed
+    if (($binding | ConvertTo-Json -Compress) -cne ($context.Binding | ConvertTo-Json -Compress) -or
+        $context.Path -cne (Get-CodecConsumptionPath $reviewed) -or $context.Stream.Name -cne $context.Path -or
+        $context.Stream.Length -lt 1 -or $context.Stream.Length -gt 4096) { throw 'AUTHORIZATION_DENIED: consumed invocation identity changed.' }
+    $context.Stream.Position = 0
+    $bytes = [byte[]]::new([int]$context.Stream.Length)
+    if ($context.Stream.Read($bytes, 0, $bytes.Length) -ne $bytes.Length -or (Get-CodecHash $bytes) -cne $context.RecordSha256) {
+        throw 'AUTHORIZATION_DENIED: consumption record changed.'
+    }
+    if ($Step -ceq 'Inspect') { return }
+    if ($context.NextStep -cne $Step) { throw 'AUTHORIZATION_DENIED: invocation step already consumed or out of order.' }
+    $context.NextStep = switch ($Step) { Dispatch { 'Stage' }; Stage { 'Import' }; Import { 'ImportResult' }; Codec { 'CodecResult' } }
+}
+
+function Complete-CodecAuthorizationPhase([ValidateSet('Import', 'Codec')][string]$Phase) {
+    Assert-CodecAuthorization
+    if ($script:CodecGrantContext.NextStep -cne ($Phase + 'Result')) { throw 'AUTHORIZATION_DENIED: phase completion out of order.' }
+    $script:CodecGrantContext.NextStep = if ($Phase -ceq 'Import') { 'Codec' } else { 'Done' }
+}
+
+function Close-CodecInvocation {
+    $context = $script:CodecGrantContext
+    $script:CodecGrantContext = $null
+    if ($null -ne $context) { $context.NextStep = 'Closed'; $context.Stream.Dispose() }
 }
 
 function Get-CodecHash([byte[]]$Bytes) {
@@ -106,7 +214,7 @@ function Get-CodecCommandPlan([string]$Source, [string]$Directory) {
 }
 
 function New-CodecStage([string]$Source, $Snapshot) {
-    Assert-CodecAuthorization # Also guards direct helper invocation before side effects.
+    Assert-CodecAuthorization -Step Stage # Also guards direct helper invocation before side effects.
     Assert-CodecSnapshot $Source $Snapshot
     $parent = 'D:\GameDev\Godot\TLWH-NativeStages'
     $id = [Guid]::NewGuid().ToString('N')
@@ -209,7 +317,7 @@ function Invoke-CodecStatic([string]$Source) {
 }
 
 function Invoke-CodecEnginePhase([ValidateSet('Import', 'Codec')][string]$Phase, $Stage, $Snapshot) {
-    Assert-CodecAuthorization
+    Assert-CodecAuthorization -Step $Phase
     $source = Split-Path $PSScriptRoot -Parent
     if ($Stage.Parent -cne 'D:\GameDev\Godot\TLWH-NativeStages' -or $Stage.Source -cne $source) { throw 'Fixed codec source/stage parent required.' }
     Assert-CodecSnapshot $source $Snapshot
@@ -260,7 +368,7 @@ function Assert-CodecEvidenceDestination([string]$Source) {
 }
 
 function Invoke-CodecAuthorizedRun {
-    Assert-CodecAuthorization # No snapshot, process or stage before this gate.
+    Assert-CodecAuthorization -Step Dispatch # No snapshot, process or stage before this gate.
     $source = Split-Path $PSScriptRoot -Parent
     $summary = [ordered]@{ Static = 'NOT RUN'; Import = 'NOT RUN'; Codec = 'NOT RUN'; Reason = ''; Revision = '';
         Stage = ''; Commands = @(); Diagnostic = ''; IdentitySha256 = ''; Evidence = ''; EvidenceError = '' }
@@ -288,6 +396,7 @@ function Invoke-CodecAuthorizedRun {
             Assert-CodecSnapshot $source $snapshot
             Assert-CodecStage $stage $true
             Assert-PinnedEngine $pinned.Path $pinned.Sha256
+            Complete-CodecAuthorizationPhase $command.Phase
             $summary[$command.Phase] = 'PASS'
         }
     } catch {
@@ -304,10 +413,12 @@ function Invoke-CodecAuthorizedRun {
 function Invoke-SaveCodecTests([ValidateSet('Static', 'Run')][string]$RequestedMode) {
     try {
         if ($RequestedMode -ieq 'Run') {
-            Assert-CodecAuthorization
-            $summary = Invoke-CodecAuthorizedRun
-            Write-Host ($summary | ConvertTo-Json -Depth 8)
-            if ($summary.Codec -cne 'PASS' -or $summary.EvidenceError) { return 1 }
+            try {
+                Start-CodecInvocation
+                $summary = Invoke-CodecAuthorizedRun
+                Write-Host ($summary | ConvertTo-Json -Depth 8)
+                if ($summary.Codec -cne 'PASS' -or $summary.EvidenceError) { return 1 }
+            } finally { Close-CodecInvocation }
         } else {
             Invoke-CodecStatic (Split-Path $PSScriptRoot -Parent)
             Write-Host 'Static: PASS. Godot import/runtime: NOT RUN — OWNER AUTHORIZATION REQUIRED.'

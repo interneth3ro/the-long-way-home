@@ -1,4 +1,5 @@
 from initial_exterior_preservation import verified_initial_paths
+from static_save_codec_runner_test import verified_codec_runner_paths
 """Decision 62 offline source/scene/math/preservation checks; never executes Godot.
 
 TLWH_FABRICATOR_FRONT_FROZEN_ROOT optionally enables complete external inventory,
@@ -405,6 +406,7 @@ class FabricatorAnimationStaticTest(unittest.TestCase):
         allowed.add(SMELTER_INVENTORY.relative_to(ROOT).as_posix())
         allowed.update(verified_application_paths())
         allowed.update(verified_initial_paths())
+        allowed.update(verified_codec_runner_paths())
         self.assertFalse(set(changed) - allowed, changed)
         # Explicit immutable files/trees also protect dirty working data before staging.
         protected = subprocess.check_output(["git", "ls-tree", "-r", "--name-only", BASE, "--",

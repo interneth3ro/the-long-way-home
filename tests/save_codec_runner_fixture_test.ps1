@@ -2,6 +2,13 @@
 # Inert fixtures only. Never activate the source gate or invoke an engine.
 $ErrorActionPreference = 'Stop'
 . "$PSScriptRoot/../tools/run-save-codec-tests.ps1"
+# Future activated-source validation is permitted only inside/already after the
+# consumed attempt. Never let an inert default-entry probe claim a real grant.
+if ((Get-CodecGrantTransition) -cne 'PREPARED') {
+    $consumedPath = Get-CodecConsumptionPath (Get-CodecGrantedRevision)
+    Assert-PlainPath $consumedPath
+    if (-not (Test-Path -LiteralPath $consumedPath)) { throw 'Inert fixtures refuse an unconsumed activated source; restore PREPARED before standalone review tests.' }
+}
 $passed = 0; $failed = 0
 function Check([string]$Name, [scriptblock]$Body) {
     try { & $Body; $script:passed++; Write-Host "PASS $Name" }
@@ -58,9 +65,28 @@ function Invoke-CodecSequenceFixture([object[]]$Results, [string]$Mutation = '')
     }
     function Invoke-CodecEnginePhase($Phase) { $calls.Add($Phase); $Results[$calls.Count - 1] }
     function Assert-CodecStage { $events.Add('stage-check') }
+    function Complete-CodecAuthorizationPhase { $events.Add('phase-authorization-double') }
     function Save-CodecFailure { $events.Add('evidence-double'); 'inert-evidence' }
     $summary = Invoke-CodecAuthorizedRun
     [pscustomobject]@{ Summary = $summary; Calls = $calls; Events = $events }
+}
+
+# Synthetic grant data and temp-only tombstones; never activate tracked source,
+# write a real grant record, or call the activated production Run entry point.
+function Invoke-CodecGrantFixture([scriptblock]$Body) {
+    $grantDirectory = Join-Path $fixture ('grant-' + [Guid]::NewGuid().ToString('N'))
+    $null = New-Item -ItemType Directory -Path $grantDirectory
+    $receipt = Join-Path $grantDirectory 'synthetic-consumed.json'
+    $model = @{ Reviewed = ('b' * 40); Activation = ('c' * 40); Identity = ('d' * 64); State = 'AUTHORIZED_ONCE:' + ('b' * 40) }
+    function Get-CodecGrantTransition { $model.State }
+    function Get-CodecConsumptionPath { $receipt }
+    function Get-CodecGrantBinding {
+        [pscustomobject]@{ ReviewedRevision = $model.Reviewed; ActivationRevision = $model.Activation; IdentitySha256 = $model.Identity }
+    }
+    function Invoke-BoundedProcess { throw 'Unexpected process in synthetic grant fixture' }
+    function New-CodecStage { throw 'Unexpected stage in synthetic grant fixture' }
+    function Invoke-CodecEnginePhase { throw 'Unexpected engine in synthetic grant fixture' }
+    try { & $Body $receipt $model } finally { Close-CodecInvocation }
 }
 
 try {
@@ -72,6 +98,7 @@ try {
         }
     }
     Check 'public denial occurs before every process and staging helper' {
+        function Get-CodecGrantTransition { 'PREPARED' }
         $calls = [Collections.Generic.List[string]]::new()
         function Invoke-BoundedProcess { $calls.Add('process'); throw 'Unexpected process' }
         function Invoke-CodecAuthorizedRun { $calls.Add('dispatch'); throw 'Unexpected dispatch' }
@@ -82,15 +109,21 @@ try {
         Require ($calls.Count -eq 0) 'Denied invocation reached a side effect'
     }
     Check 'direct dispatch, stage and engine helpers also deny first' {
+        function Get-CodecGrantTransition { 'PREPARED' }
         $calls = [Collections.Generic.List[string]]::new()
         function Get-CodecSnapshot { $calls.Add('snapshot'); throw 'Unexpected snapshot' }
         function Invoke-BoundedProcess { $calls.Add('process'); throw 'Unexpected process' }
+        Reject { Start-CodecInvocation } 'AUTHORIZATION_DENIED'
         Reject { Invoke-CodecAuthorizedRun } 'AUTHORIZATION_DENIED'
         Reject { New-CodecStage $source $null } 'AUTHORIZATION_DENIED'
         Reject { Invoke-CodecEnginePhase Import $null $null } 'AUTHORIZATION_DENIED'
         Require ($calls.Count -eq 0) 'Direct helper bypassed gate'
     }
     Check 'real default and Run invocations deny without real stage creation' {
+        if ((Get-CodecGrantTransition) -cne 'PREPARED') {
+            Write-Host 'Prepared-only real CLI denial probes are not invoked on activated source.'
+            return
+        }
         $nativeParent = 'D:\GameDev\Godot\TLWH-NativeStages'
         $before = if (Test-Path -LiteralPath $nativeParent) { @(Get-ChildItem -Force -LiteralPath $nativeParent | Select-Object -ExpandProperty Name) } else { @() }
         foreach ($arguments in @(@('-NoProfile', '-File', 'tools/run-save-codec-tests.ps1'),
@@ -101,6 +134,11 @@ try {
         }
         $after = if (Test-Path -LiteralPath $nativeParent) { @(Get-ChildItem -Force -LiteralPath $nativeParent | Select-Object -ExpandProperty Name) } else { @() }
         Require (-not @(Compare-Object $before $after).Count) 'Denied entry created external stage'
+    }
+    Check 'command-line grant arguments cannot activate an invocation' {
+        $result = Invoke-BoundedProcess (Join-Path $PSHOME 'pwsh.exe') @('-NoProfile', '-File',
+            'tools/run-save-codec-tests.ps1', '-Mode', 'Run', '-Grant', ('AUTHORIZED_ONCE:' + ('b' * 40))) $repository -Seconds 10
+        Require ($result.ExitCode -ne 0 -and $result.TerminationCertain -and $result.Stderr -match 'parameter') 'CLI grant accepted'
     }
     Check 'fixed plan has exact executable, arguments, deadlines and output caps' {
         $planned = 'D:\GameDev\Godot\TLWH-NativeStages\tlwh-codec-' + ('a' * 32)
@@ -290,6 +328,155 @@ try {
     }
     Check 'production authorization gate remains inactive after scoped doubles' {
         Reject { Assert-CodecAuthorization } 'AUTHORIZATION_DENIED'
+        Require ((Get-CodecGrantTransition) -ceq 'PREPARED' -or (Test-Path -LiteralPath (Get-CodecConsumptionPath (Get-CodecGrantedRevision)))) 'Source is neither prepared nor already consumed'
+    }
+    Check 'one-line source binding rejects unrelated commits and changes' {
+        $reviewed = 'b' * 40; $activation = 'c' * 40
+        $prepared = [IO.File]::ReadAllText("$repository/tools/run-save-codec-tests.ps1").Replace("`r`n", "`n")
+        $prepared = [regex]::Replace($prepared, "(?m)^    return '(?:PREPARED|AUTHORIZED_ONCE:[0-9a-f]{40})'$", "    return 'PREPARED'")
+        # Synthetic text only, not an activated script file or executable entry.
+        $active = [regex]::Replace($prepared, "(?m)^    return 'PREPARED'$", "    return 'AUTHORIZED_ONCE:$reviewed'")
+        $model = @{ Parents = "$activation $reviewed"; Changed = 'tools/run-save-codec-tests.ps1'; Current = $active }
+        function Get-CodecGrantTransition { "AUTHORIZED_ONCE:$reviewed" }
+        function Get-CodecSnapshot { [pscustomobject]@{ Identity = [pscustomobject]@{ Revision = $activation }; Inputs = @('inert') } }
+        function Get-CodecSourceBytes { [pscustomobject]@{ Bytes = [Text.Encoding]::UTF8.GetBytes($model.Current) } }
+        function Invoke-CodecGit($Source, $Arguments) {
+            switch ($Arguments[0]) { 'rev-list' { $model.Parents }; 'diff' { $model.Changed }; 'show' { $prepared }; default { throw 'Unexpected binding command' } }
+        }
+        Require ((Get-CodecGrantBinding $reviewed).ActivationRevision -ceq $activation) 'Exact synthetic binding rejected'
+        $model.Parents = "$activation $reviewed $reviewed"
+        Reject { Get-CodecGrantBinding $reviewed } 'single direct child'
+        $model.Parents = "$activation " + ('e' * 40)
+        Reject { Get-CodecGrantBinding $reviewed } 'single direct child'
+        $model.Parents = "$activation $reviewed"
+        $model.Changed += "`ntests/extra.gd"
+        Reject { Get-CodecGrantBinding $reviewed } 'changed more than'
+        $model.Changed = 'tools/run-save-codec-tests.ps1'
+        $model.Current = $active + "`n# unreviewed alteration"
+        Reject { Get-CodecGrantBinding $reviewed } 'beyond one transition line'
+    }
+    Check 'synthetic consumption is exclusive and survives closing its owner' {
+        Invoke-CodecGrantFixture {
+            param($receipt, $model)
+            Start-CodecInvocation
+            Require ((Test-Path -LiteralPath $receipt) -and $script:CodecGrantContext.NextStep -ceq 'Dispatch') 'Consumption not recorded before dispatch'
+            Reject { Start-CodecInvocation } 'already owns'
+            Close-CodecInvocation
+            $saved = [IO.File]::ReadAllText($receipt) | ConvertFrom-Json
+            Require ($saved.State -ceq 'CONSUMED' -and $saved.ReviewedRevision -ceq $model.Reviewed) 'Wrong tombstone identity'
+            Reject { Start-CodecInvocation } 'already consumed'
+        }
+    }
+    Check 'synthetic phase permissions cannot repeat or skip a failed import' {
+        Invoke-CodecGrantFixture {
+            Start-CodecInvocation
+            Assert-CodecAuthorization -Step Dispatch
+            Reject { Assert-CodecAuthorization -Step Dispatch } 'out of order'
+            Reject { Assert-CodecAuthorization -Step Import } 'out of order'
+            Assert-CodecAuthorization -Step Stage
+            Reject { Assert-CodecAuthorization -Step Stage } 'out of order'
+            Assert-CodecAuthorization -Step Import
+            Reject { Assert-CodecAuthorization -Step Import } 'out of order'
+            Reject { Assert-CodecAuthorization -Step Codec } 'out of order'
+            Complete-CodecAuthorizationPhase Import
+            Assert-CodecAuthorization -Step Codec
+            Complete-CodecAuthorizationPhase Codec
+            Reject { Assert-CodecAuthorization -Step Codec } 'out of order'
+            Close-CodecInvocation
+            Reject { Start-CodecInvocation } 'already consumed'
+        }
+    }
+    foreach ($failure in @('static failure', 'partial staging', 'failed import', 'codec failure', 'timeout', 'uncertain termination')) {
+        $failureLabel = $failure
+        Check "synthetic $failureLabel consumes the grant without retry" {
+            Invoke-CodecGrantFixture {
+                Start-CodecInvocation
+                try { throw 'Synthetic failed attempt' } catch { } finally { Close-CodecInvocation }
+                Reject { Start-CodecInvocation } 'already consumed'
+            }
+        }
+    }
+    Check 'empty malformed and partial tombstones deny without reading approval data' {
+        foreach ($content in @('', '{partial', '{"State":"AUTHORIZED"}')) {
+            $recordContent = $content
+            Invoke-CodecGrantFixture {
+                param($receipt)
+                [IO.File]::WriteAllText($receipt, $recordContent)
+                Reject { Start-CodecInvocation } 'already consumed'
+                Require ($null -eq $script:CodecGrantContext) 'Existing record became an approval'
+            }
+        }
+    }
+    Check 'consumption creation failure denies all helpers without an invocation context' {
+        Invoke-CodecGrantFixture {
+            param($receipt)
+            $unavailable = Join-Path ([IO.Path]::GetDirectoryName($receipt)) 'missing/record.json'
+            function Get-CodecConsumptionPath { $unavailable }
+            Reject { Start-CodecInvocation } 'consumption parent unavailable'
+            Reject { Assert-CodecAuthorization -Step Dispatch } 'no live consumed'
+            Require ($null -eq $script:CodecGrantContext) 'Failed record created context'
+        }
+    }
+    Check 'record write verification failure leaves a denying tombstone' {
+        Invoke-CodecGrantFixture {
+            param($receipt)
+            function Get-CodecHash { throw 'Synthetic write verification failure' }
+            Reject { Start-CodecInvocation } 'could not be recorded'
+            Require ((Test-Path -LiteralPath $receipt) -and $null -eq $script:CodecGrantContext) 'Partial record or denial missing'
+            Reject { Start-CodecInvocation } 'already consumed'
+        }
+    }
+    Check 'binding preflight failure consumes an empty claim before any workflow step' {
+        Invoke-CodecGrantFixture {
+            param($receipt)
+            function Get-CodecGrantBinding { throw 'Synthetic binding failure' }
+            Reject { Start-CodecInvocation } 'could not be recorded'
+            Require ((Test-Path -LiteralPath $receipt) -and (Get-Item -LiteralPath $receipt).Length -eq 0) 'Failed binding left no claim'
+            Reject { Start-CodecInvocation } 'already consumed'
+        }
+    }
+    Check 'changed binding and restored source revoke a live synthetic invocation' {
+        Invoke-CodecGrantFixture {
+            param($receipt, $model)
+            Start-CodecInvocation
+            $model.Identity = 'e' * 64
+            Reject { Assert-CodecAuthorization } 'identity changed'
+            $model.State = 'PREPARED'
+            Reject { Assert-CodecAuthorization } 'AUTHORIZATION_DENIED'
+            Reject { Start-CodecInvocation } 'AUTHORIZATION_DENIED'
+            Require (Test-Path -LiteralPath $receipt) 'Restoration deleted consumption'
+        }
+    }
+    Check 'inert process interruption leaves consumption and a second process denies' {
+        $receipt = Join-Path $fixture 'synthetic-interrupted.json'
+        $child = Join-Path $fixture 'synthetic-grant-child.ps1'
+        $runnerLiteral = (Join-Path $repository 'tools/run-save-codec-tests.ps1').Replace("'", "''")
+        $receiptLiteral = $receipt.Replace("'", "''")
+        $childText = @'
+param([switch]$Interrupt)
+$ErrorActionPreference = 'Stop'
+. '__RUNNER__'
+function Get-CodecGrantTransition { 'AUTHORIZED_ONCE:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb' }
+function Get-CodecConsumptionPath { '__RECEIPT__' }
+function Get-CodecGrantBinding { [pscustomobject]@{ ReviewedRevision = ('b' * 40); ActivationRevision = ('c' * 40); IdentitySha256 = ('d' * 64) } }
+function Invoke-BoundedProcess { throw 'Unexpected process in synthetic child' }
+function New-CodecStage { throw 'Unexpected stage in synthetic child' }
+function Invoke-CodecEnginePhase { throw 'Unexpected engine in synthetic child' }
+try {
+    Start-CodecInvocation
+    if ($Interrupt) { [Environment]::Exit(17) }
+    exit 99
+} catch {
+    if ($_ -match 'already consumed') { exit 0 }
+    throw
+}
+'@
+        [IO.File]::WriteAllText($child, $childText.Replace('__RUNNER__', $runnerLiteral).Replace('__RECEIPT__', $receiptLiteral))
+        $pwsh = Join-Path $PSHOME 'pwsh.exe'
+        $first = Invoke-BoundedProcess $pwsh @('-NoProfile', '-File', $child, '-Interrupt') $fixture -Seconds 10
+        Require ($first.ExitCode -eq 17 -and $first.TerminationCertain -and (Test-Path -LiteralPath $receipt)) 'Synthetic interruption did not consume'
+        $second = Invoke-BoundedProcess $pwsh @('-NoProfile', '-File', $child) $fixture -Seconds 10
+        Require ($second.ExitCode -eq 0 -and $second.TerminationCertain) 'Second synthetic process reused grant'
     }
 } finally {
     # This exact fresh fixture is the only recursive removal target. No real stage.
