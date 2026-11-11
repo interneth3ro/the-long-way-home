@@ -1,4 +1,5 @@
 from initial_exterior_preservation import verified_initial_paths
+from static_save_codec_runner_test import verified_codec_runner_paths
 """Frozen PNGs, scene/source contracts and offline geometry; never runs Godot.
 
 Set TLWH_FABRICATOR_FROZEN_ROOTS to a JSON array of the four external package
@@ -272,7 +273,8 @@ class FabricatorArtworkStaticTest(unittest.TestCase):
         verify_active_artifacts()
         verify_smelter_artifacts()
         self.assertFalse(set(changed) - set(ARTWORK_PATHS + ANIMATION_PATHS)
-                         - set(BODY_PATHS) - set(SMELTER_BODIES) - verified_application_paths() - verified_initial_paths(), changed)
+                     - set(BODY_PATHS) - set(SMELTER_BODIES) - verified_application_paths() - verified_initial_paths()
+                     - verified_codec_runner_paths(), changed)
         path = "construction/deployed_machine.gd"
         self.assertEqual(without_presentation_identity(read(path)),
                          git_blob(BASE, path).decode().replace("\r\n", "\n"))

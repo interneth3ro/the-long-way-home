@@ -1,4 +1,5 @@
 from initial_exterior_preservation import verified_initial_paths
+from static_save_codec_runner_test import verified_codec_runner_paths
 """Fabricator source contracts and independent geometry models; no Godot execution."""
 from application_shell_preservation import verified_application_paths
 import math
@@ -115,7 +116,8 @@ class FabricatorFootprintStaticTest(unittest.TestCase):
 
     def test_protected_gameplay_art_and_execution_controls_unchanged(self):
         # Footprint milestone permits one data line. Decision 36 additionally
-        # permits these exact presentation paths; no gameplay/runner exemption.
+        # permits these exact presentation paths; the separate codec runner is
+        # accepted only after complete source-hash verification below.
         changed = subprocess.check_output(
             ["git", "diff", "--name-only", BASE, "--", "inventory", "construction",
              "scenes", "assets", "project.godot", "tools", "AGENTS.md",
@@ -135,6 +137,7 @@ class FabricatorFootprintStaticTest(unittest.TestCase):
         artwork.update(SMELTER_BODIES)
         artwork.update(verified_application_paths())
         artwork.update(verified_initial_paths())
+        artwork.update(verified_codec_runner_paths())
         self.assertEqual(set(changed) - artwork, {"inventory/fabricator.tres", "construction/deployed_machine.gd"})
         path = "construction/deployed_machine.gd"
         self.assertEqual(without_presentation_identity(read(path)),

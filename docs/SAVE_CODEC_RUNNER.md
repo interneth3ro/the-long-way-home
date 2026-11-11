@@ -7,6 +7,20 @@ Runner preparation is on `codex/m5-codec-runner-preparation`, targeting the code
 branch so its PR diff excludes the codec implementation. Neither PR is merged.
 The codec and its runtime assertions are unchanged by this preparation.
 
+M5-40 Option A prepares the one-time authorization lifecycle on
+`codex/m5-codec-one-time-amendment`, based on reviewed runner
+[PR #173](https://github.com/interneth3ro/the-long-way-home/pull/173) at
+`a2206096be202c8b3b0341e96039fb0f5bb815a0`. It remains **PREPARED/inactive**.
+This child amendment targets `codex/m5-codec-runner-preparation`; it changes only
+authorization logic, its supporting tests and this guide. No execution grant is
+present. The separate codec baseline remains `c048787` from PR #172.
+Five historical preservation tests also recognize the now-tracked dedicated
+runner through a shared exact-source SHA-256 check in its static test module.
+Only that one path, at the reviewed PR #173 or prepared amendment identity, is
+accepted; the defined activation line is normalized for identity comparison.
+Other code, commands, limits and paths remain protected. This test exception is
+not authorization to execute the runner.
+
 **Godot import/runtime: NOT RUN — OWNER AUTHORIZATION REQUIRED.**
 
 ## Entry points and inactive gate
@@ -27,11 +41,14 @@ pwsh -NoProfile -File tools/run-save-codec-tests.ps1 -Mode Static
 
 Default invocation and `-Mode Run` both return exit 1 and explicit
 `AUTHORIZATION_DENIED` **before source preflight, any process, stage, profile or
-evidence creation**. Case variations also deny. The source function
-`Assert-CodecAuthorization` unconditionally throws and accepts no inputs. It is
-also the first statement of direct dispatch, stage creation and engine-phase
-helpers. There is no CLI, environment, local-file, token, alternate-script,
-callback, executable or config activation mechanism. Command planning and result
+evidence creation** in the prepared source. Case variations also deny. The
+no-input source function `Get-CodecGrantTransition` returns the literal
+`PREPARED`; `Get-CodecGrantedRevision` rejects it before any filesystem lookup.
+The continuation guard `Assert-CodecAuthorization` is also the first statement
+of direct dispatch, stage creation and engine-phase helpers. There is no CLI,
+environment, local approval-file, alternate-script, callback, executable or config
+activation mechanism. A consumption tombstone can deny, never grant, execution.
+Command planning and result
 classification helpers are data-only; they do not launch a process or stage.
 
 The proposed pipeline below exists behind the gate for review and inert testing.
@@ -184,11 +201,119 @@ Resolve any input revision change through a new reviewed pin update; do not edit
 the codec or runtime assertions to make runner preparation pass. Review any such
 blocking codec issue separately.
 
-Then obtain **separate explicit owner execution authorization** naming the reviewed
-revision and bounded scope, and prepare a reviewed source activation amendment
-consistent with [AGENTS.md](../AGENTS.md#godot-execution-safety). The amendment must
-define grant consumption/restoration and failure stops; this PR adds no standing
-permission. Recheck all inputs/controls and actual static PASS before any engine
-attempt. Preparing or merging either PR never consumes or supplies an execution
-grant. Until then the gate stays an unconditional rejection, and codec parse,
+Then follow the one-time procedure below, consistent with
+[AGENTS.md](../AGENTS.md#godot-execution-safety). This adds no standing permission.
+Preparing or merging a PR never consumes or supplies an execution grant. Until
+separately authorized, the source transition remains `PREPARED`, and codec parse,
 import, runtime assertions and independent file reopening remain unverified.
+
+## M5-40 one-time activation procedure — not authorized now
+
+Four approvals are distinct: preparation approval permits this inactive code;
+source activation approval permits only the reviewed transition commit; actual
+Godot execution approval names one invocation and scope; merge approval permits
+only merging a specific PR. None implies another. Do not schedule or retry runs.
+
+| Lifecycle | Meaning |
+| --- | --- |
+| Prepared | Reviewed source returns `PREPARED`; default/Run and direct runtime helpers deny. |
+| Authorized | Owner explicitly approves the exact prepared revision, source activation and one allowed invocation; the one-line activation is committed/reviewed. |
+| Consumed | An invocation begins by exclusively claiming its tombstone before binding/preflight, then verifies its record before dispatch/static validation/staging/engine. Every outcome spends the attempt. |
+| Restored | The source returns `PREPARED` again; restoration and denial are independently verified. Tombstone and evidence remain preserved. |
+
+Let **P** be the exact 40-character lowercase SHA of the final reviewed inactive
+preparation commit containing this amendment, not merely the older `a220609`
+runner baseline. Let **A** be its single-parent direct-child activation commit.
+After separate owner approval, A must change **only one line in one file**:
+
+```diff
+ function Get-CodecGrantTransition {
+-    return 'PREPARED'
++    return 'AUTHORIZED_ONCE:<P>'
+ }
+```
+
+Replace `<P>` with that exact reviewed commit SHA; it is not a literal token or
+CLI argument. No grant is left in this preparation. No other guard, assertions,
+inputs, commands, limits or files change in A. The runner requires A's sole
+parent to be P, requires the complete tree diff to name only the runner, and
+reconstructs the entire exact P runner by replacing only that transition line.
+It also performs the existing committed-control/source/index/input-pin checks.
+An uncommitted activation, changed codec, extra code/file changes, merge commit,
+different ancestry or later unreviewed commit cannot satisfy this binding.
+Git ancestry/hashes establish content identity, not the fact of human approval.
+
+The owner must separately authorize the exact invocation
+`pwsh -NoProfile -File tools/run-save-codec-tests.ps1 -Mode Run` at reviewed A.
+Do not invoke default/Run while merely preparing or reviewing activation.
+The grant covers at most one fresh external stage, one cold import, then one
+codec test only after clean import, with the unchanged scope and limits above.
+
+At entry with a source authorization transition, the runner exclusively claims
+the fixed non-authorizing tombstone before binding/preflight:
+
+`D:\GameDev\Godot\TLWH-NativeStages\codec-grant-<P>.consumed.json`
+
+The existing plain parent must already exist. No directory is created for this
+record. `CreateNew`/`FileShare.None` prevents another owner/process from claiming
+the same record. The empty claim is flushed first: a failed binding or interrupted
+preflight already consumes it. While holding that claim, verify source binding;
+`WriteThrough`, `Flush(true)` and record readback are required before dispatch.
+The bounded record contains workflow, CONSUMED state, P, A, captured
+identity/input digest and UTC start time. It is never an approval input: any
+existing file or directory, including empty, malformed or partially written
+content, rejects entry without interpreting its contents. There is no overwrite,
+deletion, reset, loading/adoption of a receipt or token-based resume path.
+
+The invoking process keeps the exclusive stream until its outer `finally`.
+Direct helpers require that live owned stream, unchanged source binding and
+record bytes, and the next single-use step. The sequence is Dispatch → Stage →
+Import → clean import result → Codec → clean codec result → Done. Each action's
+permission is spent before the action. Only the existing successful post-phase
+checks advance to the next engine phase. Closing clears the process context;
+the persistent tombstone remains. This is not an in-memory-only single-use flag.
+An exception, failed static suite, partial stage, failed import/test, timeout,
+uncertain termination or abrupt process exit never automatically retries or
+releases a recorded grant. A new process cannot adopt the old stream/record.
+
+After **any** attempt (including uncertain or interrupted attempts), stop. Preserve
+the tombstone, stage and existing bounded failure evidence. Do not delete or
+rename records to reuse P, and do not infer a retry from a repaired test or PASS.
+Report the outcome and any uncertain termination before further execution.
+
+Restore the source transition to `return 'PREPARED'` through an explicit reviewed
+restoration change/commit; do not reset or rewrite history. Independently inspect
+that source line and the restoration diff, parse PowerShell, and run the inert
+denial fixtures plus default/Run denial in fresh PowerShell processes. Verify
+that no process/stage action follows denial and that the codec/runner contract
+and tombstone remain unchanged. Do not test restoration by attempting an active
+run. If source restoration or process termination cannot be verified, report
+that condition and prohibit further engine execution. This PR prepares the
+procedure; it neither performs activation/restoration nor writes a real record.
+
+**Durability limitation requiring owner review:** this is a workflow control,
+not guaranteed crash-safe or power-loss-durable single-use enforcement. Process
+interruption after a retained record is handled by exclusive creation/existence
+denial (tested with inert PowerShell processes). Filesystem/hardware loss,
+external deletion/rollback, or failure before creation persists cannot provide
+a durable history. If consumption cannot be created, flushed or verified, no
+dispatch is permitted; consider the grant consumed by policy, restore PREPARED
+and do not retry even if storage is later repaired. The runner cannot prove that
+such a never-persisted record existed. It also cannot itself prove later manual
+source restoration or owner approval. No automatic source mutation, Git commit,
+record cleanup or standing authorization is implemented. A fresh attempt always
+requires fresh owner approval against a newly reviewed inactive revision.
+
+Inert tests use synthetic revision values and tombstones **only in unique
+test-owned temporary trees**, with scoped named doubles. They test failed
+consumption, out-of-order/repeated steps, failure consumption, restored denial
+and an abruptly exiting harmless PowerShell child followed by a denied second
+process. They never activate tracked source, write a real tombstone, create a
+real external Godot stage, call an activated production Run entry point or
+launch Godot. During a future separately authorized attempt, static fixtures
+accept the reviewed source transition only as an already-consumed grant; direct
+helpers in those child test processes still have no invocation context and deny.
+Fixtures refuse an unconsumed activated source before creating temporary files
+or probing entries. Real default/Run CLI denial probes run only on PREPARED
+source; they are not invoked against activated source during future static work.
+In-process prepared-entry denial probes use a scoped PREPARED source-state double.
