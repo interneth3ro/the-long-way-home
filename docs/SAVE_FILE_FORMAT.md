@@ -157,6 +157,11 @@ the codec detects short reads and changed file length, not all same-size races.
 
 ## Validation and execution boundary
 
+M5-39 Option A prepares a [dedicated isolated runner](SAVE_CODEC_RUNNER.md) on
+`codex/m5-codec-runner-preparation`, dependent on this codec branch. Its execution
+gate is inactive; runner preparation and static PASS grant no Godot permission.
+The codec and runtime assertions are unchanged by that preparation.
+
 [`save_file_codec_test.gd`](../tests/save_file_codec_test.gd) is an automated
 standalone SceneTree suite of synthetic round trips, canonical ordering, fixed
 layout, direct malformed envelopes, corruption, limits and isolated file I/O.

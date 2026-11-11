@@ -1,0 +1,7 @@
+; Standalone codec test manifest; stage ID is replaced only by the fixed runner.
+config_version=5
+
+[application]
+config/name="TLWH Save Codec Validation"
+config/use_custom_user_dir=true
+config/custom_user_dir_name="TLWH-codec-__STAGE_ID__"
