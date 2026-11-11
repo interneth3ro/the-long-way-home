@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3]
+[gd_scene load_steps=17 format=3]
 
 [ext_resource type="Script" path="res://scenes/interaction/exterior_boarding.gd" id="1_hatch"]
 
@@ -11,6 +11,8 @@
 [ext_resource type="PackedScene" path="res://scenes/interaction/exterior_hatch_visual.tscn" id="7_hatch_visual"]
 
 [ext_resource type="Texture2D" path="res://assets/environment/exterior/ferrite/faceted_ferrite_10x6.png" id="8_ferrite_art"]
+
+[ext_resource type="PackedScene" path="res://scenes/world/cuprite_visual_prototype.tscn" id="9_cuprite_prototype"]
 
 [sub_resource type="CircleShape2D" id="FerriteInspectionFootprint"]
 radius = 24.0
@@ -81,6 +83,9 @@ centered = false
 
 [node name="GroundObjects" type="Node2D" parent="."]
 y_sort_enabled = true
+
+[node name="CupriteVisualPrototype" parent="GroundObjects" instance=ExtResource("9_cuprite_prototype")]
+position = Vector2(-96, 320)
 
 [node name="FerriteInspection" type="Area2D" parent="GroundObjects"]
 collision_layer = 1
@@ -210,3 +215,5 @@ color = Color(0.36, 0.42, 0.44, 1)
 
 [node name="FromShip" type="Marker2D" parent="Spawns"]
 position = Vector2(-384, -64)
+
+[editable path="GroundObjects/CupriteVisualPrototype"]
