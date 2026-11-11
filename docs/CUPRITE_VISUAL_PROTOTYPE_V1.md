@@ -1,8 +1,10 @@
 # Cuprite visual prototype v1
 
-Implemented on `codex/cuprite-visual-prototype-v1`, pending owner F5 evaluation
-and merge. This is an artistic evaluation of one fixed, presentation-only deposit.
-The initial scale is approved for evaluation, not accepted as a final asset scale.
+Implemented on `codex/cuprite-visual-prototype-v1`, pending merge. The owner
+reported F5 PASS for overall artistic direction, transparency and terrain blending
+at the original `1/6` scale, but found the deposit too small beneath the Extractor.
+The owner requested a 35% uniform increase to `0.225`. This adjusted scale remains
+provisional pending another owner F5 evaluation.
 
 ## Artwork and placement
 
@@ -15,9 +17,10 @@ No regeneration, recoloring, cropping or baked scale change is involved.
 The [prototype scene](../scenes/world/cuprite_visual_prototype.tscn) is instanced
 under `GroundObjects` in the [existing exterior](../scenes/world/planet_exterior.tscn)
 at world-local `(-96, 320)`, southeast of the ship exit and west of introductory
-Ferrite. The centered sprite uses uniform `1/6` scale: its full canvas is
-256 x approximately 170.67 world units, bounded by x = -224 to 32 and
-y = approximately 234.67 to 405.33. The deposit renders at z = -5, above terrain
+Ferrite. The centered sprite uses uniform `0.225` scale: its full canvas is
+345.6 x 230.4 world units, bounded by x = -268.8 to 76.8 and
+y = 204.8 to 435.2. The center remains `(-96, 320)` and the stationary Extractor
+reference is unchanged. The deposit renders at z = -5, above terrain
 and below ground objects, without terrain tint. Linear filtering supports the
 reduced illustrated artwork.
 
@@ -26,12 +29,14 @@ spawn, rocks, introductory Ferrite artwork/footprint and its inspection trigger.
 It remains inside the existing protected crash-site clearing; no protection,
 generation or collision geometry is changed. It does not reserve construction
 space: normal gameplay may place other objects over this visual during play.
-Actual visual readability and traversal remain subject to owner F5 evaluation.
+Visual coverage and readability at the adjusted scale await owner F5 evaluation.
 
 The import sidecar follows existing Ferrite texture parameters: lossless
 compression (`compress/mode=0`), no mipmaps, unchanged alpha channel mapping,
 alpha-border correction, no premultiplied alpha and no size limit. The original
-PNG remains untouched. Import metadata is authored; Godot import is unverified.
+PNG remains untouched. Import settings are unchanged by the scale adjustment;
+the owner reported successful F5 transparency and blending at the original scale.
+The agent has not run Godot or independently verified texture import.
 
 ## Stationary Extractor scale reference
 
@@ -77,6 +82,12 @@ The full historical static suite was not run; its exact exterior snapshot guards
 do not account for this new presentation instance. No snapshot pins or runner
 controls were changed for this prototype.
 
+For the 35% scale adjustment, focused static checks verify the exact scale-only
+scene change, recalculated canvas/bounds and clearance, original PNG byte/hash
+identity, unchanged reference/center, documentation links and whitespace. All four
+protected UID hashes and the seven pre-existing playtest-modified files are checked
+unchanged; those playtest edits are excluded from the adjustment commit.
+
 No Godot editor, headless engine or game execution is included. The owner can:
 
 1. Start the existing application with F5 and reach the exterior normally.
@@ -88,6 +99,8 @@ No Godot editor, headless engine or game execution is included. The owner can:
 6. Confirm arrival, hatch access, Ferrite discovery and normal Ferrite Extractor
    placement/production still behave as expected, with no new engine errors.
 
-Coverage, final scale and artistic acceptance remain unverified until that review.
+Overall artistic direction, transparency and blending passed the owner's original
+F5 evaluation. Coverage and artistic acceptance at `0.225` remain pending the next
+owner F5 evaluation; this is not final scale approval.
 Reversal requires removing the single exterior instance/resource reference and
 these prototype-specific scene/asset/document files; no simulation migration exists.

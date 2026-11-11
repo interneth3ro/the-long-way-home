@@ -9,11 +9,11 @@
 [node name="CupriteVisualPrototype" type="Node2D"]
 y_sort_enabled = true
 
-; Preserve the complete owner PNG. Uniform 1/6 is an initial evaluation scale.
+; Preserve the complete owner PNG. Uniform 0.225 is a provisional evaluation scale.
 [node name="DepositArtwork" type="Sprite2D" parent="."]
 z_index = -5
 texture_filter = 2
-scale = Vector2(0.16666666666666666, 0.16666666666666666)
+scale = Vector2(0.225, 0.225)
 texture = ExtResource("1_cuprite")
 
 ; Toggle Visibility > Visible in the Inspector. Hidden by default.
