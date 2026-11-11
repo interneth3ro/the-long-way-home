@@ -1,5 +1,12 @@
 # The Long Way Home
 
+Milestone 5 standalone serialized `.sav` file-format foundation is implemented
+on `codex/m5-sav-codec`, pending owner review and merge. It provides a bounded
+restricted-Variant codec and whole-file SHA-256 integrity, with synthetic tests;
+there is no gameplay save/load integration. Engine tests await a reviewed codec
+execution scope; static checks alone do not establish runtime behavior. See the
+[binary format, API and validation boundary](docs/SAVE_FILE_FORMAT.md).
+
 Application shell/title Milestone 1 merged in [PR #166](https://github.com/interneth3ro/the-long-way-home/pull/166).
 Pause Menu Foundation merged in [PR #167](https://github.com/interneth3ro/the-long-way-home/pull/167)
 after owner 18/18 F5 PASS. Milestone 3 initial exterior preparation merged in
