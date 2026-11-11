@@ -238,25 +238,64 @@ try {
             Assert-CodecStage $stage $true
         } finally { Remove-Item -LiteralPath $cache; $stage.GeneratedCaptured = $false }
     }
-    Check 'reviewed canonical source hashes and raw identity changes enforced' {
-        function Get-NativeSourceIdentity {
-            [pscustomobject]@{ Revision = ('a' * 40); Working = 'inert stable status'; Index = 'inert index';
-                Tracked = @($inputs.Source) + @('tools/run-save-codec-tests.ps1', 'tests/save_codec_runner_fixture_test.ps1', 'tests/static_save_codec_runner_test.py', 'docs/SAVE_CODEC_RUNNER.md') }
+    foreach ($initialEnding in @('LF', 'CRLF')) {
+        Check "reviewed canonical source hashes and raw identity changes enforced ($initialEnding initial)" {
+            $tracked = @($inputs.Source) + @('tools/run-save-codec-tests.ps1', 'tests/save_codec_runner_fixture_test.ps1', 'tests/static_save_codec_runner_test.py', 'docs/SAVE_CODEC_RUNNER.md')
+            function Get-NativeSourceIdentity {
+                [pscustomobject]@{ Revision = ('a' * 40); Working = 'inert stable status'; Index = 'inert index';
+                    Tracked = $tracked }
+            }
+            function Invoke-CodecGit($Source, $Arguments) { if ($Arguments[0] -eq 'remote') { 'https://github.com/interneth3ro/the-long-way-home.git' } else { '' } }
+            # Scoped copies let negative controls change synthetic expectations only.
+            $fixtureInputs = @($inputs | ForEach-Object { [pscustomobject]@{ Source = $_.Source; Path = $_.Path; Sha256 = $_.Sha256 } })
+            function Get-CodecInputs { $fixtureInputs }
+            $codecInput = @($fixtureInputs | Where-Object Source -CEQ 'persistence/save_file_codec.gd')[0]
+            $reviewedHash = $codecInput.Sha256
+            $path = Join-Path $source 'persistence/save_file_codec.gd'
+            $bytes = [IO.File]::ReadAllBytes($path)
+            try {
+                $lfBytes = [Text.Encoding]::UTF8.GetBytes([Text.Encoding]::UTF8.GetString($bytes).Replace("`r`n", "`n"))
+                $crlfBytes = [Text.Encoding]::UTF8.GetBytes([Text.Encoding]::UTF8.GetString($lfBytes).Replace("`n", "`r`n"))
+                [byte[]]$initialBytes = if ($initialEnding -ceq 'LF') { $lfBytes } else { $crlfBytes }
+                [IO.File]::WriteAllBytes($path, $initialBytes)
+                $initial = Get-CodecSourceBytes $path
+                Require ($initial.RawHash -ceq (Get-CodecHash $initialBytes)) 'Initial synthetic representation not established'
+                Require ((Get-CodecHash $initial.Bytes) -ceq $reviewedHash) 'Initial canonical reviewed hash differs'
+                # Capture a known LF baseline regardless of checkout/initial endings.
+                [IO.File]::WriteAllBytes($path, $lfBytes)
+                $snapshot = Get-CodecSnapshot $source
+                Assert-CodecSnapshot $source $snapshot
+                $baselineInput = @($snapshot.Inputs | Where-Object Source -CEQ $codecInput.Source)[0]
+                Require ($baselineInput.RawHash -ceq (Get-CodecHash $lfBytes)) 'LF raw baseline not established'
+                Require ($baselineInput.Sha256 -ceq $reviewedHash) 'LF canonical reviewed hash differs'
+                $unreviewed = Join-Path $source 'tests/static_unreviewed_test.py'
+                [IO.File]::WriteAllText($unreviewed, '# inert; never executed')
+                try { Reject { Get-CodecSnapshot $source } 'Untracked static test' } finally { Remove-Item -LiteralPath $unreviewed }
+                [IO.File]::WriteAllText($path, 'changed inert source')
+                Reject { Get-CodecSnapshot $source } 'input hash changed'
+                [IO.File]::WriteAllBytes($path, $lfBytes)
+                foreach ($badHash in @(('0' * 64), $null)) {
+                    try {
+                        $codecInput.Sha256 = $badHash
+                        Reject { Get-CodecSnapshot $source } 'input hash changed'
+                    } finally { $codecInput.Sha256 = $reviewedHash }
+                }
+                $reviewedTracked = $tracked
+                try {
+                    $tracked = @($tracked | Where-Object { $_ -cne $codecInput.Source })
+                    Reject { Get-CodecSnapshot $source } 'Codec source input is not tracked'
+                } finally { $tracked = $reviewedTracked }
+                [IO.File]::WriteAllBytes($path, $crlfBytes)
+                $changed = Get-CodecSourceBytes $path
+                Require ($lfBytes.Length -ne $crlfBytes.Length -and $changed.RawHash -cne $baselineInput.RawHash) 'Synthetic raw bytes did not actually change'
+                Require ((Get-CodecHash $changed.Bytes) -ceq $reviewedHash) 'CRLF canonical reviewed content changed'
+                $freshSnapshot = Get-CodecSnapshot $source
+                Require (($freshSnapshot.Identity | ConvertTo-Json -Depth 8 -Compress) -ceq ($snapshot.Identity | ConvertTo-Json -Depth 8 -Compress)) 'Unrelated source identity changed'
+                Reject { Assert-CodecSnapshot $source $snapshot } 'changed since static'
+                # CRLF itself remains valid; changing raw identity after capture does not.
+                Assert-CodecSnapshot $source $freshSnapshot
+            } finally { [IO.File]::WriteAllBytes($path, $bytes) }
         }
-        function Invoke-CodecGit($Source, $Arguments) { if ($Arguments[0] -eq 'remote') { 'https://github.com/interneth3ro/the-long-way-home.git' } else { '' } }
-        $snapshot = Get-CodecSnapshot $source
-        Assert-CodecSnapshot $source $snapshot
-        $unreviewed = Join-Path $source 'tests/static_unreviewed_test.py'
-        [IO.File]::WriteAllText($unreviewed, '# inert; never executed')
-        try { Reject { Get-CodecSnapshot $source } 'Untracked static test' } finally { Remove-Item -LiteralPath $unreviewed }
-        $path = Join-Path $source 'persistence/save_file_codec.gd'
-        $bytes = [IO.File]::ReadAllBytes($path)
-        try {
-            [IO.File]::WriteAllText($path, 'changed inert source')
-            Reject { Get-CodecSnapshot $source } 'input hash changed'
-            [IO.File]::WriteAllText($path, [Text.Encoding]::UTF8.GetString($bytes).Replace("`r`n", "`n").Replace("`n", "`r`n"))
-            Reject { Assert-CodecSnapshot $source $snapshot } 'changed since static'
-        } finally { [IO.File]::WriteAllBytes($path, $bytes) }
     }
     Check 'valid synthetic completion accepted' { Require ((Get-CodecOutcome Codec (Result ($good + "`n"))).Status -ceq 'PASS') 'Valid completion rejected' }
     foreach ($text in @('', 'SAVE_FILE_CODEC: FAIL checks=250 failures=1', 'SAVE_FILE_CODEC: PASS checks=0 failures=0',
