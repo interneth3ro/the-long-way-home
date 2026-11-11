@@ -28,9 +28,13 @@ state; Main Menu and Exit Game require confirmation. Save Game, Load Game and Se
 Milestone 3 exterior preparation merged in PR #169 after owner F5 acceptance:
 New Game prepares and retains all 49 starting chunks before control inside the
 ship, reusing them on first exit. Milestone 4 shared loading presentation with
-real 0-51 progress and explicit failure return is implemented on
-`codex/shared-loading-screen`, pending owner F5 acceptance and merge. Persistence
-remains separate; see
+real 0-51 progress and explicit failure return merged in
+[PR #170](https://github.com/interneth3ro/the-long-way-home/pull/170)
+at `327d4efe73a7213d993fb7cc2d62c1681a7be83c`.
+An owner F5 acceptance result was not found in the reviewed PR or implementation
+chat; no acceptance PASS is inferred from merge. Gameplay persistence integration
+remains separate; the standalone codec foundation merged in PRs #172–174
+with historical isolated validation documented in [SAVE_FILE_FORMAT.md](SAVE_FILE_FORMAT.md). See
 [application ownership and owner acceptance](APPLICATION_SHELL.md#shared-loading-screen--milestone-4-pending-acceptance-and-merge).
 Computer restoration is implemented on `codex/computer-restoration`, pending
 owner normal-F5 acceptance and merge; see the

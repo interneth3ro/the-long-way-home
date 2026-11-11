@@ -5,9 +5,14 @@ Milestone 2, Pause Menu Foundation, merged in [PR #167](https://github.com/inter
 after owner 18/18 F5 PASS. Tracks
 [Issue #165](https://github.com/interneth3ro/the-long-way-home/issues/165).
 Milestone 3 initial exterior preparation merged in [PR #169](https://github.com/interneth3ro/the-long-way-home/pull/169)
-after owner F5 acceptance. Milestone 4 shared loading UI is implemented on
-`codex/shared-loading-screen`, **pending owner F5 acceptance and merge**.
-Persistence remains future work.
+after owner F5 acceptance. Milestone 4 shared loading UI merged in
+[PR #170](https://github.com/interneth3ro/the-long-way-home/pull/170).
+An owner F5 acceptance result was not found in the reviewed PR or implementation
+chat; the historical checklist below remains unmarked.
+Gameplay persistence integration remains future work. The standalone
+[serialized file codec foundation](SAVE_FILE_FORMAT.md) and inactive runner
+safeguards merged in PRs #172–174; historical M5-42 codec validation passed.
+That validation grants no current execution permission.
 
 ## Startup and ownership
 
@@ -184,7 +189,8 @@ parse GDScript with Godot or establish rendered layout, input behavior, scene
 teardown, gameplay or runtime correctness. Godot headless, graphical, playable and
 performance checks were not run. The historical Milestone 2 checklist below
 received owner 18/18 F5 PASS for PR #167. The owner subsequently reported Milestone 3 F5 acceptance and PR #169 merge;
-no itemized acceptance results are reproduced here. Milestone 4 acceptance remains pending.
+no itemized acceptance results are reproduced here. Milestone 4 merged in PR #170;
+no owner acceptance result was found in the reviewed PR or implementation chat.
 
 - [ ] 1. F5 opens the title screen normally.
 - [ ] 2. New Game enters production V2.
@@ -211,7 +217,9 @@ acceptance and merge are separate decisions. This document grants no Godot
 execution authorization.
 
 
-## Shared loading screen — Milestone 4 (pending acceptance and merge)
+<a id="shared-loading-screen--milestone-4-pending-acceptance-and-merge"></a>
+
+## Shared loading screen — Milestone 4 (merged)
 
 Approved Issue #165 D5/D6/D44 and owner Milestone 4 decisions D47–D53 guide this
 implementation. [LoadingScreen](../scenes/application/loading_screen.tscn) is a
@@ -235,7 +243,8 @@ PlaythroughState, resource presenter or SQLite internals. Reports are monotonic,
 reject older observations, and cannot award the final unit. Failure stops updates
 and exposes exactly one focused action, Return to Main Menu. A future restoration
 caller can provide a different total/context and its own factual stage/detail;
-no restoration or save contract is implemented.
+no gameplay restoration or save contract is implemented. The standalone codec
+foundation is documented separately in [SAVE_FILE_FORMAT.md](SAVE_FILE_FORMAT.md).
 
 Application subscribes before preparation and maps the controller's actual 50
 completed units into a **51-unit operation**. The upstream aggregate combines
@@ -276,9 +285,12 @@ paused recovery wiring, stale generations, process locks and exact preservation 
 ordinary hatch methods, world/gameplay code and artwork. These checks execute no
 GDScript and do not establish parsing, Godot type checking, rendering, runtime
 cleanup or frame pacing. Full static-suite and inert-runner results are recorded
-in the draft PR. Godot was not executed. Existing synchronous initialization and
+in the original PR #170 record. Godot was not executed for that implementation.
+Existing synchronous initialization and
 publication costs remain; no performance probes or numerical certification were
-performed. Save/Load/Settings stay disabled, with no SQLite, autosave or persistence.
+performed. Save/Load/Settings stay disabled, with no autosave or gameplay
+persistence integration. The separate standalone codec has historical M5-42
+runtime validation; it does not establish shell save/load behavior.
 
 ### Milestone 4 owner F5 acceptance (outstanding)
 

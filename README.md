@@ -1,11 +1,18 @@
 # The Long Way Home
 
-Milestone 5 standalone serialized `.sav` file-format foundation is implemented
-on `codex/m5-sav-codec`, pending owner review and merge. It provides a bounded
-restricted-Variant codec and whole-file SHA-256 integrity, with synthetic tests;
-there is no gameplay save/load integration. Engine tests await a reviewed codec
-execution scope; static checks alone do not establish runtime behavior. See the
-[binary format, API and validation boundary](docs/SAVE_FILE_FORMAT.md).
+Milestone 5 standalone serialized `.sav` codec foundation, isolated runner and
+inactive one-time authorization safeguards merged in
+[PR #172](https://github.com/interneth3ro/the-long-way-home/pull/172),
+[PR #173](https://github.com/interneth3ro/the-long-way-home/pull/173) and
+[PR #174](https://github.com/interneth3ro/the-long-way-home/pull/174).
+The bounded restricted-Variant binary codec uses an uncompressed envelope,
+deterministic encoding, disabled object reconstruction and whole-file SHA-256
+integrity. Historical M5-42 isolated validation passed 261 runtime checks with
+zero failures, including independent file reopening. Its one-time grant is
+consumed; the merged runner is inactive and future execution requires fresh
+explicit authorization. Gameplay save/load integration is not implemented. See the
+[binary format and validation boundary](docs/SAVE_FILE_FORMAT.md) and
+[historical runtime record](docs/SAVE_CODEC_RUNNER.md#historical-m5-42-validation-and-restoration).
 
 Application shell/title Milestone 1 merged in [PR #166](https://github.com/interneth3ro/the-long-way-home/pull/166).
 Pause Menu Foundation merged in [PR #167](https://github.com/interneth3ro/the-long-way-home/pull/167)
@@ -14,7 +21,9 @@ after owner 18/18 F5 PASS. Milestone 3 initial exterior preparation merged in
 New Game prepares and retains the 49-chunk crash-site neighborhood before Dave
 gains control inside the ship. First exit reuses it; normal exploration streams
 beyond it. Milestone 4 adds shared loading presentation and real 0–51 startup
-progress on `codex/shared-loading-screen`, **pending owner F5 acceptance and merge**.
+progress, merged in [PR #170](https://github.com/interneth3ro/the-long-way-home/pull/170).
+An owner F5 acceptance result was not found in the reviewed PR or implementation
+chat; the historical checklist remains unmarked.
 Gameplay remains locked through reveal; failures offer Return to Main Menu.
 Save Game, Load Game and Settings remain disabled; persistence is separate.
 Agent verification is static only; Godot was not executed.

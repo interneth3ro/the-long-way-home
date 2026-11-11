@@ -1,11 +1,21 @@
 # TLWH serialized save-file foundation
 
 Milestone 5 foundation for issue [#165](https://github.com/interneth3ro/the-long-way-home/issues/165),
-implemented on `codex/m5-sav-codec`, pending owner review and merge.
-The supplied implementation approval M5-30–38 supersedes the earlier SQLite-first
-investigation: that evaluation is closed. This module has no gameplay callers,
+merged in [PR #172](https://github.com/interneth3ro/the-long-way-home/pull/172)
+at `0f151a35c5c5aed6b5ebf2c7343420d03097bdf1`.
+The implementation approval M5-30–38 supersedes the earlier SQLite-first
+investigation, abandoned following native-extension execution difficulties.
+This module has no gameplay callers,
 snapshot capture, SaveCoordinator, restoration, publication journal or save UI.
 It introduces no database or extension dependency.
+
+Approved future integration work includes an append-only, length-prefixed
+committed publication journal, immutable snapshots and recovery handling,
+SaveCoordinator, durable object UUIDs and hierarchical subsystem snapshots.
+The explicit save-ready boundary, deterministic world reconstruction,
+side-effect-free restoration, single-flight saves and staged restoration that
+preserves the active session on failure also remain future work. The standalone
+codec does not implement these systems.
 
 ## Envelope version 1
 
@@ -157,10 +167,18 @@ the codec detects short reads and changed file length, not all same-size races.
 
 ## Validation and execution boundary
 
-M5-39 Option A prepares a [dedicated isolated runner](SAVE_CODEC_RUNNER.md) on
-`codex/m5-codec-runner-preparation`, dependent on this codec branch. Its execution
-gate is inactive; runner preparation and static PASS grant no Godot permission.
-The codec and runtime assertions are unchanged by that preparation.
+The M5-39 [dedicated isolated runner](SAVE_CODEC_RUNNER.md) and M5-40 one-time
+authorization safeguards merged in PRs #173 and #174. The merged execution gate
+is inactive (`return 'PREPARED'`); merging and static PASS grant no Godot permission.
+
+The explicitly authorized M5-42 isolated validation passed preflight, a full
+static suite (515 tests: 513 passed, two optional skips; 320.473 seconds), cold
+import and **261 codec runtime checks, zero failures**, including independent
+file reopening. Completion: `SAVE_FILE_CODEC: PASS checks=261 failures=0`.
+The one-time grant is **consumed** and the inactive source was restored. See the
+[activation, restoration and retained evidence record](SAVE_CODEC_RUNNER.md#historical-m5-42-validation-and-restoration).
+This is historical standalone codec validation, not gameplay integration or
+current execution authorization.
 
 [`save_file_codec_test.gd`](../tests/save_file_codec_test.gd) is an automated
 standalone SceneTree suite of synthetic round trips, canonical ordering, fixed
@@ -178,8 +196,8 @@ GDScript or establish engine parse/runtime success.
 The existing local runner remains unchanged. Its standing Native permission is
 for recipe-switching only and **does not dispatch this codec suite**. No engine
 run, metadata smoke, graphical check or benchmark is implied by static PASS.
-Before codec runtime execution, the owner must review and approve a narrow
-runner activation amendment specifying:
+Before any future codec runtime execution, fresh explicit owner authorization
+and a reviewed activation amendment must specify:
 
 1. Exact tracked codec/test inputs and isolated minimal `project.godot` staging
    manifest, with no gameplay scene or autoload; fresh unique external stage
@@ -194,7 +212,6 @@ runner activation amendment specifying:
    test data, required `SAVE_FILE_CODEC: PASS` completion with zero failures,
    fail-closed error/termination handling and retained bounded failure evidence.
 
-This checklist is a proposed review scope, **not an active runner recipe or
-execution grant**. Until reviewed activation, codec engine parsing, automated
-runtime assertions and independent file reopening remain unexecuted. Owner
-acceptance must review those results and the file contract before integration.
+This checklist defines the review boundary, **not an active execution grant**.
+The historical M5-42 results do not permit another import or runtime invocation.
+Gameplay integration and its acceptance remain separate future work.
