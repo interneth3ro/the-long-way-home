@@ -1,19 +1,21 @@
-# Isolated save codec runner — preparation only
+# Isolated save codec runner — merged and inactive
 
-M5-39 Option A, issue [#165](https://github.com/interneth3ro/the-long-way-home/issues/165).
-This dependent draft is based on codec [PR #172](https://github.com/interneth3ro/the-long-way-home/pull/172),
-`codex/m5-sav-codec` at `c048787628843719f693ae0116458242d41b0ead`.
-Runner preparation is on `codex/m5-codec-runner-preparation`, targeting the codec
-branch so its PR diff excludes the codec implementation. Neither PR is merged.
-The codec and its runtime assertions are unchanged by this preparation.
+For issue [#165](https://github.com/interneth3ro/the-long-way-home/issues/165),
+the standalone codec, M5-39 isolated runner and M5-40 one-time authorization
+safeguards are merged:
 
-M5-40 Option A prepares the one-time authorization lifecycle on
-`codex/m5-codec-one-time-amendment`, based on reviewed runner
-[PR #173](https://github.com/interneth3ro/the-long-way-home/pull/173) at
-`a2206096be202c8b3b0341e96039fb0f5bb815a0`. It remains **PREPARED/inactive**.
-This child amendment targets `codex/m5-codec-runner-preparation`; it changes only
-authorization logic, its supporting tests and this guide. No execution grant is
-present. The separate codec baseline remains `c048787` from PR #172.
+| PR | Scope | Merge commit |
+| --- | --- | --- |
+| [#172](https://github.com/interneth3ro/the-long-way-home/pull/172) | Codec foundation | `0f151a35c5c5aed6b5ebf2c7343420d03097bdf1` |
+| [#173](https://github.com/interneth3ro/the-long-way-home/pull/173) | Isolated runner | `693817e6f8732b89cbe120ef8e4a82ea6960c934` |
+| [#174](https://github.com/interneth3ro/the-long-way-home/pull/174) | Inactive authorization safeguards | `b2644d091d368b64e20d5745c6ba933e78637157` |
+
+The original codec baseline is `c048787628843719f693ae0116458242d41b0ead`;
+runner preparation was reviewed at `a2206096be202c8b3b0341e96039fb0f5bb815a0`.
+The PRs were originally stacked drafts. Their merges do not authorize execution.
+The merged runner returns `PREPARED`; the only historical codec runtime grant
+is consumed. The codec and runtime assertions were unchanged by runner preparation.
+
 Five historical preservation tests also recognize the now-tracked dedicated
 runner through a shared exact-source SHA-256 check in its static test module.
 Only that one path, at the reviewed PR #173 or prepared amendment identity, is
@@ -21,7 +23,46 @@ accepted; the defined activation line is normalized for identity comparison.
 Other code, commands, limits and paths remain protected. This test exception is
 not authorization to execute the runner.
 
-**Godot import/runtime: NOT RUN — OWNER AUTHORIZATION REQUIRED.**
+## Historical M5-42 validation and restoration
+
+One explicitly authorized isolated invocation ran at activation commit
+[`8ae6e6fb040a10c7384d01f62b7b60751326c531`](https://github.com/interneth3ro/the-long-way-home/commit/8ae6e6fb040a10c7384d01f62b7b60751326c531),
+a direct child of reviewed inactive preparation
+`5f02aec5194413a4bc917b84edb1f151bce67394`.
+
+| Phase | Historical result |
+| --- | --- |
+| Preflight | PASS |
+| Static validation | 515 tests; 513 passed, two optional skips |
+| Static duration | 320.473 seconds |
+| Isolated cold import | PASS |
+| Godot codec runtime | 261 checks, zero failures |
+| Independent file reopening | PASS |
+| One-time authorization | CONSUMED |
+
+Completion: `SAVE_FILE_CODEC: PASS checks=261 failures=0`.
+The runner did not retain exact engine-phase durations. This validates the
+standalone synthetic codec scope, not gameplay save/load or performance.
+
+M5-43 restored `return 'PREPARED'` in
+[`d544160b92bd488cd29374e505051b1cbb9e64a2`](https://github.com/interneth3ro/the-long-way-home/commit/d544160b92bd488cd29374e505051b1cbb9e64a2).
+The restored tree exactly matches reviewed inactive preparation `5f02aec`.
+Both commits remain preserved on remote branch
+`codex/m5-codec-one-time-activation`; they were not rewritten into the merged PRs.
+
+Retained evidence remains at the original external paths:
+
+- Consumption record: `D:\GameDev\Godot\TLWH-NativeStages\codec-grant-5f02aec5194413a4bc917b84edb1f151bce67394.consumed.json`.
+- Isolated validation stage: `D:\GameDev\Godot\TLWH-NativeStages\tlwh-codec-1994fd3302d64e2784d698ddbcadb1c6`, including approved generated outputs.
+
+The historical M5-42/M5-43 reports in the **Add serialized SAV codec** chat
+record the run and restoration checks. Preserve the consumption record, stage
+and retained runtime evidence. Do not delete, reset or reuse them.
+
+**Current authorization: none for codec execution.** The grant is consumed;
+fresh explicit owner approval and a newly reviewed activation are required
+before any future import or codec runtime attempt. No runner invocation or
+Godot execution was performed for this documentation reconciliation.
 
 ## Entry points and inactive gate
 
@@ -52,7 +93,7 @@ Command planning and result
 classification helpers are data-only; they do not launch a process or stage.
 
 The proposed pipeline below exists behind the gate for review and inert testing.
-Preparing, passing static tests, pushing or merging this PR **does not authorize execution**.
+Preparing, passing static tests, pushing or merging these PRs **does not authorize execution**.
 The mechanism is a trusted-checkout workflow boundary, not a sandbox against
 someone rewriting PowerShell functions or maliciously editing reviewed source.
 Scoped named doubles exist only in inert fixtures; production has no injected
@@ -140,8 +181,9 @@ the previous process values in `finally`, including on failure. These are fixed
 output-isolation paths, never authorization switches or user-selected overrides.
 The engine child inherits them through the unchanged bounded-process helper.
 Godot's [Windows platform implementation](https://github.com/godotengine/godot/blob/master/platform/windows/os_windows.cpp)
-uses APPDATA for config/data and LOCALAPPDATA for caches; actual pinned-engine
-behavior remains unverified until a separately authorized run. No owner settings
+uses APPDATA for config/data and LOCALAPPDATA for caches; the historical M5-42 run
+passed with this profile configuration; it does not prove OS access isolation.
+No owner settings
 or saves are staged or intentionally accessed. This is process configuration,
 not a filesystem access-control sandbox.
 
@@ -195,7 +237,8 @@ real stages and unknown files are not cleanup candidates.
 
 ## Review and activation
 
-Review the dependent PR diff, full runner/template, reused helper controls,
+For a future authorization, review the merged baseline and proposed activation
+diff, full runner/template, reused helper controls,
 synthetic assertions, static results, exact hashes/commands and this contract.
 Resolve any input revision change through a new reviewed pin update; do not edit
 the codec or runtime assertions to make runner preparation pass. Review any such
@@ -203,9 +246,10 @@ blocking codec issue separately.
 
 Then follow the one-time procedure below, consistent with
 [AGENTS.md](../AGENTS.md#godot-execution-safety). This adds no standing permission.
-Preparing or merging a PR never consumes or supplies an execution grant. Until
-separately authorized, the source transition remains `PREPARED`, and codec parse,
-import, runtime assertions and independent file reopening remain unverified.
+Preparing or merging a PR never consumes or supplies an execution grant. The
+source transition remains `PREPARED`; historical parse/import, runtime
+assertions and independent file reopening passed under M5-42. They confer no
+permission for another run.
 
 ## M5-40 one-time activation procedure — not authorized now
 
@@ -288,8 +332,9 @@ denial fixtures plus default/Run denial in fresh PowerShell processes. Verify
 that no process/stage action follows denial and that the codec/runner contract
 and tombstone remain unchanged. Do not test restoration by attempting an active
 run. If source restoration or process termination cannot be verified, report
-that condition and prohibit further engine execution. This PR prepares the
-procedure; it neither performs activation/restoration nor writes a real record.
+that condition and prohibit further engine execution. The merged PR prepared
+this procedure without performing activation/restoration
+or writing a real record; the separate historical M5-41–43 work above did so.
 
 **Durability limitation requiring owner review:** this is a workflow control,
 not guaranteed crash-safe or power-loss-durable single-use enforcement. Process
