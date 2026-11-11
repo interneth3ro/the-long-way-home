@@ -17,6 +17,13 @@ side-effect-free restoration, single-flight saves and staged restoration that
 preserves the active session on failure also remain future work. The standalone
 codec does not implement these systems.
 
+The separate [publication journal byte foundation](PUBLICATION_JOURNAL.md) is
+implemented on `codex/publication-journal-bytes`, pending merge. It wraps complete
+unchanged codec snapshots in records and provides pure manifest validation and
+authority selection. Filesystem publication and gameplay integration remain
+future work. Its synthetic GDScript assertions have not been executed; the
+historical codec validation and consumed execution grant below are unchanged.
+
 ## Envelope version 1
 
 All integers are **unsigned little endian**, with no alignment gaps. Offsets are

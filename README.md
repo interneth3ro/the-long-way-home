@@ -14,6 +14,13 @@ explicit authorization. Gameplay save/load integration is not implemented. See t
 [binary format and validation boundary](docs/SAVE_FILE_FORMAT.md) and
 [historical runtime record](docs/SAVE_CODEC_RUNNER.md#historical-m5-42-validation-and-restoration).
 
+The [publication journal byte foundation](docs/PUBLICATION_JOURNAL.md) is
+implemented on `codex/publication-journal-bytes`, pending merge: pure record and
+manifest bytes, strict recovery, in-memory history construction and authority
+selection. It implements no filesystem publication or gameplay saving. Its
+GDScript tests are authored but not executed; existing runner safeguards remain
+unchanged.
+
 Application shell/title Milestone 1 merged in [PR #166](https://github.com/interneth3ro/the-long-way-home/pull/166).
 Pause Menu Foundation merged in [PR #167](https://github.com/interneth3ro/the-long-way-home/pull/167)
 after owner 18/18 F5 PASS. Milestone 3 initial exterior preparation merged in
