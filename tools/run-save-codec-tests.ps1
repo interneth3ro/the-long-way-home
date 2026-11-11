@@ -9,7 +9,7 @@ $codecInvocationMode = $Mode
 $script:CodecGrantContext = $null
 
 function Get-CodecGrantTransition {
-    return 'AUTHORIZED_ONCE:5f02aec5194413a4bc917b84edb1f151bce67394'
+    return 'PREPARED'
 }
 
 function Get-CodecGrantedRevision {
