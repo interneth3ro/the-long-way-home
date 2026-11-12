@@ -1,11 +1,12 @@
 # The Long Way Home
 
 The [Resource Generation v2 foundation contracts](docs/RESOURCE_GENERATION_V2_CONTRACTS.md)
-are implemented on `codex/resource-generation-v2-foundation`, pending review
-and merge: native resource definitions and complete location/deposit data
-contracts only. No generator, activation, presentation, or mining behavior
-is connected. Legacy Ferrite and the Cuprite visual prototype are preserved;
-agent validation is static only.
+merged in PR #187. The isolated [ordinary-world generator](docs/RESOURCE_GENERATION_V2_GENERATOR.md)
+is implemented on `codex/resource-generation-v2-generator`, pending owner review
+and merge. It uses 1,536-unit regions and complete single/pair/triple groups.
+No gameplay, presentation or mining caller is connected. Legacy Ferrite and the
+Cuprite visual prototype are preserved. Validation is static only; GDScript
+behavioral assertions are authored but not executed.
 
 The [east/west walking alignment](#dave-east-and-west-walk-alignment-v1-owner-accepted-pending-merge)
 implements the owner-approved GIF on `codex/dave-east-west-walk-alignment-v1`.
