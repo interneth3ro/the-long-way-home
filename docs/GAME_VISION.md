@@ -87,11 +87,12 @@ Earlier milestone descriptions retain their historical scope and launch expectat
   See the [south-idle implementation and checklist](../README.md#dave-south-idle-v1-pr-182-merged).
   The owner also approved an east-idle breathing proof and horizontal mirroring
   of that same sheet for west idle, following the existing walking convention.
-  This refinement is implemented on `codex/dave-east-west-idle-v1`, pending owner
-  F5 acceptance and merge. The lower body stays fixed; current scale, accepted
+  This refinement is implemented on `codex/dave-east-west-idle-v1`; the owner
+  reported overall in-game acceptance PASS on November 11 against `b563fab3`,
+  and PR #183 is pending merge. The lower body stays fixed; current scale, accepted
   north/south idle and all walking artwork/timing are preserved. Walking issues
   shown in the owner's video remain separate work. See the
-  [east/west-idle implementation and checklist](../README.md#dave-east-and-west-idle-v1-pending-in-game-acceptance-and-merge).
+  [east/west-idle implementation and checklist](../README.md#dave-east-and-west-idle-v1-owner-accepted-pending-merge).
 
 ## Approved primary interior V2 visual comparison
 
