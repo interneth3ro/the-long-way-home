@@ -1,8 +1,9 @@
 # The Long Way Home
 
-The [north-facing idle refinement](#dave-north-idle-v1-feature-branch-pending-in-game-acceptance-and-merge)
-is implemented on `codex/dave-north-idle-v1`, pending owner in-game acceptance
-and merge. It uses the accepted three-second breathing proof as a separate sheet.
+The [north-facing idle refinement](#dave-north-idle-v1-owner-accepted-pending-merge)
+is implemented on `codex/dave-north-idle-v1`, owner accepted and pending merge
+in [PR #181](https://github.com/interneth3ro/the-long-way-home/pull/181). It uses
+the accepted three-second breathing proof as a separate sheet.
 
 The [Cuprite visual prototype v1](docs/CUPRITE_VISUAL_PROTOTYPE_V1.md) adds one
 presentation-only deposit near the crash site and an optional stationary
@@ -2344,7 +2345,7 @@ delay remains separate in [issue #144](https://github.com/interneth3ro/the-long-
 Keep the PR draft until acceptance; merge and later asset cleanup require separate
 owner action. No old Dave assets are deleted here.
 
-### Dave north idle v1 (feature branch, pending in-game acceptance and merge)
+### Dave north idle v1 (owner accepted, pending merge)
 
 On November 11, 2026, the owner accepted the offline north-idle proof and
 requested integration of this animation alone. `codex/dave-north-idle-v1` starts
@@ -2353,6 +2354,14 @@ at `8edb00937beb8842ae9a50a30394045d033841aa`. The separate runtime pair is
 play at 500 ms each, forming a three-second loop; metadata is an editing reference,
 not a runtime loader. The PNG is byte-identical to the accepted proof:
 `74983d4f94314f25065ddf53e421e170fd6909aa09b5c1c03b52a302bcab619a`.
+
+The owner reported overall in-game acceptance **PASS** on November 11, 2026,
+against implementation `68d6d3d2041cfcb661c24c5b17bb2f9a2ef170dc` and requested
+that [PR #181](https://github.com/interneth3ro/the-long-way-home/pull/181) be
+finalized and marked ready for review. No itemized results were supplied. This
+acceptance covers the north-idle integration; the walking-size observation below
+remains separate. The JSON `proof` block preserves the earlier offline record;
+this acceptance entry supersedes its pending status.
 
 All poses reuse north-idle atlas cell 36. The rest/half/full pose order is
 `[0,0,1,2,2,1]`. Half inhale reads source row `y+1` for destination rows 0-90;
@@ -2377,7 +2386,7 @@ This is recorded for separate walking/transition refinement; this idle integrati
 does not resize either animation. The earlier north-walk acceptance below remains
 a historical record, not a dismissal of the new observation.
 
-Validation is offline/static only. The north-idle suite checks the accepted PNG,
+Agent validation is offline/static only. The north-idle suite checks the accepted PNG,
 every copied RGBA row, fixed lower body, timing, visibility selection and shared
 anchor. Historical Dave/machine suites reverse only this exact scene amendment
 before their existing comparisons; their historical hashes remain unchanged.
@@ -2396,18 +2405,20 @@ same four Cuprite paths as committed main, with no north-idle violations. The
 remaining snapshot failures read the unchanged exterior scene. Four of those
 machine-preservation failures were also reproduced before implementation. No
 historical exterior pins were rewritten and no whole-suite PASS is claimed.
-No Godot import, headless or graphical execution was performed. The draft PR
-remains pending owner verification:
+The agent performed no Godot import, headless or graphical execution. Existing
+static results are retained because finalization changes documentation only.
+Owner acceptance is recorded as an overall PASS; the original verification scope
+is retained below as a reference, without inferring individual test results:
 
-- [ ] F5/New Game, move north and release: steady shading and restrained breathing.
-- [ ] Observe several complete loops: planted feet, no distracting loop seam.
-- [ ] Start/stop north repeatedly: no blank frame, double sprite or stale pose;
+- F5/New Game, move north and release: steady shading and restrained breathing.
+- Observe several complete loops: planted feet, no distracting loop seam.
+- Start/stop north repeatedly: no blank frame, double sprite or stale pose;
   record the already-known idle/walk size difference separately.
-- [ ] Change to/from every other facing and walking direction, including mirrored
+- Change to/from every other facing and walking direction, including mirrored
   west walking: normal artwork and immediate visibility switches.
-- [ ] Inspect at normal zoom and zoom extremes, indoors and outside: unchanged
+- Inspect at normal zoom and zoom extremes, indoors and outside: unchanged
   scale/anchor, edges and frame margins; no new parser/import/runtime errors.
-- [ ] Movement, collisions, interaction prompts and hatch transitions still work.
+- Movement, collisions, interaction prompts and hatch transitions still work.
 
 ### Dave north walking v2 (owner accepted, pending merge)
 

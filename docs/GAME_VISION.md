@@ -73,10 +73,11 @@ Earlier milestone descriptions retain their historical scope and launch expectat
   The owner accepted a north-only idle proof on November 11, 2026 and requested
   its integration: a separate sheet derived from one existing pose, with fixed
   feet, stable shading and a three-second breathing loop. This refinement is
-  implemented on `codex/dave-north-idle-v1`, pending in-game acceptance and merge.
+  implemented on `codex/dave-north-idle-v1`; the owner reported overall in-game
+  acceptance PASS on November 11 against `68d6d3d`, and PR #181 is pending merge.
   The other animations and current scale are preserved; the newly reported
   north idle/walk size mismatch is separate refinement work. See the
-  [north-idle implementation and checklist](../README.md#dave-north-idle-v1-feature-branch-pending-in-game-acceptance-and-merge).
+  [north-idle implementation and checklist](../README.md#dave-north-idle-v1-owner-accepted-pending-merge).
 
 ## Approved primary interior V2 visual comparison
 
