@@ -1,15 +1,18 @@
 # Resource Generation v2 foundation contracts
 
-Implemented on `codex/resource-generation-v2-foundation`, pending review and
-merge. This foundation follows the owner-supplied November 11 design specification
+Merged in PR #187. This foundation follows the owner-supplied November 11 design specification
 (Decisions 1–6C) and subsequent approved Decisions 7A–7C: fixed anchors with later
 placement assistance, controlled starting-area transition, and separate technical
 and gameplay activation. The original implementation brief authorizes this scoped
 work; the specification's planning boundary does not itself authorize execution.
 
-This PR supplies inert data interfaces only. No v2 generator, presenter, activation
+The foundation supplies inert data interfaces only. No v2 generator, presenter, activation
 switch, mining integration, inventory item, recipe, or persistence integration is
 implemented. The existing Ferrite system and Cuprite visual prototype remain intact.
+
+The separately scoped [ordinary-world generator](RESOURCE_GENERATION_V2_GENERATOR.md)
+is pending owner review and merge on `codex/resource-generation-v2-generator`.
+It consumes these unchanged interfaces without activating resources in gameplay.
 
 ## Native resource definition
 
@@ -56,11 +59,10 @@ Every member has the same resource type. Array order is the stable member index;
 the entire member array is the group membership, with no redundant group-size or
 group-ID field. The location ID is also its group identity. An owner is supplied
 by the future generator, never inferred from an anchor or artwork. Members may
-cross owner boundaries. This PR sets no generation-region dimensions or conversion
-algorithm; the design's initial 1,536-world-unit region target remains deferred.
-The supplied specification also describes that target as 48 terrain cells; current
-`WorldCoordinates.TERRAIN_SIZE` is 64, so those figures are not equivalent.
-The generator PR must reconcile region units explicitly before implementing them.
+cross owner boundaries. The foundation itself sets no region dimensions. The owner
+locked the Decision 5E correction for the ordinary generator: **1,536 world units =
+24 terrain cells at 64 units = 48 construction cells at 32 units**. The
+specification's 48-terrain-cell equivalence is superseded; v2 uses no 3,072-unit region.
 
 `location_error(data)` validates structural consistency without requiring a resource
 catalog. `configured_location_error(data, definitions, supported_geology,
@@ -153,7 +155,9 @@ changes no runner inventory, authorization, or safety control.
 No existing Ferrite generation, `ResourceDeposit` caller, authoritative simulation,
 machine definition, resource/item configuration, artwork, scene, save, or historical
 evidence is modified. No new deposit becomes visible or mineable. Legacy Ferrite
-migration, Cuprite/Carbite activation, generation algorithms, starting reservations,
+migration, Cuprite/Carbite activation, starting reservations,
 sampling, snapping, occupancy, and numerical tuning remain deferred to separately
 scoped work. No default resource ratio, geological category, spacing, density,
 visual-envelope size, slot count, halo, or search budget is assumed here.
+The ordinary generator's provisional policy values are recorded separately in its
+[tuning register](RESOURCE_GENERATION_V2_GENERATOR.md#provisional-tuning-register).
