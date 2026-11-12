@@ -3,10 +3,12 @@
 Merged in PR #188. The implementation request authorized PR 2 only; the supplied specification
 is design context, not independent authorization for later phases. The
 [PR #187 code contracts](RESOURCE_GENERATION_V2_CONTRACTS.md) remain unchanged.
-No gameplay or presenter registers this generator or its resource definitions.
+No gameplay caller registers this generator or its resource definitions.
+PR 4 adds a [shared presenter and disabled isolated Cuprite inspection](RESOURCE_GENERATION_V2_PRESENTATION.md),
+pending review, consuming the starting-policy extension without gameplay activation.
 
 PR 3's separately versioned [starting-reservation extension](RESOURCE_GENERATION_V2_STARTING.md)
-is pending review on `codex/resource-generation-v2-starting-reservations`. It adds
+merged in PR #189. It adds
 complete preparation, transition presence and reservation priority without changing
 `ordinary-v2-1`. The base `identity_policy()` accessor defaults to `ordinary-v2-1`.
 

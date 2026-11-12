@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "resource_id": "cuprite",
+  "variants": [
+    {
+      "id": "prototype_v1",
+      "artwork": "res://assets/environment/exterior/cuprite/cuprite_prototype_v1.png",
+      "sha256": "6a3ed462b0da325b0dc334b0fb0f5d467242d7758dbd71bfe2aa46dff8b531fe",
+      "size": [1536, 1024],
+      "scale": 0.225,
+      "offset": [0, 16]
+    }
+  ]
+}

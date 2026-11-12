@@ -4,10 +4,12 @@ The [Resource Generation v2 foundation contracts](docs/RESOURCE_GENERATION_V2_CO
 merged in PR #187. The isolated [ordinary-world generator](docs/RESOURCE_GENERATION_V2_GENERATOR.md)
 merged in PR #188. It uses 1,536-unit regions and complete single/pair/triple groups.
 The [starting reservations and migration safeguards](docs/RESOURCE_GENERATION_V2_STARTING.md)
-are implemented on `codex/resource-generation-v2-starting-reservations`, pending
-owner review and merge: seven reservations, a versioned ordinary transition,
+merged in PR #189: seven reservations, a versioned ordinary transition,
 reservation priority and temporary read-only compatibility diagnostics.
-No gameplay, presentation or mining caller is connected. Legacy Ferrite and the
+PR 4 adds an isolated
+[shared presenter and disabled Cuprite inspection](docs/RESOURCE_GENERATION_V2_PRESENTATION.md),
+pending owner review and merge.
+No gameplay or mining caller is connected. Legacy Ferrite and the
 Cuprite visual prototype are preserved. Validation is static only; GDScript
 behavioral assertions are authored but not executed.
 

@@ -1,0 +1,14 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scenes/experiments/resource_generation_v2/cuprite_inspection.gd" id="1_inspection"]
+
+[node name="CupriteInspection" type="Node2D"]
+script = ExtResource("1_inspection")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+zoom = Vector2(0.35, 0.35)
+
+[node name="HUD" type="CanvasLayer" parent="."]
+
+[node name="Instructions" type="Label" parent="HUD"]
+text = "DEVELOPMENT INSPECTION ONLY — arrows pan. Cyan: reserved 128x128 anchors/centers. White: ship reference. No gameplay or terrain."

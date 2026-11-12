@@ -7,3 +7,4 @@ script = ExtResource("1_definition")
 resource_id = &"cuprite"
 abundance_weight = 1.0
 geological_preferences = {"terrain_geology": 1.1}
+presentation_catalog = "res://scenes/world/resource_presentations/v2/cuprite.json"
