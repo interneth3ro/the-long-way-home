@@ -67,7 +67,7 @@ func _run() -> void:
 	_check(registration.illustrated_envelope.size.is_equal_approx(Vector2(345.6, 230.4)), "full canvas envelope")
 	_check(registration.illustrated_envelope != registration.logical_bounds, "logical and visual geometry separate")
 	_check(registration == Catalog.registration(made.location.deposits[0], CUPRITE.presentation_catalog, catalog), "stable descriptor registration")
-	var invalid := made.location.deposits[0].duplicate(true)
+	var invalid: Dictionary = made.location.deposits[0].duplicate(true)
 	invalid.presentation = {"variant_id": "unapproved"}
 	_check(not Catalog.registration(invalid, CUPRITE.presentation_catalog, catalog).ok, "missing variant fails admission")
 	invalid.presentation = {"catalog_ref": "res://wrong.json"}
