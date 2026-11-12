@@ -1,12 +1,14 @@
 """Reverse only the approved south-idle delta for historical comparisons.
 
-The live three-sprite selection is checked by static_south_idle_test. Existing
-historical hashes remain unchanged and unrelated scene edits remain detectable.
+The original south contract is checked by static_south_idle_test; the live scene
+is checked by static_east_idle_test. Historical hashes remain unchanged and
+unrelated scene edits remain detectable.
 """
 import hashlib
 import re
 
 from current_preservation import ROOT, git_blob
+from east_idle_preservation import without_east_idle
 
 
 BASE = '3806e6e99030ea3db866c1ebe7254d5b64ae232d'
@@ -88,5 +90,5 @@ def verified_south_idle_paths():
         assert hashlib.sha256(raw).hexdigest() == digest, path
     scene = 'scenes/player/dave.tscn'
     original = git_blob(BASE, scene).replace(b'\r\n', b'\n')
-    assert without_south_idle(scene, (ROOT / scene).read_bytes()) == original
+    assert without_south_idle(scene, without_east_idle(scene, (ROOT / scene).read_bytes())) == original
     return set(hashes) | {scene}

@@ -1,10 +1,11 @@
-"""South-idle PNG and live scene contracts; no Godot or gameplay execution."""
+"""South-idle PNG and preserved scene contracts; no Godot or gameplay execution."""
 import hashlib
 import json
 import re
 import unittest
 
 from current_preservation import git_blob
+from east_idle_preservation import without_east_idle
 from south_idle_preservation import BASE, verified_south_idle_paths, without_south_idle
 from static_automatic_transitions_test import ROOT, blocks, nodes, read
 from static_exterior_hatch_visual_test import png
@@ -17,7 +18,9 @@ SHEET_SHA256 = 'ab994380e1775aea1d4cb8fc1256f5f039f15663c4c270422a8a8399f1f777e4
 class SouthIdleStaticTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.scene = read('scenes/player/dave.tscn')
+        # Preserve the accepted south contract; east/west tests check the live scene.
+        cls.scene = without_east_idle('scenes/player/dave.tscn',
+                                      read('scenes/player/dave.tscn').encode()).decode()
         cls.clips = {re.search(r'id="Animation_([^"]+)"', h)[1]: b
                      for h, b in blocks(cls.scene, 'sub_resource')
                      if h.startswith('type="Animation"')}

@@ -1,9 +1,11 @@
 # The Long Way Home
 
-The [south-facing idle refinement](#dave-south-idle-v1-owner-accepted-pending-merge)
-is implemented on `codex/dave-south-idle-v1`, owner accepted and pending merge
-in [PR #182](https://github.com/interneth3ro/the-long-way-home/pull/182). It uses
-the accepted three-second breathing proof as a separate sheet.
+The [east/west idle refinement](#dave-east-and-west-idle-v1-owner-accepted-pending-merge)
+is implemented on `codex/dave-east-west-idle-v1`, owner accepted and pending merge
+in [PR #183](https://github.com/interneth3ro/the-long-way-home/pull/183). It uses
+one accepted east-facing sheet with horizontal mirroring for west.
+The [south-facing refinement](#dave-south-idle-v1-pr-182-merged) merged in
+[PR #182](https://github.com/interneth3ro/the-long-way-home/pull/182) and is preserved.
 The [north-facing refinement](#dave-north-idle-v1-pr-181-merged) merged in
 [PR #181](https://github.com/interneth3ro/the-long-way-home/pull/181) and is preserved.
 
@@ -2422,7 +2424,7 @@ is retained below as a reference, without inferring individual test results:
   scale/anchor, edges and frame margins; no new parser/import/runtime errors.
 - Movement, collisions, interaction prompts and hatch transitions still work.
 
-### Dave south idle v1 (owner accepted, pending merge)
+### Dave south idle v1 (PR #182, merged)
 
 The owner approved the offline south-idle proof and requested the same separate
 sheet workflow as north. `codex/dave-south-idle-v1` starts at merged PR #181,
@@ -2490,6 +2492,87 @@ without inferring individual test results:
   accepted north animation and immediate sprite selection remain intact.
 - Inspect indoors and outside at normal zoom and zoom extremes: unchanged
   scale/anchor, no clipping, frame bleed or new import/parser/runtime errors.
+- Movement, collisions, camera, interactions and hatch transitions still work.
+
+### Dave east and west idle v1 (owner accepted, pending merge)
+
+The owner approved the offline east-idle proof and its horizontally mirrored
+west preview, requesting the same separate-sheet workflow as north and south.
+`codex/dave-east-west-idle-v1` starts at merged PR #182,
+`a650743373e98020c2f1ebea692309e458c3d344`. The runtime sheet and editing metadata
+are `assets/characters/dave/dave_idle_east_v1.{png,json}`. The PNG is byte-identical
+to the approved proof:
+`4598bf309fa81774e8c5ff77d811566258f4d8f36e9a1ff70be32bced850d2f1`.
+There is one east sheet; west reuses it through `flip_h`, as west walking does.
+
+The owner reported overall in-game acceptance **PASS** on November 11, 2026,
+against implementation `b563fab3afca54d1aa45539fcb54c925b81b1d58` and requested
+that [PR #183](https://github.com/interneth3ro/the-long-way-home/pull/183) be
+finalized and marked ready for review. No itemized results were supplied. This
+acceptance covers the east/west idle integration; walking refinements remain
+separate work. The JSON `proof` block preserves the earlier offline record;
+this acceptance entry supersedes its pending status.
+
+All poses reuse east-idle atlas cell 24, with rest/half/full pose order
+`[0,0,1,2,2,1]`. Six 181-square frames at 500 ms each form a three-second loop.
+Half inhale reads source row `y+1` for destination rows 0-95; full inhale reads
+`y+2` for rows 0-90 and `y+1` for rows 91-95. Rows 96-180 always read source row
+`y`, keeping the waist, hands, legs and feet fixed. Exact RGBA row copies preserve
+shading and facial detail; no interpolation, recoloring or alpha cleanup is added.
+
+`Visual/EastIdleSprite2D` serves both `idle_east` and `idle_west` with local frame
+indices 0-5. It retains scale `0.71424418545`, offset `(-94,-174)`, nearest
+filtering and six horizontal frames, with lossless import and no mipmaps. All
+nine clips, including RESET, explicitly make exactly one of the four sprites
+visible at time zero. The new sprite's `flip_h` is true only for `idle_west` and
+false in every other clip. Existing atlas flip tracks are preserved: only
+`walk_west` flips that sprite. The unchanged controller applies the selected
+animation with `advance(0.0)` before rendering.
+
+The west idle appearance now matches the mirrored east pose, including costume
+details and hand placement. Mirroring uses the full 181-pixel cell at the same
+scale and offset as walking, without compensating repositioning or rescaling.
+The original west/east idle atlas rows remain present but unused. The atlas,
+accepted north/south sheets and timing, all walking frames/timing, controller,
+physics, camera, collision and interactions are preserved. The supplied video
+also shows walking issues; gait and walking refinements remain separate work.
+
+Agent validation is static only. The focused east/west, south, north and existing
+Dave suites check the approved PNG, every copied RGBA row, fixed lower body,
+shared frame addressing, visibility and flip resets, source preservation, shared
+anchor and scene references. Historical tests remove only the exact approved
+scene delta before their existing comparisons; historical hash pins are unchanged.
+
+```powershell
+python -B -m unittest discover -s tests -p static_east_idle_test.py
+python -B -m unittest discover -s tests -p static_south_idle_test.py
+python -B -m unittest discover -s tests -p static_north_idle_test.py
+python -B -m unittest discover -s tests -p static_dave_rework_test.py
+```
+
+The focused suites passed 7, 6, 6 and 9 tests respectively (28 total). The broader
+static suite ran 552 tests with 18 failures, no errors and two external-package
+skips: the same Cuprite/exterior preservation failure cases recorded for south
+idle. All five Git path guards were compared with committed main and report the
+same four Cuprite/exterior paths; those files are unchanged. The remaining
+failures read the unchanged exterior scene. No historical exterior pins were
+rewritten and no whole-suite PASS is claimed. Animation target paths, changed
+local Markdown links and Git patch checks passed.
+
+The agent performed no Godot import, headless or graphical execution, playable
+scene run or performance probe. Existing static results are retained because
+finalization changes documentation only. Owner acceptance is recorded as an
+overall PASS; the original verification scope is retained below as a reference,
+without inferring individual test results:
+
+- Face east and west and release: stable shading and facial detail through
+  several breathing loops, with planted waist, hands and boots.
+- Start and stop walking in both directions: correct facing, scale and ground
+  contact; no blank frame, doubled sprite or lingering animation.
+- Switch from west idle/walk to east, north and south: immediate sprite and
+  flip reset, with accepted north/south idle behavior preserved.
+- Inspect indoors/outside and at normal zoom and zoom extremes: no new
+  clipping, frame bleed, alignment jump or import/parser/runtime errors.
 - Movement, collisions, camera, interactions and hatch transitions still work.
 
 ### Dave north walking v2 (owner accepted, pending merge)
