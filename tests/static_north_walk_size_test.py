@@ -1,10 +1,11 @@
-"""North-walk size artwork and live scene contracts; no Godot execution."""
+"""North-walk size artwork and accepted scene contracts; no Godot execution."""
 import hashlib
 import json
 import re
 import unittest
 
 from current_preservation import git_blob
+from east_walk_alignment_preservation import without_east_walk_alignment
 from north_walk_size_preservation import BASE, verified_north_walk_size_paths, without_north_walk_size
 from static_automatic_transitions_test import ROOT, blocks, nodes, read
 from static_exterior_hatch_visual_test import png
@@ -20,7 +21,9 @@ BOUNDS = [[43, 9, 145, 175], [43, 9, 147, 165], [43, 9, 145, 166],
 class NorthWalkSizeStaticTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.scene = read('scenes/player/dave.tscn')
+        # The east-walk alignment suite checks the live six-sprite scene.
+        cls.scene = without_east_walk_alignment('scenes/player/dave.tscn',
+                                                read('scenes/player/dave.tscn').encode()).decode()
         cls.clips = {re.search(r'id="Animation_([^"]+)"', h)[1]: b
                      for h, b in blocks(cls.scene, 'sub_resource')
                      if h.startswith('type="Animation"')}
@@ -153,7 +156,7 @@ class NorthWalkSizeStaticTest(unittest.TestCase):
     def test_only_approved_scene_delta_and_existing_art_preserved(self):
         scene = 'scenes/player/dave.tscn'
         original = git_blob(BASE, scene).replace(b'\r\n', b'\n')
-        self.assertEqual(without_north_walk_size(scene, self.scene.encode()), original)
+        self.assertEqual(without_north_walk_size(scene, read(scene).encode()), original)
         self.assertEqual(verified_north_walk_size_paths(),
                          {ART + '.png', ART + '.json', ART + '.png.import', scene})
         paths = ['scenes/player/dave.gd', 'scenes/player/follow_camera.gd']

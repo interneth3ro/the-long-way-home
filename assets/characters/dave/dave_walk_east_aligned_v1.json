@@ -1,0 +1,308 @@
+{
+  "frames": {
+    "walk_east_00": {
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "sourceSize": {
+        "w": 181,
+        "h": 181
+      },
+      "duration": 100
+    },
+    "walk_east_01": {
+      "frame": {
+        "x": 181,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "sourceSize": {
+        "w": 181,
+        "h": 181
+      },
+      "duration": 100
+    },
+    "walk_east_02": {
+      "frame": {
+        "x": 362,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "sourceSize": {
+        "w": 181,
+        "h": 181
+      },
+      "duration": 100
+    },
+    "walk_east_03": {
+      "frame": {
+        "x": 543,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "sourceSize": {
+        "w": 181,
+        "h": 181
+      },
+      "duration": 100
+    },
+    "walk_east_04": {
+      "frame": {
+        "x": 724,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "sourceSize": {
+        "w": 181,
+        "h": 181
+      },
+      "duration": 100
+    },
+    "walk_east_05": {
+      "frame": {
+        "x": 905,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "sourceSize": {
+        "w": 181,
+        "h": 181
+      },
+      "duration": 100
+    }
+  },
+  "meta": {
+    "image": "dave_walk_east_aligned_v1.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 1086,
+      "h": 181
+    },
+    "scale": "1",
+    "frameTags": [
+      {
+        "name": "walk_east",
+        "from": 0,
+        "to": 5,
+        "direction": "forward"
+      }
+    ]
+  },
+  "proof": {
+    "status": "Offline alignment-only proof for owner review; not integrated or owner accepted.",
+    "source": "assets/characters/dave/dave_idle_walk_4dir.png",
+    "source_sha256": "6ca7d1eb6d341847216c4eccf9c6b39958b451823cda21b3150cfeeeaf0c2766",
+    "source_frames": [
+      30,
+      31,
+      32,
+      33,
+      34,
+      35
+    ],
+    "source_row_y": 905,
+    "integer_shifts_x": [
+      -4,
+      0,
+      4,
+      -4,
+      0,
+      4
+    ],
+    "integer_shifts_y": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "method": "Translate each complete existing runtime cell with exact RGBA copying. Outgoing margins are entirely RGBA zero. Translation is byte-for-byte reversible.",
+    "anchor": [
+      94,
+      174
+    ],
+    "runtime_scale_reference": 0.71424418545,
+    "canvas_size_unchanged": [
+      181,
+      181
+    ],
+    "loop_ms": 600,
+    "head_measurement": "Alpha >=128 silhouette midpoint in source rows 8..61 inclusive; reference only, not whole-silhouette centering.",
+    "head_center_before": [
+      96.5,
+      92.5,
+      89.0,
+      96.5,
+      92.5,
+      89.5
+    ],
+    "head_center_after": [
+      92.5,
+      92.5,
+      93.0,
+      92.5,
+      92.5,
+      93.5
+    ],
+    "alpha_128_bounds_before": [
+      [
+        46,
+        8,
+        149,
+        174
+      ],
+      [
+        56,
+        8,
+        120,
+        174
+      ],
+      [
+        40,
+        8,
+        146,
+        174
+      ],
+      [
+        45,
+        8,
+        150,
+        173
+      ],
+      [
+        56,
+        8,
+        120,
+        173
+      ],
+      [
+        39,
+        8,
+        146,
+        173
+      ]
+    ],
+    "alpha_128_bounds_after": [
+      [
+        42,
+        8,
+        145,
+        174
+      ],
+      [
+        56,
+        8,
+        120,
+        174
+      ],
+      [
+        44,
+        8,
+        150,
+        174
+      ],
+      [
+        41,
+        8,
+        146,
+        173
+      ],
+      [
+        56,
+        8,
+        120,
+        173
+      ],
+      [
+        43,
+        8,
+        150,
+        173
+      ]
+    ],
+    "west_reuse": "Exact horizontal mirror of the same full east cells; no separate west sheet or repositioning.",
+    "preserved": [
+      "every RGBA pixel, including faint alpha",
+      "size and proportions",
+      "vertical coordinates and boot edges",
+      "poses and frame order",
+      "100 ms frame timing",
+      "cycle average horizontal position"
+    ],
+    "sheet_sha256": "6d00dfb65a183512afb1fb383dfed7a9e023b55aa5279dd65e70519e27bc0353",
+    "preview": "artifacts/screenshots/east-walk-alignment-proof-v1/east-west-walk-alignment-review.gif",
+    "preview_sha256": "6f3925f61f70d0865c343c37b2dbdfec62b239227233a722c54f41bea2549e2b",
+    "preview_note": "2x nearest-neighbor view; six 100 ms frames with infinite loop; one shared GIF palette without dithering. PNG sheet retains full RGBA.",
+    "validation": "Offline reversible pixel translation, per-row RGBA preservation, bounds, exact west mirrors, PNG round trip, GIF decoded frames/timing and protected-file hashes passed. No Godot execution."
+  },
+  "integration": {
+    "status": "Owner approved offline proof and implementation on 2026-11-12; in-game acceptance pending.",
+    "branch": "codex/dave-east-west-walk-alignment-v1",
+    "base_commit": "8fc1ddca8cc4e0cd91a09fc386269d618a0c3663",
+    "sprite": "Visual/EastWalkSprite2D",
+    "animations": [
+      "walk_east",
+      "walk_west"
+    ],
+    "west_flip_h": true,
+    "owner_observation": "The aligned version looks smoother.",
+    "proof_record_note": "The proof block is retained as the earlier offline record; this integration approval supersedes its pending approval status."
+  }
+}

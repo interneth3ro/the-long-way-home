@@ -98,10 +98,19 @@ Earlier milestone descriptions retain their historical scope and launch expectat
   sheet. `codex/dave-north-walk-size-v1` widens the existing north-walk poses by
   14.2857%, preserving the vertical transform, ground anchor, gait and 10 FPS
   timing. The owner reported overall in-game acceptance PASS on November 11
-  against `07eece72`; PR #184 is pending merge. Other directions and accepted
+  against `07eece72`; PR #184 is merged. Other directions and accepted
   idle sheets remain unchanged;
-  east/west walking issues remain separate work. Agent validation is static only.
-  See the [north-walk size implementation and checklist](../README.md#dave-north-walk-size-v1-owner-accepted-pending-merge).
+  east/west walking alignment is addressed by the separate refinement below.
+  Agent validation is static only.
+  See the [north-walk size implementation and checklist](../README.md#dave-north-walk-size-v1-pr-184-merged).
+  On November 12, the owner approved the smoother east/west alignment GIF and
+  its integration. `codex/dave-east-west-walk-alignment-v1` uses one separate
+  east-facing sheet, mirrored for west, with integer horizontal shifts of the
+  existing six poses. Colors, size, vertical motion, ground anchor and 10 FPS
+  timing are preserved, as are accepted idle and north-walk refinements.
+  Implementation is pending in-game acceptance and merge; the PR remains draft.
+  Agent validation is static only. See the
+  [east/west-walk implementation and checklist](../README.md#dave-east-and-west-walk-alignment-v1-pending-in-game-acceptance).
 
 ## Approved primary interior V2 visual comparison
 

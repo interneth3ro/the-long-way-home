@@ -1,3 +1,4 @@
+from east_walk_alignment_preservation import verified_east_walk_alignment_paths
 from north_walk_size_preservation import verified_north_walk_size_paths
 from east_idle_preservation import verified_east_idle_paths
 from south_idle_preservation import verified_south_idle_paths
@@ -415,6 +416,7 @@ class FabricatorAnimationStaticTest(unittest.TestCase):
         allowed.update(verified_south_idle_paths())
         allowed.update(verified_east_idle_paths())
         allowed.update(verified_north_walk_size_paths())
+        allowed.update(verified_east_walk_alignment_paths())
         self.assertFalse(set(changed) - allowed, changed)
         # Explicit immutable files/trees also protect dirty working data before staging.
         protected = subprocess.check_output(["git", "ls-tree", "-r", "--name-only", BASE, "--",
