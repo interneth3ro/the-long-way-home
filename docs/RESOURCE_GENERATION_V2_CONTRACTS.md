@@ -11,8 +11,9 @@ switch, mining integration, inventory item, recipe, or persistence integration i
 implemented. The existing Ferrite system and Cuprite visual prototype remain intact.
 
 The separately scoped [ordinary-world generator](RESOURCE_GENERATION_V2_GENERATOR.md)
-is pending owner review and merge on `codex/resource-generation-v2-generator`.
-It consumes these unchanged interfaces without activating resources in gameplay.
+merged in PR #188. PR 3's [starting reservations and migration safeguards](RESOURCE_GENERATION_V2_STARTING.md)
+are pending review on `codex/resource-generation-v2-starting-reservations`.
+Both consume these unchanged interfaces without activating resources in gameplay.
 
 ## Native resource definition
 
