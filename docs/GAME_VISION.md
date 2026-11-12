@@ -97,10 +97,11 @@ Earlier milestone descriptions retain their historical scope and launch expectat
   The owner approved the north-walk size GIF and its integration using a separate
   sheet. `codex/dave-north-walk-size-v1` widens the existing north-walk poses by
   14.2857%, preserving the vertical transform, ground anchor, gait and 10 FPS
-  timing. The exact approved sheet is integrated, pending owner in-game acceptance
-  and merge. Other directions and accepted idle sheets remain unchanged;
+  timing. The owner reported overall in-game acceptance PASS on November 11
+  against `07eece72`; PR #184 is pending merge. Other directions and accepted
+  idle sheets remain unchanged;
   east/west walking issues remain separate work. Agent validation is static only.
-  See the [north-walk size implementation and checklist](../README.md#dave-north-walk-size-v1-pending-in-game-acceptance-and-merge).
+  See the [north-walk size implementation and checklist](../README.md#dave-north-walk-size-v1-owner-accepted-pending-merge).
 
 ## Approved primary interior V2 visual comparison
 

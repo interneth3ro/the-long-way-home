@@ -1,8 +1,9 @@
 # The Long Way Home
 
-The [north-walk size correction](#dave-north-walk-size-v1-pending-in-game-acceptance-and-merge)
-is implemented on `codex/dave-north-walk-size-v1`, pending owner in-game acceptance
-and merge. The separate sheet matches the approved GIF: wider north-walk artwork
+The [north-walk size correction](#dave-north-walk-size-v1-owner-accepted-pending-merge)
+is implemented on `codex/dave-north-walk-size-v1`, owner accepted and pending merge
+in [PR #184](https://github.com/interneth3ro/the-long-way-home/pull/184).
+The separate sheet matches the approved GIF: wider north-walk artwork
 with the existing vertical transform, ground anchor and 10 FPS timing.
 The [east/west idle refinement](#dave-east-and-west-idle-v1-pr-183-merged) merged in
 [PR #183](https://github.com/interneth3ro/the-long-way-home/pull/183). It uses
@@ -2392,8 +2393,8 @@ walking; walking height also changes with stride. Both use the same runtime scal
 This is recorded for separate walking/transition refinement; this idle integration
 does not resize either animation. The earlier north-walk acceptance below remains
 a historical record, not a dismissal of the new observation. The subsequent
-[north-walk size correction](#dave-north-walk-size-v1-pending-in-game-acceptance-and-merge)
-is now implemented separately, pending in-game acceptance.
+[north-walk size correction](#dave-north-walk-size-v1-owner-accepted-pending-merge)
+is now implemented separately, owner accepted and pending merge.
 
 Agent validation is offline/static only. The north-idle suite checks the accepted PNG,
 every copied RGBA row, fixed lower body, timing, visibility selection and shared
@@ -2580,7 +2581,7 @@ without inferring individual test results:
   clipping, frame bleed, alignment jump or import/parser/runtime errors.
 - Movement, collisions, camera, interactions and hatch transitions still work.
 
-### Dave north walk size v1 (pending in-game acceptance and merge)
+### Dave north walk size v1 (owner accepted, pending merge)
 
 The owner approved the offline animated GIF and requested the same feature-branch
 workflow with a separate spritesheet. `codex/dave-north-walk-size-v1` starts at
@@ -2588,7 +2589,12 @@ merged PR #183, `e8bbdd3bcd04e32e363057f13a0940ce2416c087`. The runtime sheet an
 editing metadata are `assets/characters/dave/dave_walk_north_size_v1.{png,json}`.
 The PNG is byte-identical to the approved proof:
 `07f995bd09eda3c31e9784270bee35d0b93862fab492c7e59f19ba7f277e47b4`.
-Approval of the GIF is separate from the pending in-game acceptance.
+The owner reported overall in-game acceptance **PASS** on November 11, 2026,
+against implementation `07eece7299bb52e2f0e40489608b317c0d053ee9` and requested
+that [PR #184](https://github.com/interneth3ro/the-long-way-home/pull/184) be
+finalized and marked ready for review. No itemized results were supplied. This
+acceptance covers the north-walk size correction. The JSON `proof` block retains
+the earlier offline record; this acceptance entry supersedes its pending status.
 
 The six existing north-walk v2 poses are resized from the preserved 512-square
 source cells to 240x210 instead of 210x210: a 14.2857% horizontal increase with
@@ -2632,7 +2638,9 @@ The remaining failures read the unchanged exterior scene. No historical exterior
 pins were rewritten and no whole-suite PASS is claimed. Animation target paths,
 changed local Markdown links and Git patch checks passed.
 The agent has performed no Godot import, headless or graphical execution.
-Owner normal-F5 acceptance remains pending:
+Existing static results are retained because finalization changes documentation
+only. Owner acceptance is recorded as an overall PASS; the original verification
+scope is retained below as a reference, without inferring individual test results:
 
 - Start/stop north walking repeatedly: matching apparent size and stable ground
   contact, with no blank frame, doubled sprite or alignment jump.
