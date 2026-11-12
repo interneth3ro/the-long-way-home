@@ -1,0 +1,183 @@
+{
+  "frames": {
+    "idle_north_00": {
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "sourceSize": {
+        "w": 181,
+        "h": 181
+      },
+      "duration": 500
+    },
+    "idle_north_01": {
+      "frame": {
+        "x": 181,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "sourceSize": {
+        "w": 181,
+        "h": 181
+      },
+      "duration": 500
+    },
+    "idle_north_02": {
+      "frame": {
+        "x": 362,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "sourceSize": {
+        "w": 181,
+        "h": 181
+      },
+      "duration": 500
+    },
+    "idle_north_03": {
+      "frame": {
+        "x": 543,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "sourceSize": {
+        "w": 181,
+        "h": 181
+      },
+      "duration": 500
+    },
+    "idle_north_04": {
+      "frame": {
+        "x": 724,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "sourceSize": {
+        "w": 181,
+        "h": 181
+      },
+      "duration": 500
+    },
+    "idle_north_05": {
+      "frame": {
+        "x": 905,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "sourceSize": {
+        "w": 181,
+        "h": 181
+      },
+      "duration": 500
+    }
+  },
+  "meta": {
+    "image": "dave_idle_north_v1.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 1086,
+      "h": 181
+    },
+    "scale": "1",
+    "frameTags": [
+      {
+        "name": "idle_north",
+        "from": 0,
+        "to": 5,
+        "direction": "forward"
+      }
+    ]
+  },
+  "proof": {
+    "status": "Owner accepted offline proof on 2026-11-11; north-idle integration pending in-game acceptance and merge.",
+    "source": "assets/characters/dave/dave_idle_walk_4dir.png",
+    "source_sha256": "6ca7d1eb6d341847216c4eccf9c6b39958b451823cda21b3150cfeeeaf0c2766",
+    "source_frame": 36,
+    "source_rectangle": [
+      0,
+      1086,
+      181,
+      181
+    ],
+    "source_anchor": [
+      94,
+      174
+    ],
+    "pose_order": [
+      0,
+      0,
+      1,
+      2,
+      2,
+      1
+    ],
+    "loop_ms": 3000,
+    "method": "Exact integer row copies from one existing north-facing pose; no color edits, interpolation, quantization or alpha cleanup in the RGBA sheet.",
+    "half_inhale_row_map": "destination rows 0..90 read source y+1; rows 91..180 read source y",
+    "full_inhale_row_map": "destination rows 0..85 read source y+2; rows 86..90 read source y+1; rows 91..180 read source y",
+    "fixed_region": {
+      "x": 0,
+      "y": 91,
+      "w": 181,
+      "h": 90
+    },
+    "validation": "Offline pixel invariants and image inspection only; no Godot execution.",
+    "sheet_sha256": "74983d4f94314f25065ddf53e421e170fd6909aa09b5c1c03b52a302bcab619a"
+  }
+}
