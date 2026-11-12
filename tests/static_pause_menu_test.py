@@ -1,3 +1,4 @@
+from south_idle_preservation import verified_south_idle_paths
 from north_idle_preservation import verified_north_idle_paths
 from initial_exterior_preservation import verified_initial_paths
 from static_save_codec_runner_test import verified_codec_runner_paths
@@ -101,7 +102,7 @@ class PauseMenuTests(unittest.TestCase):
                      "AGENTS.md", "docs/LOCAL_TESTING.md", "docs/experiments"]
         changed = subprocess.check_output(["git", "diff", "--name-only",
             "f92e8111b2fdcb0d88b4ebe336ca25c2f849c4d1", "--", *protected], cwd=ROOT, text=True)
-        self.assertFalse(set(changed.splitlines()) - verified_initial_paths() - verified_codec_runner_paths() - verified_north_idle_paths(), changed)
+        self.assertFalse(set(changed.splitlines()) - verified_initial_paths() - verified_codec_runner_paths() - verified_north_idle_paths() - verified_south_idle_paths(), changed)
 
 
 if __name__ == "__main__":

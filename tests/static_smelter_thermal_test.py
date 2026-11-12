@@ -1,3 +1,4 @@
+from south_idle_preservation import without_south_idle
 from north_idle_preservation import without_north_idle
 from initial_exterior_preservation import without_initial_preparation
 """Source contracts and offline envelope math only; never executes GDScript/Godot."""
@@ -203,7 +204,7 @@ class SmelterThermalStaticTest(unittest.TestCase):
                      "scenes/visuals/smelter_stationary.tscn", "scenes/world/stationary_machine_presentation.gd"):
             with self.subTest(path=path):
                 # Authorized Fabricator 4x4 amendment; every other byte stays pinned.
-                current = normalized(path, without_north_idle(path, without_initial_preparation(path, (ROOT / path).read_bytes())))
+                current = normalized(path, without_north_idle(path, without_south_idle(path, without_initial_preparation(path, (ROOT / path).read_bytes()))))
                 if path == "construction/deployed_machine.gd":
                     current = without_presentation_identity(current.decode()).encode()
                 if path == "inventory/fabricator.tres":

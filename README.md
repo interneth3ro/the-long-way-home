@@ -1,9 +1,10 @@
 # The Long Way Home
 
-The [north-facing idle refinement](#dave-north-idle-v1-owner-accepted-pending-merge)
-is implemented on `codex/dave-north-idle-v1`, owner accepted and pending merge
-in [PR #181](https://github.com/interneth3ro/the-long-way-home/pull/181). It uses
-the accepted three-second breathing proof as a separate sheet.
+The [south-facing idle refinement](#dave-south-idle-v1-pending-in-game-acceptance-and-merge)
+is implemented on `codex/dave-south-idle-v1`, pending owner F5 acceptance and
+merge. It uses the approved three-second breathing proof as a separate sheet.
+The [north-facing refinement](#dave-north-idle-v1-pr-181-merged) merged in
+[PR #181](https://github.com/interneth3ro/the-long-way-home/pull/181) and is preserved.
 
 The [Cuprite visual prototype v1](docs/CUPRITE_VISUAL_PROTOTYPE_V1.md) adds one
 presentation-only deposit near the crash site and an optional stationary
@@ -2345,7 +2346,7 @@ delay remains separate in [issue #144](https://github.com/interneth3ro/the-long-
 Keep the PR draft until acceptance; merge and later asset cleanup require separate
 owner action. No old Dave assets are deleted here.
 
-### Dave north idle v1 (owner accepted, pending merge)
+### Dave north idle v1 (PR #181, merged)
 
 On November 11, 2026, the owner accepted the offline north-idle proof and
 requested integration of this animation alone. `codex/dave-north-idle-v1` starts
@@ -2419,6 +2420,68 @@ is retained below as a reference, without inferring individual test results:
 - Inspect at normal zoom and zoom extremes, indoors and outside: unchanged
   scale/anchor, edges and frame margins; no new parser/import/runtime errors.
 - Movement, collisions, interaction prompts and hatch transitions still work.
+
+### Dave south idle v1 (pending in-game acceptance and merge)
+
+The owner approved the offline south-idle proof and requested the same separate
+sheet workflow as north. `codex/dave-south-idle-v1` starts at merged PR #181,
+`3806e6e99030ea3db866c1ebe7254d5b64ae232d`. The runtime sheet and editing metadata
+are `assets/characters/dave/dave_idle_south_v1.{png,json}`. The PNG is byte-identical
+to the approved proof:
+`ab994380e1775aea1d4cb8fc1256f5f039f15663c4c270422a8a8399f1f777e4`.
+
+All poses reuse south-idle atlas cell 0, with rest/half/full pose order
+`[0,0,1,2,2,1]`. Six 181-square frames at 500 ms each form a three-second loop.
+Half inhale reads source row `y+1` for destination rows 0-87; full inhale reads
+`y+2` for rows 0-82 and `y+1` for rows 83-87. Rows 88-180 always read source row
+`y`, keeping the waist, hands, legs and feet fixed. Exact RGBA row copies preserve
+shading and facial detail; there is no interpolation, recoloring or alpha cleanup.
+The source atlas and accepted north sheet remain unchanged.
+
+`Visual/SouthIdleSprite2D` uses the existing scale `0.71424418545`, offset
+`(-94,-174)`, nearest filtering and six horizontal frames, with lossless import
+and no mipmaps. Only `idle_south` addresses its frames. Every clip, including
+RESET, explicitly selects exactly one of the original, north-idle and south-idle
+sprites at time zero. RESET retains the original south rest frame. The unchanged
+controller applies a selected animation with `advance(0.0)` before rendering.
+North timing, all walking clips, other directions, physics, camera, collision
+and interactions are preserved. The owner reports no noticeable south idle/walk
+size mismatch; no scale adjustment is included.
+
+Agent validation is static only. Focused south-idle, north-idle and existing Dave
+suites passed 6, 6 and 9 tests respectively, checking every copied RGBA row,
+fixed lower body, frame addressing, three-sprite visibility selection and the
+shared anchor. Historical preservation tests remove only the exact approved
+south scene delta before their original comparisons; their hash pins are unchanged.
+
+```powershell
+python -B -m unittest discover -s tests -p static_south_idle_test.py
+python -B -m unittest discover -s tests -p static_north_idle_test.py
+python -B -m unittest discover -s tests -p static_dave_rework_test.py
+```
+
+The broader static suite ran 545 tests with 18 failures, no errors and two
+external-package skips. These are the same Cuprite/exterior preservation failures
+recorded for the north integration. All five Git path guards were compared with
+committed main and report the same four Cuprite/exterior paths; the remaining
+failures read the unchanged exterior scene. No historical exterior pins were
+rewritten and no whole-suite PASS is claimed. Static scene references, animation
+target paths, local Markdown links and Git patch checks passed.
+
+No agent-run Godot import, headless test,
+playable scene, graphical verification or performance probe was performed.
+Offline proof approval is recorded separately from in-game acceptance. Keep the
+PR draft pending the owner's normal F5 pass:
+
+- [ ] New Game, face south and release: steady shading and facial detail through
+  several complete breathing loops; waist, hands and boots remain planted.
+- [ ] Start and stop south walking repeatedly: stable size and ground contact,
+  with no doubled sprite, blank frame or lingering idle pose.
+- [ ] Switch between north/south idle, east/west idle and all walking directions:
+  accepted north animation and immediate sprite selection remain intact.
+- [ ] Inspect indoors and outside at normal zoom and zoom extremes: unchanged
+  scale/anchor, no clipping, frame bleed or new import/parser/runtime errors.
+- [ ] Movement, collisions, camera, interactions and hatch transitions still work.
 
 ### Dave north walking v2 (owner accepted, pending merge)
 

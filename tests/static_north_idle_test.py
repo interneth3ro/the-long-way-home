@@ -6,6 +6,7 @@ import unittest
 
 from current_preservation import git_blob
 from north_idle_preservation import without_north_idle
+from south_idle_preservation import without_south_idle
 from static_automatic_transitions_test import ROOT, blocks, nodes, read
 from static_exterior_hatch_visual_test import png
 
@@ -18,7 +19,9 @@ SHEET_SHA256 = '74983d4f94314f25065ddf53e421e170fd6909aa09b5c1c03b52a302bcab619a
 class NorthIdleStaticTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.scene = read('scenes/player/dave.tscn')
+        # Retain the original north contract; south tests check the live three-sprite scene.
+        cls.scene = without_south_idle('scenes/player/dave.tscn',
+                                       read('scenes/player/dave.tscn').encode()).decode()
         cls.clips = {re.search(r'id="Animation_([^"]+)"', h)[1]: b
                      for h, b in blocks(cls.scene, 'sub_resource')
                      if h.startswith('type="Animation"')}
