@@ -1,12 +1,14 @@
 """Reverse only the approved north-walk size delta for historical comparisons.
 
-The live five-sprite scene is checked by static_north_walk_size_test.
+The north contract is checked by static_north_walk_size_test; the live scene
+is checked by static_east_walk_alignment_test.
 Historical hash pins remain unchanged and unrelated edits stay detectable.
 """
 import hashlib
 import re
 
 from current_preservation import ROOT, git_blob
+from east_walk_alignment_preservation import without_east_walk_alignment
 
 
 BASE = 'e8bbdd3bcd04e32e363057f13a0940ce2416c087'
@@ -15,6 +17,7 @@ BASE = 'e8bbdd3bcd04e32e363057f13a0940ce2416c087'
 def without_north_walk_size(path, raw):
     if path != 'scenes/player/dave.tscn':
         return raw
+    raw = without_east_walk_alignment(path, raw)
     text = raw.decode('utf-8').replace('\r\n', '\n')
 
     def replace_once(before, after):
