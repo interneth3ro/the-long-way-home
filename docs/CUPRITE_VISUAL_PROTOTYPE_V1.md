@@ -85,15 +85,19 @@ hashes. No gameplay, collision, generation, persistence or publication-journal
 implementation files are part of the PR. Seven local playtest-modified files
 remain preserved and outside the committed PR diff.
 
-One confirmed static-review concern remains: the existing
+Owner-accepted, non-blocking historical test exception: the existing
 `FerriteIntegrationStaticTest.test_other_exterior_nodes_and_resource_fields_are_unchanged`
 passes against the committed `main` exterior but fails against the committed PR
 exterior. Its historical node-set equality does not permit the added Cuprite
 instance. This comparison was checked with only the scene input replaced by each
 committed version in memory, preserving local playtest files. The full historical
-suite was not run. No test expectations or runner controls were changed during
-acceptance review; reconcile the narrow preservation expectation before declaring
-the PR fully merge-ready. Artistic acceptance does not waive this check.
+suite was not run. The owner explicitly accepts this expected failure because
+PR #180 intentionally introduces the Cuprite presentation node; it is not
+considered a gameplay regression. The historical test, test runner and Ferrite
+implementation must remain unchanged for this prototype. This exception is
+limited to the identified failure and does not claim a full-suite PASS. With
+the focused review checks and owner artistic acceptance recorded, no other known
+merge blockers remain. Merge still requires explicit owner authorization.
 
 Agent checks are static only: byte/hash and PNG structure checks, scene/resource
 references and node types, registration arithmetic, import-parameter comparison,
