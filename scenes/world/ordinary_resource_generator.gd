@@ -272,12 +272,16 @@ func query(area: Rect2) -> Dictionary:
 
 # Both canonical identity forms resolve only ACCEPTED complete locations.
 # No generic decoder; exact round-trip checks reject aliases and int overflow.
+func identity_policy() -> String:
+	return POLICY
+
+
 func descriptor_by_id(identity: String) -> Dictionary:
 	var parts := identity.split(":")
 	var is_deposit := parts.size() == 7 and parts[0] == "resource"
 	if not is_deposit and not (parts.size() == 6 and parts[0] == "resource-location"):
 		return {"ok": false, "error": "invalid identity shape"}
-	if parts[1] != POLICY:
+	if parts[1] != identity_policy():
 		return {"ok": false, "error": "unsupported identity policy"}
 	for index in range(2, parts.size()):
 		if not parts[index].is_valid_int() or str(parts[index].to_int()) != parts[index]:

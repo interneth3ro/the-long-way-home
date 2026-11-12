@@ -1,10 +1,14 @@
 # Resource Generation v2 ordinary-world generator
 
-Implemented on `codex/resource-generation-v2-generator`, pending owner review and
-merge. The implementation request authorizes PR 2 only; the supplied specification
+Merged in PR #188. The implementation request authorized PR 2 only; the supplied specification
 is design context, not independent authorization for later phases. The
 [PR #187 code contracts](RESOURCE_GENERATION_V2_CONTRACTS.md) remain unchanged.
 No gameplay or presenter registers this generator or its resource definitions.
+
+PR 3's separately versioned [starting-reservation extension](RESOURCE_GENERATION_V2_STARTING.md)
+is pending review on `codex/resource-generation-v2-starting-reservations`. It adds
+complete preparation, transition presence and reservation priority without changing
+`ordinary-v2-1`. The base `identity_policy()` accessor defaults to `ordinary-v2-1`.
 
 ## Ownership and candidates
 
@@ -16,7 +20,8 @@ with an initialization error. Definitions are deep-copied and sorted by resource
 ID; caller array order and later edits cannot affect reconstruction. Protection
 rectangles are copied values. They must conservatively contain all fixed authored
 polygons/obstacles and required clearance, never live machines. Empty protection
-is useful for synthetic worlds. A live crash-site protection adapter is deferred.
+is useful for synthetic worlds. PR 3 supplies an inert authored snapshot; live
+crash-site integration remains deferred.
 
 The locked Decision 5E correction is **1,536 world units = 24 terrain cells at
 64 units = 48 construction cells at 32 units** per axis. `owner_at` floors both
@@ -179,8 +184,9 @@ approved Cuprite prototype, artwork/assets, historical files, existing tests and
 runner controls are preserved. No new resource appears in normal gameplay; no
 depletion quantities/history are introduced.
 
-Deferred: seven starting deposits, reservation search/suppression/transition,
-legacy overlap diagnostics, shared presentation/streaming, Cuprite/Carbite activation,
+PR 3 implements starting deposits, reservation search/suppression/transition and
+read-only legacy diagnostics under its separately versioned, unconnected policy.
+Deferred: shared presentation/streaming, Cuprite/Carbite activation,
 snapping/occupancy, mining/progression, save architecture, Carbite artwork and Ferrite
 redesign. Starting guarantees and migration safeguards belong to PR 3. Runtime and
 visual evaluation need separate authorization; artwork milestones remain required

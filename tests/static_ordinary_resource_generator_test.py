@@ -117,7 +117,11 @@ class OrdinaryResourceStaticTests(unittest.TestCase):
             weights[resource] = float(re.search(r'abundance_weight = ([\d.]+)', data)[1])
         self.assertEqual(weights, {'ferrite': 1.2, 'carbite': 1.0, 'cuprite': 1.0})
         for file in (ROOT / 'scenes').rglob('*'):
-            if file.suffix in ('.gd', '.tscn', '.tres') and file.name != 'ordinary_resource_generator.gd':
+            # PR 3's inert policy/diagnostic consumers are explicit exceptions;
+            # every gameplay/scene/resource caller remains excluded.
+            inert_consumers = {'ordinary_resource_generator.gd', 'starting_resource_generator.gd',
+                              'resource_migration_diagnostics.gd'}
+            if file.suffix in ('.gd', '.tscn', '.tres') and file.name not in inert_consumers:
                 self.assertNotIn('ordinary_resource_generator.gd', file.read_text(encoding='utf-8'))
                 self.assertNotIn('resource_definitions/v2/', file.read_text(encoding='utf-8'))
 
