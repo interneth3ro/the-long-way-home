@@ -1,10 +1,12 @@
 # Resource Generation v2 starting reservations and migration safeguards
 
-PR 3 is implemented on `codex/resource-generation-v2-starting-reservations`,
-pending owner review and merge, against `499a86cfb35428b70fb24644fe80b3312d8abdef`
-(merged PR #188). The pasted implementation request authorizes this scope;
+PR 3 merged in PR #189 at `f82298e1874ace843455f453aba2de583d2b8f5d`,
+based on `499a86cfb35428b70fb24644fe80b3312d8abdef` (merged PR #188). The pasted implementation request authorizes this scope;
 the supplied specification is design context, not execution authority.
 Decisions 4B–4G, 5A–5H, 6A–6C and 7B apply. No gameplay caller is connected.
+PR 4 adds [shared presentation and disabled Cuprite inspection](RESOURCE_GENERATION_V2_PRESENTATION.md),
+pending review. Its isolated harness retains this complete reservation policy,
+all definitions, the authored protection snapshot and ship reference unchanged.
 
 ## Policy boundary and interfaces
 
