@@ -1,13 +1,13 @@
 # Cuprite visual prototype v1
 
-Implemented on `codex/cuprite-visual-prototype-v1`, pending merge. The owner
-reported F5 PASS for overall artistic direction, transparency and terrain blending
-at the original `1/6` scale, but found the deposit too small beneath the Extractor.
-The owner reported that the 35% uniform increase to `0.225` significantly improved
-the deposit, but the Extractor appeared too low against the mineral artwork.
-An approved provisional artwork-only offset of `(0, 16)` now moves the painted
-deposit downward. Scale and offset remain provisional pending the next owner F5
-evaluation.
+Implemented on `codex/cuprite-visual-prototype-v1`, pending merge in PR #180.
+The owner reported final F5 **PASS** against visual configuration `ecdeb4b` and
+artistically accepted the terrain blending, mineral coloration, footprint and
+occupied appearance. Freeze this configuration as **Cuprite Deposit Visual
+Prototype v1**: uniform scale `0.225`, `DepositArtwork` offset `(0, 16)`, prototype
+location `(-96, 320)` and unchanged stationary Extractor reference. No further
+artwork or scale adjustments are authorized in this PR. Future artwork variations
+and functional resource generation are separate work.
 
 ## Artwork and placement
 
@@ -33,7 +33,7 @@ spawn, rocks, introductory Ferrite artwork/footprint and its inspection trigger.
 It remains inside the existing protected crash-site clearing; no protection,
 generation or collision geometry is changed. It does not reserve construction
 space: normal gameplay may place other objects over this visual during play.
-Visual coverage and readability at the adjusted scale await owner F5 evaluation.
+Visual coverage and readability are covered by the owner's artistic acceptance.
 
 The import sidecar follows existing Ferrite texture parameters: lossless
 compression (`compress/mode=0`), no mipmaps, unchanged alpha channel mapping,
@@ -68,7 +68,7 @@ Cuprite bright-mineral center approximately 4-6 world units above its original
 canvas center, while the Extractor body's alpha-weighted center lies roughly
 14 world units below its footprint center. These visual proxies indicate a
 compositional imbalance, not a reference-registration error. Moving only the
-deposit sprite down 16 world units is a provisional visual correction that
+deposit sprite down 16 world units is the owner-accepted visual correction that
 preserves normal Extractor placement conventions, the root and all source bytes.
 
 Cuprite has no ResourceDeposit registration, construction highlight, mining,
@@ -78,6 +78,22 @@ demonstrate functional Cuprite mining. Persistence and publication-journal code
 are outside this change.
 
 ## Validation and owner F5 checklist
+
+Final focused review confirmed the six-file PR scope, accepted scene properties,
+unchanged reference registration, source PNG identity and all four protected UID
+hashes. No gameplay, collision, generation, persistence or publication-journal
+implementation files are part of the PR. Seven local playtest-modified files
+remain preserved and outside the committed PR diff.
+
+One confirmed static-review concern remains: the existing
+`FerriteIntegrationStaticTest.test_other_exterior_nodes_and_resource_fields_are_unchanged`
+passes against the committed `main` exterior but fails against the committed PR
+exterior. Its historical node-set equality does not permit the added Cuprite
+instance. This comparison was checked with only the scene input replaced by each
+committed version in memory, preserving local playtest files. The full historical
+suite was not run. No test expectations or runner controls were changed during
+acceptance review; reconcile the narrow preservation expectation before declaring
+the PR fully merge-ready. Artistic acceptance does not waive this check.
 
 Agent checks are static only: byte/hash and PNG structure checks, scene/resource
 references and node types, registration arithmetic, import-parameter comparison,
@@ -113,7 +129,7 @@ No Godot editor, headless engine or game execution is included. The owner can:
 
 1. Start the existing application with F5 and reach the exterior normally.
 2. Locate Cuprite southeast of the exit, west of the introductory Ferrite.
-3. Check transparency, painted rim/shadow, ground blending and provisional scale.
+3. Check transparency, painted rim/shadow, ground blending and accepted scale.
 4. Enable the stationary reference in the Inspector, save and repeat F5; assess
    whether the Extractor covers most of the mineral core with useful visible edges
    and a better balance of exposed Cuprite above and below the machine.
@@ -121,9 +137,9 @@ No Godot editor, headless engine or game execution is included. The owner can:
 6. Confirm arrival, hatch access, Ferrite discovery and normal Ferrite Extractor
    placement/production still behave as expected, with no new engine errors.
 
-Overall artistic direction, transparency and blending passed the owner's original
-F5 evaluation. The owner reported improved scale at `0.225`; coverage and artistic
-acceptance with the new `(0, 16)` artwork offset remain pending the next owner F5
-evaluation. Neither scale nor offset is final.
+The owner reported final F5 PASS for the accepted configuration above. This records
+overall artistic acceptance, not an itemized gameplay-regression result for every
+historical checklist entry. Agent validation remains static only. Merge and engine
+execution still require explicit owner authorization.
 Reversal requires removing the single exterior instance/resource reference and
 these prototype-specific scene/asset/document files; no simulation migration exists.
