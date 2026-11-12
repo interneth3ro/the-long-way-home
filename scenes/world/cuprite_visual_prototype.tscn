@@ -13,6 +13,7 @@ y_sort_enabled = true
 [node name="DepositArtwork" type="Sprite2D" parent="."]
 z_index = -5
 texture_filter = 2
+position = Vector2(0, 16)
 scale = Vector2(0.225, 0.225)
 texture = ExtResource("1_cuprite")
 
