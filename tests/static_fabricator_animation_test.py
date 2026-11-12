@@ -1,3 +1,4 @@
+from east_idle_preservation import verified_east_idle_paths
 from south_idle_preservation import verified_south_idle_paths
 from north_idle_preservation import verified_north_idle_paths
 from initial_exterior_preservation import verified_initial_paths
@@ -411,6 +412,7 @@ class FabricatorAnimationStaticTest(unittest.TestCase):
         allowed.update(verified_codec_runner_paths())
         allowed.update(verified_north_idle_paths())
         allowed.update(verified_south_idle_paths())
+        allowed.update(verified_east_idle_paths())
         self.assertFalse(set(changed) - allowed, changed)
         # Explicit immutable files/trees also protect dirty working data before staging.
         protected = subprocess.check_output(["git", "ls-tree", "-r", "--name-only", BASE, "--",

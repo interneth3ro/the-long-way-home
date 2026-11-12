@@ -1,3 +1,4 @@
+from east_idle_preservation import verified_east_idle_paths
 from south_idle_preservation import verified_south_idle_paths
 from north_idle_preservation import verified_north_idle_paths
 """Milestone 4 offline lifecycle specifications and production source contracts.
@@ -185,7 +186,7 @@ class LoadingScreenTests(unittest.TestCase):
                  'scenes/application/pause_menu.gd', 'scenes/application/pause_menu.tscn', 'tools')
         changed = subprocess.check_output(['git', 'diff', '--name-only', 'f142fa4', '--', *paths],
                                           cwd=ROOT, text=True)
-        self.assertFalse(set(changed.splitlines()) - verified_codec_runner_paths() - verified_north_idle_paths() - verified_south_idle_paths(), changed)
+        self.assertFalse(set(changed.splitlines()) - verified_codec_runner_paths() - verified_north_idle_paths() - verified_south_idle_paths() - verified_east_idle_paths(), changed)
 
 
 if __name__ == '__main__':

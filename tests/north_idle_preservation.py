@@ -1,12 +1,13 @@
 """Reverse only the approved north-idle presentation for historical comparisons.
 
-Existing historical hashes stay unchanged. The live integration is checked by
+Existing historical hashes stay unchanged. The north contract is checked by
 static_north_idle_test; this projection keeps unrelated source edits detectable.
 """
 import hashlib
 import re
 
 from current_preservation import ROOT, git_blob
+from east_idle_preservation import without_east_idle
 from south_idle_preservation import without_south_idle
 
 
@@ -83,5 +84,5 @@ def verified_north_idle_paths():
         assert hashlib.sha256(raw).hexdigest() == digest, path
     scene = 'scenes/player/dave.tscn'
     original = git_blob('8edb00937beb8842ae9a50a30394045d033841aa', scene)
-    assert without_north_idle(scene, without_south_idle(scene, (ROOT / scene).read_bytes())) == original.replace(b'\r\n', b'\n')
+    assert without_north_idle(scene, without_south_idle(scene, without_east_idle(scene, (ROOT / scene).read_bytes()))) == original.replace(b'\r\n', b'\n')
     return set(hashes) | {scene}

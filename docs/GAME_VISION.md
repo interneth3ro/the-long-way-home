@@ -82,9 +82,16 @@ Earlier milestone descriptions retain their historical scope and launch expectat
   using the same workflow: a separate sheet derived from the existing south rest
   pose, fixed lower body and a three-second breathing loop. This refinement is
   implemented on `codex/dave-south-idle-v1`; the owner reported overall in-game
-  acceptance PASS on November 11 against `7cbac392`, and PR #182 is pending merge.
+  acceptance PASS on November 11 against `7cbac392`, and PR #182 is merged.
   Current scale, accepted north animation and walking artwork are preserved.
-  See the [south-idle implementation and checklist](../README.md#dave-south-idle-v1-owner-accepted-pending-merge).
+  See the [south-idle implementation and checklist](../README.md#dave-south-idle-v1-pr-182-merged).
+  The owner also approved an east-idle breathing proof and horizontal mirroring
+  of that same sheet for west idle, following the existing walking convention.
+  This refinement is implemented on `codex/dave-east-west-idle-v1`, pending owner
+  F5 acceptance and merge. The lower body stays fixed; current scale, accepted
+  north/south idle and all walking artwork/timing are preserved. Walking issues
+  shown in the owner's video remain separate work. See the
+  [east/west-idle implementation and checklist](../README.md#dave-east-and-west-idle-v1-pending-in-game-acceptance-and-merge).
 
 ## Approved primary interior V2 visual comparison
 
