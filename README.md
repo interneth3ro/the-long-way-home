@@ -1,9 +1,11 @@
 # The Long Way Home
 
-The [east/west walking alignment](#dave-east-and-west-walk-alignment-v1-pending-in-game-acceptance)
+The [east/west walking alignment](#dave-east-and-west-walk-alignment-v1-owner-accepted-pending-merge)
 implements the owner-approved GIF on `codex/dave-east-west-walk-alignment-v1`.
 One separate east-facing sheet serves both directions, flipped for west.
-In-game acceptance is pending; the PR remains draft.
+The owner reported in-game acceptance PASS on November 12, 2026.
+[PR #185](https://github.com/interneth3ro/the-long-way-home/pull/185) is owner accepted
+and pending review and merge.
 The [north-walk size correction](#dave-north-walk-size-v1-pr-184-merged)
 was owner accepted and merged in [PR #184](https://github.com/interneth3ro/the-long-way-home/pull/184).
 The separate sheet matches the approved GIF: wider north-walk artwork
@@ -2655,17 +2657,25 @@ scope is retained below as a reference, without inferring individual test result
   frame bleed or import/parser/runtime errors.
 - Movement, collisions, camera, interactions and hatch transitions still work.
 
-### Dave east and west walk alignment v1 (pending in-game acceptance)
+### Dave east and west walk alignment v1 (owner accepted, pending merge)
 
 On November 12, 2026, the owner reported that the aligned before/after GIF
 looked smoother and approved integration with a separate east-facing sheet,
-shared with west through horizontal flipping. This approves the offline proof;
-in-game acceptance remains pending. `codex/dave-east-west-walk-alignment-v1`
+shared with west through horizontal flipping. `codex/dave-east-west-walk-alignment-v1`
 starts at merged PR #184, `8fc1ddca8cc4e0cd91a09fc386269d618a0c3663`.
 The runtime sheet and editing metadata are
 `assets/characters/dave/dave_walk_east_aligned_v1.{png,json}`. The PNG is
 byte-identical to the approved proof:
 `6d00dfb65a183512afb1fb383dfed7a9e023b55aa5279dd65e70519e27bc0353`.
+
+The owner reported overall in-game acceptance **PASS** on November 12, 2026,
+for [PR #185](https://github.com/interneth3ro/the-long-way-home/pull/185), against
+implementation `bdbc4ec53b3870644868e7dc8ff15fa3f8aeed13`, and requested finalization
+and readiness for review. The owner specifically reported that east and west
+walking look good; no itemized results were supplied for the remaining checks.
+This acceptance covers the east/west walking alignment. The JSON retains the
+earlier offline proof/integration record; this acceptance entry supersedes its
+pending in-game status. Finalization changes documentation only.
 
 The six existing atlas cells 30-35 are translated horizontally by
 `[-4,0,4,-4,0,4]` whole pixels into six 181-square cells. All outgoing margins
@@ -2718,18 +2728,20 @@ were rewritten and no whole-suite PASS is claimed. Scene/resource references,
 changed local Markdown links and Git patch checks passed. No Godot import,
 headless or graphical execution has been performed by the agent.
 
-Owner in-game acceptance is pending; keep the PR draft until the owner reports
-PASS and the acceptance record is finalized:
+The implementation's static results above are retained because finalization
+changes documentation only. Owner acceptance is an overall PASS, distinct from
+agent static verification. The original verification scope remains below as a
+reference, without inferring individual test results:
 
-- [ ] Walk east and west through several loops: smoother horizontal registration,
+- Walk east and west through several loops: smoother horizontal registration,
   unchanged poses, size, vertical motion and 10 FPS cadence; west is mirrored.
-- [ ] Start, stop and reverse repeatedly: immediate visibility/flip selection,
+- Start, stop and reverse repeatedly: immediate visibility/flip selection,
   with no blank frame, doubled sprite or stale pose; accepted idle remains steady.
-- [ ] Switch to/from north and south: preserve accepted idle directions, north
+- Switch to/from north and south: preserve accepted idle directions, north
   walking size/gait and existing south walking.
-- [ ] Inspect indoors/outside at normal zoom and zoom extremes: stable ground
+- Inspect indoors/outside at normal zoom and zoom extremes: stable ground
   contact, no clipping, frame bleed or new import/parser/runtime errors.
-- [ ] Movement, collisions, camera, interaction prompts and hatch transitions
+- Movement, collisions, camera, interaction prompts and hatch transitions
   still work normally.
 
 ### Dave north walking v2 (owner accepted, pending merge)

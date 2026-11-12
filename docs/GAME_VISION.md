@@ -108,9 +108,11 @@ Earlier milestone descriptions retain their historical scope and launch expectat
   east-facing sheet, mirrored for west, with integer horizontal shifts of the
   existing six poses. Colors, size, vertical motion, ground anchor and 10 FPS
   timing are preserved, as are accepted idle and north-walk refinements.
-  Implementation is pending in-game acceptance and merge; the PR remains draft.
-  Agent validation is static only. See the
-  [east/west-walk implementation and checklist](../README.md#dave-east-and-west-walk-alignment-v1-pending-in-game-acceptance).
+  The owner reported overall in-game acceptance PASS on November 12 against
+  `bdbc4ec`, specifically confirming that east and west walking look good.
+  PR #185 is owner accepted, pending review and merge; finalization changes
+  documentation only. Agent validation remains static only. See the
+  [east/west-walk implementation and checklist](../README.md#dave-east-and-west-walk-alignment-v1-owner-accepted-pending-merge).
 
 ## Approved primary interior V2 visual comparison
 
