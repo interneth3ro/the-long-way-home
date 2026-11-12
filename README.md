@@ -1,8 +1,9 @@
 # The Long Way Home
 
-The [south-facing idle refinement](#dave-south-idle-v1-pending-in-game-acceptance-and-merge)
-is implemented on `codex/dave-south-idle-v1`, pending owner F5 acceptance and
-merge. It uses the approved three-second breathing proof as a separate sheet.
+The [south-facing idle refinement](#dave-south-idle-v1-owner-accepted-pending-merge)
+is implemented on `codex/dave-south-idle-v1`, owner accepted and pending merge
+in [PR #182](https://github.com/interneth3ro/the-long-way-home/pull/182). It uses
+the accepted three-second breathing proof as a separate sheet.
 The [north-facing refinement](#dave-north-idle-v1-pr-181-merged) merged in
 [PR #181](https://github.com/interneth3ro/the-long-way-home/pull/181) and is preserved.
 
@@ -2421,7 +2422,7 @@ is retained below as a reference, without inferring individual test results:
   scale/anchor, edges and frame margins; no new parser/import/runtime errors.
 - Movement, collisions, interaction prompts and hatch transitions still work.
 
-### Dave south idle v1 (pending in-game acceptance and merge)
+### Dave south idle v1 (owner accepted, pending merge)
 
 The owner approved the offline south-idle proof and requested the same separate
 sheet workflow as north. `codex/dave-south-idle-v1` starts at merged PR #181,
@@ -2429,6 +2430,13 @@ sheet workflow as north. `codex/dave-south-idle-v1` starts at merged PR #181,
 are `assets/characters/dave/dave_idle_south_v1.{png,json}`. The PNG is byte-identical
 to the approved proof:
 `ab994380e1775aea1d4cb8fc1256f5f039f15663c4c270422a8a8399f1f777e4`.
+
+The owner reported overall in-game acceptance **PASS** on November 11, 2026,
+against implementation `7cbac392f513122f070ad62b1ed854970b6d4e48` and requested
+that [PR #182](https://github.com/interneth3ro/the-long-way-home/pull/182) be
+finalized and marked ready for review. No itemized results were supplied. This
+acceptance covers the south-idle integration. The JSON `proof` block preserves
+the earlier offline record; this acceptance entry supersedes its pending status.
 
 All poses reuse south-idle atlas cell 0, with rest/half/full pose order
 `[0,0,1,2,2,1]`. Six 181-square frames at 500 ms each form a three-second loop.
@@ -2468,20 +2476,21 @@ failures read the unchanged exterior scene. No historical exterior pins were
 rewritten and no whole-suite PASS is claimed. Static scene references, animation
 target paths, local Markdown links and Git patch checks passed.
 
-No agent-run Godot import, headless test,
-playable scene, graphical verification or performance probe was performed.
-Offline proof approval is recorded separately from in-game acceptance. Keep the
-PR draft pending the owner's normal F5 pass:
+The agent performed no Godot import, headless or graphical execution, playable
+scene run or performance probe. Existing static results are retained because
+finalization changes documentation only. Owner acceptance is recorded as an
+overall PASS; the original verification scope is retained below as a reference,
+without inferring individual test results:
 
-- [ ] New Game, face south and release: steady shading and facial detail through
+- New Game, face south and release: steady shading and facial detail through
   several complete breathing loops; waist, hands and boots remain planted.
-- [ ] Start and stop south walking repeatedly: stable size and ground contact,
+- Start and stop south walking repeatedly: stable size and ground contact,
   with no doubled sprite, blank frame or lingering idle pose.
-- [ ] Switch between north/south idle, east/west idle and all walking directions:
+- Switch between north/south idle, east/west idle and all walking directions:
   accepted north animation and immediate sprite selection remain intact.
-- [ ] Inspect indoors and outside at normal zoom and zoom extremes: unchanged
+- Inspect indoors and outside at normal zoom and zoom extremes: unchanged
   scale/anchor, no clipping, frame bleed or new import/parser/runtime errors.
-- [ ] Movement, collisions, camera, interactions and hatch transitions still work.
+- Movement, collisions, camera, interactions and hatch transitions still work.
 
 ### Dave north walking v2 (owner accepted, pending merge)
 

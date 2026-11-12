@@ -81,9 +81,10 @@ Earlier milestone descriptions retain their historical scope and launch expectat
   The owner also approved the south-facing offline proof and its integration
   using the same workflow: a separate sheet derived from the existing south rest
   pose, fixed lower body and a three-second breathing loop. This refinement is
-  implemented on `codex/dave-south-idle-v1`, pending owner F5 acceptance and merge.
+  implemented on `codex/dave-south-idle-v1`; the owner reported overall in-game
+  acceptance PASS on November 11 against `7cbac392`, and PR #182 is pending merge.
   Current scale, accepted north animation and walking artwork are preserved.
-  See the [south-idle implementation and checklist](../README.md#dave-south-idle-v1-pending-in-game-acceptance-and-merge).
+  See the [south-idle implementation and checklist](../README.md#dave-south-idle-v1-owner-accepted-pending-merge).
 
 ## Approved primary interior V2 visual comparison
 
