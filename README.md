@@ -1,5 +1,11 @@
 # The Long Way Home
 
+The [Cuprite visual prototype v1](docs/CUPRITE_VISUAL_PROTOTYPE_V1.md) adds one
+presentation-only deposit near the crash site and an optional stationary
+Extractor scale reference. The owner reported final F5 PASS; its visual
+configuration is frozen as Cuprite Deposit Visual Prototype v1, pending merge.
+Cuprite mining and progression are not implemented. Agent validation is static only.
+
 Milestone 5 standalone serialized `.sav` codec foundation, isolated runner and
 inactive one-time authorization safeguards merged in
 [PR #172](https://github.com/interneth3ro/the-long-way-home/pull/172),
