@@ -1,11 +1,13 @@
 """Reverse only the approved east/west idle delta for historical comparisons.
 
-The live four-sprite scene and mirroring are checked by static_east_idle_test.
+The east contract is checked by static_east_idle_test; the live five-sprite
+scene is checked by static_north_walk_size_test.
 Historical hash pins remain unchanged and unrelated scene edits stay detectable.
 """
 import hashlib
 import re
 
+from north_walk_size_preservation import without_north_walk_size
 from current_preservation import ROOT, git_blob
 
 
@@ -92,5 +94,5 @@ def verified_east_idle_paths():
         assert hashlib.sha256(raw).hexdigest() == digest, path
     scene = 'scenes/player/dave.tscn'
     original = git_blob(BASE, scene).replace(b'\r\n', b'\n')
-    assert without_east_idle(scene, (ROOT / scene).read_bytes()) == original
+    assert without_east_idle(scene, without_north_walk_size(scene, (ROOT / scene).read_bytes())) == original
     return set(hashes) | {scene}

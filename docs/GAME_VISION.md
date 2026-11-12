@@ -76,7 +76,8 @@ Earlier milestone descriptions retain their historical scope and launch expectat
   implemented on `codex/dave-north-idle-v1`; the owner reported overall in-game
   acceptance PASS on November 11 against `68d6d3d`, and PR #181 is merged.
   The other animations and current scale are preserved; the newly reported
-  north idle/walk size mismatch is separate refinement work. See the
+  north idle/walk size mismatch is addressed by the separate correction below.
+  See the
   [north-idle implementation and checklist](../README.md#dave-north-idle-v1-pr-181-merged).
   The owner also approved the south-facing offline proof and its integration
   using the same workflow: a separate sheet derived from the existing south rest
@@ -89,10 +90,17 @@ Earlier milestone descriptions retain their historical scope and launch expectat
   of that same sheet for west idle, following the existing walking convention.
   This refinement is implemented on `codex/dave-east-west-idle-v1`; the owner
   reported overall in-game acceptance PASS on November 11 against `b563fab3`,
-  and PR #183 is pending merge. The lower body stays fixed; current scale, accepted
+  and PR #183 is merged. The lower body stays fixed; current scale, accepted
   north/south idle and all walking artwork/timing are preserved. Walking issues
   shown in the owner's video remain separate work. See the
-  [east/west-idle implementation and checklist](../README.md#dave-east-and-west-idle-v1-owner-accepted-pending-merge).
+  [east/west-idle implementation and checklist](../README.md#dave-east-and-west-idle-v1-pr-183-merged).
+  The owner approved the north-walk size GIF and its integration using a separate
+  sheet. `codex/dave-north-walk-size-v1` widens the existing north-walk poses by
+  14.2857%, preserving the vertical transform, ground anchor, gait and 10 FPS
+  timing. The exact approved sheet is integrated, pending owner in-game acceptance
+  and merge. Other directions and accepted idle sheets remain unchanged;
+  east/west walking issues remain separate work. Agent validation is static only.
+  See the [north-walk size implementation and checklist](../README.md#dave-north-walk-size-v1-pending-in-game-acceptance-and-merge).
 
 ## Approved primary interior V2 visual comparison
 

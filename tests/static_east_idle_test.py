@@ -1,10 +1,11 @@
-"""East/west idle PNG and live scene contracts; no Godot or gameplay execution."""
+"""East/west idle PNG and accepted scene contracts; no Godot or gameplay execution."""
 import hashlib
 import json
 import re
 import unittest
 
 from current_preservation import git_blob
+from north_walk_size_preservation import without_north_walk_size
 from east_idle_preservation import BASE, verified_east_idle_paths, without_east_idle
 from static_automatic_transitions_test import ROOT, blocks, nodes, read
 from static_exterior_hatch_visual_test import png
@@ -21,7 +22,8 @@ def tracks(clip):
 class EastIdleStaticTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.scene = read('scenes/player/dave.tscn')
+        # Preserve the east contract; north-walk size tests check the live scene.
+        cls.scene = without_north_walk_size('scenes/player/dave.tscn', read('scenes/player/dave.tscn').encode()).decode()
         cls.clips = {re.search(r'id="Animation_([^"]+)"', h)[1]: b
                      for h, b in blocks(cls.scene, 'sub_resource')
                      if h.startswith('type="Animation"')}

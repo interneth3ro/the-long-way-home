@@ -1,3 +1,4 @@
+from north_walk_size_preservation import verified_north_walk_size_paths
 from east_idle_preservation import verified_east_idle_paths
 from south_idle_preservation import verified_south_idle_paths
 from north_idle_preservation import verified_north_idle_paths
@@ -144,6 +145,7 @@ class FabricatorFootprintStaticTest(unittest.TestCase):
         artwork.update(verified_north_idle_paths())
         artwork.update(verified_south_idle_paths())
         artwork.update(verified_east_idle_paths())
+        artwork.update(verified_north_walk_size_paths())
         self.assertEqual(set(changed) - artwork, {"inventory/fabricator.tres", "construction/deployed_machine.gd"})
         path = "construction/deployed_machine.gd"
         self.assertEqual(without_presentation_identity(read(path)),

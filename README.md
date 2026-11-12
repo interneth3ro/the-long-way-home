@@ -1,8 +1,11 @@
 # The Long Way Home
 
-The [east/west idle refinement](#dave-east-and-west-idle-v1-owner-accepted-pending-merge)
-is implemented on `codex/dave-east-west-idle-v1`, owner accepted and pending merge
-in [PR #183](https://github.com/interneth3ro/the-long-way-home/pull/183). It uses
+The [north-walk size correction](#dave-north-walk-size-v1-pending-in-game-acceptance-and-merge)
+is implemented on `codex/dave-north-walk-size-v1`, pending owner in-game acceptance
+and merge. The separate sheet matches the approved GIF: wider north-walk artwork
+with the existing vertical transform, ground anchor and 10 FPS timing.
+The [east/west idle refinement](#dave-east-and-west-idle-v1-pr-183-merged) merged in
+[PR #183](https://github.com/interneth3ro/the-long-way-home/pull/183). It uses
 one accepted east-facing sheet with horizontal mirroring for west.
 The [south-facing refinement](#dave-south-idle-v1-pr-182-merged) merged in
 [PR #182](https://github.com/interneth3ro/the-long-way-home/pull/182) and is preserved.
@@ -2388,7 +2391,9 @@ alpha >=128 the existing idle width is 101-103 source pixels, versus 89-91 for
 walking; walking height also changes with stride. Both use the same runtime scale.
 This is recorded for separate walking/transition refinement; this idle integration
 does not resize either animation. The earlier north-walk acceptance below remains
-a historical record, not a dismissal of the new observation.
+a historical record, not a dismissal of the new observation. The subsequent
+[north-walk size correction](#dave-north-walk-size-v1-pending-in-game-acceptance-and-merge)
+is now implemented separately, pending in-game acceptance.
 
 Agent validation is offline/static only. The north-idle suite checks the accepted PNG,
 every copied RGBA row, fixed lower body, timing, visibility selection and shared
@@ -2494,7 +2499,7 @@ without inferring individual test results:
   scale/anchor, no clipping, frame bleed or new import/parser/runtime errors.
 - Movement, collisions, camera, interactions and hatch transitions still work.
 
-### Dave east and west idle v1 (owner accepted, pending merge)
+### Dave east and west idle v1 (PR #183, merged)
 
 The owner approved the offline east-idle proof and its horizontally mirrored
 west preview, requesting the same separate-sheet workflow as north and south.
@@ -2573,6 +2578,70 @@ without inferring individual test results:
   flip reset, with accepted north/south idle behavior preserved.
 - Inspect indoors/outside and at normal zoom and zoom extremes: no new
   clipping, frame bleed, alignment jump or import/parser/runtime errors.
+- Movement, collisions, camera, interactions and hatch transitions still work.
+
+### Dave north walk size v1 (pending in-game acceptance and merge)
+
+The owner approved the offline animated GIF and requested the same feature-branch
+workflow with a separate spritesheet. `codex/dave-north-walk-size-v1` starts at
+merged PR #183, `e8bbdd3bcd04e32e363057f13a0940ce2416c087`. The runtime sheet and
+editing metadata are `assets/characters/dave/dave_walk_north_size_v1.{png,json}`.
+The PNG is byte-identical to the approved proof:
+`07f995bd09eda3c31e9784270bee35d0b93862fab492c7e59f19ba7f277e47b4`.
+Approval of the GIF is separate from the pending in-game acceptance.
+
+The six existing north-walk v2 poses are resized from the preserved 512-square
+source cells to 240x210 instead of 210x210: a 14.2857% horizontal increase with
+unchanged vertical transform. The existing conservative alpha cleanup and
+premultiplied-alpha LANCZOS conversion are retained. Cropping at `(26,2)` instead
+of `(11,2)` into 181-square cells keeps the source anchor `(256,430)` at
+`(94,174.3671875)`. The new alpha >=128 widths are 102-105 pixels, compared with
+89-91 previously and 103 for the north idle rest pose. Threshold bounds vary by
+one pixel vertically in some resampled frames; no vertical scaling is added.
+The approved gait, frame order and six 100 ms frames retain the 0.6-second loop.
+
+`Visual/NorthWalkSprite2D` retains scale `0.71424418545`, offset `(-94,-174)`,
+nearest filtering and six horizontal frames, with lossless import and no mipmaps.
+Only `walk_north` addresses its local frame indices 0-5. All nine clips,
+including RESET, explicitly select exactly one of the five sprites at time zero.
+The unchanged controller applies a selected clip with `advance(0.0)` before
+rendering. The original atlas, high-resolution source, accepted idle sheets,
+other walking clips, west mirroring, controller, camera, collision and interactions
+are preserved. Original atlas cells 42-47 remain present but unused.
+
+Agent validation is offline/static only. The focused suites verify the approved
+PNG, measured frame bounds, source identity, vertical transform and anchor,
+frame order/timing, five-sprite visibility, flip resets and scene references.
+Historical tests reverse only the exact approved scene delta before their
+existing comparisons; historical hash pins remain unchanged.
+
+```powershell
+python -B -m unittest discover -s tests -p static_north_walk_size_test.py
+python -B -m unittest discover -s tests -p static_east_idle_test.py
+python -B -m unittest discover -s tests -p static_south_idle_test.py
+python -B -m unittest discover -s tests -p static_north_idle_test.py
+python -B -m unittest discover -s tests -p static_dave_rework_test.py
+```
+
+The focused suites passed 7, 7, 6, 6 and 9 tests respectively (35 total). The
+broader static suite ran 559 tests with 18 failures, no errors and two external-
+package skips: exactly the same Cuprite/exterior preservation failure cases
+recorded for PR #183. All five Git path guards were compared with committed main
+and report the same four Cuprite/exterior paths; those files are unchanged.
+The remaining failures read the unchanged exterior scene. No historical exterior
+pins were rewritten and no whole-suite PASS is claimed. Animation target paths,
+changed local Markdown links and Git patch checks passed.
+The agent has performed no Godot import, headless or graphical execution.
+Owner normal-F5 acceptance remains pending:
+
+- Start/stop north walking repeatedly: matching apparent size and stable ground
+  contact, with no blank frame, doubled sprite or alignment jump.
+- Observe several complete walking loops: the accepted gait and 10 FPS cadence
+  remain intact; the size correction matches the approved GIF.
+- Switch between north idle/walk and every other direction, including west:
+  immediate sprite selection and correct mirroring, with accepted idle behavior.
+- Inspect indoors/outside at normal zoom and zoom extremes: no new clipping,
+  frame bleed or import/parser/runtime errors.
 - Movement, collisions, camera, interactions and hatch transitions still work.
 
 ### Dave north walking v2 (owner accepted, pending merge)

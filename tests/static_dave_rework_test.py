@@ -5,6 +5,7 @@ import re
 import unittest
 from decimal import Decimal
 from north_idle_preservation import without_north_idle
+from north_walk_size_preservation import without_north_walk_size
 from east_idle_preservation import without_east_idle
 from south_idle_preservation import without_south_idle
 
@@ -108,7 +109,7 @@ class DaveReworkStaticTest(unittest.TestCase):
         scene = without_north_idle('scenes/player/dave.tscn',
                                    without_south_idle('scenes/player/dave.tscn',
                                                       without_east_idle('scenes/player/dave.tscn',
-                                                                         read('scenes/player/dave.tscn').encode()))).decode()
+                                                                         without_north_walk_size('scenes/player/dave.tscn', read('scenes/player/dave.tscn').encode())))).decode()
         animations = {re.search(r'id="([^"]+)"', header)[1]: body
                       for header, body in blocks(scene, 'sub_resource')
                       if header.startswith('type="Animation"')}
@@ -198,7 +199,7 @@ class DaveReworkStaticTest(unittest.TestCase):
         scene = without_north_idle('scenes/player/dave.tscn',
                                    without_south_idle('scenes/player/dave.tscn',
                                                       without_east_idle('scenes/player/dave.tscn',
-                                                                         read('scenes/player/dave.tscn').encode()))).decode()
+                                                                         without_north_walk_size('scenes/player/dave.tscn', read('scenes/player/dave.tscn').encode())))).decode()
         animations = [(header, body) for header, body in blocks(scene, 'sub_resource')
                       if header.startswith('type="Animation"')]
         for header, body in animations:
@@ -227,7 +228,7 @@ class DaveReworkStaticTest(unittest.TestCase):
         scene = without_north_idle('scenes/player/dave.tscn',
                                    without_south_idle('scenes/player/dave.tscn',
                                                       without_east_idle('scenes/player/dave.tscn',
-                                                                         read('scenes/player/dave.tscn').encode()))).decode()
+                                                                         without_north_walk_size('scenes/player/dave.tscn', read('scenes/player/dave.tscn').encode())))).decode()
         sprite = nodes(scene)['Visual/Sprite2D'][1]
         baseline = Decimal('0.529069767')
         scale = tuple(Decimal(v.strip()) for v in
@@ -258,7 +259,7 @@ class DaveReworkStaticTest(unittest.TestCase):
         scene = without_north_idle('scenes/player/dave.tscn',
                                    without_south_idle('scenes/player/dave.tscn',
                                                       without_east_idle('scenes/player/dave.tscn',
-                                                                         read('scenes/player/dave.tscn').encode()))).decode()
+                                                                         without_north_walk_size('scenes/player/dave.tscn', read('scenes/player/dave.tscn').encode())))).decode()
         tail = scene[scene.index('[node name="Dave"'):]
         tail = re.sub(r'\[node name="Sprite2D"[^\n]*\]\n.*?(?=\[node)', '', tail, flags=re.S)
         self.assertEqual(hashlib.sha256(tail.encode()).hexdigest(),
