@@ -1,0 +1,279 @@
+{
+  "frames": {
+    "walk_north_00": {
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "sourceSize": {
+        "w": 181,
+        "h": 181
+      },
+      "duration": 100
+    },
+    "walk_north_01": {
+      "frame": {
+        "x": 181,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "sourceSize": {
+        "w": 181,
+        "h": 181
+      },
+      "duration": 100
+    },
+    "walk_north_02": {
+      "frame": {
+        "x": 362,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "sourceSize": {
+        "w": 181,
+        "h": 181
+      },
+      "duration": 100
+    },
+    "walk_north_03": {
+      "frame": {
+        "x": 543,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "sourceSize": {
+        "w": 181,
+        "h": 181
+      },
+      "duration": 100
+    },
+    "walk_north_04": {
+      "frame": {
+        "x": 724,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "sourceSize": {
+        "w": 181,
+        "h": 181
+      },
+      "duration": 100
+    },
+    "walk_north_05": {
+      "frame": {
+        "x": 905,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 181,
+        "h": 181
+      },
+      "sourceSize": {
+        "w": 181,
+        "h": 181
+      },
+      "duration": 100
+    }
+  },
+  "meta": {
+    "image": "dave_walk_north_size_v1.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 1086,
+      "h": 181
+    },
+    "scale": "1",
+    "frameTags": [
+      {
+        "name": "walk_north",
+        "from": 0,
+        "to": 5,
+        "direction": "forward"
+      }
+    ]
+  },
+  "proof": {
+    "status": "Owner-approved offline north-walk size proof; integrated for in-game acceptance.",
+    "source": "assets/characters/dave/source_art/north_walk_v2/dave_walk_north_v2_refined.png",
+    "source_sha256": "f65cc6062cba1531b356a4dbc7a5103227f236eb308cb992d0319e2394207e34",
+    "source_grid": [
+      3,
+      2
+    ],
+    "source_cell": [
+      512,
+      512
+    ],
+    "source_anchor": [
+      256,
+      430
+    ],
+    "output_anchor": [
+      94,
+      174.3671875
+    ],
+    "resize": [
+      240,
+      210
+    ],
+    "crop_exclusive": [
+      26,
+      2,
+      207,
+      183
+    ],
+    "baseline_resize": [
+      210,
+      210
+    ],
+    "baseline_crop_exclusive": [
+      11,
+      2,
+      192,
+      183
+    ],
+    "horizontal_factor_relative_to_current": 1.1428571428571428,
+    "vertical_factor_relative_to_current": 1,
+    "resampling": "Pillow 13.0.0 RGBA LANCZOS (premultiplied alpha)",
+    "alpha_rule": "Clear alpha 1..4 only outside the 3-source-pixel Chebyshev neighborhood of alpha >=16; preserve source RGB before resizing.",
+    "frame_order": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "loop_ms": 600,
+    "current_bounds_alpha_128": [
+      [
+        49,
+        10,
+        139,
+        175
+      ],
+      [
+        49,
+        10,
+        140,
+        165
+      ],
+      [
+        50,
+        10,
+        139,
+        166
+      ],
+      [
+        49,
+        10,
+        140,
+        175
+      ],
+      [
+        49,
+        10,
+        140,
+        166
+      ],
+      [
+        49,
+        10,
+        139,
+        167
+      ]
+    ],
+    "candidate_bounds_alpha_128": [
+      [
+        43,
+        9,
+        145,
+        175
+      ],
+      [
+        43,
+        9,
+        147,
+        165
+      ],
+      [
+        43,
+        9,
+        145,
+        166
+      ],
+      [
+        42,
+        10,
+        147,
+        175
+      ],
+      [
+        43,
+        10,
+        147,
+        166
+      ],
+      [
+        43,
+        10,
+        146,
+        167
+      ]
+    ],
+    "sheet_sha256": "07f995bd09eda3c31e9784270bee35d0b93862fab492c7e59f19ba7f277e47b4",
+    "validation": "Current baseline reproduced byte-for-byte; source hashes, grid, bounds, timing and GIF decode checked offline. No Godot execution."
+  }
+}
