@@ -1,3 +1,4 @@
+from south_idle_preservation import without_south_idle
 from north_idle_preservation import without_north_idle
 from initial_exterior_preservation import without_initial_preparation
 """Smelter resource/source contracts and offline geometry examples; no Godot execution."""
@@ -138,7 +139,7 @@ class SmelterFootprintStaticTest(unittest.TestCase):
             with self.subTest(path=path):
                 # Authorized Fabricator 4x4 amendment: restore only this exact
                 # field for comparison against the unchanged historical baseline.
-                current = normalized(path, without_north_idle(path, without_initial_preparation(path, (ROOT / path).read_bytes())))
+                current = normalized(path, without_north_idle(path, without_south_idle(path, without_initial_preparation(path, (ROOT / path).read_bytes()))))
                 if path == "project.godot":
                     current = without_application_startup(current)
                 if path == "construction/deployed_machine.gd":

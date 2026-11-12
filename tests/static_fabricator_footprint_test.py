@@ -1,3 +1,4 @@
+from south_idle_preservation import verified_south_idle_paths
 from north_idle_preservation import verified_north_idle_paths
 from initial_exterior_preservation import verified_initial_paths
 from static_save_codec_runner_test import verified_codec_runner_paths
@@ -140,6 +141,7 @@ class FabricatorFootprintStaticTest(unittest.TestCase):
         artwork.update(verified_initial_paths())
         artwork.update(verified_codec_runner_paths())
         artwork.update(verified_north_idle_paths())
+        artwork.update(verified_south_idle_paths())
         self.assertEqual(set(changed) - artwork, {"inventory/fabricator.tres", "construction/deployed_machine.gd"})
         path = "construction/deployed_machine.gd"
         self.assertEqual(without_presentation_identity(read(path)),

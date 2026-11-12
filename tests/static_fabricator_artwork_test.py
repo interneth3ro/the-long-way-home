@@ -1,3 +1,4 @@
+from south_idle_preservation import verified_south_idle_paths
 from north_idle_preservation import verified_north_idle_paths
 from initial_exterior_preservation import verified_initial_paths
 from static_save_codec_runner_test import verified_codec_runner_paths
@@ -275,7 +276,7 @@ class FabricatorArtworkStaticTest(unittest.TestCase):
         verify_smelter_artifacts()
         self.assertFalse(set(changed) - set(ARTWORK_PATHS + ANIMATION_PATHS)
                      - set(BODY_PATHS) - set(SMELTER_BODIES) - verified_application_paths() - verified_initial_paths()
-                     - verified_codec_runner_paths() - verified_north_idle_paths(), changed)
+                     - verified_codec_runner_paths() - verified_north_idle_paths() - verified_south_idle_paths(), changed)
         path = "construction/deployed_machine.gd"
         self.assertEqual(without_presentation_identity(read(path)),
                          git_blob(BASE, path).decode().replace("\r\n", "\n"))
