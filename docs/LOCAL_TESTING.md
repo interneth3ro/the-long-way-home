@@ -24,6 +24,10 @@ PASS; a plan stage is never reused. Do not edit files during a plan or run.
 
 ## Authorization and standing scope
 
+The separate [local behavioral foundation](#local-behavioral-foundation-inactive)
+is inactive. The standing staged Native scope below does not authorize it or
+execution in the actual checkout.
+
 On **2026-10-29**, the owner approved standing routine use of the existing
 restricted Native runner, superseding the earlier one-invocation permission after
 PR #75. Only the fixed cold import and recipe-switching phases below are covered.
@@ -89,7 +93,7 @@ performance probes, benchmarks, stress/freeze reproduction remain restricted.
 The owner-provisioned plain parent is `D:\GameDev\Godot\TLWH-NativeStages`.
 It must exist, be readable, have no reparse points and be separate from the source
 checkout (neither ancestor nor descendant). No temp/environment fallback exists.
-Each plan/run creates a unique `tlwh-native-plan-<GUID>` directory there and never
+Each existing staged plan/run creates a unique `tlwh-native-plan-<GUID>` directory there and never
 runs Godot in the checkout. Stages, including partial failures, remain for inspection;
 there is no automatic deletion or reuse. Only the fixture's own new inert tree is
 removed by its verified cleanup.
@@ -176,6 +180,103 @@ Actual import compatibility, Godot parsing/completion output, process containmen
 first-run host stability and graphical behavior require actual verification. A Godot
 import that rewrites tracked sidecars will correctly fail these preservation checks
 and needs review. A failed first invocation must not be retried automatically.
+
+## Local behavioral foundation (inactive)
+
+The PR 1 foundation on `codex/minimal-local-behavioral-runner` is pending review
+and merge. It prepares a small Godot-native workflow; **it grants no execution
+authorization**. Current Godot restrictions remain effective. The new launcher
+always returns exit 1 and `Behavioral: NOT RUN` with `AUTHORIZATION_DENIED`, before
+engine identity checks or process dispatch. There is no CLI switch, environment
+variable, approval file or token that enables it. A branch, PR, merge or passing
+inert check does not activate it. Do not invoke the dispatcher directly to bypass
+the launcher gate.
+
+Proposed local command, currently denied:
+
+```powershell
+pwsh -NoProfile -File tools/run-behavioral-tests.ps1
+```
+
+After a separately reviewed activation and explicit owner execution approval,
+the prepared path would use the pinned executable and SHA-256 from the existing
+[identity policy](#authorization-and-standing-scope), with exactly:
+
+```text
+<pinned Godot> --headless --path <actual TLWH checkout> --script res://tests/behavioral/test_runner.gd
+```
+
+It proposes **one Godot process per suite invocation**, a 30-second deadline,
+1,048,576-byte combined output cap and a 4,096-byte diagnostic excerpt. There is
+no editor/import preparation, copied project, staging environment, container,
+executable/scene/argument override, automatic retry or destructive cleanup.
+The launcher dot-sources the existing local runner for helper definitions only,
+reusing `Invoke-BoundedProcess`, `Get-StandardGodotIdentity` and `Assert-PinnedEngine`.
+It does not call the old dispatcher, static suite, staging or evidence writers.
+No existing Native or codec authorization is changed. The inherited process-tree
+termination and diagnostic-decoding limitations still apply; uncertain termination
+is failure and needs owner direction before any further engine attempt.
+
+### Fixed dispatcher and group contract
+
+[`test_runner.gd`](../tests/behavioral/test_runner.gd) extends `SceneTree`. Its one
+explicit manifest entry is `world_coordinates`, backed by
+[`smoke_test.gd`](../tests/behavioral/smoke_test.gd). It creates a fresh `RefCounted`
+group, synchronously calls `run()` once, retains its data result and releases the
+group reference before reporting. `run()` returns a Dictionary with positive
+integer `checks` and an Array of failure messages. The dispatcher stops on the
+first failed/invalid group, prints group name and diagnostics, and exits nonzero.
+It has no dynamic discovery, test selection or migrated legacy tests. The smoke
+group makes four calls to the actual production
+`WorldCoordinates.world_to_construction()`, checking floor conversion across
+negative, positive and exact 32-unit grid boundaries. It creates no scenes or
+files and changes no production state.
+
+The engine's successful final nonempty stdout line must occur exactly once across both
+streams and match:
+
+```text
+TLWH_BEHAVIORAL_V1 PASS groups=<positive integer> checks=<positive integer> failures=0
+```
+
+Its group count and total checks must equal the individual stdout group PASS
+records. Group names must be unique; malformed, duplicated, contradictory or
+stderr-only group records cannot authorize PASS.
+
+Failure prints a `TLWH_BEHAVIORAL_V1 FAIL ...` record and exits 1. The launcher
+also fails on missing/malformed/duplicate/misplaced completion, a nonzero process
+exit, engine/script/parse/assertion diagnostics even with exit zero, timeout,
+output overflow or uncertain termination. `PASS` requires all of these checks;
+an unauthorized invocation is `NOT RUN`, never runtime PASS. Group release is
+not isolation of autoloads, globals, statics, filesystem writes or leaked external
+references. Future groups must declare and release their test-owned resources;
+this PR supplies only the scene-free `RefCounted` group.
+
+### Filesystem review and validation boundary
+
+Direct-checkout execution is a proposed departure from the existing external-stage
+policy and requires explicit approval of the precise launcher, command, manifest
+and allowed filesystem effects. Review Godot's `.godot/` cache, import metadata,
+UID generation/rewrites, resource discovery and any user-profile logs/settings
+before any run. This launcher provides neither a filesystem sandbox nor cache
+rollback. The smoke's lack of file I/O does not prove the engine is write-free.
+There is no permission to delete caches, rewrite/publish sidecars, alter owner
+files or clean up after a failed attempt. Graphical testing, performance probes,
+benchmarks, stress tests and freeze reproduction remain restricted. Any future
+standing permission must name the exact reviewed runner and scope.
+
+Non-Godot validation can run the dedicated inert fixtures:
+
+```powershell
+pwsh -NoProfile -File tests/behavioral/launcher_fixture_test.ps1
+```
+
+These parse PowerShell and use scoped process/identity doubles; they never launch
+Godot or create a test project. They validate denial, fixed dispatch and result
+classification only. GDScript inspection is static; it does not establish Godot
+parsing, loading, completion output, runtime PASS or direct-checkout cache behavior.
+The earlier test audit remains local and unchanged; its historical Python failure
+baseline is not repaired by this PR.
 
 ## Fixed metadata smoke extension (draft, tested runtime scope passed)
 

@@ -111,6 +111,20 @@
 - Clearly distinguish static validation from actual runtime verification. Do not
   claim gameplay, graphical, or engine validation when those checks were not
   performed.
+- The proposed local behavioral foundation at `tools/run-behavioral-tests.ps1`
+  is **inactive** and has no standing execution authorization. It rejects with
+  `NOT RUN` before engine identity checks or process dispatch. Its proposed
+  direct-checkout workflow is separate from the existing staged Native and codec
+  recipes; their permissions and controls are unchanged. Implementation, a branch,
+  a PR or a merge does not activate this runner or authorize direct-checkout runs.
+  Before any activation, the owner must explicitly approve the precise launcher,
+  fixed command, test manifest and allowed filesystem effects, including Godot
+  cache/import/UID behavior in the actual checkout and user-profile effects.
+  No cache or sidecar creation/rewrite is approved by this foundation. Any future
+  standing authorization applies only to the exact reviewed runner and scope.
+  No automatic retries, destructive cleanup, graphical tests, performance probes,
+  benchmarks, stress tests or freeze reproduction are authorized. See the
+  [inactive behavioral workflow](docs/LOCAL_TESTING.md#local-behavioral-foundation-inactive).
 - Preserve all existing repository safety, worktree, artifact and branch
   preservation requirements. Do not alter the abandoned PR #5 worktree,
   branches, archives, or conversation.
