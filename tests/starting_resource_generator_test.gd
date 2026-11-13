@@ -141,11 +141,11 @@ func _transition_and_priority() -> void:
 		_check(reverse.region(owner) == expected[owner], "reverse query order and cache eviction")
 	# Fixed raw chain isolates reservation admission from ordinary competition.
 	var fixture := RawFixture.new(42, _definitions(), [], Vector2(-10000, -10000))
-	var a := Descriptors.create_location(Generator.STARTING_POLICY, 42, Vector2i.ZERO, 0,
+	var a: Dictionary = Descriptors.create_location(Generator.STARTING_POLICY, 42, Vector2i.ZERO, 0,
 		&"cuprite", [Rect2i(0, 0, 4, 4), Rect2i(12, -2, 4, 4), Rect2i(4, 12, 4, 4)]).location
-	var b := Descriptors.create_location(Generator.STARTING_POLICY, 42, Vector2i(1, 0), 0,
+	var b: Dictionary = Descriptors.create_location(Generator.STARTING_POLICY, 42, Vector2i(1, 0), 0,
 		&"ferrite", [Rect2i(30, 0, 4, 4)]).location
-	var reservation := Descriptors.create_location(Generator.STARTING_POLICY, 42, Vector2i(-1, 0), 4,
+	var reservation: Dictionary = Descriptors.create_location(Generator.STARTING_POLICY, 42, Vector2i(-1, 0), 4,
 		&"carbite", [Rect2i(-18, 0, 4, 4)]).location
 	fixture._reservations = [reservation] # Synthetic test only; no production setter.
 	fixture.raw = {Vector2i.ZERO: {"location": a, "priority": 0},
@@ -174,7 +174,7 @@ func _diagnostics() -> void:
 	var legacy_polygon := PackedVector2Array([Vector2(0, 0), Vector2(128, 0), Vector2(128, 128), Vector2(0, 128)])
 	var snapshot := Diagnostics.legacy_snapshot("legacy-fixture", legacy_polygon, Rect2(-32, -32, 192, 192))
 	_check(snapshot.ok, "legacy polygon snapshot admission")
-	var location := Descriptors.create_location(Generator.STARTING_POLICY, 42, Vector2i.ZERO, 4,
+	var location: Dictionary = Descriptors.create_location(Generator.STARTING_POLICY, 42, Vector2i.ZERO, 4,
 		&"ferrite", [Rect2i(0, 0, 4, 4)]).location
 	var legacy: Array[Dictionary] = [snapshot.snapshot]
 	var locations: Array[Dictionary] = [location]
@@ -184,7 +184,7 @@ func _diagnostics() -> void:
 		and report.reports[0].kind == "potential_gameplay_overlap", "potential blocking overlap requires owner review")
 	_check([legacy, locations] == before, "legacy snapshots unchanged")
 	_check(Diagnostics.inspect(legacy, locations, []) == report, "repeatable diagnostics without relocation")
-	var nearby := Descriptors.create_location(Generator.STARTING_POLICY, 42, Vector2i.ZERO, 5,
+	var nearby: Dictionary = Descriptors.create_location(Generator.STARTING_POLICY, 42, Vector2i.ZERO, 5,
 		&"cuprite", [Rect2i(10, 0, 4, 4)]).location
 	var proximity := Diagnostics.inspect(legacy, [nearby], [])
 	_check(proximity.ok and not proximity.owner_review_required \

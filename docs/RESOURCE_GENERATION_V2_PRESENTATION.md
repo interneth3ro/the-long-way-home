@@ -218,13 +218,34 @@ area, avoiding duplicate nodes and blanking retained deposits during streaming.
 New sprites require loaded terrain. No discovery, research, proximity or occupancy
 state participates in visibility. Initial preparation and arrival wait for Cuprite
 presentation as well as existing terrain/Ferrite work before reporting readiness.
-Cancellation and tree exit retire work; reattachment reconfigures from authority.
+Explicit cancellation retires work and completion. Temporary tree exit retires
+work tokens while preserving valid live presentation for same-context reuse.
 
 Each live step performs one fixed 1536-unit page query grown by approved artwork
 reach, one candidate admission, one ordering pass or at most one texture/sprite
-publication. Query results retain the authority's 64-owner/775-descriptor bound;
-page planning, accumulated registrations, catalogs and textures retain their existing
-limits. Page overlap deduplicates authoritative deposit IDs. Context retirement
+publication. Query results retain the authority's 64-owner/775-descriptor bound.
+The live adapter has separate whole-window limits: 26,624 units per axis (the
+supported radius 4 plus retention 2, or 13 actual 2,048-unit chunks), at most
+361 query pages and 5,815 accumulated descriptors/sprites. A maximum interval
+touches 19 aligned 1,536-unit pages; their artwork/query halo touches at most
+22x22 owners, each with at most four slots of three members, plus seven starting
+reservations. Catalog and texture limits are unchanged. The isolated inspection
+adapter retains its 6,144-unit, 64-owner and 775-descriptor limits.
+
+This startup correction is pending review in PR #195. The owner-reported New Game
+failure was traced to the shared 6,144-unit guard rejecting live terrain windows:
+the initial 7x7 neighborhood spans 14,336 units. Live requests now select the
+separate whole-window limits while continuing to issue one small page query per
+query step. This changes no terrain/generation policy or authority-query limit.
+[`static_resource_live_window_test.py`](../tests/static_resource_live_window_test.py)
+passes five nonexecuting checks for actual dimensions, signed windows, page/owner
+bounds, adapter-specific limits and unchanged generation/terrain controls. Together
+with Cuprite and fixture-typing checks, 20 focused static tests pass. Live-window
+GDScript assertions are authored in `tests/cuprite_gameplay_test.gd` but unexecuted;
+no Godot parsing, import, gameplay, graphical or performance check was run by the
+agent. The original broad-suite record is not a rerun of this correction.
+
+Page overlap deduplicates authoritative deposit IDs. Context retirement
 clears visuals and reports failure through the existing exterior terrain-failure
 path. These are bounded-work contracts, not measured performance results.
 
@@ -243,3 +264,64 @@ import, graphical, gameplay or performance claim is made. The historical isolate
 inspection checklist above describes its original scope, not Milestone 8 normal
 F5 behavior. Approved canvas-versus-clearance visual review remains outstanding;
 no artwork scale/offset or deterministic clearance policy was changed.
+
+
+### Obsolete live prototype removal (PR #195, pending merge)
+
+Following owner runtime acceptance of generated Cuprite, Decision 11A removes
+only `GroundObjects/CupriteVisualPrototype` from `planet_exterior.tscn`, its unused
+PackedScene declaration and its instance-only editability entry. The scene's
+`load_steps` is adjusted accordingly. The reference prototype scene, approved PNG,
+v2 catalog/registration and generated presenter remain unchanged; other authored
+objects are preserved. This removes the redundant manual illustration, not an
+authoritative deposit. Starting preferences/identity are described in the
+[layout correction](RESOURCE_GENERATION_V2_STARTING.md#cuprite-layout-correction-pr-195-pending-merge).
+
+### Cached exterior presentation lifecycle (PR #195, pending merge)
+
+Completed Cuprite presentation now survives initial preparation's detachment and
+subsequent cached exterior visits. Live presenter tree exit cancels queued work
+and advances its token, retaining registrations, child sprites, textures and
+catalogs only while the world generation context remains valid. Reattachment
+rearms completed presentation with the new token rather than querying deposits
+and rebuilding sprites again. Interrupted work remains incomplete and restarts
+through the normal bounded request path; explicit arrival cancellation continues
+to clear registrations/visuals and reset the exterior's presentation coverage.
+
+`configure_world` reuses state only for the same `PlanetWorldState` instance,
+opaque generation token and seed, with the same resource/catalog references and
+equal freshly admitted catalog contents. A changed, missing or incompatible
+configuration follows destructive configuration/admission; invalid inputs fail
+closed. Explicit `dispose`, configuration replacement, failure and actual node
+deletion release retained state. Detached scenes remain owned by the existing
+transition controller and are freed during session retirement.
+
+The exterior reuses completion only when its attached-chunk coverage is unchanged
+and the presenter reports completion for its current token/context. Changed
+coverage still applies the loaded mask, immediately retires off-terrain sprites
+and issues a bounded streaming request. Terrain publication, legacy Ferrite
+readiness, fresh arrival-generation receipts, cancellation guards and Dave's input
+lock are preserved. Neither the starting policy/search ceiling nor gameplay,
+fade timing, terrain architecture or approved artwork changes.
+
+Eight focused nonexecuting contracts in
+[`static_cuprite_presentation_lifecycle_test.py`](../tests/static_cuprite_presentation_lifecycle_test.py)
+pass. The authored
+[`cuprite_presentation_lifecycle_test.gd`](../tests/cuprite_presentation_lifecycle_test.gd)
+exercises actual presenter/exterior initialization and resource service with a
+descriptor-query fixture and supplied chunk coverage: completed initial work,
+three detach/reattach visits without new queries, object/cache identity,
+interrupted and explicit cancellation, streaming unload/reload, world replacement,
+invalid context, stale readiness receipts, disposal and actual node retirement.
+It does not generate the initial terrain neighborhood or certify full transition
+behavior. It is unexecuted and absent from approved runners. No Godot parse,
+headless, graphical or performance verification was performed; timing improvement
+is unmeasured and owner F5 runtime acceptance remains required.
+
+Related executed checks: eight layout and two fixture-typing checks pass; the
+gameplay/window modules have 16 passing test methods and two failing methods
+(three whole-source preservation subcases). Two cases already reject the approved
+starting-layout change; the additional case freezes the exterior source before
+this approved lifecycle edit. These guards remain unchanged and failures are
+reported, not treated as functional/runtime PASS. The full historical discovery
+suite was not rerun for this follow-up.

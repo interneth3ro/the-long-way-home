@@ -33,7 +33,7 @@ var _recipe_change_pauses: Dictionary[int, RefCounted] = {}
 # V2 read boundary. Legacy APIs below retain their original Ferrite semantics.
 # Context tokens are opaque leases, never generators or persistent/save identities.
 func configure_resource_generation_v2(ordinary_policy: String = "ordinary-v2-1",
-		starting_policy: String = "starting-v2-1", schema_version: int = 1) -> Dictionary:
+		starting_policy: String = "starting-v2-2", schema_version: int = 1) -> Dictionary:
 	if seed_value != _world_generation_seed:
 		_resource_v2.invalidate("world seed changed; construct a fresh PlanetWorldState")
 		return {"ok": false, "code": "incompatible_context",

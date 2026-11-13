@@ -2,8 +2,11 @@ class_name StartingResourceGenerator
 extends "res://scenes/world/ordinary_resource_generator.gd"
 ## Versioned shared v2 policy. No gameplay caller, activation input or legacy input.
 
-const STARTING_POLICY: String = "starting-v2-1"
-const ARRANGEMENT_BUDGET: int = 512
+const STARTING_POLICY: String = "starting-v2-2"
+# Ordinary transition thinning keeps its prior draws. This hash domain is not
+# an accepted policy alias; reservation draws use the current STARTING_POLICY.
+const TRANSITION_SAMPLING_DOMAIN: String = "starting-v2-1"
+const ARRANGEMENT_BUDGET: int = 4096
 const START_SLOT: int = 4
 const MIN_DISTANCE: int = 384
 const MAX_DISTANCE: int = 2304
@@ -12,7 +15,7 @@ const TRANSITION_WIDTH: int = 1536
 const REQUIRED := {"ferrite": 3, "carbite": 2, "cuprite": 2}
 const TYPES := ["ferrite", "carbite", "cuprite"]
 # Every resource can select every band; these are preferences, never exclusions.
-const BAND_THRESHOLDS := [[25, 90], [10, 65], [5, 30]]
+const BAND_THRESHOLDS := [[25, 90], [10, 65], [45, 90]]
 const BAND_CELLS := [[14, 22], [26, 46], [50, 68]]
 const DIRECTIONS := [Vector2i(1000, 0), Vector2i(924, 383), Vector2i(707, 707),
 	Vector2i(383, 924), Vector2i(0, 1000), Vector2i(-383, 924),
@@ -66,8 +69,9 @@ func reservations() -> Dictionary:
 	return {"ok": true, "locations": _reservations.duplicate(true), "attempts": _attempts}
 
 
-func _starting_sample(attempt: int, slot: int, channel: String) -> int:
-	var key := "%s:%d:%d:%d:%s" % [STARTING_POLICY, _seed, attempt, slot, channel]
+func _starting_sample(attempt: int, slot: int, channel: String,
+		domain: String = STARTING_POLICY) -> int:
+	var key := "%s:%d:%d:%d:%s" % [domain, _seed, attempt, slot, channel]
 	return key.sha256_text().left(7).hex_to_int()
 
 
@@ -139,7 +143,7 @@ static func transition_density(distance: float) -> float:
 func _ordinary_allowed(location: Dictionary, owner: Vector2i, slot: int) -> bool:
 	var center := anchor_bounds(location.deposits[0]).get_center()
 	var density := transition_density(center.distance_to(_ship))
-	var roll := float(_starting_sample(0, slot, "transition:%d:%d" % [owner.x, owner.y])) / 268435456.0
+	var roll := float(_starting_sample(0, slot, "transition:%d:%d" % [owner.x, owner.y], TRANSITION_SAMPLING_DOMAIN)) / 268435456.0
 	if roll >= density:
 		return false
 	for reservation in _reservations:

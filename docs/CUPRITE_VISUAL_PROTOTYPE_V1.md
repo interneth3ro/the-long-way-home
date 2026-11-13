@@ -1,5 +1,12 @@
 # Cuprite visual prototype v1
 
+Decision 11A removes this obsolete instance from normal gameplay in PR #195
+(pending merge). The reference scene, approved artwork, scale/offset and stationary
+Extractor reference remain preserved. Generated Cuprite uses the unchanged v2
+artwork catalog. The implementation/acceptance record below describes the original
+prototype placement; it is not a current live deposit. See the
+[layout correction](RESOURCE_GENERATION_V2_STARTING.md#cuprite-layout-correction-pr-195-pending-merge).
+
 Implemented on `codex/cuprite-visual-prototype-v1`, pending merge in PR #180.
 The owner reported final F5 **PASS** against visual configuration `ecdeb4b` and
 artistically accepted the terrain blending, mineral coloration, footprint and

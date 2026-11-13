@@ -10,6 +10,14 @@ const MAX_DESCRIPTORS: int = 775 # 64 * 4 * 3 ordinary members + seven reservati
 const MAX_LOCATIONS_PER_OWNER: int = 11
 const TEXTURE_LIMIT: int = 8
 const MAX_AREA_AXIS: float = 6144.0
+# Live terrain supports radius 4 + retention 2: 13 chunks of 2048 units.
+# A 26624-unit interval touches at most 19 aligned 1536-unit query pages.
+# Their query/artwork halo covers at most 22x22 generation owners; each owner
+# contributes at most 4 slots x 3 members, plus seven starting reservations.
+const MAX_LIVE_AREA_AXIS: float = 26624.0
+const LIVE_PAGE_SIZE: float = 1536.0
+const MAX_LIVE_PAGES: int = 361
+const MAX_LIVE_DESCRIPTORS: int = 5815
 
 var _world: PlanetWorldState
 var _world_token: RefCounted
@@ -24,6 +32,7 @@ var _references: Dictionary = {}
 var _reach: float = 0.0
 var _token: int = 0
 var _active: bool = false
+var _complete: bool = false
 var _area: Rect2
 var _owners: Array = []
 var _locations: Array = []
@@ -56,6 +65,10 @@ func configure(source: OrdinaryResourceGenerator, world_seed: int,
 # Live adapter receives only bounded copied descriptors; the generator stays private.
 func configure_world(world: PlanetWorldState,
 		definitions: Array[WorldResourceDefinition]) -> Dictionary:
+	if matches_world(world, definitions):
+		# Tree exit retires the work token, not a completed live presentation.
+		_active = _complete
+		return {"ok": true, "reused": true}
 	dispose()
 	if world == null or definitions.is_empty() or definitions.size() > MAX_CATALOGS:
 		return Catalog.failure("Invalid world presentation context")
@@ -68,7 +81,38 @@ func configure_world(world: PlanetWorldState,
 	_world = world
 	_world_token = context.token
 	_seed = context.world_seed
-	return {"ok": true}
+	return {"ok": true, "reused": false}
+
+
+func matches_world(world: PlanetWorldState,
+		definitions: Array[WorldResourceDefinition]) -> bool:
+	if world == null or _world != world or definitions.is_empty() \
+			or definitions.size() != _catalogs.size():
+		return false
+	var context := world.resource_generation_v2_context()
+	if not context.ok or context.token != _world_token or context.world_seed != _seed:
+		return false
+	var seen: Dictionary = {}
+	for definition in definitions:
+		if definition == null:
+			return false
+		var resource_id := String(definition.resource_id)
+		if seen.has(resource_id) or _references.get(resource_id) != definition.presentation_catalog:
+			return false
+		seen[resource_id] = true
+		# Bounded catalog admission also detects edits at an unchanged path.
+		if Catalog.read_catalog(definition.presentation_catalog, resource_id) != _catalogs[resource_id]:
+			return false
+	return true
+
+
+func is_complete(token: int) -> bool:
+	if token != _token or not _active or not _complete:
+		return false
+	if _world != null:
+		var context := _world.resource_generation_v2_context()
+		return context.ok and context.token == _world_token and context.world_seed == _seed
+	return _source != null and _source.is_ready() and _source.identity_policy() == _policy
 
 
 func _configure_catalogs(definitions: Array[WorldResourceDefinition]) -> Dictionary:
@@ -111,9 +155,10 @@ func _is_loaded(registration: Dictionary) -> bool:
 
 func request(area: Rect2) -> Dictionary:
 	cancel(_world != null)
+	var area_limit: float = MAX_LIVE_AREA_AXIS if _world != null else MAX_AREA_AXIS
 	if (_source == null and _world == null) or not area.is_finite() or not area.end.is_finite() \
 			or area.size.x <= 0.0 or area.size.y <= 0.0 \
-			or area.size.x > MAX_AREA_AXIS or area.size.y > MAX_AREA_AXIS:
+			or area.size.x > area_limit or area.size.y > area_limit:
 		if _world != null:
 			return _failure("Invalid context or presentation area")
 		return Catalog.failure("Invalid context or presentation area")
@@ -131,10 +176,10 @@ func request(area: Rect2) -> Dictionary:
 					_sprites.erase(identity)
 		# Fixed-size spatial pages keep each authority query bounded. Grow each page
 		# by actual artwork reach so painted overhangs cannot be missed.
-		var page_size := 1536.0
+		var page_size: float = LIVE_PAGE_SIZE
 		var first := Vector2i((area.position / page_size).floor())
 		var last := Vector2i((area.end / page_size).floor())
-		if (last.x - first.x + 1) * (last.y - first.y + 1) > MAX_OWNERS:
+		if (last.x - first.x + 1) * (last.y - first.y + 1) > MAX_LIVE_PAGES:
 			return _failure("Presentation page budget exceeded")
 		for y in range(first.y, last.y + 1):
 			for x in range(first.x, last.x + 1):
@@ -229,6 +274,7 @@ func step(token: int) -> Dictionary:
 			_sprites[identity] = sprite
 		_index += 1
 		return {"ok": true, "done": false}
+	_complete = true
 	return {"ok": true, "done": true}
 
 
@@ -245,7 +291,8 @@ func _register_member(member: Dictionary) -> Dictionary:
 	if _registrations.has(identity) and _registrations[identity] != registration:
 		return _failure("Conflicting duplicate descriptor: " + identity)
 	_registrations[identity] = registration
-	if _registrations.size() > MAX_DESCRIPTORS:
+	var descriptor_limit: int = MAX_LIVE_DESCRIPTORS if _world != null else MAX_DESCRIPTORS
+	if _registrations.size() > descriptor_limit:
 		return _failure("Presentation descriptor budget exceeded")
 	return {"ok": true}
 
@@ -278,6 +325,7 @@ func snapshot() -> Dictionary:
 func cancel(keep_visuals: bool = false) -> void:
 	_token += 1
 	_active = false
+	_complete = false
 	_pages.clear()
 	_members.clear()
 	_owners.clear()
@@ -321,5 +369,21 @@ func _failure(message: String) -> Dictionary:
 
 func _exit_tree() -> void:
 	_exiting = true
-	dispose()
+	if _world != null:
+		var context := _world.resource_generation_v2_context()
+		if context.ok and context.token == _world_token and context.world_seed == _seed:
+			var completed := _complete
+			cancel(true)
+			_complete = completed
+		else:
+			dispose()
+	else:
+		dispose()
 	_exiting = false
+
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_PREDELETE:
+		# Actual retirement releases retained context/caches; Node frees children.
+		_exiting = true
+		dispose()

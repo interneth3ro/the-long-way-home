@@ -108,8 +108,14 @@ func _initialize_world(state: PlanetWorldState) -> void:
 		add_child(_resource_presenter)
 	var configured := _resource_presenter.configure_world(state,
 		[preload("res://scenes/world/resource_definitions/v2/cuprite.tres")])
-	_resource_chunks.clear()
-	_resources_done = false
+	_resource_token = _resource_presenter.snapshot().token
+	var loaded: Dictionary = {}
+	for coordinate in _chunks:
+		loaded[coordinate] = true
+	_resources_done = configured.get("reused", false) and loaded == _resource_chunks \
+		and _resource_presenter.is_complete(_resource_token)
+	if not _resources_done:
+		_resource_chunks.clear()
 	if not configured.ok:
 		_stop_terrain(configured)
 	if _ferrite_presenter == null:
@@ -201,7 +207,8 @@ func _initial_completed(center: Vector2i) -> int:
 					and _ground_is_current(coordinate) and not _tint_dirty:
 				completed += 1
 	if _ferrite_presenter != null and _ferrite_presenter.matches_context(_state) \
-			and _ferrite_presenter.required_ready(_ferrite_token) and _resources_done:
+			and _ferrite_presenter.required_ready(_ferrite_token) and _resources_done \
+			and _resource_presenter.is_complete(_resource_token):
 		completed += 1
 	return completed
 
@@ -236,6 +243,7 @@ func arrival_is_ready(result: Variant) -> bool:
 		and _pending.is_empty() and _ferrite_presenter != null \
 		and _ferrite_presenter.matches_context(_state) \
 		and _ferrite_presenter.required_ready(_ferrite_token) and _resources_done \
+		and _resource_presenter.is_complete(_resource_token) \
 		and _center == WorldCoordinates.world_to_chunk(to_local(_player.global_position))
 
 

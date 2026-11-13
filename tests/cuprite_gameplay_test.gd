@@ -209,6 +209,7 @@ func _run() -> void:
 				_check(state.recover_machine(identity, inventory, extraction, 160)
 					and inventory.get_quantity(&"ferrite_ore") == 1, "legacy Ferrite recovery returns stored contents")
 	_check(found, "legacy Ferrite fixture found")
+	_test_live_window_requests()
 	_test_presentation()
 	ground.free()
 	print("Cuprite gameplay regression failures: %d" % _failures)
@@ -225,6 +226,30 @@ func _finish_presentation(presenter: ResourcePresenterV2, token: int) -> bool:
 		if result.get("done", false):
 			return true
 	return false
+
+
+func _test_live_window_requests() -> void:
+	var presenter := ResourcePresenterV2.new()
+	var world := PlanetWorldState.new(42)
+	_check(presenter.configure_world(world,
+		[preload("res://scenes/world/resource_definitions/v2/cuprite.tres")]).ok,
+		"live window context")
+	# Real 2048-unit chunks: initial 7x7, default retained 7x7 and maximum 13x13.
+	for radius in [3, 6]:
+		for center in [Vector2i(-4, -2), Vector2i.ZERO, Vector2i(4, 2)]:
+			var area := Rect2(Vector2(center - Vector2i.ONE * radius) * WorldCoordinates.CHUNK_SIZE,
+				Vector2.ONE * (2 * radius + 1) * WorldCoordinates.CHUNK_SIZE)
+			var requested := presenter.request(area)
+			_check(requested.ok, "real loaded terrain window admitted")
+			_check(presenter._pages.size() <= ResourcePresenterV2.MAX_LIVE_PAGES,
+				"live page plan remains bounded")
+			for page: Rect2 in presenter._pages:
+				_check(page.size == Vector2.ONE * ResourcePresenterV2.LIVE_PAGE_SIZE,
+					"large window retains small descriptor queries")
+	_check(not presenter.request(Rect2(Vector2.ZERO,
+		Vector2.ONE * (ResourcePresenterV2.MAX_LIVE_AREA_AXIS + 1.0))).ok,
+		"oversized live window still rejected")
+	presenter.free()
 
 
 func _test_presentation() -> void:

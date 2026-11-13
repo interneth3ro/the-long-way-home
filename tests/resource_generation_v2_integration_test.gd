@@ -36,7 +36,7 @@ func _world_contract(seed_value: int) -> void:
 		return
 	var token: RefCounted = context.token
 	_check(context.world_seed == seed_value and context.schema_version == 1 \
-		and context.starting_policy == "starting-v2-1" and context.ordinary_policy == "ordinary-v2-1",
+		and context.starting_policy == "starting-v2-2" and context.ordinary_policy == "ordinary-v2-1",
 		"authoritative seed and approved policies")
 	var direct := Starting.new(seed_value, [FERRITE, CARBITE, CUPRITE],
 		CrashSite.protected_bounds(), CrashSite.SHIP_REFERENCE)
@@ -85,7 +85,7 @@ func _world_contract(seed_value: int) -> void:
 	var wrong_policy := "resource:ordinary-v2-1:%d:0:0:0:0" % seed_value
 	_check_failure(world.resource_descriptor_v2_by_id(wrong_policy, token), "incompatible_context",
 		"incompatible identity policy with current seed")
-	var wrong_seed := "resource:starting-v2-1:%d:0:0:0:0" % (seed_value + 1)
+	var wrong_seed := "resource:starting-v2-2:%d:0:0:0:0" % (seed_value + 1)
 	_check_failure(world.resource_descriptor_v2_by_id(wrong_seed, token), "invalid_identity",
 		"wrong identity seed with current policy")
 	_check(world.resource_generation_v2_context().token == token,
@@ -94,7 +94,7 @@ func _world_contract(seed_value: int) -> void:
 	# hard-coded assumption about a seed's ordinary candidate positions.
 	var absent := ""
 	for slot in range(Ordinary.CANDIDATE_SLOTS):
-		var identity := "resource:starting-v2-1:%d:-1:-1:%d:0" % [seed_value, slot]
+		var identity := "resource:starting-v2-2:%d:-1:-1:%d:0" % [seed_value, slot]
 		var probe := direct.descriptor_by_id(identity)
 		if not probe.ok and probe.error == "identity has no accepted descriptor":
 			absent = identity
@@ -168,7 +168,7 @@ func _component_failures() -> void:
 	_check(first.ok, "component initializes")
 	if not first.ok:
 		return
-	var failed := integration.configure(42, "ordinary-v2-1", "starting-v2-1", 2)
+	var failed := integration.configure(42, "ordinary-v2-1", "starting-v2-2", 2)
 	_check_failure(failed, "incompatible_context",
 		"unsupported schema invalidates previous context")
 	_check(not integration.is_ready(), "no fallback after invalid schema")
@@ -177,7 +177,7 @@ func _component_failures() -> void:
 	_check_failure(integration.reservations(first.token), "unavailable", "failed component has no reservations")
 	_check_failure(integration.descriptor_by_id("invalid", first.token), "unavailable",
 		"unavailable precedes invalid identity")
-	var repeated := integration.configure(42, "ordinary-v2-1", "starting-v2-1", 2)
+	var repeated := integration.configure(42, "ordinary-v2-1", "starting-v2-2", 2)
 	_check_failure(repeated, "incompatible_context", "repeated invalid configuration stays failed")
 	_check(not integration.is_ready() and integration.initialization_error() == failed.error,
 		"repeated failure cannot restore retired context")
