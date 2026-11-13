@@ -523,13 +523,14 @@ group implements six focused cases using production generators and native defini
 | Reconstruction | Ordinary seeds 42/-79 over owners (-1,-1), (0,-1), (-1,0), (0,0): full equality across fresh generators, opposite request orders and reversed definitions, nonempty coverage; fresh same-seed starting reservations also match. |
 | Identities | Real ordinary/starting locations and members: independent canonical fields and full public ID round trips; malformed, foreign-seed and retired-policy IDs reject without descriptors. |
 | Boundaries | Signed/exact floor ownership; one raw candidate fixture has a member across a region edge, discoverable once with its original ID through production query/lookup methods. |
-| Conflicts | Existing A/B/C raw-chain geometry: B loses to C but still rejects all of A; only C survives region/query reads in either request order, and every A member fails lookup. |
+| Conflicts | Synthetic A/B/C raw-chain geometry: B loses to C but still rejects all of A; only C survives region/query reads in either request order, and every A member fails lookup. The query covers C's visual bounds and its production owner plan includes C's declared owner. |
 | Isolation | Empty/duplicate/unsupported-geology definitions reject; construction snapshots and nested region/query/ID/reservation copies resist caller mutation. |
 
-The intended successful path performs **163 assertions** in the new group:
-20 starting, 40 reconstruction, 25 identity, 15 boundary, 30 conflict and 33
-isolation comparisons. Including the unchanged smoke gives 167 total checks.
+The intended successful path performs **168 assertions** in the new group:
+20 starting, 40 reconstruction, 25 identity, 15 boundary, 35 conflict and 33
+isolation comparisons. Including the unchanged smoke gives 172 total checks.
 These are static counts of planned comparisons, not observed runtime results.
+The totals are descriptive, not frozen requirements.
 `_expect` counts each performed comparison, including readiness/result guards;
 geometry and identity arrays are compared as explicitly labeled assertions, not
 counted once per case or inflated per member. Failed guards can reduce the actual
@@ -538,6 +539,13 @@ is claimed. Failures include case, seed, owner/ID where relevant, expected and
 actual values. Candidate fixtures override only raw supply; production region,
 query and identity methods remain intact. No private production validator is the
 sole geometry oracle. Existing tests are retained unchanged.
+
+The atomic-conflict fixture intentionally declares B/C owners (1,0)/(2,0)
+although all three first anchors naturally lie in owner (0,0). It tests the
+synthetic raw-competitor resolver/halo, not generated spatial ownership. Its
+query is wide enough for the production `query_owners()` plan to include C's
+declared owner as well as geometrically enclosing C's visual bounds. Real
+generation and boundary-ownership checks remain separate and unchanged.
 
 Static dependency review covers 28 script/resource paths including the dispatcher
 and smoke (22 GDScript files and six `.tres` resources):

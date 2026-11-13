@@ -266,6 +266,9 @@ func _boundary_queries() -> void:
 
 func _atomic_conflicts() -> void:
 	var context := "conflict seed=42"
+	# Intentionally synthetic resolver fixture, not generated spatial ownership:
+	# all first anchors naturally lie in owner (0,0), but B/C declare (1,0)/(2,0)
+	# to exercise the raw-competitor halo. Only candidate supply is overridden.
 	var made: Array[Dictionary] = [
 		Descriptors.create_location("ordinary-v2-1", 42, Vector2i.ZERO, 0, &"cuprite",
 			[Rect2i(0, 0, 4, 4), Rect2i(12, 0, 4, 4), Rect2i(4, 12, 4, 4)]),
@@ -288,6 +291,10 @@ func _atomic_conflicts() -> void:
 	for member: Dictionary in a.deposits:
 		endpoint_clear = endpoint_clear and _axis_distance(_bounds(member), _bounds(c.deposits[0])) > 704.0
 	_expect(endpoint_clear, true, context + " A/C independent endpoints")
+	# Cover C's visual bounds AND reach its synthetic declared owner in the plan.
+	var query_area := Rect2(-64, -64, 2496, 640)
+	_expect(query_area.encloses(Ordinary.visual_bounds(c.deposits[0])), true,
+		context + " query covers C visual bounds")
 	for reverse_order: bool in [false, true]:
 		var source := CandidateFixture.new(42, _definitions(), [])
 		if not _ready(source, context + " reverse=%s" % reverse_order):
@@ -301,7 +308,11 @@ func _atomic_conflicts() -> void:
 			var result: Dictionary = source.region(owner)
 			if _ok(result, context + " owner=%s reverse=%s" % [owner, reverse_order]):
 				_expect(result.locations, [c] if owner == Vector2i(2, 0) else [], context + " accepted owner=%s reverse=%s" % [owner, reverse_order])
-		var queried: Dictionary = source.query(Rect2(-64, -64, 1408, 640))
+		var plan: Dictionary = source.query_owners(query_area)
+		if _ok(plan, context + " query plan reverse=%s" % reverse_order):
+			_expect(plan.owners.has(c.owner_region), true,
+				context + " declared C owner=%s in plan=%s reverse=%s" % [c.owner_region, plan.owners, reverse_order])
+		var queried: Dictionary = source.query(query_area)
 		if _ok(queried, context + " query reverse=%s" % reverse_order):
 			_expect(queried.deposits, c.deposits, context + " only C query reverse=%s" % reverse_order)
 		for member: Dictionary in a.deposits:
