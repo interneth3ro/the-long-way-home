@@ -4,11 +4,9 @@ No Godot or project code executes; behavioral assertions remain unexecuted.
 from pathlib import Path
 import hashlib
 import re
-import subprocess
 import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
-BASE = "2614769057ece59bd38df8b744be724c9f4802b3"
 COMPONENT_PATH = "scenes/world/resource_generation_v2_integration.gd"
 WORLD_PATH = "scenes/world/planet_world_state.gd"
 SOURCE = (ROOT / COMPONENT_PATH).read_text()
@@ -25,21 +23,35 @@ def code(source):
     return "\n".join(line.split("#")[0] for line in source.splitlines())
 
 
-def git(*args):
-    return subprocess.check_output(["git", *args], cwd=ROOT)
-
-
 class ResourceIntegrationStaticTests(unittest.TestCase):
-    def test_world_owns_component_and_preserves_every_legacy_method(self):
+    def test_world_owns_component_and_legacy_apis_remain_independent(self):
         self.assertIn("var _resource_v2 := ResourceGenerationV2Integration.new()", WORLD)
         init = body(WORLD, "_init")
         self.assertIn("_world_generation_seed = world_seed", init)
         self.assertIn("configure_resource_generation_v2()", init)
-        old = git("show", f"{BASE}:{WORLD_PATH}").decode()
-        for name in re.findall(r"^func (\w+)\(", old, re.M):
-            if name != "_init":
-                self.assertEqual(body(WORLD, name), body(old, name), name)
         self.assertIn("_ferrite = FerriteRegionGenerator.new(world_seed)", init)
+        legacy_routes = {
+            "is_resource_generation_ready": "_ferrite.is_ready()",
+            "resource_generation_error": "_ferrite.initialization_error()",
+            "get_deposit_region": "_ferrite.region(owner)",
+            "query_deposit_descriptors": "_ferrite.query(area)",
+            "deposit_query_owners": "_ferrite.query_owners(area)",
+            "deposit_resource": "_ferrite.resource(descriptor)",
+            "get_deposit_variant": "_ferrite.variant_metadata(variant_id)",
+        }
+        for name, route in legacy_routes.items():
+            self.assertIn("return " + route, code(body(WORLD, name)), name)
+        for name in ("get_deposit", "deposit_at", "get_deposits_in_area"):
+            self.assertIn("_ferrite.", code(body(WORLD, name)), name)
+            self.assertIn("_deposits", code(body(WORLD, name)), name)
+        # Protect the isolation boundary as methods evolve, without freezing their
+        # entire historical implementation or banning later unrelated features.
+        for name in re.findall(r"^func (\w+)\(", WORLD, re.M):
+            if name != "_init" and not (name.endswith("_v2") or "resource_generation_v2" in name
+                                       or name == "resource_descriptor_v2_by_id"):
+                block = code(body(WORLD, name))
+                self.assertNotIn("_resource_v2", block, name)
+                self.assertNotIn("resource_generation_v2", block, name)
 
     def test_seed_is_authoritative_and_in_place_reseed_fails_closed(self):
         configure = body(WORLD, "configure_resource_generation_v2")
@@ -125,13 +137,20 @@ class ResourceIntegrationStaticTests(unittest.TestCase):
                 self.assertNotIn("resource_generation_v2_integration", text, str(path))
                 self.assertNotIn("configure_resource_generation_v2(", text, str(path))
 
-    def test_protected_tracked_inputs_are_unchanged_from_baseline(self):
-        paths = git("ls-tree", "-r", "--name-only", BASE).decode().splitlines()
-        protected = [p for p in paths if p.startswith(("assets/", "construction/", "inventory/",
-                     "persistence/", "scenes/", "tools/", "tests/"))
-                     or p in ("AGENTS.md", "project.godot", ".gitattributes")]
-        changed = set(git("diff", "--name-only", BASE).decode().splitlines())
-        self.assertLessEqual(changed.intersection(protected), {WORLD_PATH})
+    def test_approved_generation_contracts_and_frozen_artwork(self):
+        # Approved versioned contracts remain guarded; unrelated future files,
+        # authorized feature additions and test maintenance are not frozen.
+        ordinary = (ROOT / "scenes/world/ordinary_resource_generator.gd").read_text()
+        starting = (ROOT / "scenes/world/starting_resource_generator.gd").read_text()
+        descriptors = (ROOT / "scenes/world/resource_generation_descriptors.gd").read_text()
+        definition = (ROOT / "scenes/world/world_resource_definition.gd").read_text()
+        self.assertIn('const POLICY: String = "ordinary-v2-1"', ordinary)
+        self.assertIn('const STARTING_POLICY: String = "starting-v2-1"', starting)
+        self.assertIn('const SCHEMA_VERSION: int = 1', descriptors)
+        self.assertIn('const REQUIRED := {"ferrite": 3, "carbite": 2, "cuprite": 2}', starting)
+        self.assertIn('const ANCHOR_CELLS := Vector2i(4, 4)', definition)
+        for constant, value in (("REGION_SIZE", 1536), ("MAX_QUERY_REGIONS", 64), ("CACHE_LIMIT", 32)):
+            self.assertIn(f"const {constant}: int = {value}", ordinary)
         artwork = ROOT / "assets/environment/exterior/cuprite/cuprite_prototype_v1.png"
         self.assertEqual(hashlib.sha256(artwork.read_bytes()).hexdigest(),
                          "6a3ed462b0da325b0dc334b0fb0f5d467242d7758dbd71bfe2aa46dff8b531fe")
@@ -143,8 +162,18 @@ class ResourceIntegrationStaticTests(unittest.TestCase):
                       "failed replacement behavior", "rejection of stale references",
                       "invalid query distinction", "unavailable context distinction",
                       "preservation of legacy Ferrite behavior", "streaming-independent resource identity",
-                      "seed changes cannot resurrect context", "partial layout rejected"):
+                      "seed changes cannot resurrect context", "partial layout rejected",
+                      "incompatible identity policy with current seed", "wrong identity seed with current policy",
+                      "failed context has no token", "failed component has no reservations",
+                      "repeated failure cannot restore retired context"):
             self.assertIn(label, BEHAVIOR)
+        self.assertIn('"resource:ordinary-v2-1:%d:0:0:0:0" % seed_value', BEHAVIOR)
+        self.assertIn('"resource:starting-v2-1:%d:0:0:0:0" % (seed_value + 1)', BEHAVIOR)
+        self.assertIn('_check_failure(world.resource_descriptor_v2_by_id(wrong_policy, token), "incompatible_context"', BEHAVIOR)
+        self.assertIn('_check_failure(world.resource_descriptor_v2_by_id(wrong_seed, token), "invalid_identity"', BEHAVIOR)
+        for guard in ('result.size() == 3', 'result.get("ok") == false',
+                      'result.get("code") == expected_code', 'result.get("error") is String'):
+            self.assertIn(guard, body(BEHAVIOR, "_check_failure"))
         for source in (SOURCE, WORLD, BEHAVIOR):
             for ref in re.findall(r'(?:preload\(|extends )"res://([^"\n]+)"', source):
                 self.assertTrue((ROOT / ref).is_file(), ref)

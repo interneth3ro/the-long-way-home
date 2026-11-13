@@ -112,13 +112,20 @@ placement, production, recovery and presentation retain their original methods.
 All seven v2 reservations exist regardless of resource activation.
 
 [`static_resource_generation_v2_integration_test.py`](../tests/static_resource_generation_v2_integration_test.py)
-checks ownership, legacy method preservation, seed integrity, fixed dependencies,
+checks ownership, legacy API routing/isolation, seed integrity, fixed dependencies,
 publication order, complete-layout admission, error distinctions, bounded copied
-reads, gameplay isolation, protected baseline scope and unexecuted test wiring.
+reads, gameplay isolation, approved generation contracts, frozen artwork and
+unexecuted test wiring. These are ongoing invariants, not exact comparisons to
+pre-PR world-state methods or the repository's historical changed-file set.
 [`resource_generation_v2_integration_test.gd`](../tests/resource_generation_v2_integration_test.gd)
 authors multi-seed initialization, direct-generator equivalence, seven counts,
 query/resolution/copy behavior, identity failures, idempotency, replacement,
 failure, teardown, stale/foreign tokens, seed invalidation and legacy isolation.
+Policy-mismatch fixtures use the current seed; separate wrong-seed fixtures use
+the current policy and expect the documented `invalid_identity` result. Failure
+assertions require the exact error-only envelope, nonempty retained diagnostics,
+no token/reservation/descriptor publication, and continued failure on repeated
+invalid configuration. No production configuration override is added for testing.
 Its unrelated-node disposal/terrain-edit assertion models lifecycle independence;
 actual terrain streaming has not been exercised.
 

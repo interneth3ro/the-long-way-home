@@ -21,6 +21,13 @@ func _check(condition: bool, label: String) -> void:
 		printerr("FAIL: " + label)
 
 
+func _check_failure(result: Dictionary, expected_code: String, label: String) -> void:
+	# Exact failure envelope excludes token/descriptor/deposits/locations payloads.
+	_check(result.size() == 3 and result.get("ok") == false
+		and result.get("code") == expected_code and result.get("error") is String
+		and not String(result.get("error", "")).is_empty(), label)
+
+
 func _world_contract(seed_value: int) -> void:
 	var world := World.new(seed_value)
 	var context := world.resource_generation_v2_context()
@@ -75,8 +82,14 @@ func _world_contract(seed_value: int) -> void:
 	var empty := world.query_resource_descriptors_v2(Rect2(CrashSite.SHIP_REFERENCE, Vector2.ZERO), token)
 	_check(empty.ok and empty.deposits.is_empty(), "successful empty query distinction")
 	_check(world.resource_descriptor_v2_by_id("invalid", token).code == "invalid_identity", "invalid identity")
-	_check(world.resource_descriptor_v2_by_id("resource:ordinary-v2-1:42:0:0:0:0", token).code == "incompatible_context",
-		"incompatible identity policy")
+	var wrong_policy := "resource:ordinary-v2-1:%d:0:0:0:0" % seed_value
+	_check_failure(world.resource_descriptor_v2_by_id(wrong_policy, token), "incompatible_context",
+		"incompatible identity policy with current seed")
+	var wrong_seed := "resource:starting-v2-1:%d:0:0:0:0" % (seed_value + 1)
+	_check_failure(world.resource_descriptor_v2_by_id(wrong_seed, token), "invalid_identity",
+		"wrong identity seed with current policy")
+	_check(world.resource_generation_v2_context().token == token,
+		"identity admission failures preserve healthy context")
 	# Find a rejected canonical slot through the existing generator, not a
 	# hard-coded assumption about a seed's ordinary candidate positions.
 	var absent := ""
@@ -104,15 +117,20 @@ func _world_contract(seed_value: int) -> void:
 	var machines_before := world.get_machines()
 	var revision_before := world.revision
 	var failed := world.configure_resource_generation_v2("unsupported")
+	_check_failure(failed, "incompatible_context", "replacement failure envelope")
 	_check(not failed.ok and failed.code == "incompatible_context" and not world.is_resource_generation_v2_ready(),
 		"failed replacement behavior")
-	_check(not world.resource_generation_v2_error().is_empty() and not world.resource_generation_v2_context().has("token"),
+	_check(world.resource_generation_v2_error() == failed.error,
 		"failure diagnostic without partial publication")
-	_check(world.query_resource_descriptors_v2(Rect2(), token).code == "unavailable",
+	_check_failure(world.resource_generation_v2_context(), "unavailable", "failed context has no token")
+	_check_failure(world.query_resource_descriptors_v2(Rect2(), token), "unavailable",
 		"unavailable context distinction")
-	_check(world.starting_resource_reservations_v2(token).code == "unavailable" \
-		and world.resource_descriptor_v2_by_id(first.deposit_id, token).code == "unavailable",
+	_check_failure(world.starting_resource_reservations_v2(token), "unavailable",
+		"failed replacement exposes no reservations")
+	_check_failure(world.resource_descriptor_v2_by_id(first.deposit_id, token), "unavailable",
 		"failed replacement exposes no descriptors")
+	_check_failure(world.query_resource_descriptors_v2(Rect2(0, 0, -1, 1), null), "unavailable",
+		"unavailable precedes invalid query and token")
 	_check(world.is_resource_generation_ready() and world.get_deposit(legacy_intro.deposit_id) == legacy_intro \
 		and world.query_deposit_descriptors(Rect2(-1000, -1000, 2000, 2000)) == legacy_ids,
 		"preservation of legacy Ferrite behavior")
@@ -128,6 +146,9 @@ func _world_contract(seed_value: int) -> void:
 		"v2 gameplay remains inactive")
 	world.invalidate_resource_generation_v2()
 	_check(not world.is_resource_generation_v2_ready(), "teardown releases context")
+	_check_failure(world.resource_generation_v2_context(), "unavailable", "teardown has no token")
+	_check_failure(world.query_resource_descriptors_v2(Rect2(), replacement.token), "unavailable",
+		"teardown exposes no descriptors")
 	var restored := world.configure_resource_generation_v2()
 	world.seed_value = seed_value + 1
 	world.seed_value = seed_value
@@ -141,14 +162,25 @@ func _world_contract(seed_value: int) -> void:
 
 func _component_failures() -> void:
 	var integration := Integration.new()
-	_check(integration.query(Rect2(), null).code == "unavailable", "uninitialized unavailable")
+	_check_failure(integration.query(Rect2(), null), "unavailable", "uninitialized unavailable")
+	_check_failure(integration.context(), "unavailable", "uninitialized context has no token")
 	var first := integration.configure(42)
 	_check(first.ok, "component initializes")
 	if not first.ok:
 		return
-	_check(not integration.configure(42, "ordinary-v2-1", "starting-v2-1", 2).ok,
+	var failed := integration.configure(42, "ordinary-v2-1", "starting-v2-1", 2)
+	_check_failure(failed, "incompatible_context",
 		"unsupported schema invalidates previous context")
 	_check(not integration.is_ready(), "no fallback after invalid schema")
+	_check(integration.initialization_error() == failed.error, "replacement diagnostic retained")
+	_check_failure(integration.context(), "unavailable", "failed component has no token")
+	_check_failure(integration.reservations(first.token), "unavailable", "failed component has no reservations")
+	_check_failure(integration.descriptor_by_id("invalid", first.token), "unavailable",
+		"unavailable precedes invalid identity")
+	var repeated := integration.configure(42, "ordinary-v2-1", "starting-v2-1", 2)
+	_check_failure(repeated, "incompatible_context", "repeated invalid configuration stays failed")
+	_check(not integration.is_ready() and integration.initialization_error() == failed.error,
+		"repeated failure cannot restore retired context")
 	var second := integration.configure(43)
 	_check(second.ok and second.token != first.token, "component explicit seed replacement")
 	_check(integration.descriptor_by_id("invalid", first.token).code == "stale_context", "component seed retires token")
@@ -160,8 +192,10 @@ func _component_failures() -> void:
 		return
 	layout.locations.pop_back()
 	_check(not Integration._reservation_error(layout, definitions, 42).is_empty(), "partial layout rejected")
-	_check(not Integration._reservation_error({"ok": false, "error": "exhausted"}, definitions, 42).is_empty(),
+	_check(Integration._reservation_error({"ok": false, "error": "exhausted"}, definitions, 42) == "exhausted",
 		"generator exhaustion diagnostic retained")
+	_check(not Integration._reservation_error({"ok": true, "locations": []}, definitions, 42).is_empty(),
+		"empty successful reservation payload rejected")
 	layout = direct.reservations()
 	_check(not Integration._reservation_error(layout, definitions, 43).is_empty(), "mismatched seed rejected")
 	layout.locations.append(layout.locations[0].duplicate(true))
