@@ -218,7 +218,8 @@ area, avoiding duplicate nodes and blanking retained deposits during streaming.
 New sprites require loaded terrain. No discovery, research, proximity or occupancy
 state participates in visibility. Initial preparation and arrival wait for Cuprite
 presentation as well as existing terrain/Ferrite work before reporting readiness.
-Cancellation and tree exit retire work; reattachment reconfigures from authority.
+Explicit cancellation retires work and completion. Temporary tree exit retires
+work tokens while preserving valid live presentation for same-context reuse.
 
 Each live step performs one fixed 1536-unit page query grown by approved artwork
 reach, one candidate admission, one ordering pass or at most one texture/sprite
@@ -275,3 +276,52 @@ v2 catalog/registration and generated presenter remain unchanged; other authored
 objects are preserved. This removes the redundant manual illustration, not an
 authoritative deposit. Starting preferences/identity are described in the
 [layout correction](RESOURCE_GENERATION_V2_STARTING.md#cuprite-layout-correction-pr-195-pending-merge).
+
+### Cached exterior presentation lifecycle (PR #195, pending merge)
+
+Completed Cuprite presentation now survives initial preparation's detachment and
+subsequent cached exterior visits. Live presenter tree exit cancels queued work
+and advances its token, retaining registrations, child sprites, textures and
+catalogs only while the world generation context remains valid. Reattachment
+rearms completed presentation with the new token rather than querying deposits
+and rebuilding sprites again. Interrupted work remains incomplete and restarts
+through the normal bounded request path; explicit arrival cancellation continues
+to clear registrations/visuals and reset the exterior's presentation coverage.
+
+`configure_world` reuses state only for the same `PlanetWorldState` instance,
+opaque generation token and seed, with the same resource/catalog references and
+equal freshly admitted catalog contents. A changed, missing or incompatible
+configuration follows destructive configuration/admission; invalid inputs fail
+closed. Explicit `dispose`, configuration replacement, failure and actual node
+deletion release retained state. Detached scenes remain owned by the existing
+transition controller and are freed during session retirement.
+
+The exterior reuses completion only when its attached-chunk coverage is unchanged
+and the presenter reports completion for its current token/context. Changed
+coverage still applies the loaded mask, immediately retires off-terrain sprites
+and issues a bounded streaming request. Terrain publication, legacy Ferrite
+readiness, fresh arrival-generation receipts, cancellation guards and Dave's input
+lock are preserved. Neither the starting policy/search ceiling nor gameplay,
+fade timing, terrain architecture or approved artwork changes.
+
+Eight focused nonexecuting contracts in
+[`static_cuprite_presentation_lifecycle_test.py`](../tests/static_cuprite_presentation_lifecycle_test.py)
+pass. The authored
+[`cuprite_presentation_lifecycle_test.gd`](../tests/cuprite_presentation_lifecycle_test.gd)
+exercises actual presenter/exterior initialization and resource service with a
+descriptor-query fixture and supplied chunk coverage: completed initial work,
+three detach/reattach visits without new queries, object/cache identity,
+interrupted and explicit cancellation, streaming unload/reload, world replacement,
+invalid context, stale readiness receipts, disposal and actual node retirement.
+It does not generate the initial terrain neighborhood or certify full transition
+behavior. It is unexecuted and absent from approved runners. No Godot parse,
+headless, graphical or performance verification was performed; timing improvement
+is unmeasured and owner F5 runtime acceptance remains required.
+
+Related executed checks: eight layout and two fixture-typing checks pass; the
+gameplay/window modules have 16 passing test methods and two failing methods
+(three whole-source preservation subcases). Two cases already reject the approved
+starting-layout change; the additional case freezes the exterior source before
+this approved lifecycle edit. These guards remain unchanged and failures are
+reported, not treated as functional/runtime PASS. The full historical discovery
+suite was not rerun for this follow-up.

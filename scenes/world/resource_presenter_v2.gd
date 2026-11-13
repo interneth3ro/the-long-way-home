@@ -32,6 +32,7 @@ var _references: Dictionary = {}
 var _reach: float = 0.0
 var _token: int = 0
 var _active: bool = false
+var _complete: bool = false
 var _area: Rect2
 var _owners: Array = []
 var _locations: Array = []
@@ -64,6 +65,10 @@ func configure(source: OrdinaryResourceGenerator, world_seed: int,
 # Live adapter receives only bounded copied descriptors; the generator stays private.
 func configure_world(world: PlanetWorldState,
 		definitions: Array[WorldResourceDefinition]) -> Dictionary:
+	if matches_world(world, definitions):
+		# Tree exit retires the work token, not a completed live presentation.
+		_active = _complete
+		return {"ok": true, "reused": true}
 	dispose()
 	if world == null or definitions.is_empty() or definitions.size() > MAX_CATALOGS:
 		return Catalog.failure("Invalid world presentation context")
@@ -76,7 +81,38 @@ func configure_world(world: PlanetWorldState,
 	_world = world
 	_world_token = context.token
 	_seed = context.world_seed
-	return {"ok": true}
+	return {"ok": true, "reused": false}
+
+
+func matches_world(world: PlanetWorldState,
+		definitions: Array[WorldResourceDefinition]) -> bool:
+	if world == null or _world != world or definitions.is_empty() \
+			or definitions.size() != _catalogs.size():
+		return false
+	var context := world.resource_generation_v2_context()
+	if not context.ok or context.token != _world_token or context.world_seed != _seed:
+		return false
+	var seen: Dictionary = {}
+	for definition in definitions:
+		if definition == null:
+			return false
+		var resource_id := String(definition.resource_id)
+		if seen.has(resource_id) or _references.get(resource_id) != definition.presentation_catalog:
+			return false
+		seen[resource_id] = true
+		# Bounded catalog admission also detects edits at an unchanged path.
+		if Catalog.read_catalog(definition.presentation_catalog, resource_id) != _catalogs[resource_id]:
+			return false
+	return true
+
+
+func is_complete(token: int) -> bool:
+	if token != _token or not _active or not _complete:
+		return false
+	if _world != null:
+		var context := _world.resource_generation_v2_context()
+		return context.ok and context.token == _world_token and context.world_seed == _seed
+	return _source != null and _source.is_ready() and _source.identity_policy() == _policy
 
 
 func _configure_catalogs(definitions: Array[WorldResourceDefinition]) -> Dictionary:
@@ -238,6 +274,7 @@ func step(token: int) -> Dictionary:
 			_sprites[identity] = sprite
 		_index += 1
 		return {"ok": true, "done": false}
+	_complete = true
 	return {"ok": true, "done": true}
 
 
@@ -288,6 +325,7 @@ func snapshot() -> Dictionary:
 func cancel(keep_visuals: bool = false) -> void:
 	_token += 1
 	_active = false
+	_complete = false
 	_pages.clear()
 	_members.clear()
 	_owners.clear()
@@ -331,5 +369,21 @@ func _failure(message: String) -> Dictionary:
 
 func _exit_tree() -> void:
 	_exiting = true
-	dispose()
+	if _world != null:
+		var context := _world.resource_generation_v2_context()
+		if context.ok and context.token == _world_token and context.world_seed == _seed:
+			var completed := _complete
+			cancel(true)
+			_complete = completed
+		else:
+			dispose()
+	else:
+		dispose()
 	_exiting = false
+
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_PREDELETE:
+		# Actual retirement releases retained context/caches; Node frees children.
+		_exiting = true
+		dispose()
