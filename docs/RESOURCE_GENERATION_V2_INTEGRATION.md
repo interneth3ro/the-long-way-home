@@ -1,13 +1,92 @@
 # Resource Generation v2 live world-state integration
 
 Milestone 6 merged in PR #192 at `fc3b0947be5e3cb217e4de12f95ec23d550a5003`.
-Its read boundary and lifecycle are described below. Milestone 7 live Extractor
-construction/occupancy is implemented on
-`codex/resource-generation-v2-live-construction`, **pending owner review and merge**.
-See the [live placement contract](RESOURCE_GENERATION_V2_PLACEMENT.md#milestone-7-live-construction-feature-branch-pending-merge)
-for owner Decisions 9A-9E, routing, transactions, verification limits and deferred
-Milestone 8 production/presentation. Historical Milestone 6 verification below
-retains its original scope.
+Its read boundary and lifecycle are described below. Milestone 7 live construction
+merged in [PR #193](https://github.com/interneth3ro/the-long-way-home/pull/193).
+The Milestone 6/7 records below retain their historical scope; Milestone 8 supersedes
+their inactive-production and deferred-presentation boundaries.
+
+## Milestone 8 Cuprite gameplay (pending merge)
+
+Implemented on `codex/resource-generation-v2-cuprite-gameplay`, based on
+`5c70fba96fc05053d9ce7c059a0d6fcd0811c3cb`. Owner Decisions 10A-10E authorize
+immediate normal gameplay integration, without discovery, research or developer gates.
+
+`PlanetWorldState.extractor_output_item(snapshot)` is the single Extractor output
+resolver used by `machine_status` and `stored_output_item`. It obtains the committed
+machine by ID and rejects altered snapshots. V2 records must own the deposit claim;
+the resolver obtains the current context and resolves the exact committed deposit
+ID, validates compatibility and 4x4 anchor geometry, then maps authoritative Cuprite
+to `cuprite_ore` and Ferrite to `ferrite_ore`. The cached `v2_resource_type` label and
+packaged Ferrite output cannot override that authority. Unsupported resources,
+missing claims and unavailable context return no product, so production is inactive.
+Legacy Extractors resolve Ferrite at their existing rotated extraction point without
+requiring v2 context. Carbite remains incompatible and has no production mapping.
+
+The existing `advance_production` implementation is unchanged: one ore per one-second
+cycle (60/min), 20-item output capacity, full-output pause, no blocked backlog, and
+resumption after collection. No separate resource loop or extraction recipe exists.
+Smelter and Fabricator production/recipes are unchanged.
+
+Existing `collect_output` and `recover_machine` implementations are unchanged. Both
+consume `stored_output_item`; silent inventory acceptance precedes output clearing
+or machine/claim removal and guarded notifications. Identity conflicts, quantity
+overflow or rejected payloads retain all stored output. If v2 authority is unavailable,
+collection/recovery of nonempty output fails safely and retains the machine/claim;
+a restored compatible context permits exact resolution again. Empty machine recovery
+still works after retirement. No migration or administrative fallback is introduced.
+
+[`cuprite_ore.tres`](../inventory/cuprite_ore.tres) follows the existing material item
+convention: ID `cuprite_ore`, display name `Cuprite Ore`, materials section. Definitions
+are registered by accepted inventory transfers, using the existing identity checks;
+there is no second item registry. The supplied 256x256 RGBA inventory PNG was copied
+byte for byte to [`assets/items/cuprite_ore.png`](../assets/items/cuprite_ore.png),
+SHA-256 `5bf845d4d3620e935ccfe0037e4c0d6ecf98c1b54cfae1f6e7445b5bda9ac129`.
+Its transparency/content are unchanged. Authored import metadata matches Ferrite's
+lossless/mipmap/alpha settings and has a distinct UID; no importer was executed.
+`ItemPresentation.ICONS` supplies the same artwork to inventory/hotbar and material
+rows. Machine UI passes the resolved product into Extractor inspection for the
+correct icon, name, yield and collection eligibility, including an empty buffer.
+
+Normal world artwork uses the [shared world-state presenter adapter](RESOURCE_GENERATION_V2_PRESENTATION.md#milestone-8-normal-gameplay-pending-merge).
+Construction routing, exact click tickets, physical safeguards, atomic deployment,
+claim release, IDs and all generation policies/reservations are unchanged. Legacy
+Ferrite still wins overlapping placement geometry and retains its own presenter.
+Carbite extraction, Cuprite smelting/wire, power, research, discovery and persistence
+remain outside scope.
+
+### Milestone 8 verification
+
+[`static_cuprite_gameplay_test.py`](../tests/static_cuprite_gameplay_test.py) checks
+approved asset identity, item/import conventions, authority mapping, shared timing,
+transaction ordering, inspection, bounded descriptor presentation, loaded-terrain
+lifecycle and preservation. Focused Python checks: **12/12 PASS** using `python -B`.
+[`cuprite_gameplay_test.gd`](../tests/cuprite_gameplay_test.gd) authors actual production,
+capacity/full pause/resume, item identity, collection/recovery rejection, retired
+context, unsupported-resource inactivity, legacy Ferrite, physical construction,
+occupancy, presentation positioning, streaming/revisit and duplicate assertions.
+It is **unexecuted**, with no runner dispatch added. Historical Milestone 7 behavior
+fixtures remain unchanged, including their now-superseded inactive-output assertions.
+
+Complete broad discovery ran **659 tests / 87 failure cases / 0 errors / 2 skips**
+in 375.325 seconds with unchanged source/diff identity throughout the run. The broad
+suite remains **FAIL**: **55 previously recorded cases + 32 authorized source-shape
+or preservation conflicts**, with no outstanding unexpected regression identified
+by static investigation. The added cases are nested shell preservation (12),
+Extractor artwork byte guards (2), exterior preload ban (1), prior inactive v2
+construction/inspection guards (3), world-state isolation naming (1), presenter
+isolation/ordering assumptions (2), Smelter artwork/footprint/thermal byte guards
+(2 each), and literal resource-graph traversal of the catalog's existing assets
+validation prefix (5). An independent static traversal checked 247 existing files
+and confirmed that exact prefix is not a load target; no missing file was found.
+The draft PR records the full module-by-module classification against
+PR #193's published **647 tests / 55 failure cases / 0 errors / 2 skips**. Historical
+tests are not weakened, deleted, repinned or skipped; final v2 suite stabilization
+remains separate. No Godot parser/import, headless, graphical, gameplay or performance
+verification occurred. Static checks do not establish runtime acceptance. Existing
+runner controls and inactive metadata inventory are preserved; live asset dependencies
+will require review before any separately authorized metadata execution.
+
 
 ## Ownership and fixed inputs
 
@@ -158,7 +237,8 @@ authorization. This PR preserves the inactive gate and all fixed inventories.
 
 Milestone 7 now uses current context tokens without exposing the generator and
 owns occupancy in PlanetWorldState, as documented in the live placement contract.
-Milestone 8 must separately implement Cuprite extraction, output and presentation.
+Milestone 8 now implements Cuprite extraction, output and presentation on the pending
+feature branch described above.
 Carbite production, Ferrite v2 migration and final mandatory test-suite
 stabilization remain later work.
 The painted Cuprite canvas versus conservative clearance envelope remains deferred

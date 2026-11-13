@@ -1,5 +1,8 @@
 # Resource Generation v2 presentation and Cuprite inspection
 
+The earlier sections below record the isolated PR #190 implementation.
+[Milestone 8](#milestone-8-normal-gameplay-pending-merge) supersedes its lack of normal gameplay wiring.
+
 PR 4 merged in PR #190 at `5e88e774f13d80befe63c5fb24c0cace24e35f3f`,
 based on `f82298e1874ace843455f453aba2de583d2b8f5d`.
 Decision 7C permits technical inspection separately from gameplay activation.
@@ -197,3 +200,46 @@ No third-party dependency, generated cache, permanent evidence or routine succes
 log is added. No performance or runtime-determinism claim is made. Deferred work
 includes gameplay activation/mining, snapping/occupancy, Ferrite redesign/migration,
 Carbite artwork, persistence, terrain-backed acceptance and runtime verification.
+
+
+## Milestone 8 normal gameplay (pending merge)
+
+`PlanetExterior` now configures the existing `ResourcePresenterV2` with
+`configure_world(state, [CUPRITE])`. The isolated generator-based `configure` API
+remains available for the preserved inspection harness. The live adapter receives
+only current-token context and bounded copied descriptors from `PlanetWorldState`;
+the underlying generator is private and no second generator exists.
+
+The exterior derives the presentation rectangle and loaded mask from attached
+terrain chunks. A changed chunk set requests a new bounded job; sprites whose
+illustrated envelopes no longer intersect loaded terrain retire immediately.
+Live requests retain valid existing registrations/sprites within the requested
+area, avoiding duplicate nodes and blanking retained deposits during streaming.
+New sprites require loaded terrain. No discovery, research, proximity or occupancy
+state participates in visibility. Initial preparation and arrival wait for Cuprite
+presentation as well as existing terrain/Ferrite work before reporting readiness.
+Cancellation and tree exit retire work; reattachment reconfigures from authority.
+
+Each live step performs one fixed 1536-unit page query grown by approved artwork
+reach, one candidate admission, one ordering pass or at most one texture/sprite
+publication. Query results retain the authority's 64-owner/775-descriptor bound;
+page planning, accumulated registrations, catalogs and textures retain their existing
+limits. Page overlap deduplicates authoritative deposit IDs. Context retirement
+clears visuals and reports failure through the existing exterior terrain-failure
+path. These are bounded-work contracts, not measured performance results.
+
+Both adapters share catalog admission, registration, hash/dimension validation,
+texture loading/cache and sprite creation. Approved Cuprite world PNG/catalog,
+scale `0.225`, center offset `(0,16)` and all generation inputs remain unchanged.
+The separate supplied ore icon is used only by shared inventory/material UI;
+see [output and asset identity](RESOURCE_GENERATION_V2_INTEGRATION.md#milestone-8-cuprite-gameplay-pending-merge).
+Legacy Ferrite presentation remains independent and unchanged. Carbite has no
+selected catalog or production path. No placement or production authority is held
+by the presenter.
+
+Focused static checks pass; actual world presentation/streaming assertions are
+authored in `tests/cuprite_gameplay_test.gd` but unexecuted. No Godot parsing,
+import, graphical, gameplay or performance claim is made. The historical isolated
+inspection checklist above describes its original scope, not Milestone 8 normal
+F5 behavior. Approved canvas-versus-clearance visual review remains outstanding;
+no artwork scale/offset or deterministic clearance policy was changed.

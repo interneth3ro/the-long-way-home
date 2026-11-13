@@ -261,7 +261,8 @@ func _refresh(machine: Dictionary) -> void:
 	_output.text = "%s\n%d / %d" % [output_heading, machine.output, definition.output_capacity]
 	_collect_button.disabled = machine.output == 0
 	if extractor:
-		_extractor_view.refresh(machine, progression.planet.machine_status(machine), _in_range(machine))
+		_extractor_view.refresh(machine, progression.planet.machine_status(machine), _in_range(machine),
+			output_item)
 		_layout_extractor()
 
 

@@ -37,7 +37,8 @@ func set_compact(compact: bool) -> void:
 	_gauge.custom_minimum_size = Vector2.ONE * (144.0 if compact else 164.0)
 
 
-func refresh(machine: Dictionary, status: PlanetWorldState.OperatingStatus, in_range: bool) -> void:
+func refresh(machine: Dictionary, status: PlanetWorldState.OperatingStatus, in_range: bool,
+		product: ItemDefinition = null) -> void:
 	var definition: MachineDefinition = machine.definition
 	$Header/Row/Title.text = definition.display_name.to_upper()
 	var accent := INACTIVE
@@ -49,10 +50,9 @@ func refresh(machine: Dictionary, status: PlanetWorldState.OperatingStatus, in_r
 		_status.text = "Output Full"
 		accent = BLOCKED
 	_status.add_theme_color_override("font_color", accent)
-	var configured := definition.has_production() and not machine.has("v2_deposit_id")
+	var configured := definition.has_production() and product != null
 	var fraction := float(machine.cycle_progress) / definition.cycle_seconds if configured else 0.0
 	_gauge.set_progress(fraction, accent)
-	var product := definition.output_item if configured else null
 	ItemPresentation.set_material_icon(_material_icon, product, machine.output)
 	_material.text = (product.display_name if machine.output > 0 else "Output") \
 		if product != null else "No production configured."

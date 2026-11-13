@@ -289,16 +289,16 @@ func get_machine(machine_id: int) -> Dictionary:
 
 
 func machine_status(machine: Dictionary) -> OperatingStatus:
-	if not is_resource_generation_ready() or machine.is_empty() or machine.has("v2_deposit_id"):
+	if not is_resource_generation_ready() or machine.is_empty():
 		return OperatingStatus.INACTIVE
 	var definition: MachineDefinition = machine.definition
 	if definition.has_recipes():
 		return _recipe_status(machine)
-	if not definition.has_production():
+	if not definition.has_production() or (definition.item_id == &"extractor" and extractor_output_item(machine) == null):
 		return OperatingStatus.INACTIVE
 	var point := Vector2(machine.cell) * WorldCoordinates.CONSTRUCTION_SIZE \
 		+ definition.rotated_point(definition.extraction_point, machine.turns)
-	var compatible := definition.compatible_resources.is_empty()
+	var compatible := definition.compatible_resources.is_empty() or machine.has("v2_deposit_id")
 	for resource_type in definition.compatible_resources:
 		if deposit_at(point, resource_type) != null:
 			compatible = true
@@ -312,10 +312,41 @@ func machine_status(machine: Dictionary) -> OperatingStatus:
 	return OperatingStatus.PRODUCING
 
 
+# Resolve the committed record, not caller-provided resource labels or packaged output.
+# Missing/stale authority never falls back from v2 to legacy Ferrite.
+func extractor_output_item(snapshot: Dictionary) -> ItemDefinition:
+	var machine: Dictionary = _machines.get(snapshot.get("id", 0), {})
+	if machine.is_empty() or machine != snapshot:
+		return null
+	var definition: MachineDefinition = machine.definition
+	if definition.item_id != &"extractor":
+		return null
+	if machine.has("v2_deposit_id"):
+		var context := resource_generation_v2_context()
+		if not context.ok or extractor_occupant_v2(machine.v2_deposit_id) != machine.id:
+			return null
+		var resolved := resource_descriptor_v2_by_id(machine.v2_deposit_id, context.token)
+		if not resolved.ok or not resolved.descriptor.has("anchor_cells"):
+			return null
+		var member: Dictionary = resolved.descriptor
+		if not ExtractorAnchorRules.member_rejection(member, definition,
+				machine.cell, machine.turns, 0).is_empty():
+			return null
+		match member.resource_type:
+			"cuprite": return preload("res://inventory/cuprite_ore.tres")
+			"ferrite": return preload("res://inventory/ferrite_ore.tres")
+		return null
+	var point := definition.footprint(machine.cell, machine.turns).position \
+		+ definition.rotated_point(definition.extraction_point, machine.turns)
+	return preload("res://inventory/ferrite_ore.tres") if deposit_at(point, &"ferrite") != null else null
+
+
 # Resolve completed products from stored identity, never from selected recipe.
 # Recipe definitions form the small existing product catalog for this machine.
 func stored_output_item(machine: Dictionary) -> ItemDefinition:
 	var definition: MachineDefinition = machine.definition
+	if definition.item_id == &"extractor":
+		return extractor_output_item(machine)
 	if not definition.has_recipes():
 		return definition.output_item
 	var item_id: Variant = machine.get("output_item_id", &"")
