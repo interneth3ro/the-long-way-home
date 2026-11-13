@@ -111,33 +111,22 @@
 - Clearly distinguish static validation from actual runtime verification. Do not
   claim gameplay, graphical, or engine validation when those checks were not
   performed.
-- The proposed local behavioral foundation at `tools/run-behavioral-tests.ps1`
-  is **inactive** and has no standing execution authorization. It rejects with
-  `NOT RUN` before engine identity checks or process dispatch. Its proposed
-  direct-checkout workflow is separate from the existing staged Native and codec
-  recipes; their permissions and controls are unchanged. Implementation, a branch,
-  a PR or a merge does not activate this runner or authorize direct-checkout runs.
-  Before any activation, the owner must explicitly approve the precise launcher,
-  fixed command, test manifest and allowed filesystem effects, including Godot
-  cache/import/UID behavior in the actual checkout and user-profile effects.
-  No cache or sidecar creation/rewrite is approved by this foundation. Any future
-  standing authorization applies only to the exact reviewed runner and scope.
-  No automatic retries, destructive cleanup, graphical tests, performance probes,
-  benchmarks, stress tests or freeze reproduction are authorized. See the
-  [inactive behavioral workflow](docs/LOCAL_TESTING.md#local-behavioral-foundation-inactive).
+- PR #200 activated `tools/run-behavioral-tests.ps1` after explicit owner standing
+  approval on 2026-11-13. Its gate is `return`; authorization covers only the
+  original `world_coordinates` group and its four unchanged assertions. The
+  direct-checkout workflow is separate from staged Native and codec recipes;
+  their permissions and controls are unchanged. See the
+  [behavioral workflow](docs/LOCAL_TESTING.md#local-behavioral-workflow).
 - The first behavioral invocation passed at `a9aff2d` on 2026-11-13 (one group,
   four assertions; only approved project-log rotation). Its one-time grant is
   consumed and unconditional denial was restored in PR #198. Preserve its
   historical record and log copies; it grants no further execution.
-- The proposed standing behavioral amendment remains **inactive**, pending
-  separate explicit owner approval of the exact final activation revision and
-  routine filesystem scope. A later reviewed activation may replace only the
-  authorization gate's `throw` with `return`; PR creation, merge and inert PASS
-  are not approval. After approval, routine use of exactly
-  `pwsh -NoProfile -File tools/run-behavioral-tests.ps1` needs no per-run grant.
+- Standing routine use of exactly
+  `pwsh -NoProfile -File tools/run-behavioral-tests.ps1` needs no per-run grant
+  only with that original approved manifest and unchanged reviewed scope.
   Keep the pinned engine, direct local checkout, fixed dispatcher, one-entry
   `world_coordinates` manifest, four assertions and 30-second/1 MiB/4 KiB limits.
-  Only ordinary project-profile log creation/rotation is proposed as an allowed
+  Only ordinary project-profile log creation/rotation is an allowed
   write effect. Cache changes (including `.godot/`), UID/import sidecars, source,
   artwork, saves/settings, historical evidence, unrelated owner files and protected
   `.godot/validation-profile/` remain excluded. No five-log preservation copies
@@ -147,7 +136,17 @@
   suspends use immediately. Executable, manifest, assertions, command, limits or
   filesystem-scope changes require renewed review and authorization. Native and
   codec permissions are unchanged. See the
-  [proposed routine policy](docs/LOCAL_TESTING.md#proposed-standing-behavioral-authorization-inactive).
+  [standing routine policy](docs/LOCAL_TESTING.md#standing-behavioral-authorization-pr-200).
+- PR #201 proposes adding `resource_generation_v2` to the dispatcher alongside
+  the unchanged four-check smoke group. **The expanded two-group manifest is
+  not authorized to execute**, even though the unchanged launcher gate returns.
+  Do not invoke the launcher, dispatcher or any engine command with this scope
+  until separate explicit owner approval of the exact reviewed manifest,
+  assertions, dependency closure and filesystem effects. Implementation, draft PR,
+  merge, static checks and inert fixture PASS grant no runtime authority. No Godot,
+  imports, UID/import-sidecar generation, cache changes or execution-permission
+  expansion accompany this implementation. See the
+  [PR #201 proposal](docs/LOCAL_TESTING.md#resource-generation-v2-behavioral-proposal-pr-201).
 - Preserve all existing repository safety, worktree, artifact and branch
   preservation requirements. Do not alter the abandoned PR #5 worktree,
   branches, archives, or conversation.
