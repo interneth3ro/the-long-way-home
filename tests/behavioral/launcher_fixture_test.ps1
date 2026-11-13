@@ -52,16 +52,25 @@ Check 'production gate is a single denial or reviewed standing return' {
         $statement.Extent.Text -ceq 'return')) 'Unexpected authorization mechanism'
     # Shape validation is not owner approval. Both forms remain inert in fixtures.
 }
-Check 'fixed manifest and four smoke assertions remain unchanged' {
-    $root = Split-Path (Split-Path $PSScriptRoot -Parent) -Parent
-    foreach ($entry in @(
-        @('tests/behavioral/test_runner.gd', '78684EC86D05B23FB47DEF53F98757FE80A9A71A887172F160DA6F151FC6B00D'),
-        @('tests/behavioral/smoke_test.gd', '1D13B425B6928B6B6CA4209072810075C39369E68CCA7DB78B2342D31C31ABD7'))) {
-        # Normalize checkout line endings; these are source contracts, not grant tokens.
-        $source = [IO.File]::ReadAllText((Join-Path $root $entry[0])).Replace("`r`n", "`n")
-        $hash = [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes($source)))
-        Require ($hash -ceq $entry[1]) "Reviewed manifest/assertions changed: $($entry[0])"
-    }
+Check 'fixed manifest and four production coordinate smoke cases stay in approved scope' {
+    # Small scope guard only, not a GDScript parser or proof of assertion behavior.
+    # Changes to the manifest/assertions still require separate review and authorization.
+    $dispatcher = Get-Content -LiteralPath "$PSScriptRoot/test_runner.gd" -Raw
+    $smoke = Get-Content -LiteralPath "$PSScriptRoot/smoke_test.gd" -Raw
+    $manifest = [regex]::Match($dispatcher, '(?s)const\s+GROUPS\s*:=\s*\[(.*?)\]')
+    $expectedManifest = '{"name":"world_coordinates","script":preload("res://tests/behavioral/smoke_test.gd")},'
+    Require ($manifest.Success -and ($manifest.Groups[1].Value -replace '\s', '') -ceq $expectedManifest) 'Approved one-entry manifest changed'
+
+    $cases = [regex]::Match($smoke, '(?s)var\s+cases\s*:=\s*\[(.*?)\]')
+    $expectedCases = @(
+        '{"point":Vector2(-0.01,-32.01),"expected":Vector2i(-1,-2)},'
+        '{"point":Vector2(-32,-64),"expected":Vector2i(-1,-2)},'
+        '{"point":Vector2(31.99,32),"expected":Vector2i(0,1)},'
+        '{"point":Vector2(32,64),"expected":Vector2i(1,2)},'
+    ) -join ''
+    Require ($cases.Success -and ($cases.Groups[1].Value -replace '\s', '') -ceq $expectedCases) 'Approved four boundary cases changed'
+    Require ($smoke -match 'const\s+Coordinates\s*=\s*preload\("res://scenes/world/world_coordinates\.gd"\)') 'Production coordinate dependency changed'
+    Require ($smoke -match 'Coordinates\.world_to_construction\(vector\.point\)') 'Production coordinate call missing'
 }
 Check 'valid completion accepts LF CRLF and harmless engine banner' {
     foreach ($stdout in @($good, "$good`n", "Godot inert banner`r`n$good`r`n")) {

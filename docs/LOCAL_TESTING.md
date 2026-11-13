@@ -497,8 +497,11 @@ MetadataSmoke remains inactive with its grants consumed.
 The inert fixtures accept only the single denial statement or bare `return` gate
 shape; acceptance of a shape does not establish owner approval. They mock all
 engine operations, rehearse separate routine calls and failure/withdrawal stops,
-and protect the existing fixed source contracts. PowerShell parsing and inert
-PASS do not establish runtime behavior or authorize this proposed activation.
+and check the one-entry manifest and four production coordinate cases with small,
+readable scope checks, without whole-source hashes. These checks do not prove
+GDScript behavior or replace separate review/authorization of assertion changes.
+PowerShell parsing and inert PASS do not establish runtime behavior or authorize
+this proposed activation.
 
 ## Fixed metadata smoke extension (draft, tested runtime scope passed)
 
