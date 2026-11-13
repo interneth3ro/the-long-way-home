@@ -4,8 +4,10 @@ Merged in PR #188. The implementation request authorized PR 2 only; the supplied
 is design context, not independent authorization for later phases. The
 [PR #187 code contracts](RESOURCE_GENERATION_V2_CONTRACTS.md) remain unchanged.
 No gameplay caller registers this generator or its resource definitions.
-PR 4 adds a [shared presenter and disabled isolated Cuprite inspection](RESOURCE_GENERATION_V2_PRESENTATION.md),
-pending review, consuming the starting-policy extension without gameplay activation.
+PR 4's [shared presenter and disabled isolated Cuprite inspection](RESOURCE_GENERATION_V2_PRESENTATION.md)
+merged in PR #190, consuming the starting-policy extension without gameplay activation.
+PR 5's [isolated anchor contracts](RESOURCE_GENERATION_V2_PLACEMENT.md), pending
+review, reuse existing bounded queries and exact-ID lookup without generator changes.
 
 PR 3's separately versioned [starting-reservation extension](RESOURCE_GENERATION_V2_STARTING.md)
 merged in PR #189. It adds

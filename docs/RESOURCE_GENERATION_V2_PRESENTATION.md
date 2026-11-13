@@ -1,11 +1,13 @@
 # Resource Generation v2 presentation and Cuprite inspection
 
-PR 4 implementation on `codex/resource-generation-v2-shared-presenter`, pending
-owner review and merge, based on `f82298e1874ace843455f453aba2de583d2b8f5d`.
+PR 4 merged in PR #190 at `5e88e774f13d80befe63c5fb24c0cace24e35f3f`,
+based on `f82298e1874ace843455f453aba2de583d2b8f5d`.
 Decision 7C permits technical inspection separately from gameplay activation.
 No gameplay caller, resource registry, mining, construction, inventory, save or
 progression integration is added. The existing exterior, terrain streaming,
 legacy Ferrite presenter and accepted stationary Cuprite prototype are unchanged.
+PR 5 adds separate [anchor targeting and occupancy contracts](RESOURCE_GENERATION_V2_PLACEMENT.md),
+pending review. The presenter remains artwork-only and supplies no placement authority.
 
 ## Presentation admission and registration
 

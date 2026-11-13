@@ -14,9 +14,11 @@ The separately scoped [ordinary-world generator](RESOURCE_GENERATION_V2_GENERATO
 merged in PR #188. PR 3's [starting reservations and migration safeguards](RESOURCE_GENERATION_V2_STARTING.md)
 merged in PR #189.
 Both consume these unchanged interfaces without activating resources in gameplay.
-PR 4 adds a [shared presentation consumer](RESOURCE_GENERATION_V2_PRESENTATION.md)
-and disabled standalone Cuprite inspection, pending review; foundation interfaces
-remain unchanged and no gameplay activation is introduced.
+PR 4's [shared presentation consumer](RESOURCE_GENERATION_V2_PRESENTATION.md)
+and disabled standalone Cuprite inspection merged in PR #190. PR 5 adds
+[isolated extractor anchor targeting and occupancy](RESOURCE_GENERATION_V2_PLACEMENT.md),
+pending review. Foundation interfaces remain unchanged and no gameplay activation
+is introduced.
 
 ## Native resource definition
 
@@ -159,9 +161,10 @@ changes no runner inventory, authorization, or safety control.
 No existing Ferrite generation, `ResourceDeposit` caller, authoritative simulation,
 machine definition, resource/item configuration, artwork, scene, save, or historical
 evidence is modified. No new deposit becomes visible or mineable. Legacy Ferrite
-migration, Cuprite/Carbite activation, starting reservations,
-sampling, snapping, occupancy, and numerical tuning remain deferred to separately
-scoped work. No default resource ratio, geological category, spacing, density,
+migration and Cuprite/Carbite gameplay activation remain deferred. Starting
+reservations and sampling are documented in their later milestones above;
+PR 5 supplies inert snapping/occupancy contracts pending review. No default
+resource ratio, geological category, spacing, density,
 visual-envelope size, slot count, halo, or search budget is assumed here.
 The ordinary generator's provisional policy values are recorded separately in its
 [tuning register](RESOURCE_GENERATION_V2_GENERATOR.md#provisional-tuning-register).
