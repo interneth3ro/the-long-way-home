@@ -24,9 +24,10 @@ PASS; a plan stage is never reused. Do not edit files during a plan or run.
 
 ## Authorization and standing scope
 
-The separate [local behavioral foundation](#local-behavioral-foundation-inactive)
-is inactive. The standing staged Native scope below does not authorize it or
-execution in the actual checkout.
+The separate [local behavioral workflow](#local-behavioral-workflow) has PR #200
+standing approval only for its original four-check manifest. PR #201's proposed
+two-group manifest is unapproved and must not execute. The staged Native scope
+below does not authorize behavioral execution or execution in the actual checkout.
 
 On **2026-10-29**, the owner approved standing routine use of the existing
 restricted Native runner, superseding the earlier one-invocation permission after
@@ -181,32 +182,35 @@ first-run host stability and graphical behavior require actual verification. A G
 import that rewrites tracked sidecars will correctly fail these preservation checks
 and needs review. A failed first invocation must not be retried automatically.
 
-## Local behavioral foundation (inactive)
+<a id="local-behavioral-foundation-inactive"></a>
 
-The foundation merged in PR #196 at `398a2c9`; its feature branch was retired.
-It prepares a small Godot-native workflow; **it grants no execution
-authorization**. Current Godot restrictions remain effective. The new launcher
-always returns exit 1 and `Behavioral: NOT RUN` with `AUTHORIZATION_DENIED`, before
-engine identity checks or process dispatch. There is no CLI switch, environment
-variable, approval file or token that enables it. A branch, PR, merge or passing
-inert check does not activate it. Do not invoke the dispatcher directly to bypass
-the launcher gate.
+## Local behavioral workflow
 
-Proposed local command, currently denied:
+The foundation merged in PR #196 at `398a2c9`. PR #198 records the consumed
+one-time four-check smoke run below. After separate explicit owner approval,
+PR #200 activated standing use of the original one-group/four-assertion scope by
+changing only the launcher's authorization gate to `return`.
+
+**PR #201's expanded two-group manifest is proposed, pending review/merge, and
+has no runtime approval. Do not run it.** The unchanged launcher does not enforce
+manifest authorization; its active gate is not permission to execute changed
+assertions or dependencies. No CLI switch, environment variable, approval file or
+token expands scope. Do not invoke the dispatcher directly to bypass this boundary.
+
+Entry point for the original approved scope only (do not invoke with this proposal):
 
 ```powershell
 pwsh -NoProfile -File tools/run-behavioral-tests.ps1
 ```
 
-After a separately reviewed activation and explicit owner execution approval,
-the prepared path would use the pinned executable and SHA-256 from the existing
+The fixed path uses the pinned executable and SHA-256 from the existing
 [identity policy](#authorization-and-standing-scope), with exactly:
 
 ```text
 <pinned Godot> --headless --path <actual TLWH checkout> --script res://tests/behavioral/test_runner.gd
 ```
 
-It proposes **one Godot process per suite invocation**, a 30-second deadline,
+It uses **one Godot process per suite invocation**, a 30-second deadline,
 1,048,576-byte combined output cap and a 4,096-byte diagnostic excerpt. There is
 no editor/import preparation, copied project, staging environment, container,
 executable/scene/argument override, automatic retry or destructive cleanup.
@@ -219,9 +223,11 @@ is failure and needs owner direction before any further engine attempt.
 
 ### Fixed dispatcher and group contract
 
-[`test_runner.gd`](../tests/behavioral/test_runner.gd) extends `SceneTree`. Its one
-explicit manifest entry is `world_coordinates`, backed by
-[`smoke_test.gd`](../tests/behavioral/smoke_test.gd). It creates a fresh `RefCounted`
+[`test_runner.gd`](../tests/behavioral/test_runner.gd) extends `SceneTree`. The
+original approved entry is `world_coordinates`, backed by
+[`smoke_test.gd`](../tests/behavioral/smoke_test.gd). PR #201 adds exactly one proposed
+entry, `resource_generation_v2`, described below; the resulting manifest is
+unapproved for execution. The dispatcher creates a fresh `RefCounted`
 group, synchronously calls `run()` once, retains its data result and releases the
 group reference before reporting. `run()` returns a Dictionary with positive
 integer `checks` and an Array of failure messages. The dispatcher stops on the
@@ -250,13 +256,14 @@ output overflow or uncertain termination. `PASS` requires all of these checks;
 an unauthorized invocation is `NOT RUN`, never runtime PASS. Group release is
 not isolation of autoloads, globals, statics, filesystem writes or leaked external
 references. Future groups must declare and release their test-owned resources;
-this PR supplies only the scene-free `RefCounted` group.
+both groups are scene-free `RefCounted` scripts with synchronous in-memory checks.
 
 ### Filesystem review and validation boundary
 
-Direct-checkout execution is a proposed departure from the existing external-stage
-policy and requires explicit approval of the precise launcher, command, manifest
-and allowed filesystem effects. Review Godot's `.godot/` cache, import metadata,
+Direct-checkout execution is a separately approved exception for the original
+four-check manifest only. Expanded scope requires explicit approval of the precise
+launcher, command, manifest and allowed filesystem effects. Review Godot's
+`.godot/` cache, import metadata,
 UID generation/rewrites, resource discovery and any user-profile logs/settings
 before any run. This launcher provides neither a filesystem sandbox nor cache
 rollback. The smoke's lack of file I/O does not prove the engine is write-free.
@@ -272,8 +279,8 @@ pwsh -NoProfile -File tests/behavioral/launcher_fixture_test.ps1
 ```
 
 These parse PowerShell and use scoped process/identity doubles; they never launch
-Godot or create a test project. They validate denied and proposed standing
-authorization, fixed identity/command/manifest/assertions, execution bounds, no
+Godot or create a test project. They validate denial/standing gate shapes and the
+proposed manifest, fixed identity/command/smoke assertions, execution bounds, no
 retries and result classification. GDScript inspection is static; it does not
 establish Godot
 parsing, loading, completion output, runtime PASS or direct-checkout cache behavior.
@@ -284,10 +291,11 @@ baseline is not repaired by this PR.
 
 The preparation amendment merged in PR #197. **It does not activate the launcher
 or authorize Godot.** The separately authorized first invocation is recorded below;
-its grant is consumed and unconditional denial has been restored.
+its grant was consumed and unconditional denial was restored at that milestone.
 The following procedure is historical, retained for provenance; it is not the
-proposed routine policy. The production gate still throws unconditionally. Current
-fixtures rehearse the proposed standing model described below, entirely in memory.
+standing routine policy. The gate threw unconditionally at that preparation
+milestone; PR #200 later activated only the original scope. Current fixtures
+rehearse the standing model described below entirely in memory.
 No environment switch, token, permission file, persistent grant counter or
 general authorization framework is introduced.
 
@@ -440,26 +448,26 @@ PASS is claimed. The one-time authorization is **consumed**; no retry, standing
 permission, graphical/gameplay/performance validation or broader test scope
 follows. Further Godot execution requires new explicit owner authorization.
 
-### Proposed standing behavioral authorization (inactive)
+<a id="proposed-standing-behavioral-authorization-inactive"></a>
 
-This feature-branch amendment is pending review and grants **no Godot execution**.
-PR #198 completed the one-time run above; that consumed grant and its historical
-procedure do not authorize routine calls. The first run's filesystem acceptance
-supports ordinary project-profile log creation and rotation only; it observed no
-checkout cache changes.
+### Standing behavioral authorization (PR #200)
 
-The smallest proposed activation is a later gate-only change from `throw` to
-`return` in `Assert-BehavioralExecutionAuthorized`. Before activation, the owner
-must separately review and explicitly approve the **exact final activation commit**
-and standing scope here: the pinned executable/path/hash, exact launcher and
-command above, actual local checkout, unchanged `world_coordinates` manifest/four
-assertions, 30-second/1 MiB/4 KiB limits and log-only filesystem effects. Approval
-of this preparation PR, merge or inert validation does not grant execution.
-Until that approval and reviewed gate change, the launcher stays `NOT RUN`.
-Do not bypass it with a direct dispatcher call. No environment switch, token,
+PR #199 prepared the standing policy; PR #200 activated it after explicit owner
+approval on 2026-11-13, merged at `c070b2b105cb3c6d78994ced9d057cc3bc501cf1`.
+This approval is separate from PR #198's consumed one-time grant. The first run's
+filesystem acceptance supports ordinary project-profile log creation and rotation
+only; it observed no checkout cache changes. No new runtime PASS is claimed here.
+
+The activation changed only `throw` to `return` in
+`Assert-BehavioralExecutionAuthorized`. Approved standing scope remains the pinned
+executable/path/hash, exact launcher and command above, actual local checkout,
+original `world_coordinates` manifest/four assertions, 30-second/1 MiB/4 KiB limits
+and log-only filesystem effects. **The PR #201 two-group manifest is outside this
+approval; do not invoke the active launcher with the expanded scope.** A PR, merge
+or inert validation does not approve scope expansion. No environment switch, token,
 permission file, persistent counter or per-invocation grant is introduced.
 
-After explicit standing approval, normal development may use exactly
+With the original approved manifest, normal development may use exactly
 `pwsh -NoProfile -File tools/run-behavioral-tests.ps1` without asking for each run.
 The gate remains `return` across routine invocations; there is no one-use reset.
 Before use, confirm the approved runner/dispatcher/assertions/shared supervisor
@@ -471,7 +479,7 @@ identity before its single bounded process. These are workflow observations,
 not automatic filesystem enforcement or a sandbox.
 
 Only ordinary creation/rotation under the project's profile `logs/` directory
-(`%APPDATA%\Godot\app_userdata\The Long Way Home\logs\`) is proposed as a
+(`%APPDATA%\Godot\app_userdata\The Long Way Home\logs\`) is a
 permitted write effect. No `.godot/` cache activity is included; the protected
 `.godot/validation-profile/` remains excluded. Tracked source, artwork/imported
 assets, UID/import sidecars, saves/settings, profile shader caches/snapshots,
@@ -497,11 +505,92 @@ MetadataSmoke remains inactive with its grants consumed.
 The inert fixtures accept only the single denial statement or bare `return` gate
 shape; acceptance of a shape does not establish owner approval. They mock all
 engine operations, rehearse separate routine calls and failure/withdrawal stops,
-and check the one-entry manifest and four production coordinate cases with small,
+and check the proposed two-entry manifest and unchanged four coordinate cases with small,
 readable scope checks, without whole-source hashes. These checks do not prove
 GDScript behavior or replace separate review/authorization of assertion changes.
 PowerShell parsing and inert PASS do not establish runtime behavior or authorize
-this proposed activation.
+the proposed expanded scope.
+
+### Resource Generation v2 behavioral proposal (PR #201)
+
+Pending review/merge; **authored only, not authorized to run**. The new
+[`resource_generation_v2_test.gd`](../tests/behavioral/resource_generation_v2_test.gd)
+group implements six focused cases using production generators and native definitions:
+
+| Case | Intended assertions |
+| --- | --- |
+| Starting guarantees | Seeds 26026/-79: complete schema-valid reservations, exact 3 Ferrite/2 Carbite/2 Cuprite members, 4x4 anchors, center distances 384-2304, authored protection and independent within/between-group geometry. |
+| Reconstruction | Ordinary seeds 42/-79 over owners (-1,-1), (0,-1), (-1,0), (0,0): full equality across fresh generators, opposite request orders and reversed definitions, nonempty coverage; fresh same-seed starting reservations also match. |
+| Identities | Real ordinary/starting locations and members: independent canonical fields and full public ID round trips; malformed, foreign-seed and retired-policy IDs reject without descriptors. |
+| Boundaries | Signed/exact floor ownership; one raw candidate fixture has a member across a region edge, discoverable once with its original ID through production query/lookup methods. |
+| Conflicts | Synthetic A/B/C raw-chain geometry: B loses to C but still rejects all of A; only C survives region/query reads in either request order, and every A member fails lookup. The query covers C's visual bounds and its production owner plan includes C's declared owner. |
+| Isolation | Empty/duplicate/unsupported-geology definitions reject; construction snapshots and nested region/query/ID/reservation copies resist caller mutation. |
+
+The intended successful path performs **168 assertions** in the new group:
+20 starting, 40 reconstruction, 25 identity, 15 boundary, 35 conflict and 33
+isolation comparisons. Including the unchanged smoke gives 172 total checks.
+These are static counts of planned comparisons, not observed runtime results.
+The totals are descriptive, not frozen requirements.
+`_expect` counts each performed comparison, including readiness/result guards;
+geometry and identity arrays are compared as explicitly labeled assertions, not
+counted once per case or inflated per member. Failed guards can reduce the actual
+count. No runtime count/PASS
+is claimed. Failures include case, seed, owner/ID where relevant, expected and
+actual values. Candidate fixtures override only raw supply; production region,
+query and identity methods remain intact. No private production validator is the
+sole geometry oracle. Existing tests are retained unchanged.
+
+The atomic-conflict fixture intentionally declares B/C owners (1,0)/(2,0)
+although all three first anchors naturally lie in owner (0,0). It tests the
+synthetic raw-competitor resolver/halo, not generated spatial ownership. Its
+query is wide enough for the production `query_owners()` plan to include C's
+declared owner as well as geometrically enclosing C's visual bounds. Real
+generation and boundary-ownership checks remain separate and unchanged.
+
+Static dependency review covers 28 script/resource paths including the dispatcher
+and smoke (22 GDScript files and six `.tres` resources):
+
+- Direct test preloads: `ordinary_resource_generator.gd`,
+  `starting_resource_generator.gd`, `resource_generation_descriptors.gd`,
+  `resource_generation_crash_site.gd`, and the three
+  `scenes/world/resource_definitions/v2/{ferrite,carbite,cuprite}.tres` resources.
+- These reach `world_resource_definition.gd`, `planet_generator.gd`,
+  `crash_site_protection.gd` and `world_coordinates.gd`. `Starting` inherits
+  `Ordinary`; definitions attach `WorldResourceDefinition`.
+- `PlanetGenerator`'s `PlanetWorldState` type reference reaches
+  `planet_world_state.gd`, then `resource_generation_v2_integration.gd`,
+  `ferrite_region_generator.gd`, `resource_deposit.gd`,
+  `construction/{extractor_anchor_rules,placement_rules,machine_definition}.gd`,
+  `inventory/{inventory_state,item_definition}.gd`, and
+  `construction/{recipe_definition,recipe_ingredient}.gd` through global classes.
+- Constant preloads in that closure include `introductory_ferrite.tres`,
+  `inventory/ferrite_ore.tres` and `inventory/cuprite_ore.tres`; their attached
+  scripts are included above. These resources contain no external artwork.
+- `ResourceGenerationV2Integration.configure()` dynamically loads the same three
+  definitions; it is not called. `FerriteRegionGenerator._init()` reads
+  `assets/environment/exterior/ferrite/catalog_v1/catalog.json`; that constructor
+  is not called because tests never instantiate `PlanetWorldState` or the legacy
+  generator. V2 catalog strings remain inert; no JSON/texture/scene loading is
+  exercised. No autoload is configured in `project.godot`.
+
+The closure includes cycles through global class types. Static references and
+resource declarations do not prove Godot parsing or availability of registered
+classes in the existing cache. The test constructs only RefCounted v2 generators
+and duplicate Resource definitions; it has no FileAccess/DirAccess calls or
+explicit writes. Godot can nevertheless touch `.godot/`, UID/import sidecars or
+profile data while loading scripts/resources. The existing launcher provides no
+filesystem sandbox. **No such new effects are approved**; no import, cache repair,
+sidecar generation or deletion is a remedy authorized by this PR.
+
+The bounded workload is a few starting preparations and small region/query/ID
+corpora, with no deliberate exhaustion, eviction sweep, scenes, physics, graphical
+checks or statistical density tests. It is expected to fit the unchanged 30-second
+process limit, but runtime duration and parse/cache behavior remain unmeasured.
+The launcher and shared supervisor are unchanged. Before any expanded invocation,
+the owner must separately approve the exact final manifest, assertions, dependency
+closure and filesystem scope. Original four-check approval remains limited to its
+unchanged scope; neither this proposal nor static/inert PASS expands it. Native,
+codec and metadata restrictions and all historical evidence remain unchanged.
 
 ## Fixed metadata smoke extension (draft, tested runtime scope passed)
 

@@ -1,9 +1,11 @@
 extends SceneTree
-## Fixed local suite foundation. The PowerShell launcher is INACTIVE.
+## PR #200 approved only world_coordinates/four checks. The launcher gate is active.
+## This two-group manifest is proposed only: DO NOT RUN without separate approval.
 ## Releasing a group does not isolate globals, autoloads or filesystem changes.
 
 const GROUPS := [
 	{"name": "world_coordinates", "script": preload("res://tests/behavioral/smoke_test.gd")},
+	{"name": "resource_generation_v2", "script": preload("res://tests/behavioral/resource_generation_v2_test.gd")},
 ]
 
 

@@ -52,14 +52,18 @@ Check 'production gate is a single denial or reviewed standing return' {
         $statement.Extent.Text -ceq 'return')) 'Unexpected authorization mechanism'
     # Shape validation is not owner approval. Both forms remain inert in fixtures.
 }
-Check 'fixed manifest and four production coordinate smoke cases stay in approved scope' {
+Check 'proposed two-group manifest is explicit; approved four coordinate checks stay unchanged' {
     # Small scope guard only, not a GDScript parser or proof of assertion behavior.
     # Changes to the manifest/assertions still require separate review and authorization.
     $dispatcher = Get-Content -LiteralPath "$PSScriptRoot/test_runner.gd" -Raw
     $smoke = Get-Content -LiteralPath "$PSScriptRoot/smoke_test.gd" -Raw
     $manifest = [regex]::Match($dispatcher, '(?s)const\s+GROUPS\s*:=\s*\[(.*?)\]')
-    $expectedManifest = '{"name":"world_coordinates","script":preload("res://tests/behavioral/smoke_test.gd")},'
-    Require ($manifest.Success -and ($manifest.Groups[1].Value -replace '\s', '') -ceq $expectedManifest) 'Approved one-entry manifest changed'
+    $expectedManifest = @(
+        '{"name":"world_coordinates","script":preload("res://tests/behavioral/smoke_test.gd")},'
+        '{"name":"resource_generation_v2","script":preload("res://tests/behavioral/resource_generation_v2_test.gd")},'
+    ) -join ''
+    Require ($manifest.Success -and ($manifest.Groups[1].Value -replace '\s', '') -ceq $expectedManifest) 'Proposed two-entry manifest changed'
+    # Recognizing the proposal is not approval to execute the expanded manifest.
 
     $cases = [regex]::Match($smoke, '(?s)var\s+cases\s*:=\s*\[(.*?)\]')
     $expectedCases = @(
