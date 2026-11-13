@@ -11,7 +11,7 @@ function Assert-BehavioralExecutionAuthorized {
     # approves the exact activation revision and documented routine scope.
     # Activation replaces only the throw below with return. Once approved, routine
     # invocations need no per-run grant; scope changes require renewed approval.
-    throw 'AUTHORIZATION_DENIED: local behavioral execution is inactive; separate owner approval and a reviewed activation amendment are required.'
+    return
 }
 
 function Get-BehavioralFailure($Result) {
