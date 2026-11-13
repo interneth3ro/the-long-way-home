@@ -1,7 +1,7 @@
 # Resource Generation v2 extractor anchors
 
-PR 5 on `codex/resource-generation-v2-extractor-anchors`, pending owner review
-and merge. Base: `5e88e774f13d80befe63c5fb24c0cace24e35f3f` (merged PR #190).
+PR 5 merged in PR #191 at `2614769057ece59bd38df8b744be724c9f4802b3`.
+Base: `5e88e774f13d80befe63c5fb24c0cace24e35f3f` (merged PR #190).
 Decisions 7A and 7C remain: one permanent extraction anchor per deposit;
 technical readiness and gameplay activation are separate.
 
@@ -147,12 +147,15 @@ evidence is performed; the local bytecode incident is disclosed above.
 
 ## Deferred gameplay integration
 
-A separately approved activation PR must install authoritative v2 generation and
-eligibility in real world state, wire pending tickets into the normal physics-frame
+Milestone 6's [world-state integration](RESOURCE_GENERATION_V2_INTEGRATION.md),
+pending owner review and merge, provides authoritative read-only generation and
+token invalidation without changing these rules or the isolated harness.
+Milestone 7 must add live construction/occupancy, wire pending tickets into the normal physics-frame
 controller, and adapt live planetary ground, range, blocking-layer and player-safety
 checks without changing legacy semantics. It must integrate claim registration
 and release under the existing production world transaction guard, validate current
-inventory, and explicitly decide resource output/activation. The synthetic harness
+inventory. Milestone 8 separately adds Cuprite extraction, production and
+presentation. The synthetic harness
 must never substitute for that live environment/activation adapter.
 
 Cuprite mining/items/output, Carbite activation, Ferrite v2 migration/retirement,

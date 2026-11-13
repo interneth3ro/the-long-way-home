@@ -8,10 +8,14 @@ merged in PR #189: seven reservations, a versioned ordinary transition,
 reservation priority and temporary read-only compatibility diagnostics.
 PR 4's isolated
 [shared presenter and disabled Cuprite inspection](docs/RESOURCE_GENERATION_V2_PRESENTATION.md)
-merged in PR #190. PR 5 adds [extractor anchor targeting and occupancy](docs/RESOURCE_GENERATION_V2_PLACEMENT.md),
-pending owner review and merge: reusable logical rules and an isolated nonvisual
+merged in PR #190. PR 5's [extractor anchor targeting and occupancy](docs/RESOURCE_GENERATION_V2_PLACEMENT.md)
+merged in PR #191: reusable logical rules and an isolated nonvisual
 transaction/preview harness. Normal construction and production remain unchanged.
-No gameplay or mining caller is connected. Legacy Ferrite and the
+Milestone 6 adds a separate [live world-state v2 descriptor boundary](docs/RESOURCE_GENERATION_V2_INTEGRATION.md)
+on its feature branch, pending owner review and merge. It validates all seven
+reservations and controls context replacement without activating v2 gameplay.
+Live construction/occupancy (Milestone 7) and Cuprite production/presentation
+(Milestone 8) remain deferred. No mining caller is connected. Legacy Ferrite and the
 Cuprite visual prototype are preserved. Validation is static only; GDScript
 behavioral assertions are authored but not executed.
 

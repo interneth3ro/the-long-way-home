@@ -7,7 +7,9 @@ No gameplay caller, resource registry, mining, construction, inventory, save or
 progression integration is added. The existing exterior, terrain streaming,
 legacy Ferrite presenter and accepted stationary Cuprite prototype are unchanged.
 PR 5 adds separate [anchor targeting and occupancy contracts](RESOURCE_GENERATION_V2_PLACEMENT.md),
-pending review. The presenter remains artwork-only and supplies no placement authority.
+merged in PR #191. Milestone 6's [world-state integration](RESOURCE_GENERATION_V2_INTEGRATION.md)
+is pending review and merge, with no presenter or inspection wiring changes.
+The presenter remains artwork-only and supplies no placement authority.
 
 ## Presentation admission and registration
 
