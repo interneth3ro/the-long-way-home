@@ -10,7 +10,13 @@ enum RecipeChangeResult { OK, BUSY, MISSING_MACHINE, INVALID_CURRENT, INVALID_RE
 
 # Authoritative session data, independent of disposable terrain presenters.
 # Loading does not mark exploration or surveying. Neither system exists yet.
-var seed_value: int
+var seed_value: int:
+	set(value):
+		if seed_value != value and _resource_v2 != null:
+			_resource_v2.invalidate("world seed changed; explicitly reconfigure or create a fresh world")
+		seed_value = value
+var _world_generation_seed: int
+var _resource_v2 := ResourceGenerationV2Integration.new()
 var revision: int = 0
 var _terrain_changes: Dictionary[Vector2i, Color] = {}
 var _removed_details: Dictionary[Vector2i, bool] = {}
@@ -21,6 +27,45 @@ var _next_machine_id: int = 1
 var _machine_transaction: bool = false
 # Transient leases, never part of machine snapshots or persistent configuration.
 var _recipe_change_pauses: Dictionary[int, RefCounted] = {}
+
+
+# V2 read boundary. Legacy APIs below retain their original Ferrite semantics.
+# Context tokens are opaque leases, never generators or persistent/save identities.
+func configure_resource_generation_v2(ordinary_policy: String = "ordinary-v2-1",
+		starting_policy: String = "starting-v2-1", schema_version: int = 1) -> Dictionary:
+	if seed_value != _world_generation_seed:
+		_resource_v2.invalidate("world seed changed; construct a fresh PlanetWorldState")
+		return {"ok": false, "code": "incompatible_context",
+			"error": _resource_v2.initialization_error()}
+	return _resource_v2.configure(seed_value, ordinary_policy, starting_policy, schema_version)
+
+
+func is_resource_generation_v2_ready() -> bool:
+	return _resource_v2.is_ready()
+
+
+func resource_generation_v2_error() -> String:
+	return _resource_v2.initialization_error()
+
+
+func resource_generation_v2_context() -> Dictionary:
+	return _resource_v2.context()
+
+
+func query_resource_descriptors_v2(area: Rect2, token: RefCounted) -> Dictionary:
+	return _resource_v2.query(area, token)
+
+
+func resource_descriptor_v2_by_id(identity: String, token: RefCounted) -> Dictionary:
+	return _resource_v2.descriptor_by_id(identity, token)
+
+
+func starting_resource_reservations_v2(token: RefCounted) -> Dictionary:
+	return _resource_v2.reservations(token)
+
+
+func invalidate_resource_generation_v2() -> void:
+	_resource_v2.invalidate()
 
 
 func get_deposits() -> Array[ResourceDeposit]:
@@ -528,7 +573,9 @@ func deposit_at(world_point: Vector2, resource_type: StringName) -> ResourceDepo
 
 func _init(world_seed: int = 26026) -> void:
 	seed_value = world_seed
+	_world_generation_seed = world_seed
 	_ferrite = FerriteRegionGenerator.new(world_seed)
+	configure_resource_generation_v2()
 
 
 func set_terrain_color(tile: Vector2i, color: Color) -> void:

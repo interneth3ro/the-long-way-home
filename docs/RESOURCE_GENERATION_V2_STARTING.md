@@ -8,7 +8,10 @@ PR 4's [shared presentation and disabled Cuprite inspection](RESOURCE_GENERATION
 merged in PR #190. Its isolated harness retains this complete reservation policy,
 all definitions, the authored protection snapshot and ship reference unchanged.
 PR 5 adds [isolated anchor targeting and occupancy](RESOURCE_GENERATION_V2_PLACEMENT.md),
-pending review, without modifying these reservations or generation inputs.
+merged in PR #191, without modifying these reservations or generation inputs.
+Milestone 6's [live world-state integration](RESOURCE_GENERATION_V2_INTEGRATION.md)
+is pending review and merge. It uses this exact snapshot and generator, validates
+the complete reservations before publication and leaves v2 gameplay inactive.
 
 ## Policy boundary and interfaces
 
@@ -125,8 +128,9 @@ some usable polygon corners. Legacy Ferrite and prototype artwork are not inputs
 
 No scene, texture or legacy catalog is loaded. Static tests compare ship/terrain
 bounds against scene text and pin existing geometry against the PR baseline.
-Later authored edits require snapshot and policy review together. Live simulation
-and scene integration remain deferred.
+Later authored edits require snapshot and policy review together. The pending
+Milestone 6 bridge uses the snapshot in world state; scene/gameplay activation
+remains deferred.
 
 ## Temporary migration diagnostics
 
