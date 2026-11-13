@@ -15,7 +15,9 @@ function Result([string]$Stdout = '', [string]$Stderr = '', [string]$Status = 'P
         ExitCode = $ExitCode; TerminationCertain = $Certain; Excerpt = 'inert diagnostic';
         Bytes = [Text.Encoding]::UTF8.GetByteCount($Stdout + $Stderr) }
 }
-$good = 'TLWH_BEHAVIORAL_V1 PASS groups=1 checks=4 failures=0'
+$completion = 'TLWH_BEHAVIORAL_V1 PASS groups=1 checks=4 failures=0'
+$group = 'TLWH_BEHAVIORAL_GROUP_V1 world_coordinates PASS checks=4'
+$good = "$group`n$completion"
 
 Check 'launcher and fixture parse; launcher has no override parameters' {
     foreach ($path in @("$PSScriptRoot/../../tools/run-behavioral-tests.ps1", $PSCommandPath)) {
@@ -50,6 +52,38 @@ Check 'completion is required unique final on stdout and zero-failure' {
     Require ((Get-BehavioralFailure (Result '' $good)) -ne '') 'Stderr-only completion accepted'
     Require ((Get-BehavioralFailure (Result $good $good)) -ne '') 'Cross-stream duplicate accepted'
     Require ((Get-BehavioralFailure (Result "TLWH_BEHAVIORAL_GROUP_V1 world_coordinates FAIL`n$good")) -ne '') 'Contradictory group failure accepted'
+}
+Check 'completion reconciles exact group count and total checks' {
+    $other = 'TLWH_BEHAVIORAL_GROUP_V1 synthetic_second PASS checks=3'
+    $twoGroups = "$group`n$other`nTLWH_BEHAVIORAL_V1 PASS groups=2 checks=7 failures=0"
+    Require ((Get-BehavioralFailure (Result $twoGroups)) -ceq '') 'Valid synthetic group sum rejected'
+    foreach ($stdout in @($completion,
+            "$group`nTLWH_BEHAVIORAL_V1 PASS groups=2 checks=4 failures=0",
+            "$group`nTLWH_BEHAVIORAL_V1 PASS groups=1 checks=5 failures=0",
+            "$group`n$other`nTLWH_BEHAVIORAL_V1 PASS groups=1 checks=7 failures=0",
+            "$group`n$other`nTLWH_BEHAVIORAL_V1 PASS groups=2 checks=6 failures=0")) {
+        Require ((Get-BehavioralFailure (Result $stdout)) -ne '') 'Mismatched group/check counts accepted'
+    }
+}
+Check 'duplicate contradictory and malformed group records cannot produce PASS' {
+    foreach ($stdout in @("$group`n$good",
+            "$group`n$group`nTLWH_BEHAVIORAL_V1 PASS groups=2 checks=8 failures=0",
+            "$group`nTLWH_BEHAVIORAL_GROUP_V1 world_coordinates PASS checks=3`nTLWH_BEHAVIORAL_V1 PASS groups=2 checks=7 failures=0",
+            "prefix $good", "$group extra`n$completion",
+            "TLWH_BEHAVIORAL_GROUP_V1 world_coordinates PASS checks=0`n$completion",
+            "$group`nTLWH_BEHAVIORAL_GROUP_V1 world_coordinates FAIL`n$completion")) {
+        Require ((Get-BehavioralFailure (Result $stdout)) -ne '') 'Invalid or repeated group accepted'
+    }
+    Require ((Get-BehavioralFailure (Result $good $group)) -ne '') 'Cross-stream group duplicate accepted'
+    Require ((Get-BehavioralFailure (Result $completion $group)) -ne '') 'Stderr group substituted for stdout group'
+}
+Check 'completion and group totals reject out-of-range counts without overflow' {
+    foreach ($stdout in @("$group`nTLWH_BEHAVIORAL_V1 PASS groups=9223372036854775808 checks=4 failures=0",
+            "$group`nTLWH_BEHAVIORAL_V1 PASS groups=1 checks=9223372036854775808 failures=0",
+            "TLWH_BEHAVIORAL_GROUP_V1 huge PASS checks=9223372036854775808`n$completion",
+            "TLWH_BEHAVIORAL_GROUP_V1 huge PASS checks=9223372036854775807`n$group`nTLWH_BEHAVIORAL_V1 PASS groups=2 checks=4 failures=0")) {
+        Require ((Get-BehavioralFailure (Result $stdout)) -ne '') 'Out-of-range count accepted'
+    }
 }
 Check 'exit-zero engine errors and every process failure remain failures' {
     foreach ($result in @((Result $good 'SCRIPT ERROR: inert'), (Result $good 'Parse Error: inert'),

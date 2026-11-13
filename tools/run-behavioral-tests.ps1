@@ -27,9 +27,36 @@ function Get-BehavioralFailure($Result) {
     }
     $records = [regex]::Matches($output, 'TLWH_BEHAVIORAL_V1[^\r\n]*')
     $lines = @($Result.Stdout -split '\r?\n' | Where-Object { -not [string]::IsNullOrWhiteSpace($_) })
-    if ($records.Count -ne 1 -or $lines.Count -eq 0 -or
-        $lines[-1] -cnotmatch '^TLWH_BEHAVIORAL_V1 PASS groups=[1-9][0-9]* checks=[1-9][0-9]* failures=0$') {
+    if ($records.Count -ne 1 -or $lines.Count -eq 0) {
         return 'Missing, failed, malformed, duplicate or misplaced completion record.'
+    }
+    $completion = [regex]::Match($lines[-1], '^TLWH_BEHAVIORAL_V1 PASS groups=([1-9][0-9]*) checks=([1-9][0-9]*) failures=0$')
+    [long]$expectedGroups = 0
+    [long]$expectedChecks = 0
+    if (-not $completion.Success -or
+        -not [long]::TryParse($completion.Groups[1].Value, [ref]$expectedGroups) -or
+        -not [long]::TryParse($completion.Groups[2].Value, [ref]$expectedChecks)) {
+        return 'Malformed completion counts.'
+    }
+    if ($Result.Stderr.Contains('TLWH_BEHAVIORAL_GROUP_V1')) {
+        return 'Group records must be on stdout.'
+    }
+    $seen = [Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
+    [long]$totalChecks = 0
+    foreach ($line in $lines | Where-Object { $_.Contains('TLWH_BEHAVIORAL_GROUP_V1') }) {
+        $group = [regex]::Match($line, '^TLWH_BEHAVIORAL_GROUP_V1 (\S+) PASS checks=([1-9][0-9]*)$')
+        if (-not $group.Success -or -not $seen.Add($group.Groups[1].Value)) {
+            return 'Malformed, duplicate or contradictory group record.'
+        }
+        [long]$checks = 0
+        if (-not [long]::TryParse($group.Groups[2].Value, [ref]$checks) -or
+            $checks -gt [long]::MaxValue - $totalChecks) {
+            return 'Group check count exceeds the supported range.'
+        }
+        $totalChecks += $checks
+    }
+    if ($seen.Count -ne $expectedGroups -or $totalChecks -ne $expectedChecks) {
+        return 'Completion counts disagree with group PASS records.'
     }
     return ''
 }

@@ -239,6 +239,10 @@ streams and match:
 TLWH_BEHAVIORAL_V1 PASS groups=<positive integer> checks=<positive integer> failures=0
 ```
 
+Its group count and total checks must equal the individual stdout group PASS
+records. Group names must be unique; malformed, duplicated, contradictory or
+stderr-only group records cannot authorize PASS.
+
 Failure prints a `TLWH_BEHAVIORAL_V1 FAIL ...` record and exits 1. The launcher
 also fails on missing/malformed/duplicate/misplaced completion, a nonzero process
 exit, engine/script/parse/assertion diagnostics even with exit zero, timeout,
