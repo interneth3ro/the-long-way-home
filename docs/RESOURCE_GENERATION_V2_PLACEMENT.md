@@ -1,5 +1,99 @@
 # Resource Generation v2 extractor anchors
 
+## Milestone 7 live construction (feature branch, pending merge)
+
+Implemented on `codex/resource-generation-v2-live-construction`, based on merged
+PR #192 (`fc3b0947be5e3cb217e4de12f95ec23d550a5003`). Owner Decisions 9A-9E
+activate normal construction immediately, without a development gate. The
+Milestone 5 inspection record below remains historical; it is not the live path.
+
+### Targeting, routing and preview
+
+For an Extractor on planetary ground, `PlanetWorldState.extractor_target_v2`
+first evaluates the existing unsnapped construction cell and rotated extraction
+point. If that point is on compatible **legacy Ferrite**, legacy placement wins,
+including when the v2 context is unavailable. This deliberately prioritizes
+existing Ferrite access in overlapping geometry; it does not redirect to v2 when
+legacy placement fails an overlap, range or physics check. Elsewhere it requires
+a healthy v2 context, queries the authoritative descriptor API within the existing
+32-unit tolerance and calls `ExtractorAnchorRules.select`. Empty successful
+queries, unavailable contexts and rejected queries have distinct feedback.
+
+Selection includes occupied and incompatible deposits. Distance to the logical
+anchor wins, then stable deposit ID breaks ties. The current Extractor accepts
+Ferrite and Cuprite for construction; Carbite gives incompatible feedback. There
+is no second target-selection algorithm and no painted-artwork geometry. Other
+machines retain their original grid placement and resource checks.
+
+The controller retains the opaque context token, deposit ID, resource type and
+exact anchor rectangle. It snaps the ghost's cell to that anchor. Its existing
+construction-only grid/outline draws the same 4x4 / 128x128 footprint independently
+of deposit artwork and terrain presentation readiness. Quarter turns retain the
+square anchor. Legacy deposit highlighting remains unchanged.
+
+A click freezes the displayed cell, ticket, rejection and rotation until the
+physics confirmation consumes it once. A click before the first preview is
+rejected. Preview refresh cannot replace the queued deposit. Confirmation resolves
+only that exact ID through the retained token; it never runs nearest selection.
+It rejects retired/foreign tokens, changed anchors/types, incompatible resources,
+wrong geometry and occupied deposits. Current range, inventory identity/quantity,
+machine overlap, blocking-layer physics and player-safety checks remain shared
+through `PlacementRules.rejection`, used in both preview and commit.
+
+### Deployment, occupancy and recovery
+
+`PlanetWorldState` owns `_extractor_claims_v2`, a deposit-ID-to-machine-ID index
+into the existing `_machines` registry. `extractor_occupant_v2` reads that map;
+there is no independent public claim setter. Live `deploy_extractor_v2` and the
+legacy deployment entry point share `_deploy_machine_transaction`, the existing
+monotonic ID allocator and inventory implementation. The transaction guard is
+held during validation and through all notifications. After exact re-resolution
+and shared placement checks, one packaged machine is removed without notification.
+The record stores `v2_deposit_id` and `v2_resource_type`; the machine, claim and next
+ID commit synchronously before inventory, machines and deployment notifications.
+No await or callback occurs between inventory mutation and authoritative commit.
+Rejected placement/removal changes neither inventory, registry, occupancy nor ID.
+
+Recovery uses the committed machine ID, never a cursor-selected deposit. Existing
+range checks and atomic inventory return run first, including legitimately stored
+contents. Only after inventory accepts the complete payload are the record and
+its associated claim removed, before existing notifications under the same guard.
+Failure preserves both machine and claim; reuse receives a new monotonic ID.
+Context teardown does not clear machines or claims. Existing token invalidation
+remains fail-closed; no migration, reconciliation or administrative recovery is
+introduced. Recovery by machine ID remains available after context retirement.
+
+### Production and verification boundary
+
+Every committed v2 Extractor reports `INACTIVE`; normal production therefore
+skips it even if legacy Ferrite overlaps its position. The Extractor inspection
+panel hides nominal Ferrite rate/yield and shows "No production configured."
+Legacy Ferrite production, queries, transfers and recovery retain their behavior.
+Cuprite output, resource recipes and normal deposit artwork remain Milestone 8.
+No artwork, generator policy, reservation, save, progression, runner, fixed
+inventory or authorization change is included.
+
+[`static_live_extractor_v2_test.py`](../tests/static_live_extractor_v2_test.py)
+checks authoritative routing, shared geometry/physics, queued identity, transaction
+ordering, recovery, inactive production and preservation of legacy methods and
+protected inputs. Focused static results and broad-suite failure classification
+are recorded in the draft PR. The broad suite retains historical guards rather
+than weakening them for this milestone. Final v2 suite stabilization remains a
+separate final engineering PR.
+
+[`live_extractor_v2_test.gd`](../tests/live_extractor_v2_test.gd) authors snapping,
+tie order, compatibility/occupancy feedback, exact alignment, real physics
+obstacle/player checks, deployment, failed removal/placement, duplicate/reentrant
+confirmation, notification consistency, recovery success/failure, monotonic IDs,
+stale tokens, inactive Cuprite output and legacy Ferrite production/recovery.
+These tests are **authored but unexecuted**, absent from every runner. No Godot
+import, parser, headless, graphical, gameplay or performance verification occurred.
+The visible preview, input timing and physical behavior need separately authorized
+runtime/graphical verification under [the execution policy](LOCAL_TESTING.md).
+
+## Historical Milestone 5 inspection record
+
+
 PR 5 merged in PR #191 at `2614769057ece59bd38df8b744be724c9f4802b3`.
 Base: `5e88e774f13d80befe63c5fb24c0cace24e35f3f` (merged PR #190).
 Decisions 7A and 7C remain: one permanent extraction anchor per deposit;
@@ -145,21 +239,13 @@ ship and terrain remain unchanged. No caches, runtime outputs or successful chec
 logs are committed. No cleanup or deletion of unknown/ignored files or historical
 evidence is performed; the local bytecode incident is disclosed above.
 
-## Deferred gameplay integration
+## Remaining integration work
 
-Milestone 6's [world-state integration](RESOURCE_GENERATION_V2_INTEGRATION.md),
-pending owner review and merge, provides authoritative read-only generation and
-token invalidation without changing these rules or the isolated harness.
-Milestone 7 must add live construction/occupancy, wire pending tickets into the normal physics-frame
-controller, and adapt live planetary ground, range, blocking-layer and player-safety
-checks without changing legacy semantics. It must integrate claim registration
-and release under the existing production world transaction guard, validate current
-inventory. Milestone 8 separately adds Cuprite extraction, production and
-presentation. The synthetic harness
-must never substitute for that live environment/activation adapter.
-
-Cuprite mining/items/output, Carbite activation, Ferrite v2 migration/retirement,
-depletion, save redesign, terrain streaming and research/progression are excluded.
-The final dedicated v2 test-suite stabilization PR remains required after the
-remaining implementation and migration work. Runtime and graphical verification
-need separate authorization under [the execution policy](LOCAL_TESTING.md).
+Milestone 6's [world-state integration](RESOURCE_GENERATION_V2_INTEGRATION.md)
+merged in PR #192. Milestone 7's live path is described above, pending merge.
+The isolated harness remains an independent historical test adapter and cannot
+substitute for live physics. Milestone 8 separately adds Cuprite extraction,
+production and presentation. Carbite production, Ferrite migration/retirement,
+depletion, saves and research/progression remain outside this change. The final
+v2 test-suite stabilization PR remains required. Runtime/graphical verification
+requires separate authorization under [the execution policy](LOCAL_TESTING.md).

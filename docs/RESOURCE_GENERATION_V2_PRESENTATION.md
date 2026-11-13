@@ -8,8 +8,10 @@ progression integration is added. The existing exterior, terrain streaming,
 legacy Ferrite presenter and accepted stationary Cuprite prototype are unchanged.
 PR 5 adds separate [anchor targeting and occupancy contracts](RESOURCE_GENERATION_V2_PLACEMENT.md),
 merged in PR #191. Milestone 6's [world-state integration](RESOURCE_GENERATION_V2_INTEGRATION.md)
-is pending review and merge, with no presenter or inspection wiring changes.
-The presenter remains artwork-only and supplies no placement authority.
+merged in PR #192, with no presenter or inspection wiring changes. Milestone 7
+connects live construction/occupancy through world-state descriptors, pending merge.
+Its construction-only anchor outline is independent of this artwork-only presenter,
+which supplies no placement authority. Normal Cuprite artwork remains deferred.
 
 ## Presentation admission and registration
 

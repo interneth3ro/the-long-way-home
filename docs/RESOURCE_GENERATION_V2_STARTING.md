@@ -3,15 +3,18 @@
 PR 3 merged in PR #189 at `f82298e1874ace843455f453aba2de583d2b8f5d`,
 based on `499a86cfb35428b70fb24644fe80b3312d8abdef` (merged PR #188). The pasted implementation request authorizes this scope;
 the supplied specification is design context, not execution authority.
-Decisions 4B–4G, 5A–5H, 6A–6C and 7B apply. No gameplay caller is connected.
+Decisions 4B–4G, 5A–5H, 6A–6C and 7B apply. No gameplay caller was connected in that milestone.
 PR 4's [shared presentation and disabled Cuprite inspection](RESOURCE_GENERATION_V2_PRESENTATION.md)
 merged in PR #190. Its isolated harness retains this complete reservation policy,
 all definitions, the authored protection snapshot and ship reference unchanged.
 PR 5 adds [isolated anchor targeting and occupancy](RESOURCE_GENERATION_V2_PLACEMENT.md),
 merged in PR #191, without modifying these reservations or generation inputs.
 Milestone 6's [live world-state integration](RESOURCE_GENERATION_V2_INTEGRATION.md)
-is pending review and merge. It uses this exact snapshot and generator, validates
-the complete reservations before publication and leaves v2 gameplay inactive.
+merged in PR #192. It uses this exact snapshot and generator and validates the
+complete reservations before publication. Milestone 7 connects
+[live construction and occupancy](RESOURCE_GENERATION_V2_PLACEMENT.md#milestone-7-live-construction-feature-branch-pending-merge),
+pending merge, without changing this reservation policy. Production and normal
+Cuprite presentation remain deferred.
 
 ## Policy boundary and interfaces
 

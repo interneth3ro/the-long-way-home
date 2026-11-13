@@ -10,14 +10,16 @@ PR 4's isolated
 [shared presenter and disabled Cuprite inspection](docs/RESOURCE_GENERATION_V2_PRESENTATION.md)
 merged in PR #190. PR 5's [extractor anchor targeting and occupancy](docs/RESOURCE_GENERATION_V2_PLACEMENT.md)
 merged in PR #191: reusable logical rules and an isolated nonvisual
-transaction/preview harness. Normal construction and production remain unchanged.
-Milestone 6 adds a separate [live world-state v2 descriptor boundary](docs/RESOURCE_GENERATION_V2_INTEGRATION.md)
-on its feature branch, pending owner review and merge. It validates all seven
-reservations and controls context replacement without activating v2 gameplay.
-Live construction/occupancy (Milestone 7) and Cuprite production/presentation
-(Milestone 8) remain deferred. No mining caller is connected. Legacy Ferrite and the
-Cuprite visual prototype are preserved. Validation is static only; GDScript
-behavioral assertions are authored but not executed.
+transaction/preview harness. Milestone 6's
+[live world-state descriptor boundary](docs/RESOURCE_GENERATION_V2_INTEGRATION.md)
+merged in PR #192 with complete reservations and fail-closed context tokens.
+Milestone 7 connects [live Extractor construction and occupancy](docs/RESOURCE_GENERATION_V2_PLACEMENT.md#milestone-7-live-construction-feature-branch-pending-merge)
+on `codex/resource-generation-v2-live-construction`, pending owner review and merge:
+legacy Ferrite routing takes priority; elsewhere authoritative v2 anchors snap the
+ghost, with claims committed/released under existing machine transactions.
+V2 Extractors remain inactive for production. Cuprite production/presentation
+(Milestone 8) remains deferred. Legacy Ferrite and approved artwork are preserved.
+Validation is static only; GDScript assertions are authored but not executed.
 
 The [east/west walking alignment](#dave-east-and-west-walk-alignment-v1-owner-accepted-pending-merge)
 implements the owner-approved GIF on `codex/dave-east-west-walk-alignment-v1`.

@@ -13,7 +13,7 @@ static func distance_to_footprint(point: Vector2, footprint: Rect2) -> float:
 # use planet-local coordinates; physical solids use the planet's global transform.
 static func rejection(state: PlanetWorldState, definition: MachineDefinition,
 		cell: Vector2i, turns: int, player: CharacterBody2D,
-		world: Node2D, construction_range: float, inventory: InventoryState) -> String:
+		world: Node2D, construction_range: float, inventory: InventoryState, v2_ticket: Dictionary = {}) -> String:
 	if definition == null or not definition.is_valid():
 		return "Invalid machine definition"
 	if world == null or not world.is_in_group(&"construction_world"):
@@ -24,7 +24,11 @@ static func rejection(state: PlanetWorldState, definition: MachineDefinition,
 	var footprint := definition.footprint(cell, turns)
 	if distance_to_footprint(world.to_local(player.global_position), footprint) > construction_range:
 		return "Out of construction range"
-	if not definition.compatible_resources.is_empty():
+	if not v2_ticket.is_empty():
+		var reason := state.extractor_anchor_rejection_v2(v2_ticket, definition, cell, turns)
+		if not reason.is_empty():
+			return reason
+	elif not definition.compatible_resources.is_empty():
 		var point := footprint.position + definition.rotated_point(definition.extraction_point, turns)
 		var compatible := false
 		for resource_type in definition.compatible_resources:

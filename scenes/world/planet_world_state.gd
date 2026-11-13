@@ -23,6 +23,7 @@ var _removed_details: Dictionary[Vector2i, bool] = {}
 var _deposits: Array[ResourceDeposit] = [preload("res://scenes/world/introductory_ferrite.tres")]
 var _ferrite: FerriteRegionGenerator
 var _machines: Dictionary[int, Dictionary] = {}
+var _extractor_claims_v2: Dictionary[String, int] = {}
 var _next_machine_id: int = 1
 var _machine_transaction: bool = false
 # Transient leases, never part of machine snapshots or persistent configuration.
@@ -66,6 +67,51 @@ func starting_resource_reservations_v2(token: RefCounted) -> Dictionary:
 
 func invalidate_resource_generation_v2() -> void:
 	_resource_v2.invalidate()
+
+
+func extractor_occupant_v2(deposit_id: String) -> int:
+	return _extractor_claims_v2.get(deposit_id, 0)
+
+
+# Legacy-compatible extraction point wins before any v2 query. No fallback on a
+# failed v2 context/query. Other machines never call this routing adapter.
+func extractor_target_v2(cursor: Vector2, definition: MachineDefinition, turns: int) -> Dictionary:
+	var cell := WorldCoordinates.world_to_construction(cursor)
+	if definition == null or not definition.is_valid() or definition.item_id != &"extractor":
+		return {"reason": "Invalid machine definition", "ticket": {}, "cell": cell}
+	var point := definition.footprint(cell, turns).position \
+		+ definition.rotated_point(definition.extraction_point, turns)
+	if definition.compatible_resources.has(&"ferrite") and deposit_at(point, &"ferrite") != null:
+		return {"reason": "", "ticket": {}, "cell": cell}
+	var context := resource_generation_v2_context()
+	if not context.ok:
+		return {"reason": "Unavailable v2 context", "ticket": {}, "cell": cell}
+	var result := query_resource_descriptors_v2(Rect2(cursor - Vector2.ONE * ExtractorAnchorRules.SNAP_TOLERANCE,
+		Vector2.ONE * ExtractorAnchorRules.SNAP_TOLERANCE * 2.0), context.token)
+	if not result.ok:
+		return {"reason": "Unavailable v2 query", "ticket": {}, "cell": cell}
+	var member := ExtractorAnchorRules.select(cursor, result.deposits)
+	if member.is_empty():
+		return {"reason": "No valid target", "ticket": {}, "cell": cell}
+	var ticket := {"token": context.token, "deposit_id": member.deposit_id,
+		"resource_type": member.resource_type, "anchor_cells": member.anchor_cells}
+	return {"reason": "", "ticket": ticket, "cell": member.anchor_cells.position}
+
+
+# Exact resolution only: confirmation must never select another nearby deposit.
+func extractor_anchor_rejection_v2(ticket: Dictionary, definition: MachineDefinition,
+		cell: Vector2i, turns: int) -> String:
+	if not ticket.get("deposit_id") is String or not ticket.get("token") is RefCounted:
+		return "Unavailable anchor"
+	var resolved := resource_descriptor_v2_by_id(ticket.deposit_id, ticket.token)
+	if not resolved.ok or not resolved.descriptor.has("anchor_cells"):
+		return "Unavailable anchor"
+	var member: Dictionary = resolved.descriptor
+	if ticket.get("anchor_cells") != member.anchor_cells \
+			or ticket.get("resource_type") != member.resource_type:
+		return "Unavailable anchor"
+	return ExtractorAnchorRules.member_rejection(member, definition, cell, turns,
+		extractor_occupant_v2(member.deposit_id))
 
 
 func get_deposits() -> Array[ResourceDeposit]:
@@ -146,12 +192,28 @@ func deploy_machine(definition: MachineDefinition, cell: Vector2i, turns: int,
 func deploy_machine_instance(definition: MachineDefinition, cell: Vector2i, turns: int,
 		inventory: InventoryState, player: CharacterBody2D, world: Node2D,
 		construction_range: float) -> int:
+	return _deploy_machine_transaction(definition, cell, turns, inventory, player, world, construction_range, {})
+
+
+func deploy_extractor_v2(ticket: Dictionary, definition: MachineDefinition, cell: Vector2i,
+		turns: int, inventory: InventoryState, player: CharacterBody2D, world: Node2D,
+		construction_range: float) -> int:
+	if ticket.is_empty():
+		return 0
+	return _deploy_machine_transaction(definition, cell, turns, inventory, player, world, construction_range, ticket)
+
+
+# One registry, ID allocator and inventory transaction for both construction paths.
+func _deploy_machine_transaction(definition: MachineDefinition, cell: Vector2i, turns: int,
+		inventory: InventoryState, player: CharacterBody2D, world: Node2D,
+		construction_range: float, v2_ticket: Dictionary) -> int:
 	if not is_resource_generation_ready() or _machine_transaction or inventory == null:
 		return 0
-	if not PlacementRules.rejection(self, definition, cell, turns, player, world,
-			construction_range, inventory).is_empty():
-		return 0
 	_machine_transaction = true
+	if not PlacementRules.rejection(self, definition, cell, turns, player, world,
+			construction_range, inventory, v2_ticket).is_empty():
+		_machine_transaction = false
+		return 0
 	if not inventory.remove_item(definition, 1, false):
 		_machine_transaction = false
 		return 0
@@ -164,6 +226,10 @@ func deploy_machine_instance(definition: MachineDefinition, cell: Vector2i, turn
 		machine["recipe_id"] = &""
 		machine["inputs"] = {}
 		machine["output_item_id"] = &""
+	if not v2_ticket.is_empty():
+		machine["v2_deposit_id"] = v2_ticket.deposit_id
+		machine["v2_resource_type"] = v2_ticket.resource_type
+		_extractor_claims_v2[v2_ticket.deposit_id] = machine_id
 	_machines[machine_id] = machine
 	_next_machine_id += 1
 	inventory.changed.emit()
@@ -210,6 +276,7 @@ func recover_machine(machine_id: int, inventory: InventoryState,
 		_machine_transaction = false
 		return false
 	_machines.erase(machine_id)
+	_extractor_claims_v2.erase(machine.get("v2_deposit_id", ""))
 	_recipe_change_pauses.erase(machine_id)
 	inventory.changed.emit()
 	machines_changed.emit()
@@ -222,7 +289,7 @@ func get_machine(machine_id: int) -> Dictionary:
 
 
 func machine_status(machine: Dictionary) -> OperatingStatus:
-	if not is_resource_generation_ready() or machine.is_empty():
+	if not is_resource_generation_ready() or machine.is_empty() or machine.has("v2_deposit_id"):
 		return OperatingStatus.INACTIVE
 	var definition: MachineDefinition = machine.definition
 	if definition.has_recipes():

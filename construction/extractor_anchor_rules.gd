@@ -1,6 +1,6 @@
 class_name ExtractorAnchorRules
 extends RefCounted
-## Inert v2 logical contract. No presenter, physics, inventory mutation or activation.
+## Shared v2 logical contract. No presenter, physics or inventory mutation.
 
 const Generator = preload("res://scenes/world/ordinary_resource_generator.gd")
 const ANCHOR_CELLS := Vector2i(4, 4)
@@ -61,6 +61,17 @@ static func rejection(source: OrdinaryResourceGenerator, ticket: Dictionary,
 	var member: Dictionary = resolved.descriptor
 	if ticket.get("anchor_cells") != member.anchor_cells:
 		return "Unavailable anchor"
+	var reason := member_rejection(member, definition, cell, turns, occupant)
+	if not reason.is_empty():
+		return reason
+	if not gameplay_eligible:
+		return "Inactive resource"
+	return ""
+
+
+# Both live authority and the isolated harness use the same compatibility/geometry.
+static func member_rejection(member: Dictionary, definition: MachineDefinition,
+		cell: Vector2i, turns: int, occupant: int) -> String:
 	if definition == null or not definition.is_valid() or definition.item_id != &"extractor" \
 			or not definition.compatible_resources.has(StringName(member.resource_type)):
 		return "Incompatible resource"
@@ -70,6 +81,4 @@ static func rejection(source: OrdinaryResourceGenerator, ticket: Dictionary,
 		return "Requires exact 4x4 anchor alignment"
 	if occupant != 0:
 		return "Occupied anchor"
-	if not gameplay_eligible:
-		return "Inactive resource"
 	return ""
