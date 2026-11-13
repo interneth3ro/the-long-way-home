@@ -86,6 +86,28 @@ class ExtractorAnchorStaticTests(unittest.TestCase):
         self.assertIn('ticket.get("seed") != seed_value', HARNESS)
         self.assertIn('_epoch += 1', body(HARNESS, 'configure'))
 
+    def test_seed_consistency_and_fixture_contract(self):
+        configure = body(HARNESS, 'configure')
+        self.assertLess(configure.index('source._seed != seed_value'), configure.index('_source = source'))
+        preview = body(HARNESS, 'preview')
+        self.assertLess(preview.index('_source._seed != seed_value'), preview.index('Rules.target('))
+        reject = body(HARNESS, 'inspect_rejection')
+        self.assertLess(reject.index('_source._seed != seed_value'), reject.index('Rules.rejection('))
+        self.assertNotIn('Inspection.new()', body(ASSERTIONS, '_geometry'))
+        self.assertNotIn('Inspection.new()', body(ASSERTIONS, '_transactions'))
+        for label in ('mismatched generator seed rejected at configure',
+                      'world seed mismatch blocks fresh preview', 'world seed mismatch blocks confirmation',
+                      'generator seed mismatch blocks fresh preview', 'generator seed mismatch blocks confirmation',
+                      'seed failures preserve inventory registry and occupancy',
+                      'fixture foundation descriptor validity', 'fixture canonical resource identities'):
+            self.assertIn(label, ASSERTIONS)
+        fixture = body(ASSERTIONS, '_fixture')
+        self.assertIn('Descriptors.location_error(made.location)', fixture)
+        self.assertIn('Rect2i(-2, -2, 4, 4), Rect2i(4, -2, 4, 4)', fixture)
+        self.assertIn('Vector2i(-1, -1)', fixture)
+        self.assertEqual((math.floor(-2/48), math.floor(-2/48)), (-1, -1))
+        self.assertEqual((math.floor(4/48), math.floor(-2/48)), (0, -1))
+
     def test_single_machine_registry_and_constant_occupancy_lookup(self):
         self.assertIn('extends "res://scenes/world/planet_world_state.gd"', HARNESS)
         self.assertNotRegex(HARNESS, r'var _machines\b|var _next_machine_id\b|var _machine_transaction\b')

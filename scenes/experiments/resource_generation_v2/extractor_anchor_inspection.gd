@@ -12,6 +12,10 @@ var _claims: Dictionary[String, int] = {}
 func configure(source: OrdinaryResourceGenerator) -> bool:
 	if _machine_transaction or not _machines.is_empty() or source == null or not source.is_ready():
 		return false
+	# Inspection-only read of the generator's immutable input; no public accessor
+	# exists, and production generator/schema APIs remain unchanged.
+	if source._seed != seed_value:
+		return false
 	_source = source
 	_epoch += 1
 	return true
@@ -28,6 +32,8 @@ func occupant(deposit_id: String) -> int:
 # from selection and cannot move the chosen square anchor.
 func preview(cursor: Vector2, definition: MachineDefinition, turns: int,
 		context: Dictionary) -> Dictionary:
+	if _source == null or _source._seed != seed_value:
+		return {"reason": "Unavailable anchor", "ticket": {}}
 	var member := Rules.target(_source, cursor)
 	if member.is_empty():
 		return {"reason": "No valid target", "ticket": {}}
@@ -42,7 +48,8 @@ func preview(cursor: Vector2, definition: MachineDefinition, turns: int,
 # means logically valid for inspection, never eligible for gameplay activation.
 func inspect_rejection(ticket: Dictionary, definition: MachineDefinition,
 		cell: Vector2i, turns: int, context: Dictionary) -> String:
-	if ticket.get("epoch") != _epoch or ticket.get("seed") != seed_value \
+	if _source == null or _source._seed != seed_value \
+			or ticket.get("epoch") != _epoch or ticket.get("seed") != seed_value \
 			or not ticket.get("deposit_id") is String:
 		return "Unavailable anchor"
 	var reason := Rules.rejection(_source, ticket, definition, cell, turns,

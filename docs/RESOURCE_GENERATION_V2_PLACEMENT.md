@@ -45,7 +45,12 @@ no scene, hotbar entry, normal construction mode or automatic dispatch. It is th
 equivalent validation harness for this PR, rather than a graphical preview.
 
 `configure(source)` accepts an immutable ready ordinary/starting generator only
-when no machine or transaction exists. Reconfiguration increments an epoch.
+when no machine or transaction exists and its seed matches the inherited world
+seed. Configuration rejects mismatches without changing context. Preview and
+confirmation also recheck the current generator/world seed before targeting or
+validation. This inspection-only check reads the generator's existing `_seed`
+input; no production generator or descriptor API is changed. Reconfiguration
+increments an epoch.
 `preview(cursor, definition, turns, context)` returns a reason, exact logical
 bounds and a pending ticket containing source instance, policy, epoch, session
 seed, deposit ID and anchor rectangle. Empty reason means available **for
@@ -93,7 +98,7 @@ quantity, generation input or reservation changes.
 ## Validation and preservation
 
 [`static_extractor_anchor_test.py`](../tests/static_extractor_anchor_test.py)
-contains 12 nonexecuting Python tests: source contracts, independent geometry and
+contains 13 nonexecuting Python tests: source contracts, independent geometry and
 snap vectors, bounded queries, exact revalidation, transaction ordering, isolation,
 recovery delegation and baseline preservation. Actual results are recorded in the
 draft PR. PR #190 documented 21 broad-suite failures. Old guards are not repaired,
@@ -106,6 +111,12 @@ read-only audit found 25 existing `tests/__pycache__/` paths differing from the
 Stage 2A historical pins. Pre-run cache bytes/absence were not captured, so no
 claim of exact cache preservation is made. These files are retained, excluded
 from Git and not cleaned up. Subsequent Python invocations use `-B`.
+
+Focused pre-merge verification reproduced the housekeeping failure locally but
+not in a fresh isolated checkout of reviewed head `2da11f7`: the unchanged four
+housekeeping tests passed there using `python -B`, with no bytecode files created.
+This isolates the observed failure to local material; it does not restore caches,
+resolve their historical provenance or mark the local incident fixed.
 
 [`extractor_anchor_test.gd`](../tests/extractor_anchor_test.gd) authors geometry,
 negative coordinates, tie order/tolerance, rotation, alignment, compatibility,

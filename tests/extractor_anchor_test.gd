@@ -47,10 +47,17 @@ func _check(condition: bool, label: String) -> void:
 
 func _fixture() -> Fixture:
 	var definitions: Array[WorldResourceDefinition] = [FERRITE]
-	var source := Fixture.new(42, definitions, [])
+	var source: Fixture = Fixture.new(42, definitions, [])
 	var anchors: Array[Rect2i] = [Rect2i(-2, -2, 4, 4), Rect2i(4, -2, 4, 4)]
-	var made := Descriptors.create_location("ordinary-v2-1", 42, Vector2i(-1, -1), 0, &"ferrite", anchors)
+	var owner := Vector2i(-1, -1)
+	_check(OrdinaryResourceGenerator.owner_at(Rules.bounds(anchors[0]).position) == owner,
+		"fixture owner follows negative first anchor")
+	var made: Dictionary = Descriptors.create_location("ordinary-v2-1", 42, owner, 0, &"ferrite", anchors)
+	_check(made.ok and Descriptors.location_error(made.location).is_empty(), "fixture foundation descriptor validity")
 	source.members = made.location.deposits
+	_check(source.members[0].deposit_id == "resource:ordinary-v2-1:42:-1:-1:0:0"
+		and source.members[1].deposit_id == "resource:ordinary-v2-1:42:-1:-1:0:1",
+		"fixture canonical resource identities")
 	return source
 
 
@@ -74,7 +81,7 @@ func _geometry() -> void:
 	_check(Rules.select(Vector2(-96, -96), source.members).is_empty(), "Euclidean corner tolerance")
 	_check(Rules.select(Vector2(INF, 0), source.members).is_empty(), "nonfinite cursor rejected")
 	_check(Rules.target(source, Vector2(10000, 0)).is_empty(), "no distant snapping")
-	var state := Inspection.new()
+	var state := Inspection.new(42)
 	_check(state.configure(source), "inspection context configured")
 	var preview: Dictionary = state.preview(Vector2.ZERO, EXTRACTOR, 0, _environment())
 	var ticket: Dictionary = preview.ticket
@@ -117,7 +124,7 @@ func _geometry() -> void:
 	_check(state.inspect_rejection(stale_policy, EXTRACTOR, Vector2i(-2, -2), 0, _environment()) == "Unavailable anchor", "changed policy ticket rejected")
 	_check(state.configure(_fixture()), "replace same policy source")
 	_check(state.inspect_rejection(ticket, EXTRACTOR, Vector2i(-2, -2), 0, _environment()) == "Unavailable anchor", "source and policy invalidation")
-	state = Inspection.new()
+	state = Inspection.new(42)
 	state.configure(source)
 	preview = state.preview(Vector2.ZERO, EXTRACTOR, 0, _environment())
 	source.members.clear()
@@ -126,7 +133,7 @@ func _geometry() -> void:
 
 func _transactions() -> void:
 	var source := _fixture()
-	var state := Inspection.new()
+	var state := Inspection.new(42)
 	state.configure(source)
 	var ticket: Dictionary = state.preview(Vector2.ZERO, EXTRACTOR, 0, _environment()).ticket
 	var cell: Vector2i = ticket.anchor_cells.position
@@ -161,13 +168,48 @@ func _transactions() -> void:
 	_check(not state.recover_machine(machine_id, inventory, Vector2.ZERO, 160.0), "repeated recovery rejected")
 	_check(state.confirm(ticket, EXTRACTOR, cell, 3, _environment(), inventory) > machine_id, "recovered anchor available with monotonic machine IDs")
 	# Synthetic independent record in the SAME registry demonstrates overlap checks.
-	var other := Inspection.new()
+	var other := Inspection.new(42)
 	other.configure(source)
 	other._machines[99] = {"id": 99, "definition": EXTRACTOR, "cell": cell, "turns": 0}
 	var overlap: Dictionary = other.preview(Vector2.ZERO, EXTRACTOR, 0, _environment())
 	_check(overlap.reason == "Overlaps a deployed machine", "machine obstruction without proximity occupancy")
 	_check(other.confirm(overlap.ticket, EXTRACTOR, cell, 0, _environment(), inventory) == 0, "blocked placement consumes nothing")
 	_check(other.deploy_machine_instance(EXTRACTOR, cell, 0, inventory, null, null, 160) == 0, "normal deployment entry stays disabled")
+
+
+func _seed_consistency() -> void:
+	var source := _fixture()
+	var mismatched := Inspection.new()
+	_check(not mismatched.configure(source), "mismatched generator seed rejected at configure")
+	_check(mismatched.preview(Vector2.ZERO, EXTRACTOR, 0, _environment()).ticket.is_empty(),
+		"unconfigured mismatch cannot publish ticket")
+	var state := Inspection.new(42)
+	_check(state.configure(source), "matching generator seed accepted")
+	var ticket: Dictionary = state.preview(Vector2.ZERO, EXTRACTOR, 0, _environment()).ticket
+	var cell: Vector2i = ticket.anchor_cells.position
+	var foreign := _fixture()
+	foreign._seed = 43
+	_check(not state.configure(foreign) and state.preview(Vector2.ZERO, EXTRACTOR, 0, _environment()).ticket == ticket,
+		"rejected seed configuration preserves prior context")
+	var inventory := InventoryState.new()
+	inventory.add_item(EXTRACTOR, 2)
+	state.seed_value = 43
+	_check(state.preview(Vector2.ZERO, EXTRACTOR, 0, _environment()).ticket.is_empty(),
+		"world seed mismatch blocks fresh preview")
+	_check(state.confirm(ticket, EXTRACTOR, cell, 0, _environment(), inventory) == 0,
+		"world seed mismatch blocks confirmation")
+	var relabeled := ticket.duplicate()
+	relabeled.seed = 43
+	_check(state.confirm(relabeled, EXTRACTOR, cell, 0, _environment(), inventory) == 0,
+		"relabeled ticket cannot bypass source seed check")
+	state.seed_value = 42
+	source._seed = 43 # Deliberately violate immutable-source convention.
+	_check(state.preview(Vector2.ZERO, EXTRACTOR, 0, _environment()).ticket.is_empty(),
+		"generator seed mismatch blocks fresh preview")
+	_check(state.confirm(ticket, EXTRACTOR, cell, 0, _environment(), inventory) == 0,
+		"generator seed mismatch blocks confirmation")
+	_check(inventory.get_quantity(&"extractor") == 2 and state.get_machines().is_empty()
+		and state.occupant(ticket.deposit_id) == 0, "seed failures preserve inventory registry and occupancy")
 
 
 func _real_sources() -> void:
@@ -197,6 +239,7 @@ func _real_sources() -> void:
 func _initialize() -> void:
 	_geometry()
 	_transactions()
+	_seed_consistency()
 	_real_sources()
 	print("Extractor anchor assertions: %d checks, %d failures" % [_checks, _failures])
 	quit(0 if _failures == 0 else 1)
