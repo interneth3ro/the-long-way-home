@@ -27,6 +27,10 @@ var _machine_presenters: Dictionary[int, DeployedMachine] = {}
 var _highlights: Node2D
 var _ferrite_presenter: FerriteDepositPresenter
 var _ferrite_token: int = 0
+var _resource_presenter: ResourcePresenterV2
+var _resource_token: int = 0
+var _resource_chunks: Dictionary = {}
+var _resources_done: bool = false
 var _arrival_generation: int = 0
 var _arrival_cancelled: bool = false
 var _highlights_dirty: bool = false
@@ -65,7 +69,7 @@ func prepare_for_arrival(player: CharacterBody2D, state: PlanetWorldState) -> Di
 	var arrival_revision := state.revision
 	_initialize_world(state)
 	_update_neighborhood()
-	while (not _pending.is_empty() or not _ferrite_presenter.required_ready(_ferrite_token)) \
+	while (not _pending.is_empty() or not _ferrite_presenter.required_ready(_ferrite_token) or not _resources_done) \
 			and _terrain_failure.is_empty() and arrival == _arrival_generation:
 		if not is_inside_tree() or not is_instance_valid(player) or not is_ancestor_of(player) \
 				or _state != state or state.seed_value != arrival_seed or state.revision != arrival_revision:
@@ -73,6 +77,7 @@ func prepare_for_arrival(player: CharacterBody2D, state: PlanetWorldState) -> Di
 		if not _service_ferrite(true):
 			break
 		_generate_budget()
+		_service_resources()
 		_flush_highlights()
 		await get_tree().process_frame
 	# An old await must not change flags belonging to a newer preparation.
@@ -98,6 +103,15 @@ func prepare_for_arrival(player: CharacterBody2D, state: PlanetWorldState) -> Di
 
 # Shared setup uses the same generator, presenters and publication path as arrival.
 func _initialize_world(state: PlanetWorldState) -> void:
+	if _resource_presenter == null:
+		_resource_presenter = ResourcePresenterV2.new()
+		add_child(_resource_presenter)
+	var configured := _resource_presenter.configure_world(state,
+		[preload("res://scenes/world/resource_definitions/v2/cuprite.tres")])
+	_resource_chunks.clear()
+	_resources_done = false
+	if not configured.ok:
+		_stop_terrain(configured)
 	if _ferrite_presenter == null:
 		_ferrite_presenter = FerriteDepositPresenter.new()
 		_ferrite_presenter.z_index = -5
@@ -147,7 +161,7 @@ func prepare_initial_neighborhood(state: PlanetWorldState) -> Dictionary:
 			var coordinate := center + Vector2i(x, y)
 			if not _chunks.has(coordinate) and not _pending.has(coordinate):
 				_pending.append(coordinate)
-	while (not _pending.is_empty() or not _ferrite_presenter.required_ready(_ferrite_token)) \
+	while (not _pending.is_empty() or not _ferrite_presenter.required_ready(_ferrite_token) or not _resources_done) \
 			and _terrain_failure.is_empty() and generation == _arrival_generation:
 		if not is_inside_tree() or _state != state or state.seed_value != seed_value \
 				or state.revision != revision or _arrival_cancelled:
@@ -155,6 +169,7 @@ func prepare_initial_neighborhood(state: PlanetWorldState) -> Dictionary:
 		if not _service_ferrite(true):
 			break
 		_generate_budget()
+		_service_resources()
 		_flush_highlights()
 		preparation_progress.emit(_initial_completed(center), INITIAL_CHUNK_COUNT + 1)
 		if not is_inside_tree() or generation != _arrival_generation:
@@ -186,7 +201,7 @@ func _initial_completed(center: Vector2i) -> int:
 					and _ground_is_current(coordinate) and not _tint_dirty:
 				completed += 1
 	if _ferrite_presenter != null and _ferrite_presenter.matches_context(_state) \
-			and _ferrite_presenter.required_ready(_ferrite_token):
+			and _ferrite_presenter.required_ready(_ferrite_token) and _resources_done:
 		completed += 1
 	return completed
 
@@ -220,7 +235,7 @@ func arrival_is_ready(result: Variant) -> bool:
 		and not _preparing and not _arrival_cancelled and _terrain_failure.is_empty() \
 		and _pending.is_empty() and _ferrite_presenter != null \
 		and _ferrite_presenter.matches_context(_state) \
-		and _ferrite_presenter.required_ready(_ferrite_token) \
+		and _ferrite_presenter.required_ready(_ferrite_token) and _resources_done \
 		and _center == WorldCoordinates.world_to_chunk(to_local(_player.global_position))
 
 
@@ -231,6 +246,10 @@ func cancel_arrival_preparation() -> void:
 	if _ferrite_presenter != null:
 		_ferrite_presenter.cancel()
 	_cancel_continuous()
+	if _resource_presenter != null:
+		_resource_presenter.cancel()
+	_resource_chunks.clear()
+	_resources_done = false
 	_clear_highlights()
 
 
@@ -251,6 +270,7 @@ func _process(_delta: float) -> void:
 	_update_neighborhood()
 	_service_ferrite()
 	_generate_budget()
+	_service_resources()
 	_flush_highlights()
 
 
@@ -315,6 +335,40 @@ func _service_ferrite(required_only: bool = false) -> bool:
 	elif presented.changed:
 		_highlights_dirty = true
 	return not presented.get("stale", false)
+
+
+# Stream only over attached terrain. Queries never acquire construction authority.
+func _service_resources() -> void:
+	if not _terrain_failure.is_empty() or _resource_presenter == null:
+		return
+	var loaded: Dictionary = {}
+	for coordinate in _chunks:
+		loaded[coordinate] = true
+	if loaded != _resource_chunks:
+		_resource_chunks = loaded
+		_resource_presenter.set_loaded_chunks(loaded)
+		if loaded.is_empty():
+			_resource_presenter.cancel()
+			_resources_done = true
+			return
+		var coordinates: Array = loaded.keys()
+		var area := Rect2(Vector2(coordinates[0]) * WorldCoordinates.CHUNK_SIZE,
+			Vector2.ONE * WorldCoordinates.CHUNK_SIZE)
+		for coordinate: Vector2i in coordinates:
+			area = area.merge(Rect2(Vector2(coordinate) * WorldCoordinates.CHUNK_SIZE,
+				Vector2.ONE * WorldCoordinates.CHUNK_SIZE))
+		var requested := _resource_presenter.request(area)
+		if not requested.ok:
+			_stop_terrain(requested)
+			return
+		_resource_token = requested.token
+		_resources_done = false
+	var presented := _resource_presenter.step(_resource_token)
+	if not presented.ok:
+		_resources_done = false
+		_stop_terrain(presented)
+		return
+	_resources_done = presented.get("done", false)
 
 
 func _generate_budget() -> void:

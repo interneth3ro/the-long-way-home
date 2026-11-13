@@ -1,8 +1,15 @@
 # Resource Generation v2 extractor anchors
 
-## Milestone 7 live construction (feature branch, pending merge)
+Milestone 8 preserves the construction contracts below and adds
+[resource-specific production and recovery](RESOURCE_GENERATION_V2_INTEGRATION.md#milestone-8-cuprite-gameplay-pending-merge)
+with [normal Cuprite artwork](RESOURCE_GENERATION_V2_PRESENTATION.md#milestone-8-normal-gameplay-pending-merge),
+pending merge. Its output resolver is independent of construction-only highlighting.
 
-Implemented on `codex/resource-generation-v2-live-construction`, based on merged
+<a id="milestone-7-live-construction-feature-branch-pending-merge"></a>
+
+## Milestone 7 live construction (PR #193 merged)
+
+Merged in [PR #193](https://github.com/interneth3ro/the-long-way-home/pull/193), based on
 PR #192 (`fc3b0947be5e3cb217e4de12f95ec23d550a5003`). Owner Decisions 9A-9E
 activate normal construction immediately, without a development gate. The
 Milestone 5 inspection record below remains historical; it is not the live path.
@@ -63,7 +70,7 @@ Context teardown does not clear machines or claims. Existing token invalidation
 remains fail-closed; no migration, reconciliation or administrative recovery is
 introduced. Recovery by machine ID remains available after context retirement.
 
-### Production and verification boundary
+### Historical Milestone 7 production and verification boundary
 
 Every committed v2 Extractor reports `INACTIVE`; normal production therefore
 skips it even if legacy Ferrite overlaps its position. The Extractor inspection
@@ -242,7 +249,7 @@ evidence is performed; the local bytecode incident is disclosed above.
 ## Remaining integration work
 
 Milestone 6's [world-state integration](RESOURCE_GENERATION_V2_INTEGRATION.md)
-merged in PR #192. Milestone 7's live path is described above, pending merge.
+merged in PR #192. Milestone 7's live path merged in PR #193 and is described above.
 The isolated harness remains an independent historical test adapter and cannot
 substitute for live physics. Milestone 8 separately adds Cuprite extraction,
 production and presentation. Carbite production, Ferrite migration/retirement,

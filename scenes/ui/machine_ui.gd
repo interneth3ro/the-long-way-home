@@ -256,12 +256,14 @@ func _refresh(machine: Dictionary) -> void:
 		_transfer_button.disabled = machine.input >= definition.input_capacity \
 			or progression.inventory.get_quantity(definition.input_item.item_id) == 0
 	var output_heading := "Output"
-	if machine.output > 0 and definition.output_item != null:
-		output_heading += " — %s" % definition.output_item.display_name
+	var output_item := progression.planet.stored_output_item(machine)
+	if machine.output > 0 and output_item != null:
+		output_heading += " — %s" % output_item.display_name
 	_output.text = "%s\n%d / %d" % [output_heading, machine.output, definition.output_capacity]
 	_collect_button.disabled = machine.output == 0
 	if extractor:
-		_extractor_view.refresh(machine, progression.planet.machine_status(machine), _in_range(machine))
+		_extractor_view.refresh(machine, progression.planet.machine_status(machine), _in_range(machine),
+			output_item)
 		_layout_extractor()
 
 

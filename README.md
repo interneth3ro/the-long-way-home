@@ -13,12 +13,16 @@ merged in PR #191: reusable logical rules and an isolated nonvisual
 transaction/preview harness. Milestone 6's
 [live world-state descriptor boundary](docs/RESOURCE_GENERATION_V2_INTEGRATION.md)
 merged in PR #192 with complete reservations and fail-closed context tokens.
-Milestone 7 connects [live Extractor construction and occupancy](docs/RESOURCE_GENERATION_V2_PLACEMENT.md#milestone-7-live-construction-feature-branch-pending-merge)
-on `codex/resource-generation-v2-live-construction`, pending owner review and merge:
-legacy Ferrite routing takes priority; elsewhere authoritative v2 anchors snap the
-ghost, with claims committed/released under existing machine transactions.
-V2 Extractors remain inactive for production. Cuprite production/presentation
-(Milestone 8) remains deferred. Legacy Ferrite and approved artwork are preserved.
+Milestone 7's [live Extractor construction and occupancy](docs/RESOURCE_GENERATION_V2_PLACEMENT.md#milestone-7-live-construction-feature-branch-pending-merge)
+merged in [PR #193](https://github.com/interneth3ro/the-long-way-home/pull/193).
+Milestone 8 implements [normal Cuprite presentation](docs/RESOURCE_GENERATION_V2_PRESENTATION.md#milestone-8-normal-gameplay-pending-merge)
+and [resource-specific Extractor production](docs/RESOURCE_GENERATION_V2_INTEGRATION.md#milestone-8-cuprite-gameplay-pending-merge)
+on `codex/resource-generation-v2-cuprite-gameplay`, pending owner review and merge.
+The shared Extractor produces Cuprite Ore from authoritative Cuprite deposits,
+using its existing 60/min timing and 20-item storage; collection and recovery use
+the same resolved item. The owner's unchanged inventory icon is registered with
+shared item presentation. Legacy Ferrite and approved world artwork are preserved.
+Carbite production, new recipes and save migration remain outside this milestone.
 Validation is static only; GDScript assertions are authored but not executed.
 
 The [east/west walking alignment](#dave-east-and-west-walk-alignment-v1-owner-accepted-pending-merge)
@@ -43,7 +47,8 @@ The [Cuprite visual prototype v1](docs/CUPRITE_VISUAL_PROTOTYPE_V1.md) adds one
 presentation-only deposit near the crash site and an optional stationary
 Extractor scale reference. The owner reported final F5 PASS; its visual
 configuration is frozen as Cuprite Deposit Visual Prototype v1, pending merge.
-Cuprite mining and progression are not implemented. Agent validation is static only.
+The preserved prototype supplies no mining or progression authority; the pending
+Milestone 8 gameplay path is described above. Agent validation is static only.
 
 Milestone 5 standalone serialized `.sav` codec foundation, isolated runner and
 inactive one-time authorization safeguards merged in
