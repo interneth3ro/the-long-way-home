@@ -280,8 +280,9 @@ baseline is not repaired by this PR.
 
 ### First behavioral invocation proposal (inactive)
 
-This amendment is preparation only on `codex/behavioral-first-run-amendment`,
-pending review and merge. **It does not activate the launcher or authorize Godot.**
+The preparation amendment merged in PR #197. **It does not activate the launcher
+or authorize Godot.** The separately authorized first invocation is recorded below;
+its grant is consumed and unconditional denial has been restored.
 The production gate still throws unconditionally. The fixture rehearses a
 temporary return gate in memory, with inert process doubles, then restores denial
 after synthetic success, failure, timeout, output overflow and process exception.
@@ -382,6 +383,61 @@ preservation copies and unexpected outputs. Do not delete, revert or automatical
 clean generated files. Unapproved writes or uncertain termination stop further
 testing and require owner direction. A PASS grants no standing, graphical,
 gameplay or performance authority. Native/codec permissions are unchanged.
+
+### First behavioral invocation result (2026-11-13)
+
+The owner explicitly authorized exactly one supervised invocation at activation
+revision `a9aff2d2c2c29650ba338d2ac8c74147862a6244`, including the prescribed
+filesystem observations and verified preservation copies of the five project logs.
+The reviewed base was `728974c8f8cda3d698bf956a022b07aa7412c9f3`; only the
+authorization gate changed from `throw` to `return`. The fixed executable path and
+SHA-256, command, one-entry manifest, four smoke assertions, supervisor and
+30-second/1,048,576-byte/4,096-byte limits were verified unchanged.
+
+The actual command, once in `D:\GameDev\Godot\Projects\TLWH`, was:
+
+```powershell
+pwsh -NoProfile -File tools/run-behavioral-tests.ps1
+```
+
+**Runtime: PASS.** Launcher exit 0, with the unchanged supervisor accepting normal
+exit/stream completion, no engine/script/assertion errors and exactly the required
+final records:
+
+```text
+TLWH_BEHAVIORAL_GROUP_V1 world_coordinates PASS checks=4
+TLWH_BEHAVIORAL_V1 PASS groups=1 checks=4 failures=0
+```
+
+**Filesystem acceptance: PASS.** In-session inventories recorded relative paths,
+sizes and SHA-256 for 3,531 checkout files (excluding Git metadata), then 3,536
+after the five approved preservation copies, plus 26 project-profile files.
+Git HEAD/status and index SHA-256 and editor-settings identity were captured
+separately. No links were found. The index, executable and HEAD stayed unchanged.
+Post-run differences, before documentation/commit work, were only:
+
+- Intentional restoration of `tools/run-behavioral-tests.ps1` to unconditional denial.
+- Profile `logs/godot.log` changed from 719 to 183 bytes.
+- Engine log rotation removed `logs/godot2026-11-13T09.09.22.log` (719 bytes) and
+  added `logs/godot2026-11-13T11.27.38.log` (719 bytes). The added log's SHA-256
+  matches the prior current log and removed rotated log.
+
+All five pre-run log copies remain verified and ignored under
+`artifacts/logs/behavioral-first-run-8c1a377323d14b49a8d22fb20e846659/`.
+No raw logs are published. Checkout caches, protected validation profile, UIDs,
+import sidecars, artwork, both untracked audit reports, other ignored files,
+project-profile shader caches/snapshots/saves/settings and editor settings were
+unchanged. No agent cleanup or deletion occurred; the removed original was an
+approved engine rotation effect with its verified preservation copy retained.
+
+The gate was restored immediately in a `finally` block after the single launcher
+invocation. It matches the inactive preparation (normalizing Git line endings).
+PowerShell parsing and all 13 inert fixtures passed after restoration, as they
+had before activation; denial-specific fixtures were not run against the active
+gate. Exact source comparison and `git diff --check` passed. No full Python-suite
+PASS is claimed. The one-time authorization is **consumed**; no retry, standing
+permission, graphical/gameplay/performance validation or broader test scope
+follows. Further Godot execution requires new explicit owner authorization.
 
 ## Fixed metadata smoke extension (draft, tested runtime scope passed)
 
