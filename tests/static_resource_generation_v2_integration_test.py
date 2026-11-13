@@ -145,7 +145,8 @@ class ResourceIntegrationStaticTests(unittest.TestCase):
         descriptors = (ROOT / "scenes/world/resource_generation_descriptors.gd").read_text()
         definition = (ROOT / "scenes/world/world_resource_definition.gd").read_text()
         self.assertIn('const POLICY: String = "ordinary-v2-1"', ordinary)
-        self.assertIn('const STARTING_POLICY: String = "starting-v2-1"', starting)
+        self.assertIn('const STARTING_POLICY: String = "starting-v2-2"', starting)
+        self.assertIn('const TRANSITION_SAMPLING_DOMAIN: String = "starting-v2-1"', starting)
         self.assertIn('const SCHEMA_VERSION: int = 1', descriptors)
         self.assertIn('const REQUIRED := {"ferrite": 3, "carbite": 2, "cuprite": 2}', starting)
         self.assertIn('const ANCHOR_CELLS := Vector2i(4, 4)', definition)
@@ -168,7 +169,7 @@ class ResourceIntegrationStaticTests(unittest.TestCase):
                       "repeated failure cannot restore retired context"):
             self.assertIn(label, BEHAVIOR)
         self.assertIn('"resource:ordinary-v2-1:%d:0:0:0:0" % seed_value', BEHAVIOR)
-        self.assertIn('"resource:starting-v2-1:%d:0:0:0:0" % (seed_value + 1)', BEHAVIOR)
+        self.assertIn('"resource:starting-v2-2:%d:0:0:0:0" % (seed_value + 1)', BEHAVIOR)
         self.assertIn('_check_failure(world.resource_descriptor_v2_by_id(wrong_policy, token), "incompatible_context"', BEHAVIOR)
         self.assertIn('_check_failure(world.resource_descriptor_v2_by_id(wrong_seed, token), "invalid_identity"', BEHAVIOR)
         for guard in ('result.size() == 3', 'result.get("ok") == false',

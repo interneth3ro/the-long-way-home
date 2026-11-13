@@ -263,3 +263,15 @@ import, graphical, gameplay or performance claim is made. The historical isolate
 inspection checklist above describes its original scope, not Milestone 8 normal
 F5 behavior. Approved canvas-versus-clearance visual review remains outstanding;
 no artwork scale/offset or deterministic clearance policy was changed.
+
+
+### Obsolete live prototype removal (PR #195, pending merge)
+
+Following owner runtime acceptance of generated Cuprite, Decision 11A removes
+only `GroundObjects/CupriteVisualPrototype` from `planet_exterior.tscn`, its unused
+PackedScene declaration and its instance-only editability entry. The scene's
+`load_steps` is adjusted accordingly. The reference prototype scene, approved PNG,
+v2 catalog/registration and generated presenter remain unchanged; other authored
+objects are preserved. This removes the redundant manual illustration, not an
+authoritative deposit. Starting preferences/identity are described in the
+[layout correction](RESOURCE_GENERATION_V2_STARTING.md#cuprite-layout-correction-pr-195-pending-merge).

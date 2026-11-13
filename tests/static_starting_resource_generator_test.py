@@ -36,15 +36,15 @@ class StartingResourceStaticTests(unittest.TestCase):
             return a[0] <= b[2] and a[2] >= b[0] and a[1] <= b[3] and a[3] >= b[1]
 
         results = []
-        for seed in (0, 1, 42, -79, 7341, -9223372036854775807, 9223372036854775807):
+        for seed in (26026, 0, 1, 42, -79, 7341, -9223372036854775807, 9223372036854775807):
             def sample(attempt, slot, channel):
-                key = f'starting-v2-1:{seed}:{attempt}:{slot}:{channel}'
+                key = f'starting-v2-2:{seed}:{attempt}:{slot}:{channel}'
                 return int(hashlib.sha256(key.encode()).hexdigest()[:7], 16)
 
             found = None
-            for attempt in range(512):
+            for attempt in range(4096):
                 groups, slot = [], 4
-                for count, thresholds in zip((3, 2, 2), ((25, 90), (10, 65), (5, 30))):
+                for count, thresholds in zip((3, 2, 2), ((25, 90), (10, 65), (45, 90))):
                     remaining = count
                     while remaining:
                         members = 1 + sample(attempt, slot, 'group') % remaining
@@ -84,7 +84,7 @@ class StartingResourceStaticTests(unittest.TestCase):
         self.assertGreater(len({str(result) for result in results}), 1)
 
     def test_complete_bounded_search_and_failure_publication(self):
-        self.assertIn('const ARRANGEMENT_BUDGET: int = 512', SOURCE)
+        self.assertIn('const ARRANGEMENT_BUDGET: int = 4096', SOURCE)
         self.assertIn('const REQUIRED := {"ferrite": 3, "carbite": 2, "cuprite": 2}', SOURCE)
         self.assertIn('for attempt in range(ARRANGEMENT_BUDGET)', SOURCE)
         self.assertLess(SOURCE.index('var arrangement := _arrangement(attempt)'),
@@ -108,9 +108,9 @@ class StartingResourceStaticTests(unittest.TestCase):
         self.assertIn('location.duplicate(true)', SOURCE)
 
     def test_distance_preferences_overlap_and_transition_is_presence_only(self):
-        self.assertIn('[[25, 90], [10, 65], [5, 30]]', SOURCE)
+        self.assertIn('[[25, 90], [10, 65], [45, 90]]', SOURCE)
         # Every resource has positive mass in all three radial bands.
-        for a, b in ((25, 90), (10, 65), (5, 30)):
+        for a, b in ((25, 90), (10, 65), (45, 90)):
             self.assertTrue(0 < a < b < 100)
         self.assertIn('get_center().distance_to(_ship)', SOURCE)
         self.assertIn('distance < MIN_DISTANCE or distance > MAX_DISTANCE', SOURCE)

@@ -105,15 +105,19 @@ will require review before any separately authorized metadata execution.
 [`ResourceGenerationV2Integration`](../scenes/world/resource_generation_v2_integration.gd)
 `RefCounted`. The existing constructor signature and legacy Ferrite initialization
 remain. After legacy initialization, the constructor explicitly initializes v2
-using authoritative `seed_value`. V2 failure is independent of legacy readiness,
+using authoritative `seed_value`. The [Cuprite layout correction](RESOURCE_GENERATION_V2_STARTING.md#cuprite-layout-correction-pr-195-pending-merge)
+revises starting identity/reservation draws and the approved bounded search ceiling,
+while retaining prior ordinary transition draws and the ordinary policy. V2 failure is independent of legacy readiness,
 construction, production, transactions, recovery, inventories and signals.
 
 The component loads and snapshots the existing native Ferrite, Carbite and Cuprite
 definitions. It constructs the existing `StartingResourceGenerator` with the exact
 `ResourceGenerationCrashSite.protected_bounds()` and `SHIP_REFERENCE`. No caller
 can substitute definitions, protection geometry or ship position. Empty protection
-fails initialization. The inherited `ordinary-v2-1`, `starting-v2-1` and schema 1
-contracts and numerical values are unchanged. Artwork catalogs are not loaded.
+fails initialization. The current identities are `ordinary-v2-1`, `starting-v2-2` and schema 1. The
+layout correction revises Cuprite preferences and the reviewed starting search
+ceiling; generation units, protection and other resource preferences remain
+unchanged. Artwork catalogs are not loaded.
 
 A candidate stays local until generator readiness and `reservations()` succeed.
 Complete locations pass configured descriptor validation, expected seed/policy,
@@ -137,7 +141,7 @@ These separate names preserve the semantics of legacy
 | `query_resource_descriptors_v2(area, token)` | Existing bounded visual-envelope broad phase; success has `deposits`. Empty success is valid absence. Logical anchors remain extraction geometry. |
 | `resource_descriptor_v2_by_id(identity, token)` | Exact generator resolution of accepted canonical deposit or location identity; success has `descriptor`. |
 | `starting_resource_reservations_v2(token)` | Complete deep-copied `locations` plus generator `attempts`. |
-| `configure_resource_generation_v2(ordinary_policy = "ordinary-v2-1", starting_policy = "starting-v2-1", schema_version = 1)` | Explicit initialization/replacement using the authoritative seed and fixed authored inputs. Unsupported policies/schema retire the previous context and fail. |
+| `configure_resource_generation_v2(ordinary_policy = "ordinary-v2-1", starting_policy = "starting-v2-2", schema_version = 1)` | Explicit initialization/replacement using the authoritative seed and fixed authored inputs. Unsupported policies/schema retire the previous context and fail. |
 | `invalidate_resource_generation_v2()` | Explicit teardown of v2 only. Releases generator/cache and retires the token. |
 
 All result Dictionaries have `ok`. Failures contain only `ok: false`, `code`

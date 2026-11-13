@@ -16,6 +16,79 @@ complete reservations before publication. Milestone 7 connects
 pending merge, without changing this reservation policy. Production and normal
 Cuprite presentation remain deferred.
 
+## Cuprite layout correction (PR #195, pending merge)
+
+Owner Decision 11A, Option B changes only the Cuprite starting band preference
+from **5/25/70 to 45/45/10** (near/middle/far). Ferrite remains **25/65/10** and
+Carbite **10/55/35**. Cumulative thresholds are now `[[25,90],[10,65],[45,90]]`.
+The band ranges, 3/2/2 counts, 4x4 anchors, complete-arrangement validation,
+spacing, protection snapshot, ship reference and native resource definitions are
+unchanged. After static feasibility review, the owner separately approved a bounded
+search-ceiling increase from **512 to 4,096 attempts**. Exhaustion still fails closed;
+no extra distance guarantee, partial layout or fallback arrangement is introduced.
+The worst-case attempt bound is eight times the original; engine cost is unmeasured.
+
+Current layout/descriptor identity is **`starting-v2-2`**: changed reservations
+must not reuse the previous layout identity. Direct construction and world-state
+configuration reject `starting-v2-1`; no compatibility alias or save migration
+exists. Reservation hash draws use `starting-v2-2`, as part of the versioned layout.
+Only **ordinary transition-thinning draws retain `starting-v2-1`**, through the
+explicit `TRANSITION_SAMPLING_DOMAIN` argument to the existing hash sampler. That
+old string is a hash input, not accepted policy authority. Reservation draws and
+whole-arrangement rejection can change Ferrite/Carbite positions although their
+preferences remain unchanged. Ordinary `ordinary-v2-1` raw distribution/geology,
+priority and grouping are unchanged; exclusions next to the changed reservations
+necessarily follow the new reservations. Distant ordinary geometry is unchanged,
+while wrapped descriptor IDs use the current starting-policy identifier.
+
+The historical PR #189 record below describes the original `starting-v2-1`
+identity and weights. Its sampling channels, protection and geometry still apply;
+the current identity, reservation hash domain, Cuprite preference and separately
+approved search ceiling above supersede the old values.
+
+Owner-reported normal F5 acceptance passed startup, Cuprite visibility, extraction,
+60/min production, capacity, collection/resumption, recovery/occupancy, streaming
+and legacy Ferrite production/collection/recovery before this layout correction.
+The obsolete authored prototype is now removed from normal gameplay, while its
+[reference scene/artwork](CUPRITE_VISUAL_PROTOTYPE_V1.md) remain preserved.
+
+Eight focused [layout static checks](../tests/static_cuprite_layout_test.py) pass, covering
+scene membership, artwork, weights, counts, protection, policy/context, ordinary
+sampling and legacy Ferrite preservation. [GDScript layout assertions](../tests/cuprite_world_layout_test.gd)
+are authored but **unexecuted**, including deterministic reconstruction, current
+identity, rejection of the old policy and Cuprite anchor-center distance reporting
+for the default seed `26026` and representative signed seeds. Existing integration
+behavior fixtures use the new current-policy token. Directly affected Python
+policy/weight/budget expectations and the existing independent numerical examples
+are updated to the approved policy. Fifteen focused checks pass in total. The
+nonengine model finds complete examples for the default seed and seven signed/
+representative seeds within 4,096 attempts (largest modeled requirement: 2,448).
+At 512 attempts, even the default seed exhausted with the old reservation draws;
+new-policy draws still exhausted for some representative seeds. This motivated
+the explicit owner budget review. These are mathematical model results, not actual
+Godot layouts, timings or measured distances. Unrelated historical guards and SHA
+pins are unchanged. Full broad-suite classification is recorded in PR #195.
+
+Final broad static discovery ran **675 tests / 83 failure cases / 0 errors / 2 skips**
+in 378.603 seconds, with unchanged review-diff identity throughout the run.
+Against PR #194's published 659-test/87-case record, 80 prior cases remain, seven
+prior scene/source-preservation cases now pass after prototype removal, and three
+new source-shape/preservation conflicts remain (two whole-starting-source guards
+and the earlier live-presenter registration-limit shape guard). The broad suite
+remains **FAIL**. No outstanding unexpected regression was identified statically;
+the initial model exhaustion finding was addressed through the separately approved
+policy draw/search-budget review. The full module classification is in PR #195.
+This comparison uses the published PR #194 record, not a newly rerun untouched
+checkout. Only documentation of these results was updated after the frozen run.
+
+**Actual accepted ship-relative distances have not been measured** for the old
+or revised layouts. No Godot parsing/import, headless, graphical or gameplay run
+was performed by the agent. Static band preferences do not establish final
+positions: group offsets, grid rounding, protection and joint spacing can reject
+near proposals and select later attempts. Whether both accepted Cuprite deposits
+remain unusually far away is unverified and remains owner runtime review; no
+extra guarantee or unapproved weight adjustment has been added.
+
 ## Policy boundary and interfaces
 
 [`StartingResourceGenerator`](../scenes/world/starting_resource_generator.gd)
