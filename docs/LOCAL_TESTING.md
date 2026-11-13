@@ -183,8 +183,8 @@ and needs review. A failed first invocation must not be retried automatically.
 
 ## Local behavioral foundation (inactive)
 
-The PR 1 foundation on `codex/minimal-local-behavioral-runner` is pending review
-and merge. It prepares a small Godot-native workflow; **it grants no execution
+The foundation merged in PR #196 at `398a2c9`; its feature branch was retired.
+It prepares a small Godot-native workflow; **it grants no execution
 authorization**. Current Godot restrictions remain effective. The new launcher
 always returns exit 1 and `Behavioral: NOT RUN` with `AUTHORIZATION_DENIED`, before
 engine identity checks or process dispatch. There is no CLI switch, environment
@@ -277,6 +277,111 @@ classification only. GDScript inspection is static; it does not establish Godot
 parsing, loading, completion output, runtime PASS or direct-checkout cache behavior.
 The earlier test audit remains local and unchanged; its historical Python failure
 baseline is not repaired by this PR.
+
+### First behavioral invocation proposal (inactive)
+
+This amendment is preparation only on `codex/behavioral-first-run-amendment`,
+pending review and merge. **It does not activate the launcher or authorize Godot.**
+The production gate still throws unconditionally. The fixture rehearses a
+temporary return gate in memory, with inert process doubles, then restores denial
+after synthetic success, failure, timeout, output overflow and process exception.
+It also checks the fixed identity constants without reading the executable.
+No environment switch, token, permission file, persistent grant counter or
+general authorization framework is introduced.
+
+After review, a later activation revision may change only the gate's `throw`
+statement to `return`. Compare that revision with the reviewed preparation:
+the dispatcher, manifest, four production smoke assertions, shared supervisor,
+identity and limits must be unchanged. The owner must explicitly approve the
+**exact resulting activation revision**, the single invocation and filesystem
+scope before any Godot launch. Preparation, merge and inert PASS are not approval.
+The temporary return is workflow-controlled, not a technical one-use latch; the
+supervisor must prevent a second invocation and restore denial promptly.
+
+The only proposed command is:
+
+```powershell
+pwsh -NoProfile -File tools/run-behavioral-tests.ps1
+```
+
+Use only `D:\GameDev\Godot\Standard\Godot_v4.7.2-stable_win64.exe`, SHA-256
+`AB1824F85BFD8E0E4128182C000C4003A3E042245B2967848D089B2A04B22424`,
+with working directory `D:\GameDev\Godot\Projects\TLWH` and exactly:
+
+```text
+--headless --path D:\GameDev\Godot\Projects\TLWH --script res://tests/behavioral/test_runner.gd
+```
+
+One process, 30 seconds, 1,048,576 combined output bytes and a 4,096-byte raw
+diagnostic excerpt remain fixed. No import/version/help probe, graphical launch,
+performance test, automatic retry or concurrent runner is included. The existing
+best-effort termination and decoded-diagnostic limitations remain unchanged.
+
+Before the separately authorized invocation:
+
+1. Close applications that could write the checkout or project profile. Confirm
+   the reviewed revision, clean tracked/index state and unchanged scope. Preserve
+   both untracked `docs/audits/test-suite-audit-2026-11-13` reports (`.md`/`.csv`)
+   and all ignored material. Run PowerShell parsing and the inert fixtures on the
+   inactive preparation before the temporary gate edit. The denial-specific suite
+   must fail against an active gate; after that edit check parsing and the exact
+   gate-only diff, obtain approval of the resulting revision, and run the full
+   fixtures again after restoration. Unrelated historical Python failures are
+   not repaired or waived here.
+2. Capture HEAD, Git status including untracked/ignored paths (use
+   `git --no-optional-locks status` to avoid index refresh), and index SHA-256.
+   Inventory regular files by relative path, byte size and SHA-256: tracked files,
+   existing untracked/ignored owner files, `.godot/`, and
+   `%APPDATA%\Godot\app_userdata\The Long Way Home\`. Include existing profile
+   shader caches, saves/settings and `objectdb_snapshots`, even though changes
+   there are not approved. Record Godot editor settings identities separately.
+   Do not traverse links; report them and resolve affected scope before running.
+   Keep observations in the supervising session; no new inventory tool is needed.
+3. Separately obtain owner approval for log-preservation writes. Re-inventory the
+   five existing project logs; if the set has changed, stop for review. Create a
+   unique, previously absent `artifacts/logs/behavioral-first-run-<GUID>/` only after
+   verifying it is ignored and its path has no links. Copy the five logs without
+   overwriting, and verify every copy's size/SHA-256 against its source. Preserve
+   the copies: engine rotation may rename or prune originals. No log copies or
+   other preparation artifacts are created by this amendment or its fixtures.
+4. Capture the final baseline after those approved copies and immediately rehash
+   the pinned executable without launching it. Any drift or failed precondition
+   stops before execution; do not fix and retry under the same grant.
+
+Only the following effects are proposed for approval: ordinary activity in the
+existing checkout's `.godot/` cache (excluding protected
+`.godot/validation-profile/`) and project-profile log creation/rotation after
+verified preservation. This is observation, not a filesystem sandbox or rollback.
+New or rewritten UID sidecars, import-sidecar modifications, tracked source or
+artwork changes, save/settings changes and unrelated owner-file changes are
+unapproved. Profile shader-cache/snapshot changes are also outside this proposal.
+Actual write behavior of the pinned binary remains unverified.
+
+After the one invocation, compare the same inventory and Git/index identities;
+report added, removed and changed paths, including ignored paths. Report runtime
+result and filesystem acceptance separately. Require normal zero exit, observed
+termination, no error diagnostics, and exactly these stdout records, with the
+completion as the final nonempty line:
+
+```text
+TLWH_BEHAVIORAL_GROUP_V1 world_coordinates PASS checks=4
+TLWH_BEHAVIORAL_V1 PASS groups=1 checks=4 failures=0
+```
+
+Regardless of success, failure or uncertain termination, consume the grant at
+the single launcher invocation: no retry, alternate command or direct dispatcher
+call. Restore the original unconditional `throw` statement immediately afterward,
+before any further engine attempt; compare the launcher against this inactive
+preparation and rerun parsing/inert fixtures. This is a targeted source edit,
+not a checkout-wide restore. Capture post-run filesystem observations before the
+restoration edit (or identify that deliberate edit separately). Record reviewed
+activation revision, attempted command, outcome, observed filesystem differences,
+restoration verification and consumed grant in the execution PR/chat; publish no
+raw private logs without separate privacy review/approval. Retain existing logs,
+preservation copies and unexpected outputs. Do not delete, revert or automatically
+clean generated files. Unapproved writes or uncertain termination stop further
+testing and require owner direction. A PASS grants no standing, graphical,
+gameplay or performance authority. Native/codec permissions are unchanged.
 
 ## Fixed metadata smoke extension (draft, tested runtime scope passed)
 
