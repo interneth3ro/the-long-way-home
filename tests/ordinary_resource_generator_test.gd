@@ -107,9 +107,9 @@ func _reconstruction() -> void:
 
 func _synthetic_conflicts() -> void:
 	var generator := _generator()
-	var a := Descriptors.create_location(Generator.POLICY, 42, Vector2i.ZERO, 0,
+	var a: Dictionary = Descriptors.create_location(Generator.POLICY, 42, Vector2i.ZERO, 0,
 		&"cuprite", [Rect2i(0, 0, 4, 4), Rect2i(12, 0, 4, 4), Rect2i(4, 12, 4, 4)]).location
-	var b := Descriptors.create_location(Generator.POLICY, 42, Vector2i.ONE, 0,
+	var b: Dictionary = Descriptors.create_location(Generator.POLICY, 42, Vector2i.ONE, 0,
 		&"ferrite", [Rect2i(12, 0, 4, 4)]).location
 	_check(generator._eligible(a), "valid organic triple spacing")
 	_check(Generator._conflicts(a, b), "one member conflict rejects complete triple")
@@ -121,13 +121,13 @@ func _synthetic_conflicts() -> void:
 	var protected_generator := Generator.new(42, _definitions(), [Generator.visual_bounds(a.deposits[2])])
 	_check(not protected_generator._eligible(a), "authored protection rejects complete group")
 	var anchors: Array[Rect2i] = [Rect2i(0, 0, 4, 4), Rect2i(5, 0, 4, 4)]
-	var tight := Descriptors.create_location(Generator.POLICY, 42, Vector2i.ZERO, 0, &"cuprite", anchors).location
+	var tight: Dictionary = Descriptors.create_location(Generator.POLICY, 42, Vector2i.ZERO, 0, &"cuprite", anchors).location
 	_check(not generator._eligible(tight), "conservative visual clearance independent of logical overlap")
 	# A conflicts with B; B conflicts with C; A does not conflict with C.
 	# B loses to C but must still reject A. A's full triple is never trimmed.
-	var middle := Descriptors.create_location(Generator.POLICY, 42, Vector2i(1, 0), 0,
+	var middle: Dictionary = Descriptors.create_location(Generator.POLICY, 42, Vector2i(1, 0), 0,
 		&"ferrite", [Rect2i(18, 0, 4, 4)]).location
-	var last := Descriptors.create_location(Generator.POLICY, 42, Vector2i(2, 0), 0,
+	var last: Dictionary = Descriptors.create_location(Generator.POLICY, 42, Vector2i(2, 0), 0,
 		&"ferrite", [Rect2i(36, 0, 4, 4)]).location
 	var fixture := ConflictFixture.new(42, _definitions(), [])
 	fixture.raw = {Vector2i.ZERO: {"location": a, "priority": 2},
