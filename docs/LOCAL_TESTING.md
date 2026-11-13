@@ -272,8 +272,10 @@ pwsh -NoProfile -File tests/behavioral/launcher_fixture_test.ps1
 ```
 
 These parse PowerShell and use scoped process/identity doubles; they never launch
-Godot or create a test project. They validate denial, fixed dispatch and result
-classification only. GDScript inspection is static; it does not establish Godot
+Godot or create a test project. They validate denied and proposed standing
+authorization, fixed identity/command/manifest/assertions, execution bounds, no
+retries and result classification. GDScript inspection is static; it does not
+establish Godot
 parsing, loading, completion output, runtime PASS or direct-checkout cache behavior.
 The earlier test audit remains local and unchanged; its historical Python failure
 baseline is not repaired by this PR.
@@ -283,10 +285,9 @@ baseline is not repaired by this PR.
 The preparation amendment merged in PR #197. **It does not activate the launcher
 or authorize Godot.** The separately authorized first invocation is recorded below;
 its grant is consumed and unconditional denial has been restored.
-The production gate still throws unconditionally. The fixture rehearses a
-temporary return gate in memory, with inert process doubles, then restores denial
-after synthetic success, failure, timeout, output overflow and process exception.
-It also checks the fixed identity constants without reading the executable.
+The following procedure is historical, retained for provenance; it is not the
+proposed routine policy. The production gate still throws unconditionally. Current
+fixtures rehearse the proposed standing model described below, entirely in memory.
 No environment switch, token, permission file, persistent grant counter or
 general authorization framework is introduced.
 
@@ -438,6 +439,66 @@ gate. Exact source comparison and `git diff --check` passed. No full Python-suit
 PASS is claimed. The one-time authorization is **consumed**; no retry, standing
 permission, graphical/gameplay/performance validation or broader test scope
 follows. Further Godot execution requires new explicit owner authorization.
+
+### Proposed standing behavioral authorization (inactive)
+
+This feature-branch amendment is pending review and grants **no Godot execution**.
+PR #198 completed the one-time run above; that consumed grant and its historical
+procedure do not authorize routine calls. The first run's filesystem acceptance
+supports ordinary project-profile log creation and rotation only; it observed no
+checkout cache changes.
+
+The smallest proposed activation is a later gate-only change from `throw` to
+`return` in `Assert-BehavioralExecutionAuthorized`. Before activation, the owner
+must separately review and explicitly approve the **exact final activation commit**
+and standing scope here: the pinned executable/path/hash, exact launcher and
+command above, actual local checkout, unchanged `world_coordinates` manifest/four
+assertions, 30-second/1 MiB/4 KiB limits and log-only filesystem effects. Approval
+of this preparation PR, merge or inert validation does not grant execution.
+Until that approval and reviewed gate change, the launcher stays `NOT RUN`.
+Do not bypass it with a direct dispatcher call. No environment switch, token,
+permission file, persistent counter or per-invocation grant is introduced.
+
+After explicit standing approval, normal development may use exactly
+`pwsh -NoProfile -File tools/run-behavioral-tests.ps1` without asking for each run.
+The gate remains `return` across routine invocations; there is no one-use reset.
+Before use, confirm the approved runner/dispatcher/assertions/shared supervisor
+and scope remain unchanged; inspect Git status/diff and relevant protected paths
+before and after the call. Preserve existing untracked audit reports, ignored
+material and prior log copies. Routine calls need neither five-log preservation
+copies nor whole-checkout hashing. The launcher still verifies the fixed engine
+identity before its single bounded process. These are workflow observations,
+not automatic filesystem enforcement or a sandbox.
+
+Only ordinary creation/rotation under the project's profile `logs/` directory
+(`%APPDATA%\Godot\app_userdata\The Long Way Home\logs\`) is proposed as a
+permitted write effect. No `.godot/` cache activity is included; the protected
+`.godot/validation-profile/` remains excluded. Tracked source, artwork/imported
+assets, UID/import sidecars, saves/settings, profile shader caches/snapshots,
+editor settings, historical evidence and unrelated owner files must remain
+unchanged. The first smoke did not exercise all engine write paths; missing or
+stale cache inputs may fail or cause unexpected writes. Do not import, delete
+caches or widen permissions to make a run pass. Future groups need separate
+scope review rather than assuming identical filesystem behavior.
+
+Report runtime outcome and observed filesystem acceptance separately. Stop on
+failure, unexpected writes, identity/scope drift or uncertain termination and
+preserve all outputs for owner direction; no automatic retry, cleanup, rollback,
+staging or repository restoration. Never run concurrent invocations. Withdrawal
+suspends routine use immediately; restore denial through a scoped reviewed edit
+before resuming work, and obtain renewed approval before any later execution.
+Changes to executable, dispatcher manifest, assertions, command arguments,
+execution limits or filesystem scope require renewed review and authorization.
+No unattended scheduling, arbitrary headless calls, imports/version/help probes,
+graphics, performance probes, benchmarks, stress tests or freeze reproduction
+are authorized. Existing staged Native and codec permissions remain unchanged;
+MetadataSmoke remains inactive with its grants consumed.
+
+The inert fixtures accept only the single denial statement or bare `return` gate
+shape; acceptance of a shape does not establish owner approval. They mock all
+engine operations, rehearse separate routine calls and failure/withdrawal stops,
+and protect the existing fixed source contracts. PowerShell parsing and inert
+PASS do not establish runtime behavior or authorize this proposed activation.
 
 ## Fixed metadata smoke extension (draft, tested runtime scope passed)
 
