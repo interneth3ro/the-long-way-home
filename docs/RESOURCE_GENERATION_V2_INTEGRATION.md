@@ -60,7 +60,18 @@ remain outside scope.
 [`static_cuprite_gameplay_test.py`](../tests/static_cuprite_gameplay_test.py) checks
 approved asset identity, item/import conventions, authority mapping, shared timing,
 transaction ordering, inspection, bounded descriptor presentation, loaded-terrain
-lifecycle and preservation. Focused Python checks: **12/12 PASS** using `python -B`.
+lifecycle and preservation. Initial focused Python checks: **12/12 PASS** using `python -B`.
+Review follow-up to head `078ee74556effdb2450b36360faaf67b1e2a97ba` corrected
+an undeclared `output_item` in `MachineUI._refresh`: one local authoritative
+resolution now supplies both the generic heading and Extractor inspection.
+The new function-local regression assertion failed before the fix and passes
+afterward. Current focused checks pass **13/13**, plus **3/3** related Extractor/
+Fabricator inspection checks. Five dedicated Smelter/Fabricator refresh/layout
+methods remain byte-identical to the reviewed head. Static inspection found no
+further obvious undefined-variable or call-signature mismatch in the changed
+GDScript; this is not Godot parsing. The broad result below is the original
+milestone record and was not rerun for this narrow correction. No historical
+tests or execution controls were modified, and no Godot execution occurred.
 [`cuprite_gameplay_test.gd`](../tests/cuprite_gameplay_test.gd) authors actual production,
 capacity/full pause/resume, item identity, collection/recovery rejection, retired
 context, unsupported-resource inactivity, legacy Ferrite, physical construction,

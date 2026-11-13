@@ -81,6 +81,26 @@ class CupriteGameplayStaticTests(unittest.TestCase):
         self.assertNotIn('definition.output_item', view)
         self.assertIn('progression.planet.stored_output_item(machine)', read("scenes/ui/machine_ui.gd"))
 
+    def test_refresh_declares_and_reuses_resolved_output(self):
+        refresh = body(read("scenes/ui/machine_ui.gd"), "_refresh")
+        declaration = 'var output_item := progression.planet.stored_output_item(machine)'
+        heading = 'output_heading += " — %s" % output_item.display_name'
+        inspection = ('_extractor_view.refresh(machine, progression.planet.machine_status(machine), '
+                      '_in_range(machine),\n\t\t\toutput_item)')
+        self.assertEqual(refresh.count('stored_output_item(machine)'), 1)
+        self.assertIn(declaration, refresh)
+        self.assertIn('if machine.output > 0 and output_item != null:', refresh)
+        self.assertIn(heading, refresh)
+        self.assertIn(inspection, refresh)
+        self.assertLess(refresh.index(declaration), refresh.index(heading))
+        self.assertLess(refresh.index(declaration), refresh.index(inspection))
+        self.assertNotIn('definition.output_item', refresh)
+        # Dedicated Smelter/Fabricator routes still return before this fixed-output path.
+        for route in ('_refresh_fabricator_shell(machine, definition)',
+                      '_refresh_smelter(machine, definition)',
+                      '_refresh_fabricator(machine, definition)'):
+            self.assertLess(refresh.index(route), refresh.index(declaration))
+
     def test_world_adapter_uses_bounded_queries(self):
         self.assertIn('world.resource_generation_v2_context()', body(PRESENTER, 'configure_world'))
         step = body(PRESENTER, 'step')
