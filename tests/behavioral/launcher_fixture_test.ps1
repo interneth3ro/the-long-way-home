@@ -27,7 +27,8 @@ Check 'launcher and fixture parse; launcher has no override parameters' {
         if ($path -ne $PSCommandPath) { Require ($ast.ParamBlock.Parameters.Count -eq 0) 'Override parameter added' }
     }
 }
-Check 'inactive gate stops before engine identity or process operations' {
+Check 'denied authorization stops before engine identity or process operations' {
+    function Assert-BehavioralExecutionAuthorized { throw 'AUTHORIZATION_DENIED: inert withdrawal' }
     function Get-StandardGodotIdentity { throw 'Unexpected engine identity lookup' }
     function Assert-PinnedEngine { throw 'Unexpected engine hash lookup' }
     function Invoke-BoundedProcess { throw 'Unexpected process launch' }
@@ -41,10 +42,35 @@ Check 'fixed identity remains the reviewed executable and SHA-256 without execut
     Require ($identity.Path -ceq 'D:\GameDev\Godot\Standard\Godot_v4.7.2-stable_win64.exe') 'Pinned path changed'
     Require ($identity.Sha256 -ceq 'AB1824F85BFD8E0E4128182C000C4003A3E042245B2967848D089B2A04B22424') 'Pinned hash changed'
 }
-Check 'prepared gate contains only unconditional denial' {
+Check 'production gate is a single denial or reviewed standing return' {
     $gate = [scriptblock]::Create((Get-Command Assert-BehavioralExecutionAuthorized).ScriptBlock.ToString()).Ast
     Require ($gate.EndBlock.Statements.Count -eq 1) 'Gate gained executable statements'
-    Require ($gate.EndBlock.Statements[0] -is [Management.Automation.Language.ThrowStatementAst]) 'Gate is active'
+    $statement = $gate.EndBlock.Statements[0]
+    Require (($statement -is [Management.Automation.Language.ThrowStatementAst] -and
+        $statement.Extent.Text -ceq "throw 'AUTHORIZATION_DENIED: local behavioral execution is inactive; separate owner approval and a reviewed activation amendment are required.'") -or
+        ($statement -is [Management.Automation.Language.ReturnStatementAst] -and
+        $statement.Extent.Text -ceq 'return')) 'Unexpected authorization mechanism'
+    # Shape validation is not owner approval. Both forms remain inert in fixtures.
+}
+Check 'fixed manifest and four production coordinate smoke cases stay in approved scope' {
+    # Small scope guard only, not a GDScript parser or proof of assertion behavior.
+    # Changes to the manifest/assertions still require separate review and authorization.
+    $dispatcher = Get-Content -LiteralPath "$PSScriptRoot/test_runner.gd" -Raw
+    $smoke = Get-Content -LiteralPath "$PSScriptRoot/smoke_test.gd" -Raw
+    $manifest = [regex]::Match($dispatcher, '(?s)const\s+GROUPS\s*:=\s*\[(.*?)\]')
+    $expectedManifest = '{"name":"world_coordinates","script":preload("res://tests/behavioral/smoke_test.gd")},'
+    Require ($manifest.Success -and ($manifest.Groups[1].Value -replace '\s', '') -ceq $expectedManifest) 'Approved one-entry manifest changed'
+
+    $cases = [regex]::Match($smoke, '(?s)var\s+cases\s*:=\s*\[(.*?)\]')
+    $expectedCases = @(
+        '{"point":Vector2(-0.01,-32.01),"expected":Vector2i(-1,-2)},'
+        '{"point":Vector2(-32,-64),"expected":Vector2i(-1,-2)},'
+        '{"point":Vector2(31.99,32),"expected":Vector2i(0,1)},'
+        '{"point":Vector2(32,64),"expected":Vector2i(1,2)},'
+    ) -join ''
+    Require ($cases.Success -and ($cases.Groups[1].Value -replace '\s', '') -ceq $expectedCases) 'Approved four boundary cases changed'
+    Require ($smoke -match 'const\s+Coordinates\s*=\s*preload\("res://scenes/world/world_coordinates\.gd"\)') 'Production coordinate dependency changed'
+    Require ($smoke -match 'Coordinates\.world_to_construction\(vector\.point\)') 'Production coordinate call missing'
 }
 Check 'valid completion accepts LF CRLF and harmless engine banner' {
     foreach ($stdout in @($good, "$good`n", "Godot inert banner`r`n$good`r`n")) {
@@ -134,40 +160,38 @@ Check 'proposed path checks identity then dispatches one fixed bounded command' 
     Require ((Invoke-BehavioralTests) -eq 1) 'Synthetic failure accepted'
     Require (@($events | Where-Object { $_ -ceq 'process-double' }).Count -eq 1) 'Failure retried'
 }
-Check 'production gate remains inactive after scoped doubles' {
-    try { Assert-BehavioralExecutionAuthorized; throw 'Gate unexpectedly returned' }
-    catch { Require ($_ -match 'AUTHORIZATION_DENIED') 'Production gate changed' }
-}
-Check 'temporary return gate restores denial after success failure timeout overflow and exception' {
-    $deniedGate = (Get-Command Assert-BehavioralExecutionAuthorized).ScriptBlock
-    foreach ($outcome in @('PASS', 'NONZERO_EXIT', 'TIMEOUT', 'OUTPUT_LIMIT', 'EXCEPTION')) {
-        & {
-            # In-memory rehearsal only. Never edit or activate the launcher file.
-            function Assert-BehavioralExecutionAuthorized { return }
-            function Get-StandardGodotIdentity { [pscustomobject]@{ Path = 'INERT'; Sha256 = 'inert' } }
-            function Assert-PinnedEngine { }
-            $attempts = [Collections.Generic.List[string]]::new()
-            function Invoke-BoundedProcess {
-                $attempts.Add('inert')
-                if ($outcome -ceq 'EXCEPTION') { throw 'inert process exception' }
-                if ($outcome -ceq 'PASS') { return (Result $good) }
-                Result $good '' $outcome 1 ($outcome -ceq 'NONZERO_EXIT')
-            }
-            try {
-                $output = @(Invoke-BehavioralTests 6>&1)
-                Require ($output[-1] -eq $(if ($outcome -ceq 'PASS') { 0 } else { 1 })) 'Wrong synthetic result'
-                Require ($attempts.Count -eq 1) 'Temporary activation retried'
-            } finally {
-                Set-Item -LiteralPath Function:Assert-BehavioralExecutionAuthorized -Value $deniedGate
-            }
+Check 'standing return permits routine calls; failures never retry; withdrawal stops dispatch' {
+    $productionGate = (Get-Command Assert-BehavioralExecutionAuthorized).ScriptBlock.ToString()
+    & {
+        # In-memory future activation only; all engine operations remain doubles.
+        function Assert-BehavioralExecutionAuthorized { return }
+        function Get-StandardGodotIdentity { [pscustomobject]@{ Path = 'INERT'; Sha256 = 'inert' } }
+        function Assert-PinnedEngine { }
+        $attempts = [Collections.Generic.List[string]]::new()
+        function Invoke-BoundedProcess {
+            $attempts.Add('inert')
+            if ($outcome -ceq 'EXCEPTION') { throw 'inert process exception' }
+            if ($outcome -ceq 'PASS') { return (Result $good) }
+            Result $good '' $outcome 1 ($outcome -ceq 'NONZERO_EXIT')
+        }
+        # Separate routine calls do not consume a one-use grant.
+        $outcome = 'PASS'
+        foreach ($invocation in 1..2) {
+            $output = @(Invoke-BehavioralTests 6>&1)
+            Require ($output[-1] -eq 0 -and $attempts.Count -eq $invocation) 'Routine invocation denied or retried'
+        }
+        foreach ($outcome in @('NONZERO_EXIT', 'TIMEOUT', 'OUTPUT_LIMIT', 'EXCEPTION')) {
             $attempts.Clear()
             $output = @(Invoke-BehavioralTests 6>&1)
-            Require ($output[-1] -eq 1 -and ($output -join "`n") -match 'AUTHORIZATION_DENIED') 'Denial not restored'
-            Require ($attempts.Count -eq 0) 'Restored gate allowed dispatch'
+            Require ($output[-1] -eq 1 -and $attempts.Count -eq 1) 'Failure accepted or retried'
         }
+        function Assert-BehavioralExecutionAuthorized { throw 'AUTHORIZATION_DENIED: inert withdrawal' }
+        $attempts.Clear()
+        $output = @(Invoke-BehavioralTests 6>&1)
+        Require ($output[-1] -eq 1 -and ($output -join "`n") -match 'AUTHORIZATION_DENIED') 'Withdrawal ignored'
+        Require ($attempts.Count -eq 0) 'Withdrawn authorization dispatched'
     }
-    try { Assert-BehavioralExecutionAuthorized; throw 'Production gate unexpectedly returned' }
-    catch { Require ($_ -match 'AUTHORIZATION_DENIED') 'Scoped rehearsal changed production gate' }
+    Require ((Get-Command Assert-BehavioralExecutionAuthorized).ScriptBlock.ToString() -ceq $productionGate) 'Scoped doubles changed production gate'
 }
 Write-Host "Behavioral launcher fixtures: $passed PASS, $failed FAIL. Godot: NOT RUN."
 if ($failed) { exit 1 }

@@ -125,23 +125,29 @@
   No automatic retries, destructive cleanup, graphical tests, performance probes,
   benchmarks, stress tests or freeze reproduction are authorized. See the
   [inactive behavioral workflow](docs/LOCAL_TESTING.md#local-behavioral-foundation-inactive).
-- The first behavioral activation amendment is preparation only, pending review
-  and separate explicit owner approval; unconditional denial remains in place.
-  Any later grant must name the exact reviewed activation revision and permit
-  exactly one supervised `pwsh -NoProfile -File tools/run-behavioral-tests.ps1`
-  invocation in `D:\GameDev\Godot\Projects\TLWH`, using the pinned executable
-  above, unchanged manifest, fixed command and 30-second/1 MiB/4 KiB limits.
-  Proposed acceptable effects are only existing `.godot/` cache activity and
-  project-profile log creation/rotation after separately approved preservation
-  copies of the five existing logs. The protected `.godot/validation-profile/`
-  is excluded. No UID creation/rewrite, import-sidecar modification, tracked
-  source/artwork change, save/settings change or unrelated owner-file change is
-  approved. Observe pre/post paths, sizes and hashes; stop on unapproved changes
-  without deleting, reverting or cleaning them. After the single invocation,
-  regardless of result, restore unconditional denial and record the grant as
-  consumed before any further attempt. No standing grant, automatic retry or
-  broader engine permission follows. See the
-  [proposed single-run procedure](docs/LOCAL_TESTING.md#first-behavioral-invocation-proposal-inactive).
+- The first behavioral invocation passed at `a9aff2d` on 2026-11-13 (one group,
+  four assertions; only approved project-log rotation). Its one-time grant is
+  consumed and unconditional denial was restored in PR #198. Preserve its
+  historical record and log copies; it grants no further execution.
+- The proposed standing behavioral amendment remains **inactive**, pending
+  separate explicit owner approval of the exact final activation revision and
+  routine filesystem scope. A later reviewed activation may replace only the
+  authorization gate's `throw` with `return`; PR creation, merge and inert PASS
+  are not approval. After approval, routine use of exactly
+  `pwsh -NoProfile -File tools/run-behavioral-tests.ps1` needs no per-run grant.
+  Keep the pinned engine, direct local checkout, fixed dispatcher, one-entry
+  `world_coordinates` manifest, four assertions and 30-second/1 MiB/4 KiB limits.
+  Only ordinary project-profile log creation/rotation is proposed as an allowed
+  write effect. Cache changes (including `.godot/`), UID/import sidecars, source,
+  artwork, saves/settings, historical evidence, unrelated owner files and protected
+  `.godot/validation-profile/` remain excluded. No five-log preservation copies
+  or whole-checkout hashing are required for routine use. Stop on failure,
+  unexpected writes, identity/scope drift or uncertain termination; preserve files,
+  with no automatic retry, deletion, rollback or restoration. Owner withdrawal
+  suspends use immediately. Executable, manifest, assertions, command, limits or
+  filesystem-scope changes require renewed review and authorization. Native and
+  codec permissions are unchanged. See the
+  [proposed routine policy](docs/LOCAL_TESTING.md#proposed-standing-behavioral-authorization-inactive).
 - Preserve all existing repository safety, worktree, artifact and branch
   preservation requirements. Do not alter the abandoned PR #5 worktree,
   branches, archives, or conversation.
