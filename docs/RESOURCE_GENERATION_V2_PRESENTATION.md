@@ -222,9 +222,29 @@ Cancellation and tree exit retire work; reattachment reconfigures from authority
 
 Each live step performs one fixed 1536-unit page query grown by approved artwork
 reach, one candidate admission, one ordering pass or at most one texture/sprite
-publication. Query results retain the authority's 64-owner/775-descriptor bound;
-page planning, accumulated registrations, catalogs and textures retain their existing
-limits. Page overlap deduplicates authoritative deposit IDs. Context retirement
+publication. Query results retain the authority's 64-owner/775-descriptor bound.
+The live adapter has separate whole-window limits: 26,624 units per axis (the
+supported radius 4 plus retention 2, or 13 actual 2,048-unit chunks), at most
+361 query pages and 5,815 accumulated descriptors/sprites. A maximum interval
+touches 19 aligned 1,536-unit pages; their artwork/query halo touches at most
+22x22 owners, each with at most four slots of three members, plus seven starting
+reservations. Catalog and texture limits are unchanged. The isolated inspection
+adapter retains its 6,144-unit, 64-owner and 775-descriptor limits.
+
+This startup correction is pending review in PR #195. The owner-reported New Game
+failure was traced to the shared 6,144-unit guard rejecting live terrain windows:
+the initial 7x7 neighborhood spans 14,336 units. Live requests now select the
+separate whole-window limits while continuing to issue one small page query per
+query step. This changes no terrain/generation policy or authority-query limit.
+[`static_resource_live_window_test.py`](../tests/static_resource_live_window_test.py)
+passes five nonexecuting checks for actual dimensions, signed windows, page/owner
+bounds, adapter-specific limits and unchanged generation/terrain controls. Together
+with Cuprite and fixture-typing checks, 20 focused static tests pass. Live-window
+GDScript assertions are authored in `tests/cuprite_gameplay_test.gd` but unexecuted;
+no Godot parsing, import, gameplay, graphical or performance check was run by the
+agent. The original broad-suite record is not a rerun of this correction.
+
+Page overlap deduplicates authoritative deposit IDs. Context retirement
 clears visuals and reports failure through the existing exterior terrain-failure
 path. These are bounded-work contracts, not measured performance results.
 

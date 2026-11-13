@@ -10,6 +10,14 @@ const MAX_DESCRIPTORS: int = 775 # 64 * 4 * 3 ordinary members + seven reservati
 const MAX_LOCATIONS_PER_OWNER: int = 11
 const TEXTURE_LIMIT: int = 8
 const MAX_AREA_AXIS: float = 6144.0
+# Live terrain supports radius 4 + retention 2: 13 chunks of 2048 units.
+# A 26624-unit interval touches at most 19 aligned 1536-unit query pages.
+# Their query/artwork halo covers at most 22x22 generation owners; each owner
+# contributes at most 4 slots x 3 members, plus seven starting reservations.
+const MAX_LIVE_AREA_AXIS: float = 26624.0
+const LIVE_PAGE_SIZE: float = 1536.0
+const MAX_LIVE_PAGES: int = 361
+const MAX_LIVE_DESCRIPTORS: int = 5815
 
 var _world: PlanetWorldState
 var _world_token: RefCounted
@@ -111,9 +119,10 @@ func _is_loaded(registration: Dictionary) -> bool:
 
 func request(area: Rect2) -> Dictionary:
 	cancel(_world != null)
+	var area_limit: float = MAX_LIVE_AREA_AXIS if _world != null else MAX_AREA_AXIS
 	if (_source == null and _world == null) or not area.is_finite() or not area.end.is_finite() \
 			or area.size.x <= 0.0 or area.size.y <= 0.0 \
-			or area.size.x > MAX_AREA_AXIS or area.size.y > MAX_AREA_AXIS:
+			or area.size.x > area_limit or area.size.y > area_limit:
 		if _world != null:
 			return _failure("Invalid context or presentation area")
 		return Catalog.failure("Invalid context or presentation area")
@@ -131,10 +140,10 @@ func request(area: Rect2) -> Dictionary:
 					_sprites.erase(identity)
 		# Fixed-size spatial pages keep each authority query bounded. Grow each page
 		# by actual artwork reach so painted overhangs cannot be missed.
-		var page_size := 1536.0
+		var page_size: float = LIVE_PAGE_SIZE
 		var first := Vector2i((area.position / page_size).floor())
 		var last := Vector2i((area.end / page_size).floor())
-		if (last.x - first.x + 1) * (last.y - first.y + 1) > MAX_OWNERS:
+		if (last.x - first.x + 1) * (last.y - first.y + 1) > MAX_LIVE_PAGES:
 			return _failure("Presentation page budget exceeded")
 		for y in range(first.y, last.y + 1):
 			for x in range(first.x, last.x + 1):
@@ -245,7 +254,8 @@ func _register_member(member: Dictionary) -> Dictionary:
 	if _registrations.has(identity) and _registrations[identity] != registration:
 		return _failure("Conflicting duplicate descriptor: " + identity)
 	_registrations[identity] = registration
-	if _registrations.size() > MAX_DESCRIPTORS:
+	var descriptor_limit: int = MAX_LIVE_DESCRIPTORS if _world != null else MAX_DESCRIPTORS
+	if _registrations.size() > descriptor_limit:
 		return _failure("Presentation descriptor budget exceeded")
 	return {"ok": true}
 
