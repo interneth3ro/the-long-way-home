@@ -18,9 +18,11 @@ PR 4's [shared presentation consumer](RESOURCE_GENERATION_V2_PRESENTATION.md)
 and disabled standalone Cuprite inspection merged in PR #190. PR 5 adds
 [isolated extractor anchor targeting and occupancy](RESOURCE_GENERATION_V2_PLACEMENT.md),
 merged in PR #191. Milestone 6's [world-state integration](RESOURCE_GENERATION_V2_INTEGRATION.md)
-is pending owner review and merge: separate token-checked v2 queries preserve
-legacy Ferrite APIs. Foundation interfaces remain unchanged and no gameplay
-activation is introduced.
+merged in PR #192: separate token-checked v2 queries preserve legacy Ferrite APIs.
+Milestone 7 now connects [live construction and occupancy](RESOURCE_GENERATION_V2_PLACEMENT.md#milestone-7-live-construction-feature-branch-pending-merge),
+pending merge, without changing foundation interfaces. Resource production and
+normal Cuprite presentation remain deferred; earlier scope statements describe
+their individual milestones.
 
 ## Native resource definition
 

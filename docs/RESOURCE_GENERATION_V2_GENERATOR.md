@@ -3,11 +3,15 @@
 Merged in PR #188. The implementation request authorized PR 2 only; the supplied specification
 is design context, not independent authorization for later phases. The
 [PR #187 code contracts](RESOURCE_GENERATION_V2_CONTRACTS.md) remain unchanged.
-No gameplay caller registers this generator or its resource definitions.
+That milestone added no gameplay caller for this generator or its definitions.
 PR 4's [shared presenter and disabled isolated Cuprite inspection](RESOURCE_GENERATION_V2_PRESENTATION.md)
 merged in PR #190, consuming the starting-policy extension without gameplay activation.
-PR 5's [isolated anchor contracts](RESOURCE_GENERATION_V2_PLACEMENT.md), pending
-review, reuse existing bounded queries and exact-ID lookup without generator changes.
+PR 5's [isolated anchor contracts](RESOURCE_GENERATION_V2_PLACEMENT.md), merged in
+PR #191, reuse existing bounded queries and exact-ID lookup without generator changes.
+Milestone 6's [world-state integration](RESOURCE_GENERATION_V2_INTEGRATION.md) merged
+in PR #192. Milestone 7 connects live construction/occupancy, pending merge, through
+that authority and the shared anchor rules. Generation policies remain unchanged;
+resource production and normal Cuprite presentation remain deferred.
 
 PR 3's separately versioned [starting-reservation extension](RESOURCE_GENERATION_V2_STARTING.md)
 merged in PR #189. It adds
@@ -25,7 +29,8 @@ ID; caller array order and later edits cannot affect reconstruction. Protection
 rectangles are copied values. They must conservatively contain all fixed authored
 polygons/obstacles and required clearance, never live machines. Empty protection
 is useful for synthetic worlds. PR 3 supplies an inert authored snapshot; live
-crash-site integration remains deferred.
+crash-site integration was deferred at that milestone and is now provided by the
+Milestone 6 bridge using the same snapshot.
 
 The locked Decision 5E correction is **1,536 world units = 24 terrain cells at
 64 units = 48 construction cells at 32 units** per axis. `owner_at` floors both

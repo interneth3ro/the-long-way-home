@@ -23,6 +23,9 @@ var _world: Node2D
 var _cell := Vector2i.ZERO
 var _turns: int = 0
 var _reason: String = ""
+var _anchor_ticket: Dictionary = {}
+var _requested_anchor_ticket: Dictionary = {}
+var _requested_reason: String = ""
 var _target: Dictionary = {}
 var _ghost: MachineVisual
 var _aim_visible: bool = false
@@ -55,6 +58,7 @@ func begin_deployment(definition: MachineDefinition) -> bool:
 	inventory_ui.close()
 	_world = world
 	_definition = definition
+	_reason = "Waiting for placement preview"
 	_turns = 0
 	_mode = Mode.CONSTRUCTION
 	mode_started.emit()
@@ -95,6 +99,7 @@ func cancel() -> void:
 		_world.set_construction_definition(null)
 	_mode = Mode.NONE
 	_definition = null
+	_anchor_ticket = {}
 	_target = {}
 	_clear_confirmation()
 	_aim_visible = false
@@ -189,6 +194,14 @@ func _unhandled_input(event: InputEvent) -> void:
 			var point := world.get_local_mouse_position()
 			if _mode == Mode.CONSTRUCTION:
 				_requested_cell = WorldCoordinates.world_to_construction(point)
+				_requested_anchor_ticket = {}
+				_requested_reason = ""
+				if _definition.item_id == &"extractor" and world is PlanetExterior:
+					# Freeze the displayed selection, including rejection. Physics may
+					# refresh the preview, but must not redirect this click.
+					_requested_cell = _cell
+					_requested_anchor_ticket = _anchor_ticket.duplicate(true)
+					_requested_reason = _reason
 				_requested_turns = _turns
 			else:
 				var target := progression.planet.machine_at(point)
@@ -217,8 +230,16 @@ func _physics_process(_delta: float) -> void:
 				target_definition.footprint(_target.cell, _target.turns)) > recovery_range:
 			_target = {}
 	if _mode == Mode.CONSTRUCTION:
-		_reason = PlacementRules.rejection(progression.planet, _definition, _cell,
-			_turns, player, _world, construction_range, progression.inventory)
+		_anchor_ticket = {}
+		_reason = ""
+		if _definition.item_id == &"extractor" and _world is PlanetExterior:
+			var selected := progression.planet.extractor_target_v2(point, _definition, _turns)
+			_cell = selected.cell
+			_anchor_ticket = selected.ticket
+			_reason = selected.reason
+		if _reason.is_empty():
+			_reason = PlacementRules.rejection(progression.planet, _definition, _cell,
+				_turns, player, _world, construction_range, progression.inventory, _anchor_ticket)
 		_ghost.transform = global_transform.affine_inverse() * _world.global_transform \
 			* Transform2D(0.0, _definition.footprint(_cell, _turns).position)
 		_ghost.turns = _turns
@@ -231,9 +252,17 @@ func _physics_process(_delta: float) -> void:
 		_clear_confirmation()
 		if request_matches:
 			if _mode == Mode.CONSTRUCTION:
-				var machine_id := progression.planet.deploy_machine_instance(
-					_definition, _requested_cell, _requested_turns,
-					progression.inventory, player, _world, construction_range)
+				var machine_id := 0
+				if not _requested_reason.is_empty():
+					_reason = _requested_reason
+				elif not _requested_anchor_ticket.is_empty():
+					machine_id = progression.planet.deploy_extractor_v2(
+						_requested_anchor_ticket, _definition, _requested_cell, _requested_turns,
+						progression.inventory, player, _world, construction_range)
+				else:
+					machine_id = progression.planet.deploy_machine_instance(
+						_definition, _requested_cell, _requested_turns,
+						progression.inventory, player, _world, construction_range)
 				if machine_id != 0:
 					cancel()
 					# The click was consumed in _unhandled_input; opening now cannot

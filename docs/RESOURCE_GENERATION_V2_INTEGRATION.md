@@ -1,10 +1,13 @@
 # Resource Generation v2 live world-state integration
 
-Milestone 6 on `codex/resource-generation-v2-world-state-integration`, **pending
-owner review and merge**, based on `2614769057ece59bd38df8b744be724c9f4802b3`
-(merged PR #191). Approved Decisions 8A–8E separate this bridge from Milestone 7
-construction/occupancy and Milestone 8 Cuprite production/presentation.
-Normal v2 gameplay remains inactive.
+Milestone 6 merged in PR #192 at `fc3b0947be5e3cb217e4de12f95ec23d550a5003`.
+Its read boundary and lifecycle are described below. Milestone 7 live Extractor
+construction/occupancy is implemented on
+`codex/resource-generation-v2-live-construction`, **pending owner review and merge**.
+See the [live placement contract](RESOURCE_GENERATION_V2_PLACEMENT.md#milestone-7-live-construction-feature-branch-pending-merge)
+for owner Decisions 9A-9E, routing, transactions, verification limits and deferred
+Milestone 8 production/presentation. Historical Milestone 6 verification below
+retains its original scope.
 
 ## Ownership and fixed inputs
 
@@ -99,17 +102,21 @@ cache and maximum 775 deposits. No whole-world enumeration or additional cache
 is introduced. These are work bounds, not measured performance guarantees.
 
 Terrain chunk creation/disposal and exterior streaming have no v2 configuration
-callers. The authoritative component survives disposable views. The presenter,
-construction controller, placement/anchor rules and inspection harnesses are
-unchanged; this API is not wired into their normal gameplay paths.
+callers. The authoritative component survives disposable views. The generation
+presenter and inspection harnesses remain separate. Milestone 7
+wires the construction controller to these authoritative descriptor reads; shared
+anchor geometry and placement checks retain the boundaries described above.
 
 ## Isolation, verification and deferred work
 
-No v2 `ResourceDeposit` registration, rendering, extractor targeting, occupancy,
-eligibility, extraction, Cuprite inventory output, machine definition, recipe,
-save migration or research/progression change occurs. Legacy Ferrite generation,
-placement, production, recovery and presentation retain their original methods.
-All seven v2 reservations exist regardless of resource activation.
+The Milestone 6 bridge itself performs no rendering, occupancy or inventory mutation.
+Milestone 7 adds live targeting and world-state occupancy under the existing machine
+transaction, extends construction compatibility to Cuprite, and leaves all v2
+Extractors inactive for production. No v2 `ResourceDeposit` registration, normal
+Cuprite rendering, Cuprite inventory output, recipe, save migration or progression
+change occurs. Legacy Ferrite queries, production, transfers and presentation
+retain their original methods; deployment/recovery share the extended transaction.
+All seven v2 reservations remain unchanged.
 
 [`static_resource_generation_v2_integration_test.py`](../tests/static_resource_generation_v2_integration_test.py)
 checks ownership, legacy API routing/isolation, seed integrity, fixed dependencies,
@@ -149,10 +156,11 @@ new v2 dependency. Any future metadata activation requires separate owner review
 of that closure and a reviewed inventory amendment, as well as fresh execution
 authorization. This PR preserves the inactive gate and all fixed inventories.
 
-Milestone 7 must adapt live construction/occupancy under existing transactions and
-use current context tokens without exposing the generator. Milestone 8 must
-separately authorize Cuprite extraction, output and presentation. Ferrite/Carbite
-v2 activation and final mandatory test-suite stabilization remain later work.
+Milestone 7 now uses current context tokens without exposing the generator and
+owns occupancy in PlanetWorldState, as documented in the live placement contract.
+Milestone 8 must separately implement Cuprite extraction, output and presentation.
+Carbite production, Ferrite v2 migration and final mandatory test-suite
+stabilization remain later work.
 The painted Cuprite canvas versus conservative clearance envelope remains deferred
 owner visual review; no clearance/offset/scale/artwork change is made here.
 Runtime/graphical verification requires separate explicit owner authorization.
