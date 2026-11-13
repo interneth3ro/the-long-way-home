@@ -1,5 +1,5 @@
 #requires -Version 7.0
-# Inert fixtures only: no Godot, engine lookup, staging, project execution or files.
+# Inert fixtures only: no Godot, executable access, staging or file writes.
 $ErrorActionPreference = 'Stop'
 . "$PSScriptRoot/../../tools/run-behavioral-tests.ps1"
 $passed = 0
@@ -35,6 +35,16 @@ Check 'inactive gate stops before engine identity or process operations' {
     Require ($output[-1] -eq 1) 'Denied invocation returned success'
     Require (($output -join "`n") -match 'Behavioral: NOT RUN') 'NOT RUN missing'
     Require (($output -join "`n") -match 'AUTHORIZATION_DENIED') 'Gate did not deny first'
+}
+Check 'fixed identity remains the reviewed executable and SHA-256 without executable access' {
+    $identity = Get-StandardGodotIdentity
+    Require ($identity.Path -ceq 'D:\GameDev\Godot\Standard\Godot_v4.7.2-stable_win64.exe') 'Pinned path changed'
+    Require ($identity.Sha256 -ceq 'AB1824F85BFD8E0E4128182C000C4003A3E042245B2967848D089B2A04B22424') 'Pinned hash changed'
+}
+Check 'prepared gate contains only unconditional denial' {
+    $gate = [scriptblock]::Create((Get-Command Assert-BehavioralExecutionAuthorized).ScriptBlock.ToString()).Ast
+    Require ($gate.EndBlock.Statements.Count -eq 1) 'Gate gained executable statements'
+    Require ($gate.EndBlock.Statements[0] -is [Management.Automation.Language.ThrowStatementAst]) 'Gate is active'
 }
 Check 'valid completion accepts LF CRLF and harmless engine banner' {
     foreach ($stdout in @($good, "$good`n", "Godot inert banner`r`n$good`r`n")) {
@@ -127,6 +137,37 @@ Check 'proposed path checks identity then dispatches one fixed bounded command' 
 Check 'production gate remains inactive after scoped doubles' {
     try { Assert-BehavioralExecutionAuthorized; throw 'Gate unexpectedly returned' }
     catch { Require ($_ -match 'AUTHORIZATION_DENIED') 'Production gate changed' }
+}
+Check 'temporary return gate restores denial after success failure timeout overflow and exception' {
+    $deniedGate = (Get-Command Assert-BehavioralExecutionAuthorized).ScriptBlock
+    foreach ($outcome in @('PASS', 'NONZERO_EXIT', 'TIMEOUT', 'OUTPUT_LIMIT', 'EXCEPTION')) {
+        & {
+            # In-memory rehearsal only. Never edit or activate the launcher file.
+            function Assert-BehavioralExecutionAuthorized { return }
+            function Get-StandardGodotIdentity { [pscustomobject]@{ Path = 'INERT'; Sha256 = 'inert' } }
+            function Assert-PinnedEngine { }
+            $attempts = [Collections.Generic.List[string]]::new()
+            function Invoke-BoundedProcess {
+                $attempts.Add('inert')
+                if ($outcome -ceq 'EXCEPTION') { throw 'inert process exception' }
+                if ($outcome -ceq 'PASS') { return (Result $good) }
+                Result $good '' $outcome 1 ($outcome -ceq 'NONZERO_EXIT')
+            }
+            try {
+                $output = @(Invoke-BehavioralTests 6>&1)
+                Require ($output[-1] -eq $(if ($outcome -ceq 'PASS') { 0 } else { 1 })) 'Wrong synthetic result'
+                Require ($attempts.Count -eq 1) 'Temporary activation retried'
+            } finally {
+                Set-Item -LiteralPath Function:Assert-BehavioralExecutionAuthorized -Value $deniedGate
+            }
+            $attempts.Clear()
+            $output = @(Invoke-BehavioralTests 6>&1)
+            Require ($output[-1] -eq 1 -and ($output -join "`n") -match 'AUTHORIZATION_DENIED') 'Denial not restored'
+            Require ($attempts.Count -eq 0) 'Restored gate allowed dispatch'
+        }
+    }
+    try { Assert-BehavioralExecutionAuthorized; throw 'Production gate unexpectedly returned' }
+    catch { Require ($_ -match 'AUTHORIZATION_DENIED') 'Scoped rehearsal changed production gate' }
 }
 Write-Host "Behavioral launcher fixtures: $passed PASS, $failed FAIL. Godot: NOT RUN."
 if ($failed) { exit 1 }

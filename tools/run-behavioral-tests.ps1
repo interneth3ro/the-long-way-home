@@ -7,6 +7,10 @@ param()
 . "$PSScriptRoot/run-local-tests.ps1"
 
 function Assert-BehavioralExecutionAuthorized {
+    # Prepared only; this gate remains unconditional denial. A future reviewed
+    # activation revision may replace only the throw below with return; separate
+    # owner approval of that revision is required before dispatch. Restore denial
+    # after the one supervised invocation regardless of outcome; no standing grant or retry.
     throw 'AUTHORIZATION_DENIED: local behavioral execution is inactive; separate owner approval and a reviewed activation amendment are required.'
 }
 
