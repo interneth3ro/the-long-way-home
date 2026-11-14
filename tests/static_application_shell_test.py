@@ -33,35 +33,6 @@ class ApplicationShellTests(unittest.TestCase):
         with patch.object(preservation.Path, "read_bytes", changed_uid), self.assertRaises(AssertionError):
             preservation.verified_application_paths()
 
-    def test_uid_amendment_keeps_historical_preservation_consumers_closed(self):
-        names = (
-            'static_fabricator_animation_test.FabricatorAnimationStaticTest.'
-            'test_all_other_production_artwork_gameplay_and_execution_controls_preserved',
-            'static_fabricator_artwork_test.FabricatorArtworkStaticTest.'
-            'test_gameplay_existing_artwork_and_execution_controls_preserved',
-            'static_fabricator_footprint_test.FabricatorFootprintStaticTest.'
-            'test_protected_gameplay_art_and_execution_controls_unchanged',
-        )
-        real_output = subprocess.check_output
-        for unexpected in ('scenes/application/unapproved.gd.uid', 'scenes/world/planet_world_state.gd',
-                           'assets/machines/unapproved.png', 'tools/unapproved.ps1'):
-            def changed_paths(args, *a, **kw):
-                actual = real_output(args, *a, **kw)
-                if list(args[:3]) == ['git', 'diff', '--name-only']:
-                    return actual.rstrip('\n') + '\n' + unexpected + '\n'
-                return actual
-
-            for name in names:
-                with self.subTest(path=unexpected, consumer=name):
-                    result = unittest.TestResult()
-                    case = unittest.TestLoader().loadTestsFromName(name)
-                    with patch('subprocess.check_output', side_effect=changed_paths):
-                        case.run(result)
-                    self.assertEqual(result.testsRun, 1)
-                    self.assertFalse(result.errors, result.errors)
-                    self.assertEqual(len(result.failures), 1, 'Unexpected path was accepted')
-                    self.assertIn(unexpected, result.failures[0][1])
-
     def test_historical_projection_rejects_unrelated_configuration_changes(self):
         raw = (preservation.ROOT / "project.godot").read_bytes()
         preservation.verified_application_paths()

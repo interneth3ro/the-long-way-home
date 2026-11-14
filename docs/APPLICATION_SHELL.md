@@ -183,6 +183,15 @@ is claimed. Owner graphical acceptance and merge require separate decisions.
 
 ## Verification and owner acceptance
 
+PR #207 (pending review and merge) retires superseded milestone-wide changed-path
+restrictions and initial-exterior source projections from the shell, loading,
+pause and Fabricator consumers. Current startup ownership, loading progress,
+failure/retirement, pause/input and menu contracts remain checked. Focused
+initial-exterior assertions now bind resource completion, servicing, cancellation
+and shared setup to the current function bodies. These are Python structural
+checks, not engine or gameplay verification. Dated acceptance and evidence below
+retain their historical scope; execution permissions are unchanged.
+
 Agent verification is static only: Python text/resource-graph, pause lifecycle,
 focus/confirmation and preservation checks, plus diff/link validation. These do not
 parse GDScript with Godot or establish rendered layout, input behavior, scene
