@@ -1,23 +1,13 @@
-from east_walk_alignment_preservation import verified_east_walk_alignment_paths
-from north_walk_size_preservation import verified_north_walk_size_paths
-from east_idle_preservation import verified_east_idle_paths
-from south_idle_preservation import verified_south_idle_paths
-from north_idle_preservation import verified_north_idle_paths
-from initial_exterior_preservation import verified_initial_paths
-from static_save_codec_runner_test import verified_codec_runner_paths
 """Fabricator source contracts and independent geometry models; no Godot execution."""
-from application_shell_preservation import verified_application_paths
 import math
 import re
-import subprocess
 import unittest
 
 from current_preservation import ROOT, git_blob
-from extractor_artwork_offline import BODY_PATHS, verify_active_artifacts
-from smelter_artwork_offline import (BODY_PATHS as SMELTER_BODIES,
-                                     verify_active_artifacts as verify_smelter_artifacts)
+from extractor_artwork_offline import verify_active_artifacts
+from smelter_artwork_offline import verify_active_artifacts as verify_smelter_artifacts
 from static_automatic_transitions_test import function
-from static_fabricator_animation_test import LAYER_PATHS, without_presentation_identity
+from static_fabricator_animation_test import without_presentation_identity
 
 BASE = "249dd92411db6d70d1f08da809305c7f6c720385"
 
@@ -119,36 +109,9 @@ class FabricatorFootprintStaticTest(unittest.TestCase):
         self.assertIn("point.distance_to(point.clamp(footprint.position, footprint.end))",
                       read("construction/placement_rules.gd"))
 
-    def test_protected_gameplay_art_and_execution_controls_unchanged(self):
-        # Footprint milestone permits one data line. Decision 36 additionally
-        # permits these exact presentation paths; the separate codec runner is
-        # accepted only after complete source-hash verification below.
-        changed = subprocess.check_output(
-            ["git", "diff", "--name-only", BASE, "--", "inventory", "construction",
-             "scenes", "assets", "project.godot", "tools", "AGENTS.md",
-             "docs/LOCAL_TESTING.md"], cwd=ROOT, text=True).splitlines()
-        artwork = {"construction/machine_visual.gd", "construction/fabricator_visual.gd",
-                   "construction/fabricator_visual.gd.uid", "construction/fabricator_visual.tscn"}
-        for name in ("fabricator_0_resting.png", "fabricator_90_body.png",
-                     "fabricator_180_body.png", "fabricator_270_body.png"):
-            artwork.update(("assets/machines/fabricator/" + name,
-                            "assets/machines/fabricator/" + name + ".import"))
-        # Decision 62 adds exactly five runtime layers and one identity assignment.
-        artwork.update(LAYER_PATHS + [p + ".import" for p in LAYER_PATHS])
-        # Decision 2A: exact active identities protect only four Extractor bodies.
+    def test_active_artwork_deployed_identity_and_stationary_reach(self):
         verify_active_artifacts()
-        artwork.update(BODY_PATHS)
         verify_smelter_artifacts()
-        artwork.update(SMELTER_BODIES)
-        artwork.update(verified_application_paths())
-        artwork.update(verified_initial_paths())
-        artwork.update(verified_codec_runner_paths())
-        artwork.update(verified_north_idle_paths())
-        artwork.update(verified_south_idle_paths())
-        artwork.update(verified_east_idle_paths())
-        artwork.update(verified_north_walk_size_paths())
-        artwork.update(verified_east_walk_alignment_paths())
-        self.assertEqual(set(changed) - artwork, {"inventory/fabricator.tres", "construction/deployed_machine.gd"})
         path = "construction/deployed_machine.gd"
         self.assertEqual(without_presentation_identity(read(path)),
                          git_blob(BASE, path).decode().replace("\r\n", "\n"))

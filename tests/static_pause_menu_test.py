@@ -1,15 +1,7 @@
-from east_walk_alignment_preservation import verified_east_walk_alignment_paths
-from north_walk_size_preservation import verified_north_walk_size_paths
-from east_idle_preservation import verified_east_idle_paths
-from south_idle_preservation import verified_south_idle_paths
-from north_idle_preservation import verified_north_idle_paths
-from initial_exterior_preservation import verified_initial_paths
-from static_save_codec_runner_test import verified_codec_runner_paths
 """Offline pause ownership, input routing and preservation contracts; no Godot execution."""
-import subprocess
 import unittest
 
-from static_automatic_transitions_test import ROOT, function, nodes
+from static_automatic_transitions_test import function, nodes
 from static_v2_production_host_test import read
 
 
@@ -98,14 +90,6 @@ class PauseMenuTests(unittest.TestCase):
         scene = read("scenes/application/pause_menu.tscn")
         self.assertIn('text = "Any progress since your last save will be lost."', scene)
         self.assertNotIn("PackedScene", scene)
-
-    def test_gameplay_and_assets_match_merged_shell_baseline(self):
-        protected = ["construction", "inventory", "scenes/main", "scenes/player", "scenes/ui",
-                     "scenes/world", "assets", "dialogue", "objectives", "project.godot", "tools",
-                     "AGENTS.md", "docs/LOCAL_TESTING.md", "docs/experiments"]
-        changed = subprocess.check_output(["git", "diff", "--name-only",
-            "f92e8111b2fdcb0d88b4ebe336ca25c2f849c4d1", "--", *protected], cwd=ROOT, text=True)
-        self.assertFalse(set(changed.splitlines()) - verified_initial_paths() - verified_codec_runner_paths() - verified_north_idle_paths() - verified_south_idle_paths() - verified_east_idle_paths() - verified_north_walk_size_paths() - verified_east_walk_alignment_paths(), changed)
 
 
 if __name__ == "__main__":

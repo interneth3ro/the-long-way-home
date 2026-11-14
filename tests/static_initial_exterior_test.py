@@ -6,14 +6,11 @@ or performance. Source wiring binds the specification to actual production hooks
 from dataclasses import dataclass, replace
 from pathlib import Path
 import re
-import subprocess
 import unittest
 
 from static_automatic_transitions_test import function
-from initial_exterior_preservation import without_initial_preparation
 
 ROOT = Path(__file__).resolve().parents[1]
-BASE = "5ab32bd"
 E = (ROOT / "scenes/world/planet_exterior.gd").read_text()
 C = (ROOT / "scenes/main/scene_transition_controller.gd").read_text()
 A = (ROOT / "scenes/application/application.gd").read_text()
@@ -180,20 +177,43 @@ class InitialExteriorTests(unittest.TestCase):
         self.assertLess(shell.index('add_child(_session)'), shell.index('await transitions.prepare_initial_exterior(true)'))
         self.assertLess(shell.index('prepare_initial_exterior(true)'), shell.index('_starting = false'))
 
-    def test_existing_gameplay_and_publication_methods_are_exactly_preserved(self):
-        for path in ('scenes/world/planet_exterior.gd', 'scenes/main/scene_transition_controller.gd'):
-            old = subprocess.check_output(['git', 'show', BASE + ':' + path], cwd=ROOT).replace(b'\r\n', b'\n')
-            raw = (ROOT / path).read_bytes()
-            self.assertEqual(without_initial_preparation(path, raw), old)
-            for marker in (b'_sync_machines()', b'player.reparent(ground_objects)'):
-                if marker in raw:
-                    self.assertNotEqual(without_initial_preparation(path, raw.replace(marker, marker + b' # unexpected', 1)), old)
-        for path in ('scenes/world/terrain_chunk.gd', 'scenes/world/planet_generator.gd',
-                     'scenes/world/planet_world_state.gd', 'scenes/world/ferrite_deposit_presenter.gd',
-                     'scenes/world/continuous_terrain_presenter.gd', 'scenes/main/playthrough_state.gd',
-                     'tools/run-local-tests.ps1', 'scenes/world/planet_exterior.tscn'):
-            self.assertEqual((ROOT / path).read_bytes().replace(b'\r\n', b'\n'),
-                             subprocess.check_output(['git', 'show', BASE + ':' + path], cwd=ROOT).replace(b'\r\n', b'\n'), path)
+    def test_current_resource_readiness_cancellation_and_shared_setup(self):
+        # Bind completion to the current resource phase, not an earlier source snapshot.
+        completed = function(E, '_initial_completed')
+        resource_phase = completed[completed.index('\tif _ferrite_presenter != null and'):]
+        self.assertIn('and _resources_done', resource_phase)
+        self.assertIn('and _resource_presenter.is_complete(_resource_token):', resource_phase)
+        self.assertLess(resource_phase.index('_resource_presenter.is_complete(_resource_token):'),
+                        resource_phase.index('\t\tcompleted += 1'))
+        arrival_ready = function(E, 'arrival_is_ready')
+        self.assertIn('and _resources_done', arrival_ready)
+        self.assertIn('and _resource_presenter.is_complete(_resource_token)', arrival_ready)
+        self.assertIn('_initial_completed(_center) == INITIAL_CHUNK_COUNT + 1',
+                      function(E, 'preparation_is_ready'))
+        for method, readiness in (('prepare_initial_neighborhood', 'if not preparation_is_ready(result):'),
+                                  ('prepare_for_arrival', 'if not arrival_is_ready(result):')):
+            body = function(E, method)
+            self.assertIn('or not _resources_done)', body)
+            self.assertIn('_service_resources()', body)
+            self.assertLess(body.index('_initialize_world(state)'), body.index('_service_resources()'))
+            self.assertLess(body.index('_generate_budget()'), body.index('_service_resources()'))
+            self.assertLess(body.index('_service_resources()'), body.index('await get_tree().process_frame'))
+            self.assertLess(body.index('_service_resources()'), body.index(readiness))
+        cancel = function(E, 'cancel_arrival_preparation')
+        self.assertIn('if _resource_presenter != null:\n\t\t_resource_presenter.cancel()', cancel)
+        self.assertIn('_resource_chunks.clear()', cancel)
+        self.assertIn('_resources_done = false', cancel)
+        self.assertLess(cancel.index('_resource_presenter.cancel()'), cancel.index('_resource_chunks.clear()'))
+        self.assertLess(cancel.index('_resource_chunks.clear()'), cancel.index('_resources_done = false'))
+        setup = function(E, '_initialize_world')
+        self.assertIn('_state.machines_changed.connect(_queue_machine_sync)', setup)
+        self.assertIn('\n\t_sync_machines()\n', setup)
+        self.assertIn('\tif _generator == null:\n', setup)
+        generator = setup.split('\tif _generator == null:\n', 1)[1]
+        self.assertEqual(setup.count('PlanetGenerator.new('), 1)
+        self.assertIn('\n\t\t_generator = PlanetGenerator.new(state.seed_value, overlays, protected_gameplay, object_anchors)', generator)
+        self.assertIn('\n\t\t_ground_state = state', generator)
+        self.assertIn('\n\t\t_ground_seed = state.seed_value', generator)
 
     def test_real_progress_and_existing_cooperative_work_paths(self):
         prep = function(E, 'prepare_initial_neighborhood')

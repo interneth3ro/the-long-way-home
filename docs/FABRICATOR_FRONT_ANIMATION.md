@@ -203,6 +203,17 @@ cannot restart it. No previous phase resumes across scene visits.
 
 ## Offline validation and limits
 
+PR #207 (pending review and merge) narrows ongoing preservation to machine
+artwork/import metadata and the frozen Fabricator inventory, with the existing
+verified Extractor/Smelter derivative exclusions. Superseded milestone-wide
+changed-path admission and unrelated gameplay-source snapshots are retired.
+Layer/hash, registration, choreography, cancellation, lifecycle, identity,
+geometry, interaction and presentation checks remain. Both optional external
+package tests and their skip conditions are unchanged. Current startup/resource
+readiness checks are described in [application verification](APPLICATION_SHELL.md#verification-and-owner-acceptance).
+Dated results below remain historical evidence; no Godot verification or new
+execution authority is implied.
+
 `tests/static_fabricator_animation_test.py` checks PNG identities/decoding/alpha,
 source-pixel reconstruction, hierarchy and motion, exact keyframes, rational
 timeline continuity, envelopes, easing, transition math, lifecycle guards,

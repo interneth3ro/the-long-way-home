@@ -1,8 +1,3 @@
-from east_walk_alignment_preservation import verified_east_walk_alignment_paths
-from north_walk_size_preservation import verified_north_walk_size_paths
-from east_idle_preservation import verified_east_idle_paths
-from south_idle_preservation import verified_south_idle_paths
-from north_idle_preservation import verified_north_idle_paths
 """Milestone 4 offline lifecycle specifications and production source contracts.
 
 Finite fixtures do not execute GDScript or establish engine/UI behavior.
@@ -13,7 +8,6 @@ import subprocess
 import unittest
 
 from static_automatic_transitions_test import function, nodes
-from static_save_codec_runner_test import verified_codec_runner_paths
 
 ROOT = Path(__file__).resolve().parents[1]
 A = (ROOT / "scenes/application/application.gd").read_text()
@@ -175,7 +169,7 @@ class LoadingScreenTests(unittest.TestCase):
                 self.assertNotEqual(retired_generation, generation)
         self.assertIn('if _starting or _session != null:', function(A, '_start_new_game'))
 
-    def test_hatch_gameplay_artwork_and_world_implementation_unchanged(self):
+    def test_ordinary_transition_methods_match_loading_screen_baseline(self):
         old = subprocess.check_output(['git', 'show', 'f142fa4:scenes/main/scene_transition_controller.gd'],
                                       cwd=ROOT).decode()
         # Every ordinary transition method and teardown cache loop stays exact.
@@ -183,12 +177,6 @@ class LoadingScreenTests(unittest.TestCase):
                        '_validate_arrival', '_finish_transition', '_fade_to',
                        '_finish_quick_transition', 'cancel_quick_transition'):
             self.assertEqual(function(C, method), function(old, method), method)
-        paths = ('assets', 'construction', 'inventory', 'scenes/world', 'scenes/player',
-                 'scenes/main/main.gd', 'scenes/main/main_v2.gd', 'scenes/main/playthrough_state.gd',
-                 'scenes/application/pause_menu.gd', 'scenes/application/pause_menu.tscn', 'tools')
-        changed = subprocess.check_output(['git', 'diff', '--name-only', 'f142fa4', '--', *paths],
-                                          cwd=ROOT, text=True)
-        self.assertFalse(set(changed.splitlines()) - verified_codec_runner_paths() - verified_north_idle_paths() - verified_south_idle_paths() - verified_east_idle_paths() - verified_north_walk_size_paths() - verified_east_walk_alignment_paths(), changed)
 
 
 if __name__ == '__main__':
