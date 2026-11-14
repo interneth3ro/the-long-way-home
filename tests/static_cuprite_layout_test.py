@@ -60,21 +60,7 @@ class CupriteLayoutTests(unittest.TestCase):
             self.assertEqual(tuple(bands.count(i) for i in range(3)), expected)
         self.assertIn("const BAND_CELLS := [[14, 22], [26, 46], [50, 68]]", STARTING)
 
-    def test_counts_anchors_spacing_and_protection_remain_active(self):
-        self.assertIn('const REQUIRED := {"ferrite": 3, "carbite": 2, "cuprite": 2}', STARTING)
-        for fragment in ("const ARRANGEMENT_BUDGET: int = 4096", "Vector2i(4, 4)",
-                         "if _arrangement_valid(arrangement):", "not _eligible(location)",
-                         "_conflicts(location, locations[previous])", "return counts == REQUIRED",
-                         "distance < MIN_DISTANCE or distance > MAX_DISTANCE"):
-            self.assertIn(fragment, STARTING)
-        for method in ("_arrangement_valid", "_arrangement"):
-            self.assertEqual(body(STARTING, method), body(original("scenes/world/starting_resource_generator.gd"), method))
-        self.assertEqual(read("scenes/world/resource_generation_crash_site.gd"), original("scenes/world/resource_generation_crash_site.gd"))
-
-    def test_revised_policy_is_current_and_old_token_is_not_an_alias(self):
-        self.assertIn('const STARTING_POLICY: String = "starting-v2-2"', STARTING)
-        self.assertIn("if policy != STARTING_POLICY:", STARTING)
-        self.assertIn("return STARTING_POLICY", body(STARTING, "identity_policy"))
+    def test_current_policy_world_and_integration_wiring(self):
         self.assertIn('starting_policy: String = "starting-v2-2"', read("scenes/world/planet_world_state.gd"))
         integration = read("scenes/world/resource_generation_v2_integration.gd")
         for fragment in ("starting_policy == Starting.STARTING_POLICY", '"starting_policy": Starting.STARTING_POLICY',
@@ -82,8 +68,6 @@ class CupriteLayoutTests(unittest.TestCase):
             self.assertIn(fragment, integration)
 
     def test_ordinary_distribution_and_transition_draws_preserved(self):
-        ordinary = "scenes/world/ordinary_resource_generator.gd"
-        self.assertEqual(read(ordinary), original(ordinary))
         self.assertIn('const TRANSITION_SAMPLING_DOMAIN: String = "starting-v2-1"', STARTING)
         old = original("scenes/world/starting_resource_generator.gd")
         self.assertIn('domain: String = STARTING_POLICY', body(STARTING, "_starting_sample"))
@@ -104,17 +88,6 @@ class CupriteLayoutTests(unittest.TestCase):
         for method in ("deposit_at", "query_deposit_descriptors", "extractor_target_v2",
                        "advance_production", "collect_output", "recover_machine"):
             self.assertEqual(body(world, method), body(old, method))
-
-    def test_current_policy_behavior_is_authored_without_dispatch(self):
-        behavior = read("tests/cuprite_world_layout_test.gd")
-        for label in ("revised starting policy", "complete starting counts", "same-seed deterministic layout",
-                      "old policy rejected", "anchor geometry", "Cuprite anchor-center distance"):
-            self.assertIn(label, behavior)
-        integration = read("tests/resource_generation_v2_integration_test.gd")
-        self.assertIn('context.starting_policy == "starting-v2-2"', integration)
-        self.assertIn('"resource:starting-v2-2:%d:0:0:0:0" % (seed_value + 1)', integration)
-        for runner in (ROOT / "tools").glob("*.ps1"):
-            self.assertNotIn("cuprite_world_layout_test", runner.read_text())
 
 
 if __name__ == "__main__":

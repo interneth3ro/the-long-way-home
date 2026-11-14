@@ -592,6 +592,27 @@ closure and filesystem scope. Original four-check approval remains limited to it
 unchanged scope; neither this proposal nor static/inert PASS expands it. Native,
 codec and metadata restrictions and all historical evidence remain unchanged.
 
+### Historical resource test consolidation (PR #202, pending merge)
+
+The owner reports PR #201's exact two-group suite passed 172 checks and has
+separate standing approval. This consolidation changes no engine scope or runner;
+no Godot invocation accompanies it.
+In the three Python resource-generator/layout files, 32 methods become 25:
+retire duplicate reservation/identity/conflict/copy fragments, authored-label
+presence checks, obsolete pre-integration exclusions and broad milestone freezes.
+Runtime contracts now rely on the unchanged behavioral group described above;
+label presence was never runtime evidence. The original audit and execution
+records remain historical records.
+
+Keep independent halo/template/query geometry, SHA-256 sampling vectors,
+resource/artwork integrity, authored scene/protection provenance and integration
+wiring. Retained checks also cover gaps in the behavioral corpus: equal-priority
+ties, signed-coordinate ID bounds, malformed/oversized query admission, cache
+eviction, bounded exhaustion, transition compatibility, reservation priority,
+migration diagnostics and legacy production APIs. These are future behavioral
+candidates; retained Python source checks do not establish runtime PASS. Actual
+before/after static results and method dispositions are recorded in the draft PR.
+
 ## Fixed metadata smoke extension (draft, tested runtime scope passed)
 
 Stage 3A-2 adds `MetadataSmoke` to the existing runner on this feature branch,
