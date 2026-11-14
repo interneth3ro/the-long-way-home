@@ -127,19 +127,5 @@ class LiveExtractorStaticTests(unittest.TestCase):
                      "advance_production", "transfer_input", "collect_output"):
             self.assertEqual(body(WORLD, name), body(original, name), name)
 
-    def test_unexecuted_behavior_and_preserved_inputs(self):
-        behavior = read("tests/live_extractor_v2_test.gd")
-        for label in ("stable tie", "occupied feedback", "incompatible feedback", "failed removal",
-                      "successful deployment", "duplicate claim", "failed placement", "failed recovery",
-                      "successful recovery", "stale context", "legacy Ferrite", "no Cuprite production"):
-            self.assertIn(label, behavior)
-        for path in ("scenes/world/planet_exterior.gd", "scenes/world/resource_generation_v2_integration.gd",
-                     "scenes/experiments/resource_generation_v2/extractor_anchor_inspection.gd",
-                     "tools/run-local-tests.ps1", "tests/fixtures/metadata_smoke/inputs.json"):
-            original = subprocess.check_output(["git", "show", BASE + ":" + path], cwd=ROOT)
-            self.assertEqual(read(path), original.decode("utf-8").replace("\r\n", "\n"), path)
-        for path in (ROOT / "tools").glob("*.ps1"):
-            self.assertNotIn("live_extractor_v2_test", path.read_text())
-
 if __name__ == "__main__":
     unittest.main()

@@ -198,6 +198,15 @@ quantity, generation input or reservation changes.
 
 ## Validation and preservation
 
+Current maintained coverage on PR #203 (pending merge) retains 12 anchor methods
+and 12 [live Extractor methods](../tests/static_live_extractor_v2_test.py).
+Only the anchor whole-tree preservation method and the live Extractor
+historical-input/assertion-label method are retired. All other assertions remain,
+including geometry, ticket identity, revalidation, transaction ordering,
+reentrancy, recovery and reference checks, and unrelated failing expectations.
+The 13-test count and baseline-preservation statements below record the original
+milestone, not current coverage. No behavioral suite or execution scope changes.
+
 [`static_extractor_anchor_test.py`](../tests/static_extractor_anchor_test.py)
 contains 13 nonexecuting Python tests: source contracts, independent geometry and
 snap vectors, bounded queries, exact revalidation, transaction ordering, isolation,

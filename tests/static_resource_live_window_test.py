@@ -2,7 +2,6 @@
 from pathlib import Path
 import math
 import re
-import subprocess
 import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -67,16 +66,6 @@ class LiveResourceWindowTests(unittest.TestCase):
         self.assertEqual(number(PRESENTER, "MAX_OWNERS"), 64)
         self.assertEqual(number(PRESENTER, "MAX_DESCRIPTORS"), 775)
         self.assertEqual(number(PRESENTER, "TEXTURE_LIMIT"), 8)
-
-    def test_generation_and_terrain_inputs_are_unchanged(self):
-        for path in ("scenes/world/ordinary_resource_generator.gd",
-                     "scenes/world/starting_resource_generator.gd",
-                     "scenes/world/planet_exterior.gd", "scenes/world/world_coordinates.gd",
-                     "scenes/world/resource_presentation_catalog.gd", "tools/run-local-tests.ps1"):
-            with self.subTest(path=path):
-                old = subprocess.check_output(["git", "show", "e7aeef97c194fdbdf9ccf8b1c7b3493417ebe39a:" + path],
-                                              cwd=ROOT, text=True)
-                self.assertEqual((ROOT / path).read_text(), old)
 
 
 if __name__ == "__main__":

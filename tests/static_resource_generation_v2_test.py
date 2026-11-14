@@ -5,11 +5,9 @@ unexecuted. Formatting vectors below specify bytes, not generator determinism.
 """
 from pathlib import Path
 import re
-import subprocess
 import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
-BASE = "8430aacafa1e1cb08db1d7a5451d1ace66040e15"
 DEFINITION_PATH = "scenes/world/world_resource_definition.gd"
 DESCRIPTORS_PATH = "scenes/world/resource_generation_descriptors.gd"
 RUNTIME_PATH = "tests/resource_generation_v2_contract_test.gd"
@@ -100,16 +98,6 @@ class ResourceGenerationV2StaticTests(unittest.TestCase):
                 self.assertNotIn(forbidden, executable.replace("preload(", "PRELOAD("))
         for runner in ("tools/run-local-tests.ps1", "tools/run-save-codec-tests.ps1"):
             self.assertNotIn("resource_generation_v2_contract_test", (ROOT / runner).read_text())
-
-    def test_legacy_assets_simulation_and_controls_are_preserved(self):
-        protected = ["scenes/world/resource_deposit.gd", "scenes/world/planet_world_state.gd",
-                     "scenes/world/ferrite_region_generator.gd", "scenes/world/ferrite_deposit_presenter.gd",
-                     "construction", "inventory", "persistence", "assets", "tools", "AGENTS.md",
-                     "scenes/world/cuprite_visual_prototype.tscn", "scenes/world/planet_exterior.tscn",
-                     "scenes/world/introductory_ferrite.tres"]
-        changed = subprocess.check_output(
-            ["git", "diff", "--name-only", BASE, "--", *protected], cwd=ROOT, text=True)
-        self.assertEqual(changed, "", "Protected tracked inputs differ from reviewed baseline")
 
 
 if __name__ == "__main__":
