@@ -276,15 +276,13 @@ class SmelterArtworkStaticTest(unittest.TestCase):
         self.assertIn("draw_circle(Vector2(size.x - 13, size.y - 13), 3.5, _status_color())", draw)
 
     def test_gameplay_other_presenters_and_stationary_preserved(self):
-        for path in ["inventory/smelter.tres", "inventory/extractor.tres", "inventory/fabricator.tres",
-                     "construction/deployed_machine.gd", "construction/construction_controller.gd",
-                     "construction/machine_definition.gd", "construction/placement_rules.gd",
+        for path in ["inventory/smelter.tres", "inventory/fabricator.tres",
+                     "construction/deployed_machine.gd", "construction/machine_definition.gd",
                      "construction/extractor_visual.gd", "construction/extractor_visual.tscn",
-                     "scenes/world/world_coordinates.gd", "scenes/world/planet_world_state.gd",
-                     "scenes/world/planet_exterior.gd", "scenes/world/planet_exterior.tscn",
+                     "scenes/world/world_coordinates.gd", "scenes/world/planet_exterior.tscn",
                      "scenes/player/dave.gd", "scenes/player/dave.tscn",
                      "scenes/player/interaction_detector.gd", "scenes/main/scene_transition_controller.gd",
-                     "scenes/main/playthrough_state.gd", "scenes/ui/machine_ui.gd",
+                     "scenes/main/playthrough_state.gd",
                      "scenes/ui/smelter_inspection.gd", "scenes/ui/smelter_inspection.tscn",
                      "scenes/visuals/smelter_stationary.tscn", "scenes/world/stationary_machine_presentation.gd",
                      "scenes/interaction/v2_smelter_recovery.gd", "scenes/interaction/smelter_rack.gd",

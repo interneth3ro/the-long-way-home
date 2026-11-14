@@ -638,6 +638,19 @@ line-ending-normalized Cuprite prototype-scene preservation comparison remain
 unchanged. All other assertions, historical records, runner controls and Godot
 execution permissions remain unchanged.
 
+### Machine preservation cleanup (PR #206, pending merge)
+
+PR #206 retires obsolete current shared-gameplay byte comparisons from the
+Extractor artwork and Smelter artwork, footprint and thermal Python tests.
+Machine-specific artwork identities, historical inventories, registration,
+imports, scenes, stationary presentation, adapters, geometry and thermal checks
+remain intact. A focused current Extractor definition check covers Ferrite/Cuprite
+compatibility, its 4x4 footprint, extraction point and legacy Ferrite output.
+Current transaction, production and presentation structural safeguards remain;
+historical hashes, manifests, receipts and provenance are unchanged. The separate
+shared-transaction expectation F061 remains outside this cleanup. No runner,
+execution permission or Godot validation changes accompany these Python checks.
+
 ## Fixed metadata smoke extension (draft, tested runtime scope passed)
 
 Stage 3A-2 adds `MetadataSmoke` to the existing runner on this feature branch,
