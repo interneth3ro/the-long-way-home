@@ -630,6 +630,14 @@ milestone counts and execution results below and in the feature documents remain
 historical evidence. Current validation results are recorded in PR #203; Python
 checks do not establish engine or gameplay PASS.
 
+### Resource milestone scope cleanup (PR #205, pending merge)
+
+PR #205 retires two superseded milestone-wide change-scope restrictions in the
+anchor and presenter Python tests. Resource-reference resolution and the
+line-ending-normalized Cuprite prototype-scene preservation comparison remain
+unchanged. All other assertions, historical records, runner controls and Godot
+execution permissions remain unchanged.
+
 ## Fixed metadata smoke extension (draft, tested runtime scope passed)
 
 Stage 3A-2 adds `MetadataSmoke` to the existing runner on this feature branch,

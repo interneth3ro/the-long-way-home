@@ -2,11 +2,9 @@
 from pathlib import Path
 import math
 import re
-import subprocess
 import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
-BASE = '5e88e774f13d80befe63c5fb24c0cace24e35f3f'
 RULE_PATH = 'construction/extractor_anchor_rules.gd'
 HARNESS_PATH = 'scenes/experiments/resource_generation_v2/extractor_anchor_inspection.gd'
 RULES = (ROOT / RULE_PATH).read_text()
@@ -187,14 +185,10 @@ class ExtractorAnchorStaticTests(unittest.TestCase):
         for path in (ROOT / 'tools').glob('*.ps1'):
             self.assertNotIn('extractor_anchor_test', path.read_text())
 
-    def test_references_resolve_and_new_scope_is_exact(self):
+    def test_references_resolve(self):
         for source in (RULES, HARNESS, ASSERTIONS):
             for ref in re.findall(r'(?:preload\(|extends )"res://([^"\n]+)"', source):
                 self.assertTrue((ROOT / ref).is_file(), ref)
-        allowed = {RULE_PATH, HARNESS_PATH, 'tests/extractor_anchor_test.gd',
-                   'tests/static_extractor_anchor_test.py', 'docs/RESOURCE_GENERATION_V2_PLACEMENT.md'}
-        added = subprocess.check_output(['git', 'diff', '--name-only', '--diff-filter=A', BASE], cwd=ROOT, text=True)
-        self.assertLessEqual(set(added.splitlines()), allowed)
 
 
 if __name__ == '__main__':
