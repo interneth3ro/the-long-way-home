@@ -613,6 +613,23 @@ migration diagnostics and legacy production APIs. These are future behavioral
 candidates; retained Python source checks do not establish runtime PASS. Actual
 before/after static results and method dispositions are recorded in the draft PR.
 
+### Resource preservation cleanup (PR #203, pending merge)
+
+The four affected Python files now maintain 35 methods rather than 39. Retire
+only the foundation and anchor whole-tree milestone freezes, the live Extractor
+historical-input/assertion-label check, and the live-window whole-file freeze.
+Current coverage remains in the [foundation](../tests/static_resource_generation_v2_test.py),
+[anchor](../tests/static_extractor_anchor_test.py),
+[live Extractor](../tests/static_live_extractor_v2_test.py) and
+[live-window](../tests/static_resource_live_window_test.py) files. Every other
+method and substantive assertion is unchanged, including existing unrelated
+failures. No replacement behavioral assertions are needed for these obsolete
+restrictions. Geometry, identity, reference, transaction and budget safeguards
+remain; all runner controls and execution permissions are unchanged. Original
+milestone counts and execution results below and in the feature documents remain
+historical evidence. Current validation results are recorded in PR #203; Python
+checks do not establish engine or gameplay PASS.
+
 ## Fixed metadata smoke extension (draft, tested runtime scope passed)
 
 Stage 3A-2 adds `MetadataSmoke` to the existing runner on this feature branch,

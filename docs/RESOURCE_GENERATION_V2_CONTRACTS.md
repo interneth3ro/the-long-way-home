@@ -149,6 +149,13 @@ migration compatibility.
 
 ## Validation and preservation boundary
 
+Current maintained coverage on PR #203 (pending merge) contains seven Python
+methods. It retains field/configuration validation, identity vectors, membership,
+metadata separation, fixture wiring and dependency guards. Only the broad
+foundation-era preservation method is retired; no other method or substantive
+assertion changes. The baseline comparison described in the original milestone
+record below is historical, not a current restriction on approved development.
+
 [Static tests](../tests/static_resource_generation_v2_test.py) inspect field and
 validation contracts, exact identity formatting vectors, test-fixture wiring,
 absence of I/O/generation dependencies, and preservation against baseline

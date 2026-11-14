@@ -237,6 +237,13 @@ failure was traced to the shared 6,144-unit guard rejecting live terrain windows
 the initial 7x7 neighborhood spans 14,336 units. Live requests now select the
 separate whole-window limits while continuing to issue one small page query per
 query step. This changes no terrain/generation policy or authority-query limit.
+
+Current maintained live-window coverage on PR #203 (pending merge) contains four
+Python methods. Only the whole-file generation/terrain preservation method is
+retired; dimensions, signed-window geometry, page/owner budgets and adapter-limit
+assertions remain unchanged. The five-check and 20-test PASS counts in the
+following paragraph are original PR #195 evidence, not new validation results.
+
 [`static_resource_live_window_test.py`](../tests/static_resource_live_window_test.py)
 passes five nonexecuting checks for actual dimensions, signed windows, page/owner
 bounds, adapter-specific limits and unchanged generation/terrain controls. Together
