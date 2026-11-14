@@ -163,6 +163,10 @@ are owner requirements, separate from this provisional register.
 
 ## Validation, file scope and preservation
 
+For the current Python coverage after PR #202 consolidation (pending merge), see
+[retired checks and retained safeguards](LOCAL_TESTING.md#historical-resource-test-consolidation-pr-202-pending-merge).
+The validation/file-scope descriptions below record the original milestone.
+
 [`static_ordinary_resource_generator_test.py`](../tests/static_ordinary_resource_generator_test.py)
 checks source contracts, inert wiring, preservation, independent SHA-256 vectors,
 group sampling, exhaustive template geometry and halo/query reach proofs. It
