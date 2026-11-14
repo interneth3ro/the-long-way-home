@@ -35,6 +35,11 @@ def is_dev_path(path):
     path = posixpath.normpath(path.replace("\\", "/")).casefold()
     return path == "scenes/dev" or path.startswith("scenes/dev/")
 
+def literal_resource_paths(text):
+    """Follow conservative path literals, except direct prefix-predicate operands."""
+    prefix_predicate = r'''\.\s*begins_with\s*\(\s*(["'])res://[^"'\\\r\n]*\1\s*\)'''
+    return re.findall(r'res://([^"\s)]+)', re.sub(prefix_predicate, '', text))
+
 def tracked_non_dev_files(pattern):
     # Filter Git metadata before opening anything, including UID sidecars.
     paths = subprocess.check_output(["git", "ls-files", pattern], cwd=ROOT, text=True).splitlines()
@@ -128,7 +133,7 @@ class V2ProductionHostStaticTest(unittest.TestCase):
             if not path.endswith((".tscn", ".tres", ".gd", ".gdshader", ".godot")):
                 continue
             text = read(path)
-            references = re.findall(r'res://([^"\s)]+)', text)
+            references = literal_resource_paths(text)
             pending.extend(references)
             for header, _ in geometry.blocks(text, 'ext_resource'):
                 uid = re.search(r'\buid="(uid://[a-z0-9]+)"', header)
@@ -162,6 +167,45 @@ class V2ProductionHostStaticTest(unittest.TestCase):
             self.assertRegex(uid, r"^uid://[a-z0-9]+$")
             self.assertEqual(sum(p.read_text().strip() == uid
                                  for p in (ROOT / path for path in tracked_non_dev_files("*.gd.uid"))), 1)
+
+    def test_resource_graph_extracts_dependencies_except_prefix_predicates(self):
+        prefix = 'value.artwork.begins_with("res://assets/")'
+        self.assertEqual(literal_resource_paths(prefix), [])
+        self.assertEqual(literal_resource_paths("value.begins_with('res://assets/')"), [])
+        self.assertEqual(literal_resource_paths('value.begins_with(\n "res://assets/"\n)'), [])
+        # The same literal remains a dependency outside a direct predicate operand.
+        for reference in ('preload("res://assets/")', 'load("res://assets/")',
+                          'extends "res://assets/"', 'const PATH = "res://assets/"',
+                          '[ext_resource path="res://assets/" id="1"]',
+                          'run/main_scene="res://assets/"',
+                          'value.not_begins_with("res://assets/")',
+                          'value.begins_with("res://assets/" + suffix)'):
+            with self.subTest(reference=reference):
+                self.assertEqual(literal_resource_paths(prefix + '\n' + reference), ['assets/'])
+
+    def test_resource_graph_accepts_prefix_predicate_alongside_real_dependency(self):
+        source_read = read
+        source = 'scenes/world/resource_presentation_catalog.gd'
+        prefix = 'var matches = value.artwork.begins_with("res://assets/")\n'
+        target = 'scenes/world/illustrated_terrain_tint.gdshader'
+        for reference in ('', f'const SHADER = preload("res://{target}")\n'):
+            fixture = prefix + reference
+            with self.subTest(reference=reference), patch(__name__ + '.read', side_effect=lambda path:
+                    fixture if path == source else source_read(path)) as mocked_read:
+                self.assert_resource_graph([source])
+                if reference:
+                    mocked_read.assert_any_call(target)
+
+    def test_resource_graph_rejects_directory_and_missing_reference_beside_prefix(self):
+        source_read = read
+        source = 'scenes/world/resource_presentation_catalog.gd'
+        for target in ('assets/', 'assets/pr204_missing_resource.unknown'):
+            fixture = ('var matches = value.artwork.begins_with("res://assets/")\n'
+                       f'const INVALID = preload("res://{target}")\n')
+            with self.subTest(target=target), patch(__name__ + '.read', side_effect=lambda path:
+                    fixture if path == source else source_read(path)):
+                with self.assertRaisesRegex(AssertionError, re.escape(target)):
+                    self.assert_resource_graph([source])
 
     def test_resource_graph_rejects_dev_paths_and_unknown_uids(self):
         source_read = read
