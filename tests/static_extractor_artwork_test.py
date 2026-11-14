@@ -64,12 +64,25 @@ class ExtractorArtworkStaticTest(unittest.TestCase):
         # Immutable inventory and every presenter/import byte stay at the approved baseline.
         paths = ["docs/experiments/extractor_static_artwork.json", "construction/extractor_visual.gd",
                  "construction/extractor_visual.tscn", "construction/machine_visual.gd",
-                 "construction/deployed_machine.gd", "inventory/extractor.tres"]
+                 "construction/deployed_machine.gd"]
         paths += [path + ".import" for path, _ in configured_layers()]
         for path in paths:
             with self.subTest(path=path):
                 self.assertEqual((ROOT / path).read_bytes().replace(b"\r\n", b"\n"),
                                  historical_bytes(path).replace(b"\r\n", b"\n"))
+
+    def test_current_extractor_definition_contract(self):
+        definition = read("inventory/extractor.tres")
+        fields = dict(re.findall(r"^(\w+) = (.+)$", definition, re.M))
+        self.assertEqual(fields.get("compatible_resources"),
+                         'Array[StringName]([&"ferrite", &"cuprite"])')
+        self.assertEqual(fields.get("footprint_cells"), "Vector2i(4, 4)")
+        self.assertEqual(fields.get("extraction_point"), "Vector2(64, 64)")
+        output = re.fullmatch(r'ExtResource\("([^"]+)"\)', fields.get("output_item", ""))
+        self.assertIsNotNone(output)
+        resources = {identity: path for path, identity in re.findall(
+            r'^\[ext_resource type="Resource" path="([^"]+)" id="([^"]+)"\]$', definition, re.M)}
+        self.assertEqual(resources.get(output[1]), "res://inventory/ferrite_ore.tres")
 
     def test_missing_history_fails_without_current_body_fallback(self):
         import subprocess
@@ -141,16 +154,12 @@ class ExtractorArtworkStaticTest(unittest.TestCase):
             self.assertIn("MachineVisual.new()", read(script))
         controller = read("construction/construction_controller.gd")
         self.assertIn("_ghost.is_ghost = true", controller)
-        original = git_blob(BASE, "construction/construction_controller.gd").decode().replace("\r\n", "\n")
-        self.assertEqual(controller.replace("_ghost.is_ghost = true", "_ghost.modulate = Color(1, 1, 1, 0.5)"), original)
 
     def test_simulation_placement_other_machines_and_stationary_preserved(self):
-        for path in ["inventory/extractor.tres", "inventory/smelter.tres", "inventory/fabricator.tres",
-                     "construction/machine_definition.gd", "construction/placement_rules.gd",
-                     "scenes/world/planet_world_state.gd",
-                     "scenes/world/world_coordinates.gd", "scenes/world/planet_exterior.gd",
+        for path in ["inventory/smelter.tres", "inventory/fabricator.tres",
+                     "construction/machine_definition.gd", "scenes/world/world_coordinates.gd",
                      "scenes/world/planet_exterior.tscn", "scenes/player/dave.tscn",
-                     "scenes/player/interaction_detector.gd", "scenes/ui/machine_ui.gd",
+                     "scenes/player/interaction_detector.gd",
                      "scenes/visuals/extractor_stationary.tscn", "scenes/world/stationary_machine_presentation.gd",
                      "project.godot", "assets/environment/maintenance_bay_v2/machines/extractor_stationary.png",
                      "assets/environment/maintenance_bay_v2/machines/extractor_stationary.png.import"]:

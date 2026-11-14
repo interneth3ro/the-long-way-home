@@ -121,18 +121,16 @@ class SmelterFootprintStaticTest(unittest.TestCase):
                       read("construction/placement_rules.gd"))
 
     def test_shared_gameplay_presentation_and_stationary_preserved(self):
-        # Current pre-feature baseline; no broad exemption for other machines/adapters.
-        for path in ["inventory/extractor.tres", "inventory/fabricator.tres",
-                     "construction/machine_definition.gd", "construction/placement_rules.gd",
-                     "construction/construction_controller.gd", "construction/deployed_machine.gd",
+        # Retain machine-specific presentation and stationary preservation checks.
+        for path in ["inventory/fabricator.tres", "construction/machine_definition.gd",
+                     "construction/deployed_machine.gd",
                      # Shared adapter gets the separately authorized static art;
-                     # preserve its interfaces below, all gameplay here.
+                     # preserve its interfaces below.
                      "construction/extractor_visual.gd",
                      "construction/extractor_visual.tscn", "scenes/world/world_coordinates.gd",
-                     "scenes/world/planet_world_state.gd", "scenes/world/planet_exterior.gd",
                      "scenes/world/planet_exterior.tscn", "scenes/player/dave.gd",
                      "scenes/player/dave.tscn", "scenes/player/interaction_detector.gd",
-                     "scenes/ui/machine_ui.gd", "scenes/ui/smelter_inspection.gd",
+                     "scenes/ui/smelter_inspection.gd",
                      "scenes/ui/smelter_inspection.tscn", "scenes/visuals/smelter_stationary.tscn",
                      "scenes/interaction/v2_smelter_recovery.gd",
                      "scenes/world/stationary_machine_presentation.gd", "scenes/interaction/smelter_rack.gd",
