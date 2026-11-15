@@ -82,7 +82,10 @@ class SmelterFootprintStaticTest(unittest.TestCase):
                          "_turns = posmod(_turns + 1, 4)", "_ghost.turns = _turns",
                          "_definition.footprint(_cell, _turns).position", "draw_rect(footprint,"]:
             self.assertIn(contract, controller)
-        commit = function(read("scenes/world/planet_world_state.gd"), "deploy_machine_instance")
+        state = read("scenes/world/planet_world_state.gd")
+        wrapper = function(state, "deploy_machine_instance")
+        self.assertIn("return _deploy_machine_transaction(definition, cell, turns, inventory, player, world, construction_range, {})", wrapper)
+        commit = function(state, "_deploy_machine_transaction")
         self.assertIn("PlacementRules.rejection(", commit)
         self.assertIn('"turns": posmod(turns, 4)', commit)
 

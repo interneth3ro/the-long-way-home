@@ -24,6 +24,27 @@ def code(source):
 
 
 class ResourceIntegrationStaticTests(unittest.TestCase):
+    def _assert_v2_access_boundary(self, source):
+        # World may use the component's public boundary, never its generator or
+        # dynamic property access. Component-owned internals remain in SOURCE.
+        public = {'configure', 'invalidate', 'is_ready', 'initialization_error',
+                  'context', 'query', 'descriptor_by_id', 'reservations'}
+        self.assertLessEqual(set(re.findall(r'_resource_v2\.(\w+)', code(source))), public)
+        self.assertNotRegex(code(source), r'_resource_v2\s*\[')
+        for name in re.findall(r'^func (\w+)\(', source, re.M):
+            if name == '_init' or name.endswith('_v2') or 'resource_generation_v2' in name \
+                    or name == 'resource_descriptor_v2_by_id':
+                continue
+            block = code(body(source, name))
+            self.assertNotIn('_resource_v2', block, name)
+            calls = set(re.findall(r'\b(\w*v2\w*)\s*\(', block))
+            if name == 'extractor_output_item':
+                self.assertEqual(calls, {'resource_generation_v2_context',
+                                        'resource_descriptor_v2_by_id', 'extractor_occupant_v2'})
+                self.assertIn('resource_descriptor_v2_by_id(machine.v2_deposit_id, context.token)', block)
+            else:
+                self.assertEqual(calls, set(), name)
+
     def test_world_owns_component_and_legacy_apis_remain_independent(self):
         self.assertIn("var _resource_v2 := ResourceGenerationV2Integration.new()", WORLD)
         init = body(WORLD, "_init")
@@ -44,14 +65,27 @@ class ResourceIntegrationStaticTests(unittest.TestCase):
         for name in ("get_deposit", "deposit_at", "get_deposits_in_area"):
             self.assertIn("_ferrite.", code(body(WORLD, name)), name)
             self.assertIn("_deposits", code(body(WORLD, name)), name)
-        # Protect the isolation boundary as methods evolve, without freezing their
-        # entire historical implementation or banning later unrelated features.
-        for name in re.findall(r"^func (\w+)\(", WORLD, re.M):
-            if name != "_init" and not (name.endswith("_v2") or "resource_generation_v2" in name
-                                       or name == "resource_descriptor_v2_by_id"):
-                block = code(body(WORLD, name))
-                self.assertNotIn("_resource_v2", block, name)
-                self.assertNotIn("resource_generation_v2", block, name)
+        self._assert_v2_access_boundary(WORLD)
+
+    def test_legacy_isolation_rejects_source_mutations(self):
+        for method in ('get_deposit', 'deposit_at', 'get_deposits_in_area',
+                       'query_deposit_descriptors', 'get_deposit_region',
+                       'deposit_query_owners', 'deposit_resource', 'get_deposit_variant'):
+            original = body(WORLD, method)
+            header, rest = original.split('\n', 1)
+            for dependency in ('resource_generation_v2_context()',
+                               'resource_descriptor_v2_by_id("id", null)',
+                               '_resource_v2.query(area, null)'):
+                with self.subTest(method=method, dependency=dependency):
+                    mutant = WORLD.replace(original, header + '\n\t' + dependency + '\n' + rest, 1)
+                    self.assertNotEqual(mutant, WORLD)
+                    with self.assertRaises(AssertionError):
+                        self._assert_v2_access_boundary(mutant)
+        for expression in ('_resource_v2._source', '_resource_v2.get("_source")',
+                           '_resource_v2["_source"]'):
+            with self.subTest(private_access=expression):
+                with self.assertRaises(AssertionError):
+                    self._assert_v2_access_boundary(WORLD + '\nfunc unauthorized():\n\t' + expression)
 
     def test_seed_is_authoritative_and_in_place_reseed_fails_closed(self):
         configure = body(WORLD, "configure_resource_generation_v2")

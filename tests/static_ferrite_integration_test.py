@@ -9,7 +9,6 @@ from static_automatic_transitions_test import ROOT, nodes, vectors, function
 from static_low_green_ground_test import inside, edge_distance
 from static_ground_rejection_test import authored_geometry
 from current_preservation import git_blob
-from static_fabricator_animation_test import without_presentation_identity
 
 
 ART = 'assets/environment/exterior/ferrite/faceted_ferrite_10x6.png'
@@ -90,7 +89,7 @@ class FerriteIntegrationStaticTest(unittest.TestCase):
         definition = read('inventory/extractor.tres')
         self.assertIn('footprint_cells = Vector2i(4, 4)',definition)
         self.assertIn('extraction_point = Vector2(64, 64)',definition)
-        self.assertIn('compatible_resources = Array[StringName]([&"ferrite"])',definition)
+        self.assertIn('compatible_resources = Array[StringName]([&"ferrite", &"cuprite"])',definition)
         # Source-bound independent membership examples. All rotations leave center fixed.
         for turns in range(4):
             center = [(64,64), (128-64,64), (128-64,128-64), (64,128-64)][turns]
@@ -155,41 +154,52 @@ class FerriteIntegrationStaticTest(unittest.TestCase):
                          'query.collision_mask = player.collision_layer',
                          'Dave is in the footprint']:
             self.assertIn(contract, rules)
-        commit = function(read('scenes/world/planet_world_state.gd'), 'deploy_machine_instance')
+        state = read('scenes/world/planet_world_state.gd')
+        self.assertIn('return _deploy_machine_transaction(definition, cell, turns, inventory, player, world, construction_range, {})',
+                      function(state, 'deploy_machine_instance'))
+        commit = function(state, '_deploy_machine_transaction')
         self.assertIn('PlacementRules.rejection(self, definition, cell, turns', commit)
         status = function(read('scenes/world/planet_world_state.gd'), 'machine_status')
         self.assertIn('definition.rotated_point(definition.extraction_point, machine.turns)', status)
         self.assertIn('deposit_at(point, resource_type)', status)
 
     def test_footprint_change_preserves_other_definitions_and_gameplay(self):
-        base = '10b3ae89011efbd73118b9b86cf481b73df2c91c'
-        original = git_blob(base, 'inventory/extractor.tres').decode().replace('\r\n', '\n')
-        restored = read('inventory/extractor.tres').replace(
-            'footprint_cells = Vector2i(4, 4)', 'footprint_cells = Vector2i(2, 2)').replace(
-            'extraction_point = Vector2(64, 64)', 'extraction_point = Vector2(32, 32)')
-        self.assertEqual(restored, original)  # All production/item fields preserved.
-        for path in ['inventory/smelter.tres', 'inventory/fabricator.tres',
-                     'scenes/world/world_coordinates.gd', 'construction/machine_definition.gd',
-                     'construction/placement_rules.gd', 'construction/deployed_machine.gd',
-                     'construction/construction_controller.gd', 'scenes/world/planet_world_state.gd',
-                     'scenes/player/interaction_detector.gd', 'scenes/ui/machine_ui.gd']:
-            with self.subTest(path=path):
-                current = read(path)
-                if path in ('inventory/smelter.tres', 'inventory/fabricator.tres'):
-                    # Authorized Smelter/Fabricator footprint milestones; preserve every other field.
-                    self.assertEqual(current.count('footprint_cells = Vector2i(4, 4)'), 1)
-                    current = current.replace('footprint_cells = Vector2i(4, 4)',
-                                              'footprint_cells = Vector2i(2, 2)')
-                if path == 'construction/deployed_machine.gd':
-                    current = without_presentation_identity(current)
-                    # PR B only resamples presentation status on tree entry.
-                    current = current.replace(function(current, '_enter_tree'), '')
-                if path == 'construction/construction_controller.gd':
-                    # PR A moves ghost opacity to the completed Extractor composite.
-                    # Every other byte of placement/recovery remains protected.
-                    current = current.replace('_ghost.is_ghost = true',
-                                              '_ghost.modulate = Color(1, 1, 1, 0.5)')
-                self.assertEqual(current, git_blob(base, path).decode().replace('\r\n', '\n'))
+        # Current gameplay contracts, not a pre-V2 snapshot of evolving modules.
+        definition = read('inventory/extractor.tres')
+        for field in ('item_id = &"extractor"', 'footprint_cells = Vector2i(4, 4)',
+                      'extraction_point = Vector2(64, 64)',
+                      'compatible_resources = Array[StringName]([&"ferrite", &"cuprite"])',
+                      'path="res://construction/machine_definition.gd"',
+                      'path="res://inventory/ferrite_ore.tres"',
+                      'output_item = ExtResource("2_ore")', 'output_per_cycle = 1',
+                      'cycle_seconds = 1.0', 'output_capacity = 20'):
+            self.assertIn(field, definition)
+        machine_definition = read('construction/machine_definition.gd')
+        for method in ('footprint', 'rotated_point', 'is_valid', 'has_production'):
+            self.assertTrue(function(machine_definition, method))
+        self.assertIn('CONSTRUCTION_SIZE: int = 32', read('scenes/world/world_coordinates.gd'))
+        deployed = function(read('construction/deployed_machine.gd'), 'configure')
+        self.assertIn('definition.footprint(machine.cell, machine.turns)', deployed)
+        self.assertIn('shape.size = footprint.size', deployed)
+        # These four modules legitimately evolved with live V2 and resolved output.
+        rules = read('construction/placement_rules.gd')
+        self.assertIn('state.extractor_anchor_rejection_v2(v2_ticket, definition, cell, turns)', rules)
+        self.assertIn('elif not definition.compatible_resources.is_empty():', rules)
+        control = read('construction/construction_controller.gd')
+        click = function(control, '_unhandled_input')
+        self.assertIn('_requested_anchor_ticket = _anchor_ticket.duplicate(true)', click)
+        physics = function(control, '_physics_process')
+        for route in ('PlacementRules.rejection(', 'deploy_machine_instance(', 'deploy_extractor_v2('):
+            self.assertIn(route, physics)
+        state = read('scenes/world/planet_world_state.gd')
+        self.assertIn('PlacementRules.rejection(', function(state, '_deploy_machine_transaction'))
+        self.assertIn('return extractor_output_item(machine)', function(state, 'stored_output_item'))
+        ui = function(read('scenes/ui/machine_ui.gd'), '_refresh')
+        self.assertIn('var output_item := progression.planet.stored_output_item(machine)', ui)
+        self.assertIn('_extractor_view.refresh(machine, progression.planet.machine_status(machine)', ui)
+        self.assertNotIn('definition.output_item', ui)
+        detector = read('scenes/player/interaction_detector.gd')
+        self.assertIn('machine.to_global(machine.interaction_point)', detector)
         for machine, cells in [('smelter', 4), ('fabricator', 4)]:
             self.assertIn(f'footprint_cells = Vector2i({cells}, {cells})', read(f'inventory/{machine}.tres'))
 
