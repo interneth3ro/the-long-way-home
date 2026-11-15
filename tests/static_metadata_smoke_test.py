@@ -127,6 +127,7 @@ class MetadataSmokeTest(unittest.TestCase):
             (world, 'ResourceGenerationV2Integration', 'scenes/world/resource_generation_v2_integration.gd'),
             (world, 'ExtractorAnchorRules', 'construction/extractor_anchor_rules.gd'),
             (world, 'preload', 'inventory/cuprite_ore.tres'),
+            (world, 'preload', 'inventory/carbite_ore.tres'),
             (world, 'preload', 'inventory/ferrite_ore.tres'),
         })
         # Historical closure PASS is neither current readiness nor authority.

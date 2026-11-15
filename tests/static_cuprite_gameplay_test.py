@@ -50,7 +50,7 @@ class CupriteGameplayStaticTests(unittest.TestCase):
                          '"ferrite": return preload("res://inventory/ferrite_ore.tres")'):
             self.assertIn(fragment, resolver)
         self.assertNotIn('v2_resource_type', resolver)
-        self.assertNotIn('"carbite":', resolver)
+        self.assertIn('"carbite": return preload("res://inventory/carbite_ore.tres")', resolver)
         self.assertIn('return null', resolver.split('match member.resource_type:')[1].split('var point :=')[0])
 
     def test_status_and_shared_timing(self):
@@ -136,7 +136,7 @@ class CupriteGameplayStaticTests(unittest.TestCase):
     def test_generation_construction_and_world_art_unchanged(self):
         paths = ['construction/construction_controller.gd', 'construction/extractor_anchor_rules.gd',
                  'construction/placement_rules.gd', 'scenes/world/resource_generation_v2_integration.gd',
-                 'scenes/world/resource_presentation_catalog.gd', 'inventory/extractor.tres',
+                 'scenes/world/resource_presentation_catalog.gd',
                  'scenes/world/ordinary_resource_generator.gd',
                  'scenes/world/resource_generation_descriptors.gd', 'scenes/world/resource_presentations/v2/cuprite.json',
                  'assets/environment/exterior/cuprite/cuprite_prototype_v1.png', 'tools/run-local-tests.ps1']
@@ -160,8 +160,8 @@ class CupriteGameplayStaticTests(unittest.TestCase):
 
     def test_behavioral_coverage_is_authored_and_not_dispatched(self):
         fixture = read('tests/cuprite_gameplay_test.gd')
-        for fragment in ('successful Cuprite production', 'full-output status', 'production resume after collection',
-                         'correct Cuprite item identity', 'recovery returns stored Cuprite', 'inventory rejection without item loss',
+        for fragment in ('successful ore production', 'full-output status', 'production resume after collection',
+                         'correct ore item identity', 'recovery returns stored ore', 'inventory rejection without item loss',
                          'legacy Ferrite production', 'legacy Ferrite recovery', 'unsupported resource inactivity',
                          'presentation positioning', 'streaming unload', 'no duplicate sprites', 'duplicate claim',
                          'failed removal', 'failed placement', 'unavailable authority'):

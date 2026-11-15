@@ -62,7 +62,7 @@ class LiveExtractorStaticTests(unittest.TestCase):
         self.assertIn('match member.resource_type:', v2)
         authority, mapping = v2.split('match member.resource_type:', 1)
         self.assertNotIn('preload(', authority)
-        self.assertEqual(mapping.strip(), '"cuprite": return preload("res://inventory/cuprite_ore.tres")\n\t\t\t"ferrite": return preload("res://inventory/ferrite_ore.tres")\n\t\treturn null')
+        self.assertEqual(mapping.strip(), '"carbite": return preload("res://inventory/carbite_ore.tres")\n\t\t\t"cuprite": return preload("res://inventory/cuprite_ore.tres")\n\t\t\t"ferrite": return preload("res://inventory/ferrite_ore.tres")\n\t\treturn null')
         self.assertNotIn('definition.output_item', resolver)
         self.assertNotIn('v2_resource_type', resolver)
         self.assertIn('return preload("res://inventory/ferrite_ore.tres") if deposit_at(point, &"ferrite") != null else null', legacy)
@@ -171,7 +171,7 @@ class LiveExtractorStaticTests(unittest.TestCase):
         for token in ("feature_flag", "developer_mode", "gameplay_eligible"):
             self.assertNotIn(token, CONTROL + WORLD)
         definition = read("inventory/extractor.tres")
-        self.assertIn('compatible_resources = Array[StringName]([&"ferrite", &"cuprite"])', definition)
+        self.assertIn('compatible_resources = Array[StringName]([&"ferrite", &"cuprite", &"carbite"])', definition)
         self.assertIn('path="res://inventory/ferrite_ore.tres"', definition)
 
     def test_output_authority_rejects_source_mutations(self):
