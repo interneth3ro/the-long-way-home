@@ -7,3 +7,4 @@ script = ExtResource("1_definition")
 resource_id = &"carbite"
 abundance_weight = 1.0
 geological_preferences = {"terrain_geology": 0.8}
+presentation_catalog = "res://scenes/world/resource_presentations/v2/carbite.json"

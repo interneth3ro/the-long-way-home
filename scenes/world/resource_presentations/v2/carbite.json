@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "resource_id": "carbite",
+  "variants": [
+    {
+      "id": "candidate_v1",
+      "artwork": "res://assets/environment/exterior/carbite/carbite_deposit_candidate_v1.png",
+      "sha256": "f2c72ef73cd9dbdb9fc15faf3d3cd4aeeb15d135f9944c39c59970ad93948022",
+      "size": [1536, 1024],
+      "scale": 0.225,
+      "offset": [0, 16]
+    }
+  ]
+}

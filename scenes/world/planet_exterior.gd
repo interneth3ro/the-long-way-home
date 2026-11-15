@@ -107,7 +107,8 @@ func _initialize_world(state: PlanetWorldState) -> void:
 		_resource_presenter = ResourcePresenterV2.new()
 		add_child(_resource_presenter)
 	var configured := _resource_presenter.configure_world(state,
-		[preload("res://scenes/world/resource_definitions/v2/cuprite.tres")])
+		[preload("res://scenes/world/resource_definitions/v2/cuprite.tres"),
+		preload("res://scenes/world/resource_definitions/v2/carbite.tres")])
 	_resource_token = _resource_presenter.snapshot().token
 	var loaded: Dictionary = {}
 	for coordinate in _chunks:

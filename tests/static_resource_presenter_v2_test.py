@@ -198,7 +198,8 @@ class ResourcePresenterV2StaticTests(unittest.TestCase):
                          'ResourceLoader.exists(registration.artwork, "Texture2D")',
                          'texture.get_size() != registration.size'):
             self.assertIn(fragment, body(PRESENTER, '_texture'))
-        for resource in ('ferrite', 'carbite'):
+        # Carbite now opts into the shared presenter; Ferrite remains legacy.
+        for resource in ('ferrite',):
             self.assertNotIn('presentation_catalog =', (ROOT / f'scenes/world/resource_definitions/v2/{resource}.tres').read_text())
 
     def test_isolated_opt_in_seven_reservations_and_final_context(self):
