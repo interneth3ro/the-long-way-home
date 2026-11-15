@@ -2,9 +2,9 @@
 
 The earlier sections below record the isolated PR #190 implementation.
 [Milestone 8](#milestone-8-normal-gameplay-pending-merge) supersedes its lack of normal gameplay wiring.
-The [Carbite preview](#carbite-world-presentation-preview-pending-merge) extends
-normal world presentation only; earlier Cuprite-only scope descriptions below
-remain historical.
+The [Carbite production integration](#carbite-production-integration-feature-branch-pending-merge)
+extends normal world presentation and extraction; earlier Cuprite-only scope
+descriptions below remain historical.
 
 PR 4 merged in PR #190 at `5e88e774f13d80befe63c5fb24c0cace24e35f3f`,
 based on `f82298e1874ace843455f453aba2de583d2b8f5d`.
@@ -337,7 +337,16 @@ reported, not treated as functional/runtime PASS. The full historical discovery
 suite was not rerun for this follow-up.
 
 
-## Carbite world presentation preview (pending merge)
+<a id="carbite-world-presentation-preview-pending-merge"></a>
+
+## Carbite production integration (feature branch, pending merge)
+
+PR #210 merged the shared Carbite world presentation at
+`305e17e405bae955c6e2086f58d87e89206bb2cb`. That milestone excluded extraction.
+`codex/carbite-gameplay-integration` promotes the same presentation and adds
+Carbite Ore through the existing Extractor and inventory paths, pending merge
+and owner acceptance. The retained filename and `candidate_v1` identifier are
+stable catalog references, not a restriction on production use.
 
 The owner-approved `carbite_deposit_candidate_v1.png` is copied byte-for-byte to
 [`assets/environment/exterior/carbite/`](../assets/environment/exterior/carbite/carbite_deposit_candidate_v1.png).
@@ -353,40 +362,69 @@ The [Carbite catalog](../scenes/world/resource_presentations/v2/carbite.json)
 uses the existing version-1 schema with one `candidate_v1` variant, scale 0.225
 and offset (0,16). Its centered image rectangle is 345.6x230.4 world units;
 registration uses the existing 128x128 V2 logical anchor. The unchanged shared
-presenter supplies linear filtering and z-index -5, matching Cuprite. The initial
-scale and offset are provisional pending owner visual acceptance.
+presenter supplies linear filtering and z-index -5, matching Cuprite. Production
+promotion preserves these scale and offset values; visual acceptance is unrecorded.
 
 The existing Carbite definition references this catalog. Exterior initialization
 configures the same `ResourcePresenterV2` for Cuprite and Carbite; it consumes the
 already authoritative descriptors through the existing world-state query API.
-There is no separate presenter, spawn path, teleportation or inspection feature.
+There is no separate presenter, spawn path, teleportation or Carbite-specific UI.
 The disabled historical Cuprite-only harness remains Cuprite-only. Generation
 weights, starting guarantees (3 Ferrite, 2 Carbite, 2 Cuprite), identities, placement,
 legacy Ferrite visuals, shared failure checks and streaming lifecycle are unchanged.
 
-Carbite remains incompatible with the Extractor. No Carbite inventory item, icon
-registration, ore output mapping, recipe, processing or fuel behavior is included.
-Visual presence grants no extraction authority. Machines continue to validate
-exact authoritative deposits and fail closed on unavailable or unsupported output.
+The shared Extractor accepts Ferrite, Cuprite and Carbite. The packaged Ferrite
+output remains unchanged. `PlanetWorldState.extractor_output_item()` resolves
+the committed deposit through current V2 authority before mapping Carbite to
+[`inventory/carbite_ore.tres`](../inventory/carbite_ore.tres). Cached resource labels
+and presentation metadata grant no extraction authority. Exact identity, token,
+anchor, compatibility and occupancy validation remain; unavailable or unsupported
+output fails closed with no V2 fallback to packaged Ferrite.
 
-Five focused nonexecuting tests in
+Carbite produces one ore per second (60/min) into the existing 20-item buffer.
+Generic inspection, collection and recovery use the same resolved item. Inventory
+rejection preserves stored contents and claims; unresolved stored output cannot
+be collected or recovered until authority is restored. No production, storage or
+transaction implementation is duplicated.
+
+The owner's unchanged inventory icon is
+[`assets/items/carbite_ore.png`](../assets/items/carbite_ore.png): 256x256, 8-bit RGBA,
+alpha range 0-255, SHA-256
+`002eb84e1ccfc9bf63b54ee97e9ec4af6e176c25c430cd65158e58e8266ac17b`.
+`ItemPresentation.ICONS` supplies inventory and inspection artwork. Its authored
+import sidecar matches Cuprite's inventory settings, including mipmaps, with a
+unique UID and source-specific import destination. No texture import was run.
+Carbite Briquettes, Smelter recipes, thermal research, automated power generation,
+distribution changes, Ferrite migration and durable save migration are excluded.
+
+Seven focused nonexecuting tests in
 [`static_carbite_presentation_test.py`](../tests/static_carbite_presentation_test.py)
-cover artwork/catalog/import identity, the shared configuration addition,
-unchanged generation/presentation contracts and the gameplay exclusions. Existing
-static expectations change only where they formerly required no Carbite catalog,
-a Cuprite-only preload list or the Carbite definition without presentation metadata.
+cover artwork/catalog/import identity, shared configuration, unchanged generation
+and presentation, item/icon identity and the exact shared gameplay extension.
+Obsolete incompatibility/output prohibitions are replaced with support assertions;
+authority, transaction, geometry and legacy regression protections remain.
+The existing `cuprite_gameplay_test.gd` exercises both resources, including starting
+and ordinary Carbite authority, production, inspection, collection, recovery and
+failure cases. Mixed-resource lifecycle assertions extend
+`cuprite_presentation_lifecycle_test.gd`. These GDScript assertions are authored
+only, unexecuted and absent from approved runner dispatch. The old live Extractor
+fixture retains incompatibility coverage through a restricted machine definition
+and now expects current Cuprite production.
 Static checks do not establish Godot parsing, texture import, runtime streaming,
 alpha blending, apparent scale, placement feedback or gameplay acceptance. No
 Godot execution, runner amendment or expanded runtime authority accompanies this
-preview.
+integration. The metadata smoke package remains fixed and inactive; its static
+dependency-gap expectation records the additional Carbite ore preload. The
+unapproved PR #201 behavioral closure also gains that resource dependency;
+no manifest, runner or execution authorization changes.
 
-### Owner visual acceptance
+### Owner acceptance (requires separate execution authorization)
 
 1. Open this feature checkout using the approved Godot 4.7.2 Standard environment.
    Run Project (F5), choose New Game, and exit the ship through the normal flow.
 2. Explore the starting region for a dark Carbite deposit. The unchanged starting
    layout reserves two Carbite anchors with centers 384-2304 world units from the
-   ship reference; this preview adds no marker or special spawn.
+   ship reference; this integration adds no marker or special spawn.
 3. Compare its apparent size with generated Cuprite. Both use scale 0.225 and the
    same source dimensions, but their painted silhouettes can read differently.
 4. Inspect the transparent fringe and shadow against terrain for dark halos,
@@ -395,10 +433,12 @@ preview.
 5. Walk across deposit and terrain-chunk edges, move away and return, and revisit
    the exterior after entering the ship. Check clipping, duplication, disappearance
    and alignment as the normal streaming lifecycle runs.
-6. With a recovered Extractor available, attempt placement on Carbite away from
-   overlapping legacy Ferrite. Expect incompatible-resource rejection, no machine
-   consumption and no Carbite production. Recheck Ferrite/Cuprite placement and
-   ore collection through their existing paths.
+6. With a recovered Extractor available, place it on Carbite away from overlapping
+   legacy Ferrite. Check exact anchor alignment, occupied-anchor rejection,
+   Carbite Ore inspection, one-second production and the 20-item buffer. Collect
+   output, confirm production resumes, then recover the machine and its contents.
+   Check the approved inventory icon and recheck Ferrite/Cuprite placement,
+   production, collection and recovery through their existing paths.
 
 Owner execution and visual results are not yet recorded. Report scale/offset,
 blending or positioning feedback before any further artwork or gameplay changes.

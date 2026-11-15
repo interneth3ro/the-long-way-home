@@ -573,6 +573,15 @@ and smoke (22 GDScript files and six `.tres` resources):
   generator. V2 catalog strings remain inert; no JSON/texture/scene loading is
   exercised. No autoload is configured in `project.godot`.
 
+The closure above records the PR #201 proposal's original six-resource scope.
+The Carbite integration feature branch adds `inventory/carbite_ore.tres` through
+the existing `PlanetWorldState.extractor_output_item()` preload, making seven
+resources in the current dependency closure. The behavioral manifest and runner
+are unchanged and the expanded scope remains unapproved. Separately, the inactive
+fixed metadata smoke package does not gain this input: its nonexecuting gap report
+now includes the Carbite ore preload alongside the existing gaps. No historical
+input inventory, receipt or execution authorization is amended.
+
 The closure includes cycles through global class types. Static references and
 resource declarations do not prove Godot parsing or availability of registered
 classes in the existing cache. The test constructs only RefCounted v2 generators

@@ -57,9 +57,11 @@ func _run() -> void:
 		var selected := state.extractor_target_v2(center, EXTRACTOR, turn)
 		if state.deposit_at(center, &"ferrite") == null:
 			_check(selected.ticket == ticket and selected.cell == cell, "live authoritative snapping")
+	var restricted := EXTRACTOR.duplicate() as MachineDefinition
+	restricted.compatible_resources = [&"ferrite"]
 	var incompatible := {"token": context.token, "deposit_id": carbite.deposit_id,
 		"resource_type": carbite.resource_type, "anchor_cells": carbite.anchor_cells}
-	_check(state.extractor_anchor_rejection_v2(incompatible, EXTRACTOR,
+	_check(state.extractor_anchor_rejection_v2(incompatible, restricted,
 		carbite.anchor_cells.position, 0) == "Incompatible resource", "incompatible feedback")
 	var ground := Node2D.new()
 	ground.add_to_group(&"construction_world")
@@ -128,15 +130,18 @@ func _run() -> void:
 		and inventory.get_quantity(&"extractor") == 1, "duplicate claim")
 	var before := state.get_machine(machine_id)
 	state.advance_production(5.0)
-	_check(state.get_machine(machine_id) == before and state.machine_status(before) == PlanetWorldState.OperatingStatus.INACTIVE,
-		"no Cuprite production or legacy Ferrite output")
+	_check(state.get_machine(machine_id).output == 5
+		and state.stored_output_item(state.get_machine(machine_id)).item_id == &"cuprite_ore",
+		"Cuprite production without legacy Ferrite output")
+	before = state.get_machine(machine_id)
 	_check(not state.recover_machine(machine_id, RejectRecovery.new(), center, 160)
 		and state.extractor_occupant_v2(cuprite.deposit_id) == machine_id
 		and state.get_machine(machine_id) == before, "failed recovery retains machine and claim")
 	_check(not state.recover_machine(machine_id, inventory, center + Vector2(1000, 0), 1), "failed recovery distance")
 	_check(state.recover_machine(machine_id, inventory, center, 160)
 		and state.extractor_occupant_v2(cuprite.deposit_id) == 0 and notifications == [1, 0]
-		and inventory.get_quantity(&"extractor") == 2, "successful recovery releases before notification")
+		and inventory.get_quantity(&"extractor") == 2 and inventory.get_quantity(&"cuprite_ore") == 5,
+		"successful recovery releases before notification")
 	var next := state.deploy_extractor_v2(ticket, EXTRACTOR, cell, 0, inventory, player, ground, 160)
 	_check(next == 2, "monotonic ID after recovery")
 	_check(state.recover_machine(next, inventory, center, 160), "second recovery")

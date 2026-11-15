@@ -3,6 +3,7 @@ extends SceneTree
 
 const Presenter = preload("res://scenes/world/resource_presenter_v2.gd")
 const Descriptors = preload("res://scenes/world/resource_generation_descriptors.gd")
+const CARBITE = preload("res://scenes/world/resource_definitions/v2/carbite.tres")
 const CUPRITE = preload("res://scenes/world/resource_definitions/v2/cuprite.tres")
 const EXTERIOR = preload("res://scenes/world/planet_exterior.tscn")
 var _failures: int = 0
@@ -43,7 +44,9 @@ func _run() -> void:
 	var world := FixtureWorld.new()
 	var made := Descriptors.create_location("starting-v2-2", world.seed_value,
 		Vector2i.ZERO, 0, &"cuprite", [Rect2i(-2, -2, 4, 4)])
-	world.members = made.location.deposits
+	var carbite := Descriptors.create_location("starting-v2-2", world.seed_value,
+		Vector2i.ZERO, 1, &"carbite", [Rect2i(8, 8, 4, 4)])
+	world.members = made.location.deposits + carbite.location.deposits
 	var exterior := EXTERIOR.instantiate() as PlanetExterior
 	root.add_child(exterior)
 	exterior.set_process(false)
@@ -55,11 +58,11 @@ func _run() -> void:
 	# Exercise the actual initial presentation service, without generating terrain.
 	_drain(exterior)
 	var presenter: ResourcePresenterV2 = exterior._resource_presenter
-	_check(exterior._resources_done and presenter.snapshot().sprites == 1,
+	_check(exterior._resources_done and presenter.snapshot().sprites == 2,
 		"initial presentation completes")
 	var registrations: Dictionary = presenter._registrations.duplicate(true)
-	var sprite: Sprite2D = presenter._sprites.values()[0]
-	var texture: Texture2D = presenter._textures.values()[0]
+	var sprites: Dictionary = presenter._sprites.duplicate()
+	var textures: Dictionary = presenter._textures.duplicate()
 	var query_count: int = world.queries
 	for visit in range(3):
 		var old_token: int = exterior._resource_token
@@ -70,8 +73,8 @@ func _run() -> void:
 		_check(exterior._resources_done, "same-context completed visit reuses readiness work")
 		exterior._service_resources()
 		_check(world.queries == query_count, "reattachment performs no repeated queries")
-		_check(presenter._registrations == registrations and presenter._sprites.values()[0] == sprite
-			and presenter._textures.values()[0] == texture, "registrations sprite and texture retained")
+		_check(presenter._registrations == registrations and presenter._sprites == sprites
+			and presenter._textures == textures, "registrations sprite and texture retained")
 		_check(not exterior.arrival_is_ready({"ok": true, "generation": -1}),
 			"reused presentation cannot authorize an old arrival receipt")
 
@@ -99,11 +102,11 @@ func _run() -> void:
 	exterior._chunks.erase(Vector2i(50, 50))
 	exterior._chunks[Vector2i.ZERO] = chunk
 	_drain(exterior)
-	_check(presenter.snapshot().sprites == 1, "streaming reload restores visible sprite")
+	_check(presenter.snapshot().sprites == 2, "streaming reload restores visible sprite")
 
 	var replacement := FixtureWorld.new()
 	var replacement_token: int = exterior._resource_token
-	_check(presenter.configure_world(replacement, [CUPRITE]).ok,
+	_check(presenter.configure_world(replacement, [CUPRITE, CARBITE]).ok,
 		"new world instance reinitializes even at identical seed")
 	_check(not presenter.is_complete(replacement_token) and presenter.snapshot().sprites == 0
 		and presenter.snapshot().textures == 0, "world replacement clears unrelated caches")
@@ -113,16 +116,16 @@ func _run() -> void:
 	incompatible.presentation_catalog = "res://missing.json"
 	_check(not presenter.configure_world(replacement, [incompatible]).ok,
 		"changed catalog is reinitialized and admitted fail closed")
-	_check(presenter.configure_world(world, [CUPRITE]).ok, "valid context restored")
+	_check(presenter.configure_world(world, [CUPRITE, CARBITE]).ok, "valid context restored")
 	world._resource_v2.invalidate("fixture retirement")
-	_check(not presenter.configure_world(world, [CUPRITE]).ok and presenter._world == null,
+	_check(not presenter.configure_world(world, [CUPRITE, CARBITE]).ok and presenter._world == null,
 		"retired generation context cannot be reused")
 	_check(world.configure_resource_generation_v2().ok, "same world obtains a replacement context")
-	_check(presenter.configure_world(world, [CUPRITE]).ok, "replacement context configured")
+	_check(presenter.configure_world(world, [CUPRITE, CARBITE]).ok, "replacement context configured")
 	world._resource_v2._token = RefCounted.new()
-	var renewed := presenter.configure_world(world, [CUPRITE])
+	var renewed := presenter.configure_world(world, [CUPRITE, CARBITE])
 	_check(renewed.ok and not renewed.reused, "new context token reinitializes the same world")
-	_check(presenter.configure_world(replacement, [CUPRITE]).ok, "retirement fixture configured")
+	_check(presenter.configure_world(replacement, [CUPRITE, CARBITE]).ok, "retirement fixture configured")
 	presenter.dispose()
 	_check(presenter._world == null and presenter._catalogs.is_empty()
 		and presenter._loaded_chunks.is_empty() and not presenter.is_complete(presenter.snapshot().token),
@@ -130,11 +133,14 @@ func _run() -> void:
 	# Refill before freeing the cached exterior to verify automatic actual retirement.
 	exterior._state = replacement
 	exterior._initialize_world(replacement)
-	replacement.members = made.location.deposits
+	replacement.members = world.members.duplicate(true)
 	_drain(exterior)
-	var retained_sprite: WeakRef = weakref(presenter._sprites.values()[0])
+	var retained_sprites: Array[WeakRef] = []
+	for sprite: Sprite2D in presenter._sprites.values():
+		retained_sprites.append(weakref(sprite))
 	root.remove_child(exterior)
 	exterior.free()
-	_check(retained_sprite.get_ref() == null, "actual retirement frees retained child sprites")
-	print("Cuprite presentation lifecycle failures: %d" % _failures)
+	for retained_sprite: WeakRef in retained_sprites:
+		_check(retained_sprite.get_ref() == null, "actual retirement frees retained child sprites")
+	print("Cuprite/Carbite presentation lifecycle failures: %d" % _failures)
 	quit(0 if _failures == 0 else 1)

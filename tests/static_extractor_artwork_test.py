@@ -75,7 +75,7 @@ class ExtractorArtworkStaticTest(unittest.TestCase):
         definition = read("inventory/extractor.tres")
         fields = dict(re.findall(r"^(\w+) = (.+)$", definition, re.M))
         self.assertEqual(fields.get("compatible_resources"),
-                         'Array[StringName]([&"ferrite", &"cuprite"])')
+                         'Array[StringName]([&"ferrite", &"cuprite", &"carbite"])')
         self.assertEqual(fields.get("footprint_cells"), "Vector2i(4, 4)")
         self.assertEqual(fields.get("extraction_point"), "Vector2(64, 64)")
         output = re.fullmatch(r'ExtResource\("([^"]+)"\)', fields.get("output_item", ""))

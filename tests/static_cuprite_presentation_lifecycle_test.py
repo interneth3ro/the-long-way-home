@@ -95,6 +95,13 @@ class CupritePresentationLifecycleTests(unittest.TestCase):
                          "_loaded_chunks.clear()", "_textures.clear()", "_catalogs.clear()"):
             self.assertIn(fragment, dispose)
 
+    def test_mixed_resource_lifecycle_retains_both_presentations(self):
+        for fragment in ('&"cuprite"', '&"carbite"', '[CUPRITE, CARBITE]',
+                         'presenter.snapshot().sprites == 2', 'presenter._sprites == sprites',
+                         'presenter._textures == textures', 'replacement.members = world.members.duplicate(true)',
+                         'for retained_sprite: WeakRef in retained_sprites:'):
+            self.assertIn(fragment, BEHAVIOR)
+
     def test_behavioral_fixture_covers_lifecycle_without_runner_expansion(self):
         for label in ("initial presentation completes", "reattachment performs no repeated queries",
                       "registrations sprite and texture retained", "cancelled work restarts safely",

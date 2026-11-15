@@ -89,7 +89,7 @@ class FerriteIntegrationStaticTest(unittest.TestCase):
         definition = read('inventory/extractor.tres')
         self.assertIn('footprint_cells = Vector2i(4, 4)',definition)
         self.assertIn('extraction_point = Vector2(64, 64)',definition)
-        self.assertIn('compatible_resources = Array[StringName]([&"ferrite", &"cuprite"])',definition)
+        self.assertIn('compatible_resources = Array[StringName]([&"ferrite", &"cuprite", &"carbite"])',definition)
         # Source-bound independent membership examples. All rotations leave center fixed.
         for turns in range(4):
             center = [(64,64), (128-64,64), (128-64,128-64), (64,128-64)][turns]
@@ -168,7 +168,7 @@ class FerriteIntegrationStaticTest(unittest.TestCase):
         definition = read('inventory/extractor.tres')
         for field in ('item_id = &"extractor"', 'footprint_cells = Vector2i(4, 4)',
                       'extraction_point = Vector2(64, 64)',
-                      'compatible_resources = Array[StringName]([&"ferrite", &"cuprite"])',
+                      'compatible_resources = Array[StringName]([&"ferrite", &"cuprite", &"carbite"])',
                       'path="res://construction/machine_definition.gd"',
                       'path="res://inventory/ferrite_ore.tres"',
                       'output_item = ExtResource("2_ore")', 'output_per_cycle = 1',

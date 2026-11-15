@@ -3,6 +3,7 @@ extends RefCounted
 
 # Shared canonical item artwork for inventory and hotbar.
 const ICONS := {
+	&"carbite_ore": preload("res://assets/items/carbite_ore.png"),
 	&"cuprite_ore": preload("res://assets/items/cuprite_ore.png"),
 	&"ferrite_ore": preload("res://assets/items/ferrite_ore.png"),
 	&"ferrite_ingot": preload("res://assets/items/ferrite_ingot.png"),

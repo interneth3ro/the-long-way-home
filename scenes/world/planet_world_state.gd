@@ -333,6 +333,7 @@ func extractor_output_item(snapshot: Dictionary) -> ItemDefinition:
 				machine.cell, machine.turns, 0).is_empty():
 			return null
 		match member.resource_type:
+			"carbite": return preload("res://inventory/carbite_ore.tres")
 			"cuprite": return preload("res://inventory/cuprite_ore.tres")
 			"ferrite": return preload("res://inventory/ferrite_ore.tres")
 		return null
