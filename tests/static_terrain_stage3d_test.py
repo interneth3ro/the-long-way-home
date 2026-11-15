@@ -1,4 +1,3 @@
-from initial_exterior_preservation import without_initial_preparation
 """Default-selection and exact production-diff contracts; no Godot execution."""
 import hashlib
 import json
@@ -83,14 +82,19 @@ class Stage3DTest(unittest.TestCase):
         before = git('show', BASE+':'+path)
         old = '@export var terrain_renderer: TerrainRenderer = TerrainRenderer.ILLUSTRATED'
         self.assertEqual(before.count(old), 1)
-        current = without_initial_preparation(path, (ROOT/path).read_bytes()).decode()
-        self.assertEqual(current, before.replace(old, old.replace('= TerrainRenderer.ILLUSTRATED',
+        historical = git('show', MERGED+':'+path)
+        self.assertEqual(historical, before.replace(old, old.replace('= TerrainRenderer.ILLUSTRATED',
                                                                  '= TerrainRenderer.CONTINUOUS')))
+        # Later startup/resource changes are checked as current contracts, not
+        # reversed out of evolving source to reproduce the default-only PR.
+        current = (ROOT/path).read_text()
+        self.assertEqual(current.count(old.replace('ILLUSTRATED', 'CONTINUOUS')), 1)
         path = 'scenes/world/planet_exterior.tscn'
         before = git('show', BASE+':'+path)
         marker = 'script = ExtResource("2_world")\n'
         self.assertEqual(before.count(marker), 1)
         scene = (ROOT/path).read_text()
+        self.assertEqual(git('show', MERGED+':'+path), before)
         self.assertEqual(scene, before)
         self.assertNotIn('terrain_renderer =', scene)
         # The enum keeps serialized rollback value 1; selection remains locked

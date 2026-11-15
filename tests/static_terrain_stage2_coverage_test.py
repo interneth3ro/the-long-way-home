@@ -213,7 +213,9 @@ class Stage2ClassificationTest(unittest.TestCase):
             baseline = subprocess.check_output(["git", "show", f"{reference.BASE}:{path}"], cwd=ROOT)
             # Preserve the terrain-era transition bytes; current Computer-only
             # transition guard is covered by static_computer_restoration_test.py.
-            actual = (subprocess.check_output(["git", "show", "993ffc14c1fad1032227801870cd3a3fce50f7a5:"+path], cwd=ROOT)
+            actual = (subprocess.check_output(["git", "show", stage2a_merge+":"+path], cwd=ROOT)
+                      if path == "scenes/world/planet_world_state.gd" else
+                      subprocess.check_output(["git", "show", "993ffc14c1fad1032227801870cd3a3fce50f7a5:"+path], cwd=ROOT)
                       if path == "scenes/main/scene_transition_controller.gd" else
                       subprocess.check_output(["git", "show", "cd91c9086ef24e71ddb6a43a2076c4be5a69485e:"+path], cwd=ROOT)
                       if path == "tools/run-local-tests.ps1" else

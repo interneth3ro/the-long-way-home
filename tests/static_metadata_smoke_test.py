@@ -10,6 +10,7 @@ import terrain_stage2_reference as reference
 
 ROOT = reference.ROOT
 BASE = "cd91c9086ef24e71ddb6a43a2076c4be5a69485e"
+MERGED = "ee937c98aa5e5bcb087f99c5b0eb8c8960ecf4f0"
 ADDED = {
     "tests/static_metadata_smoke_test.py", "tests/metadata_smoke_test.gd",
     "tests/metadata_smoke_test.gd.uid", "tests/fixtures/metadata_smoke/inputs.json",
@@ -34,6 +35,32 @@ def before(path):
     return subprocess.check_output(["git", "show", BASE+":"+path], cwd=ROOT, text=True)
 
 
+def historical(path):
+    return subprocess.check_output(["git", "show", MERGED+":"+path], cwd=ROOT, text=True)
+
+
+def dependency_gaps(inputs, paths, reader):
+    """Inspect one consistent source universe; never import or stage scripts."""
+    scripts = {p for p in inputs if p.endswith('.gd')}
+    classes = {}
+    for path in paths:
+        if path.endswith('.gd'):
+            match = re.search(r'^class_name (\w+)', reader(path), re.M)
+            if match:
+                classes[match[1]] = path
+    gaps = set()
+    for path in scripts:
+        source = reader(path)
+        code = re.sub(r'"[^"\n]*"|#[^\n]*', '', source)
+        for token in set(re.findall(r'\b[A-Za-z_]\w*\b', code)) & classes.keys():
+            if classes[token] not in scripts:
+                gaps.add((path, token, classes[token]))
+        for dependency in re.findall(r'preload\("res://([^"\n]+)"\)', source):
+            if dependency not in inputs:
+                gaps.add((path, 'preload', dependency))
+    return gaps
+
+
 class MetadataSmokeTest(unittest.TestCase):
     def test_exact_change_scope_and_preserved_inputs(self):
         # PR #139 historical inventory; Stage 3B checks its own exact scope.
@@ -46,7 +73,7 @@ class MetadataSmokeTest(unittest.TestCase):
             self.assertEqual(hashlib.sha256((ROOT/path).read_bytes()).hexdigest(), entry["sha256"])
         for path in json.loads(read("tests/fixtures/metadata_smoke/inputs.json")):
             if path.startswith(("scenes/", "construction/", "inventory/")):
-                self.assertEqual(read(path), before(path), path)
+                self.assertEqual(historical(path), before(path), path)
 
     def test_production_geometry_and_colors_have_not_drifted(self):
         fixture = json.loads(read("tests/fixtures/metadata_smoke/geometry.json"))
@@ -63,7 +90,9 @@ class MetadataSmokeTest(unittest.TestCase):
         self.assertIn('"feather": 256.0', read("scenes/world/planet_exterior.gd"))
 
     def test_fixed_inventory_dependency_closure_and_no_assets(self):
-        inputs = json.loads(read("tests/fixtures/metadata_smoke/inputs.json"))
+        inventory_path = "tests/fixtures/metadata_smoke/inputs.json"
+        self.assertEqual(read(inventory_path), historical(inventory_path))
+        inputs = json.loads(historical(inventory_path))
         staged = ["project.godot" if p.endswith("metadata_smoke/project.godot") else
                   "scenes/world/continuous_terrain_metadata.gd.uid" if p.endswith("/builder.gd.uid") else p for p in inputs]
         runner = read("tools/run-local-tests.ps1")
@@ -74,20 +103,11 @@ class MetadataSmokeTest(unittest.TestCase):
         self.assertTrue(all((ROOT/p).is_file() for p in inputs))
         self.assertFalse(any(p.startswith("assets/") or p.endswith((".tscn", ".png", ".import")) for p in inputs))
         scripts = [p for p in inputs if p.endswith(".gd")]
-        # Inspect all repository class declarations to detect newly referenced types.
-        classes = {}
-        for directory in ("scenes", "inventory", "construction", "dialogue", "objectives"):
-            for path in (ROOT/directory).rglob("*.gd"):
-                match = re.search(r"^class_name (\w+)", path.read_text(), re.M)
-                if match:
-                    classes[match[1]] = path.relative_to(ROOT).as_posix()
+        paths = subprocess.check_output(['git', 'ls-tree', '-r', '--name-only', MERGED],
+                                        cwd=ROOT, text=True).splitlines()
+        self.assertLessEqual(set(inputs), set(paths))
+        self.assertEqual(dependency_gaps(inputs, paths, historical), set())
         for path in scripts:
-            source = read(path)
-            code = re.sub(r'"[^"\n]*"|#[^\n]*', '', source)
-            for token in set(re.findall(r"\b[A-Za-z_]\w*\b", code)) & classes.keys():
-                self.assertIn(classes[token], scripts, (path, token))
-            for dependency in re.findall(r'preload\("res://([^"\n]+)"\)', source):
-                self.assertIn(dependency, inputs, (path, dependency))
             self.assertIn(path+".uid", staged)
         self.assertNotIn("PlanetWorldState.new", read("tests/metadata_smoke_test.gd"))
         self.assertNotIn("FerriteRegionGenerator.new", read("tests/metadata_smoke_test.gd"))
@@ -95,6 +115,32 @@ class MetadataSmokeTest(unittest.TestCase):
         self.assertNotIn("run/main_scene", read(inputs[0]))
         # Only dormant Ferrite initialization references the unstaged catalog.
         self.assertIn("func _init(world_seed: int)", read("scenes/world/ferrite_region_generator.gd"))
+
+    def test_current_package_is_incomplete_and_metadata_dispatch_remains_denied(self):
+        from static_execution_policy_test import verify_metadata_denial
+        inputs = json.loads(read('tests/fixtures/metadata_smoke/inputs.json'))
+        paths = [p.relative_to(ROOT).as_posix()
+                 for directory in ('scenes', 'inventory', 'construction', 'dialogue', 'objectives')
+                 for p in (ROOT/directory).rglob('*.gd')]
+        world = 'scenes/world/planet_world_state.gd'
+        self.assertEqual(dependency_gaps(inputs, paths, read), {
+            (world, 'ResourceGenerationV2Integration', 'scenes/world/resource_generation_v2_integration.gd'),
+            (world, 'ExtractorAnchorRules', 'construction/extractor_anchor_rules.gd'),
+            (world, 'preload', 'inventory/cuprite_ore.tres'),
+            (world, 'preload', 'inventory/ferrite_ore.tres'),
+        })
+        # Historical closure PASS is neither current readiness nor authority.
+        verify_metadata_denial(read('tools/run-local-tests.ps1'))
+
+    def test_dependency_scan_rejects_unstaged_preloads_and_global_types(self):
+        paths = ['included.gd', 'outside.gd']
+        sources = {'included.gd': 'class_name Included\nvar other: Outside\n'
+                   'const Bad = preload("res://unreviewed.tres")\n',
+                   'outside.gd': 'class_name Outside\n'}
+        self.assertEqual(dependency_gaps(['included.gd'], paths, sources.__getitem__), {
+            ('included.gd', 'Outside', 'outside.gd'),
+            ('included.gd', 'preload', 'unreviewed.tres'),
+        })
 
     def test_golden_inventory_preserves_supported_and_unsupported_cases(self):
         path = "tests/fixtures/terrain_stage2_classification_vectors.json"

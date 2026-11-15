@@ -13,6 +13,7 @@ from static_terrain_c1_test import c1
 
 ROOT = Path(__file__).resolve().parents[1]
 BASE = 'de09eeee2c07036ac50471bde12a716e173e3366'
+MERGED = 'e5db8040d38bfd6b1ddb584d636af01052806b7c'
 E = (ROOT/'scenes/world/planet_exterior.gd').read_text()
 P = (ROOT/'scenes/world/continuous_terrain_presenter.gd').read_text()
 S = (ROOT/'scenes/world/continuous_terrain.gdshader').read_text()
@@ -31,6 +32,21 @@ def historical_checkout_bytes(path, raw):
         raw = without_application_startup(raw)
     if path in ('project.godot', 'assets/audio/exterior_hatch/hatch_close.wav.import'):
         raw = raw.replace(b'\r\n', b'\n')
+    return raw
+
+
+def sealed_plan_input(path, entry):
+    """Recreate the plan's original Windows serialization, never today's inputs.
+
+    Binary files, project.godot and the 60 committed import sidecars retain their
+    original blob bytes. The other nine text suffixes used CRLF in this plan.
+    This fixed rule does not choose a representation by trying expected hashes.
+    """
+    raw = subprocess.check_output(['git', 'show', MERGED+':'+path], cwd=ROOT)
+    if Path(path).suffix in ('.json', '.txt', '.tres', '.md', '.svg', '.gd',
+                             '.uid', '.tscn', '.gdshader'):
+        raw = raw.replace(b'\r\n', b'\n').replace(b'\n', b'\r\n')
+    assert (len(raw), hashlib.sha256(raw).hexdigest()) == (entry['bytes'], entry['sha256']), path
     return raw
 
 
@@ -74,56 +90,26 @@ class Stage3CTest(unittest.TestCase):
         # execution policy, receipts and historical evidence cannot change.
         for path in ('scenes/world/terrain_chunk.gd','scenes/world/planet_generator.gd',
                      'scenes/world/planet_exterior.tscn','scenes/world/planet_world_state.gd'):
-            self.assertEqual((ROOT/path).read_text(),subprocess.check_output(['git','show',BASE+':'+path],cwd=ROOT,text=True))
+            actual = (subprocess.check_output(['git', 'show', MERGED+':'+path], cwd=ROOT, text=True)
+                      if path == 'scenes/world/planet_world_state.gd' else (ROOT/path).read_text())
+            self.assertEqual(actual,subprocess.check_output(['git','show',BASE+':'+path],cwd=ROOT,text=True))
 
     def test_inactive_gameplay_plan_inputs_transforms_and_dependencies(self):
         import re
         plan = json.loads((ROOT/'docs/experiments/terrain_stage3c_gameplay_plan.json').read_text())
+        plan_path = 'docs/experiments/terrain_stage3c_gameplay_plan.json'
+        self.assertEqual((ROOT/plan_path).read_text(), subprocess.check_output(
+            ['git', 'show', MERGED+':'+plan_path], cwd=ROOT, text=True))
         self.assertTrue(plan['status'].startswith('INACTIVE'))
         inputs = {e['path']:e for e in plan['inputs']}
         self.assertEqual(len(inputs),plan['input_count'])
         self.assertEqual(sum(e['bytes'] for e in inputs.values()),plan['source_bytes'])
-        historical_inputs = ('scenes/world/planet_exterior.gd', 'scenes/player/dave.tscn',
-                             # Static Extractor PR A replaces presentation only;
-                             # keep this consumed plan pinned to its original art.
-                             # Current art/gameplay contracts have separate guards.
-                             'construction/machine_visual.gd',
-                             # PR B adds only a presentation status resample on
-                             # entry; static_extractor_animation_test protects
-                             # the current presenter against the PR A baseline.
-                             'construction/deployed_machine.gd',
-                             # Merged PR #153 changed the Extractor footprint.
-                             # Its resource is protected by current baseline tests.
-                             'inventory/extractor.tres',
-                             # Smelter 4x4 milestone: retain the consumed plan's
-                             # original bytes/hashes; current resource and shared
-                             # geometry are guarded by static_smelter_footprint_test.
-                             'inventory/smelter.tres',
-                             # Fabricator 4x4: preserve the consumed plan bytes;
-                             # current definition is pinned by static_fabricator_footprint_test.
-                             'inventory/fabricator.tres',
-                             # PR #152 warning fixes preserve executable behavior;
-                             # validate current presenter changes separately below.
-                             'scenes/world/continuous_terrain_presenter.gd',
-                             'scenes/world/ferrite_deposit_presenter.gd',
-                             'dialogue/computer_opening.tres', 'objectives/restore_computer.tres',
-                             # Computer restoration extends these gameplay files;
-                             # keep the consumed Stage 3C plan and its hashes sealed.
-                             # Current source preservation has separate feature checks.
-                             'construction/construction_controller.gd', 'scenes/main/main.gd',
-                             'scenes/main/main.tscn', 'scenes/main/playthrough_state.gd',
-                             'scenes/main/scene_transition_controller.gd',
-                             'scenes/player/interaction_detector.gd', 'scenes/ui/dialogue_ui.gd',
-                             'scenes/ui/hotbar_ui.gd', 'scenes/ui/inventory_ui.gd')
+        self.assertEqual(len(inputs), 346)
+        committed_representations = 0
         for path,entry in inputs.items():
-            # The consumed Stage 3C plan stays sealed to its merged source.
-            raw = (subprocess.check_output(['git','show','e5db8040d38bfd6b1ddb584d636af01052806b7c:'+path],cwd=ROOT)
-                   if path in historical_inputs
-                   else (ROOT/path).read_bytes())
-            if path in historical_inputs:
-                # Historical manifest pins the approved CRLF serialization.
-                raw = raw.replace(b'\r\n', b'\n').replace(b'\n', b'\r\n')
-            raw = historical_checkout_bytes(path, raw)
+            raw = sealed_plan_input(path, entry)
+            committed_representations += Path(path).suffix not in (
+                '.json', '.txt', '.tres', '.md', '.svg', '.gd', '.uid', '.tscn', '.gdshader')
             self.assertEqual((len(raw),hashlib.sha256(raw).hexdigest()),(entry['bytes'],entry['sha256']),path)
             if 'transform' in entry:
                 t = entry['transform']
@@ -135,10 +121,23 @@ class Stage3CTest(unittest.TestCase):
                 text = raw.decode('utf-8')
                 for dep in re.findall(r'(?:path="|(?:load|preload)\(")res://([A-Za-z0-9_./-]+)',text):
                     self.assertIn(dep,inputs,(path,dep))
+        self.assertEqual((committed_representations, len(inputs)-committed_representations), (134, 212))
         self.assertEqual({p for p,e in inputs.items() if 'transform' in e},
                          {'project.godot','scenes/world/planet_exterior.tscn'})
         self.assertEqual([p['timeout_seconds'] for p in plan['phases']],[60,300])
         self.assertEqual(plan['retries'],0)
+
+    def test_sealed_plan_rejects_changed_blob_and_expected_identity(self):
+        from unittest.mock import patch
+        plan = json.loads((ROOT/'docs/experiments/terrain_stage3c_gameplay_plan.json').read_text())
+        entry = next(e for e in plan['inputs'] if e['path'] == 'construction/placement_rules.gd')
+        path = entry['path']
+        for bad in (b'changed historical source', b''):
+            with patch.object(subprocess, 'check_output', return_value=bad), self.assertRaises(AssertionError):
+                sealed_plan_input(path, entry)
+        for changed in (entry | {'sha256': '0'*64}, entry | {'bytes': entry['bytes']+1}):
+            with self.assertRaises(AssertionError):
+                sealed_plan_input(path, changed)
 
     def test_warning_fixes_preserve_presenter_behavior(self):
         baseline = '7f65d42e7647d1bfff17ad83a88463ff275067ba'
