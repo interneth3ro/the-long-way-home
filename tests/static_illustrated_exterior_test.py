@@ -40,6 +40,31 @@ def vertices(chunk):
 
 
 class IllustratedExteriorStaticTest(unittest.TestCase):
+    def _assert_no_eager_terrain_renderer(self, source):
+        # The live resource definition is unrelated to terrain initialization.
+        self.assertEqual(re.findall(r'preload\(([^\n]+?)\)', source),
+                         ['"res://scenes/world/resource_definitions/v2/cuprite.tres"'])
+        configure = body(source, '_configure_terrain_renderer')
+        self.assertEqual(re.findall(r'\bload\([^\n]+\)', source),
+                         re.findall(r'\bload\([^\n]+\)', configure))
+        self.assertEqual(re.findall(r'\w+\.initialize\([^\n]*\)', source),
+                         re.findall(r'\w+\.initialize\([^\n]*\)', configure))
+        self.assertEqual(source.count('_terrain_presenter.initialize()'), 1)
+        self.assertIn('if _effective_renderer == TerrainRenderer.ILLUSTRATED:\n'
+                      '\t\t\tvar initialized := _terrain_presenter.initialize()', configure)
+        self.assertIn('\t\tif _effective_renderer != TerrainRenderer.LEGACY:\n', configure)
+        tail = configure.split('\t\tif _effective_renderer != TerrainRenderer.LEGACY:\n', 1)[1]
+        guarded = re.match(r'(?:(?:\t\t\t[^\n]*)?\n)*', tail)[0]
+        for operation in ('Image.create(', 'ShaderMaterial.new()',
+                          'load("res://scenes/world/illustrated_terrain_tint.gdshader")',
+                          '_continuous_presenter.initialize('):
+            self.assertIn(operation, guarded)
+        # No eager load or initialization may escape the renderer branches.
+        for method in ('_ready', '_init'):
+            match = re.search(r'^func '+method+r'\(.*?(?=^func |\Z)', source, re.M | re.S)
+            if match:
+                self.assertNotRegex(match[0], r'\b(?:load|preload|initialize)\(')
+
     def test_proposed_native_package_is_closed_bounded_and_non_playable(self):
         import json
         proposal = json.loads((ROOT/'docs/experiments/illustrated_exterior_stage.json').read_text())
@@ -92,13 +117,26 @@ class IllustratedExteriorStaticTest(unittest.TestCase):
                  '_terrain_presenter.initialize()', 'Image.create(', 'ShaderMaterial.new()', 'load(']
         self.assertEqual([configure.index(x) for x in order], sorted(configure.index(x) for x in order))
         self.assertEqual(SOURCE.count('_effective_renderer = terrain_renderer'), 1)
-        self.assertNotIn('preload(', SOURCE)
+        self._assert_no_eager_terrain_renderer(SOURCE)
         self.assertIn('if _effective_renderer != TerrainRenderer.ILLUSTRATED:\n\t\treturn true', body(SOURCE, '_present_illustrated_chunk'))
         self.assertIn('if _effective_renderer == TerrainRenderer.LEGACY:\n\t\treturn true', body(SOURCE, '_retire_illustrated_chunk'))
         budget = body(SOURCE, '_generate_budget')
         self.assertIn('chunk.configure(coordinate, _generator, _state, _effective_renderer == TerrainRenderer.LEGACY)', budget)
         self.assertIn('if _effective_renderer != TerrainRenderer.LEGACY:\n\t\t\tchunk.write_tint(', budget)
         self.assertNotIn('initialize(', budget)
+
+    def test_eager_renderer_loading_and_unguarded_initialization_reject_mutations(self):
+        mutations = (
+            SOURCE + '\nconst EAGER = preload("res://terrain.tres")\n',
+            SOURCE.replace('if _effective_renderer == TerrainRenderer.ILLUSTRATED:\n'
+                           '\t\t\tvar initialized := _terrain_presenter.initialize()',
+                           'if true:\n\t\t\tvar initialized := _terrain_presenter.initialize()', 1),
+            SOURCE + '\nfunc _ready():\n\tload("res://terrain.tres")\n',
+            SOURCE.replace('\t\t\t_tint_material.shader = load(', '\t_tint_material.shader = load(', 1),
+        )
+        for source in mutations:
+            with self.subTest(change=mutations.index(source)), self.assertRaises(AssertionError):
+                self._assert_no_eager_terrain_renderer(source)
 
     def test_ground_only_gate_preserves_exact_draw_commands_and_details(self):
         drawing = body(GROUND, '_draw')

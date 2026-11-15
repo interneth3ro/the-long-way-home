@@ -137,9 +137,11 @@ class CupriteGameplayStaticTests(unittest.TestCase):
         paths = ['construction/construction_controller.gd', 'construction/extractor_anchor_rules.gd',
                  'construction/placement_rules.gd', 'scenes/world/resource_generation_v2_integration.gd',
                  'scenes/world/resource_presentation_catalog.gd', 'inventory/extractor.tres',
-                 'scenes/world/ordinary_resource_generator.gd', 'scenes/world/starting_resource_generator.gd',
+                 'scenes/world/ordinary_resource_generator.gd',
                  'scenes/world/resource_generation_descriptors.gd', 'scenes/world/resource_presentations/v2/cuprite.json',
                  'assets/environment/exterior/cuprite/cuprite_prototype_v1.png', 'tools/run-local-tests.ps1']
+        # Starting policy evolved in the later Cuprite layout milestone; its
+        # exact weights, transition domain and legacy routes have current tests.
         for path in paths:
             with self.subTest(path=path):
                 original = subprocess.check_output(['git', 'show', BASE + ':' + path], cwd=ROOT)

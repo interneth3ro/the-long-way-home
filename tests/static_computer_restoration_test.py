@@ -14,6 +14,37 @@ from static_automatic_transitions_test import ROOT, blocks, function, read
 
 
 class ComputerRestorationStaticTest(unittest.TestCase):
+    def _assert_current_construction_hooks(self, source):
+        begin = function(source, 'begin_deployment')
+        self.assertIn('_context_blocked(false)', begin)
+        self.assertLess(begin.index('_context_blocked(false)'), begin.index('cancel()'))
+        self.assertIn('progression.inventory.get_quantity(definition.item_id) < 1', begin)
+        self.assertLess(begin.index('cancel()'), begin.index('mode_started.emit()'))
+        self.assertIn('_reason = "Waiting for placement preview"', begin)
+        cancel = function(source, 'cancel')
+        for fragment in ('_mode = Mode.NONE', '_anchor_ticket = {}',
+                         '_clear_confirmation()', '_detector.set_tool_active(false)'):
+            self.assertIn(fragment, cancel)
+        self.assertIn('_requested_mode = Mode.NONE', function(source, '_clear_confirmation'))
+        self.assertIn('computer_modal_open()', function(source, '_context_blocked'))
+        click = function(source, '_unhandled_input')
+        self.assertLess(click.index('_context_blocked()'), click.index('var world :='))
+        self.assertIn('if _requested_mode == Mode.NONE:', click)
+        for fragment in ('_requested_cell = _cell',
+                         '_requested_anchor_ticket = _anchor_ticket.duplicate(true)',
+                         '_requested_reason = _reason'):
+            self.assertIn(fragment, click)
+        physics = function(source, '_physics_process')
+        self.assertIn('if _context_blocked():\n\t\t_clear_confirmation()', physics)
+        self.assertIn('_requested_world == _world', physics)
+        consume = physics.index('# Consume or reject once')
+        self.assertLess(physics.index('_clear_confirmation()', consume),
+                        physics.index('deploy_extractor_v2('))
+        for fragment in ('PlacementRules.rejection(', 'if not _requested_reason.is_empty():',
+                         '_requested_anchor_ticket, _definition, _requested_cell, _requested_turns',
+                         'deploy_machine_instance('):
+            self.assertIn(fragment, physics)
+
     def test_existing_gameplay_methods_only_add_reviewable_feature_hooks(self):
         baseline = "993ffc14c1fad1032227801870cd3a3fce50f7a5"
         modal_guard = '\tif player.get_node("InteractionDetector").computer_modal_open():\n\t\treturn\n'
@@ -56,13 +87,33 @@ class ComputerRestorationStaticTest(unittest.TestCase):
                     for name, body in re.findall(r'^func (\w+)(.*?)(?=^func |\Z)', text, re.M | re.S)}
         for path, replacements in amendments.items():
             current = read(path)
+            if path == 'construction/construction_controller.gd':
+                self._assert_current_construction_hooks(current)
             for new, old in replacements:
                 self.assertIn(new, current, path)
                 current = current.replace(new, old)
             original = subprocess.check_output(['git', 'show', baseline + ':' + path], cwd=ROOT).decode('utf-8')
             after = methods(current)
             for name, body in methods(original).items():
+                if path == 'construction/construction_controller.gd' and name in (
+                        'begin_deployment', 'cancel', '_unhandled_input', '_physics_process'):
+                    continue  # Live V2 methods have the focused current contract above.
                 self.assertEqual(after[name], body, path + ':' + name)
+
+    def test_current_construction_hooks_reject_mutations(self):
+        source = read('construction/construction_controller.gd')
+        for old, new in (
+            ('_context_blocked(false)', 'false'),
+            ('_anchor_ticket = {}', '_anchor_ticket = {"stale": true}'),
+            ('_requested_mode = Mode.NONE', '_requested_mode = Mode.CONSTRUCTION'),
+            ('_requested_anchor_ticket = _anchor_ticket.duplicate(true)',
+             '_requested_anchor_ticket = {}'),
+            ('computer_modal_open()', 'unrelated_modal_open()'),
+            ('deploy_machine_instance(', 'unreviewed_deploy('),
+        ):
+            self.assertIn(old, source)
+            with self.subTest(changed=old), self.assertRaises(AssertionError):
+                self._assert_current_construction_hooks(source.replace(old, new))
 
     def test_locked_narrative_and_inspection(self):
         content = json.loads(read("dialogue/computer_restoration.json"))

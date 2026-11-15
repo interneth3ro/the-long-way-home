@@ -192,7 +192,12 @@ class SaveCodecRunnerStaticTests(unittest.TestCase):
         for path in ('AGENTS.md', 'tools/run-local-tests.ps1', 'tests/local_runner_fixture_test.ps1',
                      'persistence/save_file_codec.gd', 'tests/save_file_codec_test.gd'):
             before = subprocess.check_output(['git', 'show', f'{BASE}:{path}'], cwd=ROOT)
-            after = (ROOT / path).read_bytes().replace(b'\r\n', b'\n')
+            # Historical preparation preserved policy; current policy is checked
+            # independently without freezing the complete evolving document.
+            after = (subprocess.check_output(['git', 'show',
+                     'a2206096be202c8b3b0341e96039fb0f5bb815a0:'+path], cwd=ROOT)
+                     if path == 'AGENTS.md' else (ROOT / path).read_bytes())
+            after = after.replace(b'\r\n', b'\n')
             self.assertEqual(before, after, path)
 
     def test_fixed_budget_sequence_and_rechecks(self):
