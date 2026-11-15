@@ -80,7 +80,11 @@ class CupriteLayoutTests(unittest.TestCase):
             self.assertEqual(body(STARTING, method), body(old, method))
         for resource in ("ferrite", "carbite", "cuprite"):
             path = "scenes/world/resource_definitions/v2/" + resource + ".tres"
-            self.assertEqual(read(path), original(path))
+            current = read(path)
+            if resource == "carbite":
+                # Presentation opt-in does not alter geological generation inputs.
+                current = current.replace('presentation_catalog = "res://scenes/world/resource_presentations/v2/carbite.json"\n', '')
+            self.assertEqual(current, original(path))
 
     def test_legacy_ferrite_queries_production_and_construction_unchanged(self):
         path = "scenes/world/planet_world_state.gd"

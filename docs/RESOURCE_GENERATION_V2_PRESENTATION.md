@@ -2,6 +2,9 @@
 
 The earlier sections below record the isolated PR #190 implementation.
 [Milestone 8](#milestone-8-normal-gameplay-pending-merge) supersedes its lack of normal gameplay wiring.
+The [Carbite preview](#carbite-world-presentation-preview-pending-merge) extends
+normal world presentation only; earlier Cuprite-only scope descriptions below
+remain historical.
 
 PR 4 merged in PR #190 at `5e88e774f13d80befe63c5fb24c0cace24e35f3f`,
 based on `f82298e1874ace843455f453aba2de583d2b8f5d`.
@@ -332,3 +335,70 @@ starting-layout change; the additional case freezes the exterior source before
 this approved lifecycle edit. These guards remain unchanged and failures are
 reported, not treated as functional/runtime PASS. The full historical discovery
 suite was not rerun for this follow-up.
+
+
+## Carbite world presentation preview (pending merge)
+
+The owner-approved `carbite_deposit_candidate_v1.png` is copied byte-for-byte to
+[`assets/environment/exterior/carbite/`](../assets/environment/exterior/carbite/carbite_deposit_candidate_v1.png).
+It is a 1536x1024, 8-bit RGBA PNG with SHA-256
+`f2c72ef73cd9dbdb9fc15faf3d3cd4aeeb15d135f9944c39c59970ad93948022`.
+The supplied image has alpha values from 0 through 254; transparency is preserved,
+including its partially transparent painted terrain fringe. It is not resized,
+repainted or regenerated. Import metadata is authored from Cuprite's existing
+settings: lossless texture, no mipmaps, alpha-border fixing, no premultiplied alpha
+and no size limit. Godot has not generated or verified an imported texture here.
+
+The [Carbite catalog](../scenes/world/resource_presentations/v2/carbite.json)
+uses the existing version-1 schema with one `candidate_v1` variant, scale 0.225
+and offset (0,16). Its centered image rectangle is 345.6x230.4 world units;
+registration uses the existing 128x128 V2 logical anchor. The unchanged shared
+presenter supplies linear filtering and z-index -5, matching Cuprite. The initial
+scale and offset are provisional pending owner visual acceptance.
+
+The existing Carbite definition references this catalog. Exterior initialization
+configures the same `ResourcePresenterV2` for Cuprite and Carbite; it consumes the
+already authoritative descriptors through the existing world-state query API.
+There is no separate presenter, spawn path, teleportation or inspection feature.
+The disabled historical Cuprite-only harness remains Cuprite-only. Generation
+weights, starting guarantees (3 Ferrite, 2 Carbite, 2 Cuprite), identities, placement,
+legacy Ferrite visuals, shared failure checks and streaming lifecycle are unchanged.
+
+Carbite remains incompatible with the Extractor. No Carbite inventory item, icon
+registration, ore output mapping, recipe, processing or fuel behavior is included.
+Visual presence grants no extraction authority. Machines continue to validate
+exact authoritative deposits and fail closed on unavailable or unsupported output.
+
+Five focused nonexecuting tests in
+[`static_carbite_presentation_test.py`](../tests/static_carbite_presentation_test.py)
+cover artwork/catalog/import identity, the shared configuration addition,
+unchanged generation/presentation contracts and the gameplay exclusions. Existing
+static expectations change only where they formerly required no Carbite catalog,
+a Cuprite-only preload list or the Carbite definition without presentation metadata.
+Static checks do not establish Godot parsing, texture import, runtime streaming,
+alpha blending, apparent scale, placement feedback or gameplay acceptance. No
+Godot execution, runner amendment or expanded runtime authority accompanies this
+preview.
+
+### Owner visual acceptance
+
+1. Open this feature checkout using the approved Godot 4.7.2 Standard environment.
+   Run Project (F5), choose New Game, and exit the ship through the normal flow.
+2. Explore the starting region for a dark Carbite deposit. The unchanged starting
+   layout reserves two Carbite anchors with centers 384-2304 world units from the
+   ship reference; this preview adds no marker or special spawn.
+3. Compare its apparent size with generated Cuprite. Both use scale 0.225 and the
+   same source dimensions, but their painted silhouettes can read differently.
+4. Inspect the transparent fringe and shadow against terrain for dark halos,
+   rectangular edges or excessive translucency. Inspect the central surface's
+   positioning relative to the 128x128 anchor when previewing an Extractor.
+5. Walk across deposit and terrain-chunk edges, move away and return, and revisit
+   the exterior after entering the ship. Check clipping, duplication, disappearance
+   and alignment as the normal streaming lifecycle runs.
+6. With a recovered Extractor available, attempt placement on Carbite away from
+   overlapping legacy Ferrite. Expect incompatible-resource rejection, no machine
+   consumption and no Carbite production. Recheck Ferrite/Cuprite placement and
+   ore collection through their existing paths.
+
+Owner execution and visual results are not yet recorded. Report scale/offset,
+blending or positioning feedback before any further artwork or gameplay changes.

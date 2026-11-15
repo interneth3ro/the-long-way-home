@@ -43,7 +43,8 @@ class IllustratedExteriorStaticTest(unittest.TestCase):
     def _assert_no_eager_terrain_renderer(self, source):
         # The live resource definition is unrelated to terrain initialization.
         self.assertEqual(re.findall(r'preload\(([^\n]+?)\)', source),
-                         ['"res://scenes/world/resource_definitions/v2/cuprite.tres"'])
+                         ['"res://scenes/world/resource_definitions/v2/cuprite.tres"',
+                          '"res://scenes/world/resource_definitions/v2/carbite.tres"'])
         configure = body(source, '_configure_terrain_renderer')
         self.assertEqual(re.findall(r'\bload\([^\n]+\)', source),
                          re.findall(r'\bload\([^\n]+\)', configure))

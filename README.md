@@ -27,6 +27,9 @@ The shared Extractor produces Cuprite Ore from authoritative Cuprite deposits,
 using its existing 60/min timing and 20-item storage; collection and recovery use
 the same resolved item. The owner's unchanged inventory icon is registered with
 shared item presentation. Legacy Ferrite and approved world artwork are preserved.
+The [Carbite world presentation preview](docs/RESOURCE_GENERATION_V2_PRESENTATION.md#carbite-world-presentation-preview-pending-merge)
+adds approved deposit artwork through the shared presenter, pending merge and owner
+visual acceptance. Carbite remains incompatible with the Extractor.
 Carbite production, new recipes and save migration remain outside this milestone.
 Agent validation is static only; GDScript assertions are authored but not executed.
 
