@@ -305,7 +305,9 @@ class FerriteRegionStaticTest(unittest.TestCase):
         self.assertIn('definition.rotated_point(definition.extraction_point, machine.turns)',status)
         self.assertIn('deposit_at(point, resource_type)',status)
         self.assertIn('definition.output_per_cycle',function(state,'advance_production'))
-        self.assertIn('PlacementRules.rejection',function(state,'deploy_machine_instance'))
+        self.assertIn('return _deploy_machine_transaction(definition, cell, turns, inventory, player, world, construction_range, {})',
+                      function(state, 'deploy_machine_instance'))
+        self.assertIn('PlacementRules.rejection', function(state, '_deploy_machine_transaction'))
         self.assertIn('return _deposits.duplicate()',function(state,'get_deposits'))
         self.assertIn('_ferrite.descriptor_by_id(deposit_id)',function(state,'get_deposit'))
         self.assertIn('_ferrite.query(Rect2(world_point, Vector2.ZERO))',function(state,'deposit_at'))

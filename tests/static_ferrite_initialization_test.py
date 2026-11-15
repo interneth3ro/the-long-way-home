@@ -173,7 +173,12 @@ class FerriteInitializationStaticTest(unittest.TestCase):
 
     def test_failure_blocks_dependent_session_and_production_paths(self):
         state = (ROOT/'scenes/world/planet_world_state.gd').read_text()
-        for method in ('deploy_machine_instance','machine_status','advance_production'):
+        self.assertIn('return _deploy_machine_transaction(definition, cell, turns, inventory, player, world, construction_range, {})',
+                      function(state, 'deploy_machine_instance'))
+        transaction = function(state, '_deploy_machine_transaction')
+        self.assertLess(transaction.index('not is_resource_generation_ready()'),
+                        transaction.index('_machine_transaction = true'))
+        for method in ('_deploy_machine_transaction','machine_status','advance_production'):
             self.assertIn('not is_resource_generation_ready()',function(state,method))
         self.assertIn('_ferrite.initialization_error()',function(state,'resource_generation_error'))
         main = function((ROOT/'scenes/main/main.gd').read_text(),'_ready')

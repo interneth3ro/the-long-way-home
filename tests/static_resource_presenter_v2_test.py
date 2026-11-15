@@ -31,6 +31,62 @@ def baseline(path):
 
 
 class ResourcePresenterV2StaticTests(unittest.TestCase):
+    def _assert_area_limits(self, source):
+        for name, value in (('MAX_AREA_AXIS', 6144.0), ('MAX_LIVE_AREA_AXIS', 26624.0),
+                            ('LIVE_PAGE_SIZE', 1536.0), ('MAX_LIVE_PAGES', 361),
+                            ('MAX_OWNERS', 64)):
+            declaration = re.search(r'^const ' + name + r': \w+ = ([\d.]+)', source, re.M)
+            self.assertIsNotNone(declaration, name)
+            self.assertEqual(float(declaration[1]), value, name)
+        request = body(source, 'request')
+        self.assertIn('var area_limit: float = MAX_LIVE_AREA_AXIS if _world != null else MAX_AREA_AXIS', request)
+        for guard in ('not area.is_finite()', 'not area.end.is_finite()',
+                      'area.size.x <= 0.0 or area.size.y <= 0.0',
+                      'area.size.x > area_limit or area.size.y > area_limit'):
+            self.assertIn(guard, request)
+        self.assertIn('return _failure("Invalid context or presentation area")', request)
+        self.assertIn('return Catalog.failure("Invalid context or presentation area")', request)
+        live, offline = request.split('\tvar plan :=', 1)
+        self.assertIn('var page_size: float = LIVE_PAGE_SIZE', live)
+        self.assertIn('(last.x - first.x + 1) * (last.y - first.y + 1) > MAX_LIVE_PAGES:\n\t\t\treturn _failure("Presentation page budget exceeded")', live)
+        self.assertLess(live.index('area.size.x > area_limit'), live.index('_pages.append('))
+        self.assertLess(live.index('> MAX_LIVE_PAGES:'), live.index('_pages.append('))
+        self.assertLess(live.index('_pages.append('), live.index('_active = true'))
+        self.assertIn('_source.query_owners(area.grow(_reach))', offline)
+        self.assertIn('if not plan.ok:\n\t\treturn plan', offline)
+        self.assertIn('if plan.owners.size() > MAX_OWNERS:\n\t\treturn Catalog.failure("Presentation owner budget exceeded")', offline)
+        self.assertLess(offline.index('> MAX_OWNERS:'), offline.index('_active = true'))
+        step = body(source, 'step')
+        self.assertIn('_world.query_resource_descriptors_v2(page.grow(_reach), _world_token)', step)
+
+    def _assert_descriptor_limits(self, source):
+        for name, expected in (('MAX_DESCRIPTORS', 775), ('MAX_LIVE_DESCRIPTORS', 5815)):
+            declaration = re.search(r'^const ' + name + r': int = (\d+)', source, re.M)
+            self.assertIsNotNone(declaration, name)
+            self.assertEqual(int(declaration[1]), expected)
+        register = body(source, '_register_member')
+        self.assertIn('var descriptor_limit: int = MAX_LIVE_DESCRIPTORS if _world != null else MAX_DESCRIPTORS', register)
+        self.assertIn('if _registrations.size() > descriptor_limit:\n\t\treturn _failure("Presentation descriptor budget exceeded")', register)
+        step = body(source, 'step')
+        self.assertIn('if queried.deposits.size() > MAX_DESCRIPTORS:\n\t\t\t\treturn _failure("Presentation query budget exceeded")', step)
+        self.assertLess(step.index('queried.deposits.size() > MAX_DESCRIPTORS'),
+                        step.index('_members = queried.deposits.filter('))
+
+    def _assert_world_read_boundary(self, source):
+        code = '\n'.join(line.split('#')[0] for line in source.splitlines())
+        allowed = {'resource_generation_v2_context', 'query_resource_descriptors_v2'}
+        # Check every world member access, including dynamic call/get/set attempts.
+        members = set(re.findall(r'\b(?:_world|world)\.(\w+)', code))
+        self.assertEqual(members, allowed)
+        self.assertNotRegex(code, r'\b(?:_world|world)\s*\[')
+        self.assertNotRegex(code, r'\bvar\s+\w+\s*:?=\s*(?:_world|world)\s*(?:\n|$)')
+        for forbidden in ('InventoryState', 'PlacementRules', 'ResourceDeposit',
+                          'inventory.', 'deploy_machine', 'advance_production',
+                          '_resource_v2', 'get_deposits_in_area', 'FileAccess.WRITE',
+                          'FileAccess.READ_WRITE', 'FileAccess.WRITE_READ',
+                          'store_var', 'save_game', 'quantity', 'depletion'):
+            self.assertNotIn(forbidden, code)
+
     def test_frozen_artwork_identity_and_native_catalog_reference(self):
         self.assertEqual(CONFIG['version'], 1)
         self.assertEqual(CONFIG['resource_id'], 'cuprite')
@@ -77,10 +133,7 @@ class ResourcePresenterV2StaticTests(unittest.TestCase):
         painted = max(CONFIG['variants'][0]['size']) * 0.225 / 2
         self.assertLessEqual(448 + 64 + painted, 640 + painted)
         self.assertIn('reach > MAX_REACH', CATALOG)
-        self.assertIn('area.size.x > MAX_AREA_AXIS', request)
-        self.assertIn('area.end.is_finite()', request)
-        self.assertLess(request.index('area.size.x > MAX_AREA_AXIS'), request.index('_source.query_owners'))
-        self.assertLess(request.index('plan.owners.size() > MAX_OWNERS'), request.index('_active = true'))
+        self._assert_area_limits(PRESENTER)
 
     def test_registration_determinism_and_duplicate_admission(self):
         registration = body(CATALOG, 'registration')
@@ -105,11 +158,14 @@ class ResourcePresenterV2StaticTests(unittest.TestCase):
         self.assertNotIn('for identity', step)
         for fragment in ('MAX_DESCRIPTORS: int = 775', 'MAX_OWNERS: int = 64',
                          'MAX_LOCATIONS_PER_OWNER: int = 11', 'TEXTURE_LIMIT: int = 8',
-                         'MAX_CATALOGS: int = 8', '_registrations.size() > MAX_DESCRIPTORS',
+                         'MAX_CATALOGS: int = 8',
                          'result.locations.size() > MAX_LOCATIONS_PER_OWNER',
                          '_textures.size() >= TEXTURE_LIMIT', '_textures.erase(_textures.keys()[0])'):
             self.assertIn(fragment, PRESENTER)
         self.assertEqual(64*4*3 + 7, 775)
+        self._assert_descriptor_limits(PRESENTER)
+        self.assertIn('_pages.pop_front()', step)
+        self.assertIn('_members.pop_front()', step)
         self.assertIn('_presenter.step(_token)', body(HARNESS, '_process'))
         self.assertNotRegex(body(HARNESS, '_process'), re.compile(r'^\s*while ', re.M))
 
@@ -164,15 +220,49 @@ class ResourcePresenterV2StaticTests(unittest.TestCase):
                 self.assertNotIn('cuprite_inspection', file.read_text(encoding='utf-8'))
 
     def test_no_gameplay_authority_or_persistence_in_new_code(self):
+        self._assert_world_read_boundary(PRESENTER)
         for source in (PRESENTER, CATALOG, HARNESS):
             code = '\n'.join(line.split('#')[0] for line in source.splitlines())
-            for forbidden in ('ResourceDeposit', 'PlanetWorldState', 'PlacementRules',
+            for forbidden in ('ResourceDeposit', 'PlacementRules',
                               'InventoryState', 'deploy_machine', 'get_deposits_in_area',
                               'FileAccess.WRITE', 'store_var', 'save_game', 'quantity', 'depletion'):
                 self.assertNotIn(forbidden, code)
+            if source != PRESENTER:
+                self.assertNotIn('PlanetWorldState', code)
         for resource in ('"ferrite"', '"carbite"', '"cuprite"'):
             self.assertNotIn(resource, PRESENTER)
             self.assertNotIn(resource, CATALOG)
+
+    def test_adapter_bounds_reject_source_mutations(self):
+        mutations = (
+            ('relaxed offline area', 'MAX_AREA_AXIS: float = 6144.0', 'MAX_AREA_AXIS: float = 99999.0', self._assert_area_limits),
+            ('relaxed live area', 'MAX_LIVE_AREA_AXIS: float = 26624.0', 'MAX_LIVE_AREA_AXIS: float = 99999.0', self._assert_area_limits),
+            ('missing area check', 'area.size.x > area_limit', 'false', self._assert_area_limits),
+            ('relaxed page budget', '> MAX_LIVE_PAGES:', '> 99999:', self._assert_area_limits),
+            ('relaxed owner budget', '> MAX_OWNERS:', '> 99999:', self._assert_area_limits),
+            ('relaxed offline descriptors', 'MAX_DESCRIPTORS: int = 775', 'MAX_DESCRIPTORS: int = 99999', self._assert_descriptor_limits),
+            ('relaxed live descriptors', 'MAX_LIVE_DESCRIPTORS: int = 5815', 'MAX_LIVE_DESCRIPTORS: int = 99999', self._assert_descriptor_limits),
+            ('missing accumulation check', '_registrations.size() > descriptor_limit', 'false', self._assert_descriptor_limits),
+            ('relaxed per-query cap', 'queried.deposits.size() > MAX_DESCRIPTORS', 'queried.deposits.size() > MAX_LIVE_DESCRIPTORS', self._assert_descriptor_limits),
+        )
+        for label, old, new, check in mutations:
+            with self.subTest(mutation=label):
+                mutant = PRESENTER.replace(old, new, 1)
+                self.assertNotEqual(mutant, PRESENTER)
+                with self.assertRaises(AssertionError):
+                    check(mutant)
+
+    def test_world_read_boundary_rejects_unauthorized_calls(self):
+        for call in ('_world.deploy_machine()', 'world.advance_production(1.0)',
+                     '_world.collect_output(1)', '_world.configure_resource_generation_v2()',
+                     '_world.query_deposit_descriptors(area)', '_world.get_deposits_in_area(area)',
+                     '_world._resource_v2._source.query(area)',
+                     '_world.call("deploy_machine")', '_world.get("_resource_v2")',
+                     '_world.set("seed_value", 1)', '_world["seed_value"] = 1',
+                     'var authority := _world\n\tauthority.deploy_machine()'):
+            with self.subTest(call=call):
+                with self.assertRaises(AssertionError):
+                    self._assert_world_read_boundary(PRESENTER + '\nfunc unauthorized():\n\t' + call)
 
     def test_cuprite_prototype_scene_preserved(self):
         # Checkout CRLF is preserved; Git stores the normalized source as LF.

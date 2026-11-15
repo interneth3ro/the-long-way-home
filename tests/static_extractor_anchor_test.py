@@ -72,12 +72,19 @@ class ExtractorAnchorStaticTests(unittest.TestCase):
         for check in ('ticket.get("source") != source', 'source.descriptor_by_id(ticket.deposit_id)',
                       'ticket.get("policy") != source.identity_policy()',
                       'ticket.get("anchor_cells") != member.anchor_cells',
+                      'member_rejection(member, definition, cell, turns, occupant)',
+                      'gameplay_eligible: bool = false', 'if not gameplay_eligible:'):
+            self.assertIn(check, reject)
+        geometry = body(RULES, 'member_rejection')
+        for check in (
                       'definition.compatible_resources.has(StringName(member.resource_type))',
                       'definition.item_id != &"extractor"', 'cell != anchor.position',
+                      'anchor.size != ANCHOR_CELLS',
                       'definition.footprint_cells != ANCHOR_CELLS',
-                      'definition.footprint(cell, turns) != bounds(anchor)', 'occupant != 0',
-                      'gameplay_eligible: bool = false'):
-            self.assertIn(check, reject)
+                      'definition.footprint(cell, turns) != bounds(anchor)', 'occupant != 0'):
+            self.assertIn(check, geometry)
+        self.assertIn('inspect_rejection(', body(HARNESS, 'confirm'))
+        self.assertIn('Rules.rejection(', body(HARNESS, 'inspect_rejection'))
         self.assertNotIn('select(', reject)
         self.assertNotIn('target(', body(HARNESS, 'confirm'))
         self.assertIn('ticket.get("epoch") != _epoch', HARNESS)
