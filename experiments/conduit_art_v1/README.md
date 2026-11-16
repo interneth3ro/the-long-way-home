@@ -7,7 +7,7 @@ this experiment to straight segments. Its depicted adapters, corners, bridges an
 machine connections are not implemented.
 
 The canonical design remains [Issue #214](https://github.com/interneth3ro/the-long-way-home/issues/214),
-especially D10 (one 32Ã—32 cell; narrower artwork allowed), D87/D90 (visible items
+especially D10 (one 32×32 cell; narrower artwork allowed), D87/D90 (visible items
 and an unresolved item envelope), and D91 (future foreground layering).
 The issue is unchanged.
 
@@ -16,14 +16,19 @@ The issue is unchanged.
 1. In the TLWH Godot project, open
    [conduit_art_v1.tscn](conduit_art_v1.tscn).
 2. Use **F6 / Run Current Scene**, not F5 / Run Project.
-3. The initial camera is **1Ã—**, in the normal 1280Ã—720 logical viewport.
-   Mouse wheel uses the existing exterior camera's 0.5â€“1.5Ã— limits, 0.1 steps and
+3. The initial camera is **1×**, in the normal 1280×720 logical viewport.
+   Mouse wheel uses the existing exterior camera's 0.5–1.5× limits, 0.1 steps and
    0.15-second easing. Middle-drag pans this inspection camera.
-4. Use **F8** to stop; rerun F6 to restore the initial view.
+4. For the new **STATIC ITEM READABILITY** board, keep the initial 1x zoom and
+   middle-drag upward to look below the original board (768 world units down).
+   Center its dirt/grass panels between the fixed header and footer for a screenshot.
+   The original comparisons remain in their original positions.
+5. Use **F8** to stop; rerun F6 to restore the initial view and 1x zoom.
 
-These are owner launch instructions, not a record of agent execution. No editor,
-engine import, scene-load run, headless test or graphical Godot launch was
-performed. The standing restricted recipes do not cover loading this experiment.
+These are owner launch instructions, not a record of agent execution. The agent
+has not launched the editor, imported with Godot, loaded the scene in-engine, or
+performed a headless or graphical Godot run. The standing restricted recipes do
+not cover loading this experiment.
 The [execution policy](../../AGENTS.md#godot-execution-safety) remains unchanged.
 First owner import may create ordinary local engine caches/UID metadata; none is
 included in this PR.
@@ -37,13 +42,15 @@ existing earth and green source artwork. Each has:
 - A vertical unlit run and a vertical mixed run, each 12 cells long.
 - Three illuminated cells per mixed run (positions 3, 7 and 11).
 - Static Extractor and Smelter layers at their existing production transforms,
-  with 128Ã—128 outlines for their four-by-four-cell logical footprints.
+  with 128×128 outlines for their four-by-four-cell logical footprints.
 - A separate four-cell item-fit strip using existing Ferrite Ore/Ingot icons in
-  provisional **10Ã—10-unit maximum envelopes**, and a 32-unit ruler.
+  provisional **10×10-unit maximum envelopes**, and a 32-unit ruler.
 
-There are 96 clean comparison segments plus eight segments in the separate fit
-strips. Segment centers sit on the construction grid's cell centers, 32 units
-apart. A 128-pixel conduit texture is scaled by 0.25, giving a full 32Ã—32 logical
+The original board retains 96 clean comparison segments plus eight segments in
+the separate fit strips. The new readability board adds 144 segments, described
+below; the original layouts are unchanged. Segment centers sit on the
+construction grid's cell centers, 32 units
+apart. A 128-pixel conduit texture is scaled by 0.25, giving a full 32×32 logical
 cell; the visible housing is approximately 23 units wide and the open recess
 approximately 12 units wide. These are artwork measurements, not simulation
 dimensions or approved item sizes.
@@ -57,19 +64,74 @@ script adds middle-drag panning and enables the existing exterior zoom range.
 No machine, player, terrain streaming, inventory, production, construction,
 recovery or logistics simulation is instantiated.
 
+## Static item-readability follow-up
+
+The additional board is a separate `ItemReadability` node at world (0, 768).
+It uses the same unmodified conduit textures, 0.25 scale and 32-unit grid. The
+initial camera, original dirt/grass panels, clean runs, machine references,
+original fit strips and existing viewing controls are unchanged. A small new
+header hint points to the lower board.
+
+Artwork inspection found:
+
+| Sample | Definition and source | Status |
+| --- | --- | --- |
+| Ferrite Ore | `inventory/ferrite_ore.tres`; `assets/items/ferrite_ore.png` | Existing 256x256 inventory sprite, registered in `ItemPresentation.ICONS` |
+| Ferrite Ingot | `inventory/ferrite_ingot.tres`; `assets/items/ferrite_ingot.png` | Existing 256x256 inventory sprite, registered in `ItemPresentation.ICONS` |
+| Cuprite Wire | No corresponding item definition, icon registration or sprite found | Temporary copper-colored coil silhouette authored only for this experiment |
+
+The Wire row and both panel headings explicitly identify the placeholder. It
+represents an expected coiled-wire shape, not approved Cuprite Wire artwork or
+an implementation of that item. No replacement Ore or Ingot artwork is used.
+
+Each of the three item rows is repeated on dirt and grass. Each row includes:
+
+- Horizontal **single**: one item centered in a three-cell conduit.
+- Horizontal **adjacent**: three consecutive occupied cells, one item per cell.
+- Matching vertical single and adjacent samples.
+- Both an all-unlit version (**U**) and an all-cyan version (**C**) of every sample.
+
+That is 48 three-cell samples, 144 conduit segments and 96 stationary item
+sprites. Every item type appears in both orientations, lighting conditions and
+occupancy patterns on both terrain materials. Cyan on every occupied cell is
+an explicit contrast test; the original occasional-cyan runs remain intact.
+
+All new items use the same provisional 10x10-unit **source-canvas** envelope as
+the original fit probes: `10/256` scale for the PNGs and `10/32` for the SVG.
+Aspect ratios and existing transparent margins are retained; actual painted
+silhouettes can be smaller. Item sprites remain screen-upright in both conduit
+orientations to compare recognition consistently. Their orientation is an
+experiment choice, not a logistics rule. Items are separate static Sprite2D
+nodes above the conduit, with no animation, item state or inventory nodes.
+
+Start at 1x. Compare Ore, Ingot and the temporary Wire shape for recognition,
+channel room, contrast against the dark channel, interference from cyan,
+clutter in adjacent occupied cells, and horizontal/vertical readability.
+Optional closer zoom is diagnostic; it does not replace the normal-zoom review.
+The owner will launch with F6 and provide a screenshot. **No final conduit or
+item dimensions are recommended before that review.**
+
+This is a static visual test only. The existing icon artwork is inventory art,
+not a certified transported-item set. The Wire placeholder supports shape/size
+comparison only. Flattened conduit textures cannot establish foreground-rail
+occlusion, and no moving-item readability or visual acceptance is claimed.
+
 ## Files and import settings
 
-All seven added files are inside this directory:
+All nine PR files are inside this directory. This follow-up changes only the
+scene and this guide, and adds the temporary wire SVG and its import settings:
 
 | File | Purpose |
 | --- | --- |
 | [conduit_art_v1.tscn](conduit_art_v1.tscn) | Isolated comparison scene |
 | [inspection_camera.gd](inspection_camera.gd) | Viewing controls extending the existing camera |
-| [straight_unlit.png](straight_unlit.png) | 128Ã—128 RGBA candidate, no cyan |
-| [straight_lit.png](straight_lit.png) | 128Ã—128 RGBA candidate, localized steady cyan inset |
+| [straight_unlit.png](straight_unlit.png) | 128×128 RGBA candidate, no cyan |
+| [straight_lit.png](straight_lit.png) | 128×128 RGBA candidate, localized steady cyan inset |
 | [straight_unlit.png.import](straight_unlit.png.import) | Authored texture import settings |
 | [straight_lit.png.import](straight_lit.png.import) | Matching authored texture import settings |
 | [README.md](README.md) | Launch instructions, provenance and review boundaries |
+| [cuprite_wire_placeholder.svg](cuprite_wire_placeholder.svg) | Clearly labeled temporary 32x32 coil silhouette |
+| [cuprite_wire_placeholder.svg.import](cuprite_wire_placeholder.svg.import) | Authored lossless/mipmap settings for the placeholder |
 
 Both PNGs have genuine alpha. Import settings are lossless compression
 (`compress/mode=0`), mipmaps enabled, alpha-border fixing enabled, no
@@ -82,8 +144,8 @@ Existing assets are referenced in place and remain unchanged:
 - Terrain: `assets/experiments/terrain_c1/sources/{earth,green}.png`, the artwork
   loaded by the current `ContinuousTerrainPresenter`.
   Fixed center crops use nominal shader phase scale 0.9:
-  `2048 / (1254 Ã— 0.9)` world units per source pixel, with linear filtering.
-  This falls within the live renderer's 0.8â€“1.0 phase-scale range.
+  `2048 / (1254 × 0.9)` world units per source pixel, with linear filtering.
+  This falls within the live renderer's 0.8–1.0 phase-scale range.
 - Machines: front-facing layers under `assets/machines/{extractor,smelter}/`;
   scales and offsets copied as values from their current visual definitions.
   Machine scripts and animation are deliberately absent.
@@ -93,13 +155,14 @@ Existing assets are referenced in place and remain unchanged:
 
 ## Owner review
 
-Inspect each material at 1Ã— first, then compare near 0.5Ã— and 1.5Ã—:
+Inspect each material at 1× first, then compare near 0.5× and 1.5×:
 
 - Do adjacent copies read as a continuous conduit? Are join lines, repeated
   scratches or rail highlights distracting?
 - Is housing width appropriate beside the existing machines?
 - Does the open channel leave enough room for recognizable item silhouettes?
-  The separate static fit strip tests one provisional envelope only.
+  The original fit strip and the new three-resource readability board use one
+  provisional envelope only.
 - Do unlit and illuminated cells share geometry and materials?
 - Is cyan visible but restrained? Does one light every four cells look repetitive?
 - Does rotating the art work visually in vertical runs?
@@ -117,8 +180,13 @@ confined to the illuminated inset, and **identical RGBA left/right boundary
 columns across both variants**. Matching edges do not establish perceptual
 seamlessness or eliminate repeated texture patterns.
 
-An offline raster layout inspection was used to check spacing and scale. It is
-not a Godot screenshot and does not validate engine filtering, shader output,
+Follow-up static checks additionally verify the full three-resource sample
+matrix, exact preservation of every pre-existing scene node, unmodified conduit
+PNG hashes, matching item scales, placeholder labeling, resource paths, SVG/XML
+validity and local documentation links. Current results are recorded in the PR.
+
+An offline raster layout inspection of the original board was used to check
+spacing and scale. It is not a Godot screenshot and does not validate engine filtering, shader output,
 scene parsing or runtime controls. Repository static-suite results are reported
 in the PR.
 
@@ -143,8 +211,8 @@ Built-in imagegen produced the candidate artwork using the supplied
 `conduit_tiling.png` as a visual reference. These are newly generated derivatives,
 not lossless extractions of the concept swatches and not placeholder geometry.
 
-The generated square canvases were 1254Ã—1254. A centered 768Ã—768 region at
-(243, 243) was downsampled to 128Ã—128. An eight-pixel blend at each horizontal
+The generated square canvases were 1254×1254. A centered 768×768 region at
+(243, 243) was downsampled to 128×128. An eight-pixel blend at each horizontal
 edge brings both boundary columns to their shared mean profile. The illuminated
 candidate retains the exact unlit base and alpha, with only a feathered lower-rail
 patch inside x=43..84, y=92..105 taken from the final generated illuminated
