@@ -204,6 +204,8 @@ func request(area: Rect2) -> Dictionary:
 func step(token: int) -> Dictionary:
 	if token != _token or not _active:
 		return {"ok": true, "stale": true}
+	if is_complete(token):
+		return {"ok": true, "done": true}
 	if _world != null:
 		var context := _world.resource_generation_v2_context()
 		if not context.ok or context.token != _world_token:

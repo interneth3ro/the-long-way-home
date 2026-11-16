@@ -1045,6 +1045,11 @@ acceptance should check:
 
 1. New Game completion, first exit, cancellation and exterior revisits with healthy
    V2 readiness and unchanged terrain/arrival protections.
+   Owner acceptance at `2f9adac` failed on first exit with a late arrival-validation
+   error and black curtain. The terminal completed-step correction is pending
+   owner retest. Authored lifecycle coverage now checks repeated steps/services
+   after reattachment, invalidation, and receipt validity across the existing
+   reveal fade with ordinary exterior processing enabled. It remains unexecuted.
 2. Three starting Ferrite members, ordinary Ferrite and preserved Cuprite/Carbite
    distribution. One visual per deposit, approved artwork transform, streaming
    retention and construction anchor feedback.

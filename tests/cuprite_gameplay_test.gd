@@ -497,6 +497,30 @@ func _test_exterior_revisit() -> void:
 	var arrived: Dictionary = await exterior.prepare_for_arrival(player, progression.planet)
 	_check(exterior.arrival_is_ready(arrived) and exterior._resource_presenter == presenter,
 		"cached exterior arrival retains shared presenter")
+	# Use the real reveal fade with ordinary exterior processing enabled. The
+	# previous fixture checked only immediately after prepare_for_arrival returned.
+	var reveal := SceneTransitionController.new()
+	var fade := CanvasLayer.new()
+	fade.name = "Fade"
+	var curtain := ColorRect.new()
+	curtain.name = "Curtain"
+	curtain.color = Color.BLACK
+	fade.add_child(curtain)
+	reveal.add_child(fade)
+	root.add_child(reveal)
+	var readiness_samples: Array[bool] = []
+	var sample_readiness := func() -> void:
+		readiness_samples.append(exterior.arrival_is_ready(arrived))
+	player.process_mode = Node.PROCESS_MODE_DISABLED
+	exterior.process_mode = Node.PROCESS_MODE_INHERIT
+	process_frame.connect(sample_readiness)
+	await reveal._fade_to(0.0)
+	process_frame.disconnect(sample_readiness)
+	_check(not readiness_samples.is_empty() and not readiness_samples.has(false)
+		and exterior.arrival_is_ready(arrived) and exterior._resources_done,
+		"completed arrival receipt stays valid across normal reveal interval")
+	exterior.process_mode = Node.PROCESS_MODE_DISABLED
+	reveal.free()
 	for discovery in discovery_nodes:
 		_check(discovery.can_interact(), "arrival restores retained Ferrite discovery")
 	for identity in sprites:

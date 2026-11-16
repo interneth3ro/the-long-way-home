@@ -3,6 +3,7 @@ extends SceneTree
 
 const Presenter = preload("res://scenes/world/resource_presenter_v2.gd")
 const Descriptors = preload("res://scenes/world/resource_generation_descriptors.gd")
+const FERRITE = preload("res://scenes/world/resource_definitions/v2/ferrite.tres")
 const CARBITE = preload("res://scenes/world/resource_definitions/v2/carbite.tres")
 const CUPRITE = preload("res://scenes/world/resource_definitions/v2/cuprite.tres")
 const EXTERIOR = preload("res://scenes/world/planet_exterior.tscn")
@@ -11,6 +12,7 @@ var _failures: int = 0
 
 class FixtureWorld:
 	extends "res://scenes/world/planet_world_state.gd"
+	var fail_query: bool = false
 	var queries: int = 0
 	var members: Array = []
 
@@ -18,6 +20,8 @@ class FixtureWorld:
 		var context := resource_generation_v2_context()
 		if not context.ok or context.token != token:
 			return {"ok": false}
+		if fail_query:
+			return {"ok": false, "error": "fixture presentation query failure"}
 		queries += 1
 		return {"ok": true, "deposits": members.duplicate(true)}
 
@@ -46,7 +50,9 @@ func _run() -> void:
 		Vector2i.ZERO, 0, &"cuprite", [Rect2i(-2, -2, 4, 4)])
 	var carbite := Descriptors.create_location("starting-v2-2", world.seed_value,
 		Vector2i.ZERO, 1, &"carbite", [Rect2i(8, 8, 4, 4)])
-	world.members = made.location.deposits + carbite.location.deposits
+	var ferrite := Descriptors.create_location("starting-v2-2", world.seed_value,
+		Vector2i.ZERO, 2, &"ferrite", [Rect2i(16, 16, 4, 4)])
+	world.members = made.location.deposits + carbite.location.deposits + ferrite.location.deposits
 	var exterior := EXTERIOR.instantiate() as PlanetExterior
 	root.add_child(exterior)
 	exterior.set_process(false)
@@ -58,20 +64,27 @@ func _run() -> void:
 	# Exercise the actual initial presentation service, without generating terrain.
 	_drain(exterior)
 	var presenter: ResourcePresenterV2 = exterior._resource_presenter
-	_check(exterior._resources_done and presenter.snapshot().sprites == 2,
+	_check(exterior._resources_done and presenter.snapshot().sprites == 3,
 		"initial presentation completes")
 	var registrations: Dictionary = presenter._registrations.duplicate(true)
 	var sprites: Dictionary = presenter._sprites.duplicate()
 	var textures: Dictionary = presenter._textures.duplicate()
 	var query_count: int = world.queries
+	_check_completed_steps(presenter, exterior._resource_token)
+	_test_completed_invalidation(world.members)
 	for visit in range(3):
 		var old_token: int = exterior._resource_token
 		root.remove_child(exterior)
 		_check(presenter.step(old_token).get("stale", false), "detachment retires old token")
+		_check(presenter.step(presenter.snapshot().token).get("stale", false), "detached activity guard precedes terminal completion")
 		root.add_child(exterior)
 		exterior._initialize_world(world)
 		_check(exterior._resources_done, "same-context completed visit reuses readiness work")
-		exterior._service_resources()
+		for repeat in range(4):
+			exterior._service_resources()
+			_check(exterior._resources_done and presenter.is_complete(exterior._resource_token),
+				"unchanged coverage service preserves completed readiness")
+		_check_completed_steps(presenter, exterior._resource_token)
 		_check(world.queries == query_count, "reattachment performs no repeated queries")
 		_check(presenter._registrations == registrations and presenter._sprites == sprites
 			and presenter._textures == textures, "registrations sprite and texture retained")
@@ -81,6 +94,7 @@ func _run() -> void:
 	# Explicit cancellation invalidates completion, even if coverage is unchanged.
 	var completed_token: int = exterior._resource_token
 	exterior.cancel_arrival_preparation()
+	_check(presenter.step(presenter.snapshot().token).get("stale", false), "cancelled activity cannot return completed work")
 	_check(not presenter.is_complete(completed_token), "explicit cancellation rejects completion")
 	exterior._initialize_world(world)
 	_check(not exterior._resources_done, "cancelled visit requires presentation work")
@@ -97,12 +111,16 @@ func _run() -> void:
 	# Streaming still retires unloaded visuals and recreates them after reload.
 	exterior._chunks.erase(Vector2i.ZERO)
 	exterior._chunks[Vector2i(50, 50)] = chunk
+	var prior_request: int = exterior._resource_token
+	exterior._service_resources()
+	_check(not exterior._resources_done and not presenter.is_complete(exterior._resource_token)
+		and presenter.step(prior_request).get("stale", false), "changed coverage starts genuinely incomplete request")
 	_drain(exterior)
 	_check(presenter.snapshot().sprites == 0, "streaming after reattachment retires visuals")
 	exterior._chunks.erase(Vector2i(50, 50))
 	exterior._chunks[Vector2i.ZERO] = chunk
 	_drain(exterior)
-	_check(presenter.snapshot().sprites == 2, "streaming reload restores visible sprite")
+	_check(presenter.snapshot().sprites == 3, "streaming reload restores visible sprite")
 
 	var replacement := FixtureWorld.new()
 	var replacement_token: int = exterior._resource_token
@@ -127,6 +145,7 @@ func _run() -> void:
 	_check(renewed.ok and not renewed.reused, "new context token reinitializes the same world")
 	_check(presenter.configure_world(replacement, [CUPRITE, CARBITE]).ok, "retirement fixture configured")
 	presenter.dispose()
+	_check(presenter.step(presenter.snapshot().token).get("stale", false), "disposed presenter cannot return completed work")
 	_check(presenter._world == null and presenter._catalogs.is_empty()
 		and presenter._loaded_chunks.is_empty() and not presenter.is_complete(presenter.snapshot().token),
 		"explicit disposal clears all reusable state")
@@ -144,3 +163,55 @@ func _run() -> void:
 		_check(retained_sprite.get_ref() == null, "actual retirement frees retained child sprites")
 	print("Cuprite/Carbite presentation lifecycle failures: %d" % _failures)
 	quit(0 if _failures == 0 else 1)
+
+
+func _check_completed_steps(presenter: ResourcePresenterV2, token: int) -> void:
+	var before := presenter.snapshot()
+	var registrations: Dictionary = presenter._registrations.duplicate(true)
+	var sprites: Dictionary = presenter._sprites.duplicate()
+	var textures: Dictionary = presenter._textures.duplicate()
+	var cursor := [presenter._ordered, presenter._index, presenter._ids.duplicate()]
+	for repeat in range(4):
+		var result := presenter.step(token)
+		_check(result.ok and result.get("done", false), "repeated completed step remains done")
+		_check(presenter.snapshot() == before and presenter._registrations == registrations
+			and presenter._sprites == sprites and presenter._textures == textures
+			and [presenter._ordered, presenter._index, presenter._ids] == cursor,
+			"terminal completion does not replay registrations or mutate published state")
+
+
+func _test_completed_invalidation(members: Array) -> void:
+	for failure in ["retired", "replaced", "failed"]:
+		var world := FixtureWorld.new()
+		world.members = members.duplicate(true)
+		var presenter := Presenter.new()
+		root.add_child(presenter)
+		_check(presenter.configure_world(world, [FERRITE, CUPRITE, CARBITE]).ok, "three-resource completion fixture")
+		presenter.set_loaded_chunks({Vector2i.ZERO: true})
+		var requested := presenter.request(Rect2(-256, -256, 1536, 1536))
+		var done := false
+		for index in range(1000):
+			var result := presenter.step(requested.token)
+			if not result.ok or result.get("done", false):
+				done = result.ok and result.get("done", false)
+				break
+		_check(done, "invalidation begins with genuinely completed presentation")
+		if not done:
+			presenter.free()
+			continue
+		_check_completed_steps(presenter, requested.token)
+		if failure == "failed":
+			world.fail_query = true
+			var prior: int = requested.token
+			requested = presenter.request(Rect2(-256, -256, 1536, 1536))
+			_check(not presenter.is_complete(requested.token) and presenter.step(prior).get("stale", false),
+				"same-area new request invalidates completed work")
+		else:
+			world.invalidate_resource_generation_v2()
+			if failure == "replaced":
+				_check(world.configure_resource_generation_v2().ok, "replacement generation context ready")
+		var rejected := presenter.step(requested.token)
+		_check(not rejected.ok and presenter.snapshot().sprites == 0
+			and not presenter.is_complete(presenter.snapshot().token),
+			"completed presentation still fails closed after " + failure)
+		presenter.free()

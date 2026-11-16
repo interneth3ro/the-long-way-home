@@ -19,6 +19,14 @@ Initial preparation and arrival receipts bind the current shared resource reques
 completion also requires the presenter's current generation context. Terrain
 publication, loading square, failure handling and transition protections remain.
 
+Completed requests are terminal in `ResourcePresenterV2.step()`: after rejecting
+stale/inactive work, `is_complete(token)` validates completion against the current
+context before returning `done:true` without replaying retained registrations.
+This preserves exterior readiness when a completed cached presenter is reattached
+and serviced during the reveal. New requests, changed coverage, cancellation,
+context retirement/replacement and failures still invalidate completion normally.
+Transition validation, arrival predicates, fades and startup preparation are unchanged.
+
 Ferrite discovery additionally requires `ResourcePresenterV2.is_deposit_presented`:
 the exact sprite must be attached, visible, published, relevant to loaded chunks,
 and bound to the current world/context. `PlanetExterior.is_ferrite_discovery_presented`

@@ -84,6 +84,7 @@ class CarbitePresentationStaticTests(unittest.TestCase):
                     current, before = current.replace(b"\r\n", b"\n"), before.replace(b"\r\n", b"\n")
                 if path == "scenes/world/resource_presenter_v2.gd":
                     current = current.split(b'\n\n# Read-only live presentation availability.', 1)[0]
+                    current = current.replace(b'\tif is_complete(token):\n\t\treturn {"ok": true, "done": true}\n', b'', 1)
                 self.assertEqual(current, before)
 
     def test_shared_gameplay_extension_preserves_authority_and_transactions(self):
