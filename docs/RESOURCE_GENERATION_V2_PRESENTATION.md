@@ -15,6 +15,31 @@ readiness gates, lookahead work and polygon clipping are retired. Existing share
 catalog admission, bounded paged descriptor queries, sprite retention, cancellation
 and reattachment serve all three resources. Construction highlights use deduplicated
 V2 anchor rectangles and the existing shared highlight layer/ghost feedback.
+Construction feedback now reads `ResourcePresenterV2.highlight_page(token, offset)`:
+only an attached, active, completed current-world/context presentation can return
+a page. Each call examines at most 16 completed index entries and returns fresh
+records containing deposit ID, resource ID, exact anchor cells and logical bounds.
+The completed index survives supported detach/reattach, while availability does
+not. Publication, sprite lifetime and loaded illustrated-envelope relevance are
+checked, then logical bounds are checked against attached chunks inclusively.
+Painted overhang alone cannot highlight an off-terrain anchor; crossing anchors
+remain represented. The query performs no generation, texture loading or new work.
+
+The existing exterior highlight layer retains polygons keyed by deposit ID under
+resource groups. Preparation also reconciles while construction is inactive.
+Each update admits at most 16 entries or retires at most 16 nodes; a bounded
+registration-key snapshot starts retirement. Unchanged selection only switches
+visibility and compatibility groups, preserving polygon identity. Streaming hides
+the view until reconciliation completes; cancellation, detachment, failure or
+retired contexts reject availability. A completed new request reconciles retained
+nodes and removes obsolete identities. No generation/presentation budgets change.
+
+These records grant no placement authority: cursor targeting, exact descriptor
+resolution, tickets, compatibility, occupancy and inventory transactions remain
+independently authoritative. Highlight refreshes no longer query resource regions.
+Runtime selection/exploration performance acceptance remains owner-controlled;
+static contracts and authored, unexecuted regressions are not timing evidence.
+
 Initial preparation and arrival receipts bind the current shared resource request;
 completion also requires the presenter's current generation context. Terrain
 publication, loading square, failure handling and transition protections remain.

@@ -45,6 +45,7 @@ func _drain(exterior: PlanetExterior) -> void:
 
 
 func _run() -> void:
+	_test_highlight_budget()
 	var world := FixtureWorld.new()
 	var made := Descriptors.create_location("starting-v2-2", world.seed_value,
 		Vector2i.ZERO, 0, &"cuprite", [Rect2i(-2, -2, 4, 4)])
@@ -66,6 +67,7 @@ func _run() -> void:
 	var presenter: ResourcePresenterV2 = exterior._resource_presenter
 	_check(exterior._resources_done and presenter.snapshot().sprites == 3,
 		"initial presentation completes")
+	_test_highlights(exterior, world)
 	var registrations: Dictionary = presenter._registrations.duplicate(true)
 	var sprites: Dictionary = presenter._sprites.duplicate()
 	var textures: Dictionary = presenter._textures.duplicate()
@@ -75,6 +77,7 @@ func _run() -> void:
 	for visit in range(3):
 		var old_token: int = exterior._resource_token
 		root.remove_child(exterior)
+		_check(not presenter.highlight_page(old_token, 0).ok, "detachment rejects highlight projection")
 		_check(presenter.step(old_token).get("stale", false), "detachment retires old token")
 		_check(presenter.step(presenter.snapshot().token).get("stale", false), "detached activity guard precedes terminal completion")
 		root.add_child(exterior)
@@ -84,6 +87,7 @@ func _run() -> void:
 			exterior._service_resources()
 			_check(exterior._resources_done and presenter.is_complete(exterior._resource_token),
 				"unchanged coverage service preserves completed readiness")
+		_test_highlights(exterior, world)
 		_check_completed_steps(presenter, exterior._resource_token)
 		_check(world.queries == query_count, "reattachment performs no repeated queries")
 		_check(presenter._registrations == registrations and presenter._sprites == sprites
@@ -108,6 +112,7 @@ func _run() -> void:
 	_drain(exterior)
 	_check(exterior._resources_done and world.queries > query_count, "cancelled work restarts safely")
 
+	_check(not presenter.highlight_page(completed_token, 0).ok, "cancelled highlight token rejected")
 	# Streaming still retires unloaded visuals and recreates them after reload.
 	exterior._chunks.erase(Vector2i.ZERO)
 	exterior._chunks[Vector2i(50, 50)] = chunk
@@ -116,10 +121,14 @@ func _run() -> void:
 	_check(not exterior._resources_done and not presenter.is_complete(exterior._resource_token)
 		and presenter.step(prior_request).get("stale", false), "changed coverage starts genuinely incomplete request")
 	_drain(exterior)
+	_drain_highlights(exterior)
+	_check(exterior._highlight_nodes.is_empty(), "streaming retires highlight nodes")
 	_check(presenter.snapshot().sprites == 0, "streaming after reattachment retires visuals")
 	exterior._chunks.erase(Vector2i(50, 50))
 	exterior._chunks[Vector2i.ZERO] = chunk
 	_drain(exterior)
+	_drain_highlights(exterior)
+	_check(exterior._highlight_nodes.size() == 3, "streaming restores all resource highlights")
 	_check(presenter.snapshot().sprites == 3, "streaming reload restores visible sprite")
 
 	var replacement := FixtureWorld.new()
@@ -210,8 +219,112 @@ func _test_completed_invalidation(members: Array) -> void:
 			world.invalidate_resource_generation_v2()
 			if failure == "replaced":
 				_check(world.configure_resource_generation_v2().ok, "replacement generation context ready")
+		_check(not presenter.highlight_page(requested.token, 0).ok, "retired context rejects highlight projection")
 		var rejected := presenter.step(requested.token)
 		_check(not rejected.ok and presenter.snapshot().sprites == 0
 			and not presenter.is_complete(presenter.snapshot().token),
 			"completed presentation still fails closed after " + failure)
 		presenter.free()
+
+
+func _drain_highlights(exterior: PlanetExterior) -> void:
+	for index in range(1000):
+		exterior._flush_highlights()
+		if exterior._highlight_ready:
+			return
+	_check(false, "finite highlight fixture budget")
+
+
+func _test_highlights(exterior: PlanetExterior, world: FixtureWorld) -> void:
+	var presenter: ResourcePresenterV2 = exterior._resource_presenter
+	var token: int = exterior._resource_token
+	var queries: int = world.queries
+	_drain_highlights(exterior)
+	_check(exterior._highlight_nodes.size() == 3 and exterior._highlight_groups.size() == 3,
+		"three resource highlights and crossing anchor")
+	var nodes: Dictionary = exterior._highlight_nodes.duplicate()
+	var definition := preload("res://inventory/extractor.tres") as MachineDefinition
+	for repeat in range(3):
+		exterior.set_construction_definition(definition)
+		exterior._flush_highlights()
+		_check(exterior._highlights.visible, "selection reveals retained highlights")
+		exterior.set_construction_definition(null)
+		_check(not exterior._highlights.visible, "deselection hides without destruction")
+		exterior.set_construction_definition(definition)
+		exterior._flush_highlights()
+		_check(exterior._highlight_nodes == nodes, "reselection retains highlight node identity")
+	_check(world.queries == queries, "highlight selection performs no generation")
+	var page := presenter.highlight_page(token, 0)
+	_check(page.ok and page.entries.size() == 3, "published projection complete")
+	page.entries[0].anchor_cells = Rect2i()
+	page.entries[0].deposit_id = "forged"
+	var fresh := presenter.highlight_page(token, 0)
+	_check(fresh.entries[0].deposit_id != "forged" and fresh.entries[0].anchor_cells.size == Vector2i(4, 4),
+		"highlight projection returns independent data")
+	for entry: Dictionary in fresh.entries:
+		_check(entry.keys().size() == 4 and not entry.has("token") and not entry.has("ticket"),
+			"visual projection grants no placement ticket")
+	# Art can still overlap the loaded chunk while the logical anchor is outside it.
+	var identity: String = fresh.entries[0].deposit_id
+	var original: Dictionary = presenter._registrations[identity].duplicate(true)
+	presenter._registrations[identity].logical_bounds = Rect2(-4096, -4096, 128, 128)
+	_check(presenter.highlight_page(token, 0).entries.size() == 2, "painted overhang alone is not an anchor")
+	presenter._registrations[identity] = original
+	var incompatible := definition.duplicate() as MachineDefinition
+	incompatible.compatible_resources = [&"cuprite"]
+	exterior.set_construction_definition(incompatible)
+	_check(exterior._highlight_groups["cuprite"].visible and not exterior._highlight_groups["ferrite"].visible
+		and not exterior._highlight_groups["carbite"].visible, "compatibility changes group visibility")
+	exterior.set_construction_definition(null)
+
+
+func _test_highlight_budget() -> void:
+	var world := FixtureWorld.new()
+	for index in range(40):
+		var made := Descriptors.create_location("starting-v2-2", world.seed_value,
+			Vector2i.ZERO, index, &"ferrite", [Rect2i((index % 8) * 6, (index / 8) * 6, 4, 4)])
+		world.members.append_array(made.location.deposits)
+	var exterior := EXTERIOR.instantiate() as PlanetExterior
+	root.add_child(exterior)
+	exterior.set_process(false)
+	exterior._state = world
+	exterior._initialize_world(world)
+	var chunk := TerrainChunk.new()
+	exterior.add_child(chunk)
+	exterior._chunks[Vector2i.ZERO] = chunk
+	_drain(exterior)
+	var queries: int = world.queries
+	var previous := 0
+	for index in range(20):
+		exterior._flush_highlights()
+		var count: int = exterior._highlight_nodes.size()
+		_check(count - previous <= exterior.HIGHLIGHT_BUDGET, "highlight reconciliation budget")
+		previous = count
+		if exterior._highlight_ready:
+			break
+	_check(exterior._highlight_ready and previous == 40 and world.queries == queries,
+		"bounded reconciliation includes every published anchor")
+	# A disjoint published set retires old nodes before allocating replacements.
+	var replacements: Array = []
+	for index in range(40):
+		var made := Descriptors.create_location("starting-v2-2", world.seed_value,
+			Vector2i.ZERO, index + 40, &"cuprite", [Rect2i((index % 8) * 6, (index / 8) * 6, 4, 4)])
+		replacements.append_array(made.location.deposits)
+	world.members = replacements
+	exterior._resource_chunks.clear()
+	_drain(exterior)
+	previous = exterior._highlight_nodes.size()
+	for index in range(30):
+		exterior._flush_highlights()
+		var count: int = exterior._highlight_nodes.size()
+		_check(absi(count - previous) <= exterior.HIGHLIGHT_BUDGET and count <= 40,
+			"streaming additions and retirement remain bounded without accumulation")
+		previous = count
+		if exterior._highlight_ready:
+			break
+	_check(exterior._highlight_ready and previous == 40, "replacement set eventually complete")
+	exterior._resource_presenter.cancel(true)
+	exterior._flush_highlights()
+	_check(not exterior._highlights.visible and not exterior._highlight_ready,
+		"retained visuals after cancellation cannot highlight")
+	exterior.free()

@@ -37,10 +37,13 @@ class CupritePresentationLifecycleTests(unittest.TestCase):
         terminal = '\tif is_complete(token):\n\t\treturn {"ok": true, "done": true}\n'
         self.assertEqual(PRESENTER.count(terminal), 1)
         renamed = PRESENTER.replace('var region_owner: Vector2i = _owners.pop_front()', 'var owner: Vector2i = _owners.pop_front()', 1).replace('_source.region(region_owner)', '_source.region(owner)', 1)
+        renamed = renamed.replace('var _highlight_ids: Array = [] # Completed visual index survives supported detachment.\n', '', 1)
+        renamed = renamed.replace('\t_highlight_ids = _ids.duplicate()\n', '', 1)
+        renamed = renamed.replace('\t\t_highlight_ids.clear()\n', '', 1)
         self.assertNotRegex(body(PRESENTER, 'step'), r'\bvar owner\b')
         self.assertIn('_source.region(region_owner)', body(PRESENTER, 'step'))
-        self.assertEqual(renamed.replace(terminal, '', 1), before)
-        for path in ('scenes/world/planet_exterior.gd', 'scenes/main/scene_transition_controller.gd',
+        self.assertEqual(renamed.split('\n\n# Visual feedback only.', 1)[0].replace(terminal, '', 1), before)
+        for path in ('scenes/main/scene_transition_controller.gd',
                      'scenes/interaction/ferrite_inspection.gd', 'scenes/world/planet_world_state.gd',
                      'scenes/main/playthrough_state.gd', 'tools/run-behavioral-tests.ps1',
                      'tools/run-local-tests.ps1', 'tests/behavioral/test_runner.gd'):

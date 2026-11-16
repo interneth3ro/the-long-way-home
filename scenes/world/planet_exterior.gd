@@ -33,6 +33,18 @@ var _resources_done: bool = false
 var _arrival_generation: int = 0
 var _arrival_cancelled: bool = false
 var _highlights_dirty: bool = false
+# Shared presentation owns the data; these nodes are disposable visual feedback.
+const HIGHLIGHT_BUDGET: int = 16
+var _highlight_nodes: Dictionary = {}
+var _highlight_groups: Dictionary = {}
+var _highlight_token: int = -1
+var _highlight_cursor: int = 0
+var _highlight_seen: Dictionary = {}
+var _highlight_retiring: Array = []
+var _highlight_retire_cursor: int = 0
+var _highlight_pending: Array = []
+var _highlight_build_cursor: int = 0
+var _highlight_ready: bool = false
 var _construction_definition: MachineDefinition
 var _effective_renderer: TerrainRenderer = TerrainRenderer.LEGACY
 var _renderer_configured: bool = false
@@ -124,6 +136,7 @@ func _initialize_world(state: PlanetWorldState) -> void:
 	if _highlights == null:
 		_highlights = Node2D.new()
 		_highlights.z_index = -4
+		_highlights.hide()
 		add_child(_highlights)
 	if _generator == null:
 		var overlays: Array[Dictionary] = []
@@ -533,6 +546,7 @@ func terrain_failure() -> Dictionary:
 func _stop_terrain(result: Dictionary) -> void:
 	if _terrain_failure.is_empty():
 		_terrain_failure = result.duplicate(true)
+		_clear_highlights()
 		_cancel_continuous()
 		push_warning("Exterior terrain stopped; restart after correcting input: " + str(result))
 
@@ -630,55 +644,108 @@ func _sync_machines() -> void:
 
 func set_construction_definition(definition: MachineDefinition) -> void:
 	_construction_definition = definition
-	_clear_highlights()
-	_highlights_dirty = definition != null
+	_highlights_dirty = true
+	_update_highlight_visibility()
 
 
 func _clear_highlights() -> void:
+	# Hide immediately on cancellation/failure; reconcile retained nodes on reuse.
+	if _highlights != null:
+		_highlights.hide()
+	_highlight_token = -1
+	_highlight_ready = false
+	_highlights_dirty = true
+
+
+func _update_highlight_visibility() -> void:
 	if _highlights == null:
 		return
-	for child in _highlights.get_children():
-		_highlights.remove_child(child)
-		child.queue_free()
+	_highlights.visible = _highlight_ready and _construction_definition != null \
+		and not _arrival_cancelled and _terrain_failure.is_empty() \
+		and _resource_presenter != null and _resource_presenter.highlight_view_is_current(_resource_token)
+	# At most three resource groups, independent of deposit count.
+	for resource_id: String in _highlight_groups:
+		_highlight_groups[resource_id].visible = _construction_definition != null \
+			and _construction_definition.compatible_resources.has(StringName(resource_id))
 
 
 func _flush_highlights() -> void:
-	if _highlights_dirty and _resources_done and _resource_presenter.is_complete(_resource_token):
-		_highlights_dirty = false
+	if _highlights == null or _resource_presenter == null:
+		return
+	if _arrival_cancelled or not _terrain_failure.is_empty() or not _resources_done \
+			or not _resource_presenter.highlight_view_is_current(_resource_token):
+		_clear_highlights()
+		return
+	if _highlight_token != _resource_token:
+		_highlight_token = _resource_token
+		_highlight_cursor = 0
+		_highlight_seen.clear()
+		_highlight_retiring.clear()
+		_highlight_retire_cursor = 0
+		_highlight_pending.clear()
+		_highlight_build_cursor = 0
+		_highlight_ready = false
+		_highlights.hide()
+	if not _highlight_ready:
 		_refresh_highlights()
+	if _highlights_dirty or _highlight_ready:
+		_highlights_dirty = false
+		_update_highlight_visibility()
 
 
 func _refresh_highlights() -> void:
-	_clear_highlights()
-	if _construction_definition == null or _state == null or _chunks.is_empty():
-		return
-	var context := _state.resource_generation_v2_context()
-	if not context.ok:
-		return
-	# One bounded authority query per attached chunk; deduplicate boundary members.
-	var seen: Dictionary = {}
-	for coordinate: Vector2i in _chunks:
-		var chunk_bounds := Rect2(Vector2(coordinate) * WorldCoordinates.CHUNK_SIZE,
-			Vector2.ONE * WorldCoordinates.CHUNK_SIZE)
-		var result := _state.query_resource_descriptors_v2(chunk_bounds, context.token)
-		if not result.ok:
+	# Prepare while construction is inactive too, including new-game loading.
+	# Selection itself only switches visibility; it never restarts reconciliation.
+	if _highlight_cursor >= 0:
+		var page := _resource_presenter.highlight_page(_resource_token, _highlight_cursor)
+		if not page.ok:
 			_clear_highlights()
-			_stop_terrain(result)
 			return
-		for member: Dictionary in result.deposits:
-			if seen.has(member.deposit_id) or not _construction_definition.compatible_resources.has(
-					StringName(member.resource_type)):
-				continue
-			var bounds := ExtractorAnchorRules.bounds(member.anchor_cells)
-			if not chunk_bounds.intersects(bounds, true):
-				continue
-			seen[member.deposit_id] = true
+		for entry: Dictionary in page.entries:
+			_highlight_seen[entry.deposit_id] = entry
+		_highlight_cursor = page.next
+		if page.done:
+			_highlight_cursor = -1
+			_highlight_retiring = _highlight_nodes.keys()
+			_highlight_pending = _highlight_seen.keys()
+		return
+	# Retire before adding: even interrupted streaming cannot accumulate old nodes.
+	if _highlight_retire_cursor < _highlight_retiring.size():
+		for index in range(HIGHLIGHT_BUDGET):
+			if _highlight_retire_cursor >= _highlight_retiring.size():
+				break
+			var identity: String = _highlight_retiring[_highlight_retire_cursor]
+			_highlight_retire_cursor += 1
+			if not _highlight_seen.has(identity):
+				var highlight: Polygon2D = _highlight_nodes[identity]
+				highlight.get_parent().remove_child(highlight)
+				highlight.free()
+				_highlight_nodes.erase(identity)
+		return
+	for index in range(HIGHLIGHT_BUDGET):
+		if _highlight_build_cursor >= _highlight_pending.size():
+			_highlight_ready = true
+			_highlight_retiring.clear()
+			_highlight_pending.clear()
+			_highlight_seen.clear()
+			return
+		var identity: String = _highlight_pending[_highlight_build_cursor]
+		_highlight_build_cursor += 1
+		var entry: Dictionary = _highlight_seen[identity]
+		var resource_id: String = entry.resource_id
+		if not _highlight_groups.has(resource_id):
+			var group := Node2D.new()
+			_highlights.add_child(group)
+			_highlight_groups[resource_id] = group
+		var bounds: Rect2 = entry.logical_bounds
+		if not _highlight_nodes.has(identity):
 			var highlight := Polygon2D.new()
 			highlight.polygon = PackedVector2Array([bounds.position,
 				Vector2(bounds.end.x, bounds.position.y), bounds.end,
 				Vector2(bounds.position.x, bounds.end.y)])
 			highlight.color = Color(0.63, 0.76, 0.88, 0.18)
-			_highlights.add_child(highlight)
+			_highlight_groups[resource_id].add_child(highlight)
+			_highlight_nodes[identity] = highlight
 
 
 func _distance(a: Vector2i, b: Vector2i) -> int:

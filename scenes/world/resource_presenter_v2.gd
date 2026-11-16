@@ -43,6 +43,7 @@ var _index: int = 0
 var _sprites: Dictionary = {}
 var _textures: Dictionary = {}
 var _exiting: bool = false
+var _highlight_ids: Array = [] # Completed visual index survives supported detachment.
 
 
 # Source is an immutable generator instance; replace it via configure for ANY
@@ -276,6 +277,7 @@ func step(token: int) -> Dictionary:
 			_sprites[identity] = sprite
 		_index += 1
 		return {"ok": true, "done": false}
+	_highlight_ids = _ids.duplicate()
 	_complete = true
 	return {"ok": true, "done": true}
 
@@ -334,6 +336,7 @@ func cancel(keep_visuals: bool = false) -> void:
 	_locations.clear()
 	if not keep_visuals:
 		_registrations.clear()
+		_highlight_ids.clear()
 	_ids.clear()
 	_ordered = false
 	_index = 0
@@ -404,3 +407,36 @@ func is_deposit_presented(identity: String, world: PlanetWorldState, token: RefC
 	return is_instance_valid(sprite) and not sprite.is_queued_for_deletion() \
 		and sprite.get_parent() == self and sprite.is_visible_in_tree() and sprite.texture != null \
 		and _is_loaded(_registrations[identity])
+
+
+# Visual feedback only. Completion fixes the copied index until the next request.
+# No authority descriptors, tickets, textures or mutable registrations escape.
+func highlight_view_is_current(token: int) -> bool:
+	return is_inside_tree() and not _exiting and _world != null and is_complete(token)
+
+
+# At most 16 index entries per call, including entries excluded by loaded coverage.
+func highlight_page(token: int, offset: int) -> Dictionary:
+	if not highlight_view_is_current(token) or offset < 0 or offset > _highlight_ids.size():
+		return {"ok": false}
+	var entries: Array[Dictionary] = []
+	var end := mini(offset + 16, _highlight_ids.size())
+	for index in range(offset, end):
+		var identity: String = _highlight_ids[index]
+		var registration: Dictionary = _registrations[identity]
+		if not is_deposit_presented(identity, _world, _world_token):
+			continue
+		# Artwork overhang alone does not make an off-terrain anchor relevant.
+		# Inclusive bounds retain anchors on either side of a chunk boundary.
+		var bounds: Rect2 = registration.logical_bounds
+		var first := WorldCoordinates.world_to_chunk(bounds.position)
+		var last := WorldCoordinates.world_to_chunk(bounds.end)
+		var loaded := false
+		for y in range(first.y, last.y + 1):
+			for x in range(first.x, last.x + 1):
+				if _loaded_chunks.has(Vector2i(x, y)):
+					loaded = true
+		if loaded:
+			entries.append({"deposit_id": identity, "resource_id": registration.resource_id,
+				"anchor_cells": registration.anchor_cells, "logical_bounds": bounds})
+	return {"ok": true, "entries": entries, "next": end, "done": end == _highlight_ids.size()}

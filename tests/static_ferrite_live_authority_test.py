@@ -50,6 +50,9 @@ class FerriteLiveAuthorityTests(unittest.TestCase):
                 current = (ROOT / path).read_bytes().replace(b'\r\n', b'\n')
                 if path == 'scenes/world/resource_presenter_v2.gd':
                     current = current.split(b'\n\n# Read-only live presentation availability.', 1)[0]
+                    current = current.replace(b'var _highlight_ids: Array = [] # Completed visual index survives supported detachment.\n', b'', 1)
+                    current = current.replace(b'\t_highlight_ids = _ids.duplicate()\n', b'', 1)
+                    current = current.replace(b'\t\t_highlight_ids.clear()\n', b'', 1)
                     current = current.replace(b'\tif is_complete(token):\n\t\treturn {"ok": true, "done": true}\n', b'', 1)
                     current = current.replace(b'var region_owner: Vector2i = _owners.pop_front()', b'var owner: Vector2i = _owners.pop_front()', 1).replace(b'_source.region(region_owner)', b'_source.region(owner)', 1)
                 self.assertEqual(current, old.replace(b'\r\n', b'\n'))
@@ -157,9 +160,10 @@ class FerriteLiveAuthorityTests(unittest.TestCase):
 
     def test_highlights_use_descriptor_anchors(self):
         highlight = body(read('scenes/world/planet_exterior.gd'), '_refresh_highlights')
-        self.assertIn('query_resource_descriptors_v2(', highlight)
-        self.assertIn('ExtractorAnchorRules.bounds(member.anchor_cells)', highlight)
-        self.assertIn('seen.has(member.deposit_id)', highlight)
+        self.assertNotIn('query_resource_descriptors_v2(', highlight)
+        self.assertIn('_resource_presenter.highlight_page(', highlight)
+        self.assertIn('entry.logical_bounds', highlight)
+        self.assertIn('_highlight_nodes.has(identity)', highlight)
         self.assertNotIn('intersect_polygons', highlight)
 
     def test_cutover_projection_rejects_unrelated_scene_and_story_changes(self):

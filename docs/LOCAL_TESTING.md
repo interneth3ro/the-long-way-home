@@ -1070,3 +1070,32 @@ acceptance should check:
 
 Static PASS establishes no Godot parsing, import, headless, graphical, gameplay or
 performance result. This checklist grants no execution authority.
+
+
+### Retained construction highlights (PR #213, pending merge)
+
+The owner reports completion of the earlier three-resource gameplay acceptance
+checklist and resolution of the console issues. The subsequent recurring hotbar
+selection hitch has a focused source correction; performance acceptance is pending.
+Visual highlights now consume retained shared-presenter registrations through a
+context-validated, copied 16-entry page. They never generate resource regions or
+grant placement tickets. Repeated selection preserves keyed polygon nodes;
+streaming reconciles additions/removals across bounded updates. Placement remains
+independently authoritative through the unchanged V2 targeting/transaction path.
+
+`tests/static_construction_highlights_test.py` checks the projection, generation-free
+selection, reconciliation bounds and preservation of authority/generation code.
+The existing `tests/cuprite_presentation_lifecycle_test.gd` authors three-resource
+and boundary coverage, copied data, retained node identity, deselect/reselect,
+compatibility, streaming retirement/reload, detach/revisit, invalid contexts and
+bounded multi-page reconciliation. It remains unexecuted; no runner, dispatcher,
+manifest, permissions or execution grant changes.
+
+Owner graphical acceptance should repeat hotbar `1` selection/cancellation with
+unchanged terrain, then switch compatible definitions, rotate and deploy/recover
+at Ferrite/Cuprite/Carbite anchors. Confirm occupied/incompatible rejection and
+unchanged production. Check chunk-edge anchors, ordinary and guaranteed deposits,
+streaming while construction is active, first exit and cached revisits. Compare
+CPU frame spikes on repeated selection and normal exploration. Any automated
+fixture execution or temporary profiling instrumentation requires separately
+reviewed authorization; this documentation grants none.
