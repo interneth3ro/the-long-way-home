@@ -1050,6 +1050,11 @@ acceptance should check:
    retention and construction anchor feedback.
 3. Examine any starting Ferrite anchor: existing discovery musing/objective and
    subsequent recovery progress exactly once, without an authored legacy deposit.
+   Before its sprite publishes, after unloading/cancellation and with retired or
+   replaced contexts, the interaction must be unavailable. Re-presenting the same
+   valid deposit restores it unless discovery already completed. Check unchanged
+   detector range, retained nodes and ship/exterior revisits. These assertions are
+   authored in the existing gameplay fixture and remain unexecuted.
 4. Ticketed exact anchors in all rotations, occupied/incompatible rejection, range,
    solid obstacles and player-footprint checks without item loss.
 5. Three canonical ores at one/second, partial cycles, 20-item full-buffer pause,

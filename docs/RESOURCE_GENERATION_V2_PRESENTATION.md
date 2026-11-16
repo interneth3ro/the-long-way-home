@@ -19,6 +19,17 @@ Initial preparation and arrival receipts bind the current shared resource reques
 completion also requires the presenter's current generation context. Terrain
 publication, loading square, failure handling and transition protections remain.
 
+Ferrite discovery additionally requires `ResourcePresenterV2.is_deposit_presented`:
+the exact sprite must be attached, visible, published, relevant to loaded chunks,
+and bound to the current world/context. `PlanetExterior.is_ferrite_discovery_presented`
+checks starting Ferrite membership and exterior lifetime before delegating this
+read-only query. It gates the existing interaction through a callable; it grants
+no resource authority. A retained sprite remains available during a new streaming
+request, without waiting for unrelated sprites to finish. Unloading, cancellation,
+detachment, presentation failure or context retirement disables discovery; valid
+republication/arrival restores it unless discovery already completed. The three
+interaction nodes stay attached, and detector range and arrival readiness are unchanged.
+
 The [PR #212 isolated preview](../scenes/experiments/resource_generation_v2/ferrite_inspection.tscn)
 remains available for artwork inspection. Earlier sections below retain their
 historical scope; unchanged-legacy and missing-catalog statements no longer describe

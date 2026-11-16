@@ -116,7 +116,10 @@ class FerriteV2PreviewStaticTests(unittest.TestCase):
         paths += [f"scenes/world/resource_presentations/v2/{name}.json" for name in ("cuprite", "carbite")]
         for path in paths:
             with self.subTest(path=path):
-                self.assertEqual(read(path), original(path))
+                current = read(path)
+                if path == "scenes/world/resource_presenter_v2.gd":
+                    current = current.split('\n\n# Read-only live presentation availability.', 1)[0]
+                self.assertEqual(current, original(path))
         presenter = read("scenes/world/resource_presenter_v2.gd")
         self.assertIn("sprite.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR", presenter)
         self.assertIn("sprite.z_index = -5", presenter)

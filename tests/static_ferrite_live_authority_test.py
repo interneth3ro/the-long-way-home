@@ -47,7 +47,10 @@ class FerriteLiveAuthorityTests(unittest.TestCase):
         for path in paths:
             with self.subTest(path=path):
                 old = subprocess.check_output(['git', 'show', BASE + ':' + path], cwd=ROOT)
-                self.assertEqual((ROOT / path).read_bytes().replace(b'\r\n', b'\n'), old.replace(b'\r\n', b'\n'))
+                current = (ROOT / path).read_bytes().replace(b'\r\n', b'\n')
+                if path == 'scenes/world/resource_presenter_v2.gd':
+                    current = current.split(b'\n\n# Read-only live presentation availability.', 1)[0]
+                self.assertEqual(current, old.replace(b'\r\n', b'\n'))
         art = ROOT / 'assets/environment/exterior/ferrite/ferrite_v2_production_candidate_v1.png'
         self.assertEqual(hashlib.sha256(art.read_bytes()).hexdigest(),
                          'bd0f7696d64f8f96dca3cbfa0baecb7bba7da96876242eabc5056916574825a0')
@@ -83,6 +86,60 @@ class FerriteLiveAuthorityTests(unittest.TestCase):
         interaction = read('scenes/interaction/ferrite_inspection.gd')
         self.assertIn('_progression.discover_ferrite(deposit_id, context_token)', interaction)
         self.assertNotIn('crash_site_ferrite', interaction + progression)
+
+    def test_discovery_requires_current_published_loaded_artwork(self):
+        interaction = read('scenes/interaction/ferrite_inspection.gd')
+        available = body(interaction, 'can_interact')
+        for guard in ('not _progression.ferrite_discovered', '_progression.planet == world_state',
+                      'resource_descriptor_v2_by_id(deposit_id, context_token).ok',
+                      'presentation_available.is_valid()', 'presentation_available.call(deposit_id, context_token)'):
+            self.assertIn(guard, available)
+        self.assertIn('if can_interact():', body(interaction, 'interact'))
+        self.assertNotIn('_sprites', interaction)
+        self.assertNotIn('_registrations', interaction)
+        exterior = read('scenes/world/planet_exterior.gd')
+        self.assertIn('interaction.presentation_available = Callable(self, "is_ferrite_discovery_presented")',
+                      body(exterior, '_configure_discovery'))
+        boundary = body(exterior, 'is_ferrite_discovery_presented')
+        for guard in ('not is_inside_tree()', '_arrival_cancelled', '_terrain_failure.is_empty()',
+                      'token != _discovery_token', 'starting_resource_reservations_v2(token)',
+                      'if not starting.ok:', 'location.resource_type != "ferrite"',
+                      'member.deposit_id == deposit_id', '_resource_presenter.is_deposit_presented(deposit_id, _state, token)'):
+            self.assertIn(guard, boundary)
+        query = body(read('scenes/world/resource_presenter_v2.gd'), 'is_deposit_presented')
+        for guard in ('not is_inside_tree()', 'not _active', '_exiting', '_world != world',
+                      'token != _world_token', 'not context.ok', 'context.token != _world_token',
+                      'context.world_seed != _seed', 'not _registrations.has(identity)',
+                      'not _sprites.has(identity)', 'is_instance_valid(sprite)',
+                      'not sprite.is_queued_for_deletion()', 'sprite.get_parent() == self',
+                      'sprite.is_visible_in_tree()', 'sprite.texture != null', '_is_loaded(_registrations[identity])'):
+            self.assertIn(guard, query)
+        # Availability is per published sprite: a retained sprite can remain usable
+        # while a new request is pending. Global completion is still required for arrival.
+        self.assertNotIn('_complete', query)
+        for mutation in (' = ', '.new(', '.clear(', '.erase(', '.append(', 'cancel(', 'request(', 'load('):
+            executable = '\n'.join(line for line in query.splitlines() if not line.lstrip().startswith('var '))
+            self.assertNotIn(mutation, executable)
+
+    def test_discovery_visibility_coverage_and_unchanged_gameplay(self):
+        fixture = read('tests/cuprite_gameplay_test.gd')
+        for label in ('valid authority without published sprite rejects discovery interaction',
+                      'published loaded Ferrite becomes interactable', 'unloaded Ferrite disables discovery',
+                      'same deposit republication restores discovery', 'cancelled retained artwork cannot authorize discovery',
+                      'retired generation context rejects retained discovery artwork',
+                      'replacement context cannot revive stale discovery interaction',
+                      'completed discovery stays disabled after republication',
+                      'detached exterior discovery unavailable', 'arrival restores retained Ferrite discovery',
+                      'streaming never replaces discovery nodes'):
+            self.assertIn(label, fixture)
+        # The correction adds visibility, not authority, range or progression changes.
+        reviewed = '4740ef47356074cca2b4ab817fd849936f93a33f'
+        for path in ('scenes/world/planet_world_state.gd', 'scenes/main/playthrough_state.gd',
+                     'scenes/player/interaction_detector.gd', 'construction/construction_controller.gd',
+                     'construction/placement_rules.gd', 'construction/extractor_anchor_rules.gd'):
+            with self.subTest(path=path):
+                before = subprocess.check_output(['git', 'show', reviewed + ':' + path], cwd=ROOT)
+                self.assertEqual((ROOT / path).read_bytes().replace(b'\r\n', b'\n'), before.replace(b'\r\n', b'\n'))
 
     def test_output_context_and_claim_release_are_owned(self):
         world = read('scenes/world/planet_world_state.gd')

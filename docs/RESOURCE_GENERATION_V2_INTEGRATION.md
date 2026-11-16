@@ -41,6 +41,11 @@ requires exact membership in current starting reservations before setting the
 existing flag and emitting the existing signal. Dialogue, objective and later
 recovery/progression handlers are unchanged. Reattachment reuses the interactions;
 there is no tutorial deposit, fabricated identity, waypoint or second resource view.
+The interaction also requires the corresponding published, loaded sprite through
+the exterior's read-only presentation boundary. Invisible/unloaded, cancelled or
+retired presentations cannot trigger discovery; republication restores availability
+for an undiscovered deposit. This supplements V2 authority and preserves one-shot
+progression and the existing detector range; no interaction nodes stream in or out.
 Start a new game: no record conversion, relocation, refund, save migration or
 session compatibility system is implemented.
 

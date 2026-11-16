@@ -387,3 +387,18 @@ func _notification(what: int) -> void:
 		# Actual retirement releases retained context/caches; Node frees children.
 		_exiting = true
 		dispose()
+
+
+# Read-only live presentation availability. Never grants deposit or mining authority.
+func is_deposit_presented(identity: String, world: PlanetWorldState, token: RefCounted) -> bool:
+	if not is_inside_tree() or not _active or _exiting or world == null \
+			or _world != world or token != _world_token:
+		return false
+	var context := world.resource_generation_v2_context()
+	if not context.ok or context.token != _world_token or context.world_seed != _seed \
+			or not _registrations.has(identity) or not _sprites.has(identity):
+		return false
+	var sprite: Sprite2D = _sprites[identity]
+	return is_instance_valid(sprite) and not sprite.is_queued_for_deletion() \
+		and sprite.get_parent() == self and sprite.is_visible_in_tree() and sprite.texture != null \
+		and _is_loaded(_registrations[identity])

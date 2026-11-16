@@ -46,6 +46,8 @@ func _run() -> void:
 	for resource_type in ["ferrite", "cuprite", "carbite"]:
 		await _test_gameplay(resource_type)
 	_test_discovery()
+	for ending in ["discovered", "retired"]:
+		_test_discovery_presentation(ending)
 	await _test_exterior_revisit()
 	_test_live_window_requests()
 	for resource_type in ["ferrite", "cuprite", "carbite"]:
@@ -477,11 +479,16 @@ func _test_exterior_revisit() -> void:
 	var presenter: ResourcePresenterV2 = exterior._resource_presenter
 	var sprites: Dictionary = presenter._sprites.duplicate()
 	var interactions := 0
+	var discovery_nodes: Array = []
 	for child in exterior.get_node("GroundObjects").get_children():
 		if child.get_script() == preload("res://scenes/interaction/ferrite_inspection.gd"):
 			interactions += 1
+			discovery_nodes.append(child)
+			_check(child.can_interact(), "initial exterior published Ferrite interaction ready")
 	_check(interactions == 3, "three genuine Ferrite interactions without authored duplicate")
 	root.remove_child(exterior)
+	for discovery in discovery_nodes:
+		_check(not discovery.can_interact(), "detached exterior discovery unavailable")
 	_check(not exterior.preparation_is_ready(prepared), "detached startup receipt rejected")
 	root.add_child(exterior)
 	var player := CharacterBody2D.new()
@@ -490,10 +497,92 @@ func _test_exterior_revisit() -> void:
 	var arrived: Dictionary = await exterior.prepare_for_arrival(player, progression.planet)
 	_check(exterior.arrival_is_ready(arrived) and exterior._resource_presenter == presenter,
 		"cached exterior arrival retains shared presenter")
+	for discovery in discovery_nodes:
+		_check(discovery.can_interact(), "arrival restores retained Ferrite discovery")
 	for identity in sprites:
 		if presenter._sprites.has(identity):
 			_check(presenter._sprites[identity] == sprites[identity], "revisit reuses resource sprites")
 	exterior.cancel_arrival_preparation()
 	_check(not exterior.arrival_is_ready(arrived), "cancelled resource receipt rejected")
+	for discovery in discovery_nodes:
+		_check(not discovery.can_interact(), "cancelled exterior discovery unavailable")
+	exterior.free()
+	progression.free()
+
+
+# Authored only: actual shared sprite publication plus the real interaction path.
+func _test_discovery_presentation(ending: String) -> void:
+	var progression := PlaythroughState.new()
+	progression.world_seed = 42
+	root.add_child(progression)
+	var exterior = preload("res://scenes/world/planet_exterior.tscn").instantiate()
+	exterior.process_mode = Node.PROCESS_MODE_DISABLED
+	root.add_child(exterior)
+	exterior._state = progression.planet
+	exterior._initialize_world(progression.planet)
+	var discoveries: Array = []
+	for child in exterior.get_node("GroundObjects").get_children():
+		if child.get_script() == preload("res://scenes/interaction/ferrite_inspection.gd"):
+			discoveries.append(child)
+	_check(discoveries.size() == 3, "discovery nodes remain attached before presentation")
+	if discoveries.size() != 3:
+		exterior.free()
+		progression.free()
+		return
+	var inspection = discoveries[0]
+	var context := progression.planet.resource_generation_v2_context()
+	var identity: String = inspection.deposit_id
+	var resolved := progression.planet.resource_descriptor_v2_by_id(identity, context.token)
+	_check(resolved.ok and not inspection.can_interact(), "valid authority without published sprite rejects discovery interaction")
+	inspection.interact()
+	_check(not progression.ferrite_discovered, "invisible interaction cannot advance discovery")
+	var presenter: ResourcePresenterV2 = exterior._resource_presenter
+	var area := Rules.bounds(resolved.descriptor.anchor_cells).grow(256.0)
+	var chunk := WorldCoordinates.world_to_chunk(area.get_center())
+	var loaded := {chunk: true}
+	presenter.set_loaded_chunks(loaded)
+	var requested := presenter.request(area)
+	_check(not inspection.can_interact(), "request alone cannot authorize discovery")
+	_check(_finish_presentation(presenter, requested.token) and inspection.can_interact(),
+		"published loaded Ferrite becomes interactable")
+	# Retained valid artwork remains usable while the next bounded request is pending.
+	requested = presenter.request(area)
+	_check(inspection.can_interact(), "retained loaded Ferrite remains available during streaming")
+	_check(_finish_presentation(presenter, requested.token), "retained request completes")
+	presenter.set_loaded_chunks({})
+	_check(not inspection.can_interact(), "unloaded Ferrite disables discovery")
+	inspection.interact()
+	_check(not progression.ferrite_discovered, "unloaded interaction cannot advance discovery")
+	presenter.set_loaded_chunks(loaded)
+	requested = presenter.request(area)
+	_check(not inspection.can_interact(), "loaded registration without republished sprite stays unavailable")
+	_check(_finish_presentation(presenter, requested.token) and inspection.can_interact(),
+		"same deposit republication restores discovery")
+	presenter.cancel(true)
+	_check(not inspection.can_interact(), "cancelled retained artwork cannot authorize discovery")
+	requested = presenter.request(area)
+	_check(_finish_presentation(presenter, requested.token) and inspection.can_interact(),
+		"restarted presentation restores discovery")
+	inspection.context_token = RefCounted.new()
+	_check(not inspection.can_interact(), "foreign discovery token rejects presented artwork")
+	inspection.context_token = context.token
+	_check(inspection.can_interact(), "current discovery token restores availability")
+	_check(not exterior.is_ferrite_discovery_presented(identity + ":forged", context.token),
+		"presentation cannot fabricate starting Ferrite identity")
+	if ending == "discovered":
+		inspection.interact()
+		_check(progression.ferrite_discovered and not inspection.can_interact(), "presented discovery completes once")
+		presenter.set_loaded_chunks({})
+		presenter.set_loaded_chunks(loaded)
+		requested = presenter.request(area)
+		_check(_finish_presentation(presenter, requested.token) and not inspection.can_interact(),
+			"completed discovery stays disabled after republication")
+	else:
+		progression.planet.invalidate_resource_generation_v2()
+		_check(not inspection.can_interact(), "retired generation context rejects retained discovery artwork")
+		progression.planet.configure_resource_generation_v2()
+		_check(not inspection.can_interact(), "replacement context cannot revive stale discovery interaction")
+	_check(discoveries[0] == inspection and inspection.get_parent() == exterior.get_node("GroundObjects"),
+		"streaming never replaces discovery nodes")
 	exterior.free()
 	progression.free()

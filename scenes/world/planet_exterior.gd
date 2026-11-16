@@ -165,6 +165,7 @@ func _configure_discovery() -> void:
 			interaction.deposit_id = member.deposit_id
 			interaction.context_token = context.token
 			interaction.world_state = _state
+			interaction.presentation_available = Callable(self, "is_ferrite_discovery_presented")
 			interaction.interaction_prompt = "E — Examine mineral deposit"
 			interaction.collision_layer = 1
 			interaction.collision_mask = 0
@@ -179,6 +180,23 @@ func _configure_discovery() -> void:
 			interaction.add_child(shape)
 			$GroundObjects.add_child(interaction)
 	_discovery_token = context.token
+
+
+# Visibility supplements the existing authoritative descriptor/discovery validation.
+func is_ferrite_discovery_presented(deposit_id: String, token: RefCounted) -> bool:
+	if not is_inside_tree() or _arrival_cancelled or not _terrain_failure.is_empty() \
+			or _state == null or _resource_presenter == null or token != _discovery_token:
+		return false
+	var starting := _state.starting_resource_reservations_v2(token)
+	if not starting.ok:
+		return false
+	for location: Dictionary in starting.locations:
+		if location.resource_type != "ferrite":
+			continue
+		for member: Dictionary in location.deposits:
+			if member.deposit_id == deposit_id:
+				return _resource_presenter.is_deposit_presented(deposit_id, _state, token)
+	return false
 
 
 # Player-independent startup contract. The caller stages this visible in-tree

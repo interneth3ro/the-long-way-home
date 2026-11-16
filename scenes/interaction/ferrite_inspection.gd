@@ -3,6 +3,7 @@ extends WorldInteractable
 var deposit_id: String
 var context_token: RefCounted
 var world_state: PlanetWorldState
+var presentation_available: Callable
 
 @onready var _progression := get_tree().get_first_node_in_group(&"playthrough") as PlaythroughState
 
@@ -16,7 +17,8 @@ func _ready() -> void:
 func can_interact() -> bool:
 	return interaction_enabled and _progression != null and not _progression.ferrite_discovered \
 		and _progression.planet == world_state and world_state != null \
-		and world_state.resource_descriptor_v2_by_id(deposit_id, context_token).ok
+		and world_state.resource_descriptor_v2_by_id(deposit_id, context_token).ok \
+		and presentation_available.is_valid() and presentation_available.call(deposit_id, context_token)
 
 
 func interact() -> String:
