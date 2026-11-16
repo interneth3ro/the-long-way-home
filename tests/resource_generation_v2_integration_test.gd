@@ -112,8 +112,6 @@ func _world_contract(seed_value: int) -> void:
 	var after := world.resource_generation_v2_context()
 	_check(after.token == token and world.resource_descriptor_v2_by_id(first.deposit_id, token).descriptor == first,
 		"streaming-independent resource identity")
-	var legacy_ids := world.query_deposit_descriptors(Rect2(-1000, -1000, 2000, 2000))
-	var legacy_intro := world.get_deposits()[0]
 	var machines_before := world.get_machines()
 	var revision_before := world.revision
 	var failed := world.configure_resource_generation_v2("unsupported")
@@ -131,9 +129,7 @@ func _world_contract(seed_value: int) -> void:
 		"failed replacement exposes no descriptors")
 	_check_failure(world.query_resource_descriptors_v2(Rect2(0, 0, -1, 1), null), "unavailable",
 		"unavailable precedes invalid query and token")
-	_check(world.is_resource_generation_ready() and world.get_deposit(legacy_intro.deposit_id) == legacy_intro \
-		and world.query_deposit_descriptors(Rect2(-1000, -1000, 2000, 2000)) == legacy_ids,
-		"preservation of legacy Ferrite behavior")
+	_check(not world.is_resource_generation_v2_ready(), "no legacy readiness after retirement")
 	var replacement := world.configure_resource_generation_v2()
 	_check(replacement.ok and replacement.token != token, "changed-context invalidation")
 	_check(world.query_resource_descriptors_v2(Rect2(), token).code == "stale_context" \
@@ -142,8 +138,6 @@ func _world_contract(seed_value: int) -> void:
 	_check(world.get_machines() == machines_before and world.revision == revision_before \
 		and world.terrain_color(Vector2i(9, 9), Color.WHITE) == Color.RED \
 		and world.is_detail_removed(Vector2i(8, 8)), "unrelated authoritative state preserved")
-	_check(world.deposit_at(Ordinary.anchor_bounds(first).get_center(), &"cuprite") == null,
-		"v2 gameplay remains inactive")
 	world.invalidate_resource_generation_v2()
 	_check(not world.is_resource_generation_v2_ready(), "teardown releases context")
 	_check_failure(world.resource_generation_v2_context(), "unavailable", "teardown has no token")

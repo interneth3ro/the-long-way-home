@@ -1,5 +1,76 @@
 # Resource Generation v2 presentation and Cuprite inspection
 
+## Three-resource live cutover (pending merge)
+
+`codex/ferrite-v2-live-authority` configures the existing `ResourcePresenterV2`
+with Ferrite, Cuprite and Carbite. The live Ferrite definition references
+[`ferrite.json`](../scenes/world/resource_presentations/v2/ferrite.json).
+PR #212's approved 1536x1024 RGBA image is unchanged, SHA-256
+`bd0f7696d64f8f96dca3cbfa0baecb7bba7da96876242eabc5056916574825a0`.
+Its scale 0.225, offset (0,16), linear filtering, z-index -5 and 128x128 logical
+anchor are unchanged. Cuprite and Carbite artwork/catalogs are unchanged.
+
+The dedicated legacy presenter, authored Ferrite sprite, legacy request token,
+readiness gates, lookahead work and polygon clipping are retired. Existing shared
+catalog admission, bounded paged descriptor queries, sprite retention, cancellation
+and reattachment serve all three resources. Construction highlights use deduplicated
+V2 anchor rectangles and the existing shared highlight layer/ghost feedback.
+Construction feedback now reads `ResourcePresenterV2.highlight_page(token, offset)`:
+only an attached, active, completed current-world/context presentation can return
+a page. Each call examines at most 16 completed index entries and returns fresh
+records containing deposit ID, resource ID, exact anchor cells and logical bounds.
+The completed index survives supported detach/reattach, while availability does
+not. Publication, sprite lifetime and loaded illustrated-envelope relevance are
+checked, then logical bounds are checked against attached chunks inclusively.
+Painted overhang alone cannot highlight an off-terrain anchor; crossing anchors
+remain represented. The query performs no generation, texture loading or new work.
+
+The existing exterior highlight layer retains polygons keyed by deposit ID under
+resource groups. Preparation also reconciles while construction is inactive.
+Each update admits at most 16 entries or retires at most 16 nodes; a bounded
+registration-key snapshot starts retirement. Unchanged selection only switches
+visibility and compatibility groups, preserving polygon identity. Streaming hides
+the view until reconciliation completes; cancellation, detachment, failure or
+retired contexts reject availability. A completed new request reconciles retained
+nodes and removes obsolete identities. No generation/presentation budgets change.
+
+These records grant no placement authority: cursor targeting, exact descriptor
+resolution, tickets, compatibility, occupancy and inventory transactions remain
+independently authoritative. Highlight refreshes no longer query resource regions.
+Runtime selection/exploration performance acceptance remains owner-controlled;
+static contracts and authored, unexecuted regressions are not timing evidence.
+
+Initial preparation and arrival receipts bind the current shared resource request;
+completion also requires the presenter's current generation context. Terrain
+publication, loading square, failure handling and transition protections remain.
+
+Completed requests are terminal in `ResourcePresenterV2.step()`: after rejecting
+stale/inactive work, `is_complete(token)` validates completion against the current
+context before returning `done:true` without replaying retained registrations.
+This preserves exterior readiness when a completed cached presenter is reattached
+and serviced during the reveal. New requests, changed coverage, cancellation,
+context retirement/replacement and failures still invalidate completion normally.
+Transition validation, arrival predicates, fades and startup preparation are unchanged.
+
+Ferrite discovery additionally requires `ResourcePresenterV2.is_deposit_presented`:
+the exact sprite must be attached, visible, published, relevant to loaded chunks,
+and bound to the current world/context. `PlanetExterior.is_ferrite_discovery_presented`
+checks starting Ferrite membership and exterior lifetime before delegating this
+read-only query. It gates the existing interaction through a callable; it grants
+no resource authority. A retained sprite remains available during a new streaming
+request, without waiting for unrelated sprites to finish. Unloading, cancellation,
+detachment, presentation failure or context retirement disables discovery; valid
+republication/arrival restores it unless discovery already completed. The three
+interaction nodes stay attached, and detector range and arrival readiness are unchanged.
+
+The [PR #212 isolated preview](../scenes/experiments/resource_generation_v2/ferrite_inspection.tscn)
+remains available for artwork inspection. Earlier sections below retain their
+historical scope; unchanged-legacy and missing-catalog statements no longer describe
+this branch. See [authority and legacy disposition](RESOURCE_GENERATION_V2_INTEGRATION.md#ferrite-live-authority-cutover-pending-merge).
+Godot parsing, graphics, streaming/revisits and gameplay acceptance remain unverified.
+
+
+
 The earlier sections below record the isolated PR #190 implementation.
 [Milestone 8](#milestone-8-normal-gameplay-pending-merge) supersedes its lack of normal gameplay wiring.
 The [Carbite production integration](#carbite-production-integration-feature-branch-pending-merge)

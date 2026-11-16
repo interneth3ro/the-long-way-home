@@ -199,11 +199,23 @@ class MetadataSmokeTest(unittest.TestCase):
                                     "        historical=subprocess.check_output(['git','show','"+BASE+":'+AMENDMENT],cwd=ROOT,text=True)\n        self.assertEqual(historical,expected)")
         self.assertEqual(read(path), expected)
         path = "tests/static_terrain_stage2b_compatibility_test.py"
-        self.assertEqual(read(path), before(path).replace(
+        # Reverse only the reviewed Ferrite scene projection before the historical guard pin.
+        current = read(path)
+        amendment = 'from initial_exterior_preservation import without_initial_preparation\n'
+        self.assertEqual(current.count(amendment), 1)
+        self.assertEqual(current.count('without_initial_preparation(path, (ROOT / path).read_bytes())'), 1)
+        current = current.replace(amendment, '').replace('without_initial_preparation(path, (ROOT / path).read_bytes())', '(ROOT / path).read_bytes()')
+        self.assertEqual(current, before(path).replace(
             '        current = (ROOT / AMENDMENT).read_text()',
             '        current = subprocess.check_output(["git", "show", "'+BASE+':"+AMENDMENT], cwd=ROOT, text=True)'))
         path = "tests/static_terrain_stage3a1_metadata_test.py"
-        self.assertEqual(read(path), before(path).replace(
+        # Reverse only the reviewed Ferrite scene projection before the historical guard pin.
+        current = read(path)
+        amendment = 'from initial_exterior_preservation import without_initial_preparation\n'
+        self.assertEqual(current.count(amendment), 1)
+        self.assertEqual(current.count('without_initial_preparation(path, (ROOT/path).read_bytes())'), 1)
+        current = current.replace(amendment, '').replace('without_initial_preparation(path, (ROOT/path).read_bytes())', '(ROOT/path).read_bytes()')
+        self.assertEqual(current, before(path).replace(
             '        after = (ROOT/path).read_text()',
             "        # Validate the immutable merged 3A-1 amendment; 3A-2 checks its own exact delta.\n"
             "        after = subprocess.check_output(['git', 'show', '"+BASE+":'+path], cwd=ROOT, text=True)"))

@@ -105,7 +105,7 @@ class InitialExteriorTests(unittest.TestCase):
         for marker in ('_chunks.has(coordinate)', 'is_instance_valid(_chunks[coordinate])',
                        'get_parent() == self', 'is_inside_tree()', 'state_revision == _state.revision',
                        '_ground_is_current(coordinate)', 'not _tint_dirty',
-                       'matches_context(_state)', 'required_ready(_ferrite_token)'):
+                       '_resources_done', 'is_complete(_resource_token)'):
             self.assertIn(marker, live)
         self.assertIn('_initial_completed(_center) == INITIAL_CHUNK_COUNT + 1',
                       function(E, 'preparation_is_ready'))
@@ -118,7 +118,7 @@ class InitialExteriorTests(unittest.TestCase):
                        'result.get("revision") == _state.revision', 'not _arrival_cancelled',
                        'not _preparing', '_terrain_failure.is_empty()', '_pending.is_empty()',
                        '_continuous_job.is_empty()', '_ground_state == _state',
-                       'result.get("ferrite_token", -1) == _ferrite_token'):
+                       'result.get("resource_token", -1) == _resource_token'):
             self.assertIn(marker, check)
         prep = function(E, 'prepare_initial_neighborhood')
         self.assertLess(prep.index('if generation != _arrival_generation:'), prep.index('_preparing = false'))
@@ -180,7 +180,7 @@ class InitialExteriorTests(unittest.TestCase):
     def test_current_resource_readiness_cancellation_and_shared_setup(self):
         # Bind completion to the current resource phase, not an earlier source snapshot.
         completed = function(E, '_initial_completed')
-        resource_phase = completed[completed.index('\tif _ferrite_presenter != null and'):]
+        resource_phase = completed[completed.index('\tif _resource_presenter != null and'):]
         self.assertIn('and _resources_done', resource_phase)
         self.assertIn('and _resource_presenter.is_complete(_resource_token):', resource_phase)
         self.assertLess(resource_phase.index('_resource_presenter.is_complete(_resource_token):'),
@@ -217,7 +217,7 @@ class InitialExteriorTests(unittest.TestCase):
 
     def test_real_progress_and_existing_cooperative_work_paths(self):
         prep = function(E, 'prepare_initial_neighborhood')
-        for marker in ('_service_ferrite(true)', '_generate_budget()', '_flush_highlights()',
+        for marker in ('_service_resources()', '_generate_budget()', '_flush_highlights()',
                        'preparation_progress.emit(_initial_completed(center), INITIAL_CHUNK_COUNT + 1)',
                        'await get_tree().process_frame'):
             self.assertIn(marker, prep)
@@ -225,8 +225,10 @@ class InitialExteriorTests(unittest.TestCase):
         self.assertNotIn('create_timer', prep)
         self.assertIn('initial_preparation_progress.emit(completed, total)', function(C, '_report_initial_progress'))
         # Cache visits revalidate resource ownership, using existing sprites/textures.
-        ferrite = (ROOT / 'scenes/world/ferrite_deposit_presenter.gd').read_text()
-        self.assertIn('return not _sprites.has(identity)', function(ferrite, 'step'))
+        presenter = (ROOT / 'scenes/world/resource_presenter_v2.gd').read_text()
+        self.assertIn('if matches_world(world, definitions):', function(presenter, 'configure_world'))
+        self.assertIn('"reused": true', function(presenter, 'configure_world'))
+
 
 
 if __name__ == '__main__':

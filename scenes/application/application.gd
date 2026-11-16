@@ -93,7 +93,7 @@ func _start_new_game() -> void:
 	add_child(_session)
 	# MainV2 completes interior setup synchronously. Exterior work has its own
 	# explicit completion contract; a global pause never authorizes activation.
-	if not _session.get_node("PlaythroughState").planet.is_resource_generation_ready():
+	if not _session.get_node("PlaythroughState").planet.is_resource_generation_v2_ready():
 		_fail_startup("Ship initialization failed. Return to Main Menu to start a new session.")
 		return
 	var transitions := _session.get_node("SceneTransitions") as SceneTransitionController

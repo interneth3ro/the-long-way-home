@@ -55,8 +55,7 @@ func _run() -> void:
 	for turn in range(4):
 		_check(state.extractor_anchor_rejection_v2(ticket, EXTRACTOR, cell, turn).is_empty(), "exact rotated 4x4 alignment")
 		var selected := state.extractor_target_v2(center, EXTRACTOR, turn)
-		if state.deposit_at(center, &"ferrite") == null:
-			_check(selected.ticket == ticket and selected.cell == cell, "live authoritative snapping")
+		_check(selected.ticket == ticket and selected.cell == cell, "live authoritative snapping")
 	var restricted := EXTRACTOR.duplicate() as MachineDefinition
 	restricted.compatible_resources = [&"ferrite"]
 	var incompatible := {"token": context.token, "deposit_id": carbite.deposit_id,
@@ -149,28 +148,8 @@ func _run() -> void:
 	state.configure_resource_generation_v2()
 	_check(state.deploy_extractor_v2(ticket, EXTRACTOR, cell, 0, inventory, player, ground, 160) == 0,
 		"stale context cannot redirect confirmation")
-	# Legacy geometry wins even when the v2 context is unavailable.
-	state.invalidate_resource_generation_v2()
-	var legacy := state.get_deposits()[0]
-	var legacy_cell := WorldCoordinates.world_to_construction(legacy.footprint[0])
-	var found := false
-	for y in range(legacy_cell.y - 16, legacy_cell.y + 16):
-		for x in range(legacy_cell.x - 16, legacy_cell.x + 16):
-			var candidate := Vector2i(x, y)
-			var extraction := EXTRACTOR.footprint(candidate, 0).get_center()
-			if not found and state.deposit_at(extraction, &"ferrite") != null:
-				found = true
-				var selected := state.extractor_target_v2(Vector2(candidate) * 32, EXTRACTOR, 0)
-				_check(selected.ticket.is_empty() and selected.reason.is_empty(), "legacy Ferrite route independent of v2")
-				player.position = extraction - Vector2(90, 0)
-				await physics_frame
-				var identity := state.deploy_machine_instance(EXTRACTOR, candidate, 0, inventory, player, ground, 160)
-				_check(identity == 3, "legacy Ferrite deployment")
-				state.advance_production(1.0)
-				_check(state.get_machine(identity).output == 1, "legacy Ferrite production preserved")
-				_check(state.recover_machine(identity, inventory, extraction, 160)
-					and inventory.get_quantity(&"ferrite_ore") == 1, "legacy Ferrite recovery returns stored contents")
-	_check(found, "legacy Ferrite fixture found")
+	_check(not state.extractor_target_v2(center, EXTRACTOR, 0).reason.is_empty(),
+		"unavailable authority has no legacy fallback")
 	ground.free()
 	print("Live extractor v2 regression failures: %d" % _failures)
 	quit(0 if _failures == 0 else 1)

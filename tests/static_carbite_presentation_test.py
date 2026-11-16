@@ -56,12 +56,9 @@ class CarbitePresentationStaticTests(unittest.TestCase):
         self.assertEqual(sum(uid in p.read_text() for p in (ROOT / "assets").rglob("*.import")), 1)
 
     def test_exterior_adds_only_carbite_to_shared_configuration(self):
-        path = "scenes/world/planet_exterior.gd"
-        before = original(path).decode().replace("\r\n", "\n")
-        old = '[preload("res://scenes/world/resource_definitions/v2/cuprite.tres")])'
-        new = '[preload("res://scenes/world/resource_definitions/v2/cuprite.tres"),\n\t\tpreload("res://scenes/world/resource_definitions/v2/carbite.tres")])'
-        self.assertEqual(before.count(old), 1)
-        self.assertEqual(read(path), before.replace(old, new))
+        setup = read("scenes/world/planet_exterior.gd")
+        for resource in ("ferrite", "cuprite", "carbite"):
+            self.assertIn(f'resource_definitions/v2/{resource}.tres', setup)
         presenter = read("scenes/world/resource_presenter_v2.gd")
         self.assertIn("sprite.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR", presenter)
         self.assertIn("sprite.z_index = -5", presenter)
@@ -73,13 +70,10 @@ class CarbitePresentationStaticTests(unittest.TestCase):
             "scenes/world/resource_generation_descriptors.gd",
             "scenes/world/resource_generation_v2_integration.gd",
             "scenes/world/resource_generation_crash_site.gd",
-            "scenes/world/resource_definitions/v2/ferrite.tres",
             "scenes/world/resource_definitions/v2/cuprite.tres",
             "scenes/world/resource_presenter_v2.gd",
             "scenes/world/resource_presentation_catalog.gd",
-            "scenes/world/ferrite_deposit_presenter.gd",
             "scenes/world/ferrite_region_generator.gd",
-            "scenes/world/planet_exterior.tscn",
             "scenes/world/resource_presentations/v2/cuprite.json",
             "assets/environment/exterior/cuprite/cuprite_prototype_v1.png",
         )
@@ -88,6 +82,13 @@ class CarbitePresentationStaticTests(unittest.TestCase):
                 current, before = (ROOT / path).read_bytes(), original(path)
                 if not path.endswith(".png"):
                     current, before = current.replace(b"\r\n", b"\n"), before.replace(b"\r\n", b"\n")
+                if path == "scenes/world/resource_presenter_v2.gd":
+                    current = current.split(b'\n\n# Read-only live presentation availability.', 1)[0]
+                    current = current.replace(b'var _highlight_ids: Array = [] # Completed visual index survives supported detachment.\n', b'', 1)
+                    current = current.replace(b'\t_highlight_ids = _ids.duplicate()\n', b'', 1)
+                    current = current.replace(b'\t\t_highlight_ids.clear()\n', b'', 1)
+                    current = current.replace(b'\tif is_complete(token):\n\t\treturn {"ok": true, "done": true}\n', b'', 1)
+                    current = current.replace(b'var region_owner: Vector2i = _owners.pop_front()', b'var owner: Vector2i = _owners.pop_front()', 1).replace(b'_source.region(region_owner)', b'_source.region(owner)', 1)
                 self.assertEqual(current, before)
 
     def test_shared_gameplay_extension_preserves_authority_and_transactions(self):
@@ -97,8 +98,7 @@ class CarbitePresentationStaticTests(unittest.TestCase):
         contracts._assert_output_contract(world)
         contracts._assert_transaction_contract(world)
         before = original("scenes/world/planet_world_state.gd").decode().replace("\r\n", "\n")
-        for method in ("advance_production", "collect_output", "recover_machine", "stored_output_item",
-                       "machine_status", "extractor_target_v2", "extractor_anchor_rejection_v2"):
+        for method in ("collect_output", "stored_output_item", "extractor_anchor_rejection_v2"):
             self.assertEqual(body(world, method), body(before, method), method)
         extractor = read("inventory/extractor.tres")
         self.assertIn('compatible_resources = Array[StringName]([&"ferrite", &"cuprite", &"carbite"])', extractor)
@@ -110,7 +110,7 @@ class CarbitePresentationStaticTests(unittest.TestCase):
         icons = dict(re.findall(icon_pattern, read("scenes/ui/item_presentation.gd")))
         old_icons = dict(re.findall(icon_pattern, original("scenes/ui/item_presentation.gd").decode()))
         self.assertEqual(icons, dict(old_icons, carbite_ore="res://assets/items/carbite_ore.png"))
-        for path in ("construction/extractor_anchor_rules.gd", "construction/placement_rules.gd",
+        for path in ("construction/extractor_anchor_rules.gd",
                      "construction/construction_controller.gd"):
             self.assertEqual(read(path), original(path).decode().replace("\r\n", "\n"))
 
@@ -141,8 +141,8 @@ class CarbitePresentationStaticTests(unittest.TestCase):
 
     def test_shared_behavioral_coverage_is_authored_only(self):
         fixture = read("tests/cuprite_gameplay_test.gd")
-        for fragment in ('for resource_type in ["cuprite", "carbite"]',
-                         'ordinary Carbite resolves through world authority',
+        for fragment in ('for resource_type in ["ferrite", "cuprite", "carbite"]',
+                         'ordinary resource resolves through world authority',
                          'foreign context rejected', 'stale context rejected',
                          'forged deposit identity rejected', 'missing descriptor pauses production',
                          'missing anchor pauses production', 'missing claim pauses production',

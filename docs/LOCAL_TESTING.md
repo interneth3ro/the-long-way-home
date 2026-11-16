@@ -1027,3 +1027,75 @@ numerical enclosure, GPU correctness, graphics, gameplay or performance. Stage
 3A-2 numerical certification and Stage 3B presenter integration remain unproven
 and unauthorized. No production renderer change, merge or repository cleanup
 occurred; the PR remains draft.
+
+
+## Ferrite V2 cutover validation (pending owner acceptance)
+
+The pending `codex/ferrite-v2-live-authority` implementation uses static validation
+only. No runner, dispatcher, behavioral manifest or execution authorization changes
+accompany it. Do not dispatch authored fixtures under an existing grant. The shared
+`tests/cuprite_gameplay_test.gd` now covers all three resources; its assertions
+remain unexecuted. Legacy Ferrite suites inspect the pre-cutover Git revision;
+current checks are in `tests/static_ferrite_live_authority_test.py` and updated
+live authority, gameplay, startup and transition suites.
+
+Owner Godot acceptance needs separate authorization and review of the exact
+fixture/dependency/filesystem scope before behavioral dispatch. Fresh-game graphical
+acceptance should check:
+
+1. New Game completion, first exit, cancellation and exterior revisits with healthy
+   V2 readiness and unchanged terrain/arrival protections.
+   Owner acceptance at `2f9adac` failed on first exit with a late arrival-validation
+   error and black curtain. The terminal completed-step correction is pending
+   owner retest. Authored lifecycle coverage now checks repeated steps/services
+   after reattachment, invalidation, and receipt validity across the existing
+   reveal fade with ordinary exterior processing enabled. It remains unexecuted.
+2. Three starting Ferrite members, ordinary Ferrite and preserved Cuprite/Carbite
+   distribution. One visual per deposit, approved artwork transform, streaming
+   retention and construction anchor feedback.
+3. Examine any starting Ferrite anchor: existing discovery musing/objective and
+   subsequent recovery progress exactly once, without an authored legacy deposit.
+   Before its sprite publishes, after unloading/cancellation and with retired or
+   replaced contexts, the interaction must be unavailable. Re-presenting the same
+   valid deposit restores it unless discovery already completed. Check unchanged
+   detector range, retained nodes and ship/exterior revisits. These assertions are
+   authored in the existing gameplay fixture and remain unexecuted.
+4. Ticketed exact anchors in all rotations, occupied/incompatible rejection, range,
+   solid obstacles and player-footprint checks without item loss.
+5. Three canonical ores at one/second, partial cycles, 20-item full-buffer pause,
+   collection/resumption, atomic recovery, claim release and redeployment.
+6. Missing/forged/stale/foreign contexts, descriptors and claims fail closed with no
+   Ferrite fallback or unticketed generic deployment. Interrupted sessions require
+   a fresh game; no migration or refund occurs.
+
+Static PASS establishes no Godot parsing, import, headless, graphical, gameplay or
+performance result. This checklist grants no execution authority.
+
+
+### Retained construction highlights (PR #213, pending merge)
+
+The owner reports completion of the earlier three-resource gameplay acceptance
+checklist and resolution of the console issues. The subsequent recurring hotbar
+selection hitch has a focused source correction; performance acceptance is pending.
+Visual highlights now consume retained shared-presenter registrations through a
+context-validated, copied 16-entry page. They never generate resource regions or
+grant placement tickets. Repeated selection preserves keyed polygon nodes;
+streaming reconciles additions/removals across bounded updates. Placement remains
+independently authoritative through the unchanged V2 targeting/transaction path.
+
+`tests/static_construction_highlights_test.py` checks the projection, generation-free
+selection, reconciliation bounds and preservation of authority/generation code.
+The existing `tests/cuprite_presentation_lifecycle_test.gd` authors three-resource
+and boundary coverage, copied data, retained node identity, deselect/reselect,
+compatibility, streaming retirement/reload, detach/revisit, invalid contexts and
+bounded multi-page reconciliation. It remains unexecuted; no runner, dispatcher,
+manifest, permissions or execution grant changes.
+
+Owner graphical acceptance should repeat hotbar `1` selection/cancellation with
+unchanged terrain, then switch compatible definitions, rotate and deploy/recover
+at Ferrite/Cuprite/Carbite anchors. Confirm occupied/incompatible rejection and
+unchanged production. Check chunk-edge anchors, ordinary and guaranteed deposits,
+streaming while construction is active, first exit and cached revisits. Compare
+CPU frame spikes on repeated selection and normal exploration. Any automated
+fixture execution or temporary profiling instrumentation requires separately
+reviewed authorization; this documentation grants none.

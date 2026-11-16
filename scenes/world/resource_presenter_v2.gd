@@ -43,6 +43,7 @@ var _index: int = 0
 var _sprites: Dictionary = {}
 var _textures: Dictionary = {}
 var _exiting: bool = false
+var _highlight_ids: Array = [] # Completed visual index survives supported detachment.
 
 
 # Source is an immutable generator instance; replace it via configure for ANY
@@ -204,6 +205,8 @@ func request(area: Rect2) -> Dictionary:
 func step(token: int) -> Dictionary:
 	if token != _token or not _active:
 		return {"ok": true, "stale": true}
+	if is_complete(token):
+		return {"ok": true, "done": true}
 	if _world != null:
 		var context := _world.resource_generation_v2_context()
 		if not context.ok or context.token != _world_token:
@@ -240,8 +243,8 @@ func step(token: int) -> Dictionary:
 				return admitted
 		return {"ok": true, "done": false}
 	if not _owners.is_empty():
-		var owner: Vector2i = _owners.pop_front()
-		var result := _source.region(owner)
+		var region_owner: Vector2i = _owners.pop_front()
+		var result := _source.region(region_owner)
 		if not result.ok:
 			return _failure(result.error)
 		if result.locations.size() > MAX_LOCATIONS_PER_OWNER:
@@ -274,6 +277,7 @@ func step(token: int) -> Dictionary:
 			_sprites[identity] = sprite
 		_index += 1
 		return {"ok": true, "done": false}
+	_highlight_ids = _ids.duplicate()
 	_complete = true
 	return {"ok": true, "done": true}
 
@@ -332,6 +336,7 @@ func cancel(keep_visuals: bool = false) -> void:
 	_locations.clear()
 	if not keep_visuals:
 		_registrations.clear()
+		_highlight_ids.clear()
 	_ids.clear()
 	_ordered = false
 	_index = 0
@@ -387,3 +392,51 @@ func _notification(what: int) -> void:
 		# Actual retirement releases retained context/caches; Node frees children.
 		_exiting = true
 		dispose()
+
+
+# Read-only live presentation availability. Never grants deposit or mining authority.
+func is_deposit_presented(identity: String, world: PlanetWorldState, token: RefCounted) -> bool:
+	if not is_inside_tree() or not _active or _exiting or world == null \
+			or _world != world or token != _world_token:
+		return false
+	var context := world.resource_generation_v2_context()
+	if not context.ok or context.token != _world_token or context.world_seed != _seed \
+			or not _registrations.has(identity) or not _sprites.has(identity):
+		return false
+	var sprite: Sprite2D = _sprites[identity]
+	return is_instance_valid(sprite) and not sprite.is_queued_for_deletion() \
+		and sprite.get_parent() == self and sprite.is_visible_in_tree() and sprite.texture != null \
+		and _is_loaded(_registrations[identity])
+
+
+# Visual feedback only. Completion fixes the copied index until the next request.
+# No authority descriptors, tickets, textures or mutable registrations escape.
+func highlight_view_is_current(token: int) -> bool:
+	return is_inside_tree() and not _exiting and _world != null and is_complete(token)
+
+
+# At most 16 index entries per call, including entries excluded by loaded coverage.
+func highlight_page(token: int, offset: int) -> Dictionary:
+	if not highlight_view_is_current(token) or offset < 0 or offset > _highlight_ids.size():
+		return {"ok": false}
+	var entries: Array[Dictionary] = []
+	var end := mini(offset + 16, _highlight_ids.size())
+	for index in range(offset, end):
+		var identity: String = _highlight_ids[index]
+		var registration: Dictionary = _registrations[identity]
+		if not is_deposit_presented(identity, _world, _world_token):
+			continue
+		# Artwork overhang alone does not make an off-terrain anchor relevant.
+		# Inclusive bounds retain anchors on either side of a chunk boundary.
+		var bounds: Rect2 = registration.logical_bounds
+		var first := WorldCoordinates.world_to_chunk(bounds.position)
+		var last := WorldCoordinates.world_to_chunk(bounds.end)
+		var loaded := false
+		for y in range(first.y, last.y + 1):
+			for x in range(first.x, last.x + 1):
+				if _loaded_chunks.has(Vector2i(x, y)):
+					loaded = true
+		if loaded:
+			entries.append({"deposit_id": identity, "resource_id": registration.resource_id,
+				"anchor_cells": registration.anchor_cells, "logical_bounds": bounds})
+	return {"ok": true, "entries": entries, "next": end, "done": end == _highlight_ids.size()}

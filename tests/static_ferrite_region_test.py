@@ -1,3 +1,10 @@
+# Historical legacy Ferrite specifications at the pre-cutover revision.
+# Current live authority is checked by static_ferrite_live_authority_test.py.
+import subprocess
+
+def historical_source(path):
+    return subprocess.check_output(['git', 'show', '1dbdcbdc8a1ee22b411b5ded056d0a2574e1ff2a:' + path], text=True, encoding='utf-8')
+
 """Offline specification oracle and source contracts, NOT GDScript execution.
 
 Properties exercise real catalog geometry and authoritative crash-site inputs.
@@ -299,7 +306,7 @@ class FerriteRegionStaticTest(unittest.TestCase):
         self.assertNotIn('distance',function(SOURCE,'_size_class').split('\n',1)[1])
 
     def test_legacy_contracts_and_persistent_lookup_wiring(self):
-        state = (ROOT/'scenes/world/planet_world_state.gd').read_text()
+        state = historical_source('scenes/world/planet_world_state.gd')
         # Existing point-only compatibility and persistent production contracts.
         status = function(state,'machine_status')
         self.assertIn('definition.rotated_point(definition.extraction_point, machine.turns)',status)

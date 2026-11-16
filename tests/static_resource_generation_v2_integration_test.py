@@ -31,56 +31,21 @@ class ResourceIntegrationStaticTests(unittest.TestCase):
                   'context', 'query', 'descriptor_by_id', 'reservations'}
         self.assertLessEqual(set(re.findall(r'_resource_v2\.(\w+)', code(source))), public)
         self.assertNotRegex(code(source), r'_resource_v2\s*\[')
-        for name in re.findall(r'^func (\w+)\(', source, re.M):
-            if name == '_init' or name.endswith('_v2') or 'resource_generation_v2' in name \
-                    or name == 'resource_descriptor_v2_by_id':
-                continue
-            block = code(body(source, name))
-            self.assertNotIn('_resource_v2', block, name)
-            calls = set(re.findall(r'\b(\w*v2\w*)\s*\(', block))
-            if name == 'extractor_output_item':
-                self.assertEqual(calls, {'resource_generation_v2_context',
-                                        'resource_descriptor_v2_by_id', 'extractor_occupant_v2'})
-                self.assertIn('resource_descriptor_v2_by_id(machine.v2_deposit_id, context.token)', block)
-            else:
-                self.assertEqual(calls, set(), name)
+        self.assertNotIn('FerriteRegionGenerator', source)
+        self.assertNotIn('introductory_ferrite.tres', source)
+        for retired in ('deposit_at', 'get_deposit', 'get_deposits', 'get_deposit_region',
+                        'query_deposit_descriptors', 'deposit_query_owners', 'deposit_resource',
+                        'get_deposit_variant', 'get_deposits_in_area', 'is_resource_generation_ready'):
+            self.assertNotRegex(code(source), r'^func ' + retired + r'\(', retired)
 
-    def test_world_owns_component_and_legacy_apis_remain_independent(self):
+    def test_world_owns_only_v2_component(self):
         self.assertIn("var _resource_v2 := ResourceGenerationV2Integration.new()", WORLD)
         init = body(WORLD, "_init")
         self.assertIn("_world_generation_seed = world_seed", init)
         self.assertIn("configure_resource_generation_v2()", init)
-        self.assertIn("_ferrite = FerriteRegionGenerator.new(world_seed)", init)
-        legacy_routes = {
-            "is_resource_generation_ready": "_ferrite.is_ready()",
-            "resource_generation_error": "_ferrite.initialization_error()",
-            "get_deposit_region": "_ferrite.region(owner)",
-            "query_deposit_descriptors": "_ferrite.query(area)",
-            "deposit_query_owners": "_ferrite.query_owners(area)",
-            "deposit_resource": "_ferrite.resource(descriptor)",
-            "get_deposit_variant": "_ferrite.variant_metadata(variant_id)",
-        }
-        for name, route in legacy_routes.items():
-            self.assertIn("return " + route, code(body(WORLD, name)), name)
-        for name in ("get_deposit", "deposit_at", "get_deposits_in_area"):
-            self.assertIn("_ferrite.", code(body(WORLD, name)), name)
-            self.assertIn("_deposits", code(body(WORLD, name)), name)
         self._assert_v2_access_boundary(WORLD)
 
-    def test_legacy_isolation_rejects_source_mutations(self):
-        for method in ('get_deposit', 'deposit_at', 'get_deposits_in_area',
-                       'query_deposit_descriptors', 'get_deposit_region',
-                       'deposit_query_owners', 'deposit_resource', 'get_deposit_variant'):
-            original = body(WORLD, method)
-            header, rest = original.split('\n', 1)
-            for dependency in ('resource_generation_v2_context()',
-                               'resource_descriptor_v2_by_id("id", null)',
-                               '_resource_v2.query(area, null)'):
-                with self.subTest(method=method, dependency=dependency):
-                    mutant = WORLD.replace(original, header + '\n\t' + dependency + '\n' + rest, 1)
-                    self.assertNotEqual(mutant, WORLD)
-                    with self.assertRaises(AssertionError):
-                        self._assert_v2_access_boundary(mutant)
+    def test_private_generator_boundary_rejects_source_mutations(self):
         for expression in ('_resource_v2._source', '_resource_v2.get("_source")',
                            '_resource_v2["_source"]'):
             with self.subTest(private_access=expression):
@@ -196,7 +161,7 @@ class ResourceIntegrationStaticTests(unittest.TestCase):
                       "same-context idempotency", "changed-context invalidation",
                       "failed replacement behavior", "rejection of stale references",
                       "invalid query distinction", "unavailable context distinction",
-                      "preservation of legacy Ferrite behavior", "streaming-independent resource identity",
+                      "no legacy readiness after retirement", "streaming-independent resource identity",
                       "seed changes cannot resurrect context", "partial layout rejected",
                       "incompatible identity policy with current seed", "wrong identity seed with current policy",
                       "failed context has no token", "failed component has no reservations",

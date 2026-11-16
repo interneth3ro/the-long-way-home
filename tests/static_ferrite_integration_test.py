@@ -1,3 +1,10 @@
+# Historical legacy Ferrite specifications at the pre-cutover revision.
+# Current live authority is checked by static_ferrite_live_authority_test.py.
+import subprocess
+
+def historical_source(path):
+    return subprocess.check_output(['git', 'show', '1dbdcbdc8a1ee22b411b5ded056d0a2574e1ff2a:' + path], text=True, encoding='utf-8')
+
 """Offline Ferrite geometry/registration contracts; no Godot or project execution."""
 import hashlib
 import math
@@ -15,7 +22,10 @@ ART = 'assets/environment/exterior/ferrite/faceted_ferrite_10x6.png'
 
 
 def read(path):
-    return (ROOT/path).read_text(encoding='utf-8')
+    return historical_source(path) if path in {
+        'scenes/world/planet_exterior.tscn', 'scenes/world/planet_exterior.gd',
+        'scenes/world/planet_world_state.gd', 'scenes/interaction/ferrite_inspection.gd',
+        'construction/placement_rules.gd'} else (ROOT/path).read_text(encoding='utf-8')
 
 
 def polygon(text):

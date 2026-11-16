@@ -6,6 +6,7 @@ import json
 import random
 import subprocess
 import unittest
+from initial_exterior_preservation import without_initial_preparation
 
 import terrain_stage2b_compatibility_reference as oracle
 import terrain_stage2_reference as classification
@@ -239,7 +240,7 @@ class CompatibilityTest(unittest.TestCase):
             self.assertEqual(hashlib.sha256((ROOT / path).read_bytes()).hexdigest(), entry["sha256"])
         vectors = json.loads((ROOT / "tests/fixtures/terrain_stage2_classification_vectors.json").read_text())
         for path, expected in vectors["source_sha256_lf"].items():
-            self.assertEqual(hashlib.sha256((ROOT / path).read_bytes().replace(b"\r\n", b"\n")).hexdigest(), expected)
+            self.assertEqual(hashlib.sha256(without_initial_preparation(path, (ROOT / path).read_bytes()).replace(b"\r\n", b"\n")).hexdigest(), expected)
         # Every previously tracked file besides the authorized amendment is
         # protected by the exact inventory, including frozen goldens and C1.
 

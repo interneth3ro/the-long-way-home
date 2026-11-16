@@ -5,6 +5,7 @@ from pathlib import Path
 import re
 import subprocess
 import unittest
+from initial_exterior_preservation import without_initial_preparation
 
 ROOT = Path(__file__).resolve().parents[1]
 BASE = "ba48f716c804f03e2073dd191d7df41d48d94dcc"
@@ -29,7 +30,7 @@ STARTING = read("scenes/world/starting_resource_generator.gd")
 class CupriteLayoutTests(unittest.TestCase):
     def test_live_prototype_removed_and_other_authored_nodes_preserved(self):
         path = "scenes/world/planet_exterior.tscn"
-        scene = read(path)
+        scene = without_initial_preparation(path, (ROOT/path).read_bytes()).decode('utf-8')
         for token in ("CupriteVisualPrototype", "cuprite_visual_prototype.tscn", "9_cuprite_prototype"):
             self.assertNotIn(token, scene)
         self.assertEqual(int(re.search(r"load_steps=(\d+)", scene)[1]),
@@ -81,16 +82,15 @@ class CupriteLayoutTests(unittest.TestCase):
         for resource in ("ferrite", "carbite", "cuprite"):
             path = "scenes/world/resource_definitions/v2/" + resource + ".tres"
             current = read(path)
-            if resource == "carbite":
+            if resource in ("carbite", "ferrite"):
                 # Presentation opt-in does not alter geological generation inputs.
-                current = current.replace('presentation_catalog = "res://scenes/world/resource_presentations/v2/carbite.json"\n', '')
+                current = current.replace(f'presentation_catalog = "res://scenes/world/resource_presentations/v2/{resource}.json"\n', '')
             self.assertEqual(current, original(path))
 
-    def test_legacy_ferrite_queries_production_and_construction_unchanged(self):
+    def test_shared_collection_transfer_and_recipes_unchanged(self):
         path = "scenes/world/planet_world_state.gd"
         world, old = read(path), original(path)
-        for method in ("deposit_at", "query_deposit_descriptors", "extractor_target_v2",
-                       "advance_production", "collect_output", "recover_machine"):
+        for method in ("collect_output", "transfer_input", "_advance_recipe", "change_recipe"):
             self.assertEqual(body(world, method), body(old, method))
 
 

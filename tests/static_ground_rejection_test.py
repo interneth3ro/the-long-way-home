@@ -9,7 +9,8 @@ from static_low_green_ground_test import inside, edge_distance
 
 def authored_geometry():
     scene = (ROOT/'scenes/world/planet_exterior.tscn').read_text()
-    head = scene.split('[node name="FerriteGround"')[0]
+    head = scene.split('[node name="AuthoredCrashSite"', 1)[1].split(
+        '[node name="GroundObjects"', 1)[0]
     overlays = []
     for raw in re.findall(r'polygon = PackedVector2Array\(([^)]+)\)', head):
         values = [float(v) for v in raw.split(',')]

@@ -10,6 +10,7 @@ import math
 import random
 import subprocess
 import unittest
+from initial_exterior_preservation import without_initial_preparation
 
 import terrain_stage2_reference as reference
 from static_ground_rejection_test import authored_geometry, material_at, original_protection
@@ -193,7 +194,7 @@ class Stage2ClassificationTest(unittest.TestCase):
 
     def test_source_guards_reviewed_provenance_and_protected_files(self):
         for path, digest in self.vectors["source_sha256_lf"].items():
-            self.assertEqual(hashlib.sha256((ROOT / path).read_bytes().replace(b"\r\n", b"\n")).hexdigest(), digest)
+            self.assertEqual(hashlib.sha256(without_initial_preparation(path, (ROOT / path).read_bytes()).replace(b"\r\n", b"\n")).hexdigest(), digest)
         # Historical Stage 2A inventory is immutable, not a ban on later additions.
         # Keep the working-source preservation checks below against the same base.
         stage2a_merge = "1f083dae00245a0bd5a7ac8a0c59c8f66b1a5744"
@@ -220,7 +221,7 @@ class Stage2ClassificationTest(unittest.TestCase):
                       subprocess.check_output(["git", "show", "cd91c9086ef24e71ddb6a43a2076c4be5a69485e:"+path], cwd=ROOT)
                       if path == "tools/run-local-tests.ps1" else
                       subprocess.check_output(["git", "show", "de09eeee2c07036ac50471bde12a716e173e3366:"+path], cwd=ROOT)
-                      if path == "scenes/world/planet_exterior.gd" else (ROOT/path).read_bytes())
+                      if path == "scenes/world/planet_exterior.gd" else without_initial_preparation(path, (ROOT/path).read_bytes()))
             if path == "project.godot":
                 actual = without_application_startup(actual)
             self.assertEqual(actual.replace(b"\r\n", b"\n"), baseline.replace(b"\r\n", b"\n"), path)

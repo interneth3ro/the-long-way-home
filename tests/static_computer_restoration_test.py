@@ -87,6 +87,12 @@ class ComputerRestorationStaticTest(unittest.TestCase):
                     for name, body in re.findall(r'^func (\w+)(.*?)(?=^func |\Z)', text, re.M | re.S)}
         for path, replacements in amendments.items():
             current = read(path)
+            if path == 'scenes/main/playthrough_state.gd':
+                # Validate the precise Ferrite cutover projection; keep every other method pinned.
+                from initial_exterior_preservation import without_initial_preparation
+                current = without_initial_preparation(path, (ROOT/path).read_bytes()).decode('utf-8')
+            current = current.replace('is_resource_generation_v2_ready()', 'is_resource_generation_ready()').replace(
+                'resource_generation_v2_error()', 'resource_generation_error()')
             if path == 'construction/construction_controller.gd':
                 self._assert_current_construction_hooks(current)
             for new, old in replacements:
@@ -276,6 +282,12 @@ class ComputerRestorationStaticTest(unittest.TestCase):
         self.assertNotIn('finish_computer_cinematic', cleanup)
         self.assertNotIn('inventory.', cleanup)
         self.assertIn('_cleanup()', function(script, '_exit_tree'))
+        close = function(script, 'close')
+        self.assertIn('\t_panel.hide()\n', close)
+        for button in ('_confirm', '$HUD/Panel/Content/NotYet'):
+            self.assertIn('\tif ' + button + '.is_inside_tree():\n\t\t' + button + '.release_focus()', close)
+        self.assertNotIn('return', close)
+
         # Existing V2 overlays share the same room-sized canvas and zero offset;
         # switching visibility never edits geometry, scale, collision or range.
         for name in ('damaged', 'repaired'):

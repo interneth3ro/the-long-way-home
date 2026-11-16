@@ -1,3 +1,10 @@
+# Historical legacy Ferrite specifications at the pre-cutover revision.
+# Current live authority is checked by static_ferrite_live_authority_test.py.
+import subprocess
+
+def historical_source(path):
+    return subprocess.check_output(['git', 'show', '1dbdcbdc8a1ee22b411b5ded056d0a2574e1ff2a:' + path], text=True, encoding='utf-8')
+
 """Initialization specification and source checks only; no GDScript execution.
 
 Python JSON tests cover a shared strict subset, not Godot parser equivalence.
@@ -172,7 +179,7 @@ class FerriteInitializationStaticTest(unittest.TestCase):
         self.assertIn('if not query_is_bounded(area):',function(SOURCE,'query'))
 
     def test_failure_blocks_dependent_session_and_production_paths(self):
-        state = (ROOT/'scenes/world/planet_world_state.gd').read_text()
+        state = historical_source('scenes/world/planet_world_state.gd')
         self.assertIn('return _deploy_machine_transaction(definition, cell, turns, inventory, player, world, construction_range, {})',
                       function(state, 'deploy_machine_instance'))
         transaction = function(state, '_deploy_machine_transaction')
@@ -181,10 +188,10 @@ class FerriteInitializationStaticTest(unittest.TestCase):
         for method in ('_deploy_machine_transaction','machine_status','advance_production'):
             self.assertIn('not is_resource_generation_ready()',function(state,method))
         self.assertIn('_ferrite.initialization_error()',function(state,'resource_generation_error'))
-        main = function((ROOT/'scenes/main/main.gd').read_text(),'_ready')
+        main = function(historical_source('scenes/main/main.gd'),'_ready')
         self.assertLess(main.index('is_resource_generation_ready()'),main.index('$SceneTransitions.initialize()'))
         self.assertIn('get_tree().paused = true\n\t\treturn',main)
-        v2 = function((ROOT/'scenes/main/main_v2.gd').read_text(),'_ready')
+        v2 = function(historical_source('scenes/main/main_v2.gd'),'_ready')
         self.assertLess(v2.index('super._ready()'),v2.index('is_resource_generation_ready()'))
         self.assertLess(v2.index('is_resource_generation_ready()'),v2.index('transitions.get_current_world()'))
 

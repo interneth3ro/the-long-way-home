@@ -146,7 +146,7 @@ class LowGreenStaticTest(unittest.TestCase):
     def test_authored_clearing_masks_and_authority_preserved(self):
         scene = (ROOT/'scenes/world/planet_exterior.tscn').read_text()
         overlays = []
-        for values in re.findall(r'polygon = PackedVector2Array\(([^)]+)\)', scene.split('[node name="FerriteGround"')[0]):
+        for values in re.findall(r'polygon = PackedVector2Array\(([^)]+)\)', scene.split('[node name="AuthoredCrashSite"', 1)[1].split('[node name="GroundObjects"', 1)[0]):
             numbers = [float(v) for v in values.split(',')]
             overlays.append(list(zip(numbers[::2],numbers[1::2])))
         source = (ROOT/'scenes/world/planet_exterior.gd').read_text()

@@ -24,19 +24,14 @@ static func rejection(state: PlanetWorldState, definition: MachineDefinition,
 	var footprint := definition.footprint(cell, turns)
 	if distance_to_footprint(world.to_local(player.global_position), footprint) > construction_range:
 		return "Out of construction range"
-	if not v2_ticket.is_empty():
+	if definition.item_id == &"extractor":
+		if v2_ticket.is_empty():
+			return "Requires authoritative V2 deposit ticket"
 		var reason := state.extractor_anchor_rejection_v2(v2_ticket, definition, cell, turns)
 		if not reason.is_empty():
 			return reason
-	elif not definition.compatible_resources.is_empty():
-		var point := footprint.position + definition.rotated_point(definition.extraction_point, turns)
-		var compatible := false
-		for resource_type in definition.compatible_resources:
-			if state.deposit_at(point, resource_type) != null:
-				compatible = true
-				break
-		if not compatible:
-			return "Requires compatible mineral-bearing ground"
+	elif not v2_ticket.is_empty() or not definition.compatible_resources.is_empty():
+		return "Incompatible resource"
 	for machine in state.get_machines():
 		var other: MachineDefinition = machine.definition
 		if footprint.intersects(other.footprint(machine.cell, machine.turns)):

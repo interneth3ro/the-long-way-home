@@ -14,6 +14,73 @@ def body(source, name):
 
 
 class CupritePresentationLifecycleTests(unittest.TestCase):
+    def _assert_terminal_completion_contract(self, source):
+        step = body(source, "step")
+        prefix = ('func step(token: int) -> Dictionary:\n'
+                  '\tif token != _token or not _active:\n'
+                  '\t\treturn {"ok": true, "stale": true}\n'
+                  '\tif is_complete(token):\n'
+                  '\t\treturn {"ok": true, "done": true}\n')
+        self.assertTrue(step.startswith(prefix))
+        complete = body(source, "is_complete")
+        for guard in ('token != _token or not _active or not _complete',
+                      'context.ok and context.token == _world_token and context.world_seed == _seed',
+                      '_source.is_ready() and _source.identity_policy() == _policy'):
+            self.assertIn(guard, complete)
+
+    def test_completed_step_is_terminal_after_validated_completion(self):
+        self._assert_terminal_completion_contract(PRESENTER)
+        import subprocess
+        reviewed = '2f9adac517eb469c9641133391afd782d3e067c8'
+        path = 'scenes/world/resource_presenter_v2.gd'
+        before = subprocess.check_output(['git', 'show', reviewed + ':' + path], cwd=ROOT).decode('utf-8')
+        terminal = '\tif is_complete(token):\n\t\treturn {"ok": true, "done": true}\n'
+        self.assertEqual(PRESENTER.count(terminal), 1)
+        renamed = PRESENTER.replace('var region_owner: Vector2i = _owners.pop_front()', 'var owner: Vector2i = _owners.pop_front()', 1).replace('_source.region(region_owner)', '_source.region(owner)', 1)
+        renamed = renamed.replace('var _highlight_ids: Array = [] # Completed visual index survives supported detachment.\n', '', 1)
+        renamed = renamed.replace('\t_highlight_ids = _ids.duplicate()\n', '', 1)
+        renamed = renamed.replace('\t\t_highlight_ids.clear()\n', '', 1)
+        self.assertNotRegex(body(PRESENTER, 'step'), r'\bvar owner\b')
+        self.assertIn('_source.region(region_owner)', body(PRESENTER, 'step'))
+        self.assertEqual(renamed.split('\n\n# Visual feedback only.', 1)[0].replace(terminal, '', 1), before)
+        for path in ('scenes/main/scene_transition_controller.gd',
+                     'scenes/interaction/ferrite_inspection.gd', 'scenes/world/planet_world_state.gd',
+                     'scenes/main/playthrough_state.gd', 'tools/run-behavioral-tests.ps1',
+                     'tools/run-local-tests.ps1', 'tests/behavioral/test_runner.gd'):
+            with self.subTest(path=path):
+                before = subprocess.check_output(['git', 'show', reviewed + ':' + path], cwd=ROOT)
+                self.assertEqual((ROOT / path).read_bytes().replace(b'\r\n', b'\n'), before.replace(b'\r\n', b'\n'))
+
+    def test_terminal_guard_rejects_removed_unchecked_or_state_mutating_shortcuts(self):
+        terminal = '\tif is_complete(token):\n\t\treturn {"ok": true, "done": true}\n'
+        for replacement in ('', terminal.replace('is_complete(token)', '_complete'),
+                            terminal.replace('"done": true', '"done": false'),
+                            terminal.replace('\t\treturn', '\t\t_index = 0\n\t\treturn')):
+            with self.subTest(replacement=replacement):
+                with self.assertRaises(AssertionError):
+                    self._assert_terminal_completion_contract(PRESENTER.replace(terminal, replacement, 1))
+        with self.assertRaises(AssertionError):
+            self._assert_terminal_completion_contract(PRESENTER.replace('context.token == _world_token', 'true'))
+
+    def test_authored_completion_regressions_cover_service_and_reveal(self):
+        for label in ('repeated completed step remains done',
+                      'terminal completion does not replay registrations or mutate published state',
+                      'unchanged coverage service preserves completed readiness',
+                      'same-area new request invalidates completed work',
+                      'changed coverage starts genuinely incomplete request',
+                      'completed presentation still fails closed after ',
+                      'detached activity guard precedes terminal completion',
+                      'cancelled activity cannot return completed work',
+                      'disposed presenter cannot return completed work'):
+            self.assertIn(label, BEHAVIOR)
+        gameplay = (ROOT / 'tests/cuprite_gameplay_test.gd').read_text()
+        self.assertIn('completed arrival receipt stays valid across normal reveal interval', gameplay)
+        self.assertIn('await reveal._fade_to(0.0)', gameplay)
+        self.assertIn('exterior.process_mode = Node.PROCESS_MODE_INHERIT', gameplay)
+        self.assertIn('process_frame.connect(sample_readiness)', gameplay)
+        self.assertIn('not readiness_samples.has(false)', gameplay)
+        self.assertNotIn('create_timer', gameplay)
+
     def test_temporary_detachment_retires_token_but_preserves_completed_live_state(self):
         initial = body(EXTERIOR, "prepare_initial_neighborhood")
         self.assertIn("_initialize_world(state)", initial)
@@ -78,7 +145,7 @@ class CupritePresentationLifecycleTests(unittest.TestCase):
             self.assertIn("_resource_presenter.is_complete(_resource_token)", body(EXTERIOR, name))
         ready = body(EXTERIOR, "arrival_is_ready")
         for fragment in ('result.get("generation", -1) == _arrival_generation',
-                         "_required_ground_is_current()", "required_ready(_ferrite_token)",
+                         "_required_ground_is_current()", "is_complete(_resource_token)",
                          "and _resources_done", "not _arrival_cancelled"):
             self.assertIn(fragment, ready)
         complete = body(PRESENTER, "is_complete")
@@ -95,9 +162,9 @@ class CupritePresentationLifecycleTests(unittest.TestCase):
                          "_loaded_chunks.clear()", "_textures.clear()", "_catalogs.clear()"):
             self.assertIn(fragment, dispose)
 
-    def test_mixed_resource_lifecycle_retains_both_presentations(self):
-        for fragment in ('&"cuprite"', '&"carbite"', '[CUPRITE, CARBITE]',
-                         'presenter.snapshot().sprites == 2', 'presenter._sprites == sprites',
+    def test_mixed_resource_lifecycle_retains_all_three_presentations(self):
+        for fragment in ('&"ferrite"', '&"cuprite"', '&"carbite"', '[FERRITE, CUPRITE, CARBITE]',
+                         'presenter.snapshot().sprites == 3', 'presenter._sprites == sprites',
                          'presenter._textures == textures', 'replacement.members = world.members.duplicate(true)',
                          'for retained_sprite: WeakRef in retained_sprites:'):
             self.assertIn(fragment, BEHAVIOR)
