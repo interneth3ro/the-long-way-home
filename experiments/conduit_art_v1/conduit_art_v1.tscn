@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3]
+[gd_scene load_steps=16 format=3]
 
 [ext_resource type="Texture2D" path="res://experiments/conduit_art_v1/straight_unlit.png" id="unlit"]
 [ext_resource type="Texture2D" path="res://experiments/conduit_art_v1/straight_lit.png" id="lit"]
@@ -12,6 +12,10 @@
 [ext_resource type="Texture2D" path="res://assets/machines/smelter/smelter_0_body.png" id="smelter_body"]
 [ext_resource type="Texture2D" path="res://assets/machines/smelter/smelter_0_interior.png" id="smelter_interior"]
 [ext_resource type="Texture2D" path="res://assets/machines/smelter/smelter_0_foreground.png" id="smelter_foreground"]
+
+[ext_resource type="Texture2D" path="res://experiments/conduit_art_v1/heavy_v2_vent.png" id="heavy_vent"]
+[ext_resource type="Texture2D" path="res://experiments/conduit_art_v1/heavy_v2_access.png" id="heavy_access"]
+[ext_resource type="Texture2D" path="res://experiments/conduit_art_v1/heavy_v2_lit.png" id="heavy_lit"]
 
 [node name="ConduitArtV1" type="Node2D"]
 texture_filter = 4
@@ -1120,7 +1124,7 @@ theme_override_constants/shadow_offset_x = 1
 theme_override_constants/shadow_offset_y = 1
 theme_override_fonts/font = ExtResource("font")
 theme_override_font_sizes/font_size = 16
-text = "Final visual candidate - owner approval pending     |     128 px source / 32-unit cell / starts at gameplay 1x"
+text = "Salvaged Sci-Fi baseline + Heavy Industrial v2 candidates     |     128 px / 32-unit cell / starts at gameplay 1x"
 
 [node name="Footer" type="ColorRect" parent="HUD"]
 offset_top = 660.0
@@ -1155,7 +1159,7 @@ theme_override_constants/shadow_offset_x = 1
 theme_override_constants/shadow_offset_y = 1
 theme_override_fonts/font = ExtResource("font")
 theme_override_font_sizes/font_size = 14
-text = "Recessed conduits without transported item sprites. Final visual acceptance remains pending."
+text = "Artwork comparison only / no transported items or logistics / owner visual acceptance pending."
 
 [node name="ReviewFocus" type="Label" parent="Dirt"]
 offset_left = 64.0
@@ -1184,3 +1188,1808 @@ theme_override_constants/shadow_offset_y = 1
 theme_override_fonts/font = ExtResource("font")
 theme_override_font_sizes/font_size = 15
 text = "Review: seams / repetition / width / cyan / orientation"
+
+[node name="ComparisonNavigation" type="Label" parent="HUD"]
+offset_left = 790.0
+offset_top = 12.0
+offset_right = 1260.0
+offset_bottom = 38.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 15
+text = "Heavy comparison below: middle-drag upward"
+
+[node name="HeavyComparison" type="Node2D" parent="."]
+position = Vector2(0, 768)
+
+[node name="Dirt" type="Node2D" parent="HeavyComparison"]
+position = Vector2(0, 0)
+
+[node name="Terrain" type="Sprite2D" parent="HeavyComparison/Dirt"]
+position = Vector2(0, 80)
+scale = Vector2(1.8146376041112882, 1.8146376041112882)
+texture_filter = 2
+texture = ExtResource("earth")
+centered = false
+region_enabled = true
+region_rect = Rect2(416, 416, 352.6875, 317.41875)
+region_filter_clip_enabled = true
+
+[node name="Material" type="Label" parent="HeavyComparison/Dirt"]
+offset_left = 32.0
+offset_top = 118.0
+offset_right = 412.0
+offset_bottom = 144.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 18
+text = "WEATHERED EARTH"
+
+[node name="BaselineUnlitLabel" type="Label" parent="HeavyComparison/Dirt"]
+offset_left = 32.0
+offset_top = 148.0
+offset_right = 412.0
+offset_bottom = 174.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 14
+text = "Baseline / unlit / 12 cells"
+
+[node name="BaselineUnlit" type="Node2D" parent="HeavyComparison/Dirt"]
+
+
+[node name="Segment01" type="Sprite2D" parent="HeavyComparison/Dirt/BaselineUnlit"]
+position = Vector2(48, 176)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment02" type="Sprite2D" parent="HeavyComparison/Dirt/BaselineUnlit"]
+position = Vector2(80, 176)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment03" type="Sprite2D" parent="HeavyComparison/Dirt/BaselineUnlit"]
+position = Vector2(112, 176)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment04" type="Sprite2D" parent="HeavyComparison/Dirt/BaselineUnlit"]
+position = Vector2(144, 176)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment05" type="Sprite2D" parent="HeavyComparison/Dirt/BaselineUnlit"]
+position = Vector2(176, 176)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment06" type="Sprite2D" parent="HeavyComparison/Dirt/BaselineUnlit"]
+position = Vector2(208, 176)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment07" type="Sprite2D" parent="HeavyComparison/Dirt/BaselineUnlit"]
+position = Vector2(240, 176)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment08" type="Sprite2D" parent="HeavyComparison/Dirt/BaselineUnlit"]
+position = Vector2(272, 176)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment09" type="Sprite2D" parent="HeavyComparison/Dirt/BaselineUnlit"]
+position = Vector2(304, 176)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment10" type="Sprite2D" parent="HeavyComparison/Dirt/BaselineUnlit"]
+position = Vector2(336, 176)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment11" type="Sprite2D" parent="HeavyComparison/Dirt/BaselineUnlit"]
+position = Vector2(368, 176)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment12" type="Sprite2D" parent="HeavyComparison/Dirt/BaselineUnlit"]
+position = Vector2(400, 176)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="HeavyUnlitLabel" type="Label" parent="HeavyComparison/Dirt"]
+offset_left = 32.0
+offset_top = 212.0
+offset_right = 412.0
+offset_bottom = 238.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 14
+text = "Heavy v2 / vent + access / 12 cells"
+
+[node name="HeavyUnlit" type="Node2D" parent="HeavyComparison/Dirt"]
+
+
+[node name="Segment01" type="Sprite2D" parent="HeavyComparison/Dirt/HeavyUnlit"]
+position = Vector2(48, 240)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_vent")
+
+[node name="Segment02" type="Sprite2D" parent="HeavyComparison/Dirt/HeavyUnlit"]
+position = Vector2(80, 240)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_vent")
+
+[node name="Segment03" type="Sprite2D" parent="HeavyComparison/Dirt/HeavyUnlit"]
+position = Vector2(112, 240)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_access")
+
+[node name="Segment04" type="Sprite2D" parent="HeavyComparison/Dirt/HeavyUnlit"]
+position = Vector2(144, 240)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_vent")
+
+[node name="Segment05" type="Sprite2D" parent="HeavyComparison/Dirt/HeavyUnlit"]
+position = Vector2(176, 240)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_access")
+
+[node name="Segment06" type="Sprite2D" parent="HeavyComparison/Dirt/HeavyUnlit"]
+position = Vector2(208, 240)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_vent")
+
+[node name="Segment07" type="Sprite2D" parent="HeavyComparison/Dirt/HeavyUnlit"]
+position = Vector2(240, 240)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_vent")
+
+[node name="Segment08" type="Sprite2D" parent="HeavyComparison/Dirt/HeavyUnlit"]
+position = Vector2(272, 240)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_access")
+
+[node name="Segment09" type="Sprite2D" parent="HeavyComparison/Dirt/HeavyUnlit"]
+position = Vector2(304, 240)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_vent")
+
+[node name="Segment10" type="Sprite2D" parent="HeavyComparison/Dirt/HeavyUnlit"]
+position = Vector2(336, 240)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_access")
+
+[node name="Segment11" type="Sprite2D" parent="HeavyComparison/Dirt/HeavyUnlit"]
+position = Vector2(368, 240)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_vent")
+
+[node name="Segment12" type="Sprite2D" parent="HeavyComparison/Dirt/HeavyUnlit"]
+position = Vector2(400, 240)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_access")
+
+[node name="BaselineMixedLabel" type="Label" parent="HeavyComparison/Dirt"]
+offset_left = 32.0
+offset_top = 276.0
+offset_right = 412.0
+offset_bottom = 302.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 14
+text = "Baseline / cyan every fourth cell"
+
+[node name="BaselineMixed" type="Node2D" parent="HeavyComparison/Dirt"]
+
+
+[node name="Segment01" type="Sprite2D" parent="HeavyComparison/Dirt/BaselineMixed"]
+position = Vector2(48, 304)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment02" type="Sprite2D" parent="HeavyComparison/Dirt/BaselineMixed"]
+position = Vector2(80, 304)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment03" type="Sprite2D" parent="HeavyComparison/Dirt/BaselineMixed"]
+position = Vector2(112, 304)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("lit")
+
+[node name="Segment04" type="Sprite2D" parent="HeavyComparison/Dirt/BaselineMixed"]
+position = Vector2(144, 304)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment05" type="Sprite2D" parent="HeavyComparison/Dirt/BaselineMixed"]
+position = Vector2(176, 304)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment06" type="Sprite2D" parent="HeavyComparison/Dirt/BaselineMixed"]
+position = Vector2(208, 304)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment07" type="Sprite2D" parent="HeavyComparison/Dirt/BaselineMixed"]
+position = Vector2(240, 304)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("lit")
+
+[node name="Segment08" type="Sprite2D" parent="HeavyComparison/Dirt/BaselineMixed"]
+position = Vector2(272, 304)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment09" type="Sprite2D" parent="HeavyComparison/Dirt/BaselineMixed"]
+position = Vector2(304, 304)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment10" type="Sprite2D" parent="HeavyComparison/Dirt/BaselineMixed"]
+position = Vector2(336, 304)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment11" type="Sprite2D" parent="HeavyComparison/Dirt/BaselineMixed"]
+position = Vector2(368, 304)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("lit")
+
+[node name="Segment12" type="Sprite2D" parent="HeavyComparison/Dirt/BaselineMixed"]
+position = Vector2(400, 304)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="HeavyMixedLabel" type="Label" parent="HeavyComparison/Dirt"]
+offset_left = 32.0
+offset_top = 340.0
+offset_right = 412.0
+offset_bottom = 366.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 14
+text = "Heavy v2 / vent + access + cyan / 12 cells"
+
+[node name="HeavyMixed" type="Node2D" parent="HeavyComparison/Dirt"]
+
+
+[node name="Segment01" type="Sprite2D" parent="HeavyComparison/Dirt/HeavyMixed"]
+position = Vector2(48, 368)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_vent")
+
+[node name="Segment02" type="Sprite2D" parent="HeavyComparison/Dirt/HeavyMixed"]
+position = Vector2(80, 368)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_vent")
+
+[node name="Segment03" type="Sprite2D" parent="HeavyComparison/Dirt/HeavyMixed"]
+position = Vector2(112, 368)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_lit")
+
+[node name="Segment04" type="Sprite2D" parent="HeavyComparison/Dirt/HeavyMixed"]
+position = Vector2(144, 368)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_vent")
+
+[node name="Segment05" type="Sprite2D" parent="HeavyComparison/Dirt/HeavyMixed"]
+position = Vector2(176, 368)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_access")
+
+[node name="Segment06" type="Sprite2D" parent="HeavyComparison/Dirt/HeavyMixed"]
+position = Vector2(208, 368)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_vent")
+
+[node name="Segment07" type="Sprite2D" parent="HeavyComparison/Dirt/HeavyMixed"]
+position = Vector2(240, 368)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_lit")
+
+[node name="Segment08" type="Sprite2D" parent="HeavyComparison/Dirt/HeavyMixed"]
+position = Vector2(272, 368)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_access")
+
+[node name="Segment09" type="Sprite2D" parent="HeavyComparison/Dirt/HeavyMixed"]
+position = Vector2(304, 368)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_vent")
+
+[node name="Segment10" type="Sprite2D" parent="HeavyComparison/Dirt/HeavyMixed"]
+position = Vector2(336, 368)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_access")
+
+[node name="Segment11" type="Sprite2D" parent="HeavyComparison/Dirt/HeavyMixed"]
+position = Vector2(368, 368)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_lit")
+
+[node name="Segment12" type="Sprite2D" parent="HeavyComparison/Dirt/HeavyMixed"]
+position = Vector2(400, 368)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_access")
+
+[node name="VerticalBaselineLabel" type="Label" parent="HeavyComparison/Dirt"]
+offset_left = 446.0
+offset_top = 138.0
+offset_right = 500.0
+offset_bottom = 164.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 12
+text = "Base"
+
+[node name="VerticalBaseline" type="Node2D" parent="HeavyComparison/Dirt"]
+
+
+[node name="Segment01" type="Sprite2D" parent="HeavyComparison/Dirt/VerticalBaseline"]
+position = Vector2(464, 176)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment02" type="Sprite2D" parent="HeavyComparison/Dirt/VerticalBaseline"]
+position = Vector2(464, 208)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment03" type="Sprite2D" parent="HeavyComparison/Dirt/VerticalBaseline"]
+position = Vector2(464, 240)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("lit")
+
+[node name="Segment04" type="Sprite2D" parent="HeavyComparison/Dirt/VerticalBaseline"]
+position = Vector2(464, 272)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment05" type="Sprite2D" parent="HeavyComparison/Dirt/VerticalBaseline"]
+position = Vector2(464, 304)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment06" type="Sprite2D" parent="HeavyComparison/Dirt/VerticalBaseline"]
+position = Vector2(464, 336)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment07" type="Sprite2D" parent="HeavyComparison/Dirt/VerticalBaseline"]
+position = Vector2(464, 368)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("lit")
+
+[node name="Segment08" type="Sprite2D" parent="HeavyComparison/Dirt/VerticalBaseline"]
+position = Vector2(464, 400)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment09" type="Sprite2D" parent="HeavyComparison/Dirt/VerticalBaseline"]
+position = Vector2(464, 432)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment10" type="Sprite2D" parent="HeavyComparison/Dirt/VerticalBaseline"]
+position = Vector2(464, 464)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment11" type="Sprite2D" parent="HeavyComparison/Dirt/VerticalBaseline"]
+position = Vector2(464, 496)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("lit")
+
+[node name="Segment12" type="Sprite2D" parent="HeavyComparison/Dirt/VerticalBaseline"]
+position = Vector2(464, 528)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="VerticalHeavyUnlitLabel" type="Label" parent="HeavyComparison/Dirt"]
+offset_left = 510.0
+offset_top = 138.0
+offset_right = 564.0
+offset_bottom = 164.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 12
+text = "HI U"
+
+[node name="VerticalHeavyUnlit" type="Node2D" parent="HeavyComparison/Dirt"]
+
+
+[node name="Segment01" type="Sprite2D" parent="HeavyComparison/Dirt/VerticalHeavyUnlit"]
+position = Vector2(528, 176)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_vent")
+
+[node name="Segment02" type="Sprite2D" parent="HeavyComparison/Dirt/VerticalHeavyUnlit"]
+position = Vector2(528, 208)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_vent")
+
+[node name="Segment03" type="Sprite2D" parent="HeavyComparison/Dirt/VerticalHeavyUnlit"]
+position = Vector2(528, 240)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_access")
+
+[node name="Segment04" type="Sprite2D" parent="HeavyComparison/Dirt/VerticalHeavyUnlit"]
+position = Vector2(528, 272)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_vent")
+
+[node name="Segment05" type="Sprite2D" parent="HeavyComparison/Dirt/VerticalHeavyUnlit"]
+position = Vector2(528, 304)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_access")
+
+[node name="Segment06" type="Sprite2D" parent="HeavyComparison/Dirt/VerticalHeavyUnlit"]
+position = Vector2(528, 336)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_vent")
+
+[node name="Segment07" type="Sprite2D" parent="HeavyComparison/Dirt/VerticalHeavyUnlit"]
+position = Vector2(528, 368)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_vent")
+
+[node name="Segment08" type="Sprite2D" parent="HeavyComparison/Dirt/VerticalHeavyUnlit"]
+position = Vector2(528, 400)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_access")
+
+[node name="Segment09" type="Sprite2D" parent="HeavyComparison/Dirt/VerticalHeavyUnlit"]
+position = Vector2(528, 432)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_vent")
+
+[node name="Segment10" type="Sprite2D" parent="HeavyComparison/Dirt/VerticalHeavyUnlit"]
+position = Vector2(528, 464)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_access")
+
+[node name="Segment11" type="Sprite2D" parent="HeavyComparison/Dirt/VerticalHeavyUnlit"]
+position = Vector2(528, 496)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_vent")
+
+[node name="Segment12" type="Sprite2D" parent="HeavyComparison/Dirt/VerticalHeavyUnlit"]
+position = Vector2(528, 528)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_access")
+
+[node name="VerticalHeavyMixedLabel" type="Label" parent="HeavyComparison/Dirt"]
+offset_left = 574.0
+offset_top = 138.0
+offset_right = 628.0
+offset_bottom = 164.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 12
+text = "HI C"
+
+[node name="VerticalHeavyMixed" type="Node2D" parent="HeavyComparison/Dirt"]
+
+
+[node name="Segment01" type="Sprite2D" parent="HeavyComparison/Dirt/VerticalHeavyMixed"]
+position = Vector2(592, 176)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_vent")
+
+[node name="Segment02" type="Sprite2D" parent="HeavyComparison/Dirt/VerticalHeavyMixed"]
+position = Vector2(592, 208)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_vent")
+
+[node name="Segment03" type="Sprite2D" parent="HeavyComparison/Dirt/VerticalHeavyMixed"]
+position = Vector2(592, 240)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_lit")
+
+[node name="Segment04" type="Sprite2D" parent="HeavyComparison/Dirt/VerticalHeavyMixed"]
+position = Vector2(592, 272)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_vent")
+
+[node name="Segment05" type="Sprite2D" parent="HeavyComparison/Dirt/VerticalHeavyMixed"]
+position = Vector2(592, 304)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_access")
+
+[node name="Segment06" type="Sprite2D" parent="HeavyComparison/Dirt/VerticalHeavyMixed"]
+position = Vector2(592, 336)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_vent")
+
+[node name="Segment07" type="Sprite2D" parent="HeavyComparison/Dirt/VerticalHeavyMixed"]
+position = Vector2(592, 368)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_lit")
+
+[node name="Segment08" type="Sprite2D" parent="HeavyComparison/Dirt/VerticalHeavyMixed"]
+position = Vector2(592, 400)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_access")
+
+[node name="Segment09" type="Sprite2D" parent="HeavyComparison/Dirt/VerticalHeavyMixed"]
+position = Vector2(592, 432)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_vent")
+
+[node name="Segment10" type="Sprite2D" parent="HeavyComparison/Dirt/VerticalHeavyMixed"]
+position = Vector2(592, 464)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_access")
+
+[node name="Segment11" type="Sprite2D" parent="HeavyComparison/Dirt/VerticalHeavyMixed"]
+position = Vector2(592, 496)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_lit")
+
+[node name="Segment12" type="Sprite2D" parent="HeavyComparison/Dirt/VerticalHeavyMixed"]
+position = Vector2(592, 528)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_access")
+
+[node name="MachineLabel" type="Label" parent="HeavyComparison/Dirt"]
+offset_left = 32.0
+offset_top = 400.0
+offset_right = 432.0
+offset_bottom = 426.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 15
+text = "Existing machines / unchanged gameplay scale"
+
+[node name="extractorFootprint" type="Line2D" parent="HeavyComparison/Dirt"]
+position = Vector2(32, 448)
+points = PackedVector2Array(0, 0, 128, 0, 128, 128, 0, 128, 0, 0)
+width = 1.0
+default_color = Color(0.8, 0.89, 0.91, 0.4)
+
+[node name="Extractor" type="Node2D" parent="HeavyComparison/Dirt"]
+position = Vector2(96, 576)
+scale = Vector2(0.11387900355871886, 0.11387900355871886)
+
+[node name="body" type="Sprite2D" parent="HeavyComparison/Dirt/Extractor"]
+position = Vector2(-566, -1102)
+scale = Vector2(1, 1)
+texture_filter = 4
+texture = ExtResource("extractor_body")
+centered = false
+
+[node name="barrel" type="Sprite2D" parent="HeavyComparison/Dirt/Extractor"]
+position = Vector2(-312, -865)
+scale = Vector2(1, 1)
+texture_filter = 4
+texture = ExtResource("extractor_barrel")
+centered = false
+
+[node name="foreground" type="Sprite2D" parent="HeavyComparison/Dirt/Extractor"]
+position = Vector2(-336, -873)
+scale = Vector2(1, 1)
+texture_filter = 4
+texture = ExtResource("extractor_foreground")
+centered = false
+
+[node name="extractorLabel" type="Label" parent="HeavyComparison/Dirt"]
+offset_left = 16.0
+offset_top = 588.0
+offset_right = 226.0
+offset_bottom = 614.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 15
+text = "Extractor / 4 x 4 cells"
+
+[node name="smelterFootprint" type="Line2D" parent="HeavyComparison/Dirt"]
+position = Vector2(256, 448)
+points = PackedVector2Array(0, 0, 128, 0, 128, 128, 0, 128, 0, 0)
+width = 1.0
+default_color = Color(0.8, 0.89, 0.91, 0.4)
+
+[node name="Smelter" type="Node2D" parent="HeavyComparison/Dirt"]
+position = Vector2(320, 576)
+scale = Vector2(0.13793103448275862, 0.13793103448275862)
+
+[node name="body" type="Sprite2D" parent="HeavyComparison/Dirt/Smelter"]
+position = Vector2(-571, -999)
+scale = Vector2(1, 1)
+texture_filter = 4
+texture = ExtResource("smelter_body")
+centered = false
+
+[node name="interior" type="Sprite2D" parent="HeavyComparison/Dirt/Smelter"]
+position = Vector2(-8, -439)
+scale = Vector2(1, 1)
+texture_filter = 4
+texture = ExtResource("smelter_interior")
+centered = false
+
+[node name="foreground" type="Sprite2D" parent="HeavyComparison/Dirt/Smelter"]
+position = Vector2(-72, -460)
+scale = Vector2(1, 1)
+texture_filter = 4
+texture = ExtResource("smelter_foreground")
+centered = false
+
+[node name="smelterLabel" type="Label" parent="HeavyComparison/Dirt"]
+offset_left = 240.0
+offset_top = 588.0
+offset_right = 450.0
+offset_bottom = 614.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 15
+text = "Smelter / 4 x 4 cells"
+
+[node name="OrientationKey" type="Label" parent="HeavyComparison/Dirt"]
+offset_left = 448.0
+offset_top = 560.0
+offset_right = 622.0
+offset_bottom = 586.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 12
+text = "Base: baseline
+HI: Heavy v2
+U: unlit / C: mixed"
+
+[node name="VentSwatch" type="Sprite2D" parent="HeavyComparison/Dirt"]
+position = Vector2(48, 624)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_vent")
+
+[node name="VentCaption" type="Label" parent="HeavyComparison/Dirt"]
+offset_left = 68.0
+offset_top = 613.0
+offset_right = 168.0
+offset_bottom = 639.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 13
+text = "A Vent"
+
+[node name="AccessSwatch" type="Sprite2D" parent="HeavyComparison/Dirt"]
+position = Vector2(176, 624)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_access")
+
+[node name="AccessCaption" type="Label" parent="HeavyComparison/Dirt"]
+offset_left = 196.0
+offset_top = 613.0
+offset_right = 296.0
+offset_bottom = 639.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 13
+text = "B Access"
+
+[node name="CyanSwatch" type="Sprite2D" parent="HeavyComparison/Dirt"]
+position = Vector2(336, 624)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_lit")
+
+[node name="CyanCaption" type="Label" parent="HeavyComparison/Dirt"]
+offset_left = 356.0
+offset_top = 613.0
+offset_right = 456.0
+offset_bottom = 639.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 13
+text = "C Cyan"
+
+[node name="ScaleNote" type="Label" parent="HeavyComparison/Dirt"]
+offset_left = 448.0
+offset_top = 616.0
+offset_right = 628.0
+offset_bottom = 642.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 12
+text = "All samples: 32-unit cells"
+
+[node name="Grass" type="Node2D" parent="HeavyComparison"]
+position = Vector2(640, 0)
+
+[node name="Terrain" type="Sprite2D" parent="HeavyComparison/Grass"]
+position = Vector2(0, 80)
+scale = Vector2(1.8146376041112882, 1.8146376041112882)
+texture_filter = 2
+texture = ExtResource("green")
+centered = false
+region_enabled = true
+region_rect = Rect2(416, 416, 352.6875, 317.41875)
+region_filter_clip_enabled = true
+
+[node name="Material" type="Label" parent="HeavyComparison/Grass"]
+offset_left = 32.0
+offset_top = 118.0
+offset_right = 412.0
+offset_bottom = 144.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 18
+text = "LOW GREEN COVER"
+
+[node name="BaselineUnlitLabel" type="Label" parent="HeavyComparison/Grass"]
+offset_left = 32.0
+offset_top = 148.0
+offset_right = 412.0
+offset_bottom = 174.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 14
+text = "Baseline / unlit / 12 cells"
+
+[node name="BaselineUnlit" type="Node2D" parent="HeavyComparison/Grass"]
+
+
+[node name="Segment01" type="Sprite2D" parent="HeavyComparison/Grass/BaselineUnlit"]
+position = Vector2(48, 176)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment02" type="Sprite2D" parent="HeavyComparison/Grass/BaselineUnlit"]
+position = Vector2(80, 176)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment03" type="Sprite2D" parent="HeavyComparison/Grass/BaselineUnlit"]
+position = Vector2(112, 176)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment04" type="Sprite2D" parent="HeavyComparison/Grass/BaselineUnlit"]
+position = Vector2(144, 176)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment05" type="Sprite2D" parent="HeavyComparison/Grass/BaselineUnlit"]
+position = Vector2(176, 176)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment06" type="Sprite2D" parent="HeavyComparison/Grass/BaselineUnlit"]
+position = Vector2(208, 176)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment07" type="Sprite2D" parent="HeavyComparison/Grass/BaselineUnlit"]
+position = Vector2(240, 176)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment08" type="Sprite2D" parent="HeavyComparison/Grass/BaselineUnlit"]
+position = Vector2(272, 176)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment09" type="Sprite2D" parent="HeavyComparison/Grass/BaselineUnlit"]
+position = Vector2(304, 176)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment10" type="Sprite2D" parent="HeavyComparison/Grass/BaselineUnlit"]
+position = Vector2(336, 176)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment11" type="Sprite2D" parent="HeavyComparison/Grass/BaselineUnlit"]
+position = Vector2(368, 176)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment12" type="Sprite2D" parent="HeavyComparison/Grass/BaselineUnlit"]
+position = Vector2(400, 176)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="HeavyUnlitLabel" type="Label" parent="HeavyComparison/Grass"]
+offset_left = 32.0
+offset_top = 212.0
+offset_right = 412.0
+offset_bottom = 238.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 14
+text = "Heavy v2 / vent + access / 12 cells"
+
+[node name="HeavyUnlit" type="Node2D" parent="HeavyComparison/Grass"]
+
+
+[node name="Segment01" type="Sprite2D" parent="HeavyComparison/Grass/HeavyUnlit"]
+position = Vector2(48, 240)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_vent")
+
+[node name="Segment02" type="Sprite2D" parent="HeavyComparison/Grass/HeavyUnlit"]
+position = Vector2(80, 240)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_vent")
+
+[node name="Segment03" type="Sprite2D" parent="HeavyComparison/Grass/HeavyUnlit"]
+position = Vector2(112, 240)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_access")
+
+[node name="Segment04" type="Sprite2D" parent="HeavyComparison/Grass/HeavyUnlit"]
+position = Vector2(144, 240)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_vent")
+
+[node name="Segment05" type="Sprite2D" parent="HeavyComparison/Grass/HeavyUnlit"]
+position = Vector2(176, 240)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_access")
+
+[node name="Segment06" type="Sprite2D" parent="HeavyComparison/Grass/HeavyUnlit"]
+position = Vector2(208, 240)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_vent")
+
+[node name="Segment07" type="Sprite2D" parent="HeavyComparison/Grass/HeavyUnlit"]
+position = Vector2(240, 240)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_vent")
+
+[node name="Segment08" type="Sprite2D" parent="HeavyComparison/Grass/HeavyUnlit"]
+position = Vector2(272, 240)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_access")
+
+[node name="Segment09" type="Sprite2D" parent="HeavyComparison/Grass/HeavyUnlit"]
+position = Vector2(304, 240)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_vent")
+
+[node name="Segment10" type="Sprite2D" parent="HeavyComparison/Grass/HeavyUnlit"]
+position = Vector2(336, 240)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_access")
+
+[node name="Segment11" type="Sprite2D" parent="HeavyComparison/Grass/HeavyUnlit"]
+position = Vector2(368, 240)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_vent")
+
+[node name="Segment12" type="Sprite2D" parent="HeavyComparison/Grass/HeavyUnlit"]
+position = Vector2(400, 240)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_access")
+
+[node name="BaselineMixedLabel" type="Label" parent="HeavyComparison/Grass"]
+offset_left = 32.0
+offset_top = 276.0
+offset_right = 412.0
+offset_bottom = 302.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 14
+text = "Baseline / cyan every fourth cell"
+
+[node name="BaselineMixed" type="Node2D" parent="HeavyComparison/Grass"]
+
+
+[node name="Segment01" type="Sprite2D" parent="HeavyComparison/Grass/BaselineMixed"]
+position = Vector2(48, 304)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment02" type="Sprite2D" parent="HeavyComparison/Grass/BaselineMixed"]
+position = Vector2(80, 304)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment03" type="Sprite2D" parent="HeavyComparison/Grass/BaselineMixed"]
+position = Vector2(112, 304)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("lit")
+
+[node name="Segment04" type="Sprite2D" parent="HeavyComparison/Grass/BaselineMixed"]
+position = Vector2(144, 304)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment05" type="Sprite2D" parent="HeavyComparison/Grass/BaselineMixed"]
+position = Vector2(176, 304)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment06" type="Sprite2D" parent="HeavyComparison/Grass/BaselineMixed"]
+position = Vector2(208, 304)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment07" type="Sprite2D" parent="HeavyComparison/Grass/BaselineMixed"]
+position = Vector2(240, 304)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("lit")
+
+[node name="Segment08" type="Sprite2D" parent="HeavyComparison/Grass/BaselineMixed"]
+position = Vector2(272, 304)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment09" type="Sprite2D" parent="HeavyComparison/Grass/BaselineMixed"]
+position = Vector2(304, 304)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment10" type="Sprite2D" parent="HeavyComparison/Grass/BaselineMixed"]
+position = Vector2(336, 304)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment11" type="Sprite2D" parent="HeavyComparison/Grass/BaselineMixed"]
+position = Vector2(368, 304)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("lit")
+
+[node name="Segment12" type="Sprite2D" parent="HeavyComparison/Grass/BaselineMixed"]
+position = Vector2(400, 304)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="HeavyMixedLabel" type="Label" parent="HeavyComparison/Grass"]
+offset_left = 32.0
+offset_top = 340.0
+offset_right = 412.0
+offset_bottom = 366.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 14
+text = "Heavy v2 / vent + access + cyan / 12 cells"
+
+[node name="HeavyMixed" type="Node2D" parent="HeavyComparison/Grass"]
+
+
+[node name="Segment01" type="Sprite2D" parent="HeavyComparison/Grass/HeavyMixed"]
+position = Vector2(48, 368)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_vent")
+
+[node name="Segment02" type="Sprite2D" parent="HeavyComparison/Grass/HeavyMixed"]
+position = Vector2(80, 368)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_vent")
+
+[node name="Segment03" type="Sprite2D" parent="HeavyComparison/Grass/HeavyMixed"]
+position = Vector2(112, 368)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_lit")
+
+[node name="Segment04" type="Sprite2D" parent="HeavyComparison/Grass/HeavyMixed"]
+position = Vector2(144, 368)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_vent")
+
+[node name="Segment05" type="Sprite2D" parent="HeavyComparison/Grass/HeavyMixed"]
+position = Vector2(176, 368)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_access")
+
+[node name="Segment06" type="Sprite2D" parent="HeavyComparison/Grass/HeavyMixed"]
+position = Vector2(208, 368)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_vent")
+
+[node name="Segment07" type="Sprite2D" parent="HeavyComparison/Grass/HeavyMixed"]
+position = Vector2(240, 368)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_lit")
+
+[node name="Segment08" type="Sprite2D" parent="HeavyComparison/Grass/HeavyMixed"]
+position = Vector2(272, 368)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_access")
+
+[node name="Segment09" type="Sprite2D" parent="HeavyComparison/Grass/HeavyMixed"]
+position = Vector2(304, 368)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_vent")
+
+[node name="Segment10" type="Sprite2D" parent="HeavyComparison/Grass/HeavyMixed"]
+position = Vector2(336, 368)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_access")
+
+[node name="Segment11" type="Sprite2D" parent="HeavyComparison/Grass/HeavyMixed"]
+position = Vector2(368, 368)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_lit")
+
+[node name="Segment12" type="Sprite2D" parent="HeavyComparison/Grass/HeavyMixed"]
+position = Vector2(400, 368)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_access")
+
+[node name="VerticalBaselineLabel" type="Label" parent="HeavyComparison/Grass"]
+offset_left = 446.0
+offset_top = 138.0
+offset_right = 500.0
+offset_bottom = 164.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 12
+text = "Base"
+
+[node name="VerticalBaseline" type="Node2D" parent="HeavyComparison/Grass"]
+
+
+[node name="Segment01" type="Sprite2D" parent="HeavyComparison/Grass/VerticalBaseline"]
+position = Vector2(464, 176)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment02" type="Sprite2D" parent="HeavyComparison/Grass/VerticalBaseline"]
+position = Vector2(464, 208)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment03" type="Sprite2D" parent="HeavyComparison/Grass/VerticalBaseline"]
+position = Vector2(464, 240)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("lit")
+
+[node name="Segment04" type="Sprite2D" parent="HeavyComparison/Grass/VerticalBaseline"]
+position = Vector2(464, 272)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment05" type="Sprite2D" parent="HeavyComparison/Grass/VerticalBaseline"]
+position = Vector2(464, 304)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment06" type="Sprite2D" parent="HeavyComparison/Grass/VerticalBaseline"]
+position = Vector2(464, 336)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment07" type="Sprite2D" parent="HeavyComparison/Grass/VerticalBaseline"]
+position = Vector2(464, 368)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("lit")
+
+[node name="Segment08" type="Sprite2D" parent="HeavyComparison/Grass/VerticalBaseline"]
+position = Vector2(464, 400)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment09" type="Sprite2D" parent="HeavyComparison/Grass/VerticalBaseline"]
+position = Vector2(464, 432)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment10" type="Sprite2D" parent="HeavyComparison/Grass/VerticalBaseline"]
+position = Vector2(464, 464)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment11" type="Sprite2D" parent="HeavyComparison/Grass/VerticalBaseline"]
+position = Vector2(464, 496)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("lit")
+
+[node name="Segment12" type="Sprite2D" parent="HeavyComparison/Grass/VerticalBaseline"]
+position = Vector2(464, 528)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="VerticalHeavyUnlitLabel" type="Label" parent="HeavyComparison/Grass"]
+offset_left = 510.0
+offset_top = 138.0
+offset_right = 564.0
+offset_bottom = 164.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 12
+text = "HI U"
+
+[node name="VerticalHeavyUnlit" type="Node2D" parent="HeavyComparison/Grass"]
+
+
+[node name="Segment01" type="Sprite2D" parent="HeavyComparison/Grass/VerticalHeavyUnlit"]
+position = Vector2(528, 176)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_vent")
+
+[node name="Segment02" type="Sprite2D" parent="HeavyComparison/Grass/VerticalHeavyUnlit"]
+position = Vector2(528, 208)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_vent")
+
+[node name="Segment03" type="Sprite2D" parent="HeavyComparison/Grass/VerticalHeavyUnlit"]
+position = Vector2(528, 240)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_access")
+
+[node name="Segment04" type="Sprite2D" parent="HeavyComparison/Grass/VerticalHeavyUnlit"]
+position = Vector2(528, 272)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_vent")
+
+[node name="Segment05" type="Sprite2D" parent="HeavyComparison/Grass/VerticalHeavyUnlit"]
+position = Vector2(528, 304)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_access")
+
+[node name="Segment06" type="Sprite2D" parent="HeavyComparison/Grass/VerticalHeavyUnlit"]
+position = Vector2(528, 336)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_vent")
+
+[node name="Segment07" type="Sprite2D" parent="HeavyComparison/Grass/VerticalHeavyUnlit"]
+position = Vector2(528, 368)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_vent")
+
+[node name="Segment08" type="Sprite2D" parent="HeavyComparison/Grass/VerticalHeavyUnlit"]
+position = Vector2(528, 400)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_access")
+
+[node name="Segment09" type="Sprite2D" parent="HeavyComparison/Grass/VerticalHeavyUnlit"]
+position = Vector2(528, 432)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_vent")
+
+[node name="Segment10" type="Sprite2D" parent="HeavyComparison/Grass/VerticalHeavyUnlit"]
+position = Vector2(528, 464)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_access")
+
+[node name="Segment11" type="Sprite2D" parent="HeavyComparison/Grass/VerticalHeavyUnlit"]
+position = Vector2(528, 496)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_vent")
+
+[node name="Segment12" type="Sprite2D" parent="HeavyComparison/Grass/VerticalHeavyUnlit"]
+position = Vector2(528, 528)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_access")
+
+[node name="VerticalHeavyMixedLabel" type="Label" parent="HeavyComparison/Grass"]
+offset_left = 574.0
+offset_top = 138.0
+offset_right = 628.0
+offset_bottom = 164.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 12
+text = "HI C"
+
+[node name="VerticalHeavyMixed" type="Node2D" parent="HeavyComparison/Grass"]
+
+
+[node name="Segment01" type="Sprite2D" parent="HeavyComparison/Grass/VerticalHeavyMixed"]
+position = Vector2(592, 176)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_vent")
+
+[node name="Segment02" type="Sprite2D" parent="HeavyComparison/Grass/VerticalHeavyMixed"]
+position = Vector2(592, 208)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_vent")
+
+[node name="Segment03" type="Sprite2D" parent="HeavyComparison/Grass/VerticalHeavyMixed"]
+position = Vector2(592, 240)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_lit")
+
+[node name="Segment04" type="Sprite2D" parent="HeavyComparison/Grass/VerticalHeavyMixed"]
+position = Vector2(592, 272)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_vent")
+
+[node name="Segment05" type="Sprite2D" parent="HeavyComparison/Grass/VerticalHeavyMixed"]
+position = Vector2(592, 304)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_access")
+
+[node name="Segment06" type="Sprite2D" parent="HeavyComparison/Grass/VerticalHeavyMixed"]
+position = Vector2(592, 336)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_vent")
+
+[node name="Segment07" type="Sprite2D" parent="HeavyComparison/Grass/VerticalHeavyMixed"]
+position = Vector2(592, 368)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_lit")
+
+[node name="Segment08" type="Sprite2D" parent="HeavyComparison/Grass/VerticalHeavyMixed"]
+position = Vector2(592, 400)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_access")
+
+[node name="Segment09" type="Sprite2D" parent="HeavyComparison/Grass/VerticalHeavyMixed"]
+position = Vector2(592, 432)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_vent")
+
+[node name="Segment10" type="Sprite2D" parent="HeavyComparison/Grass/VerticalHeavyMixed"]
+position = Vector2(592, 464)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_access")
+
+[node name="Segment11" type="Sprite2D" parent="HeavyComparison/Grass/VerticalHeavyMixed"]
+position = Vector2(592, 496)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_lit")
+
+[node name="Segment12" type="Sprite2D" parent="HeavyComparison/Grass/VerticalHeavyMixed"]
+position = Vector2(592, 528)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_access")
+
+[node name="MachineLabel" type="Label" parent="HeavyComparison/Grass"]
+offset_left = 32.0
+offset_top = 400.0
+offset_right = 432.0
+offset_bottom = 426.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 15
+text = "Existing machines / unchanged gameplay scale"
+
+[node name="extractorFootprint" type="Line2D" parent="HeavyComparison/Grass"]
+position = Vector2(32, 448)
+points = PackedVector2Array(0, 0, 128, 0, 128, 128, 0, 128, 0, 0)
+width = 1.0
+default_color = Color(0.8, 0.89, 0.91, 0.4)
+
+[node name="Extractor" type="Node2D" parent="HeavyComparison/Grass"]
+position = Vector2(96, 576)
+scale = Vector2(0.11387900355871886, 0.11387900355871886)
+
+[node name="body" type="Sprite2D" parent="HeavyComparison/Grass/Extractor"]
+position = Vector2(-566, -1102)
+scale = Vector2(1, 1)
+texture_filter = 4
+texture = ExtResource("extractor_body")
+centered = false
+
+[node name="barrel" type="Sprite2D" parent="HeavyComparison/Grass/Extractor"]
+position = Vector2(-312, -865)
+scale = Vector2(1, 1)
+texture_filter = 4
+texture = ExtResource("extractor_barrel")
+centered = false
+
+[node name="foreground" type="Sprite2D" parent="HeavyComparison/Grass/Extractor"]
+position = Vector2(-336, -873)
+scale = Vector2(1, 1)
+texture_filter = 4
+texture = ExtResource("extractor_foreground")
+centered = false
+
+[node name="extractorLabel" type="Label" parent="HeavyComparison/Grass"]
+offset_left = 16.0
+offset_top = 588.0
+offset_right = 226.0
+offset_bottom = 614.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 15
+text = "Extractor / 4 x 4 cells"
+
+[node name="smelterFootprint" type="Line2D" parent="HeavyComparison/Grass"]
+position = Vector2(256, 448)
+points = PackedVector2Array(0, 0, 128, 0, 128, 128, 0, 128, 0, 0)
+width = 1.0
+default_color = Color(0.8, 0.89, 0.91, 0.4)
+
+[node name="Smelter" type="Node2D" parent="HeavyComparison/Grass"]
+position = Vector2(320, 576)
+scale = Vector2(0.13793103448275862, 0.13793103448275862)
+
+[node name="body" type="Sprite2D" parent="HeavyComparison/Grass/Smelter"]
+position = Vector2(-571, -999)
+scale = Vector2(1, 1)
+texture_filter = 4
+texture = ExtResource("smelter_body")
+centered = false
+
+[node name="interior" type="Sprite2D" parent="HeavyComparison/Grass/Smelter"]
+position = Vector2(-8, -439)
+scale = Vector2(1, 1)
+texture_filter = 4
+texture = ExtResource("smelter_interior")
+centered = false
+
+[node name="foreground" type="Sprite2D" parent="HeavyComparison/Grass/Smelter"]
+position = Vector2(-72, -460)
+scale = Vector2(1, 1)
+texture_filter = 4
+texture = ExtResource("smelter_foreground")
+centered = false
+
+[node name="smelterLabel" type="Label" parent="HeavyComparison/Grass"]
+offset_left = 240.0
+offset_top = 588.0
+offset_right = 450.0
+offset_bottom = 614.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 15
+text = "Smelter / 4 x 4 cells"
+
+[node name="OrientationKey" type="Label" parent="HeavyComparison/Grass"]
+offset_left = 448.0
+offset_top = 560.0
+offset_right = 622.0
+offset_bottom = 586.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 12
+text = "Base: baseline
+HI: Heavy v2
+U: unlit / C: mixed"
+
+[node name="VentSwatch" type="Sprite2D" parent="HeavyComparison/Grass"]
+position = Vector2(48, 624)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_vent")
+
+[node name="VentCaption" type="Label" parent="HeavyComparison/Grass"]
+offset_left = 68.0
+offset_top = 613.0
+offset_right = 168.0
+offset_bottom = 639.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 13
+text = "A Vent"
+
+[node name="AccessSwatch" type="Sprite2D" parent="HeavyComparison/Grass"]
+position = Vector2(176, 624)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_access")
+
+[node name="AccessCaption" type="Label" parent="HeavyComparison/Grass"]
+offset_left = 196.0
+offset_top = 613.0
+offset_right = 296.0
+offset_bottom = 639.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 13
+text = "B Access"
+
+[node name="CyanSwatch" type="Sprite2D" parent="HeavyComparison/Grass"]
+position = Vector2(336, 624)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("heavy_lit")
+
+[node name="CyanCaption" type="Label" parent="HeavyComparison/Grass"]
+offset_left = 356.0
+offset_top = 613.0
+offset_right = 456.0
+offset_bottom = 639.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 13
+text = "C Cyan"
+
+[node name="ScaleNote" type="Label" parent="HeavyComparison/Grass"]
+offset_left = 448.0
+offset_top = 616.0
+offset_right = 628.0
+offset_bottom = 642.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 12
+text = "All samples: 32-unit cells"
+
+[node name="Heading" type="Label" parent="HeavyComparison"]
+offset_left = 32.0
+offset_top = 82.0
+offset_right = 952.0
+offset_bottom = 108.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 22
+text = "HEAVY INDUSTRIAL v2 / BASELINE COMPARISON"
+
+[node name="ReviewNote" type="Label" parent="HeavyComparison"]
+offset_left = 934.0
+offset_top = 88.0
+offset_right = 1258.0
+offset_bottom = 114.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 14
+text = "Experimental / owner review pending"
