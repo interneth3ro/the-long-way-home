@@ -1,0 +1,18 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scenes/experiments/resource_generation_v2/ferrite_inspection.gd" id="1_inspection"]
+[ext_resource type="Script" path="res://scenes/player/follow_camera.gd" id="2_camera"]
+
+[node name="FerriteInspection" type="Node2D"]
+script = ExtResource("1_inspection")
+development_inspection_enabled = true
+
+[node name="Camera2D" type="Camera2D" parent="."]
+script = ExtResource("2_camera")
+
+[node name="HUD" type="CanvasLayer" parent="."]
+
+[node name="Instructions" type="Label" parent="HUD"]
+offset_left = 16.0
+offset_top = 16.0
+text = "FERRITE V2 ISOLATED PREVIEW — preparing. No gameplay authority."

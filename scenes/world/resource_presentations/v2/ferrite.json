@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "resource_id": "ferrite",
+  "variants": [
+    {
+      "id": "production_candidate_v1",
+      "artwork": "res://assets/environment/exterior/ferrite/ferrite_v2_production_candidate_v1.png",
+      "sha256": "bd0f7696d64f8f96dca3cbfa0baecb7bba7da96876242eabc5056916574825a0",
+      "size": [1536, 1024],
+      "scale": 0.225,
+      "offset": [0, 16]
+    }
+  ]
+}

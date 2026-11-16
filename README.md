@@ -28,11 +28,17 @@ using its existing 60/min timing and 20-item storage; collection and recovery us
 the same resolved item. The owner's unchanged inventory icon is registered with
 shared item presentation. Legacy Ferrite and approved world artwork are preserved.
 The [Carbite production integration](docs/RESOURCE_GENERATION_V2_PRESENTATION.md#carbite-production-integration-feature-branch-pending-merge)
-on `codex/carbite-gameplay-integration` adds authoritative Carbite Ore extraction,
-inventory artwork, collection and recovery, pending merge and owner acceptance.
+merged in PR #211 adds authoritative Carbite Ore extraction,
+inventory artwork, collection and recovery; owner acceptance remains unrecorded.
 PR #210's approved world presentation is retained through the shared presenter.
 Carbite uses the same 60/min timing and 20-item buffer. New recipes, fuel behavior,
 research, power generation and save migration remain outside this milestone.
+
+The [Ferrite V2 isolated artwork preview](docs/RESOURCE_GENERATION_V2_PRESENTATION.md#ferrite-v2-isolated-artwork-preview-feature-branch-pending-merge)
+on `codex/ferrite-v2-isolated-preview` is pending merge and owner graphical
+acceptance. Open `scenes/experiments/resource_generation_v2/ferrite_inspection.tscn`
+and use F6 for the standalone comparison; live Ferrite gameplay and presentation
+remain unchanged. Preview acceptance does not approve production migration.
 Agent validation is static only; GDScript assertions are authored but not executed.
 
 The [east/west walking alignment](#dave-east-and-west-walk-alignment-v1-owner-accepted-pending-merge)
