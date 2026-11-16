@@ -344,8 +344,9 @@ suite was not rerun for this follow-up.
 PR #210 merged the shared Carbite world presentation at
 `305e17e405bae955c6e2086f58d87e89206bb2cb`. That milestone excluded extraction.
 `codex/carbite-gameplay-integration` promotes the same presentation and adds
-Carbite Ore through the existing Extractor and inventory paths, pending merge
-and owner acceptance. The retained filename and `candidate_v1` identifier are
+Carbite Ore through the existing Extractor and inventory paths, merged in PR #211
+at `b21cd0490c1ece3c5905843fd593ad8f8d38b034`; owner acceptance remains unrecorded.
+The retained filename and `candidate_v1` identifier are
 stable catalog references, not a restriction on production use.
 
 The owner-approved `carbite_deposit_candidate_v1.png` is copied byte-for-byte to
@@ -442,3 +443,89 @@ no manifest, runner or execution authorization changes.
 
 Owner execution and visual results are not yet recorded. Report scale/offset,
 blending or positioning feedback before any further artwork or gameplay changes.
+
+## Ferrite V2 isolated artwork preview (feature branch, pending merge)
+
+`codex/ferrite-v2-isolated-preview` integrates the owner-approved
+[`ferrite_v2_production_candidate_v1.png`](../assets/environment/exterior/ferrite/ferrite_v2_production_candidate_v1.png)
+byte-for-byte, based on synchronized `main` including merged PR #211.
+Its SHA-256 is
+`bd0f7696d64f8f96dca3cbfa0baecb7bba7da96876242eabc5056916574825a0`.
+Offline decoding verifies a 1536x1024 RGBA8 PNG, 963,188 fully transparent pixels,
+609,676 partially transparent pixels and 255 alpha levels (0-254). The image has
+no fully opaque pixels; the bottom-left corner has alpha 1. It is not resized,
+recolored, recompressed or regenerated. The import sidecar is authored using
+Carbite's existing settings, with its own UID and source-specific destination;
+Godot import remains unverified.
+
+The [Ferrite catalog](../scenes/world/resource_presentations/v2/ferrite.json)
+uses existing version-1 admission rules and one `production_candidate_v1`
+variant. Provisional scale is **0.225**, offset **(0,16)**, giving a centered
+345.6x230.4 image rectangle around a **128x128** logical anchor. The unchanged
+shared presenter supplies linear filtering and z-index **-5**. Its limits,
+validation and rendering implementation are unchanged.
+
+Only the isolated
+[`ferrite_preview.tres`](../scenes/experiments/resource_generation_v2/ferrite_preview.tres)
+references this catalog. It matches the live Ferrite definition except for its
+presentation reference. The live definition has no presentation catalog, and
+`PlanetExterior` continues to configure V2 presentation for Cuprite and Carbite
+only. Legacy Ferrite, the authored crash-site deposit, generation weights,
+seven starting reservations, anchor geometry, deposit identities, Extractor
+placement/production/collection/recovery and opening discovery are unchanged.
+Historical Ferrite artwork and documentation are preserved.
+
+The standalone [preview scene](../scenes/experiments/resource_generation_v2/ferrite_inspection.tscn)
+reuses `StartingResourceGenerator`, `ResourcePresenterV2`,
+`ContinuousTerrainPresenter`, `PlanetGenerator.sample_ground_material` and the
+normal exterior `FollowCamera` zoom controls. It uses seed 26026, all three
+definitions and all seven starting reservations. Tab visits the actual generated
+anchors; there are no fabricated deposit identities or relocated sprites.
+Rendering uses one shared-presenter step and at most one terrain slice per frame,
+within existing limits. Each focus requests a 2048x2048 presentation area and
+prepares its central terrain chunk and eight neighbors. Arrow panning is bounded
+to 320 units around the focused anchor.
+
+Terrain uses normal continuous textures, material transitions and rendering
+order (terrain -11, deposits -5, optional anchor overlay 0). A neutral white
+tint field excludes gameplay terrain edits and crash-site masks; this is an
+unmodified procedural terrain comparison, not a reproduction of the authored
+crash site. The artwork's angled overhead perspective is preserved. No live world
+state, player, machines, narrative session or save is created. The scene runs
+only as the editor's current standalone scene, with its inspection flag enabled;
+it is not referenced by gameplay or test dispatch.
+
+### Owner preview inspection (graphical acceptance outstanding)
+
+The owner performs this check separately; this PR does not authorize an agent
+Godot invocation or amend execution policy.
+
+1. In the approved Godot 4.7.2 Standard editor, open
+   `res://scenes/experiments/resource_generation_v2/ferrite_inspection.tscn`.
+   Its `development_inspection_enabled` flag is already enabled in this scene.
+2. Use **F6 / Run Current Scene**. F5 retains the normal application entry point.
+   Allow terrain and deposits to finish appearing. Any input/admission failure
+   stops the preview and displays a diagnostic.
+3. Use **Tab / Shift+Tab** to visit all seven reserved deposits. The HUD identifies
+   each resource. Compare Ferrite against Cuprite and Carbite at the same zoom.
+   Initial zoom is 1.0; mouse wheel uses the normal exterior 0.5-1.5 range.
+4. Use **arrow keys** to pan slightly; **A** toggles cyan 128x128 anchor outlines
+   and center markers. Inspect the (0,16) registration, painted overhang, scale,
+   rendering order and readability from the normal angled overhead perspective.
+5. Hide anchors and inspect terrain fringes, shadows and natural transitions
+   for rectangular edges, halos, excessive translucency and poor blending on
+   earth and green terrain. Compare multiple Ferrite anchors. Stop with F8.
+6. Record the checked commit and visual feedback, including whether scale 0.225
+   and offset (0,16) are acceptable. No acceptance PASS is recorded yet.
+
+Preview acceptance concerns artwork and provisional presentation values only.
+It does **not** approve live Ferrite migration, removal of the legacy presenter,
+a second live deposit representation or changes to generation/gameplay authority.
+Those require a separate owner-approved scope and PR.
+
+[`static_ferrite_v2_preview_test.py`](../tests/static_ferrite_v2_preview_test.py)
+checks exact PNG bytes, decoded alpha, catalog/import identity, preview wiring,
+resource references and isolation, and unchanged live authority/shared limits
+against PR #211's merge revision. These are static file checks; they establish
+neither Godot parsing/import compatibility nor graphical/runtime acceptance.
+No Godot, headless runner, metadata dispatch or behavioral tests are executed.
