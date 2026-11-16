@@ -36,7 +36,10 @@ class CupritePresentationLifecycleTests(unittest.TestCase):
         before = subprocess.check_output(['git', 'show', reviewed + ':' + path], cwd=ROOT).decode('utf-8')
         terminal = '\tif is_complete(token):\n\t\treturn {"ok": true, "done": true}\n'
         self.assertEqual(PRESENTER.count(terminal), 1)
-        self.assertEqual(PRESENTER.replace(terminal, '', 1), before)
+        renamed = PRESENTER.replace('var region_owner: Vector2i = _owners.pop_front()', 'var owner: Vector2i = _owners.pop_front()', 1).replace('_source.region(region_owner)', '_source.region(owner)', 1)
+        self.assertNotRegex(body(PRESENTER, 'step'), r'\bvar owner\b')
+        self.assertIn('_source.region(region_owner)', body(PRESENTER, 'step'))
+        self.assertEqual(renamed.replace(terminal, '', 1), before)
         for path in ('scenes/world/planet_exterior.gd', 'scenes/main/scene_transition_controller.gd',
                      'scenes/interaction/ferrite_inspection.gd', 'scenes/world/planet_world_state.gd',
                      'scenes/main/playthrough_state.gd', 'tools/run-behavioral-tests.ps1',

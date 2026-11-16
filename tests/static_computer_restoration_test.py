@@ -282,6 +282,12 @@ class ComputerRestorationStaticTest(unittest.TestCase):
         self.assertNotIn('finish_computer_cinematic', cleanup)
         self.assertNotIn('inventory.', cleanup)
         self.assertIn('_cleanup()', function(script, '_exit_tree'))
+        close = function(script, 'close')
+        self.assertIn('\t_panel.hide()\n', close)
+        for button in ('_confirm', '$HUD/Panel/Content/NotYet'):
+            self.assertIn('\tif ' + button + '.is_inside_tree():\n\t\t' + button + '.release_focus()', close)
+        self.assertNotIn('return', close)
+
         # Existing V2 overlays share the same room-sized canvas and zero offset;
         # switching visibility never edits geometry, scale, collision or range.
         for name in ('damaged', 'repaired'):

@@ -151,8 +151,10 @@ func _open_panel() -> void:
 
 func close() -> void:
 	_panel.hide()
-	_confirm.release_focus()
-	$HUD/Panel/Content/NotYet.release_focus()
+	if _confirm.is_inside_tree():
+		_confirm.release_focus()
+	if $HUD/Panel/Content/NotYet.is_inside_tree():
+		$HUD/Panel/Content/NotYet.release_focus()
 
 
 func _refresh() -> void:

@@ -51,6 +51,7 @@ class FerriteLiveAuthorityTests(unittest.TestCase):
                 if path == 'scenes/world/resource_presenter_v2.gd':
                     current = current.split(b'\n\n# Read-only live presentation availability.', 1)[0]
                     current = current.replace(b'\tif is_complete(token):\n\t\treturn {"ok": true, "done": true}\n', b'', 1)
+                    current = current.replace(b'var region_owner: Vector2i = _owners.pop_front()', b'var owner: Vector2i = _owners.pop_front()', 1).replace(b'_source.region(region_owner)', b'_source.region(owner)', 1)
                 self.assertEqual(current, old.replace(b'\r\n', b'\n'))
         art = ROOT / 'assets/environment/exterior/ferrite/ferrite_v2_production_candidate_v1.png'
         self.assertEqual(hashlib.sha256(art.read_bytes()).hexdigest(),

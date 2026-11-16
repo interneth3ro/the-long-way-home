@@ -242,8 +242,8 @@ func step(token: int) -> Dictionary:
 				return admitted
 		return {"ok": true, "done": false}
 	if not _owners.is_empty():
-		var owner: Vector2i = _owners.pop_front()
-		var result := _source.region(owner)
+		var region_owner: Vector2i = _owners.pop_front()
+		var result := _source.region(region_owner)
 		if not result.ok:
 			return _failure(result.error)
 		if result.locations.size() > MAX_LOCATIONS_PER_OWNER:

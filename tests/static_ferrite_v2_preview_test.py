@@ -120,6 +120,7 @@ class FerriteV2PreviewStaticTests(unittest.TestCase):
                 if path == "scenes/world/resource_presenter_v2.gd":
                     current = current.split('\n\n# Read-only live presentation availability.', 1)[0]
                     current = current.replace('\tif is_complete(token):\n\t\treturn {"ok": true, "done": true}\n', '', 1)
+                    current = current.replace('var region_owner: Vector2i = _owners.pop_front()', 'var owner: Vector2i = _owners.pop_front()', 1).replace('_source.region(region_owner)', '_source.region(owner)', 1)
                 self.assertEqual(current, original(path))
         presenter = read("scenes/world/resource_presenter_v2.gd")
         self.assertIn("sprite.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR", presenter)
