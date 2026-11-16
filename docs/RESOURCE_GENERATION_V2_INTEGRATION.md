@@ -1,5 +1,75 @@
 # Resource Generation v2 live world-state integration
 
+## Ferrite live authority cutover (pending merge)
+
+Implemented on `codex/ferrite-v2-live-authority`, based on PR #212 merge
+`1dbdcbdc8a1ee22b411b5ded056d0a2574e1ff2a`. Owner Decisions 1A and 2A approve
+fresh sessions and discovery through a genuine starting Ferrite member.
+Earlier milestone sections below are historical; their legacy-first targeting,
+independent readiness and Ferrite output fallback are superseded by this cutover.
+
+`PlanetWorldState` initializes only `ResourceGenerationV2Integration`. All three
+resources retain unchanged ordinary generation, policies, identities, spacing,
+protection, weights and 4x4 anchors; starting counts remain Ferrite 3, Cuprite 2,
+Carbite 2. Legacy world-state polygon queries/wrappers and initialization are removed.
+Startup, deployment, machine status and production check V2 readiness.
+
+Every Extractor selects an authoritative descriptor ticket. Confirmation resolves
+that exact ID and context again, checks resource compatibility, exact rotated 4x4
+alignment and occupancy, then applies existing range, obstacle, player footprint,
+inventory and machine-overlap checks. The world transaction rejects an unticketed
+Extractor through either generic deployment API before inventory consumption.
+Non-Extractor deployments cannot publish a resource claim. Inventory removal,
+allocation, record/claim publication and notifications remain synchronous and guarded.
+
+Committed Extractors retain the process-local generation token. Output requires
+that same current token, an exact committed snapshot, resolved descriptor, valid
+anchor/resource and a claim owned by the machine. Descriptors map Ferrite to
+`ferrite_ore`, Cuprite to `cuprite_ore`, Carbite to `carbite_ore`; cached labels and
+packaged defaults have no authority. Missing, stale, foreign or unsupported authority
+returns no product. Context replacement cannot revive an old machine's output.
+Timing remains one ore per second, 60/min, a 20-item buffer, partial progress,
+full-buffer pause without backlog and collection resumption. Collection/recovery
+use the resolved item and retain output on inventory rejection. Recovery releases
+only a claim owned by the recovered machine, after successful atomic inventory
+acceptance. Empty machines may still be recovered after context retirement.
+
+The exterior creates the existing nonblocking Ferrite examination interaction at
+each of the three real starting Ferrite anchors. E uses the existing detector and
+prompt. `PlaythroughState.discover_ferrite(id, token)` resolves the descriptor and
+requires exact membership in current starting reservations before setting the
+existing flag and emitting the existing signal. Dialogue, objective and later
+recovery/progression handlers are unchanged. Reattachment reuses the interactions;
+there is no tutorial deposit, fabricated identity, waypoint or second resource view.
+Start a new game: no record conversion, relocation, refund, save migration or
+session compatibility system is implemented.
+
+### Legacy disposition
+
+| Material | Disposition |
+| --- | --- |
+| `FerriteRegionGenerator` | Retired from live generation; retained for historical catalog/oracle evidence |
+| `FerriteDepositPresenter` | Retired; exact source retained as `ferrite_deposit_presenter.gd.txt`, outside Godot script registration; original UID sidecar preserved |
+| `ResourceDeposit`, `introductory_ferrite.tres` | Historical catalog/geometry evidence; no live simulation, placement, discovery or production consumer |
+| Authored Ferrite sprite and inspection area | Replaced by shared V2 artwork and interactions at actual starting anchors |
+| Legacy wrappers, readiness, output fallback, polygon highlights | Removed from live production |
+| Catalogs, masks, authoring tools, artwork, experiments, UID sidecars | Preserved; no cleanup or asset regeneration |
+| PR #212 isolated preview | Retained for artwork inspection; no live reference |
+
+### Validation boundary
+
+Static Python checks cover current authority, transactions, output, startup receipts,
+presentation and artwork identity. Legacy catalog/polygon/streaming suites explicitly
+inspect the pre-cutover Git snapshot as historical specifications. Current-source
+checks preserve terrain and transition protections. `tests/cuprite_gameplay_test.gd`
+authors all-three-resource placement/production, ordinary members, rotations,
+generic-bypass rejection, collection/recovery, context failures, starting Ferrite
+discovery, presentation and exterior revisits. Live Extractor/world-integration
+fixtures also reflect exclusive V2 authority. All behavioral coverage is **unexecuted**;
+dispatch manifests/runners are unchanged. See [owner acceptance and execution limits](LOCAL_TESTING.md#ferrite-v2-cutover-validation-pending-owner-acceptance).
+
+
+
 Milestone 6 merged in PR #192 at `fc3b0947be5e3cb217e4de12f95ec23d550a5003`.
 Its read boundary and lifecycle are described below. Milestone 7 live construction
 merged in [PR #193](https://github.com/interneth3ro/the-long-way-home/pull/193).

@@ -16,7 +16,7 @@ E = (ROOT/'scenes/world/planet_exterior.gd').read_text()
 @dataclass(frozen=True)
 class Arrival:
     generation: int = 1
-    ferrite_token: int = 1
+    resource_token: int = 1
     state: int = 1
     player: int = 1
     seed: int = 26026
@@ -26,19 +26,19 @@ class Arrival:
     cancelled: bool = False
     failure: bool = False
     terrain_pending: bool = False
-    ferrite_ready: bool = True
+    resources_ready: bool = True
     context_matches: bool = True
     centered: bool = True
 
     def receipt(self):
         return {name:getattr(self,name) for name in
-                ('generation','ferrite_token','state','player','seed','revision')} | {'ok':True}
+                ('generation','resource_token','state','player','seed','revision')} | {'ok':True}
 
     def ready(self, receipt):
         return (isinstance(receipt,dict) and receipt.get('ok') is True
                 and all(receipt.get(k) == v for k,v in self.receipt().items())
                 and self.attached and not self.preparing and not self.cancelled
-                and not self.failure and not self.terrain_pending and self.ferrite_ready
+                and not self.failure and not self.terrain_pending and self.resources_ready
                 and self.context_matches and self.centered)
 
 
@@ -59,7 +59,7 @@ class TransitionSafetyStaticTest(unittest.TestCase):
         receipt = arrival.receipt()
         self.assertTrue(arrival.ready(receipt))
         for field, value in (('preparing',True),('cancelled',True),('failure',True),
-                             ('terrain_pending',True),('ferrite_ready',False),
+                             ('terrain_pending',True),('resources_ready',False),
                              ('context_matches',False),('centered',False),('attached',False)):
             self.assertFalse(replace(arrival,**{field:value}).ready(receipt),field)
         for bad in (None,True,False,{},'ready',{'ok':False,'cancelled':True}):
@@ -67,14 +67,14 @@ class TransitionSafetyStaticTest(unittest.TestCase):
         ready = function(E,'arrival_is_ready')
         for contract in ('result is Dictionary','result.get("ok", false)',
                          '_terrain_failure.is_empty()','_pending.is_empty()',
-                         'matches_context(_state)','required_ready(_ferrite_token)',
+                         '_resources_done','is_complete(_resource_token)',
                          'not _preparing','not _arrival_cancelled','is_ancestor_of(_player)',
                          'WorldCoordinates.world_to_chunk'):
             self.assertIn(contract,ready)
 
     def test_receipts_are_bound_to_generation_world_seed_revision_player_and_request(self):
         a = Arrival()
-        for field in ('generation','ferrite_token','state','player','seed','revision'):
+        for field in ('generation','resource_token','state','player','seed','revision'):
             self.assertFalse(replace(a,**{field:getattr(a,field)+1}).ready(a.receipt()),field)
             self.assertIn(f'result.get("{field}"',function(E,'arrival_is_ready'))
 
@@ -86,8 +86,8 @@ class TransitionSafetyStaticTest(unittest.TestCase):
         self.assertIn('return {"ok": false, "cancelled": true}',arrival[guard:flag])
         for method in ('cancel_arrival_preparation','_exit_tree'):
             self.assertIn('_arrival_generation += 1',function(E,method))
-        self.assertIn('if not _service_ferrite(true):\n\t\t\tbreak',arrival)
-        self.assertIn('return not presented.get("stale", false)',function(E,'_service_ferrite'))
+        self.assertIn('_service_resources()', arrival)
+        self.assertIn('_stop_terrain(presented)', function(E, '_service_resources'))
 
     def test_pause_is_not_a_success_or_failure_guard(self):
         # Whether a paused await happens to resume cannot change authorization.

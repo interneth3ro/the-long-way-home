@@ -1,3 +1,10 @@
+# Historical legacy Ferrite specifications at the pre-cutover revision.
+# Current live authority is checked by static_ferrite_live_authority_test.py.
+import subprocess
+
+def historical_source(path):
+    return subprocess.check_output(['git', 'show', '1dbdcbdc8a1ee22b411b5ded056d0a2574e1ff2a:' + path], text=True, encoding='utf-8')
+
 """3B non-engine specifications + source contracts; no GDScript/runtime execution.
 
 The accepted generation oracle supplies real catalog descriptors. Scheduling is
@@ -11,10 +18,10 @@ from static_automatic_transitions_test import ROOT, function
 from static_ferrite_region_test import Oracle, VARIANTS, REGION, intersects, grow
 from static_ferrite_presentation_test import retained, pages, nearby
 
-PRESENTER = (ROOT/'scenes/world/ferrite_deposit_presenter.gd').read_text()
-EXTERIOR = (ROOT/'scenes/world/planet_exterior.gd').read_text()
+PRESENTER = (ROOT/'scenes/world/ferrite_deposit_presenter.gd.txt').read_text()
+EXTERIOR = historical_source('scenes/world/planet_exterior.gd')
 GENERATOR = (ROOT/'scenes/world/ferrite_region_generator.gd').read_text()
-STATE = (ROOT/'scenes/world/planet_world_state.gd').read_text()
+STATE = historical_source('scenes/world/planet_world_state.gd')
 TRANSITION = (ROOT/'scenes/main/scene_transition_controller.gd').read_text()
 
 

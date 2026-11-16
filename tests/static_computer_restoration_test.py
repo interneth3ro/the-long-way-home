@@ -87,6 +87,12 @@ class ComputerRestorationStaticTest(unittest.TestCase):
                     for name, body in re.findall(r'^func (\w+)(.*?)(?=^func |\Z)', text, re.M | re.S)}
         for path, replacements in amendments.items():
             current = read(path)
+            if path == 'scenes/main/playthrough_state.gd':
+                # Validate the precise Ferrite cutover projection; keep every other method pinned.
+                from initial_exterior_preservation import without_initial_preparation
+                current = without_initial_preparation(path, (ROOT/path).read_bytes()).decode('utf-8')
+            current = current.replace('is_resource_generation_v2_ready()', 'is_resource_generation_ready()').replace(
+                'resource_generation_v2_error()', 'resource_generation_error()')
             if path == 'construction/construction_controller.gd':
                 self._assert_current_construction_hooks(current)
             for new, old in replacements:

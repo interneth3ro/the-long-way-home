@@ -1,3 +1,10 @@
+# Historical legacy Ferrite specifications at the pre-cutover revision.
+# Current live authority is checked by static_ferrite_live_authority_test.py.
+import subprocess
+
+def historical_source(path):
+    return subprocess.check_output(['git', 'show', '1dbdcbdc8a1ee22b411b5ded056d0a2574e1ff2a:' + path], text=True, encoding='utf-8')
+
 """3A offline spatial/lifecycle specifications and source contracts.
 
 No Godot, GDScript, ResourceLoader or Geometry2D execution. Mask-cell clipping
@@ -13,9 +20,9 @@ from static_ferrite_catalog_test import catalog
 from static_ferrite_initialization_test import DATA, validate
 
 
-PRESENTER = (ROOT/'scenes/world/ferrite_deposit_presenter.gd').read_text()
-EXTERIOR = (ROOT/'scenes/world/planet_exterior.gd').read_text()
-STATE = (ROOT/'scenes/world/planet_world_state.gd').read_text()
+PRESENTER = (ROOT/'scenes/world/ferrite_deposit_presenter.gd.txt').read_text()
+EXTERIOR = historical_source('scenes/world/planet_exterior.gd')
+STATE = historical_source('scenes/world/planet_world_state.gd')
 CHUNK, PAGE = 2048, 8192
 
 
@@ -242,7 +249,7 @@ class FerritePresentationStaticTest(unittest.TestCase):
 
     def test_authored_sprite_separate_and_simulation_ignores_presentation(self):
         # Scene/intro inputs stay unchanged; legacy preservation regressions pin geometry.
-        scene = (ROOT/'scenes/world/planet_exterior.tscn').read_text()
+        scene = historical_source('scenes/world/planet_exterior.tscn')
         self.assertIn('position = Vector2(96, 96)',scene)
         self.assertIn('faceted_ferrite_10x6.png',scene)
         self.assertNotIn('crash_site_ferrite',PRESENTER)

@@ -78,7 +78,7 @@ class CupritePresentationLifecycleTests(unittest.TestCase):
             self.assertIn("_resource_presenter.is_complete(_resource_token)", body(EXTERIOR, name))
         ready = body(EXTERIOR, "arrival_is_ready")
         for fragment in ('result.get("generation", -1) == _arrival_generation',
-                         "_required_ground_is_current()", "required_ready(_ferrite_token)",
+                         "_required_ground_is_current()", "is_complete(_resource_token)",
                          "and _resources_done", "not _arrival_cancelled"):
             self.assertIn(fragment, ready)
         complete = body(PRESENTER, "is_complete")

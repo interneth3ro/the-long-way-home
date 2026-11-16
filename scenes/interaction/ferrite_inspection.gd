@@ -1,6 +1,8 @@
 extends WorldInteractable
 
-@export var deposit_id: StringName = &"crash_site_ferrite"
+var deposit_id: String
+var context_token: RefCounted
+var world_state: PlanetWorldState
 
 @onready var _progression := get_tree().get_first_node_in_group(&"playthrough") as PlaythroughState
 
@@ -12,12 +14,14 @@ func _ready() -> void:
 
 
 func can_interact() -> bool:
-	return interaction_enabled and _progression != null and not _progression.ferrite_discovered
+	return interaction_enabled and _progression != null and not _progression.ferrite_discovered \
+		and _progression.planet == world_state and world_state != null \
+		and world_state.resource_descriptor_v2_by_id(deposit_id, context_token).ok
 
 
 func interact() -> String:
 	if can_interact():
-		_progression.discover_ferrite(deposit_id)
+		_progression.discover_ferrite(deposit_id, context_token)
 	# The discovery signal routes to the musing presenter, never inspection/dialogue UI.
 	return ""
 

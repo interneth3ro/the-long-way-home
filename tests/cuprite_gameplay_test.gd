@@ -1,5 +1,5 @@
 extends SceneTree
-## Shared Cuprite/Carbite behavioral fixture. Authored only; not dispatched or executed.
+## Shared Ferrite/Cuprite/Carbite behavioral fixture. Authored only; not dispatched or executed.
 
 const EXTRACTOR = preload("res://inventory/extractor.tres")
 const Rules = preload("res://construction/extractor_anchor_rules.gd")
@@ -17,7 +17,12 @@ class DescriptorFailure:
 			return {"ok": false, "error": "fixture missing descriptor"}
 		if descriptor_failure == "anchor":
 			return {"ok": true, "descriptor": {}}
-		return super.resource_descriptor_v2_by_id(identity, token)
+		var result := super.resource_descriptor_v2_by_id(identity, token)
+		if result.ok and descriptor_failure == "geometry":
+			result.descriptor.anchor_cells = Rect2i(0, 0, 3, 4)
+		if result.ok and descriptor_failure == "unsupported":
+			result.descriptor.resource_type = "unsupported"
+		return result
 
 class RejectRemoval:
 	extends InventoryState
@@ -38,12 +43,14 @@ func _initialize() -> void:
 	_run.call_deferred()
 
 func _run() -> void:
-	for resource_type in ["cuprite", "carbite"]:
+	for resource_type in ["ferrite", "cuprite", "carbite"]:
 		await _test_gameplay(resource_type)
+	_test_discovery()
+	await _test_exterior_revisit()
 	_test_live_window_requests()
-	for resource_type in ["cuprite", "carbite"]:
+	for resource_type in ["ferrite", "cuprite", "carbite"]:
 		_test_presentation(resource_type)
-	print("Cuprite/Carbite gameplay regression failures: %d" % _failures)
+	print("Three-resource gameplay regression failures: %d" % _failures)
 	quit(0 if _failures == 0 else 1)
 
 
@@ -77,7 +84,7 @@ func _test_gameplay(resource_type: String) -> void:
 	var cell: Vector2i = member.anchor_cells.position
 	var center := Rules.bounds(member.anchor_cells).get_center()
 	# Use the authoritative descriptor ticket directly for transaction tests;
-	# live routing is separately asserted wherever legacy ground does not win.
+	# live routing always uses the same V2 authority.
 	var ticket := {"token": context.token, "deposit_id": member.deposit_id,
 		"resource_type": member.resource_type, "anchor_cells": member.anchor_cells}
 	var foreign := ticket.duplicate()
@@ -91,8 +98,7 @@ func _test_gameplay(resource_type: String) -> void:
 	for turn in range(4):
 		_check(state.extractor_anchor_rejection_v2(ticket, EXTRACTOR, cell, turn).is_empty(), "exact rotated 4x4 alignment")
 		var selected := state.extractor_target_v2(center, EXTRACTOR, turn)
-		if state.deposit_at(center, &"ferrite") == null:
-			_check(selected.ticket == ticket and selected.cell == cell, "live authoritative snapping")
+		_check(selected.ticket == ticket and selected.cell == cell, "live authoritative snapping")
 	var restricted := EXTRACTOR.duplicate() as MachineDefinition
 	restricted.compatible_resources = [&"ferrite"]
 	var incompatible := {"token": context.token, "deposit_id": carbite.deposit_id,
@@ -117,13 +123,17 @@ func _test_gameplay(resource_type: String) -> void:
 		and rejecting.get_quantity(&"extractor") == 2 and state.get_machines().is_empty()
 		and state.extractor_occupant_v2(member.deposit_id) == 0, "failed removal leaves all state unchanged")
 	var relabeled := ticket.duplicate()
-	relabeled.resource_type = "ferrite"
+	relabeled.resource_type = "carbite" if resource_type == "ferrite" else "ferrite"
 	_check(state.extractor_anchor_rejection_v2(relabeled, EXTRACTOR, cell, 0) == "Unavailable anchor", "changed resource rejected")
 	relabeled = ticket.duplicate()
 	relabeled.anchor_cells = Rect2i(cell + Vector2i.ONE, Vector2i(4, 4))
 	_check(state.extractor_anchor_rejection_v2(relabeled, EXTRACTOR, cell, 0) == "Unavailable anchor", "changed anchor rejected")
 	var inventory := InventoryState.new()
 	inventory.add_item(EXTRACTOR, 2)
+	_check(state.deploy_machine_instance(EXTRACTOR, cell, 0, inventory, player, ground, 160) == 0
+		and not state.deploy_machine(EXTRACTOR, cell, 0, inventory, player, ground, 160)
+		and inventory.get_quantity(&"extractor") == 2 and state.get_machines().is_empty(),
+		"unticketed generic Extractor bypass rejected atomically")
 	for invalid_ticket: Dictionary in [foreign, forged_id, relabeled]:
 		_check(state.deploy_extractor_v2(invalid_ticket, EXTRACTOR, cell, 0,
 			inventory, player, ground, 160) == 0 and inventory.get_quantity(&"extractor") == 2
@@ -171,9 +181,9 @@ func _test_gameplay(resource_type: String) -> void:
 		and inventory.get_quantity(&"extractor") == 1, "duplicate claim")
 	_check(state.stored_output_item(state.get_machine(machine_id)).item_id == ore.item_id, "correct ore item identity")
 	var forged := state.get_machine(machine_id)
-	forged.v2_resource_type = "ferrite"
+	forged.v2_resource_type = "carbite" if resource_type == "ferrite" else "ferrite"
 	_check(state.stored_output_item(forged) == null, "caller metadata cannot override authority")
-	state._machines[machine_id].v2_resource_type = "ferrite"
+	state._machines[machine_id].v2_resource_type = "carbite" if resource_type == "ferrite" else "ferrite"
 	_check(state.stored_output_item(state.get_machine(machine_id)).item_id == ore.item_id, "authoritative descriptor outranks cached label")
 	var view = preload("res://scenes/ui/extractor_inspection.tscn").instantiate()
 	root.add_child(view)
@@ -208,7 +218,7 @@ func _test_gameplay(resource_type: String) -> void:
 		and state.extractor_occupant_v2(member.deposit_id) == machine_id, "atomic recovery rejection retains output and claim")
 	_check(state.collect_output(machine_id, inventory, center, 160)
 		and inventory.get_quantity(ore.item_id) == 20
-		and inventory.get_quantity(&"ferrite_ore") == 0, "collection transfers resolved ore only")
+		and (resource_type == "ferrite" or inventory.get_quantity(&"ferrite_ore") == 0), "collection transfers resolved ore only")
 	state.advance_production(1.0)
 	_check(state.get_machine(machine_id).output == 1, "production resume after collection")
 	_check(state.recover_machine(machine_id, inventory, center, 160)
@@ -219,7 +229,7 @@ func _test_gameplay(resource_type: String) -> void:
 	_check(next == 2, "construction and occupancy preserved on redeployment")
 	state.advance_production(1.0)
 	var stored := state.get_machine(next)
-	for failure in ["missing", "anchor"]:
+	for failure in ["missing", "anchor", "geometry", "unsupported"]:
 		state.descriptor_failure = failure
 		state.advance_production(1.0)
 		_check(state.get_machine(next) == stored and state.stored_output_item(stored) == null,
@@ -234,6 +244,20 @@ func _test_gameplay(resource_type: String) -> void:
 	state.advance_production(1.0)
 	_check(state.get_machine(next) == stored and state.stored_output_item(stored) == null,
 		"missing claim pauses production")
+	state._extractor_claims_v2[member.deposit_id] = 999
+	_check(state.stored_output_item(state.get_machine(next)) == null, "foreign occupancy claim rejected")
+	state._extractor_claims_v2[member.deposit_id] = next
+	var committed_token: RefCounted = state._machines[next].v2_context_token
+	state._machines[next].v2_context_token = RefCounted.new()
+	_check(state.stored_output_item(state.get_machine(next)) == null, "foreign committed token rejected")
+	state._machines[next].v2_context_token = committed_token
+	state._machines[next].erase("v2_deposit_id")
+	_check(state.stored_output_item(state.get_machine(next)) == null, "missing committed identity has no Ferrite fallback")
+	state._machines[next].v2_deposit_id = member.deposit_id + ":forged"
+	state._extractor_claims_v2[member.deposit_id + ":forged"] = next
+	_check(state.stored_output_item(state.get_machine(next)) == null, "forged committed identity rejected")
+	state._extractor_claims_v2.erase(member.deposit_id + ":forged")
+	state._machines[next].v2_deposit_id = member.deposit_id
 	state._extractor_claims_v2[member.deposit_id] = next
 	state.invalidate_resource_generation_v2()
 	state.advance_production(1.0)
@@ -245,7 +269,14 @@ func _test_gameplay(resource_type: String) -> void:
 	state.configure_resource_generation_v2()
 	_check(state.extractor_anchor_rejection_v2(ticket, EXTRACTOR, cell, 0) == "Unavailable anchor",
 		"stale context rejected")
-	_check(state.recover_machine(next, inventory, center, 160), "restored authority permits recovery")
+	_check(not state.recover_machine(next, inventory, center, 160)
+		and state.stored_output_item(state.get_machine(next)) == null,
+		"replacement context cannot revive committed old-context output")
+	# Fresh-session cutover: no conversion or refund of interrupted session records.
+	state = DescriptorFailure.new(42)
+	inventory = InventoryState.new()
+	inventory.add_item(EXTRACTOR, 2)
+	next = 0
 	_check(state.deploy_extractor_v2(ticket, EXTRACTOR, cell, 0, inventory, player, ground, 160) == 0
 		and inventory.get_quantity(&"extractor") == 2 and state.get_machines().is_empty(),
 		"stale confirmation consumes nothing")
@@ -257,40 +288,23 @@ func _test_gameplay(resource_type: String) -> void:
 		state.advance_production(1.0)
 		_check(state.get_machine(rotated).output == 1, "rotated production")
 		_check(state.recover_machine(rotated, inventory, center, 160), "rotated recovery")
-	if resource_type == "carbite":
-		_test_ordinary_carbite(state)
+	_test_ordinary_resource(state, resource_type)
 	# A corrupt/unsupported record cannot gain production from the packaged default.
 	state._machines[99] = {"id": 99, "definition": restricted, "cell": carbite.anchor_cells.position,
-		"turns": 0, "cycle_progress": 0.0, "output": 0, "v2_deposit_id": carbite.deposit_id}
+		"turns": 0, "cycle_progress": 0.0, "output": 0, "v2_deposit_id": carbite.deposit_id, "v2_context_token": context.token}
 	state._extractor_claims_v2[carbite.deposit_id] = 99
 	state.advance_production(5.0)
 	_check(state.get_machine(99).output == 0 and state.stored_output_item(state.get_machine(99)) == null,
 		"unsupported resource inactivity")
-	state._machines.erase(99)
+	# Empty-record recovery must not erase someone else's claim.
+	state._extractor_claims_v2[carbite.deposit_id] = 100
+	_check(state.recover_machine(99, InventoryState.new(), Rules.bounds(carbite.anchor_cells).get_center(), 160)
+		and state.extractor_occupant_v2(carbite.deposit_id) == 100,
+		"empty recovery preserves foreign claim ownership")
 	state._extractor_claims_v2.erase(carbite.deposit_id)
-	# Legacy geometry wins even when the v2 context is unavailable.
 	state.invalidate_resource_generation_v2()
-	var legacy := state.get_deposits()[0]
-	var legacy_cell := WorldCoordinates.world_to_construction(legacy.footprint[0])
-	var found := false
-	var expected_legacy_id: int = state._next_machine_id
-	for y in range(legacy_cell.y - 16, legacy_cell.y + 16):
-		for x in range(legacy_cell.x - 16, legacy_cell.x + 16):
-			var candidate := Vector2i(x, y)
-			var extraction := EXTRACTOR.footprint(candidate, 0).get_center()
-			if not found and state.deposit_at(extraction, &"ferrite") != null:
-				found = true
-				var selected := state.extractor_target_v2(Vector2(candidate) * 32, EXTRACTOR, 0)
-				_check(selected.ticket.is_empty() and selected.reason.is_empty(), "legacy Ferrite route independent of v2")
-				player.position = extraction - Vector2(90, 0)
-				await physics_frame
-				var identity := state.deploy_machine_instance(EXTRACTOR, candidate, 0, inventory, player, ground, 160)
-				_check(identity == expected_legacy_id, "legacy Ferrite deployment")
-				state.advance_production(1.0)
-				_check(state.get_machine(identity).output == 1, "legacy Ferrite production preserved")
-				_check(state.recover_machine(identity, inventory, extraction, 160)
-					and inventory.get_quantity(&"ferrite_ore") == 1, "legacy Ferrite recovery returns stored contents")
-	_check(found, "legacy Ferrite fixture found")
+	_check(not state.extractor_target_v2(center, EXTRACTOR, 0).reason.is_empty(),
+		"unavailable authority has no legacy target fallback")
 	ground.free()
 
 
@@ -310,7 +324,8 @@ func _test_live_window_requests() -> void:
 	var presenter := ResourcePresenterV2.new()
 	var world := PlanetWorldState.new(42)
 	_check(presenter.configure_world(world,
-		[preload("res://scenes/world/resource_definitions/v2/cuprite.tres"),
+		[preload("res://scenes/world/resource_definitions/v2/ferrite.tres"),
+		preload("res://scenes/world/resource_definitions/v2/cuprite.tres"),
 		preload("res://scenes/world/resource_definitions/v2/carbite.tres")]).ok,
 		"live window context")
 	# Real 2048-unit chunks: initial 7x7, default retained 7x7 and maximum 13x13.
@@ -346,7 +361,8 @@ func _test_presentation(resource_type: String) -> void:
 	var loaded := {chunk: true}
 	var presenter := ResourcePresenterV2.new()
 	root.add_child(presenter)
-	_check(presenter.configure_world(world, [preload("res://scenes/world/resource_definitions/v2/cuprite.tres"),
+	_check(presenter.configure_world(world, [preload("res://scenes/world/resource_definitions/v2/ferrite.tres"),
+		preload("res://scenes/world/resource_definitions/v2/cuprite.tres"),
 		preload("res://scenes/world/resource_definitions/v2/carbite.tres")]).ok,
 		"world descriptor presentation adapter")
 	presenter.set_loaded_chunks(loaded)
@@ -383,7 +399,7 @@ func _test_presentation(resource_type: String) -> void:
 	presenter.free()
 
 
-func _test_ordinary_carbite(state: PlanetWorldState) -> void:
+func _test_ordinary_resource(state: PlanetWorldState, resource_type: String) -> void:
 	var context := state.resource_generation_v2_context()
 	var found := false
 	# Finite corpus away from starting reservations; no density/performance probe.
@@ -397,11 +413,11 @@ func _test_ordinary_carbite(state: PlanetWorldState) -> void:
 			if not queried.ok:
 				return
 			for member: Dictionary in queried.deposits:
-				if member.resource_type != "carbite" or not member.deposit_id.begins_with("resource:ordinary-v2-1:"):
+				if member.resource_type != resource_type or not member.deposit_id.begins_with("resource:ordinary-v2-1:"):
 					continue
 				var resolved := state.resource_descriptor_v2_by_id(member.deposit_id, context.token)
 				_check(resolved.ok and resolved.descriptor == member,
-					"ordinary Carbite resolves through world authority")
+					"ordinary resource resolves through world authority")
 				var ticket := {"token": context.token, "deposit_id": member.deposit_id,
 					"resource_type": member.resource_type, "anchor_cells": member.anchor_cells}
 				for turn in range(4):
@@ -411,15 +427,73 @@ func _test_ordinary_carbite(state: PlanetWorldState) -> void:
 				var identity: int = state._next_machine_id
 				state._machines[identity] = {"id": identity, "definition": EXTRACTOR,
 					"cell": member.anchor_cells.position, "turns": 0, "cycle_progress": 0.0,
-					"output": 0, "v2_deposit_id": member.deposit_id}
+					"output": 0, "v2_deposit_id": member.deposit_id, "v2_context_token": context.token}
 				state._extractor_claims_v2[member.deposit_id] = identity
-				_check(state.stored_output_item(state.get_machine(identity)) == preload("res://inventory/carbite_ore.tres"),
-					"ordinary canonical Carbite output")
+				_check(state.stored_output_item(state.get_machine(identity)) == load("res://inventory/%s_ore.tres" % resource_type),
+					"ordinary canonical resource output")
 				state.advance_production(1.0)
 				var inventory := InventoryState.new()
 				_check(state.recover_machine(identity, inventory,
 					Rules.bounds(member.anchor_cells).get_center(), 160)
-					and inventory.get_quantity(&"carbite_ore") == 1, "ordinary Carbite production and recovery")
+					and inventory.get_quantity(StringName(resource_type + "_ore")) == 1, "ordinary resource production and recovery")
 				found = true
 				break
-	_check(found, "ordinary Carbite fixture found")
+	_check(found, "ordinary resource fixture found")
+
+
+func _test_discovery() -> void:
+	var seed_world := PlanetWorldState.new(42)
+	var context := seed_world.resource_generation_v2_context()
+	var layout := seed_world.starting_resource_reservations_v2(context.token)
+	var ferrite_count := 0
+	for location: Dictionary in layout.locations:
+		if location.resource_type != "ferrite":
+			continue
+		for member: Dictionary in location.deposits:
+			ferrite_count += 1
+			var progression := PlaythroughState.new()
+			progression.world_seed = 42
+			root.add_child(progression)
+			var own := progression.planet.resource_generation_v2_context()
+			_check(not progression.discover_ferrite(member.deposit_id, context.token), "foreign discovery context rejected")
+			_check(not progression.discover_ferrite("crash_site_ferrite", own.token), "retired authored discovery identity rejected")
+			_check(not progression.discover_ferrite(member.deposit_id + ":forged", own.token), "forged discovery identity rejected")
+			_check(progression.discover_ferrite(member.deposit_id, own.token)
+				and progression.ferrite_discovered, "genuine starting V2 Ferrite discovery")
+			_check(not progression.discover_ferrite(member.deposit_id, own.token), "discovery is one shot")
+			progression.free()
+	_check(ferrite_count == 3, "three starting Ferrite discovery members")
+
+
+func _test_exterior_revisit() -> void:
+	var progression := PlaythroughState.new()
+	progression.world_seed = 42
+	root.add_child(progression)
+	var exterior = preload("res://scenes/world/planet_exterior.tscn").instantiate()
+	exterior.process_mode = Node.PROCESS_MODE_DISABLED
+	root.add_child(exterior)
+	var prepared: Dictionary = await exterior.prepare_initial_neighborhood(progression.planet)
+	_check(exterior.preparation_is_ready(prepared), "three-resource exterior startup readiness")
+	var presenter: ResourcePresenterV2 = exterior._resource_presenter
+	var sprites: Dictionary = presenter._sprites.duplicate()
+	var interactions := 0
+	for child in exterior.get_node("GroundObjects").get_children():
+		if child.get_script() == preload("res://scenes/interaction/ferrite_inspection.gd"):
+			interactions += 1
+	_check(interactions == 3, "three genuine Ferrite interactions without authored duplicate")
+	root.remove_child(exterior)
+	_check(not exterior.preparation_is_ready(prepared), "detached startup receipt rejected")
+	root.add_child(exterior)
+	var player := CharacterBody2D.new()
+	player.position = exterior.get_node("Spawns/FromShip").position
+	exterior.add_child(player)
+	var arrived: Dictionary = await exterior.prepare_for_arrival(player, progression.planet)
+	_check(exterior.arrival_is_ready(arrived) and exterior._resource_presenter == presenter,
+		"cached exterior arrival retains shared presenter")
+	for identity in sprites:
+		if presenter._sprites.has(identity):
+			_check(presenter._sprites[identity] == sprites[identity], "revisit reuses resource sprites")
+	exterior.cancel_arrival_preparation()
+	_check(not exterior.arrival_is_ready(arrived), "cancelled resource receipt rejected")
+	exterior.free()
+	progression.free()

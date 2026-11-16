@@ -8,6 +8,7 @@ import math
 from pathlib import Path
 import subprocess
 import unittest
+from initial_exterior_preservation import without_initial_preparation
 
 import terrain_stage2_reference as reference
 import terrain_stage2b2_reconstruction_reference as reconstruction
@@ -27,7 +28,7 @@ class MetadataContractTest(unittest.TestCase):
     def test_authoritative_call_and_unchanged_original_sources(self):
         vectors = json.loads((ROOT/'tests/fixtures/terrain_stage2_classification_vectors.json').read_text())
         for path, digest in vectors['source_sha256_lf'].items():
-            self.assertEqual(hashlib.sha256((ROOT/path).read_bytes().replace(b'\r\n', b'\n')).hexdigest(), digest)
+            self.assertEqual(hashlib.sha256(without_initial_preparation(path, (ROOT/path).read_bytes()).replace(b'\r\n', b'\n')).hexdigest(), digest)
         self.assertIn('Generator = preload("res://scenes/world/planet_generator.gd")', SOURCE)
         self.assertIn('Generator.new(seed, copied_overlays, protected.duplicate(), anchors.duplicate())', SOURCE)
         self.assertEqual(SOURCE.count('generator.sample_ground_material(cell)'), 1)

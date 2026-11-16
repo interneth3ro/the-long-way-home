@@ -19,7 +19,7 @@ func _ready() -> void:
 	# Parent @onready captures DialogueUI while Dave is still Main/Dave.
 	# All exported controller/UI player references resolve before initialize reparents.
 	super._ready()
-	if not $PlaythroughState.planet.is_resource_generation_ready():
+	if not $PlaythroughState.planet.is_resource_generation_v2_ready():
 		return
 	var transitions := $SceneTransitions as SceneTransitionController
 	var world := transitions.get_current_world()

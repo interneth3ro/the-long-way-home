@@ -25,8 +25,7 @@ var _revision: int = -1
 var _preparing: bool = false
 var _machine_presenters: Dictionary[int, DeployedMachine] = {}
 var _highlights: Node2D
-var _ferrite_presenter: FerriteDepositPresenter
-var _ferrite_token: int = 0
+var _discovery_token: RefCounted
 var _resource_presenter: ResourcePresenterV2
 var _resource_token: int = 0
 var _resource_chunks: Dictionary = {}
@@ -69,12 +68,10 @@ func prepare_for_arrival(player: CharacterBody2D, state: PlanetWorldState) -> Di
 	var arrival_revision := state.revision
 	_initialize_world(state)
 	_update_neighborhood()
-	while (not _pending.is_empty() or not _ferrite_presenter.required_ready(_ferrite_token) or not _resources_done) \
+	while (not _pending.is_empty() or not _resources_done) \
 			and _terrain_failure.is_empty() and arrival == _arrival_generation:
 		if not is_inside_tree() or not is_instance_valid(player) or not is_ancestor_of(player) \
 				or _state != state or state.seed_value != arrival_seed or state.revision != arrival_revision:
-			break
-		if not _service_ferrite(true):
 			break
 		_generate_budget()
 		_service_resources()
@@ -88,7 +85,7 @@ func prepare_for_arrival(player: CharacterBody2D, state: PlanetWorldState) -> Di
 		return {"ok": false, "cancelled": false}
 	if _state != state or state.seed_value != arrival_seed or state.revision != arrival_revision:
 		return {"ok": false, "cancelled": true}
-	var result := {"ok": true, "generation": arrival, "ferrite_token": _ferrite_token,
+	var result := {"ok": true, "generation": arrival, "resource_token": _resource_token,
 		"state": state, "player": player, "seed": arrival_seed, "revision": arrival_revision,
 		"ground_center": _center, "ground_radius": loading_radius}
 	if not _required_ground_is_current():
@@ -107,7 +104,8 @@ func _initialize_world(state: PlanetWorldState) -> void:
 		_resource_presenter = ResourcePresenterV2.new()
 		add_child(_resource_presenter)
 	var configured := _resource_presenter.configure_world(state,
-		[preload("res://scenes/world/resource_definitions/v2/cuprite.tres"),
+		[preload("res://scenes/world/resource_definitions/v2/ferrite.tres"),
+		preload("res://scenes/world/resource_definitions/v2/cuprite.tres"),
 		preload("res://scenes/world/resource_definitions/v2/carbite.tres")])
 	_resource_token = _resource_presenter.snapshot().token
 	var loaded: Dictionary = {}
@@ -119,10 +117,7 @@ func _initialize_world(state: PlanetWorldState) -> void:
 		_resource_chunks.clear()
 	if not configured.ok:
 		_stop_terrain(configured)
-	if _ferrite_presenter == null:
-		_ferrite_presenter = FerriteDepositPresenter.new()
-		_ferrite_presenter.z_index = -5
-		add_child(_ferrite_presenter)
+	_configure_discovery()
 	if not _state.machines_changed.is_connected(_queue_machine_sync):
 		_state.machines_changed.connect(_queue_machine_sync)
 	_sync_machines()
@@ -143,6 +138,47 @@ func _initialize_world(state: PlanetWorldState) -> void:
 		_generator = PlanetGenerator.new(state.seed_value, overlays, protected_gameplay, object_anchors)
 		_ground_state = state
 		_ground_seed = state.seed_value
+
+
+# These nonblocking interactions reference real starting descriptors, never authored deposits.
+func _configure_discovery() -> void:
+	var context := _state.resource_generation_v2_context()
+	if not context.ok:
+		_stop_terrain(context)
+		return
+	if _discovery_token == context.token:
+		return
+	# A changed generation context is handled like all other cached exterior failures.
+	if _discovery_token != null:
+		_stop_terrain({"ok": false, "code": "discovery_context", "error": "Restart the exterior"})
+		return
+	var layout := _state.starting_resource_reservations_v2(context.token)
+	if not layout.ok:
+		_stop_terrain(layout)
+		return
+	for location: Dictionary in layout.locations:
+		if location.resource_type != "ferrite":
+			continue
+		for member: Dictionary in location.deposits:
+			var interaction = Area2D.new()
+			interaction.set_script(preload("res://scenes/interaction/ferrite_inspection.gd"))
+			interaction.deposit_id = member.deposit_id
+			interaction.context_token = context.token
+			interaction.world_state = _state
+			interaction.interaction_prompt = "E — Examine mineral deposit"
+			interaction.collision_layer = 1
+			interaction.collision_mask = 0
+			interaction.monitoring = false
+			var bounds := ExtractorAnchorRules.bounds(member.anchor_cells)
+			interaction.position = bounds.get_center()
+			var shape := CollisionShape2D.new()
+			shape.name = "CollisionShape2D"
+			var rectangle := RectangleShape2D.new()
+			rectangle.size = bounds.size
+			shape.shape = rectangle
+			interaction.add_child(shape)
+			$GroundObjects.add_child(interaction)
+	_discovery_token = context.token
 
 
 # Player-independent startup contract. The caller stages this visible in-tree
@@ -168,12 +204,10 @@ func prepare_initial_neighborhood(state: PlanetWorldState) -> Dictionary:
 			var coordinate := center + Vector2i(x, y)
 			if not _chunks.has(coordinate) and not _pending.has(coordinate):
 				_pending.append(coordinate)
-	while (not _pending.is_empty() or not _ferrite_presenter.required_ready(_ferrite_token) or not _resources_done) \
+	while (not _pending.is_empty() or not _resources_done) \
 			and _terrain_failure.is_empty() and generation == _arrival_generation:
 		if not is_inside_tree() or _state != state or state.seed_value != seed_value \
 				or state.revision != revision or _arrival_cancelled:
-			break
-		if not _service_ferrite(true):
 			break
 		_generate_budget()
 		_service_resources()
@@ -187,7 +221,7 @@ func prepare_initial_neighborhood(state: PlanetWorldState) -> Dictionary:
 	_preparing = false
 	var result := {"ok": true, "generation": generation, "state": state,
 		"seed": seed_value, "revision": revision, "center": center,
-		"ferrite_token": _ferrite_token}
+		"resource_token": _resource_token}
 	if not preparation_is_ready(result):
 		if is_inside_tree() and not _arrival_cancelled and _state == state \
 				and state.seed_value == seed_value and state.revision == revision:
@@ -207,8 +241,7 @@ func _initial_completed(center: Vector2i) -> int:
 					and _chunks[coordinate].state_revision == _state.revision \
 					and _ground_is_current(coordinate) and not _tint_dirty:
 				completed += 1
-	if _ferrite_presenter != null and _ferrite_presenter.matches_context(_state) \
-			and _ferrite_presenter.required_ready(_ferrite_token) and _resources_done \
+	if _resource_presenter != null and _resources_done \
 			and _resource_presenter.is_complete(_resource_token):
 		completed += 1
 	return completed
@@ -224,7 +257,7 @@ func preparation_is_ready(result: Variant) -> bool:
 		and _ground_state == _state and _ground_seed == _state.seed_value \
 		and result.get("center") == _center \
 		and _center == WorldCoordinates.world_to_chunk(to_local($Spawns/FromShip.global_position)) \
-		and result.get("ferrite_token", -1) == _ferrite_token \
+		and result.get("resource_token", -1) == _resource_token \
 		and _initial_completed(_center) == INITIAL_CHUNK_COUNT + 1
 
 
@@ -238,12 +271,10 @@ func arrival_is_ready(result: Variant) -> bool:
 		and result.get("revision") == _state.revision \
 		and result.get("ground_center") == _center and result.get("ground_radius") == loading_radius \
 		and _required_ground_is_current() \
-		and result.get("ferrite_token", -1) == _ferrite_token \
+		and result.get("resource_token", -1) == _resource_token \
 		and is_inside_tree() and is_instance_valid(_player) and is_ancestor_of(_player) \
 		and not _preparing and not _arrival_cancelled and _terrain_failure.is_empty() \
-		and _pending.is_empty() and _ferrite_presenter != null \
-		and _ferrite_presenter.matches_context(_state) \
-		and _ferrite_presenter.required_ready(_ferrite_token) and _resources_done \
+		and _pending.is_empty() and _resource_presenter != null and _resources_done \
 		and _resource_presenter.is_complete(_resource_token) \
 		and _center == WorldCoordinates.world_to_chunk(to_local(_player.global_position))
 
@@ -252,8 +283,6 @@ func cancel_arrival_preparation() -> void:
 	_arrival_generation += 1
 	_arrival_cancelled = true
 	_preparing = false
-	if _ferrite_presenter != null:
-		_ferrite_presenter.cancel()
 	_cancel_continuous()
 	if _resource_presenter != null:
 		_resource_presenter.cancel()
@@ -277,7 +306,6 @@ func _process(_delta: float) -> void:
 			or not is_instance_valid(_player) or not is_ancestor_of(_player):
 		return
 	_update_neighborhood()
-	_service_ferrite()
 	_generate_budget()
 	_service_resources()
 	_flush_highlights()
@@ -294,8 +322,7 @@ func _update_neighborhood(preparation_center: Variant = null) -> void:
 		return
 	var center: Vector2i = preparation_center if preparation_center is Vector2i else \
 		WorldCoordinates.world_to_chunk(to_local(_player.global_position))
-	if center == _center and _state.revision == _revision \
-			and _ferrite_presenter.matches_context(_state):
+	if center == _center and _state.revision == _revision:
 		return
 	_center = center
 	_revision = _state.revision
@@ -322,28 +349,7 @@ func _update_neighborhood(preparation_center: Variant = null) -> void:
 				_pending.append(coordinate)
 	_pending.sort_custom(func(a: Vector2i, b: Vector2i) -> bool:
 		return _distance(a, center) < _distance(b, center))
-	var presented := _ferrite_presenter.request(_state, _retained_presentation_area())
-	if not presented.ok:
-		_stop_terrain(presented)
-		push_error("Exterior Ferrite presentation blocked: " + str(presented))
-		get_tree().paused = true
-		return
-	_ferrite_token = presented.token
 	_highlights_dirty = true
-
-
-func _service_ferrite(required_only: bool = false) -> bool:
-	if not _terrain_failure.is_empty():
-		return false
-	var presented := _ferrite_presenter.step(_state, _ferrite_token, required_only)
-	if not presented.ok:
-		_stop_terrain(presented)
-		push_error("Exterior Ferrite preparation blocked: " + str(presented))
-		get_tree().paused = true
-		return false
-	elif presented.changed:
-		_highlights_dirty = true
-	return not presented.get("stale", false)
 
 
 # Stream only over attached terrain. Queries never acquire construction authority.
@@ -377,7 +383,10 @@ func _service_resources() -> void:
 		_resources_done = false
 		_stop_terrain(presented)
 		return
+	var was_done := _resources_done
 	_resources_done = presented.get("done", false)
+	if _resources_done and not was_done:
+		_highlights_dirty = true
 
 
 func _generate_budget() -> void:
@@ -607,13 +616,6 @@ func set_construction_definition(definition: MachineDefinition) -> void:
 	_highlights_dirty = definition != null
 
 
-# Planet-local square, independent of which terrain requests have completed.
-func _retained_presentation_area() -> Rect2:
-	var radius := loading_radius + retention_margin
-	return Rect2(Vector2(_center - Vector2i.ONE * radius) * WorldCoordinates.CHUNK_SIZE,
-		Vector2.ONE * (2 * radius + 1) * WorldCoordinates.CHUNK_SIZE)
-
-
 func _clear_highlights() -> void:
 	if _highlights == null:
 		return
@@ -623,7 +625,7 @@ func _clear_highlights() -> void:
 
 
 func _flush_highlights() -> void:
-	if _highlights_dirty and _ferrite_presenter.required_ready(_ferrite_token):
+	if _highlights_dirty and _resources_done and _resource_presenter.is_complete(_resource_token):
 		_highlights_dirty = false
 		_refresh_highlights()
 
@@ -632,28 +634,33 @@ func _refresh_highlights() -> void:
 	_clear_highlights()
 	if _construction_definition == null or _state == null or _chunks.is_empty():
 		return
-	for deposit in _ferrite_presenter.highlight_deposits(_state, _ferrite_token):
-		if not _construction_definition.compatible_resources.has(deposit.resource_type):
-			continue
-		var bounds := FerriteRegionGenerator._bounds(deposit.footprint)
-		var first := WorldCoordinates.world_to_chunk(bounds.position)
-		var last := WorldCoordinates.world_to_chunk(bounds.end)
-		# Visit footprint chunk candidates only, never explored deposits x chunks.
-		for y in range(first.y, last.y + 1):
-			for x in range(first.x, last.x + 1):
-				var coordinate := Vector2i(x, y)
-				if not _chunks.has(coordinate):
-					continue
-				var start := Vector2(coordinate) * WorldCoordinates.CHUNK_SIZE
-				var end := start + Vector2.ONE * WorldCoordinates.CHUNK_SIZE
-				var boundary := PackedVector2Array([start, Vector2(end.x, start.y), end,
-					Vector2(start.x, end.y)])
-				# All pieces of the actual concave footprint; decorative rims stay empty.
-				for polygon in Geometry2D.intersect_polygons(deposit.footprint, boundary):
-					var highlight := Polygon2D.new()
-					highlight.polygon = polygon
-					highlight.color = deposit.construction_highlight
-					_highlights.add_child(highlight)
+	var context := _state.resource_generation_v2_context()
+	if not context.ok:
+		return
+	# One bounded authority query per attached chunk; deduplicate boundary members.
+	var seen: Dictionary = {}
+	for coordinate: Vector2i in _chunks:
+		var chunk_bounds := Rect2(Vector2(coordinate) * WorldCoordinates.CHUNK_SIZE,
+			Vector2.ONE * WorldCoordinates.CHUNK_SIZE)
+		var result := _state.query_resource_descriptors_v2(chunk_bounds, context.token)
+		if not result.ok:
+			_clear_highlights()
+			_stop_terrain(result)
+			return
+		for member: Dictionary in result.deposits:
+			if seen.has(member.deposit_id) or not _construction_definition.compatible_resources.has(
+					StringName(member.resource_type)):
+				continue
+			var bounds := ExtractorAnchorRules.bounds(member.anchor_cells)
+			if not chunk_bounds.intersects(bounds, true):
+				continue
+			seen[member.deposit_id] = true
+			var highlight := Polygon2D.new()
+			highlight.polygon = PackedVector2Array([bounds.position,
+				Vector2(bounds.end.x, bounds.position.y), bounds.end,
+				Vector2(bounds.position.x, bounds.end.y)])
+			highlight.color = Color(0.63, 0.76, 0.88, 0.18)
+			_highlights.add_child(highlight)
 
 
 func _distance(a: Vector2i, b: Vector2i) -> int:

@@ -1,5 +1,11 @@
 # Ferrite Milestone 2: deterministic region data
 
+This document preserves the historical legacy generation/presentation specification.
+The pending [Ferrite V2 live cutover](RESOURCE_GENERATION_V2_INTEGRATION.md#ferrite-live-authority-cutover-pending-merge)
+retires this system from gameplay. Its catalogs, source, artwork and diagnostics
+remain preserved; fresh sessions use the shared V2 authority and presenter.
+
+
 Owner-accepted local-development Milestone 2 merged in PR #126.
 Runtime acceptance is recorded below for reviewed commit `366378a`.
 Uses the ten
@@ -248,7 +254,7 @@ This section records the accepted PR #127 implementation. Its synchronous query
 and refresh mechanics are superseded by the pending 3B section below; the dated
 owner acceptance remains historical evidence for 3A only.
 
-[FerriteDepositPresenter](../scenes/world/ferrite_deposit_presenter.gd) is a small
+[FerriteDepositPresenter](../scenes/world/ferrite_deposit_presenter.gd.txt) is a small
 disposable Node2D owned by the exterior. It queries generated descriptors only,
 deduplicates stable IDs across pages, and keeps one uncentered Sprite2D per nearby
 deposit. The authored introductory sprite/scene and discovery remain separate

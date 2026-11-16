@@ -21,10 +21,10 @@ ANCHOR = read("construction/extractor_anchor_rules.gd")
 class LiveExtractorStaticTests(unittest.TestCase):
     def _assert_transaction_contract(self, source):
         transaction = body(source, "_deploy_machine_transaction")
-        self.assertIn('if not is_resource_generation_ready() or _machine_transaction or inventory == null:\n\t\treturn 0', transaction)
+        self.assertIn('if not is_resource_generation_v2_ready() or _machine_transaction or inventory == null:\n\t\treturn 0', transaction)
         self.assertIn('PlacementRules.rejection(self, definition, cell, turns, player, world,\n\t\t\tconstruction_range, inventory, v2_ticket).is_empty():\n\t\t_machine_transaction = false\n\t\treturn 0', transaction)
         self.assertIn('if not inventory.remove_item(definition, 1, false):\n\t\t_machine_transaction = false\n\t\treturn 0\n\tvar machine_id := _next_machine_id', transaction)
-        ordered = ['not is_resource_generation_ready()', '_machine_transaction = true',
+        ordered = ['not is_resource_generation_v2_ready()', '_machine_transaction = true',
                    'PlacementRules.rejection(', 'inventory.remove_item(definition, 1, false)',
                    'var machine_id := _next_machine_id',
                    '_extractor_claims_v2[v2_ticket.deposit_id] = machine_id',
@@ -50,11 +50,12 @@ class LiveExtractorStaticTests(unittest.TestCase):
         resolver = body(source, 'extractor_output_item')
         for fragment in ('_machines.get(snapshot.get("id", 0), {})',
                          'if machine.is_empty() or machine != snapshot:\n\t\treturn null',
-                         'if definition.item_id != &"extractor":\n\t\treturn null'):
+                         'if definition.item_id != &"extractor" or not machine.get("v2_deposit_id") is String:\n\t\treturn null'):
             self.assertIn(fragment, resolver)
-        v2, legacy = resolver.split('\tif machine.has("v2_deposit_id"):', 1)[1].split('\n\tvar point :=', 1)
+        v2 = resolver.split('\tif machine.has("v2_deposit_id"):', 1)[1].rsplit('\n\treturn null', 1)[0]
         for fragment in ('var context := resource_generation_v2_context()',
-                         'if not context.ok or extractor_occupant_v2(machine.v2_deposit_id) != machine.id:\n\t\t\treturn null',
+                         'machine.get("v2_context_token") != context.token',
+                         'or extractor_occupant_v2(machine.v2_deposit_id) != machine.id:\n\t\t\treturn null',
                          'var resolved := resource_descriptor_v2_by_id(machine.v2_deposit_id, context.token)',
                          'if not resolved.ok or not resolved.descriptor.has("anchor_cells"):\n\t\t\treturn null',
                          'if not ExtractorAnchorRules.member_rejection(member, definition,\n\t\t\t\tmachine.cell, machine.turns, 0).is_empty():\n\t\t\treturn null'):
@@ -65,7 +66,8 @@ class LiveExtractorStaticTests(unittest.TestCase):
         self.assertEqual(mapping.strip(), '"carbite": return preload("res://inventory/carbite_ore.tres")\n\t\t\t"cuprite": return preload("res://inventory/cuprite_ore.tres")\n\t\t\t"ferrite": return preload("res://inventory/ferrite_ore.tres")\n\t\treturn null')
         self.assertNotIn('definition.output_item', resolver)
         self.assertNotIn('v2_resource_type', resolver)
-        self.assertIn('return preload("res://inventory/ferrite_ore.tres") if deposit_at(point, &"ferrite") != null else null', legacy)
+        self.assertNotIn('deposit_at(', resolver)
+        self.assertIn('\n\treturn null\n', resolver)
         status = body(source, 'machine_status')
         self.assertIn('extractor_output_item(machine) == null):\n\t\treturn OperatingStatus.INACTIVE', status)
         self.assertIn('return extractor_output_item(machine)', body(source, 'stored_output_item'))
@@ -78,11 +80,13 @@ class LiveExtractorStaticTests(unittest.TestCase):
             self.assertIn(fragment, target)
         self.assertNotIn("_resource_v2._source", WORLD)
 
-    def test_legacy_routing_precedes_v2_and_uses_extraction_geometry(self):
+    def test_no_legacy_targeting_or_unticketed_deployment(self):
         target = body(WORLD, "extractor_target_v2")
-        self.assertLess(target.index('deposit_at(point, &"ferrite")'), target.index("resource_generation_v2_context()"))
-        self.assertIn("definition.rotated_point(definition.extraction_point, turns)", target)
-        self.assertIn('if _definition.item_id == &"extractor" and _world is PlanetExterior:', CONTROL)
+        self.assertNotIn("deposit_at", target)
+        transaction = body(WORLD, "_deploy_machine_transaction")
+        guard = 'definition.item_id == &"extractor" and v2_ticket.is_empty()'
+        self.assertLess(transaction.index(guard), transaction.index('inventory.remove_item'))
+
 
     def test_ticket_identity_and_exact_resolution(self):
         for key in ('"token": context.token', '"deposit_id": member.deposit_id',
@@ -129,7 +133,7 @@ class LiveExtractorStaticTests(unittest.TestCase):
                          "query.collision_mask = player.collision_layer", "result.collider == player"):
             self.assertIn(fragment, RULES)
         self.assertIn("state.extractor_anchor_rejection_v2(v2_ticket, definition, cell, turns)", RULES)
-        self.assertIn("elif not definition.compatible_resources.is_empty():", RULES)
+        self.assertIn("elif not v2_ticket.is_empty() or not definition.compatible_resources.is_empty():", RULES)
 
     def test_one_transaction_order_and_guard(self):
         self._assert_transaction_contract(WORLD)
@@ -143,7 +147,7 @@ class LiveExtractorStaticTests(unittest.TestCase):
             'missing rejection release': WORLD.replace('v2_ticket).is_empty():\n\t\t_machine_transaction = false', 'v2_ticket).is_empty():', 1),
             'missing inventory failure release': WORLD.replace('if not inventory.remove_item(definition, 1, false):\n\t\t_machine_transaction = false', 'if not inventory.remove_item(definition, 1, false):', 1),
             'missing reentrancy exclusion': WORLD.replace('or _machine_transaction or inventory == null', 'or inventory == null', 1),
-            'missing readiness': WORLD.replace('not is_resource_generation_ready() or _machine_transaction', '_machine_transaction', 1),
+            'missing readiness': WORLD.replace('not is_resource_generation_v2_ready() or _machine_transaction', '_machine_transaction', 1),
             'missing success release': WORLD.replace('machine_deployed.emit(definition)\n\t_machine_transaction = false', 'machine_deployed.emit(definition)', 1),
             'release before notifications': WORLD.replace('inventory.changed.emit()\n\tmachines_changed.emit()', '_machine_transaction = false\n\tinventory.changed.emit()\n\tmachines_changed.emit()', 1),
             'mutation before failed removal return': WORLD.replace('if not inventory.remove_item(definition, 1, false):\n\t\t_machine_transaction = false', 'if not inventory.remove_item(definition, 1, false):\n\t\t_next_machine_id += 1\n\t\t_machine_transaction = false', 1),
@@ -160,7 +164,7 @@ class LiveExtractorStaticTests(unittest.TestCase):
     def test_recovery_claim_release_after_inventory_before_notifications(self):
         recovery = body(WORLD, "recover_machine")
         ordered = ["inventory.add_items(recovered, false)", "_machines.erase(machine_id)",
-                   '_extractor_claims_v2.erase(machine.get("v2_deposit_id", ""))', "inventory.changed.emit()"]
+                   '_extractor_claims_v2.erase(deposit_id)', "inventory.changed.emit()"]
         positions = [recovery.index(fragment) for fragment in ordered]
         self.assertEqual(positions, sorted(positions))
         self.assertNotIn("select(", recovery)
@@ -180,7 +184,7 @@ class LiveExtractorStaticTests(unittest.TestCase):
         mutations = {
             'unavailable context fallback': resolver.replace('machine.id:\n\t\t\treturn null', 'machine.id:\n\t\t\t' + fallback, 1),
             'stale descriptor fallback': resolver.replace('has("anchor_cells"):\n\t\t\treturn null', 'has("anchor_cells"):\n\t\t\t' + fallback, 1),
-            'unsupported resource fallback': resolver.replace('\n\t\treturn null\n\tvar point', '\n\t\t' + fallback + '\n\tvar point', 1),
+            'unsupported resource fallback': resolver.replace('\n\t\treturn null\n\treturn null', '\n\t\t' + fallback + '\n\treturn null', 1),
             'caller label authority': resolver.replace('match member.resource_type:', 'match machine.v2_resource_type:', 1),
         }
         for label, replacement in mutations.items():
@@ -202,11 +206,11 @@ class LiveExtractorStaticTests(unittest.TestCase):
         self.assertIn("_details.visible = configured", view)
         self.assertIn("_unavailable.visible = not configured", view)
 
-    def test_legacy_queries_and_production_loop_unchanged(self):
+    def test_shared_production_loop_unchanged_except_authority_readiness(self):
         original = subprocess.check_output(["git", "show", BASE + ":scenes/world/planet_world_state.gd"], cwd=ROOT, text=True)
-        for name in ("deposit_at", "get_deposit", "get_deposits_in_area", "query_deposit_descriptors",
-                     "advance_production", "transfer_input", "collect_output"):
-            self.assertEqual(body(WORLD, name), body(original, name), name)
+        for name in ("advance_production", "transfer_input", "collect_output"):
+            self.assertEqual(body(WORLD, name), body(original, name).replace(
+                "is_resource_generation_ready()", "is_resource_generation_v2_ready()"), name)
 
 if __name__ == "__main__":
     unittest.main()

@@ -1027,3 +1027,36 @@ numerical enclosure, GPU correctness, graphics, gameplay or performance. Stage
 3A-2 numerical certification and Stage 3B presenter integration remain unproven
 and unauthorized. No production renderer change, merge or repository cleanup
 occurred; the PR remains draft.
+
+
+## Ferrite V2 cutover validation (pending owner acceptance)
+
+The pending `codex/ferrite-v2-live-authority` implementation uses static validation
+only. No runner, dispatcher, behavioral manifest or execution authorization changes
+accompany it. Do not dispatch authored fixtures under an existing grant. The shared
+`tests/cuprite_gameplay_test.gd` now covers all three resources; its assertions
+remain unexecuted. Legacy Ferrite suites inspect the pre-cutover Git revision;
+current checks are in `tests/static_ferrite_live_authority_test.py` and updated
+live authority, gameplay, startup and transition suites.
+
+Owner Godot acceptance needs separate authorization and review of the exact
+fixture/dependency/filesystem scope before behavioral dispatch. Fresh-game graphical
+acceptance should check:
+
+1. New Game completion, first exit, cancellation and exterior revisits with healthy
+   V2 readiness and unchanged terrain/arrival protections.
+2. Three starting Ferrite members, ordinary Ferrite and preserved Cuprite/Carbite
+   distribution. One visual per deposit, approved artwork transform, streaming
+   retention and construction anchor feedback.
+3. Examine any starting Ferrite anchor: existing discovery musing/objective and
+   subsequent recovery progress exactly once, without an authored legacy deposit.
+4. Ticketed exact anchors in all rotations, occupied/incompatible rejection, range,
+   solid obstacles and player-footprint checks without item loss.
+5. Three canonical ores at one/second, partial cycles, 20-item full-buffer pause,
+   collection/resumption, atomic recovery, claim release and redeployment.
+6. Missing/forged/stale/foreign contexts, descriptors and claims fail closed with no
+   Ferrite fallback or unticketed generic deployment. Interrupted sessions require
+   a fresh game; no migration or refund occurs.
+
+Static PASS establishes no Godot parsing, import, headless, graphical, gameplay or
+performance result. This checklist grants no execution authority.

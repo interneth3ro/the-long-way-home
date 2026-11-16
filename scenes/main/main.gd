@@ -22,9 +22,9 @@ const REPAIR_READY_GUIDANCE: ObjectiveDefinition = preload("res://objectives/res
 
 
 func _ready() -> void:
-	if not $PlaythroughState.planet.is_resource_generation_ready():
+	if not $PlaythroughState.planet.is_resource_generation_v2_ready():
 		# Catalog failure is a blocked session, never an authored-only fallback.
-		push_error("Session startup blocked: " + $PlaythroughState.planet.resource_generation_error())
+		push_error("Session startup blocked: " + $PlaythroughState.planet.resource_generation_v2_error())
 		get_tree().paused = true
 		return
 	$PlaythroughState.ferrite_discovery_completed.connect(_on_ferrite_discovered)

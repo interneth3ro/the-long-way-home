@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 import subprocess
 import unittest
+from initial_exterior_preservation import without_initial_preparation
 
 from static_illustrated_exterior_test import body, window
 from static_terrain_stage3b_test import reconstructed
@@ -91,7 +92,8 @@ class Stage3CTest(unittest.TestCase):
         for path in ('scenes/world/terrain_chunk.gd','scenes/world/planet_generator.gd',
                      'scenes/world/planet_exterior.tscn','scenes/world/planet_world_state.gd'):
             actual = (subprocess.check_output(['git', 'show', MERGED+':'+path], cwd=ROOT, text=True)
-                      if path == 'scenes/world/planet_world_state.gd' else (ROOT/path).read_text())
+                      if path == 'scenes/world/planet_world_state.gd' else
+                      without_initial_preparation(path, (ROOT/path).read_bytes()).decode('cp1252').replace('\r\n', '\n'))
             self.assertEqual(actual,subprocess.check_output(['git','show',BASE+':'+path],cwd=ROOT,text=True))
 
     def test_inactive_gameplay_plan_inputs_transforms_and_dependencies(self):
@@ -141,7 +143,7 @@ class Stage3CTest(unittest.TestCase):
 
     def test_warning_fixes_preserve_presenter_behavior(self):
         baseline = '7f65d42e7647d1bfff17ad83a88463ff275067ba'
-        ferrite = (ROOT/'scenes/world/ferrite_deposit_presenter.gd').read_text()
+        ferrite = (ROOT/'scenes/world/ferrite_deposit_presenter.gd.txt').read_text()
         terrain = (ROOT/'scenes/world/continuous_terrain_presenter.gd').read_text()
         annotation = ('\t\t\t# Integer quotient selects the row of this flattened grid.\n'
                       '\t\t\t@warning_ignore("integer_division")\n')

@@ -148,11 +148,20 @@ func _on_machine_deployed(definition: MachineDefinition) -> void:
 		smelter_deployment_completed.emit()
 
 
-func discover_ferrite(deposit_id: StringName) -> bool:
+func discover_ferrite(deposit_id: String, token: RefCounted) -> bool:
 	if ferrite_discovered or planet == null:
 		return false
-	var deposit := planet.get_deposit(deposit_id)
-	if deposit == null or deposit.resource_type != &"ferrite":
+	var resolved := planet.resource_descriptor_v2_by_id(deposit_id, token)
+	var layout := planet.starting_resource_reservations_v2(token)
+	if not resolved.ok or not layout.ok or resolved.descriptor.resource_type != "ferrite":
+		return false
+	# Opening discovery belongs to one of the three genuine starting members.
+	var starting := false
+	for location: Dictionary in layout.locations:
+		for member: Dictionary in location.deposits:
+			if member.deposit_id == deposit_id and member == resolved.descriptor:
+				starting = true
+	if not starting:
 		return false
 	ferrite_discovered = true
 	ferrite_discovery_completed.emit()

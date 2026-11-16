@@ -1,5 +1,16 @@
 # Resource Generation v2 extractor anchors
 
+The pending [Ferrite live cutover](RESOURCE_GENERATION_V2_INTEGRATION.md#ferrite-live-authority-cutover-pending-merge)
+supersedes historical legacy-first routing below. Fresh-session Ferrite, Cuprite
+and Carbite all require V2 tickets at the world-state transaction boundary,
+including calls through generic deployment APIs. Exact identity resolution preserves
+anchors, rotations, occupancy, physics, range, inventory and reentrancy protections.
+Production requires the committed context and owned claim; recovery releases only
+that machine's claim. No legacy conversion or refund system is implemented.
+Runtime acceptance is pending; behavioral assertions are authored but unexecuted.
+
+
+
 Milestone 8 preserves the construction contracts below and adds
 [resource-specific production and recovery](RESOURCE_GENERATION_V2_INTEGRATION.md#milestone-8-cuprite-gameplay-pending-merge)
 with [normal Cuprite artwork](RESOURCE_GENERATION_V2_PRESENTATION.md#milestone-8-normal-gameplay-pending-merge),

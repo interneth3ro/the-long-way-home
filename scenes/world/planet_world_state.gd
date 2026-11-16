@@ -20,8 +20,6 @@ var _resource_v2 := ResourceGenerationV2Integration.new()
 var revision: int = 0
 var _terrain_changes: Dictionary[Vector2i, Color] = {}
 var _removed_details: Dictionary[Vector2i, bool] = {}
-var _deposits: Array[ResourceDeposit] = [preload("res://scenes/world/introductory_ferrite.tres")]
-var _ferrite: FerriteRegionGenerator
 var _machines: Dictionary[int, Dictionary] = {}
 var _extractor_claims_v2: Dictionary[String, int] = {}
 var _next_machine_id: int = 1
@@ -30,7 +28,7 @@ var _machine_transaction: bool = false
 var _recipe_change_pauses: Dictionary[int, RefCounted] = {}
 
 
-# V2 read boundary. Legacy APIs below retain their original Ferrite semantics.
+# V2 is the sole live resource authority for fresh sessions.
 # Context tokens are opaque leases, never generators or persistent/save identities.
 func configure_resource_generation_v2(ordinary_policy: String = "ordinary-v2-1",
 		starting_policy: String = "starting-v2-2", schema_version: int = 1) -> Dictionary:
@@ -73,16 +71,11 @@ func extractor_occupant_v2(deposit_id: String) -> int:
 	return _extractor_claims_v2.get(deposit_id, 0)
 
 
-# Legacy-compatible extraction point wins before any v2 query. No fallback on a
-# failed v2 context/query. Other machines never call this routing adapter.
-func extractor_target_v2(cursor: Vector2, definition: MachineDefinition, turns: int) -> Dictionary:
+# All resources use the same authoritative descriptor ticket. No legacy fallback.
+func extractor_target_v2(cursor: Vector2, definition: MachineDefinition, _turns: int) -> Dictionary:
 	var cell := WorldCoordinates.world_to_construction(cursor)
 	if definition == null or not definition.is_valid() or definition.item_id != &"extractor":
 		return {"reason": "Invalid machine definition", "ticket": {}, "cell": cell}
-	var point := definition.footprint(cell, turns).position \
-		+ definition.rotated_point(definition.extraction_point, turns)
-	if definition.compatible_resources.has(&"ferrite") and deposit_at(point, &"ferrite") != null:
-		return {"reason": "", "ticket": {}, "cell": cell}
 	var context := resource_generation_v2_context()
 	if not context.ok:
 		return {"reason": "Unavailable v2 context", "ticket": {}, "cell": cell}
@@ -112,54 +105,6 @@ func extractor_anchor_rejection_v2(ticket: Dictionary, definition: MachineDefini
 		return "Unavailable anchor"
 	return ExtractorAnchorRules.member_rejection(member, definition, cell, turns,
 		extractor_occupant_v2(member.deposit_id))
-
-
-func get_deposits() -> Array[ResourceDeposit]:
-	# Authored-only legacy list; spatial consumers use get_deposits_in_area.
-	return _deposits.duplicate()
-
-
-func is_resource_generation_ready() -> bool:
-	return _ferrite.is_ready()
-
-
-func resource_generation_error() -> String:
-	return _ferrite.initialization_error()
-
-
-func get_deposit_region(owner: Vector2i) -> Array:
-	return _ferrite.region(owner)
-
-
-# Broad-phase illustrated-envelope query for bounded presentation.
-func query_deposit_descriptors(area: Rect2) -> Array:
-	return _ferrite.query(area)
-
-
-# Planning only: no region generation or artwork I/O.
-func deposit_query_owners(area: Rect2) -> Array[Vector2i]:
-	return _ferrite.query_owners(area)
-
-
-func deposit_resource(descriptor: Dictionary) -> ResourceDeposit:
-	return _ferrite.resource(descriptor)
-
-
-# A copy of validated catalog registration; no textures or nodes in simulation.
-func get_deposit_variant(variant_id: String) -> Dictionary:
-	return _ferrite.variant_metadata(variant_id)
-
-
-func get_deposits_in_area(area: Rect2) -> Array[ResourceDeposit]:
-	var result: Array[ResourceDeposit] = []
-	if not _ferrite.query_is_bounded(area):
-		return result
-	for deposit in _deposits:
-		if area.intersects(FerriteRegionGenerator._bounds(deposit.footprint), true):
-			result.append(deposit)
-	for descriptor in _ferrite.query(area):
-		result.append(_ferrite.resource(descriptor))
-	return result
 
 
 func get_machines() -> Array[Dictionary]:
@@ -207,7 +152,10 @@ func deploy_extractor_v2(ticket: Dictionary, definition: MachineDefinition, cell
 func _deploy_machine_transaction(definition: MachineDefinition, cell: Vector2i, turns: int,
 		inventory: InventoryState, player: CharacterBody2D, world: Node2D,
 		construction_range: float, v2_ticket: Dictionary) -> int:
-	if not is_resource_generation_ready() or _machine_transaction or inventory == null:
+	if not is_resource_generation_v2_ready() or _machine_transaction or inventory == null:
+		return 0
+	if definition == null or (definition.item_id == &"extractor" and v2_ticket.is_empty()) \
+			or (definition.item_id != &"extractor" and not v2_ticket.is_empty()):
 		return 0
 	_machine_transaction = true
 	if not PlacementRules.rejection(self, definition, cell, turns, player, world,
@@ -229,6 +177,7 @@ func _deploy_machine_transaction(definition: MachineDefinition, cell: Vector2i, 
 	if not v2_ticket.is_empty():
 		machine["v2_deposit_id"] = v2_ticket.deposit_id
 		machine["v2_resource_type"] = v2_ticket.resource_type
+		machine["v2_context_token"] = v2_ticket.token
 		_extractor_claims_v2[v2_ticket.deposit_id] = machine_id
 	_machines[machine_id] = machine
 	_next_machine_id += 1
@@ -276,7 +225,9 @@ func recover_machine(machine_id: int, inventory: InventoryState,
 		_machine_transaction = false
 		return false
 	_machines.erase(machine_id)
-	_extractor_claims_v2.erase(machine.get("v2_deposit_id", ""))
+	var deposit_id: String = machine.get("v2_deposit_id", "")
+	if extractor_occupant_v2(deposit_id) == machine_id:
+		_extractor_claims_v2.erase(deposit_id)
 	_recipe_change_pauses.erase(machine_id)
 	inventory.changed.emit()
 	machines_changed.emit()
@@ -289,20 +240,12 @@ func get_machine(machine_id: int) -> Dictionary:
 
 
 func machine_status(machine: Dictionary) -> OperatingStatus:
-	if not is_resource_generation_ready() or machine.is_empty():
+	if not is_resource_generation_v2_ready() or machine.is_empty():
 		return OperatingStatus.INACTIVE
 	var definition: MachineDefinition = machine.definition
 	if definition.has_recipes():
 		return _recipe_status(machine)
 	if not definition.has_production() or (definition.item_id == &"extractor" and extractor_output_item(machine) == null):
-		return OperatingStatus.INACTIVE
-	var point := Vector2(machine.cell) * WorldCoordinates.CONSTRUCTION_SIZE \
-		+ definition.rotated_point(definition.extraction_point, machine.turns)
-	var compatible := definition.compatible_resources.is_empty() or machine.has("v2_deposit_id")
-	for resource_type in definition.compatible_resources:
-		if deposit_at(point, resource_type) != null:
-			compatible = true
-	if not compatible:
 		return OperatingStatus.INACTIVE
 	if machine.output > definition.output_capacity - definition.output_per_cycle:
 		return OperatingStatus.OUTPUT_FULL
@@ -319,11 +262,12 @@ func extractor_output_item(snapshot: Dictionary) -> ItemDefinition:
 	if machine.is_empty() or machine != snapshot:
 		return null
 	var definition: MachineDefinition = machine.definition
-	if definition.item_id != &"extractor":
+	if definition.item_id != &"extractor" or not machine.get("v2_deposit_id") is String:
 		return null
 	if machine.has("v2_deposit_id"):
 		var context := resource_generation_v2_context()
-		if not context.ok or extractor_occupant_v2(machine.v2_deposit_id) != machine.id:
+		if not context.ok or machine.get("v2_context_token") != context.token \
+			or extractor_occupant_v2(machine.v2_deposit_id) != machine.id:
 			return null
 		var resolved := resource_descriptor_v2_by_id(machine.v2_deposit_id, context.token)
 		if not resolved.ok or not resolved.descriptor.has("anchor_cells"):
@@ -337,9 +281,7 @@ func extractor_output_item(snapshot: Dictionary) -> ItemDefinition:
 			"cuprite": return preload("res://inventory/cuprite_ore.tres")
 			"ferrite": return preload("res://inventory/ferrite_ore.tres")
 		return null
-	var point := definition.footprint(machine.cell, machine.turns).position \
-		+ definition.rotated_point(definition.extraction_point, machine.turns)
-	return preload("res://inventory/ferrite_ore.tres") if deposit_at(point, &"ferrite") != null else null
+	return null
 
 
 # Resolve completed products from stored identity, never from selected recipe.
@@ -427,7 +369,7 @@ func _advance_recipe(machine: Dictionary, delta: float) -> void:
 
 # Called only by persistent PlaythroughState, never by terrain or UI nodes.
 func advance_production(delta: float) -> void:
-	if not is_resource_generation_ready() or _machine_transaction or not is_finite(delta) or delta <= 0.0:
+	if not is_resource_generation_v2_ready() or _machine_transaction or not is_finite(delta) or delta <= 0.0:
 		return
 	_machine_transaction = true
 	var changed := false
@@ -648,32 +590,9 @@ func collect_output(machine_id: int, inventory: InventoryState,
 	return true
 
 
-func get_deposit(deposit_id: StringName) -> ResourceDeposit:
-	for deposit in _deposits:
-		if deposit.deposit_id == deposit_id:
-			return deposit
-	var descriptor := _ferrite.descriptor_by_id(deposit_id)
-	return null if descriptor.is_empty() else _ferrite.resource(descriptor)
-
-
-# A future machine's designated extraction point can query this independently
-# of terrain tiles, artwork and its remaining 32-unit construction footprint.
-func deposit_at(world_point: Vector2, resource_type: StringName) -> ResourceDeposit:
-	for deposit in _deposits:
-		if deposit.resource_type == resource_type and deposit.contains_point(world_point):
-			return deposit
-	if resource_type == &"ferrite" and world_point.is_finite():
-		for descriptor in _ferrite.query(Rect2(world_point, Vector2.ZERO)):
-			var deposit := _ferrite.resource(descriptor)
-			if deposit.contains_point(world_point):
-				return deposit
-	return null
-
-
 func _init(world_seed: int = 26026) -> void:
 	seed_value = world_seed
 	_world_generation_seed = world_seed
-	_ferrite = FerriteRegionGenerator.new(world_seed)
 	configure_resource_generation_v2()
 
 

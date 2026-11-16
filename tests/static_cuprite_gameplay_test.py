@@ -60,7 +60,7 @@ class CupriteGameplayStaticTests(unittest.TestCase):
         for fragment in ('output_per_cycle = 1', 'cycle_seconds = 1.0', 'output_capacity = 20'):
             self.assertIn(fragment, read("inventory/extractor.tres"))
         original = subprocess.check_output(["git", "show", BASE + ":scenes/world/planet_world_state.gd"], cwd=ROOT, text=True)
-        self.assertEqual(body(WORLD, "advance_production"), body(original, "advance_production"))
+        self.assertEqual(body(WORLD, "advance_production"), body(original, "advance_production").replace("is_resource_generation_ready()", "is_resource_generation_v2_ready()"))
         self.assertEqual(body(WORLD, "_advance_recipe"), body(original, "_advance_recipe"))
 
     def test_collection_recovery_reuse_transactions(self):
@@ -135,7 +135,7 @@ class CupriteGameplayStaticTests(unittest.TestCase):
 
     def test_generation_construction_and_world_art_unchanged(self):
         paths = ['construction/construction_controller.gd', 'construction/extractor_anchor_rules.gd',
-                 'construction/placement_rules.gd', 'scenes/world/resource_generation_v2_integration.gd',
+                  'scenes/world/resource_generation_v2_integration.gd',
                  'scenes/world/resource_presentation_catalog.gd',
                  'scenes/world/ordinary_resource_generator.gd',
                  'scenes/world/resource_generation_descriptors.gd', 'scenes/world/resource_presentations/v2/cuprite.json',
@@ -152,8 +152,7 @@ class CupriteGameplayStaticTests(unittest.TestCase):
 
     def test_legacy_and_other_production_methods_preserved(self):
         original = subprocess.check_output(['git', 'show', BASE + ':scenes/world/planet_world_state.gd'], cwd=ROOT, text=True)
-        for name in ('extractor_target_v2', 'extractor_anchor_rejection_v2', '_deploy_machine_transaction',
-                     'deposit_at', 'query_deposit_descriptors', 'transfer_input', 'collect_output', 'recover_machine',
+        for name in ('extractor_anchor_rejection_v2', 'transfer_input', 'collect_output',
                      '_recipe_status', '_advance_recipe', 'change_recipe'):
             with self.subTest(method=name):
                 self.assertEqual(body(WORLD, name), body(original, name))
@@ -162,7 +161,7 @@ class CupriteGameplayStaticTests(unittest.TestCase):
         fixture = read('tests/cuprite_gameplay_test.gd')
         for fragment in ('successful ore production', 'full-output status', 'production resume after collection',
                          'correct ore item identity', 'recovery returns stored ore', 'inventory rejection without item loss',
-                         'legacy Ferrite production', 'legacy Ferrite recovery', 'unsupported resource inactivity',
+                         'unticketed generic Extractor bypass', 'no legacy target fallback', 'unsupported resource inactivity',
                          'presentation positioning', 'streaming unload', 'no duplicate sprites', 'duplicate claim',
                          'failed removal', 'failed placement', 'unavailable authority'):
             self.assertIn(fragment, fixture)

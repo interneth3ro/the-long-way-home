@@ -43,8 +43,10 @@ class IllustratedExteriorStaticTest(unittest.TestCase):
     def _assert_no_eager_terrain_renderer(self, source):
         # The live resource definition is unrelated to terrain initialization.
         self.assertEqual(re.findall(r'preload\(([^\n]+?)\)', source),
-                         ['"res://scenes/world/resource_definitions/v2/cuprite.tres"',
-                          '"res://scenes/world/resource_definitions/v2/carbite.tres"'])
+                         ['"res://scenes/world/resource_definitions/v2/ferrite.tres"',
+                          '"res://scenes/world/resource_definitions/v2/cuprite.tres"',
+                          '"res://scenes/world/resource_definitions/v2/carbite.tres"',
+                          '"res://scenes/interaction/ferrite_inspection.gd"'])
         configure = body(source, '_configure_terrain_renderer')
         self.assertEqual(re.findall(r'\bload\([^\n]+\)', source),
                          re.findall(r'\bload\([^\n]+\)', configure))
@@ -178,7 +180,7 @@ class IllustratedExteriorStaticTest(unittest.TestCase):
             self.assertIn('if not _terrain_failure.is_empty():\n\t\treturn', body(SOURCE, name))
         self.assertIn('not _terrain_failure.is_empty()', body(SOURCE, '_process'))
         arrival = body(SOURCE, 'prepare_for_arrival')
-        self.assertIn('not _pending.is_empty() or not _ferrite_presenter.required_ready(_ferrite_token)', arrival)
+        self.assertIn('not _pending.is_empty() or not _resources_done', arrival)
         self.assertIn('and _terrain_failure.is_empty() and arrival == _arrival_generation:', arrival)
         self.assertIn('if _terrain_failure.is_empty():', body(SOURCE, '_stop_terrain'))
         self.assertIn('_terrain_failure.duplicate(true)', body(SOURCE, 'terrain_failure'))
@@ -329,7 +331,8 @@ class IllustratedExteriorStaticTest(unittest.TestCase):
         # PR #104-vs-#103 Z-only comparison. Current Z/resource checks stay below.
         self.assertIn('chunk.z_index = -10', SOURCE)
         self.assertIn('_highlights.z_index = -4', SOURCE)
-        self.assertIn('[node name="FerriteGround" type="Node2D" parent="."]\nz_index = -5', scene)
+        self.assertNotIn('[node name="FerriteGround"', scene)
+        self.assertIn('sprite.z_index = -5', (ROOT/'scenes/world/resource_presenter_v2.gd').read_text())
         self.assertEqual(scene.count('type="TileMapLayer"'), 1)
         for path in re.findall(r'(?:path="|load\(")res://([^"]+)', scene + SOURCE):
             self.assertTrue((ROOT/path).is_file(), path)

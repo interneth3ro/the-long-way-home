@@ -5,6 +5,7 @@ import re
 from pathlib import Path
 import subprocess
 import unittest
+from initial_exterior_preservation import without_initial_preparation
 
 from static_illustrated_exterior_test import body
 
@@ -93,7 +94,7 @@ class Stage3DTest(unittest.TestCase):
         before = git('show', BASE+':'+path)
         marker = 'script = ExtResource("2_world")\n'
         self.assertEqual(before.count(marker), 1)
-        scene = (ROOT/path).read_text()
+        scene = without_initial_preparation(path, (ROOT/path).read_bytes()).decode('cp1252').replace('\r\n', '\n')
         self.assertEqual(git('show', MERGED+':'+path), before)
         self.assertEqual(scene, before)
         self.assertNotIn('terrain_renderer =', scene)

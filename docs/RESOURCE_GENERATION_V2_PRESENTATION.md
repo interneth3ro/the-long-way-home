@@ -1,5 +1,32 @@
 # Resource Generation v2 presentation and Cuprite inspection
 
+## Three-resource live cutover (pending merge)
+
+`codex/ferrite-v2-live-authority` configures the existing `ResourcePresenterV2`
+with Ferrite, Cuprite and Carbite. The live Ferrite definition references
+[`ferrite.json`](../scenes/world/resource_presentations/v2/ferrite.json).
+PR #212's approved 1536x1024 RGBA image is unchanged, SHA-256
+`bd0f7696d64f8f96dca3cbfa0baecb7bba7da96876242eabc5056916574825a0`.
+Its scale 0.225, offset (0,16), linear filtering, z-index -5 and 128x128 logical
+anchor are unchanged. Cuprite and Carbite artwork/catalogs are unchanged.
+
+The dedicated legacy presenter, authored Ferrite sprite, legacy request token,
+readiness gates, lookahead work and polygon clipping are retired. Existing shared
+catalog admission, bounded paged descriptor queries, sprite retention, cancellation
+and reattachment serve all three resources. Construction highlights use deduplicated
+V2 anchor rectangles and the existing shared highlight layer/ghost feedback.
+Initial preparation and arrival receipts bind the current shared resource request;
+completion also requires the presenter's current generation context. Terrain
+publication, loading square, failure handling and transition protections remain.
+
+The [PR #212 isolated preview](../scenes/experiments/resource_generation_v2/ferrite_inspection.tscn)
+remains available for artwork inspection. Earlier sections below retain their
+historical scope; unchanged-legacy and missing-catalog statements no longer describe
+this branch. See [authority and legacy disposition](RESOURCE_GENERATION_V2_INTEGRATION.md#ferrite-live-authority-cutover-pending-merge).
+Godot parsing, graphics, streaming/revisits and gameplay acceptance remain unverified.
+
+
+
 The earlier sections below record the isolated PR #190 implementation.
 [Milestone 8](#milestone-8-normal-gameplay-pending-merge) supersedes its lack of normal gameplay wiring.
 The [Carbite production integration](#carbite-production-integration-feature-branch-pending-merge)

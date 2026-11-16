@@ -8,6 +8,7 @@ from dataclasses import dataclass, replace
 from pathlib import Path
 import subprocess
 import unittest
+from initial_exterior_preservation import without_initial_preparation
 
 from static_illustrated_exterior_test import body, window
 
@@ -102,8 +103,7 @@ class GroundPublicationTest(unittest.TestCase):
 
     def test_unchanged_neighborhood_fails_closed_without_receipt_retry(self):
         neighborhood = body(E, '_update_neighborhood')
-        early = ('if center == _center and _state.revision == _revision \\\n'
-                 '\t\t\tand _ferrite_presenter.matches_context(_state):\n\t\treturn')
+        early = 'if center == _center and _state.revision == _revision:\n\t\treturn'
         self.assertIn(early, neighborhood)
         self.assertLess(neighborhood.index(early), neighborhood.index('_pending.clear()'))
         self.assertLess(neighborhood.index('_pending.clear()'),
@@ -126,11 +126,11 @@ class GroundPublicationTest(unittest.TestCase):
         self.assertIn('return {"ok": false, "cancelled": false}', rejection)
         # Supported cancellation/reattachment invalidates the early-return
         # predicate, so retained work is reconsidered on the next preparation.
-        ferrite = (ROOT/'scenes/world/ferrite_deposit_presenter.gd').read_text()
-        self.assertIn('_active and _state == state', body(ferrite, 'matches_context'))
-        self.assertIn('_active = false', body(ferrite, 'cancel'))
-        self.assertIn('cancel()', body(ferrite, '_exit_tree'))
-        self.assertIn('_ferrite_presenter.cancel()', body(E, 'cancel_arrival_preparation'))
+        presenter = (ROOT/'scenes/world/resource_presenter_v2.gd').read_text()
+        self.assertIn('_resource_presenter.cancel()', body(E, 'cancel_arrival_preparation'))
+        self.assertIn('_resource_chunks.clear()', body(E, 'cancel_arrival_preparation'))
+        self.assertIn('if matches_world(world, definitions):', body(presenter, 'configure_world'))
+        self.assertIn('_resource_presenter.is_complete(_resource_token)', body(E, 'arrival_is_ready'))
         # Receipt removal occurs only during synchronous replacement or
         # successful retirement; failures stop before any later admission.
         self.assertEqual(E.count('_ground_receipts.erase(coordinate)'), 3)
@@ -168,7 +168,7 @@ class GroundPublicationTest(unittest.TestCase):
         ready = body(E, 'arrival_is_ready')
         for marker in ('_required_ground_is_current()', 'result.get("ground_center") == _center',
                        'result.get("ground_radius") == loading_radius', '_pending.is_empty()',
-                       'required_ready(_ferrite_token)', 'matches_context(_state)'):
+                       '_resources_done', 'is_complete(_resource_token)'):
             self.assertIn(marker, ready)
 
     def test_tokens_replacement_failure_retained_old_and_retirement(self):
@@ -299,7 +299,9 @@ class GroundPublicationTest(unittest.TestCase):
                       subprocess.check_output(['git', 'show', '993ffc14c1fad1032227801870cd3a3fce50f7a5:'+path], cwd=ROOT)
                       if path in ('scenes/main/scene_transition_controller.gd', 'scenes/main/playthrough_state.gd') else
                       subprocess.check_output(['git', 'show', 'cd91c9086ef24e71ddb6a43a2076c4be5a69485e:'+path], cwd=ROOT)
-                      if path == 'tools/run-local-tests.ps1' else (ROOT/path).read_bytes())
+                      if path == 'tools/run-local-tests.ps1' else (ROOT/'scenes/world/ferrite_deposit_presenter.gd.txt').read_bytes()
+                      if path == 'scenes/world/ferrite_deposit_presenter.gd' else
+                      without_initial_preparation(path, (ROOT/path).read_bytes()))
             if path == 'scenes/world/ferrite_deposit_presenter.gd':
                 # PR #152 renames locals that shadow Node.owner; preserve the
                 # exact terrain-era behavior after reversing only that rename.
