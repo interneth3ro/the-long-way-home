@@ -34,3 +34,7 @@ assets/characters/dave/source_art/north_walk_v2/dave_walk_north_v2.json -text wh
 
 # Preserve the owner-supplied east-walk source metadata byte for byte.
 assets/characters/dave/source_art/east_walk_v2/dave_walk_east_v2.json -text whitespace=cr-at-eol
+
+# Preserve the owner-approved historical audit's original bytes, including CSV BOM/newlines.
+docs/audits/test-suite-audit-2026-11-13.csv -text whitespace=cr-at-eol
+docs/audits/test-suite-audit-2026-11-13.md -text

@@ -14,6 +14,10 @@ export_credentials.cfg
 # Imported translations (automatically generated from CSV files)
 *.translation
 
+# Retain the accidental audit translation sidecar locally; docs/audits/.gdignore
+# prevents future Godot imports of the historical reports.
+/docs/audits/test-suite-audit-2026-11-13.csv.import
+
 # Mono-specific ignores
 .mono/
 data_*/
