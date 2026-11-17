@@ -4,7 +4,7 @@ extends "res://experiments/conduit_art_v1/inspection_camera.gd"
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and not event.echo:
 		match event.keycode:
-			KEY_1, KEY_2, KEY_3:
+			KEY_1, KEY_2, KEY_3, KEY_4:
 				_set_view(Vector2(640, 360 + (event.keycode - KEY_1) * 768), 1.0)
 			KEY_HOME:
 				_set_view(position, 1.0)
