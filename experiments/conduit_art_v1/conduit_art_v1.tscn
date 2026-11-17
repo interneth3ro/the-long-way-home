@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3]
+[gd_scene load_steps=32 format=3]
 
 [ext_resource type="Texture2D" path="res://experiments/conduit_art_v1/straight_unlit.png" id="unlit"]
 [ext_resource type="Texture2D" path="res://experiments/conduit_art_v1/straight_lit.png" id="lit"]
@@ -25,6 +25,15 @@
 [ext_resource type="Texture2D" path="res://experiments/conduit_art_v1/supplied_heavy_v2/straight_lit_01.png" id="supplied_lit_01"]
 [ext_resource type="Texture2D" path="res://experiments/conduit_art_v1/supplied_heavy_v2/straight_lit_02.png" id="supplied_lit_02"]
 [ext_resource type="Texture2D" path="res://experiments/conduit_art_v1/supplied_heavy_v2/straight_lit_03.png" id="supplied_lit_03"]
+
+[ext_resource type="Texture2D" path="res://experiments/conduit_art_v1/supplied_no_connectors_v1/straight_vent_00.png" id="free_vent_00"]
+[ext_resource type="Texture2D" path="res://experiments/conduit_art_v1/supplied_no_connectors_v1/straight_vent_01.png" id="free_vent_01"]
+[ext_resource type="Texture2D" path="res://experiments/conduit_art_v1/supplied_no_connectors_v1/straight_vent_02.png" id="free_vent_02"]
+[ext_resource type="Texture2D" path="res://experiments/conduit_art_v1/supplied_no_connectors_v1/straight_vent_03.png" id="free_vent_03"]
+[ext_resource type="Texture2D" path="res://experiments/conduit_art_v1/supplied_no_connectors_v1/straight_lit_00.png" id="free_lit_00"]
+[ext_resource type="Texture2D" path="res://experiments/conduit_art_v1/supplied_no_connectors_v1/straight_lit_01.png" id="free_lit_01"]
+[ext_resource type="Texture2D" path="res://experiments/conduit_art_v1/supplied_no_connectors_v1/straight_lit_02.png" id="free_lit_02"]
+[ext_resource type="Texture2D" path="res://experiments/conduit_art_v1/supplied_no_connectors_v1/straight_lit_03.png" id="free_lit_03"]
 
 [node name="ConduitArtV1" type="Node2D"]
 texture_filter = 4
@@ -1133,7 +1142,7 @@ theme_override_constants/shadow_offset_x = 1
 theme_override_constants/shadow_offset_y = 1
 theme_override_fonts/font = ExtResource("font")
 theme_override_font_sizes/font_size = 16
-text = "Salvaged baseline / Codex Heavy v2 / supplied Heavy v2     |     128 px / 32-unit cells / starts at 1x"
+text = "Salvaged / Codex / supplied / connector-free     |     128 px source / 32-unit cells / starts at 1x"
 
 [node name="Footer" type="ColorRect" parent="HUD"]
 offset_top = 660.0
@@ -1210,7 +1219,7 @@ theme_override_constants/shadow_offset_x = 1
 theme_override_constants/shadow_offset_y = 1
 theme_override_fonts/font = ExtResource("font")
 theme_override_font_sizes/font_size = 15
-text = "Middle-drag up: Codex v2 / supplied unlit / supplied lit"
+text = "Middle-drag up: connector-free comparison at bottom"
 
 [node name="HeavyComparison" type="Node2D" parent="."]
 position = Vector2(0, 768)
@@ -6288,6 +6297,3304 @@ texture_filter = 4
 texture = ExtResource("supplied_lit_03")
 
 [node name="Phase03Caption" type="Label" parent="SuppliedLitComparison/Grass"]
+offset_left = 356.0
+offset_top = 613.0
+offset_right = 416.0
+offset_bottom = 639.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 13
+text = "03"
+
+[node name="ConnectorFreeUnlitComparison" type="Node2D" parent="."]
+position = Vector2(0, 3072)
+
+[node name="Dirt" type="Node2D" parent="ConnectorFreeUnlitComparison"]
+position = Vector2(0, 0)
+
+[node name="Terrain" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt"]
+position = Vector2(0, 80)
+scale = Vector2(1.8146376041112882, 1.8146376041112882)
+texture_filter = 2
+texture = ExtResource("earth")
+centered = false
+region_enabled = true
+region_rect = Rect2(416, 416, 352.6875, 317.41875)
+region_filter_clip_enabled = true
+
+[node name="Material" type="Label" parent="ConnectorFreeUnlitComparison/Dirt"]
+offset_left = 32.0
+offset_top = 118.0
+offset_right = 412.0
+offset_bottom = 144.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 18
+text = "WEATHERED EARTH"
+
+[node name="VerticalBaselineLabel" type="Label" parent="ConnectorFreeUnlitComparison/Dirt"]
+offset_left = 446.0
+offset_top = 138.0
+offset_right = 500.0
+offset_bottom = 164.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 12
+text = "Base"
+
+[node name="VerticalBaseline" type="Node2D" parent="ConnectorFreeUnlitComparison/Dirt"]
+
+
+[node name="Segment01" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt/VerticalBaseline"]
+position = Vector2(464, 176)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment02" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt/VerticalBaseline"]
+position = Vector2(464, 208)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment03" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt/VerticalBaseline"]
+position = Vector2(464, 240)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment04" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt/VerticalBaseline"]
+position = Vector2(464, 272)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment05" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt/VerticalBaseline"]
+position = Vector2(464, 304)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment06" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt/VerticalBaseline"]
+position = Vector2(464, 336)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment07" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt/VerticalBaseline"]
+position = Vector2(464, 368)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment08" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt/VerticalBaseline"]
+position = Vector2(464, 400)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment09" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt/VerticalBaseline"]
+position = Vector2(464, 432)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment10" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt/VerticalBaseline"]
+position = Vector2(464, 464)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment11" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt/VerticalBaseline"]
+position = Vector2(464, 496)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment12" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt/VerticalBaseline"]
+position = Vector2(464, 528)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="VerticalOriginalSuppliedLabel" type="Label" parent="ConnectorFreeUnlitComparison/Dirt"]
+offset_left = 510.0
+offset_top = 138.0
+offset_right = 564.0
+offset_bottom = 164.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 12
+text = "Orig"
+
+[node name="VerticalOriginalSupplied" type="Node2D" parent="ConnectorFreeUnlitComparison/Dirt"]
+
+
+[node name="Segment01" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt/VerticalOriginalSupplied"]
+position = Vector2(528, 176)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_vent_00")
+
+[node name="Segment02" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt/VerticalOriginalSupplied"]
+position = Vector2(528, 208)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_vent_01")
+
+[node name="Segment03" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt/VerticalOriginalSupplied"]
+position = Vector2(528, 240)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_vent_02")
+
+[node name="Segment04" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt/VerticalOriginalSupplied"]
+position = Vector2(528, 272)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_vent_03")
+
+[node name="Segment05" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt/VerticalOriginalSupplied"]
+position = Vector2(528, 304)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_vent_00")
+
+[node name="Segment06" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt/VerticalOriginalSupplied"]
+position = Vector2(528, 336)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_vent_01")
+
+[node name="Segment07" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt/VerticalOriginalSupplied"]
+position = Vector2(528, 368)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_vent_02")
+
+[node name="Segment08" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt/VerticalOriginalSupplied"]
+position = Vector2(528, 400)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_vent_03")
+
+[node name="Segment09" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt/VerticalOriginalSupplied"]
+position = Vector2(528, 432)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_vent_00")
+
+[node name="Segment10" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt/VerticalOriginalSupplied"]
+position = Vector2(528, 464)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_vent_01")
+
+[node name="Segment11" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt/VerticalOriginalSupplied"]
+position = Vector2(528, 496)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_vent_02")
+
+[node name="Segment12" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt/VerticalOriginalSupplied"]
+position = Vector2(528, 528)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_vent_03")
+
+[node name="VerticalConnectorFreeLabel" type="Label" parent="ConnectorFreeUnlitComparison/Dirt"]
+offset_left = 574.0
+offset_top = 138.0
+offset_right = 628.0
+offset_bottom = 164.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 12
+text = "Free"
+
+[node name="VerticalConnectorFree" type="Node2D" parent="ConnectorFreeUnlitComparison/Dirt"]
+
+
+[node name="Segment01" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt/VerticalConnectorFree"]
+position = Vector2(592, 176)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_vent_00")
+
+[node name="Segment02" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt/VerticalConnectorFree"]
+position = Vector2(592, 208)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_vent_01")
+
+[node name="Segment03" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt/VerticalConnectorFree"]
+position = Vector2(592, 240)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_vent_02")
+
+[node name="Segment04" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt/VerticalConnectorFree"]
+position = Vector2(592, 272)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_vent_03")
+
+[node name="Segment05" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt/VerticalConnectorFree"]
+position = Vector2(592, 304)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_vent_00")
+
+[node name="Segment06" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt/VerticalConnectorFree"]
+position = Vector2(592, 336)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_vent_01")
+
+[node name="Segment07" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt/VerticalConnectorFree"]
+position = Vector2(592, 368)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_vent_02")
+
+[node name="Segment08" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt/VerticalConnectorFree"]
+position = Vector2(592, 400)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_vent_03")
+
+[node name="Segment09" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt/VerticalConnectorFree"]
+position = Vector2(592, 432)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_vent_00")
+
+[node name="Segment10" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt/VerticalConnectorFree"]
+position = Vector2(592, 464)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_vent_01")
+
+[node name="Segment11" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt/VerticalConnectorFree"]
+position = Vector2(592, 496)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_vent_02")
+
+[node name="Segment12" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt/VerticalConnectorFree"]
+position = Vector2(592, 528)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_vent_03")
+
+[node name="MachineLabel" type="Label" parent="ConnectorFreeUnlitComparison/Dirt"]
+offset_left = 32.0
+offset_top = 400.0
+offset_right = 432.0
+offset_bottom = 426.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 15
+text = "Existing machines / unchanged gameplay scale"
+
+[node name="extractorFootprint" type="Line2D" parent="ConnectorFreeUnlitComparison/Dirt"]
+position = Vector2(32, 448)
+points = PackedVector2Array(0, 0, 128, 0, 128, 128, 0, 128, 0, 0)
+width = 1.0
+default_color = Color(0.8, 0.89, 0.91, 0.4)
+
+[node name="Extractor" type="Node2D" parent="ConnectorFreeUnlitComparison/Dirt"]
+position = Vector2(96, 576)
+scale = Vector2(0.11387900355871886, 0.11387900355871886)
+
+[node name="body" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt/Extractor"]
+position = Vector2(-566, -1102)
+scale = Vector2(1, 1)
+texture_filter = 4
+texture = ExtResource("extractor_body")
+centered = false
+
+[node name="barrel" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt/Extractor"]
+position = Vector2(-312, -865)
+scale = Vector2(1, 1)
+texture_filter = 4
+texture = ExtResource("extractor_barrel")
+centered = false
+
+[node name="foreground" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt/Extractor"]
+position = Vector2(-336, -873)
+scale = Vector2(1, 1)
+texture_filter = 4
+texture = ExtResource("extractor_foreground")
+centered = false
+
+[node name="extractorLabel" type="Label" parent="ConnectorFreeUnlitComparison/Dirt"]
+offset_left = 16.0
+offset_top = 588.0
+offset_right = 226.0
+offset_bottom = 614.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 15
+text = "Extractor / 4 x 4 cells"
+
+[node name="smelterFootprint" type="Line2D" parent="ConnectorFreeUnlitComparison/Dirt"]
+position = Vector2(256, 448)
+points = PackedVector2Array(0, 0, 128, 0, 128, 128, 0, 128, 0, 0)
+width = 1.0
+default_color = Color(0.8, 0.89, 0.91, 0.4)
+
+[node name="Smelter" type="Node2D" parent="ConnectorFreeUnlitComparison/Dirt"]
+position = Vector2(320, 576)
+scale = Vector2(0.13793103448275862, 0.13793103448275862)
+
+[node name="body" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt/Smelter"]
+position = Vector2(-571, -999)
+scale = Vector2(1, 1)
+texture_filter = 4
+texture = ExtResource("smelter_body")
+centered = false
+
+[node name="interior" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt/Smelter"]
+position = Vector2(-8, -439)
+scale = Vector2(1, 1)
+texture_filter = 4
+texture = ExtResource("smelter_interior")
+centered = false
+
+[node name="foreground" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt/Smelter"]
+position = Vector2(-72, -460)
+scale = Vector2(1, 1)
+texture_filter = 4
+texture = ExtResource("smelter_foreground")
+centered = false
+
+[node name="smelterLabel" type="Label" parent="ConnectorFreeUnlitComparison/Dirt"]
+offset_left = 240.0
+offset_top = 588.0
+offset_right = 450.0
+offset_bottom = 614.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 15
+text = "Smelter / 4 x 4 cells"
+
+[node name="OrientationKey" type="Label" parent="ConnectorFreeUnlitComparison/Dirt"]
+offset_left = 448.0
+offset_top = 560.0
+offset_right = 622.0
+offset_bottom = 586.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 12
+text = "Orig / Free: 00 01 02 03\nrepeated top to bottom\nCompare rail textures"
+
+[node name="ScaleNote" type="Label" parent="ConnectorFreeUnlitComparison/Dirt"]
+offset_left = 448.0
+offset_top = 616.0
+offset_right = 628.0
+offset_bottom = 642.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 12
+text = "All samples: 32-unit cells"
+
+[node name="Grass" type="Node2D" parent="ConnectorFreeUnlitComparison"]
+position = Vector2(640, 0)
+
+[node name="Terrain" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass"]
+position = Vector2(0, 80)
+scale = Vector2(1.8146376041112882, 1.8146376041112882)
+texture_filter = 2
+texture = ExtResource("green")
+centered = false
+region_enabled = true
+region_rect = Rect2(416, 416, 352.6875, 317.41875)
+region_filter_clip_enabled = true
+
+[node name="Material" type="Label" parent="ConnectorFreeUnlitComparison/Grass"]
+offset_left = 32.0
+offset_top = 118.0
+offset_right = 412.0
+offset_bottom = 144.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 18
+text = "LOW GREEN COVER"
+
+[node name="VerticalBaselineLabel" type="Label" parent="ConnectorFreeUnlitComparison/Grass"]
+offset_left = 446.0
+offset_top = 138.0
+offset_right = 500.0
+offset_bottom = 164.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 12
+text = "Base"
+
+[node name="VerticalBaseline" type="Node2D" parent="ConnectorFreeUnlitComparison/Grass"]
+
+
+[node name="Segment01" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass/VerticalBaseline"]
+position = Vector2(464, 176)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment02" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass/VerticalBaseline"]
+position = Vector2(464, 208)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment03" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass/VerticalBaseline"]
+position = Vector2(464, 240)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment04" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass/VerticalBaseline"]
+position = Vector2(464, 272)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment05" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass/VerticalBaseline"]
+position = Vector2(464, 304)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment06" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass/VerticalBaseline"]
+position = Vector2(464, 336)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment07" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass/VerticalBaseline"]
+position = Vector2(464, 368)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment08" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass/VerticalBaseline"]
+position = Vector2(464, 400)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment09" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass/VerticalBaseline"]
+position = Vector2(464, 432)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment10" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass/VerticalBaseline"]
+position = Vector2(464, 464)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment11" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass/VerticalBaseline"]
+position = Vector2(464, 496)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment12" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass/VerticalBaseline"]
+position = Vector2(464, 528)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="VerticalOriginalSuppliedLabel" type="Label" parent="ConnectorFreeUnlitComparison/Grass"]
+offset_left = 510.0
+offset_top = 138.0
+offset_right = 564.0
+offset_bottom = 164.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 12
+text = "Orig"
+
+[node name="VerticalOriginalSupplied" type="Node2D" parent="ConnectorFreeUnlitComparison/Grass"]
+
+
+[node name="Segment01" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass/VerticalOriginalSupplied"]
+position = Vector2(528, 176)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_vent_00")
+
+[node name="Segment02" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass/VerticalOriginalSupplied"]
+position = Vector2(528, 208)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_vent_01")
+
+[node name="Segment03" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass/VerticalOriginalSupplied"]
+position = Vector2(528, 240)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_vent_02")
+
+[node name="Segment04" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass/VerticalOriginalSupplied"]
+position = Vector2(528, 272)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_vent_03")
+
+[node name="Segment05" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass/VerticalOriginalSupplied"]
+position = Vector2(528, 304)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_vent_00")
+
+[node name="Segment06" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass/VerticalOriginalSupplied"]
+position = Vector2(528, 336)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_vent_01")
+
+[node name="Segment07" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass/VerticalOriginalSupplied"]
+position = Vector2(528, 368)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_vent_02")
+
+[node name="Segment08" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass/VerticalOriginalSupplied"]
+position = Vector2(528, 400)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_vent_03")
+
+[node name="Segment09" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass/VerticalOriginalSupplied"]
+position = Vector2(528, 432)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_vent_00")
+
+[node name="Segment10" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass/VerticalOriginalSupplied"]
+position = Vector2(528, 464)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_vent_01")
+
+[node name="Segment11" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass/VerticalOriginalSupplied"]
+position = Vector2(528, 496)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_vent_02")
+
+[node name="Segment12" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass/VerticalOriginalSupplied"]
+position = Vector2(528, 528)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_vent_03")
+
+[node name="VerticalConnectorFreeLabel" type="Label" parent="ConnectorFreeUnlitComparison/Grass"]
+offset_left = 574.0
+offset_top = 138.0
+offset_right = 628.0
+offset_bottom = 164.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 12
+text = "Free"
+
+[node name="VerticalConnectorFree" type="Node2D" parent="ConnectorFreeUnlitComparison/Grass"]
+
+
+[node name="Segment01" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass/VerticalConnectorFree"]
+position = Vector2(592, 176)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_vent_00")
+
+[node name="Segment02" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass/VerticalConnectorFree"]
+position = Vector2(592, 208)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_vent_01")
+
+[node name="Segment03" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass/VerticalConnectorFree"]
+position = Vector2(592, 240)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_vent_02")
+
+[node name="Segment04" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass/VerticalConnectorFree"]
+position = Vector2(592, 272)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_vent_03")
+
+[node name="Segment05" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass/VerticalConnectorFree"]
+position = Vector2(592, 304)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_vent_00")
+
+[node name="Segment06" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass/VerticalConnectorFree"]
+position = Vector2(592, 336)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_vent_01")
+
+[node name="Segment07" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass/VerticalConnectorFree"]
+position = Vector2(592, 368)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_vent_02")
+
+[node name="Segment08" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass/VerticalConnectorFree"]
+position = Vector2(592, 400)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_vent_03")
+
+[node name="Segment09" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass/VerticalConnectorFree"]
+position = Vector2(592, 432)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_vent_00")
+
+[node name="Segment10" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass/VerticalConnectorFree"]
+position = Vector2(592, 464)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_vent_01")
+
+[node name="Segment11" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass/VerticalConnectorFree"]
+position = Vector2(592, 496)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_vent_02")
+
+[node name="Segment12" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass/VerticalConnectorFree"]
+position = Vector2(592, 528)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_vent_03")
+
+[node name="MachineLabel" type="Label" parent="ConnectorFreeUnlitComparison/Grass"]
+offset_left = 32.0
+offset_top = 400.0
+offset_right = 432.0
+offset_bottom = 426.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 15
+text = "Existing machines / unchanged gameplay scale"
+
+[node name="extractorFootprint" type="Line2D" parent="ConnectorFreeUnlitComparison/Grass"]
+position = Vector2(32, 448)
+points = PackedVector2Array(0, 0, 128, 0, 128, 128, 0, 128, 0, 0)
+width = 1.0
+default_color = Color(0.8, 0.89, 0.91, 0.4)
+
+[node name="Extractor" type="Node2D" parent="ConnectorFreeUnlitComparison/Grass"]
+position = Vector2(96, 576)
+scale = Vector2(0.11387900355871886, 0.11387900355871886)
+
+[node name="body" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass/Extractor"]
+position = Vector2(-566, -1102)
+scale = Vector2(1, 1)
+texture_filter = 4
+texture = ExtResource("extractor_body")
+centered = false
+
+[node name="barrel" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass/Extractor"]
+position = Vector2(-312, -865)
+scale = Vector2(1, 1)
+texture_filter = 4
+texture = ExtResource("extractor_barrel")
+centered = false
+
+[node name="foreground" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass/Extractor"]
+position = Vector2(-336, -873)
+scale = Vector2(1, 1)
+texture_filter = 4
+texture = ExtResource("extractor_foreground")
+centered = false
+
+[node name="extractorLabel" type="Label" parent="ConnectorFreeUnlitComparison/Grass"]
+offset_left = 16.0
+offset_top = 588.0
+offset_right = 226.0
+offset_bottom = 614.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 15
+text = "Extractor / 4 x 4 cells"
+
+[node name="smelterFootprint" type="Line2D" parent="ConnectorFreeUnlitComparison/Grass"]
+position = Vector2(256, 448)
+points = PackedVector2Array(0, 0, 128, 0, 128, 128, 0, 128, 0, 0)
+width = 1.0
+default_color = Color(0.8, 0.89, 0.91, 0.4)
+
+[node name="Smelter" type="Node2D" parent="ConnectorFreeUnlitComparison/Grass"]
+position = Vector2(320, 576)
+scale = Vector2(0.13793103448275862, 0.13793103448275862)
+
+[node name="body" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass/Smelter"]
+position = Vector2(-571, -999)
+scale = Vector2(1, 1)
+texture_filter = 4
+texture = ExtResource("smelter_body")
+centered = false
+
+[node name="interior" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass/Smelter"]
+position = Vector2(-8, -439)
+scale = Vector2(1, 1)
+texture_filter = 4
+texture = ExtResource("smelter_interior")
+centered = false
+
+[node name="foreground" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass/Smelter"]
+position = Vector2(-72, -460)
+scale = Vector2(1, 1)
+texture_filter = 4
+texture = ExtResource("smelter_foreground")
+centered = false
+
+[node name="smelterLabel" type="Label" parent="ConnectorFreeUnlitComparison/Grass"]
+offset_left = 240.0
+offset_top = 588.0
+offset_right = 450.0
+offset_bottom = 614.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 15
+text = "Smelter / 4 x 4 cells"
+
+[node name="OrientationKey" type="Label" parent="ConnectorFreeUnlitComparison/Grass"]
+offset_left = 448.0
+offset_top = 560.0
+offset_right = 622.0
+offset_bottom = 586.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 12
+text = "Orig / Free: 00 01 02 03\nrepeated top to bottom\nCompare rail textures"
+
+[node name="ScaleNote" type="Label" parent="ConnectorFreeUnlitComparison/Grass"]
+offset_left = 448.0
+offset_top = 616.0
+offset_right = 628.0
+offset_bottom = 642.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 12
+text = "All samples: 32-unit cells"
+
+[node name="Heading" type="Label" parent="ConnectorFreeUnlitComparison"]
+offset_left = 32.0
+offset_top = 82.0
+offset_right = 952.0
+offset_bottom = 108.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 22
+text = "CONNECTOR-FREE / UNLIT COMPARISON"
+
+[node name="ReviewNote" type="Label" parent="ConnectorFreeUnlitComparison"]
+offset_left = 934.0
+offset_top = 88.0
+offset_right = 1258.0
+offset_bottom = 114.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 14
+text = "Exact supplied PNGs / owner review pending"
+
+[node name="HorizontalBaselineLabel" type="Label" parent="ConnectorFreeUnlitComparison/Dirt"]
+offset_left = 32.0
+offset_top = 148.0
+offset_right = 412.0
+offset_bottom = 174.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 14
+text = "Baseline / unlit / 12 cells"
+
+[node name="HorizontalBaseline" type="Node2D" parent="ConnectorFreeUnlitComparison/Dirt"]
+
+
+[node name="Segment01" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt/HorizontalBaseline"]
+position = Vector2(48, 176)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment02" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt/HorizontalBaseline"]
+position = Vector2(80, 176)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment03" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt/HorizontalBaseline"]
+position = Vector2(112, 176)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment04" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt/HorizontalBaseline"]
+position = Vector2(144, 176)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment05" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt/HorizontalBaseline"]
+position = Vector2(176, 176)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment06" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt/HorizontalBaseline"]
+position = Vector2(208, 176)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment07" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt/HorizontalBaseline"]
+position = Vector2(240, 176)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment08" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt/HorizontalBaseline"]
+position = Vector2(272, 176)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment09" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt/HorizontalBaseline"]
+position = Vector2(304, 176)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment10" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt/HorizontalBaseline"]
+position = Vector2(336, 176)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment11" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt/HorizontalBaseline"]
+position = Vector2(368, 176)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment12" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt/HorizontalBaseline"]
+position = Vector2(400, 176)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="HorizontalOriginalSuppliedLabel" type="Label" parent="ConnectorFreeUnlitComparison/Dirt"]
+offset_left = 32.0
+offset_top = 244.0
+offset_right = 412.0
+offset_bottom = 270.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 14
+text = "Original supplied / 00 01 02 03 repeated"
+
+[node name="HorizontalOriginalSupplied" type="Node2D" parent="ConnectorFreeUnlitComparison/Dirt"]
+
+
+[node name="Segment01" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt/HorizontalOriginalSupplied"]
+position = Vector2(48, 272)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_vent_00")
+
+[node name="Segment02" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt/HorizontalOriginalSupplied"]
+position = Vector2(80, 272)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_vent_01")
+
+[node name="Segment03" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt/HorizontalOriginalSupplied"]
+position = Vector2(112, 272)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_vent_02")
+
+[node name="Segment04" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt/HorizontalOriginalSupplied"]
+position = Vector2(144, 272)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_vent_03")
+
+[node name="Segment05" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt/HorizontalOriginalSupplied"]
+position = Vector2(176, 272)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_vent_00")
+
+[node name="Segment06" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt/HorizontalOriginalSupplied"]
+position = Vector2(208, 272)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_vent_01")
+
+[node name="Segment07" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt/HorizontalOriginalSupplied"]
+position = Vector2(240, 272)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_vent_02")
+
+[node name="Segment08" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt/HorizontalOriginalSupplied"]
+position = Vector2(272, 272)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_vent_03")
+
+[node name="Segment09" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt/HorizontalOriginalSupplied"]
+position = Vector2(304, 272)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_vent_00")
+
+[node name="Segment10" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt/HorizontalOriginalSupplied"]
+position = Vector2(336, 272)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_vent_01")
+
+[node name="Segment11" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt/HorizontalOriginalSupplied"]
+position = Vector2(368, 272)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_vent_02")
+
+[node name="Segment12" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt/HorizontalOriginalSupplied"]
+position = Vector2(400, 272)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_vent_03")
+
+[node name="HorizontalConnectorFreeLabel" type="Label" parent="ConnectorFreeUnlitComparison/Dirt"]
+offset_left = 32.0
+offset_top = 340.0
+offset_right = 412.0
+offset_bottom = 366.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 14
+text = "Connector-free / 00 01 02 03 repeated"
+
+[node name="HorizontalConnectorFree" type="Node2D" parent="ConnectorFreeUnlitComparison/Dirt"]
+
+
+[node name="Segment01" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt/HorizontalConnectorFree"]
+position = Vector2(48, 368)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_vent_00")
+
+[node name="Segment02" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt/HorizontalConnectorFree"]
+position = Vector2(80, 368)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_vent_01")
+
+[node name="Segment03" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt/HorizontalConnectorFree"]
+position = Vector2(112, 368)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_vent_02")
+
+[node name="Segment04" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt/HorizontalConnectorFree"]
+position = Vector2(144, 368)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_vent_03")
+
+[node name="Segment05" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt/HorizontalConnectorFree"]
+position = Vector2(176, 368)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_vent_00")
+
+[node name="Segment06" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt/HorizontalConnectorFree"]
+position = Vector2(208, 368)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_vent_01")
+
+[node name="Segment07" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt/HorizontalConnectorFree"]
+position = Vector2(240, 368)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_vent_02")
+
+[node name="Segment08" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt/HorizontalConnectorFree"]
+position = Vector2(272, 368)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_vent_03")
+
+[node name="Segment09" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt/HorizontalConnectorFree"]
+position = Vector2(304, 368)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_vent_00")
+
+[node name="Segment10" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt/HorizontalConnectorFree"]
+position = Vector2(336, 368)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_vent_01")
+
+[node name="Segment11" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt/HorizontalConnectorFree"]
+position = Vector2(368, 368)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_vent_02")
+
+[node name="Segment12" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt/HorizontalConnectorFree"]
+position = Vector2(400, 368)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_vent_03")
+
+[node name="Phase00Swatch" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt"]
+position = Vector2(48, 624)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_vent_00")
+
+[node name="Phase00Caption" type="Label" parent="ConnectorFreeUnlitComparison/Dirt"]
+offset_left = 68.0
+offset_top = 613.0
+offset_right = 128.0
+offset_bottom = 639.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 13
+text = "00"
+
+[node name="Phase01Swatch" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt"]
+position = Vector2(144, 624)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_vent_01")
+
+[node name="Phase01Caption" type="Label" parent="ConnectorFreeUnlitComparison/Dirt"]
+offset_left = 164.0
+offset_top = 613.0
+offset_right = 224.0
+offset_bottom = 639.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 13
+text = "01"
+
+[node name="Phase02Swatch" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt"]
+position = Vector2(240, 624)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_vent_02")
+
+[node name="Phase02Caption" type="Label" parent="ConnectorFreeUnlitComparison/Dirt"]
+offset_left = 260.0
+offset_top = 613.0
+offset_right = 320.0
+offset_bottom = 639.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 13
+text = "02"
+
+[node name="Phase03Swatch" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Dirt"]
+position = Vector2(336, 624)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_vent_03")
+
+[node name="Phase03Caption" type="Label" parent="ConnectorFreeUnlitComparison/Dirt"]
+offset_left = 356.0
+offset_top = 613.0
+offset_right = 416.0
+offset_bottom = 639.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 13
+text = "03"
+
+[node name="HorizontalBaselineLabel" type="Label" parent="ConnectorFreeUnlitComparison/Grass"]
+offset_left = 32.0
+offset_top = 148.0
+offset_right = 412.0
+offset_bottom = 174.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 14
+text = "Baseline / unlit / 12 cells"
+
+[node name="HorizontalBaseline" type="Node2D" parent="ConnectorFreeUnlitComparison/Grass"]
+
+
+[node name="Segment01" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass/HorizontalBaseline"]
+position = Vector2(48, 176)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment02" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass/HorizontalBaseline"]
+position = Vector2(80, 176)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment03" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass/HorizontalBaseline"]
+position = Vector2(112, 176)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment04" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass/HorizontalBaseline"]
+position = Vector2(144, 176)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment05" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass/HorizontalBaseline"]
+position = Vector2(176, 176)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment06" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass/HorizontalBaseline"]
+position = Vector2(208, 176)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment07" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass/HorizontalBaseline"]
+position = Vector2(240, 176)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment08" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass/HorizontalBaseline"]
+position = Vector2(272, 176)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment09" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass/HorizontalBaseline"]
+position = Vector2(304, 176)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment10" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass/HorizontalBaseline"]
+position = Vector2(336, 176)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment11" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass/HorizontalBaseline"]
+position = Vector2(368, 176)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment12" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass/HorizontalBaseline"]
+position = Vector2(400, 176)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="HorizontalOriginalSuppliedLabel" type="Label" parent="ConnectorFreeUnlitComparison/Grass"]
+offset_left = 32.0
+offset_top = 244.0
+offset_right = 412.0
+offset_bottom = 270.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 14
+text = "Original supplied / 00 01 02 03 repeated"
+
+[node name="HorizontalOriginalSupplied" type="Node2D" parent="ConnectorFreeUnlitComparison/Grass"]
+
+
+[node name="Segment01" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass/HorizontalOriginalSupplied"]
+position = Vector2(48, 272)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_vent_00")
+
+[node name="Segment02" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass/HorizontalOriginalSupplied"]
+position = Vector2(80, 272)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_vent_01")
+
+[node name="Segment03" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass/HorizontalOriginalSupplied"]
+position = Vector2(112, 272)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_vent_02")
+
+[node name="Segment04" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass/HorizontalOriginalSupplied"]
+position = Vector2(144, 272)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_vent_03")
+
+[node name="Segment05" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass/HorizontalOriginalSupplied"]
+position = Vector2(176, 272)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_vent_00")
+
+[node name="Segment06" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass/HorizontalOriginalSupplied"]
+position = Vector2(208, 272)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_vent_01")
+
+[node name="Segment07" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass/HorizontalOriginalSupplied"]
+position = Vector2(240, 272)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_vent_02")
+
+[node name="Segment08" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass/HorizontalOriginalSupplied"]
+position = Vector2(272, 272)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_vent_03")
+
+[node name="Segment09" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass/HorizontalOriginalSupplied"]
+position = Vector2(304, 272)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_vent_00")
+
+[node name="Segment10" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass/HorizontalOriginalSupplied"]
+position = Vector2(336, 272)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_vent_01")
+
+[node name="Segment11" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass/HorizontalOriginalSupplied"]
+position = Vector2(368, 272)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_vent_02")
+
+[node name="Segment12" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass/HorizontalOriginalSupplied"]
+position = Vector2(400, 272)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_vent_03")
+
+[node name="HorizontalConnectorFreeLabel" type="Label" parent="ConnectorFreeUnlitComparison/Grass"]
+offset_left = 32.0
+offset_top = 340.0
+offset_right = 412.0
+offset_bottom = 366.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 14
+text = "Connector-free / 00 01 02 03 repeated"
+
+[node name="HorizontalConnectorFree" type="Node2D" parent="ConnectorFreeUnlitComparison/Grass"]
+
+
+[node name="Segment01" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass/HorizontalConnectorFree"]
+position = Vector2(48, 368)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_vent_00")
+
+[node name="Segment02" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass/HorizontalConnectorFree"]
+position = Vector2(80, 368)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_vent_01")
+
+[node name="Segment03" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass/HorizontalConnectorFree"]
+position = Vector2(112, 368)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_vent_02")
+
+[node name="Segment04" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass/HorizontalConnectorFree"]
+position = Vector2(144, 368)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_vent_03")
+
+[node name="Segment05" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass/HorizontalConnectorFree"]
+position = Vector2(176, 368)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_vent_00")
+
+[node name="Segment06" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass/HorizontalConnectorFree"]
+position = Vector2(208, 368)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_vent_01")
+
+[node name="Segment07" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass/HorizontalConnectorFree"]
+position = Vector2(240, 368)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_vent_02")
+
+[node name="Segment08" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass/HorizontalConnectorFree"]
+position = Vector2(272, 368)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_vent_03")
+
+[node name="Segment09" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass/HorizontalConnectorFree"]
+position = Vector2(304, 368)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_vent_00")
+
+[node name="Segment10" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass/HorizontalConnectorFree"]
+position = Vector2(336, 368)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_vent_01")
+
+[node name="Segment11" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass/HorizontalConnectorFree"]
+position = Vector2(368, 368)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_vent_02")
+
+[node name="Segment12" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass/HorizontalConnectorFree"]
+position = Vector2(400, 368)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_vent_03")
+
+[node name="Phase00Swatch" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass"]
+position = Vector2(48, 624)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_vent_00")
+
+[node name="Phase00Caption" type="Label" parent="ConnectorFreeUnlitComparison/Grass"]
+offset_left = 68.0
+offset_top = 613.0
+offset_right = 128.0
+offset_bottom = 639.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 13
+text = "00"
+
+[node name="Phase01Swatch" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass"]
+position = Vector2(144, 624)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_vent_01")
+
+[node name="Phase01Caption" type="Label" parent="ConnectorFreeUnlitComparison/Grass"]
+offset_left = 164.0
+offset_top = 613.0
+offset_right = 224.0
+offset_bottom = 639.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 13
+text = "01"
+
+[node name="Phase02Swatch" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass"]
+position = Vector2(240, 624)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_vent_02")
+
+[node name="Phase02Caption" type="Label" parent="ConnectorFreeUnlitComparison/Grass"]
+offset_left = 260.0
+offset_top = 613.0
+offset_right = 320.0
+offset_bottom = 639.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 13
+text = "02"
+
+[node name="Phase03Swatch" type="Sprite2D" parent="ConnectorFreeUnlitComparison/Grass"]
+position = Vector2(336, 624)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_vent_03")
+
+[node name="Phase03Caption" type="Label" parent="ConnectorFreeUnlitComparison/Grass"]
+offset_left = 356.0
+offset_top = 613.0
+offset_right = 416.0
+offset_bottom = 639.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 13
+text = "03"
+
+[node name="ConnectorFreeLitComparison" type="Node2D" parent="."]
+position = Vector2(0, 3840)
+
+[node name="Dirt" type="Node2D" parent="ConnectorFreeLitComparison"]
+position = Vector2(0, 0)
+
+[node name="Terrain" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt"]
+position = Vector2(0, 80)
+scale = Vector2(1.8146376041112882, 1.8146376041112882)
+texture_filter = 2
+texture = ExtResource("earth")
+centered = false
+region_enabled = true
+region_rect = Rect2(416, 416, 352.6875, 317.41875)
+region_filter_clip_enabled = true
+
+[node name="Material" type="Label" parent="ConnectorFreeLitComparison/Dirt"]
+offset_left = 32.0
+offset_top = 118.0
+offset_right = 412.0
+offset_bottom = 144.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 18
+text = "WEATHERED EARTH"
+
+[node name="VerticalBaselineLabel" type="Label" parent="ConnectorFreeLitComparison/Dirt"]
+offset_left = 446.0
+offset_top = 138.0
+offset_right = 500.0
+offset_bottom = 164.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 12
+text = "Base"
+
+[node name="VerticalBaseline" type="Node2D" parent="ConnectorFreeLitComparison/Dirt"]
+
+
+[node name="Segment01" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt/VerticalBaseline"]
+position = Vector2(464, 176)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment02" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt/VerticalBaseline"]
+position = Vector2(464, 208)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment03" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt/VerticalBaseline"]
+position = Vector2(464, 240)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("lit")
+
+[node name="Segment04" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt/VerticalBaseline"]
+position = Vector2(464, 272)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment05" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt/VerticalBaseline"]
+position = Vector2(464, 304)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment06" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt/VerticalBaseline"]
+position = Vector2(464, 336)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment07" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt/VerticalBaseline"]
+position = Vector2(464, 368)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("lit")
+
+[node name="Segment08" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt/VerticalBaseline"]
+position = Vector2(464, 400)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment09" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt/VerticalBaseline"]
+position = Vector2(464, 432)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment10" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt/VerticalBaseline"]
+position = Vector2(464, 464)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment11" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt/VerticalBaseline"]
+position = Vector2(464, 496)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("lit")
+
+[node name="Segment12" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt/VerticalBaseline"]
+position = Vector2(464, 528)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="VerticalOriginalSuppliedLabel" type="Label" parent="ConnectorFreeLitComparison/Dirt"]
+offset_left = 510.0
+offset_top = 138.0
+offset_right = 564.0
+offset_bottom = 164.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 12
+text = "Orig"
+
+[node name="VerticalOriginalSupplied" type="Node2D" parent="ConnectorFreeLitComparison/Dirt"]
+
+
+[node name="Segment01" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt/VerticalOriginalSupplied"]
+position = Vector2(528, 176)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_lit_00")
+
+[node name="Segment02" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt/VerticalOriginalSupplied"]
+position = Vector2(528, 208)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_lit_01")
+
+[node name="Segment03" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt/VerticalOriginalSupplied"]
+position = Vector2(528, 240)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_lit_02")
+
+[node name="Segment04" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt/VerticalOriginalSupplied"]
+position = Vector2(528, 272)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_lit_03")
+
+[node name="Segment05" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt/VerticalOriginalSupplied"]
+position = Vector2(528, 304)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_lit_00")
+
+[node name="Segment06" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt/VerticalOriginalSupplied"]
+position = Vector2(528, 336)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_lit_01")
+
+[node name="Segment07" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt/VerticalOriginalSupplied"]
+position = Vector2(528, 368)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_lit_02")
+
+[node name="Segment08" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt/VerticalOriginalSupplied"]
+position = Vector2(528, 400)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_lit_03")
+
+[node name="Segment09" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt/VerticalOriginalSupplied"]
+position = Vector2(528, 432)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_lit_00")
+
+[node name="Segment10" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt/VerticalOriginalSupplied"]
+position = Vector2(528, 464)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_lit_01")
+
+[node name="Segment11" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt/VerticalOriginalSupplied"]
+position = Vector2(528, 496)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_lit_02")
+
+[node name="Segment12" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt/VerticalOriginalSupplied"]
+position = Vector2(528, 528)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_lit_03")
+
+[node name="VerticalConnectorFreeLabel" type="Label" parent="ConnectorFreeLitComparison/Dirt"]
+offset_left = 574.0
+offset_top = 138.0
+offset_right = 628.0
+offset_bottom = 164.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 12
+text = "Free"
+
+[node name="VerticalConnectorFree" type="Node2D" parent="ConnectorFreeLitComparison/Dirt"]
+
+
+[node name="Segment01" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt/VerticalConnectorFree"]
+position = Vector2(592, 176)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_lit_00")
+
+[node name="Segment02" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt/VerticalConnectorFree"]
+position = Vector2(592, 208)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_lit_01")
+
+[node name="Segment03" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt/VerticalConnectorFree"]
+position = Vector2(592, 240)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_lit_02")
+
+[node name="Segment04" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt/VerticalConnectorFree"]
+position = Vector2(592, 272)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_lit_03")
+
+[node name="Segment05" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt/VerticalConnectorFree"]
+position = Vector2(592, 304)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_lit_00")
+
+[node name="Segment06" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt/VerticalConnectorFree"]
+position = Vector2(592, 336)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_lit_01")
+
+[node name="Segment07" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt/VerticalConnectorFree"]
+position = Vector2(592, 368)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_lit_02")
+
+[node name="Segment08" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt/VerticalConnectorFree"]
+position = Vector2(592, 400)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_lit_03")
+
+[node name="Segment09" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt/VerticalConnectorFree"]
+position = Vector2(592, 432)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_lit_00")
+
+[node name="Segment10" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt/VerticalConnectorFree"]
+position = Vector2(592, 464)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_lit_01")
+
+[node name="Segment11" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt/VerticalConnectorFree"]
+position = Vector2(592, 496)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_lit_02")
+
+[node name="Segment12" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt/VerticalConnectorFree"]
+position = Vector2(592, 528)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_lit_03")
+
+[node name="MachineLabel" type="Label" parent="ConnectorFreeLitComparison/Dirt"]
+offset_left = 32.0
+offset_top = 400.0
+offset_right = 432.0
+offset_bottom = 426.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 15
+text = "Existing machines / unchanged gameplay scale"
+
+[node name="extractorFootprint" type="Line2D" parent="ConnectorFreeLitComparison/Dirt"]
+position = Vector2(32, 448)
+points = PackedVector2Array(0, 0, 128, 0, 128, 128, 0, 128, 0, 0)
+width = 1.0
+default_color = Color(0.8, 0.89, 0.91, 0.4)
+
+[node name="Extractor" type="Node2D" parent="ConnectorFreeLitComparison/Dirt"]
+position = Vector2(96, 576)
+scale = Vector2(0.11387900355871886, 0.11387900355871886)
+
+[node name="body" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt/Extractor"]
+position = Vector2(-566, -1102)
+scale = Vector2(1, 1)
+texture_filter = 4
+texture = ExtResource("extractor_body")
+centered = false
+
+[node name="barrel" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt/Extractor"]
+position = Vector2(-312, -865)
+scale = Vector2(1, 1)
+texture_filter = 4
+texture = ExtResource("extractor_barrel")
+centered = false
+
+[node name="foreground" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt/Extractor"]
+position = Vector2(-336, -873)
+scale = Vector2(1, 1)
+texture_filter = 4
+texture = ExtResource("extractor_foreground")
+centered = false
+
+[node name="extractorLabel" type="Label" parent="ConnectorFreeLitComparison/Dirt"]
+offset_left = 16.0
+offset_top = 588.0
+offset_right = 226.0
+offset_bottom = 614.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 15
+text = "Extractor / 4 x 4 cells"
+
+[node name="smelterFootprint" type="Line2D" parent="ConnectorFreeLitComparison/Dirt"]
+position = Vector2(256, 448)
+points = PackedVector2Array(0, 0, 128, 0, 128, 128, 0, 128, 0, 0)
+width = 1.0
+default_color = Color(0.8, 0.89, 0.91, 0.4)
+
+[node name="Smelter" type="Node2D" parent="ConnectorFreeLitComparison/Dirt"]
+position = Vector2(320, 576)
+scale = Vector2(0.13793103448275862, 0.13793103448275862)
+
+[node name="body" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt/Smelter"]
+position = Vector2(-571, -999)
+scale = Vector2(1, 1)
+texture_filter = 4
+texture = ExtResource("smelter_body")
+centered = false
+
+[node name="interior" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt/Smelter"]
+position = Vector2(-8, -439)
+scale = Vector2(1, 1)
+texture_filter = 4
+texture = ExtResource("smelter_interior")
+centered = false
+
+[node name="foreground" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt/Smelter"]
+position = Vector2(-72, -460)
+scale = Vector2(1, 1)
+texture_filter = 4
+texture = ExtResource("smelter_foreground")
+centered = false
+
+[node name="smelterLabel" type="Label" parent="ConnectorFreeLitComparison/Dirt"]
+offset_left = 240.0
+offset_top = 588.0
+offset_right = 450.0
+offset_bottom = 614.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 15
+text = "Smelter / 4 x 4 cells"
+
+[node name="OrientationKey" type="Label" parent="ConnectorFreeLitComparison/Dirt"]
+offset_left = 448.0
+offset_top = 560.0
+offset_right = 622.0
+offset_bottom = 586.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 12
+text = "Orig / Free: 00 01 02 03\nrepeated top to bottom\nCompare rail textures"
+
+[node name="ScaleNote" type="Label" parent="ConnectorFreeLitComparison/Dirt"]
+offset_left = 448.0
+offset_top = 616.0
+offset_right = 628.0
+offset_bottom = 642.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 12
+text = "All samples: 32-unit cells"
+
+[node name="Grass" type="Node2D" parent="ConnectorFreeLitComparison"]
+position = Vector2(640, 0)
+
+[node name="Terrain" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass"]
+position = Vector2(0, 80)
+scale = Vector2(1.8146376041112882, 1.8146376041112882)
+texture_filter = 2
+texture = ExtResource("green")
+centered = false
+region_enabled = true
+region_rect = Rect2(416, 416, 352.6875, 317.41875)
+region_filter_clip_enabled = true
+
+[node name="Material" type="Label" parent="ConnectorFreeLitComparison/Grass"]
+offset_left = 32.0
+offset_top = 118.0
+offset_right = 412.0
+offset_bottom = 144.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 18
+text = "LOW GREEN COVER"
+
+[node name="VerticalBaselineLabel" type="Label" parent="ConnectorFreeLitComparison/Grass"]
+offset_left = 446.0
+offset_top = 138.0
+offset_right = 500.0
+offset_bottom = 164.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 12
+text = "Base"
+
+[node name="VerticalBaseline" type="Node2D" parent="ConnectorFreeLitComparison/Grass"]
+
+
+[node name="Segment01" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass/VerticalBaseline"]
+position = Vector2(464, 176)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment02" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass/VerticalBaseline"]
+position = Vector2(464, 208)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment03" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass/VerticalBaseline"]
+position = Vector2(464, 240)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("lit")
+
+[node name="Segment04" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass/VerticalBaseline"]
+position = Vector2(464, 272)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment05" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass/VerticalBaseline"]
+position = Vector2(464, 304)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment06" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass/VerticalBaseline"]
+position = Vector2(464, 336)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment07" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass/VerticalBaseline"]
+position = Vector2(464, 368)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("lit")
+
+[node name="Segment08" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass/VerticalBaseline"]
+position = Vector2(464, 400)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment09" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass/VerticalBaseline"]
+position = Vector2(464, 432)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment10" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass/VerticalBaseline"]
+position = Vector2(464, 464)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment11" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass/VerticalBaseline"]
+position = Vector2(464, 496)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("lit")
+
+[node name="Segment12" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass/VerticalBaseline"]
+position = Vector2(464, 528)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="VerticalOriginalSuppliedLabel" type="Label" parent="ConnectorFreeLitComparison/Grass"]
+offset_left = 510.0
+offset_top = 138.0
+offset_right = 564.0
+offset_bottom = 164.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 12
+text = "Orig"
+
+[node name="VerticalOriginalSupplied" type="Node2D" parent="ConnectorFreeLitComparison/Grass"]
+
+
+[node name="Segment01" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass/VerticalOriginalSupplied"]
+position = Vector2(528, 176)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_lit_00")
+
+[node name="Segment02" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass/VerticalOriginalSupplied"]
+position = Vector2(528, 208)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_lit_01")
+
+[node name="Segment03" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass/VerticalOriginalSupplied"]
+position = Vector2(528, 240)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_lit_02")
+
+[node name="Segment04" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass/VerticalOriginalSupplied"]
+position = Vector2(528, 272)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_lit_03")
+
+[node name="Segment05" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass/VerticalOriginalSupplied"]
+position = Vector2(528, 304)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_lit_00")
+
+[node name="Segment06" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass/VerticalOriginalSupplied"]
+position = Vector2(528, 336)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_lit_01")
+
+[node name="Segment07" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass/VerticalOriginalSupplied"]
+position = Vector2(528, 368)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_lit_02")
+
+[node name="Segment08" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass/VerticalOriginalSupplied"]
+position = Vector2(528, 400)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_lit_03")
+
+[node name="Segment09" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass/VerticalOriginalSupplied"]
+position = Vector2(528, 432)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_lit_00")
+
+[node name="Segment10" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass/VerticalOriginalSupplied"]
+position = Vector2(528, 464)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_lit_01")
+
+[node name="Segment11" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass/VerticalOriginalSupplied"]
+position = Vector2(528, 496)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_lit_02")
+
+[node name="Segment12" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass/VerticalOriginalSupplied"]
+position = Vector2(528, 528)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_lit_03")
+
+[node name="VerticalConnectorFreeLabel" type="Label" parent="ConnectorFreeLitComparison/Grass"]
+offset_left = 574.0
+offset_top = 138.0
+offset_right = 628.0
+offset_bottom = 164.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 12
+text = "Free"
+
+[node name="VerticalConnectorFree" type="Node2D" parent="ConnectorFreeLitComparison/Grass"]
+
+
+[node name="Segment01" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass/VerticalConnectorFree"]
+position = Vector2(592, 176)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_lit_00")
+
+[node name="Segment02" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass/VerticalConnectorFree"]
+position = Vector2(592, 208)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_lit_01")
+
+[node name="Segment03" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass/VerticalConnectorFree"]
+position = Vector2(592, 240)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_lit_02")
+
+[node name="Segment04" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass/VerticalConnectorFree"]
+position = Vector2(592, 272)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_lit_03")
+
+[node name="Segment05" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass/VerticalConnectorFree"]
+position = Vector2(592, 304)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_lit_00")
+
+[node name="Segment06" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass/VerticalConnectorFree"]
+position = Vector2(592, 336)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_lit_01")
+
+[node name="Segment07" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass/VerticalConnectorFree"]
+position = Vector2(592, 368)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_lit_02")
+
+[node name="Segment08" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass/VerticalConnectorFree"]
+position = Vector2(592, 400)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_lit_03")
+
+[node name="Segment09" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass/VerticalConnectorFree"]
+position = Vector2(592, 432)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_lit_00")
+
+[node name="Segment10" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass/VerticalConnectorFree"]
+position = Vector2(592, 464)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_lit_01")
+
+[node name="Segment11" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass/VerticalConnectorFree"]
+position = Vector2(592, 496)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_lit_02")
+
+[node name="Segment12" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass/VerticalConnectorFree"]
+position = Vector2(592, 528)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_lit_03")
+
+[node name="MachineLabel" type="Label" parent="ConnectorFreeLitComparison/Grass"]
+offset_left = 32.0
+offset_top = 400.0
+offset_right = 432.0
+offset_bottom = 426.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 15
+text = "Existing machines / unchanged gameplay scale"
+
+[node name="extractorFootprint" type="Line2D" parent="ConnectorFreeLitComparison/Grass"]
+position = Vector2(32, 448)
+points = PackedVector2Array(0, 0, 128, 0, 128, 128, 0, 128, 0, 0)
+width = 1.0
+default_color = Color(0.8, 0.89, 0.91, 0.4)
+
+[node name="Extractor" type="Node2D" parent="ConnectorFreeLitComparison/Grass"]
+position = Vector2(96, 576)
+scale = Vector2(0.11387900355871886, 0.11387900355871886)
+
+[node name="body" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass/Extractor"]
+position = Vector2(-566, -1102)
+scale = Vector2(1, 1)
+texture_filter = 4
+texture = ExtResource("extractor_body")
+centered = false
+
+[node name="barrel" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass/Extractor"]
+position = Vector2(-312, -865)
+scale = Vector2(1, 1)
+texture_filter = 4
+texture = ExtResource("extractor_barrel")
+centered = false
+
+[node name="foreground" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass/Extractor"]
+position = Vector2(-336, -873)
+scale = Vector2(1, 1)
+texture_filter = 4
+texture = ExtResource("extractor_foreground")
+centered = false
+
+[node name="extractorLabel" type="Label" parent="ConnectorFreeLitComparison/Grass"]
+offset_left = 16.0
+offset_top = 588.0
+offset_right = 226.0
+offset_bottom = 614.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 15
+text = "Extractor / 4 x 4 cells"
+
+[node name="smelterFootprint" type="Line2D" parent="ConnectorFreeLitComparison/Grass"]
+position = Vector2(256, 448)
+points = PackedVector2Array(0, 0, 128, 0, 128, 128, 0, 128, 0, 0)
+width = 1.0
+default_color = Color(0.8, 0.89, 0.91, 0.4)
+
+[node name="Smelter" type="Node2D" parent="ConnectorFreeLitComparison/Grass"]
+position = Vector2(320, 576)
+scale = Vector2(0.13793103448275862, 0.13793103448275862)
+
+[node name="body" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass/Smelter"]
+position = Vector2(-571, -999)
+scale = Vector2(1, 1)
+texture_filter = 4
+texture = ExtResource("smelter_body")
+centered = false
+
+[node name="interior" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass/Smelter"]
+position = Vector2(-8, -439)
+scale = Vector2(1, 1)
+texture_filter = 4
+texture = ExtResource("smelter_interior")
+centered = false
+
+[node name="foreground" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass/Smelter"]
+position = Vector2(-72, -460)
+scale = Vector2(1, 1)
+texture_filter = 4
+texture = ExtResource("smelter_foreground")
+centered = false
+
+[node name="smelterLabel" type="Label" parent="ConnectorFreeLitComparison/Grass"]
+offset_left = 240.0
+offset_top = 588.0
+offset_right = 450.0
+offset_bottom = 614.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 15
+text = "Smelter / 4 x 4 cells"
+
+[node name="OrientationKey" type="Label" parent="ConnectorFreeLitComparison/Grass"]
+offset_left = 448.0
+offset_top = 560.0
+offset_right = 622.0
+offset_bottom = 586.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 12
+text = "Orig / Free: 00 01 02 03\nrepeated top to bottom\nCompare rail textures"
+
+[node name="ScaleNote" type="Label" parent="ConnectorFreeLitComparison/Grass"]
+offset_left = 448.0
+offset_top = 616.0
+offset_right = 628.0
+offset_bottom = 642.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 12
+text = "All samples: 32-unit cells"
+
+[node name="Heading" type="Label" parent="ConnectorFreeLitComparison"]
+offset_left = 32.0
+offset_top = 82.0
+offset_right = 952.0
+offset_bottom = 108.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 22
+text = "CONNECTOR-FREE / ILLUMINATED COMPARISON"
+
+[node name="ReviewNote" type="Label" parent="ConnectorFreeLitComparison"]
+offset_left = 934.0
+offset_top = 88.0
+offset_right = 1258.0
+offset_bottom = 114.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 14
+text = "Exact supplied PNGs / owner review pending"
+
+[node name="HorizontalBaselineLabel" type="Label" parent="ConnectorFreeLitComparison/Dirt"]
+offset_left = 32.0
+offset_top = 148.0
+offset_right = 412.0
+offset_bottom = 174.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 14
+text = "Baseline / occasional cyan / 12 cells"
+
+[node name="HorizontalBaseline" type="Node2D" parent="ConnectorFreeLitComparison/Dirt"]
+
+
+[node name="Segment01" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt/HorizontalBaseline"]
+position = Vector2(48, 176)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment02" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt/HorizontalBaseline"]
+position = Vector2(80, 176)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment03" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt/HorizontalBaseline"]
+position = Vector2(112, 176)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("lit")
+
+[node name="Segment04" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt/HorizontalBaseline"]
+position = Vector2(144, 176)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment05" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt/HorizontalBaseline"]
+position = Vector2(176, 176)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment06" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt/HorizontalBaseline"]
+position = Vector2(208, 176)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment07" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt/HorizontalBaseline"]
+position = Vector2(240, 176)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("lit")
+
+[node name="Segment08" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt/HorizontalBaseline"]
+position = Vector2(272, 176)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment09" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt/HorizontalBaseline"]
+position = Vector2(304, 176)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment10" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt/HorizontalBaseline"]
+position = Vector2(336, 176)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment11" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt/HorizontalBaseline"]
+position = Vector2(368, 176)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("lit")
+
+[node name="Segment12" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt/HorizontalBaseline"]
+position = Vector2(400, 176)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="HorizontalOriginalSuppliedLabel" type="Label" parent="ConnectorFreeLitComparison/Dirt"]
+offset_left = 32.0
+offset_top = 244.0
+offset_right = 412.0
+offset_bottom = 270.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 14
+text = "Original supplied / 00 01 02 03 repeated"
+
+[node name="HorizontalOriginalSupplied" type="Node2D" parent="ConnectorFreeLitComparison/Dirt"]
+
+
+[node name="Segment01" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt/HorizontalOriginalSupplied"]
+position = Vector2(48, 272)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_lit_00")
+
+[node name="Segment02" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt/HorizontalOriginalSupplied"]
+position = Vector2(80, 272)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_lit_01")
+
+[node name="Segment03" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt/HorizontalOriginalSupplied"]
+position = Vector2(112, 272)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_lit_02")
+
+[node name="Segment04" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt/HorizontalOriginalSupplied"]
+position = Vector2(144, 272)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_lit_03")
+
+[node name="Segment05" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt/HorizontalOriginalSupplied"]
+position = Vector2(176, 272)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_lit_00")
+
+[node name="Segment06" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt/HorizontalOriginalSupplied"]
+position = Vector2(208, 272)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_lit_01")
+
+[node name="Segment07" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt/HorizontalOriginalSupplied"]
+position = Vector2(240, 272)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_lit_02")
+
+[node name="Segment08" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt/HorizontalOriginalSupplied"]
+position = Vector2(272, 272)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_lit_03")
+
+[node name="Segment09" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt/HorizontalOriginalSupplied"]
+position = Vector2(304, 272)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_lit_00")
+
+[node name="Segment10" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt/HorizontalOriginalSupplied"]
+position = Vector2(336, 272)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_lit_01")
+
+[node name="Segment11" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt/HorizontalOriginalSupplied"]
+position = Vector2(368, 272)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_lit_02")
+
+[node name="Segment12" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt/HorizontalOriginalSupplied"]
+position = Vector2(400, 272)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_lit_03")
+
+[node name="HorizontalConnectorFreeLabel" type="Label" parent="ConnectorFreeLitComparison/Dirt"]
+offset_left = 32.0
+offset_top = 340.0
+offset_right = 412.0
+offset_bottom = 366.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 14
+text = "Connector-free / 00 01 02 03 repeated"
+
+[node name="HorizontalConnectorFree" type="Node2D" parent="ConnectorFreeLitComparison/Dirt"]
+
+
+[node name="Segment01" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt/HorizontalConnectorFree"]
+position = Vector2(48, 368)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_lit_00")
+
+[node name="Segment02" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt/HorizontalConnectorFree"]
+position = Vector2(80, 368)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_lit_01")
+
+[node name="Segment03" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt/HorizontalConnectorFree"]
+position = Vector2(112, 368)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_lit_02")
+
+[node name="Segment04" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt/HorizontalConnectorFree"]
+position = Vector2(144, 368)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_lit_03")
+
+[node name="Segment05" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt/HorizontalConnectorFree"]
+position = Vector2(176, 368)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_lit_00")
+
+[node name="Segment06" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt/HorizontalConnectorFree"]
+position = Vector2(208, 368)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_lit_01")
+
+[node name="Segment07" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt/HorizontalConnectorFree"]
+position = Vector2(240, 368)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_lit_02")
+
+[node name="Segment08" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt/HorizontalConnectorFree"]
+position = Vector2(272, 368)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_lit_03")
+
+[node name="Segment09" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt/HorizontalConnectorFree"]
+position = Vector2(304, 368)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_lit_00")
+
+[node name="Segment10" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt/HorizontalConnectorFree"]
+position = Vector2(336, 368)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_lit_01")
+
+[node name="Segment11" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt/HorizontalConnectorFree"]
+position = Vector2(368, 368)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_lit_02")
+
+[node name="Segment12" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt/HorizontalConnectorFree"]
+position = Vector2(400, 368)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_lit_03")
+
+[node name="Phase00Swatch" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt"]
+position = Vector2(48, 624)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_lit_00")
+
+[node name="Phase00Caption" type="Label" parent="ConnectorFreeLitComparison/Dirt"]
+offset_left = 68.0
+offset_top = 613.0
+offset_right = 128.0
+offset_bottom = 639.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 13
+text = "00"
+
+[node name="Phase01Swatch" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt"]
+position = Vector2(144, 624)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_lit_01")
+
+[node name="Phase01Caption" type="Label" parent="ConnectorFreeLitComparison/Dirt"]
+offset_left = 164.0
+offset_top = 613.0
+offset_right = 224.0
+offset_bottom = 639.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 13
+text = "01"
+
+[node name="Phase02Swatch" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt"]
+position = Vector2(240, 624)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_lit_02")
+
+[node name="Phase02Caption" type="Label" parent="ConnectorFreeLitComparison/Dirt"]
+offset_left = 260.0
+offset_top = 613.0
+offset_right = 320.0
+offset_bottom = 639.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 13
+text = "02"
+
+[node name="Phase03Swatch" type="Sprite2D" parent="ConnectorFreeLitComparison/Dirt"]
+position = Vector2(336, 624)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_lit_03")
+
+[node name="Phase03Caption" type="Label" parent="ConnectorFreeLitComparison/Dirt"]
+offset_left = 356.0
+offset_top = 613.0
+offset_right = 416.0
+offset_bottom = 639.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 13
+text = "03"
+
+[node name="HorizontalBaselineLabel" type="Label" parent="ConnectorFreeLitComparison/Grass"]
+offset_left = 32.0
+offset_top = 148.0
+offset_right = 412.0
+offset_bottom = 174.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 14
+text = "Baseline / occasional cyan / 12 cells"
+
+[node name="HorizontalBaseline" type="Node2D" parent="ConnectorFreeLitComparison/Grass"]
+
+
+[node name="Segment01" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass/HorizontalBaseline"]
+position = Vector2(48, 176)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment02" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass/HorizontalBaseline"]
+position = Vector2(80, 176)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment03" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass/HorizontalBaseline"]
+position = Vector2(112, 176)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("lit")
+
+[node name="Segment04" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass/HorizontalBaseline"]
+position = Vector2(144, 176)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment05" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass/HorizontalBaseline"]
+position = Vector2(176, 176)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment06" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass/HorizontalBaseline"]
+position = Vector2(208, 176)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment07" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass/HorizontalBaseline"]
+position = Vector2(240, 176)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("lit")
+
+[node name="Segment08" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass/HorizontalBaseline"]
+position = Vector2(272, 176)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment09" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass/HorizontalBaseline"]
+position = Vector2(304, 176)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment10" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass/HorizontalBaseline"]
+position = Vector2(336, 176)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="Segment11" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass/HorizontalBaseline"]
+position = Vector2(368, 176)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("lit")
+
+[node name="Segment12" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass/HorizontalBaseline"]
+position = Vector2(400, 176)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("unlit")
+
+[node name="HorizontalOriginalSuppliedLabel" type="Label" parent="ConnectorFreeLitComparison/Grass"]
+offset_left = 32.0
+offset_top = 244.0
+offset_right = 412.0
+offset_bottom = 270.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 14
+text = "Original supplied / 00 01 02 03 repeated"
+
+[node name="HorizontalOriginalSupplied" type="Node2D" parent="ConnectorFreeLitComparison/Grass"]
+
+
+[node name="Segment01" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass/HorizontalOriginalSupplied"]
+position = Vector2(48, 272)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_lit_00")
+
+[node name="Segment02" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass/HorizontalOriginalSupplied"]
+position = Vector2(80, 272)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_lit_01")
+
+[node name="Segment03" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass/HorizontalOriginalSupplied"]
+position = Vector2(112, 272)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_lit_02")
+
+[node name="Segment04" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass/HorizontalOriginalSupplied"]
+position = Vector2(144, 272)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_lit_03")
+
+[node name="Segment05" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass/HorizontalOriginalSupplied"]
+position = Vector2(176, 272)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_lit_00")
+
+[node name="Segment06" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass/HorizontalOriginalSupplied"]
+position = Vector2(208, 272)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_lit_01")
+
+[node name="Segment07" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass/HorizontalOriginalSupplied"]
+position = Vector2(240, 272)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_lit_02")
+
+[node name="Segment08" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass/HorizontalOriginalSupplied"]
+position = Vector2(272, 272)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_lit_03")
+
+[node name="Segment09" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass/HorizontalOriginalSupplied"]
+position = Vector2(304, 272)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_lit_00")
+
+[node name="Segment10" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass/HorizontalOriginalSupplied"]
+position = Vector2(336, 272)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_lit_01")
+
+[node name="Segment11" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass/HorizontalOriginalSupplied"]
+position = Vector2(368, 272)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_lit_02")
+
+[node name="Segment12" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass/HorizontalOriginalSupplied"]
+position = Vector2(400, 272)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("supplied_lit_03")
+
+[node name="HorizontalConnectorFreeLabel" type="Label" parent="ConnectorFreeLitComparison/Grass"]
+offset_left = 32.0
+offset_top = 340.0
+offset_right = 412.0
+offset_bottom = 366.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 14
+text = "Connector-free / 00 01 02 03 repeated"
+
+[node name="HorizontalConnectorFree" type="Node2D" parent="ConnectorFreeLitComparison/Grass"]
+
+
+[node name="Segment01" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass/HorizontalConnectorFree"]
+position = Vector2(48, 368)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_lit_00")
+
+[node name="Segment02" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass/HorizontalConnectorFree"]
+position = Vector2(80, 368)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_lit_01")
+
+[node name="Segment03" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass/HorizontalConnectorFree"]
+position = Vector2(112, 368)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_lit_02")
+
+[node name="Segment04" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass/HorizontalConnectorFree"]
+position = Vector2(144, 368)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_lit_03")
+
+[node name="Segment05" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass/HorizontalConnectorFree"]
+position = Vector2(176, 368)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_lit_00")
+
+[node name="Segment06" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass/HorizontalConnectorFree"]
+position = Vector2(208, 368)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_lit_01")
+
+[node name="Segment07" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass/HorizontalConnectorFree"]
+position = Vector2(240, 368)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_lit_02")
+
+[node name="Segment08" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass/HorizontalConnectorFree"]
+position = Vector2(272, 368)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_lit_03")
+
+[node name="Segment09" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass/HorizontalConnectorFree"]
+position = Vector2(304, 368)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_lit_00")
+
+[node name="Segment10" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass/HorizontalConnectorFree"]
+position = Vector2(336, 368)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_lit_01")
+
+[node name="Segment11" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass/HorizontalConnectorFree"]
+position = Vector2(368, 368)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_lit_02")
+
+[node name="Segment12" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass/HorizontalConnectorFree"]
+position = Vector2(400, 368)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_lit_03")
+
+[node name="Phase00Swatch" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass"]
+position = Vector2(48, 624)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_lit_00")
+
+[node name="Phase00Caption" type="Label" parent="ConnectorFreeLitComparison/Grass"]
+offset_left = 68.0
+offset_top = 613.0
+offset_right = 128.0
+offset_bottom = 639.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 13
+text = "00"
+
+[node name="Phase01Swatch" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass"]
+position = Vector2(144, 624)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_lit_01")
+
+[node name="Phase01Caption" type="Label" parent="ConnectorFreeLitComparison/Grass"]
+offset_left = 164.0
+offset_top = 613.0
+offset_right = 224.0
+offset_bottom = 639.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 13
+text = "01"
+
+[node name="Phase02Swatch" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass"]
+position = Vector2(240, 624)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_lit_02")
+
+[node name="Phase02Caption" type="Label" parent="ConnectorFreeLitComparison/Grass"]
+offset_left = 260.0
+offset_top = 613.0
+offset_right = 320.0
+offset_bottom = 639.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.91, 0.94, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 13
+text = "02"
+
+[node name="Phase03Swatch" type="Sprite2D" parent="ConnectorFreeLitComparison/Grass"]
+position = Vector2(336, 624)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("free_lit_03")
+
+[node name="Phase03Caption" type="Label" parent="ConnectorFreeLitComparison/Grass"]
 offset_left = 356.0
 offset_top = 613.0
 offset_right = 416.0

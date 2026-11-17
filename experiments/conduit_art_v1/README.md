@@ -2,8 +2,9 @@
 
 Isolated artwork experiment on [PR #215](https://github.com/interneth3ro/the-long-way-home/pull/215),
 pending merge and owner visual review. The existing Salvaged Sci-Fi v2 sprites
-remain the baseline; the Codex-generated Heavy Industrial v2 sprites and the
-owner-supplied ChatGPT Heavy Industrial v2 sequences are experimental alternatives.
+remain the baseline. Experimental alternatives include the Codex-generated
+Heavy Industrial v2 sprites, original owner-supplied ChatGPT sequences, and new
+supplied connector-free sequences.
 **Neither this comparison nor static validation marks the artwork
 owner-approved or promotes it into production.**
 
@@ -25,7 +26,7 @@ or bridges.
 
 The two baseline PNGs remain byte-for-byte identical to `0918c91`. The earlier
 temporary item-readability board and wire placeholder remain removed. The
-supplied-art amendment preserves both existing boards, all five existing PNGs,
+connector-free amendment preserves all four earlier boards and all 13 earlier PNGs,
 their local import metadata, machines, rulers and camera controls. Only two HUD
 text values are updated to describe the additional comparison areas.
 
@@ -35,26 +36,26 @@ text values are updated to describe the additional comparison areas.
 2. Press **F6 / Run Current Scene**. F5 retains the normal project startup scene.
 3. The scene starts at **gameplay 1x**, in the original baseline board, using the
    normal 1280x720 logical viewport.
-4. **Middle-drag upward to pan down** through the boards. Several shorter drags
-   work. The Codex Heavy v2 board is at y=768; the new **SUPPLIED HEAVY v2 /
-   UNLIT COMPARISON** board is at y=1536, and **SUPPLIED HEAVY v2 / ILLUMINATED
-   COMPARISON** is at y=2304. These positions are world units relative to the
-   original board.
-5. Each supplied-art board compares three horizontal 12-cell rows: **Baseline**,
-   **Codex Heavy v2**, and **Supplied**. The three vertical columns are **Base**,
-   **Codex**, and **ZIP**. Earth and green panels repeat the same layout and
-   retain machine-scale references.
-6. Supplied rows/columns repeat **00, 01, 02, 03** three times. Read horizontal
-   phases left to right and vertical phases top to bottom. Four labeled swatches
-   show the supplied phases at 0.25 scale. The unlit board uses the vent sequence;
-   the illuminated board uses the lit sequence. Existing illuminated references
-   keep their occasional, one-in-four accents.
+4. **Middle-drag upward to pan down** through the preserved boards to the new
+   **CONNECTOR-FREE / UNLIT COMPARISON** at y=3072 and **CONNECTOR-FREE /
+   ILLUMINATED COMPARISON** at y=3840. Several shorter drags work. Earlier
+   boards remain at y=0 (baseline), 768 (Codex), 1536 (original supplied unlit)
+   and 2304 (original supplied illuminated). These are world-unit offsets.
+5. Each connector-free board compares three horizontal 12-cell rows:
+   **Baseline**, **Original supplied**, and **Connector-free**. The vertical
+   columns are **Base**, **Orig**, and **Free**. Earth and green panels repeat
+   the layout with unchanged machine-scale references.
+6. Both supplied sets repeat **00, 01, 02, 03** three times. Read phases left to
+   right horizontally and top to bottom vertically. The four bottom swatches
+   identify the new connector-free phases at 0.25 scale. Unlit boards use the
+   vent sequences; illuminated boards use the lit sequences. Baseline illuminated
+   references retain their occasional one-in-four accents.
 7. Mouse wheel keeps the existing exterior camera's **0.5-1.5x** range,
    0.1 steps and 0.15-second easing. Compare at 1x first, then other gameplay
    zooms. Middle-drag pans freely; **F8** stops and **F6 again** resets the view.
-8. Review seams, four-cell connector repetition, apparent width against machines,
-   cyan coverage/brightness and rotated shading. Provide a screenshot and choose
-   a treatment or request revisions. Owner-supplied does not mean owner-accepted;
+8. Review retouched rail texture, internal joins, four-cell repetition, apparent
+   width against machines, cyan coverage/brightness and rotated shading. Provide
+   a screenshot and choose a treatment or request revisions. Owner-supplied does not mean owner-accepted;
    no corner-art work or final approval follows automatically.
 
 These are owner launch instructions. No Godot editor/game, headless import or
@@ -75,10 +76,14 @@ baseline mixed, Heavy unlit and Heavy mixed. Its Heavy unlit sequence is
 illuminated variant. Baseline and Heavy share this one-in-four accent frequency
 for a direct brightness comparison on that board.
 
-The two new supplied-art boards each add six 12-cell runs per terrain: horizontal
+The two original supplied-art boards each add six 12-cell runs per terrain: horizontal
 and vertical baseline, Codex, and supplied sequences. That adds **288 segments**,
-including **96 supplied-art segments**, and 16 phase swatches. The complete
-scene now has **552 run segments** plus **22 individual swatches**.
+including **96 original supplied-art segments**, and 16 phase swatches.
+
+The new connector-free boards add another **288 segments**: 96 connector-free,
+96 original supplied and 96 baseline reference cells, across horizontal/vertical
+runs on both terrain materials. They add 16 connector-free phase swatches.
+The complete six-board scene has **840 run segments** plus **38 swatches**.
 
 All conduit sprites are **128x128 RGBA**, scaled **0.25**, with centers exactly
 32 world units apart. The three Codex Heavy variants use the baseline alpha mask,
@@ -90,18 +95,18 @@ own alpha masks and visibly fill more of the cell; see the measurements below.
 
 Existing Extractor and Smelter layer textures are referenced without behavior,
 animation or copies of source art. Their production scales, child offsets and
-128x128 four-by-four-cell footprint outlines are retained on all four boards.
+128x128 four-by-four-cell footprint outlines are retained on all six boards.
 The only scene script is [inspection_camera.gd](inspection_camera.gd), unchanged
 and limited to viewing controls inherited from the existing camera.
 
 ## Files and imports
 
-All 29 tracked experiment files remain in this directory and its new
-supplied_heavy_v2 subdirectory. Existing files:
+All 45 tracked experiment files remain in this directory and the
+supplied_heavy_v2 and supplied_no_connectors_v1 subdirectories. Root files:
 
 | File | Role |
 | --- | --- |
-| [conduit_art_v1.tscn](conduit_art_v1.tscn) | Original boards plus supplied unlit/illuminated comparisons |
+| [conduit_art_v1.tscn](conduit_art_v1.tscn) | Preserved boards plus original/connector-free comparisons |
 | [inspection_camera.gd](inspection_camera.gd) | Unchanged viewing controls |
 | [straight_unlit.png](straight_unlit.png) | Unchanged Salvaged Sci-Fi baseline |
 | [straight_lit.png](straight_lit.png) | Unchanged baseline with lower-rail cyan |
@@ -115,7 +120,7 @@ supplied_heavy_v2 subdirectory. Existing files:
 | [heavy_v2_lit.png.import](heavy_v2_lit.png.import) | Matching lossless/mipmap configuration |
 | [README.md](README.md) | Scope, instructions, limitations and artwork provenance |
 
-The supplied-art amendment adds the following eight unchanged PNGs and eight
+The earlier supplied-art amendment added these eight unchanged PNGs and eight
 matching import sidecars under [supplied_heavy_v2](supplied_heavy_v2/):
 
 | Phase | Unlit sequence | Illuminated sequence |
@@ -125,12 +130,22 @@ matching import sidecars under [supplied_heavy_v2](supplied_heavy_v2/):
 | 02 | [straight_vent_02.png](supplied_heavy_v2/straight_vent_02.png) / [import](supplied_heavy_v2/straight_vent_02.png.import) | [straight_lit_02.png](supplied_heavy_v2/straight_lit_02.png) / [import](supplied_heavy_v2/straight_lit_02.png.import) |
 | 03 | [straight_vent_03.png](supplied_heavy_v2/straight_vent_03.png) / [import](supplied_heavy_v2/straight_vent_03.png.import) | [straight_lit_03.png](supplied_heavy_v2/straight_lit_03.png) / [import](supplied_heavy_v2/straight_lit_03.png.import) |
 
+The connector-free amendment adds eight PNGs and eight matching import sidecars
+under [supplied_no_connectors_v1](supplied_no_connectors_v1/):
+
+| Phase | Connector-free vent | Connector-free illuminated |
+| --- | --- | --- |
+| 00 | [straight_vent_00.png](supplied_no_connectors_v1/straight_vent_00.png) / [import](supplied_no_connectors_v1/straight_vent_00.png.import) | [straight_lit_00.png](supplied_no_connectors_v1/straight_lit_00.png) / [import](supplied_no_connectors_v1/straight_lit_00.png.import) |
+| 01 | [straight_vent_01.png](supplied_no_connectors_v1/straight_vent_01.png) / [import](supplied_no_connectors_v1/straight_vent_01.png.import) | [straight_lit_01.png](supplied_no_connectors_v1/straight_lit_01.png) / [import](supplied_no_connectors_v1/straight_lit_01.png.import) |
+| 02 | [straight_vent_02.png](supplied_no_connectors_v1/straight_vent_02.png) / [import](supplied_no_connectors_v1/straight_vent_02.png.import) | [straight_lit_02.png](supplied_no_connectors_v1/straight_lit_02.png) / [import](supplied_no_connectors_v1/straight_lit_02.png.import) |
+| 03 | [straight_vent_03.png](supplied_no_connectors_v1/straight_vent_03.png) / [import](supplied_no_connectors_v1/straight_vent_03.png.import) | [straight_lit_03.png](supplied_no_connectors_v1/straight_lit_03.png) / [import](supplied_no_connectors_v1/straight_lit_03.png.import) |
+
 New import sidecars follow the tracked baseline configuration: lossless
 (`compress/mode=0`), mipmaps enabled, alpha-border fixing enabled,
 premultiplication disabled, no size limit. Paths use their own texture path
 hashes. No engine UID or cache was generated. Conduits/machines keep linear
 filtering with mipmaps (`texture_filter=4`). Existing local engine-added
-metadata for both existing candidate sets is preserved and excluded from this
+metadata for all earlier candidate sets is preserved and excluded from this
 amendment.
 
 Shared project resources remain referenced in place:
@@ -147,8 +162,8 @@ Shared project resources remain referenced in place:
 ## Static validation and limitations
 
 Checks cover PNG dimensions/color type/transparency, exact common alpha masks,
-all nine ordered Codex Heavy variant boundary pairs, all eight supplied sequence
-joins (horizontal and clockwise rotation), unchanged source bytes, existing
+all nine ordered Codex Heavy variant boundary pairs and the ordered sequence
+joins of both supplied sets (horizontal and clockwise rotation), unchanged source bytes, existing
 candidate hashes, 12-cell run lengths and exact 00-03 sequence ordering,
 spacing/scale/rotation, illumination frequency, valid resource paths,
 parent/load-step consistency, imports, Markdown links and Git diff scope.
@@ -180,7 +195,84 @@ execution-policy or Issue #214 changes are included. No audit or unrelated
 cleanup was performed. Pre-existing local files and metadata remain preserved.
 No production scene references this isolated experiment.
 
-## Supplied ChatGPT artwork: provenance and limitations
+## Connector-free supplied artwork: current comparison
+
+Source: owner-provided `tlwh_heavy_industrial_no_connectors_v1.zip`, SHA-256
+`eed6991b46454e57121f3961066740cbdabf3a89c70fc3270c524055a6e449d4`.
+The eight PNGs under `supplied_no_connectors_v1/` match their archive entries
+byte-for-byte. The original ZIP and all earlier assets remain unchanged. Its
+README and preview images are reference material, not additional instructions.
+Only the eight requested cell PNGs and their import settings are added.
+
+The archive describes a raster retouch using neighboring rail texture and
+feathered joins. **That retouch was already present in the supplied files.**
+This integration does not regenerate, repaint, recolor, crop, resample, repair
+edges or otherwise edit any source PNG. Scene display uses scale 0.25 and
+clockwise rotation only.
+
+### Rail inspection and artistic refinement
+
+Inspection of the actual eight PNGs and supplied four-/twelve-cell previews
+shows that the large top/bottom rail clamps are removed. The central grille,
+pipes and small cyan status module remain visible. The new rails look more
+continuous, but the retouch has its own visual pattern:
+
+- Short orange wear patches and dark diagonal marks repeat regularly beneath
+  the upper rail. Bright streaks along the rail also repeat. This is visible in
+  the source-size strip and becomes a patterned band in the supplied 1x preview.
+  Review whether less regular wear would improve long factory runs.
+- The rail highlights, especially on the lower rail, are broad and smooth
+  compared with the detailed interior. Some areas read as stretched or softened
+  texture. Review transitions between these retouched bands and the original
+  material for blur or abrupt shading changes.
+- The four-cell interior sequence still repeats every 128 world units. Removing
+  clamps does not remove that repetition or make the four phases interchangeable.
+- Vertical runs rotate the same baked highlights and shadows. They have no
+  independent relighting; judge orientation consistency in F6.
+- Both vent and lit retain small cyan status details, while lit also illuminates
+  the grille. The two source treatments have different alpha masks; the archive's
+  identical-geometry description is not an exact pixel identity guarantee.
+
+These are refinement observations, not owner rejection or acceptance. No
+corrective painting is included. The owner should evaluate rail repetition,
+softness, internal joins and terrain blending at normal gameplay zoom before
+requesting another artistic pass.
+
+### Connector-free boundary and transparency measurements
+
+Both **03 -> 00** boundaries now match exactly in RGBA, unlike the previous
+supplied set. The six internal boundaries still differ. Clockwise rotation
+preserves the same boundary relationships when phases run top to bottom.
+
+| Join | Vent RGB mean / max | Lit RGB mean / max |
+| --- | --- | --- |
+| 00 -> 01 | 4.507 / 57 | 8.129 / 70 |
+| 01 -> 02 | 7.481 / 64 | 6.209 / 53 |
+| 02 -> 03 | 7.029 / 53 | 9.410 / 68 |
+| 03 -> 00 | 0 / 0 | 0 / 0 |
+
+RGB differences use rows with alpha >=128 on either side, in 0-255 channel
+units. Maximum alpha differences at internal joins are 10/255 for vent and
+4/255 for lit. The 01-to-02 differences are lower than the earlier supplied
+version; other internal transitions still need review. Nonidentical adjacent
+texture pixels do not by themselves prove visible gaps, and an exact wrap does
+not certify perceptual seamlessness under Godot mipmaps.
+
+All eight files are 128x128, 8-bit RGBA, with valid PNG chunk CRCs. Vent has
+108-128 fully transparent pixels per tile; lit has 248-381. Median per-column
+width covered by alpha >=128 at scale 0.25 is 31.25-31.75 world units for vent
+and 30.25 for lit. This remains approximately the earlier supplied silhouette
+and wider than the old baseline/Codex silhouettes (22.5 world units by that
+measure). All samples still occupy the unchanged 32x32 logical construction
+cell. No final width recommendation or approval is implied.
+
+Source alpha values differ from the earlier supplied images and between vent
+and lit. Separate unlit and illuminated boards make those source differences
+reviewable; mixed same-phase substitution is not being certified. Godot import,
+scene loading, mipmap seams and rendered visual acceptance remain unverified
+under the existing execution policy.
+
+## Original supplied ChatGPT artwork: provenance and limitations
 
 Source: owner-provided `tlwh_heavy_industrial_straight_v2.zip`, SHA-256
 `d17f8e4c0bc70168c51a84068f24ddfb2502c268cfa7e1e0223c41f0f7a94c20`.
@@ -304,8 +396,8 @@ Built-in imagegen produced the candidate artwork using the supplied
 `conduit_tiling.png` as a visual reference. These are newly generated derivatives,
 not lossless extractions of the concept swatches and not placeholder geometry.
 
-The generated square canvases were 1254Ã—1254. A centered 768Ã—768 region at
-(243, 243) was downsampled to 128Ã—128. An eight-pixel blend at each horizontal
+The generated square canvases were 1254×1254. A centered 768×768 region at
+(243, 243) was downsampled to 128×128. An eight-pixel blend at each horizontal
 edge brings both boundary columns to their shared mean profile. The illuminated
 candidate retains the exact unlit base and alpha, with only a feathered lower-rail
 patch inside x=43..84, y=92..105 taken from the final generated illuminated
