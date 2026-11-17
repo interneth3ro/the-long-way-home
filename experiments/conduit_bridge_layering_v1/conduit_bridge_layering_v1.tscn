@@ -1,0 +1,2230 @@
+[gd_scene load_steps=16 format=3]
+
+[ext_resource type="Texture2D" path="res://experiments/conduit_corner_art_v1/tlwh_corner_grille_free_128_v1.png" id="corner"]
+[ext_resource type="Script" path="res://experiments/conduit_bridge_layering_v1/inspection_camera.gd" id="camera"]
+[ext_resource type="Texture2D" path="res://assets/experiments/terrain_c1/sources/earth.png" id="earth"]
+[ext_resource type="Texture2D" path="res://assets/experiments/terrain_c1/sources/green.png" id="green"]
+[ext_resource type="FontFile" path="res://assets/fonts/ibm-plex-sans/IBMPlexSans-Regular.ttf" id="font"]
+[ext_resource type="Texture2D" path="res://experiments/conduit_art_v1/supplied_no_connectors_v1/straight_vent_00.png" id="vent_00"]
+[ext_resource type="Texture2D" path="res://experiments/conduit_art_v1/supplied_no_connectors_v1/straight_vent_01.png" id="vent_01"]
+[ext_resource type="Texture2D" path="res://experiments/conduit_art_v1/supplied_no_connectors_v1/straight_vent_02.png" id="vent_02"]
+[ext_resource type="Texture2D" path="res://experiments/conduit_art_v1/supplied_no_connectors_v1/straight_vent_03.png" id="vent_03"]
+[ext_resource type="Texture2D" path="res://assets/machines/extractor/extractor_0_body.png" id="extractor_body"]
+[ext_resource type="Texture2D" path="res://assets/machines/extractor/extractor_0_barrel.png" id="extractor_barrel"]
+[ext_resource type="Texture2D" path="res://assets/machines/extractor/extractor_0_foreground.png" id="extractor_foreground"]
+[ext_resource type="Texture2D" path="res://assets/machines/smelter/smelter_0_body.png" id="smelter_body"]
+[ext_resource type="Texture2D" path="res://assets/machines/smelter/smelter_0_interior.png" id="smelter_interior"]
+[ext_resource type="Texture2D" path="res://assets/machines/smelter/smelter_0_foreground.png" id="smelter_foreground"]
+
+[node name="ConduitBridgeLayeringV1" type="Node2D"]
+texture_filter = 4
+
+[node name="Camera" type="Camera2D" parent="."]
+position = Vector2(640, 360)
+zoom = Vector2(1, 1)
+script = ExtResource("camera")
+
+[node name="HorizontalOverVertical" type="Node2D" parent="."]
+position = Vector2(0, 0)
+
+[node name="Dirt" type="Node2D" parent="HorizontalOverVertical"]
+position = Vector2(0, 0)
+
+[node name="Terrain" type="Sprite2D" parent="HorizontalOverVertical/Dirt"]
+position = Vector2(0, 80)
+scale = Vector2(1.8146376041112882, 1.8146376041112882)
+texture_filter = 2
+texture = ExtResource("earth")
+centered = false
+region_enabled = true
+region_rect = Rect2(416, 416, 352.6875, 330.64453125)
+region_filter_clip_enabled = true
+
+[node name="Title" type="Label" parent="HorizontalOverVertical/Dirt"]
+offset_left = 24.0
+offset_top = 82.0
+offset_right = 624.0
+offset_bottom = 106.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 17
+text = "1 / HORIZONTAL OVER VERTICAL / DIRT"
+
+[node name="SpanLegend" type="Label" parent="HorizontalOverVertical/Dirt"]
+offset_left = 24.0
+offset_top = 110.0
+offset_right = 624.0
+offset_bottom = 134.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 14
+text = "Upper bridge span: approach / crossing / departure (3 cells)"
+
+[node name="SpanCoordinates" type="Label" parent="HorizontalOverVertical/Dirt"]
+offset_left = 24.0
+offset_top = 132.0
+offset_right = 624.0
+offset_bottom = 156.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 13
+text = "Cells (9,10) -> (10,10) -> (11,10); two independent routes"
+
+[node name="HorizontalRoute" type="Node2D" parent="HorizontalOverVertical/Dirt"]
+z_index = 2
+
+; Logical three-cell span only: ordinary straight sprites, no elevation geometry.
+
+[node name="BridgeSpan" type="Node2D" parent="HorizontalOverVertical/Dirt/HorizontalRoute"]
+
+[node name="Cell_02_10_phase00" type="Sprite2D" parent="HorizontalOverVertical/Dirt/HorizontalRoute"]
+position = Vector2(80, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Cell_03_10_phase01" type="Sprite2D" parent="HorizontalOverVertical/Dirt/HorizontalRoute"]
+position = Vector2(112, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="Cell_04_10_phase02" type="Sprite2D" parent="HorizontalOverVertical/Dirt/HorizontalRoute"]
+position = Vector2(144, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+
+[node name="Cell_05_10_phase03" type="Sprite2D" parent="HorizontalOverVertical/Dirt/HorizontalRoute"]
+position = Vector2(176, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_03")
+
+[node name="Cell_06_10_phase00" type="Sprite2D" parent="HorizontalOverVertical/Dirt/HorizontalRoute"]
+position = Vector2(208, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Cell_07_10_phase01" type="Sprite2D" parent="HorizontalOverVertical/Dirt/HorizontalRoute"]
+position = Vector2(240, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="Cell_08_10_phase02" type="Sprite2D" parent="HorizontalOverVertical/Dirt/HorizontalRoute"]
+position = Vector2(272, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+
+[node name="Approach" type="Sprite2D" parent="HorizontalOverVertical/Dirt/HorizontalRoute/BridgeSpan"]
+position = Vector2(304, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_03")
+
+[node name="Crossing" type="Sprite2D" parent="HorizontalOverVertical/Dirt/HorizontalRoute/BridgeSpan"]
+position = Vector2(336, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Departure" type="Sprite2D" parent="HorizontalOverVertical/Dirt/HorizontalRoute/BridgeSpan"]
+position = Vector2(368, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="Cell_12_10_phase02" type="Sprite2D" parent="HorizontalOverVertical/Dirt/HorizontalRoute"]
+position = Vector2(400, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+
+[node name="Cell_13_10_phase03" type="Sprite2D" parent="HorizontalOverVertical/Dirt/HorizontalRoute"]
+position = Vector2(432, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_03")
+
+[node name="Cell_14_10_phase00" type="Sprite2D" parent="HorizontalOverVertical/Dirt/HorizontalRoute"]
+position = Vector2(464, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Cell_15_10_phase01" type="Sprite2D" parent="HorizontalOverVertical/Dirt/HorizontalRoute"]
+position = Vector2(496, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="Cell_16_10_phase02" type="Sprite2D" parent="HorizontalOverVertical/Dirt/HorizontalRoute"]
+position = Vector2(528, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+
+[node name="Cell_17_10_phase03" type="Sprite2D" parent="HorizontalOverVertical/Dirt/HorizontalRoute"]
+position = Vector2(560, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_03")
+
+[node name="VerticalRoute" type="Node2D" parent="HorizontalOverVertical/Dirt"]
+z_index = 1
+
+[node name="Cell_10_05_phase00" type="Sprite2D" parent="HorizontalOverVertical/Dirt/VerticalRoute"]
+position = Vector2(336, 176)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Cell_10_06_phase01" type="Sprite2D" parent="HorizontalOverVertical/Dirt/VerticalRoute"]
+position = Vector2(336, 208)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="Cell_10_07_phase02" type="Sprite2D" parent="HorizontalOverVertical/Dirt/VerticalRoute"]
+position = Vector2(336, 240)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+
+[node name="Cell_10_08_phase03" type="Sprite2D" parent="HorizontalOverVertical/Dirt/VerticalRoute"]
+position = Vector2(336, 272)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_03")
+
+[node name="Cell_10_09_phase00" type="Sprite2D" parent="HorizontalOverVertical/Dirt/VerticalRoute"]
+position = Vector2(336, 304)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Cell_10_10_phase01" type="Sprite2D" parent="HorizontalOverVertical/Dirt/VerticalRoute"]
+position = Vector2(336, 336)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="Cell_10_11_phase02" type="Sprite2D" parent="HorizontalOverVertical/Dirt/VerticalRoute"]
+position = Vector2(336, 368)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+
+[node name="Cell_10_12_phase03" type="Sprite2D" parent="HorizontalOverVertical/Dirt/VerticalRoute"]
+position = Vector2(336, 400)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_03")
+
+[node name="Cell_10_13_phase00" type="Sprite2D" parent="HorizontalOverVertical/Dirt/VerticalRoute"]
+position = Vector2(336, 432)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Cell_10_14_phase01" type="Sprite2D" parent="HorizontalOverVertical/Dirt/VerticalRoute"]
+position = Vector2(336, 464)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="Cell_10_15_phase02" type="Sprite2D" parent="HorizontalOverVertical/Dirt/VerticalRoute"]
+position = Vector2(336, 496)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+
+[node name="extractorFootprint" type="Line2D" parent="HorizontalOverVertical/Dirt"]
+position = Vector2(96, 528)
+points = PackedVector2Array(0, 0, 128, 0, 128, 128, 0, 128, 0, 0)
+width = 1.0
+default_color = Color(0.8, 0.89, 0.91, 0.4)
+
+[node name="Extractor" type="Node2D" parent="HorizontalOverVertical/Dirt"]
+position = Vector2(160, 656)
+scale = Vector2(0.11387900355871886, 0.11387900355871886)
+
+[node name="body" type="Sprite2D" parent="HorizontalOverVertical/Dirt/Extractor"]
+position = Vector2(-566, -1102)
+texture_filter = 4
+texture = ExtResource("extractor_body")
+centered = false
+
+[node name="barrel" type="Sprite2D" parent="HorizontalOverVertical/Dirt/Extractor"]
+position = Vector2(-312, -865)
+texture_filter = 4
+texture = ExtResource("extractor_barrel")
+centered = false
+
+[node name="foreground" type="Sprite2D" parent="HorizontalOverVertical/Dirt/Extractor"]
+position = Vector2(-336, -873)
+texture_filter = 4
+texture = ExtResource("extractor_foreground")
+centered = false
+
+[node name="extractorCaption" type="Label" parent="HorizontalOverVertical/Dirt"]
+offset_left = 88.0
+offset_top = 658.0
+offset_right = 278.0
+offset_bottom = 678.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 13
+text = "Extractor / 4 x 4"
+
+[node name="smelterFootprint" type="Line2D" parent="HorizontalOverVertical/Dirt"]
+position = Vector2(352, 528)
+points = PackedVector2Array(0, 0, 128, 0, 128, 128, 0, 128, 0, 0)
+width = 1.0
+default_color = Color(0.8, 0.89, 0.91, 0.4)
+
+[node name="Smelter" type="Node2D" parent="HorizontalOverVertical/Dirt"]
+position = Vector2(416, 656)
+scale = Vector2(0.13793103448275862, 0.13793103448275862)
+
+[node name="body" type="Sprite2D" parent="HorizontalOverVertical/Dirt/Smelter"]
+position = Vector2(-571, -999)
+texture_filter = 4
+texture = ExtResource("smelter_body")
+centered = false
+
+[node name="interior" type="Sprite2D" parent="HorizontalOverVertical/Dirt/Smelter"]
+position = Vector2(-8, -439)
+texture_filter = 4
+texture = ExtResource("smelter_interior")
+centered = false
+
+[node name="foreground" type="Sprite2D" parent="HorizontalOverVertical/Dirt/Smelter"]
+position = Vector2(-72, -460)
+texture_filter = 4
+texture = ExtResource("smelter_foreground")
+centered = false
+
+[node name="smelterCaption" type="Label" parent="HorizontalOverVertical/Dirt"]
+offset_left = 344.0
+offset_top = 658.0
+offset_right = 534.0
+offset_bottom = 678.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 13
+text = "Smelter / 4 x 4"
+
+
+[node name="Grass" type="Node2D" parent="HorizontalOverVertical"]
+position = Vector2(640, 0)
+
+[node name="Terrain" type="Sprite2D" parent="HorizontalOverVertical/Grass"]
+position = Vector2(0, 80)
+scale = Vector2(1.8146376041112882, 1.8146376041112882)
+texture_filter = 2
+texture = ExtResource("green")
+centered = false
+region_enabled = true
+region_rect = Rect2(416, 416, 352.6875, 330.64453125)
+region_filter_clip_enabled = true
+
+[node name="Title" type="Label" parent="HorizontalOverVertical/Grass"]
+offset_left = 24.0
+offset_top = 82.0
+offset_right = 624.0
+offset_bottom = 106.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 17
+text = "1 / HORIZONTAL OVER VERTICAL / GRASS"
+
+[node name="SpanLegend" type="Label" parent="HorizontalOverVertical/Grass"]
+offset_left = 24.0
+offset_top = 110.0
+offset_right = 624.0
+offset_bottom = 134.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 14
+text = "Upper bridge span: approach / crossing / departure (3 cells)"
+
+[node name="SpanCoordinates" type="Label" parent="HorizontalOverVertical/Grass"]
+offset_left = 24.0
+offset_top = 132.0
+offset_right = 624.0
+offset_bottom = 156.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 13
+text = "Cells (9,10) -> (10,10) -> (11,10); two independent routes"
+
+[node name="HorizontalRoute" type="Node2D" parent="HorizontalOverVertical/Grass"]
+z_index = 2
+
+; Logical three-cell span only: ordinary straight sprites, no elevation geometry.
+
+[node name="BridgeSpan" type="Node2D" parent="HorizontalOverVertical/Grass/HorizontalRoute"]
+
+[node name="Cell_02_10_phase00" type="Sprite2D" parent="HorizontalOverVertical/Grass/HorizontalRoute"]
+position = Vector2(80, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Cell_03_10_phase01" type="Sprite2D" parent="HorizontalOverVertical/Grass/HorizontalRoute"]
+position = Vector2(112, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="Cell_04_10_phase02" type="Sprite2D" parent="HorizontalOverVertical/Grass/HorizontalRoute"]
+position = Vector2(144, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+
+[node name="Cell_05_10_phase03" type="Sprite2D" parent="HorizontalOverVertical/Grass/HorizontalRoute"]
+position = Vector2(176, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_03")
+
+[node name="Cell_06_10_phase00" type="Sprite2D" parent="HorizontalOverVertical/Grass/HorizontalRoute"]
+position = Vector2(208, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Cell_07_10_phase01" type="Sprite2D" parent="HorizontalOverVertical/Grass/HorizontalRoute"]
+position = Vector2(240, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="Cell_08_10_phase02" type="Sprite2D" parent="HorizontalOverVertical/Grass/HorizontalRoute"]
+position = Vector2(272, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+
+[node name="Approach" type="Sprite2D" parent="HorizontalOverVertical/Grass/HorizontalRoute/BridgeSpan"]
+position = Vector2(304, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_03")
+
+[node name="Crossing" type="Sprite2D" parent="HorizontalOverVertical/Grass/HorizontalRoute/BridgeSpan"]
+position = Vector2(336, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Departure" type="Sprite2D" parent="HorizontalOverVertical/Grass/HorizontalRoute/BridgeSpan"]
+position = Vector2(368, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="Cell_12_10_phase02" type="Sprite2D" parent="HorizontalOverVertical/Grass/HorizontalRoute"]
+position = Vector2(400, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+
+[node name="Cell_13_10_phase03" type="Sprite2D" parent="HorizontalOverVertical/Grass/HorizontalRoute"]
+position = Vector2(432, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_03")
+
+[node name="Cell_14_10_phase00" type="Sprite2D" parent="HorizontalOverVertical/Grass/HorizontalRoute"]
+position = Vector2(464, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Cell_15_10_phase01" type="Sprite2D" parent="HorizontalOverVertical/Grass/HorizontalRoute"]
+position = Vector2(496, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="Cell_16_10_phase02" type="Sprite2D" parent="HorizontalOverVertical/Grass/HorizontalRoute"]
+position = Vector2(528, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+
+[node name="Cell_17_10_phase03" type="Sprite2D" parent="HorizontalOverVertical/Grass/HorizontalRoute"]
+position = Vector2(560, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_03")
+
+[node name="VerticalRoute" type="Node2D" parent="HorizontalOverVertical/Grass"]
+z_index = 1
+
+[node name="Cell_10_05_phase00" type="Sprite2D" parent="HorizontalOverVertical/Grass/VerticalRoute"]
+position = Vector2(336, 176)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Cell_10_06_phase01" type="Sprite2D" parent="HorizontalOverVertical/Grass/VerticalRoute"]
+position = Vector2(336, 208)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="Cell_10_07_phase02" type="Sprite2D" parent="HorizontalOverVertical/Grass/VerticalRoute"]
+position = Vector2(336, 240)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+
+[node name="Cell_10_08_phase03" type="Sprite2D" parent="HorizontalOverVertical/Grass/VerticalRoute"]
+position = Vector2(336, 272)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_03")
+
+[node name="Cell_10_09_phase00" type="Sprite2D" parent="HorizontalOverVertical/Grass/VerticalRoute"]
+position = Vector2(336, 304)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Cell_10_10_phase01" type="Sprite2D" parent="HorizontalOverVertical/Grass/VerticalRoute"]
+position = Vector2(336, 336)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="Cell_10_11_phase02" type="Sprite2D" parent="HorizontalOverVertical/Grass/VerticalRoute"]
+position = Vector2(336, 368)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+
+[node name="Cell_10_12_phase03" type="Sprite2D" parent="HorizontalOverVertical/Grass/VerticalRoute"]
+position = Vector2(336, 400)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_03")
+
+[node name="Cell_10_13_phase00" type="Sprite2D" parent="HorizontalOverVertical/Grass/VerticalRoute"]
+position = Vector2(336, 432)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Cell_10_14_phase01" type="Sprite2D" parent="HorizontalOverVertical/Grass/VerticalRoute"]
+position = Vector2(336, 464)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="Cell_10_15_phase02" type="Sprite2D" parent="HorizontalOverVertical/Grass/VerticalRoute"]
+position = Vector2(336, 496)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+
+[node name="extractorFootprint" type="Line2D" parent="HorizontalOverVertical/Grass"]
+position = Vector2(96, 528)
+points = PackedVector2Array(0, 0, 128, 0, 128, 128, 0, 128, 0, 0)
+width = 1.0
+default_color = Color(0.8, 0.89, 0.91, 0.4)
+
+[node name="Extractor" type="Node2D" parent="HorizontalOverVertical/Grass"]
+position = Vector2(160, 656)
+scale = Vector2(0.11387900355871886, 0.11387900355871886)
+
+[node name="body" type="Sprite2D" parent="HorizontalOverVertical/Grass/Extractor"]
+position = Vector2(-566, -1102)
+texture_filter = 4
+texture = ExtResource("extractor_body")
+centered = false
+
+[node name="barrel" type="Sprite2D" parent="HorizontalOverVertical/Grass/Extractor"]
+position = Vector2(-312, -865)
+texture_filter = 4
+texture = ExtResource("extractor_barrel")
+centered = false
+
+[node name="foreground" type="Sprite2D" parent="HorizontalOverVertical/Grass/Extractor"]
+position = Vector2(-336, -873)
+texture_filter = 4
+texture = ExtResource("extractor_foreground")
+centered = false
+
+[node name="extractorCaption" type="Label" parent="HorizontalOverVertical/Grass"]
+offset_left = 88.0
+offset_top = 658.0
+offset_right = 278.0
+offset_bottom = 678.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 13
+text = "Extractor / 4 x 4"
+
+[node name="smelterFootprint" type="Line2D" parent="HorizontalOverVertical/Grass"]
+position = Vector2(352, 528)
+points = PackedVector2Array(0, 0, 128, 0, 128, 128, 0, 128, 0, 0)
+width = 1.0
+default_color = Color(0.8, 0.89, 0.91, 0.4)
+
+[node name="Smelter" type="Node2D" parent="HorizontalOverVertical/Grass"]
+position = Vector2(416, 656)
+scale = Vector2(0.13793103448275862, 0.13793103448275862)
+
+[node name="body" type="Sprite2D" parent="HorizontalOverVertical/Grass/Smelter"]
+position = Vector2(-571, -999)
+texture_filter = 4
+texture = ExtResource("smelter_body")
+centered = false
+
+[node name="interior" type="Sprite2D" parent="HorizontalOverVertical/Grass/Smelter"]
+position = Vector2(-8, -439)
+texture_filter = 4
+texture = ExtResource("smelter_interior")
+centered = false
+
+[node name="foreground" type="Sprite2D" parent="HorizontalOverVertical/Grass/Smelter"]
+position = Vector2(-72, -460)
+texture_filter = 4
+texture = ExtResource("smelter_foreground")
+centered = false
+
+[node name="smelterCaption" type="Label" parent="HorizontalOverVertical/Grass"]
+offset_left = 344.0
+offset_top = 658.0
+offset_right = 534.0
+offset_bottom = 678.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 13
+text = "Smelter / 4 x 4"
+
+
+[node name="VerticalOverHorizontal" type="Node2D" parent="."]
+position = Vector2(0, 768)
+
+[node name="Dirt" type="Node2D" parent="VerticalOverHorizontal"]
+position = Vector2(0, 0)
+
+[node name="Terrain" type="Sprite2D" parent="VerticalOverHorizontal/Dirt"]
+position = Vector2(0, 80)
+scale = Vector2(1.8146376041112882, 1.8146376041112882)
+texture_filter = 2
+texture = ExtResource("earth")
+centered = false
+region_enabled = true
+region_rect = Rect2(416, 416, 352.6875, 330.64453125)
+region_filter_clip_enabled = true
+
+[node name="Title" type="Label" parent="VerticalOverHorizontal/Dirt"]
+offset_left = 24.0
+offset_top = 82.0
+offset_right = 624.0
+offset_bottom = 106.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 17
+text = "2 / VERTICAL OVER HORIZONTAL / DIRT"
+
+[node name="SpanLegend" type="Label" parent="VerticalOverHorizontal/Dirt"]
+offset_left = 24.0
+offset_top = 110.0
+offset_right = 624.0
+offset_bottom = 134.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 14
+text = "Upper bridge span: approach / crossing / departure (3 cells)"
+
+[node name="SpanCoordinates" type="Label" parent="VerticalOverHorizontal/Dirt"]
+offset_left = 24.0
+offset_top = 132.0
+offset_right = 624.0
+offset_bottom = 156.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 13
+text = "Cells (10,9) -> (10,10) -> (10,11); two independent routes"
+
+[node name="HorizontalRoute" type="Node2D" parent="VerticalOverHorizontal/Dirt"]
+z_index = 1
+
+[node name="Cell_02_10_phase00" type="Sprite2D" parent="VerticalOverHorizontal/Dirt/HorizontalRoute"]
+position = Vector2(80, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Cell_03_10_phase01" type="Sprite2D" parent="VerticalOverHorizontal/Dirt/HorizontalRoute"]
+position = Vector2(112, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="Cell_04_10_phase02" type="Sprite2D" parent="VerticalOverHorizontal/Dirt/HorizontalRoute"]
+position = Vector2(144, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+
+[node name="Cell_05_10_phase03" type="Sprite2D" parent="VerticalOverHorizontal/Dirt/HorizontalRoute"]
+position = Vector2(176, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_03")
+
+[node name="Cell_06_10_phase00" type="Sprite2D" parent="VerticalOverHorizontal/Dirt/HorizontalRoute"]
+position = Vector2(208, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Cell_07_10_phase01" type="Sprite2D" parent="VerticalOverHorizontal/Dirt/HorizontalRoute"]
+position = Vector2(240, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="Cell_08_10_phase02" type="Sprite2D" parent="VerticalOverHorizontal/Dirt/HorizontalRoute"]
+position = Vector2(272, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+
+[node name="Cell_09_10_phase03" type="Sprite2D" parent="VerticalOverHorizontal/Dirt/HorizontalRoute"]
+position = Vector2(304, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_03")
+
+[node name="Cell_10_10_phase00" type="Sprite2D" parent="VerticalOverHorizontal/Dirt/HorizontalRoute"]
+position = Vector2(336, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Cell_11_10_phase01" type="Sprite2D" parent="VerticalOverHorizontal/Dirt/HorizontalRoute"]
+position = Vector2(368, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="Cell_12_10_phase02" type="Sprite2D" parent="VerticalOverHorizontal/Dirt/HorizontalRoute"]
+position = Vector2(400, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+
+[node name="Cell_13_10_phase03" type="Sprite2D" parent="VerticalOverHorizontal/Dirt/HorizontalRoute"]
+position = Vector2(432, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_03")
+
+[node name="Cell_14_10_phase00" type="Sprite2D" parent="VerticalOverHorizontal/Dirt/HorizontalRoute"]
+position = Vector2(464, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Cell_15_10_phase01" type="Sprite2D" parent="VerticalOverHorizontal/Dirt/HorizontalRoute"]
+position = Vector2(496, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="Cell_16_10_phase02" type="Sprite2D" parent="VerticalOverHorizontal/Dirt/HorizontalRoute"]
+position = Vector2(528, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+
+[node name="Cell_17_10_phase03" type="Sprite2D" parent="VerticalOverHorizontal/Dirt/HorizontalRoute"]
+position = Vector2(560, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_03")
+
+[node name="VerticalRoute" type="Node2D" parent="VerticalOverHorizontal/Dirt"]
+z_index = 2
+
+; Logical three-cell span only: ordinary straight sprites, no elevation geometry.
+
+[node name="BridgeSpan" type="Node2D" parent="VerticalOverHorizontal/Dirt/VerticalRoute"]
+
+[node name="Cell_10_05_phase00" type="Sprite2D" parent="VerticalOverHorizontal/Dirt/VerticalRoute"]
+position = Vector2(336, 176)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Cell_10_06_phase01" type="Sprite2D" parent="VerticalOverHorizontal/Dirt/VerticalRoute"]
+position = Vector2(336, 208)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="Cell_10_07_phase02" type="Sprite2D" parent="VerticalOverHorizontal/Dirt/VerticalRoute"]
+position = Vector2(336, 240)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+
+[node name="Cell_10_08_phase03" type="Sprite2D" parent="VerticalOverHorizontal/Dirt/VerticalRoute"]
+position = Vector2(336, 272)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_03")
+
+[node name="Approach" type="Sprite2D" parent="VerticalOverHorizontal/Dirt/VerticalRoute/BridgeSpan"]
+position = Vector2(336, 304)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Crossing" type="Sprite2D" parent="VerticalOverHorizontal/Dirt/VerticalRoute/BridgeSpan"]
+position = Vector2(336, 336)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="Departure" type="Sprite2D" parent="VerticalOverHorizontal/Dirt/VerticalRoute/BridgeSpan"]
+position = Vector2(336, 368)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+
+[node name="Cell_10_12_phase03" type="Sprite2D" parent="VerticalOverHorizontal/Dirt/VerticalRoute"]
+position = Vector2(336, 400)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_03")
+
+[node name="Cell_10_13_phase00" type="Sprite2D" parent="VerticalOverHorizontal/Dirt/VerticalRoute"]
+position = Vector2(336, 432)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Cell_10_14_phase01" type="Sprite2D" parent="VerticalOverHorizontal/Dirt/VerticalRoute"]
+position = Vector2(336, 464)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="Cell_10_15_phase02" type="Sprite2D" parent="VerticalOverHorizontal/Dirt/VerticalRoute"]
+position = Vector2(336, 496)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+
+[node name="extractorFootprint" type="Line2D" parent="VerticalOverHorizontal/Dirt"]
+position = Vector2(96, 528)
+points = PackedVector2Array(0, 0, 128, 0, 128, 128, 0, 128, 0, 0)
+width = 1.0
+default_color = Color(0.8, 0.89, 0.91, 0.4)
+
+[node name="Extractor" type="Node2D" parent="VerticalOverHorizontal/Dirt"]
+position = Vector2(160, 656)
+scale = Vector2(0.11387900355871886, 0.11387900355871886)
+
+[node name="body" type="Sprite2D" parent="VerticalOverHorizontal/Dirt/Extractor"]
+position = Vector2(-566, -1102)
+texture_filter = 4
+texture = ExtResource("extractor_body")
+centered = false
+
+[node name="barrel" type="Sprite2D" parent="VerticalOverHorizontal/Dirt/Extractor"]
+position = Vector2(-312, -865)
+texture_filter = 4
+texture = ExtResource("extractor_barrel")
+centered = false
+
+[node name="foreground" type="Sprite2D" parent="VerticalOverHorizontal/Dirt/Extractor"]
+position = Vector2(-336, -873)
+texture_filter = 4
+texture = ExtResource("extractor_foreground")
+centered = false
+
+[node name="extractorCaption" type="Label" parent="VerticalOverHorizontal/Dirt"]
+offset_left = 88.0
+offset_top = 658.0
+offset_right = 278.0
+offset_bottom = 678.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 13
+text = "Extractor / 4 x 4"
+
+[node name="smelterFootprint" type="Line2D" parent="VerticalOverHorizontal/Dirt"]
+position = Vector2(352, 528)
+points = PackedVector2Array(0, 0, 128, 0, 128, 128, 0, 128, 0, 0)
+width = 1.0
+default_color = Color(0.8, 0.89, 0.91, 0.4)
+
+[node name="Smelter" type="Node2D" parent="VerticalOverHorizontal/Dirt"]
+position = Vector2(416, 656)
+scale = Vector2(0.13793103448275862, 0.13793103448275862)
+
+[node name="body" type="Sprite2D" parent="VerticalOverHorizontal/Dirt/Smelter"]
+position = Vector2(-571, -999)
+texture_filter = 4
+texture = ExtResource("smelter_body")
+centered = false
+
+[node name="interior" type="Sprite2D" parent="VerticalOverHorizontal/Dirt/Smelter"]
+position = Vector2(-8, -439)
+texture_filter = 4
+texture = ExtResource("smelter_interior")
+centered = false
+
+[node name="foreground" type="Sprite2D" parent="VerticalOverHorizontal/Dirt/Smelter"]
+position = Vector2(-72, -460)
+texture_filter = 4
+texture = ExtResource("smelter_foreground")
+centered = false
+
+[node name="smelterCaption" type="Label" parent="VerticalOverHorizontal/Dirt"]
+offset_left = 344.0
+offset_top = 658.0
+offset_right = 534.0
+offset_bottom = 678.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 13
+text = "Smelter / 4 x 4"
+
+
+[node name="Grass" type="Node2D" parent="VerticalOverHorizontal"]
+position = Vector2(640, 0)
+
+[node name="Terrain" type="Sprite2D" parent="VerticalOverHorizontal/Grass"]
+position = Vector2(0, 80)
+scale = Vector2(1.8146376041112882, 1.8146376041112882)
+texture_filter = 2
+texture = ExtResource("green")
+centered = false
+region_enabled = true
+region_rect = Rect2(416, 416, 352.6875, 330.64453125)
+region_filter_clip_enabled = true
+
+[node name="Title" type="Label" parent="VerticalOverHorizontal/Grass"]
+offset_left = 24.0
+offset_top = 82.0
+offset_right = 624.0
+offset_bottom = 106.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 17
+text = "2 / VERTICAL OVER HORIZONTAL / GRASS"
+
+[node name="SpanLegend" type="Label" parent="VerticalOverHorizontal/Grass"]
+offset_left = 24.0
+offset_top = 110.0
+offset_right = 624.0
+offset_bottom = 134.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 14
+text = "Upper bridge span: approach / crossing / departure (3 cells)"
+
+[node name="SpanCoordinates" type="Label" parent="VerticalOverHorizontal/Grass"]
+offset_left = 24.0
+offset_top = 132.0
+offset_right = 624.0
+offset_bottom = 156.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 13
+text = "Cells (10,9) -> (10,10) -> (10,11); two independent routes"
+
+[node name="HorizontalRoute" type="Node2D" parent="VerticalOverHorizontal/Grass"]
+z_index = 1
+
+[node name="Cell_02_10_phase00" type="Sprite2D" parent="VerticalOverHorizontal/Grass/HorizontalRoute"]
+position = Vector2(80, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Cell_03_10_phase01" type="Sprite2D" parent="VerticalOverHorizontal/Grass/HorizontalRoute"]
+position = Vector2(112, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="Cell_04_10_phase02" type="Sprite2D" parent="VerticalOverHorizontal/Grass/HorizontalRoute"]
+position = Vector2(144, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+
+[node name="Cell_05_10_phase03" type="Sprite2D" parent="VerticalOverHorizontal/Grass/HorizontalRoute"]
+position = Vector2(176, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_03")
+
+[node name="Cell_06_10_phase00" type="Sprite2D" parent="VerticalOverHorizontal/Grass/HorizontalRoute"]
+position = Vector2(208, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Cell_07_10_phase01" type="Sprite2D" parent="VerticalOverHorizontal/Grass/HorizontalRoute"]
+position = Vector2(240, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="Cell_08_10_phase02" type="Sprite2D" parent="VerticalOverHorizontal/Grass/HorizontalRoute"]
+position = Vector2(272, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+
+[node name="Cell_09_10_phase03" type="Sprite2D" parent="VerticalOverHorizontal/Grass/HorizontalRoute"]
+position = Vector2(304, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_03")
+
+[node name="Cell_10_10_phase00" type="Sprite2D" parent="VerticalOverHorizontal/Grass/HorizontalRoute"]
+position = Vector2(336, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Cell_11_10_phase01" type="Sprite2D" parent="VerticalOverHorizontal/Grass/HorizontalRoute"]
+position = Vector2(368, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="Cell_12_10_phase02" type="Sprite2D" parent="VerticalOverHorizontal/Grass/HorizontalRoute"]
+position = Vector2(400, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+
+[node name="Cell_13_10_phase03" type="Sprite2D" parent="VerticalOverHorizontal/Grass/HorizontalRoute"]
+position = Vector2(432, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_03")
+
+[node name="Cell_14_10_phase00" type="Sprite2D" parent="VerticalOverHorizontal/Grass/HorizontalRoute"]
+position = Vector2(464, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Cell_15_10_phase01" type="Sprite2D" parent="VerticalOverHorizontal/Grass/HorizontalRoute"]
+position = Vector2(496, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="Cell_16_10_phase02" type="Sprite2D" parent="VerticalOverHorizontal/Grass/HorizontalRoute"]
+position = Vector2(528, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+
+[node name="Cell_17_10_phase03" type="Sprite2D" parent="VerticalOverHorizontal/Grass/HorizontalRoute"]
+position = Vector2(560, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_03")
+
+[node name="VerticalRoute" type="Node2D" parent="VerticalOverHorizontal/Grass"]
+z_index = 2
+
+; Logical three-cell span only: ordinary straight sprites, no elevation geometry.
+
+[node name="BridgeSpan" type="Node2D" parent="VerticalOverHorizontal/Grass/VerticalRoute"]
+
+[node name="Cell_10_05_phase00" type="Sprite2D" parent="VerticalOverHorizontal/Grass/VerticalRoute"]
+position = Vector2(336, 176)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Cell_10_06_phase01" type="Sprite2D" parent="VerticalOverHorizontal/Grass/VerticalRoute"]
+position = Vector2(336, 208)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="Cell_10_07_phase02" type="Sprite2D" parent="VerticalOverHorizontal/Grass/VerticalRoute"]
+position = Vector2(336, 240)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+
+[node name="Cell_10_08_phase03" type="Sprite2D" parent="VerticalOverHorizontal/Grass/VerticalRoute"]
+position = Vector2(336, 272)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_03")
+
+[node name="Approach" type="Sprite2D" parent="VerticalOverHorizontal/Grass/VerticalRoute/BridgeSpan"]
+position = Vector2(336, 304)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Crossing" type="Sprite2D" parent="VerticalOverHorizontal/Grass/VerticalRoute/BridgeSpan"]
+position = Vector2(336, 336)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="Departure" type="Sprite2D" parent="VerticalOverHorizontal/Grass/VerticalRoute/BridgeSpan"]
+position = Vector2(336, 368)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+
+[node name="Cell_10_12_phase03" type="Sprite2D" parent="VerticalOverHorizontal/Grass/VerticalRoute"]
+position = Vector2(336, 400)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_03")
+
+[node name="Cell_10_13_phase00" type="Sprite2D" parent="VerticalOverHorizontal/Grass/VerticalRoute"]
+position = Vector2(336, 432)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Cell_10_14_phase01" type="Sprite2D" parent="VerticalOverHorizontal/Grass/VerticalRoute"]
+position = Vector2(336, 464)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="Cell_10_15_phase02" type="Sprite2D" parent="VerticalOverHorizontal/Grass/VerticalRoute"]
+position = Vector2(336, 496)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+
+[node name="extractorFootprint" type="Line2D" parent="VerticalOverHorizontal/Grass"]
+position = Vector2(96, 528)
+points = PackedVector2Array(0, 0, 128, 0, 128, 128, 0, 128, 0, 0)
+width = 1.0
+default_color = Color(0.8, 0.89, 0.91, 0.4)
+
+[node name="Extractor" type="Node2D" parent="VerticalOverHorizontal/Grass"]
+position = Vector2(160, 656)
+scale = Vector2(0.11387900355871886, 0.11387900355871886)
+
+[node name="body" type="Sprite2D" parent="VerticalOverHorizontal/Grass/Extractor"]
+position = Vector2(-566, -1102)
+texture_filter = 4
+texture = ExtResource("extractor_body")
+centered = false
+
+[node name="barrel" type="Sprite2D" parent="VerticalOverHorizontal/Grass/Extractor"]
+position = Vector2(-312, -865)
+texture_filter = 4
+texture = ExtResource("extractor_barrel")
+centered = false
+
+[node name="foreground" type="Sprite2D" parent="VerticalOverHorizontal/Grass/Extractor"]
+position = Vector2(-336, -873)
+texture_filter = 4
+texture = ExtResource("extractor_foreground")
+centered = false
+
+[node name="extractorCaption" type="Label" parent="VerticalOverHorizontal/Grass"]
+offset_left = 88.0
+offset_top = 658.0
+offset_right = 278.0
+offset_bottom = 678.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 13
+text = "Extractor / 4 x 4"
+
+[node name="smelterFootprint" type="Line2D" parent="VerticalOverHorizontal/Grass"]
+position = Vector2(352, 528)
+points = PackedVector2Array(0, 0, 128, 0, 128, 128, 0, 128, 0, 0)
+width = 1.0
+default_color = Color(0.8, 0.89, 0.91, 0.4)
+
+[node name="Smelter" type="Node2D" parent="VerticalOverHorizontal/Grass"]
+position = Vector2(416, 656)
+scale = Vector2(0.13793103448275862, 0.13793103448275862)
+
+[node name="body" type="Sprite2D" parent="VerticalOverHorizontal/Grass/Smelter"]
+position = Vector2(-571, -999)
+texture_filter = 4
+texture = ExtResource("smelter_body")
+centered = false
+
+[node name="interior" type="Sprite2D" parent="VerticalOverHorizontal/Grass/Smelter"]
+position = Vector2(-8, -439)
+texture_filter = 4
+texture = ExtResource("smelter_interior")
+centered = false
+
+[node name="foreground" type="Sprite2D" parent="VerticalOverHorizontal/Grass/Smelter"]
+position = Vector2(-72, -460)
+texture_filter = 4
+texture = ExtResource("smelter_foreground")
+centered = false
+
+[node name="smelterCaption" type="Label" parent="VerticalOverHorizontal/Grass"]
+offset_left = 344.0
+offset_top = 658.0
+offset_right = 534.0
+offset_bottom = 678.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 13
+text = "Smelter / 4 x 4"
+
+
+[node name="ExtendedRoutes" type="Node2D" parent="."]
+position = Vector2(0, 1536)
+
+[node name="Dirt" type="Node2D" parent="ExtendedRoutes"]
+position = Vector2(0, 0)
+
+[node name="Terrain" type="Sprite2D" parent="ExtendedRoutes/Dirt"]
+position = Vector2(0, 80)
+scale = Vector2(1.8146376041112882, 1.8146376041112882)
+texture_filter = 2
+texture = ExtResource("earth")
+centered = false
+region_enabled = true
+region_rect = Rect2(416, 416, 352.6875, 330.64453125)
+region_filter_clip_enabled = true
+
+[node name="Title" type="Label" parent="ExtendedRoutes/Dirt"]
+offset_left = 24.0
+offset_top = 82.0
+offset_right = 624.0
+offset_bottom = 106.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 17
+text = "3 / EXTENDED ROUTES - HORIZONTAL OVER VERTICAL / DIRT"
+
+[node name="SpanLegend" type="Label" parent="ExtendedRoutes/Dirt"]
+offset_left = 24.0
+offset_top = 110.0
+offset_right = 624.0
+offset_bottom = 134.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 14
+text = "Upper bridge span: approach / crossing / departure (3 cells)"
+
+[node name="SpanCoordinates" type="Label" parent="ExtendedRoutes/Dirt"]
+offset_left = 24.0
+offset_top = 132.0
+offset_right = 624.0
+offset_bottom = 156.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 13
+text = "Cells (8,10) -> (9,10) -> (10,10); two independent routes"
+
+[node name="HorizontalRoute" type="Node2D" parent="ExtendedRoutes/Dirt"]
+z_index = 2
+
+; Logical three-cell span only: ordinary straight sprites, no elevation geometry.
+
+[node name="BridgeSpan" type="Node2D" parent="ExtendedRoutes/Dirt/HorizontalRoute"]
+
+[node name="Cell_01_10_phase00" type="Sprite2D" parent="ExtendedRoutes/Dirt/HorizontalRoute"]
+position = Vector2(48, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Cell_02_10_phase01" type="Sprite2D" parent="ExtendedRoutes/Dirt/HorizontalRoute"]
+position = Vector2(80, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="Cell_03_10_phase02" type="Sprite2D" parent="ExtendedRoutes/Dirt/HorizontalRoute"]
+position = Vector2(112, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+
+[node name="Cell_04_10_phase03" type="Sprite2D" parent="ExtendedRoutes/Dirt/HorizontalRoute"]
+position = Vector2(144, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_03")
+
+[node name="Cell_05_10_phase00" type="Sprite2D" parent="ExtendedRoutes/Dirt/HorizontalRoute"]
+position = Vector2(176, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Cell_06_10_phase01" type="Sprite2D" parent="ExtendedRoutes/Dirt/HorizontalRoute"]
+position = Vector2(208, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="Cell_07_10_phase02" type="Sprite2D" parent="ExtendedRoutes/Dirt/HorizontalRoute"]
+position = Vector2(240, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+
+[node name="Approach" type="Sprite2D" parent="ExtendedRoutes/Dirt/HorizontalRoute/BridgeSpan"]
+position = Vector2(272, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_03")
+
+[node name="Crossing" type="Sprite2D" parent="ExtendedRoutes/Dirt/HorizontalRoute/BridgeSpan"]
+position = Vector2(304, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Departure" type="Sprite2D" parent="ExtendedRoutes/Dirt/HorizontalRoute/BridgeSpan"]
+position = Vector2(336, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="Cell_11_10_phase02" type="Sprite2D" parent="ExtendedRoutes/Dirt/HorizontalRoute"]
+position = Vector2(368, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+
+[node name="Cell_12_10_phase03" type="Sprite2D" parent="ExtendedRoutes/Dirt/HorizontalRoute"]
+position = Vector2(400, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_03")
+
+[node name="Cell_13_10_phase00" type="Sprite2D" parent="ExtendedRoutes/Dirt/HorizontalRoute"]
+position = Vector2(432, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Cell_14_10_phase01" type="Sprite2D" parent="ExtendedRoutes/Dirt/HorizontalRoute"]
+position = Vector2(464, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="Cell_15_10_phase02" type="Sprite2D" parent="ExtendedRoutes/Dirt/HorizontalRoute"]
+position = Vector2(496, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+
+[node name="Cell_16_09_phase02" type="Sprite2D" parent="ExtendedRoutes/Dirt/HorizontalRoute"]
+position = Vector2(528, 304)
+rotation = 4.71238898038469
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+
+[node name="Cell_16_08_phase03" type="Sprite2D" parent="ExtendedRoutes/Dirt/HorizontalRoute"]
+position = Vector2(528, 272)
+rotation = 4.71238898038469
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_03")
+
+[node name="Cell_16_07_phase00" type="Sprite2D" parent="ExtendedRoutes/Dirt/HorizontalRoute"]
+position = Vector2(528, 240)
+rotation = 4.71238898038469
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="RoundedCorner" type="Sprite2D" parent="ExtendedRoutes/Dirt/HorizontalRoute"]
+position = Vector2(528, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("corner")
+
+[node name="VerticalRoute" type="Node2D" parent="ExtendedRoutes/Dirt"]
+z_index = 1
+
+[node name="Cell_09_06_phase02" type="Sprite2D" parent="ExtendedRoutes/Dirt/VerticalRoute"]
+position = Vector2(304, 208)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+
+[node name="Cell_09_07_phase03" type="Sprite2D" parent="ExtendedRoutes/Dirt/VerticalRoute"]
+position = Vector2(304, 240)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_03")
+
+[node name="Cell_09_08_phase00" type="Sprite2D" parent="ExtendedRoutes/Dirt/VerticalRoute"]
+position = Vector2(304, 272)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Cell_09_09_phase01" type="Sprite2D" parent="ExtendedRoutes/Dirt/VerticalRoute"]
+position = Vector2(304, 304)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="Cell_09_10_phase02" type="Sprite2D" parent="ExtendedRoutes/Dirt/VerticalRoute"]
+position = Vector2(304, 336)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+
+[node name="Cell_09_11_phase03" type="Sprite2D" parent="ExtendedRoutes/Dirt/VerticalRoute"]
+position = Vector2(304, 368)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_03")
+
+[node name="Cell_09_12_phase00" type="Sprite2D" parent="ExtendedRoutes/Dirt/VerticalRoute"]
+position = Vector2(304, 400)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Cell_09_13_phase01" type="Sprite2D" parent="ExtendedRoutes/Dirt/VerticalRoute"]
+position = Vector2(304, 432)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="Cell_09_14_phase02" type="Sprite2D" parent="ExtendedRoutes/Dirt/VerticalRoute"]
+position = Vector2(304, 464)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+
+[node name="Cell_09_15_phase03" type="Sprite2D" parent="ExtendedRoutes/Dirt/VerticalRoute"]
+position = Vector2(304, 496)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_03")
+
+[node name="Cell_10_05_phase02" type="Sprite2D" parent="ExtendedRoutes/Dirt/VerticalRoute"]
+position = Vector2(336, 176)
+rotation = 3.141592653589793
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+
+[node name="Cell_11_05_phase01" type="Sprite2D" parent="ExtendedRoutes/Dirt/VerticalRoute"]
+position = Vector2(368, 176)
+rotation = 3.141592653589793
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="Cell_12_05_phase00" type="Sprite2D" parent="ExtendedRoutes/Dirt/VerticalRoute"]
+position = Vector2(400, 176)
+rotation = 3.141592653589793
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Cell_13_05_phase03" type="Sprite2D" parent="ExtendedRoutes/Dirt/VerticalRoute"]
+position = Vector2(432, 176)
+rotation = 3.141592653589793
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_03")
+
+[node name="Cell_14_05_phase02" type="Sprite2D" parent="ExtendedRoutes/Dirt/VerticalRoute"]
+position = Vector2(464, 176)
+rotation = 3.141592653589793
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+
+[node name="Cell_15_05_phase01" type="Sprite2D" parent="ExtendedRoutes/Dirt/VerticalRoute"]
+position = Vector2(496, 176)
+rotation = 3.141592653589793
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="Cell_16_05_phase00" type="Sprite2D" parent="ExtendedRoutes/Dirt/VerticalRoute"]
+position = Vector2(528, 176)
+rotation = 3.141592653589793
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Cell_17_05_phase03" type="Sprite2D" parent="ExtendedRoutes/Dirt/VerticalRoute"]
+position = Vector2(560, 176)
+rotation = 3.141592653589793
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_03")
+
+[node name="RoundedCorner" type="Sprite2D" parent="ExtendedRoutes/Dirt/VerticalRoute"]
+position = Vector2(304, 176)
+rotation = 3.141592653589793
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("corner")
+
+[node name="extractorFootprint" type="Line2D" parent="ExtendedRoutes/Dirt"]
+position = Vector2(96, 528)
+points = PackedVector2Array(0, 0, 128, 0, 128, 128, 0, 128, 0, 0)
+width = 1.0
+default_color = Color(0.8, 0.89, 0.91, 0.4)
+
+[node name="Extractor" type="Node2D" parent="ExtendedRoutes/Dirt"]
+position = Vector2(160, 656)
+scale = Vector2(0.11387900355871886, 0.11387900355871886)
+
+[node name="body" type="Sprite2D" parent="ExtendedRoutes/Dirt/Extractor"]
+position = Vector2(-566, -1102)
+texture_filter = 4
+texture = ExtResource("extractor_body")
+centered = false
+
+[node name="barrel" type="Sprite2D" parent="ExtendedRoutes/Dirt/Extractor"]
+position = Vector2(-312, -865)
+texture_filter = 4
+texture = ExtResource("extractor_barrel")
+centered = false
+
+[node name="foreground" type="Sprite2D" parent="ExtendedRoutes/Dirt/Extractor"]
+position = Vector2(-336, -873)
+texture_filter = 4
+texture = ExtResource("extractor_foreground")
+centered = false
+
+[node name="extractorCaption" type="Label" parent="ExtendedRoutes/Dirt"]
+offset_left = 88.0
+offset_top = 658.0
+offset_right = 278.0
+offset_bottom = 678.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 13
+text = "Extractor / 4 x 4"
+
+[node name="smelterFootprint" type="Line2D" parent="ExtendedRoutes/Dirt"]
+position = Vector2(352, 528)
+points = PackedVector2Array(0, 0, 128, 0, 128, 128, 0, 128, 0, 0)
+width = 1.0
+default_color = Color(0.8, 0.89, 0.91, 0.4)
+
+[node name="Smelter" type="Node2D" parent="ExtendedRoutes/Dirt"]
+position = Vector2(416, 656)
+scale = Vector2(0.13793103448275862, 0.13793103448275862)
+
+[node name="body" type="Sprite2D" parent="ExtendedRoutes/Dirt/Smelter"]
+position = Vector2(-571, -999)
+texture_filter = 4
+texture = ExtResource("smelter_body")
+centered = false
+
+[node name="interior" type="Sprite2D" parent="ExtendedRoutes/Dirt/Smelter"]
+position = Vector2(-8, -439)
+texture_filter = 4
+texture = ExtResource("smelter_interior")
+centered = false
+
+[node name="foreground" type="Sprite2D" parent="ExtendedRoutes/Dirt/Smelter"]
+position = Vector2(-72, -460)
+texture_filter = 4
+texture = ExtResource("smelter_foreground")
+centered = false
+
+[node name="smelterCaption" type="Label" parent="ExtendedRoutes/Dirt"]
+offset_left = 344.0
+offset_top = 658.0
+offset_right = 534.0
+offset_bottom = 678.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 13
+text = "Smelter / 4 x 4"
+
+
+[node name="Grass" type="Node2D" parent="ExtendedRoutes"]
+position = Vector2(640, 0)
+
+[node name="Terrain" type="Sprite2D" parent="ExtendedRoutes/Grass"]
+position = Vector2(0, 80)
+scale = Vector2(1.8146376041112882, 1.8146376041112882)
+texture_filter = 2
+texture = ExtResource("green")
+centered = false
+region_enabled = true
+region_rect = Rect2(416, 416, 352.6875, 330.64453125)
+region_filter_clip_enabled = true
+
+[node name="Title" type="Label" parent="ExtendedRoutes/Grass"]
+offset_left = 24.0
+offset_top = 82.0
+offset_right = 624.0
+offset_bottom = 106.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 17
+text = "3 / EXTENDED ROUTES - HORIZONTAL OVER VERTICAL / GRASS"
+
+[node name="SpanLegend" type="Label" parent="ExtendedRoutes/Grass"]
+offset_left = 24.0
+offset_top = 110.0
+offset_right = 624.0
+offset_bottom = 134.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 14
+text = "Upper bridge span: approach / crossing / departure (3 cells)"
+
+[node name="SpanCoordinates" type="Label" parent="ExtendedRoutes/Grass"]
+offset_left = 24.0
+offset_top = 132.0
+offset_right = 624.0
+offset_bottom = 156.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 13
+text = "Cells (8,10) -> (9,10) -> (10,10); two independent routes"
+
+[node name="HorizontalRoute" type="Node2D" parent="ExtendedRoutes/Grass"]
+z_index = 2
+
+; Logical three-cell span only: ordinary straight sprites, no elevation geometry.
+
+[node name="BridgeSpan" type="Node2D" parent="ExtendedRoutes/Grass/HorizontalRoute"]
+
+[node name="Cell_01_10_phase00" type="Sprite2D" parent="ExtendedRoutes/Grass/HorizontalRoute"]
+position = Vector2(48, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Cell_02_10_phase01" type="Sprite2D" parent="ExtendedRoutes/Grass/HorizontalRoute"]
+position = Vector2(80, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="Cell_03_10_phase02" type="Sprite2D" parent="ExtendedRoutes/Grass/HorizontalRoute"]
+position = Vector2(112, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+
+[node name="Cell_04_10_phase03" type="Sprite2D" parent="ExtendedRoutes/Grass/HorizontalRoute"]
+position = Vector2(144, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_03")
+
+[node name="Cell_05_10_phase00" type="Sprite2D" parent="ExtendedRoutes/Grass/HorizontalRoute"]
+position = Vector2(176, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Cell_06_10_phase01" type="Sprite2D" parent="ExtendedRoutes/Grass/HorizontalRoute"]
+position = Vector2(208, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="Cell_07_10_phase02" type="Sprite2D" parent="ExtendedRoutes/Grass/HorizontalRoute"]
+position = Vector2(240, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+
+[node name="Approach" type="Sprite2D" parent="ExtendedRoutes/Grass/HorizontalRoute/BridgeSpan"]
+position = Vector2(272, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_03")
+
+[node name="Crossing" type="Sprite2D" parent="ExtendedRoutes/Grass/HorizontalRoute/BridgeSpan"]
+position = Vector2(304, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Departure" type="Sprite2D" parent="ExtendedRoutes/Grass/HorizontalRoute/BridgeSpan"]
+position = Vector2(336, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="Cell_11_10_phase02" type="Sprite2D" parent="ExtendedRoutes/Grass/HorizontalRoute"]
+position = Vector2(368, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+
+[node name="Cell_12_10_phase03" type="Sprite2D" parent="ExtendedRoutes/Grass/HorizontalRoute"]
+position = Vector2(400, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_03")
+
+[node name="Cell_13_10_phase00" type="Sprite2D" parent="ExtendedRoutes/Grass/HorizontalRoute"]
+position = Vector2(432, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Cell_14_10_phase01" type="Sprite2D" parent="ExtendedRoutes/Grass/HorizontalRoute"]
+position = Vector2(464, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="Cell_15_10_phase02" type="Sprite2D" parent="ExtendedRoutes/Grass/HorizontalRoute"]
+position = Vector2(496, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+
+[node name="Cell_16_09_phase02" type="Sprite2D" parent="ExtendedRoutes/Grass/HorizontalRoute"]
+position = Vector2(528, 304)
+rotation = 4.71238898038469
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+
+[node name="Cell_16_08_phase03" type="Sprite2D" parent="ExtendedRoutes/Grass/HorizontalRoute"]
+position = Vector2(528, 272)
+rotation = 4.71238898038469
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_03")
+
+[node name="Cell_16_07_phase00" type="Sprite2D" parent="ExtendedRoutes/Grass/HorizontalRoute"]
+position = Vector2(528, 240)
+rotation = 4.71238898038469
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="RoundedCorner" type="Sprite2D" parent="ExtendedRoutes/Grass/HorizontalRoute"]
+position = Vector2(528, 336)
+rotation = 0.0
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("corner")
+
+[node name="VerticalRoute" type="Node2D" parent="ExtendedRoutes/Grass"]
+z_index = 1
+
+[node name="Cell_09_06_phase02" type="Sprite2D" parent="ExtendedRoutes/Grass/VerticalRoute"]
+position = Vector2(304, 208)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+
+[node name="Cell_09_07_phase03" type="Sprite2D" parent="ExtendedRoutes/Grass/VerticalRoute"]
+position = Vector2(304, 240)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_03")
+
+[node name="Cell_09_08_phase00" type="Sprite2D" parent="ExtendedRoutes/Grass/VerticalRoute"]
+position = Vector2(304, 272)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Cell_09_09_phase01" type="Sprite2D" parent="ExtendedRoutes/Grass/VerticalRoute"]
+position = Vector2(304, 304)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="Cell_09_10_phase02" type="Sprite2D" parent="ExtendedRoutes/Grass/VerticalRoute"]
+position = Vector2(304, 336)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+
+[node name="Cell_09_11_phase03" type="Sprite2D" parent="ExtendedRoutes/Grass/VerticalRoute"]
+position = Vector2(304, 368)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_03")
+
+[node name="Cell_09_12_phase00" type="Sprite2D" parent="ExtendedRoutes/Grass/VerticalRoute"]
+position = Vector2(304, 400)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Cell_09_13_phase01" type="Sprite2D" parent="ExtendedRoutes/Grass/VerticalRoute"]
+position = Vector2(304, 432)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="Cell_09_14_phase02" type="Sprite2D" parent="ExtendedRoutes/Grass/VerticalRoute"]
+position = Vector2(304, 464)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+
+[node name="Cell_09_15_phase03" type="Sprite2D" parent="ExtendedRoutes/Grass/VerticalRoute"]
+position = Vector2(304, 496)
+rotation = 1.5707963267948966
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_03")
+
+[node name="Cell_10_05_phase02" type="Sprite2D" parent="ExtendedRoutes/Grass/VerticalRoute"]
+position = Vector2(336, 176)
+rotation = 3.141592653589793
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+
+[node name="Cell_11_05_phase01" type="Sprite2D" parent="ExtendedRoutes/Grass/VerticalRoute"]
+position = Vector2(368, 176)
+rotation = 3.141592653589793
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="Cell_12_05_phase00" type="Sprite2D" parent="ExtendedRoutes/Grass/VerticalRoute"]
+position = Vector2(400, 176)
+rotation = 3.141592653589793
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Cell_13_05_phase03" type="Sprite2D" parent="ExtendedRoutes/Grass/VerticalRoute"]
+position = Vector2(432, 176)
+rotation = 3.141592653589793
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_03")
+
+[node name="Cell_14_05_phase02" type="Sprite2D" parent="ExtendedRoutes/Grass/VerticalRoute"]
+position = Vector2(464, 176)
+rotation = 3.141592653589793
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+
+[node name="Cell_15_05_phase01" type="Sprite2D" parent="ExtendedRoutes/Grass/VerticalRoute"]
+position = Vector2(496, 176)
+rotation = 3.141592653589793
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="Cell_16_05_phase00" type="Sprite2D" parent="ExtendedRoutes/Grass/VerticalRoute"]
+position = Vector2(528, 176)
+rotation = 3.141592653589793
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Cell_17_05_phase03" type="Sprite2D" parent="ExtendedRoutes/Grass/VerticalRoute"]
+position = Vector2(560, 176)
+rotation = 3.141592653589793
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_03")
+
+[node name="RoundedCorner" type="Sprite2D" parent="ExtendedRoutes/Grass/VerticalRoute"]
+position = Vector2(304, 176)
+rotation = 3.141592653589793
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("corner")
+
+[node name="extractorFootprint" type="Line2D" parent="ExtendedRoutes/Grass"]
+position = Vector2(96, 528)
+points = PackedVector2Array(0, 0, 128, 0, 128, 128, 0, 128, 0, 0)
+width = 1.0
+default_color = Color(0.8, 0.89, 0.91, 0.4)
+
+[node name="Extractor" type="Node2D" parent="ExtendedRoutes/Grass"]
+position = Vector2(160, 656)
+scale = Vector2(0.11387900355871886, 0.11387900355871886)
+
+[node name="body" type="Sprite2D" parent="ExtendedRoutes/Grass/Extractor"]
+position = Vector2(-566, -1102)
+texture_filter = 4
+texture = ExtResource("extractor_body")
+centered = false
+
+[node name="barrel" type="Sprite2D" parent="ExtendedRoutes/Grass/Extractor"]
+position = Vector2(-312, -865)
+texture_filter = 4
+texture = ExtResource("extractor_barrel")
+centered = false
+
+[node name="foreground" type="Sprite2D" parent="ExtendedRoutes/Grass/Extractor"]
+position = Vector2(-336, -873)
+texture_filter = 4
+texture = ExtResource("extractor_foreground")
+centered = false
+
+[node name="extractorCaption" type="Label" parent="ExtendedRoutes/Grass"]
+offset_left = 88.0
+offset_top = 658.0
+offset_right = 278.0
+offset_bottom = 678.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 13
+text = "Extractor / 4 x 4"
+
+[node name="smelterFootprint" type="Line2D" parent="ExtendedRoutes/Grass"]
+position = Vector2(352, 528)
+points = PackedVector2Array(0, 0, 128, 0, 128, 128, 0, 128, 0, 0)
+width = 1.0
+default_color = Color(0.8, 0.89, 0.91, 0.4)
+
+[node name="Smelter" type="Node2D" parent="ExtendedRoutes/Grass"]
+position = Vector2(416, 656)
+scale = Vector2(0.13793103448275862, 0.13793103448275862)
+
+[node name="body" type="Sprite2D" parent="ExtendedRoutes/Grass/Smelter"]
+position = Vector2(-571, -999)
+texture_filter = 4
+texture = ExtResource("smelter_body")
+centered = false
+
+[node name="interior" type="Sprite2D" parent="ExtendedRoutes/Grass/Smelter"]
+position = Vector2(-8, -439)
+texture_filter = 4
+texture = ExtResource("smelter_interior")
+centered = false
+
+[node name="foreground" type="Sprite2D" parent="ExtendedRoutes/Grass/Smelter"]
+position = Vector2(-72, -460)
+texture_filter = 4
+texture = ExtResource("smelter_foreground")
+centered = false
+
+[node name="smelterCaption" type="Label" parent="ExtendedRoutes/Grass"]
+offset_left = 344.0
+offset_top = 658.0
+offset_right = 534.0
+offset_bottom = 678.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 13
+text = "Smelter / 4 x 4"
+
+
+[node name="HUD" type="CanvasLayer" parent="."]
+
+[node name="Header" type="ColorRect" parent="HUD"]
+offset_right = 1280.0
+offset_bottom = 78.0
+mouse_filter = 2
+color = Color(0.035, 0.05, 0.07, 0.98)
+
+[node name="Heading" type="Label" parent="HUD"]
+offset_left = 24.0
+offset_top = 8.0
+offset_right = 1256.0
+offset_bottom = 32.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 24
+text = "SIMPLE CONDUIT BRIDGE / LAYERING EXPERIMENT v1"
+
+[node name="Summary" type="Label" parent="HUD"]
+offset_left = 24.0
+offset_top = 43.0
+offset_right = 1256.0
+offset_bottom = 67.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 16
+text = "Ordinary straight artwork / 32-unit cells / 0.25 scale / continuous upper rails, independent lower route"
+
+[node name="Footer" type="ColorRect" parent="HUD"]
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -40.0
+offset_right = 1280.0
+mouse_filter = 2
+color = Color(0.035, 0.05, 0.07, 0.98)
+
+[node name="Controls" type="Label" parent="HUD"]
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 24.0
+offset_top = -39.0
+offset_right = 1260.0
+offset_bottom = -19.0
+mouse_filter = 2
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 14
+text = "1: horizontal over   2: vertical over   3: extended   Middle-drag: pan   Wheel: zoom   C: 4x / return   Home: 1x"
+
+[node name="Scope" type="Label" parent="HUD"]
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 24.0
+offset_top = -20.0
+offset_right = 1260.0
+offset_bottom = 0.0
+mouse_filter = 2
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 14
+text = "Artwork only / no junction or item transfer / machines are scale references / F8: stop"
