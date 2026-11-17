@@ -1,0 +1,4198 @@
+[gd_scene load_steps=18 format=3]
+
+[ext_resource type="Texture2D" path="res://experiments/conduit_adapter_art_v1/shared_coupling_overlay_v2_candidate_128.png" id="coupling"]
+[ext_resource type="Texture2D" path="res://experiments/conduit_adapter_art_v1/originals/standard_adapter_v1.png" id="original_standard"]
+[ext_resource type="Texture2D" path="res://experiments/conduit_adapter_art_v1/originals/extended_adapter_v1.png" id="original_extended"]
+[ext_resource type="Script" path="res://experiments/conduit_adapter_art_v1/inspection_camera.gd" id="camera"]
+[ext_resource type="Texture2D" path="res://assets/experiments/terrain_c1/sources/earth.png" id="earth"]
+[ext_resource type="Texture2D" path="res://assets/experiments/terrain_c1/sources/green.png" id="green"]
+[ext_resource type="FontFile" path="res://assets/fonts/ibm-plex-sans/IBMPlexSans-Regular.ttf" id="font"]
+[ext_resource type="Texture2D" path="res://experiments/conduit_art_v1/supplied_no_connectors_v1/straight_vent_00.png" id="vent_00"]
+[ext_resource type="Texture2D" path="res://experiments/conduit_art_v1/supplied_no_connectors_v1/straight_vent_01.png" id="vent_01"]
+[ext_resource type="Texture2D" path="res://experiments/conduit_art_v1/supplied_no_connectors_v1/straight_vent_02.png" id="vent_02"]
+[ext_resource type="Texture2D" path="res://experiments/conduit_art_v1/supplied_no_connectors_v1/straight_vent_03.png" id="vent_03"]
+[ext_resource type="Texture2D" path="res://assets/machines/extractor/extractor_0_body.png" id="extractor_body"]
+[ext_resource type="Texture2D" path="res://assets/machines/extractor/extractor_0_barrel.png" id="extractor_barrel"]
+[ext_resource type="Texture2D" path="res://assets/machines/extractor/extractor_0_foreground.png" id="extractor_foreground"]
+[ext_resource type="Texture2D" path="res://assets/machines/smelter/smelter_0_body.png" id="smelter_body"]
+[ext_resource type="Texture2D" path="res://assets/machines/smelter/smelter_0_interior.png" id="smelter_interior"]
+[ext_resource type="Texture2D" path="res://assets/machines/smelter/smelter_0_foreground.png" id="smelter_foreground"]
+
+[node name="ConduitAdapterArtV1" type="Node2D"]
+texture_filter = 4
+
+[node name="Camera" type="Camera2D" parent="."]
+position = Vector2(640, 360)
+zoom = Vector2(1, 1)
+script = ExtResource("camera")
+
+[node name="Standard" type="Node2D" parent="."]
+position = Vector2(0, 0)
+
+[node name="Dirt" type="Node2D" parent="Standard"]
+position = Vector2(0, 0)
+
+[node name="Terrain" type="Sprite2D" parent="Standard/Dirt"]
+position = Vector2(0, 80)
+scale = Vector2(1.8146376041112882, 1.8146376041112882)
+texture_filter = 2
+texture = ExtResource("earth")
+centered = false
+region_enabled = true
+region_rect = Rect2(416, 416, 352.6875, 330.64453125)
+region_filter_clip_enabled = true
+
+[node name="Title" type="Label" parent="Standard/Dirt"]
+z_index = 10
+offset_left = 24.0
+offset_top = 84.0
+offset_right = 614.0
+offset_bottom = 108.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 17
+text = "1 / STANDARD / ONE CELL / DIRT"
+
+[node name="Subtitle" type="Label" parent="Standard/Dirt"]
+z_index = 10
+offset_left = 24.0
+offset_top = 111.0
+offset_right = 614.0
+offset_bottom = 135.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 13
+text = "Full-width straight housing + shared coupling; samples are provisional."
+
+[node name="EastCaption" type="Label" parent="Standard/Dirt"]
+z_index = 10
+offset_left = 24.0
+offset_top = 145.0
+offset_right = 296.0
+offset_bottom = 169.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 14
+text = "Smelter / East / 1 cell"
+
+[node name="EastMachineFootprint" type="Line2D" parent="Standard/Dirt"]
+position = Vector2(32, 192)
+z_index = 1
+points = PackedVector2Array(0, 0, 128, 0, 128, 128, 0, 128, 0, 0)
+width = 1.0
+default_color = Color(0.8, 0.89, 0.91, 0.35)
+
+[node name="EastMachine" type="Node2D" parent="Standard/Dirt"]
+position = Vector2(96, 320)
+scale = Vector2(0.13793103448275862, 0.13793103448275862)
+z_index = 3
+
+[node name="body" type="Sprite2D" parent="Standard/Dirt/EastMachine"]
+position = Vector2(-571, -999)
+texture_filter = 4
+texture = ExtResource("smelter_body")
+centered = false
+
+[node name="interior" type="Sprite2D" parent="Standard/Dirt/EastMachine"]
+position = Vector2(-8, -439)
+texture_filter = 4
+texture = ExtResource("smelter_interior")
+centered = false
+
+[node name="foreground" type="Sprite2D" parent="Standard/Dirt/EastMachine"]
+position = Vector2(-72, -460)
+texture_filter = 4
+texture = ExtResource("smelter_foreground")
+centered = false
+
+[node name="East" type="Node2D" parent="Standard/Dirt"]
+position = Vector2(176, 272)
+rotation = 0.0
+
+[node name="AdapterFootprint" type="Line2D" parent="Standard/Dirt/East"]
+position = Vector2(-16, -16)
+z_index = 1
+points = PackedVector2Array(0, 0, 32, 0, 32, 32, 0, 32, 0, 0)
+width = 1.0
+default_color = Color(0.3, 0.9, 0.9, 0.45)
+
+[node name="Assembly" type="Node2D" parent="Standard/Dirt/East"]
+z_index = 4
+
+[node name="Housing1" type="Sprite2D" parent="Standard/Dirt/East/Assembly"]
+position = Vector2(0, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Coupling" type="Sprite2D" parent="Standard/Dirt/East/Assembly"]
+position = Vector2(0, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("coupling")
+z_index = 1
+
+[node name="Continuation" type="Node2D" parent="Standard/Dirt/East"]
+z_index = 4
+
+[node name="Cell2_phase01" type="Sprite2D" parent="Standard/Dirt/East/Continuation"]
+position = Vector2(32, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="Cell3_phase02" type="Sprite2D" parent="Standard/Dirt/East/Continuation"]
+position = Vector2(64, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+
+[node name="WestCaption" type="Label" parent="Standard/Dirt"]
+z_index = 10
+offset_left = 344.0
+offset_top = 145.0
+offset_right = 616.0
+offset_bottom = 169.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 14
+text = "Extractor / West / 1 cell"
+
+[node name="WestMachineFootprint" type="Line2D" parent="Standard/Dirt"]
+position = Vector2(480, 192)
+z_index = 1
+points = PackedVector2Array(0, 0, 128, 0, 128, 128, 0, 128, 0, 0)
+width = 1.0
+default_color = Color(0.8, 0.89, 0.91, 0.35)
+
+[node name="WestMachine" type="Node2D" parent="Standard/Dirt"]
+position = Vector2(544, 320)
+scale = Vector2(0.11387900355871886, 0.11387900355871886)
+z_index = 3
+
+[node name="body" type="Sprite2D" parent="Standard/Dirt/WestMachine"]
+position = Vector2(-566, -1102)
+texture_filter = 4
+texture = ExtResource("extractor_body")
+centered = false
+
+[node name="barrel" type="Sprite2D" parent="Standard/Dirt/WestMachine"]
+position = Vector2(-312, -865)
+texture_filter = 4
+texture = ExtResource("extractor_barrel")
+centered = false
+
+[node name="foreground" type="Sprite2D" parent="Standard/Dirt/WestMachine"]
+position = Vector2(-336, -873)
+texture_filter = 4
+texture = ExtResource("extractor_foreground")
+centered = false
+
+[node name="West" type="Node2D" parent="Standard/Dirt"]
+position = Vector2(464, 272)
+rotation = 3.141592653589793
+
+[node name="AdapterFootprint" type="Line2D" parent="Standard/Dirt/West"]
+position = Vector2(-16, -16)
+z_index = 1
+points = PackedVector2Array(0, 0, 32, 0, 32, 32, 0, 32, 0, 0)
+width = 1.0
+default_color = Color(0.3, 0.9, 0.9, 0.45)
+
+[node name="Assembly" type="Node2D" parent="Standard/Dirt/West"]
+z_index = 4
+
+[node name="Housing1" type="Sprite2D" parent="Standard/Dirt/West/Assembly"]
+position = Vector2(0, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Coupling" type="Sprite2D" parent="Standard/Dirt/West/Assembly"]
+position = Vector2(0, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("coupling")
+z_index = 1
+
+[node name="Continuation" type="Node2D" parent="Standard/Dirt/West"]
+z_index = 4
+
+[node name="Cell2_phase01" type="Sprite2D" parent="Standard/Dirt/West/Continuation"]
+position = Vector2(32, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="Cell3_phase02" type="Sprite2D" parent="Standard/Dirt/West/Continuation"]
+position = Vector2(64, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+
+[node name="SouthCaption" type="Label" parent="Standard/Dirt"]
+z_index = 10
+offset_left = 24.0
+offset_top = 350.0
+offset_right = 296.0
+offset_bottom = 374.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 14
+text = "Smelter / South / 1 cell"
+
+[node name="SouthMachineFootprint" type="Line2D" parent="Standard/Dirt"]
+position = Vector2(96, 384)
+z_index = 1
+points = PackedVector2Array(0, 0, 128, 0, 128, 128, 0, 128, 0, 0)
+width = 1.0
+default_color = Color(0.8, 0.89, 0.91, 0.35)
+
+[node name="SouthMachine" type="Node2D" parent="Standard/Dirt"]
+position = Vector2(160, 512)
+scale = Vector2(0.13793103448275862, 0.13793103448275862)
+z_index = 3
+
+[node name="body" type="Sprite2D" parent="Standard/Dirt/SouthMachine"]
+position = Vector2(-571, -999)
+texture_filter = 4
+texture = ExtResource("smelter_body")
+centered = false
+
+[node name="interior" type="Sprite2D" parent="Standard/Dirt/SouthMachine"]
+position = Vector2(-8, -439)
+texture_filter = 4
+texture = ExtResource("smelter_interior")
+centered = false
+
+[node name="foreground" type="Sprite2D" parent="Standard/Dirt/SouthMachine"]
+position = Vector2(-72, -460)
+texture_filter = 4
+texture = ExtResource("smelter_foreground")
+centered = false
+
+[node name="South" type="Node2D" parent="Standard/Dirt"]
+position = Vector2(176, 528)
+rotation = 1.5707963267948966
+
+[node name="AdapterFootprint" type="Line2D" parent="Standard/Dirt/South"]
+position = Vector2(-16, -16)
+z_index = 1
+points = PackedVector2Array(0, 0, 32, 0, 32, 32, 0, 32, 0, 0)
+width = 1.0
+default_color = Color(0.3, 0.9, 0.9, 0.45)
+
+[node name="Assembly" type="Node2D" parent="Standard/Dirt/South"]
+z_index = 4
+
+[node name="Housing1" type="Sprite2D" parent="Standard/Dirt/South/Assembly"]
+position = Vector2(0, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Coupling" type="Sprite2D" parent="Standard/Dirt/South/Assembly"]
+position = Vector2(0, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("coupling")
+z_index = 1
+
+[node name="Continuation" type="Node2D" parent="Standard/Dirt/South"]
+z_index = 4
+
+[node name="Cell2_phase01" type="Sprite2D" parent="Standard/Dirt/South/Continuation"]
+position = Vector2(32, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="Cell3_phase02" type="Sprite2D" parent="Standard/Dirt/South/Continuation"]
+position = Vector2(64, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+
+[node name="NorthCaption" type="Label" parent="Standard/Dirt"]
+z_index = 10
+offset_left = 344.0
+offset_top = 350.0
+offset_right = 616.0
+offset_bottom = 374.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 14
+text = "Extractor / North / 1 cell"
+
+[node name="NorthMachineFootprint" type="Line2D" parent="Standard/Dirt"]
+position = Vector2(416, 512)
+z_index = 1
+points = PackedVector2Array(0, 0, 128, 0, 128, 128, 0, 128, 0, 0)
+width = 1.0
+default_color = Color(0.8, 0.89, 0.91, 0.35)
+
+[node name="NorthMachine" type="Node2D" parent="Standard/Dirt"]
+position = Vector2(480, 640)
+scale = Vector2(0.11387900355871886, 0.11387900355871886)
+z_index = 3
+
+[node name="body" type="Sprite2D" parent="Standard/Dirt/NorthMachine"]
+position = Vector2(-566, -1102)
+texture_filter = 4
+texture = ExtResource("extractor_body")
+centered = false
+
+[node name="barrel" type="Sprite2D" parent="Standard/Dirt/NorthMachine"]
+position = Vector2(-312, -865)
+texture_filter = 4
+texture = ExtResource("extractor_barrel")
+centered = false
+
+[node name="foreground" type="Sprite2D" parent="Standard/Dirt/NorthMachine"]
+position = Vector2(-336, -873)
+texture_filter = 4
+texture = ExtResource("extractor_foreground")
+centered = false
+
+[node name="North" type="Node2D" parent="Standard/Dirt"]
+position = Vector2(496, 496)
+rotation = 4.71238898038469
+
+[node name="AdapterFootprint" type="Line2D" parent="Standard/Dirt/North"]
+position = Vector2(-16, -16)
+z_index = 1
+points = PackedVector2Array(0, 0, 32, 0, 32, 32, 0, 32, 0, 0)
+width = 1.0
+default_color = Color(0.3, 0.9, 0.9, 0.45)
+
+[node name="Assembly" type="Node2D" parent="Standard/Dirt/North"]
+z_index = 4
+
+[node name="Housing1" type="Sprite2D" parent="Standard/Dirt/North/Assembly"]
+position = Vector2(0, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Coupling" type="Sprite2D" parent="Standard/Dirt/North/Assembly"]
+position = Vector2(0, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("coupling")
+z_index = 1
+
+[node name="Continuation" type="Node2D" parent="Standard/Dirt/North"]
+z_index = 4
+
+[node name="Cell2_phase01" type="Sprite2D" parent="Standard/Dirt/North/Continuation"]
+position = Vector2(32, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="Cell3_phase02" type="Sprite2D" parent="Standard/Dirt/North/Continuation"]
+position = Vector2(64, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+
+[node name="Notes" type="Label" parent="Standard/Dirt"]
+z_index = 10
+offset_left = 24.0
+offset_top = 650.0
+offset_right = 614.0
+offset_bottom = 674.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 12
+text = "Faint outlines: 4 x 4 machine footprint / adapter footprint. Geometry is provisional."
+
+[node name="Grass" type="Node2D" parent="Standard"]
+position = Vector2(640, 0)
+
+[node name="Terrain" type="Sprite2D" parent="Standard/Grass"]
+position = Vector2(0, 80)
+scale = Vector2(1.8146376041112882, 1.8146376041112882)
+texture_filter = 2
+texture = ExtResource("green")
+centered = false
+region_enabled = true
+region_rect = Rect2(416, 416, 352.6875, 330.64453125)
+region_filter_clip_enabled = true
+
+[node name="Title" type="Label" parent="Standard/Grass"]
+z_index = 10
+offset_left = 24.0
+offset_top = 84.0
+offset_right = 614.0
+offset_bottom = 108.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 17
+text = "1 / STANDARD / ONE CELL / GRASS"
+
+[node name="Subtitle" type="Label" parent="Standard/Grass"]
+z_index = 10
+offset_left = 24.0
+offset_top = 111.0
+offset_right = 614.0
+offset_bottom = 135.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 13
+text = "Full-width straight housing + shared coupling; samples are provisional."
+
+[node name="EastCaption" type="Label" parent="Standard/Grass"]
+z_index = 10
+offset_left = 24.0
+offset_top = 145.0
+offset_right = 296.0
+offset_bottom = 169.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 14
+text = "Smelter / East / 1 cell"
+
+[node name="EastMachineFootprint" type="Line2D" parent="Standard/Grass"]
+position = Vector2(32, 192)
+z_index = 1
+points = PackedVector2Array(0, 0, 128, 0, 128, 128, 0, 128, 0, 0)
+width = 1.0
+default_color = Color(0.8, 0.89, 0.91, 0.35)
+
+[node name="EastMachine" type="Node2D" parent="Standard/Grass"]
+position = Vector2(96, 320)
+scale = Vector2(0.13793103448275862, 0.13793103448275862)
+z_index = 3
+
+[node name="body" type="Sprite2D" parent="Standard/Grass/EastMachine"]
+position = Vector2(-571, -999)
+texture_filter = 4
+texture = ExtResource("smelter_body")
+centered = false
+
+[node name="interior" type="Sprite2D" parent="Standard/Grass/EastMachine"]
+position = Vector2(-8, -439)
+texture_filter = 4
+texture = ExtResource("smelter_interior")
+centered = false
+
+[node name="foreground" type="Sprite2D" parent="Standard/Grass/EastMachine"]
+position = Vector2(-72, -460)
+texture_filter = 4
+texture = ExtResource("smelter_foreground")
+centered = false
+
+[node name="East" type="Node2D" parent="Standard/Grass"]
+position = Vector2(176, 272)
+rotation = 0.0
+
+[node name="AdapterFootprint" type="Line2D" parent="Standard/Grass/East"]
+position = Vector2(-16, -16)
+z_index = 1
+points = PackedVector2Array(0, 0, 32, 0, 32, 32, 0, 32, 0, 0)
+width = 1.0
+default_color = Color(0.3, 0.9, 0.9, 0.45)
+
+[node name="Assembly" type="Node2D" parent="Standard/Grass/East"]
+z_index = 4
+
+[node name="Housing1" type="Sprite2D" parent="Standard/Grass/East/Assembly"]
+position = Vector2(0, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Coupling" type="Sprite2D" parent="Standard/Grass/East/Assembly"]
+position = Vector2(0, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("coupling")
+z_index = 1
+
+[node name="Continuation" type="Node2D" parent="Standard/Grass/East"]
+z_index = 4
+
+[node name="Cell2_phase01" type="Sprite2D" parent="Standard/Grass/East/Continuation"]
+position = Vector2(32, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="Cell3_phase02" type="Sprite2D" parent="Standard/Grass/East/Continuation"]
+position = Vector2(64, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+
+[node name="WestCaption" type="Label" parent="Standard/Grass"]
+z_index = 10
+offset_left = 344.0
+offset_top = 145.0
+offset_right = 616.0
+offset_bottom = 169.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 14
+text = "Extractor / West / 1 cell"
+
+[node name="WestMachineFootprint" type="Line2D" parent="Standard/Grass"]
+position = Vector2(480, 192)
+z_index = 1
+points = PackedVector2Array(0, 0, 128, 0, 128, 128, 0, 128, 0, 0)
+width = 1.0
+default_color = Color(0.8, 0.89, 0.91, 0.35)
+
+[node name="WestMachine" type="Node2D" parent="Standard/Grass"]
+position = Vector2(544, 320)
+scale = Vector2(0.11387900355871886, 0.11387900355871886)
+z_index = 3
+
+[node name="body" type="Sprite2D" parent="Standard/Grass/WestMachine"]
+position = Vector2(-566, -1102)
+texture_filter = 4
+texture = ExtResource("extractor_body")
+centered = false
+
+[node name="barrel" type="Sprite2D" parent="Standard/Grass/WestMachine"]
+position = Vector2(-312, -865)
+texture_filter = 4
+texture = ExtResource("extractor_barrel")
+centered = false
+
+[node name="foreground" type="Sprite2D" parent="Standard/Grass/WestMachine"]
+position = Vector2(-336, -873)
+texture_filter = 4
+texture = ExtResource("extractor_foreground")
+centered = false
+
+[node name="West" type="Node2D" parent="Standard/Grass"]
+position = Vector2(464, 272)
+rotation = 3.141592653589793
+
+[node name="AdapterFootprint" type="Line2D" parent="Standard/Grass/West"]
+position = Vector2(-16, -16)
+z_index = 1
+points = PackedVector2Array(0, 0, 32, 0, 32, 32, 0, 32, 0, 0)
+width = 1.0
+default_color = Color(0.3, 0.9, 0.9, 0.45)
+
+[node name="Assembly" type="Node2D" parent="Standard/Grass/West"]
+z_index = 4
+
+[node name="Housing1" type="Sprite2D" parent="Standard/Grass/West/Assembly"]
+position = Vector2(0, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Coupling" type="Sprite2D" parent="Standard/Grass/West/Assembly"]
+position = Vector2(0, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("coupling")
+z_index = 1
+
+[node name="Continuation" type="Node2D" parent="Standard/Grass/West"]
+z_index = 4
+
+[node name="Cell2_phase01" type="Sprite2D" parent="Standard/Grass/West/Continuation"]
+position = Vector2(32, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="Cell3_phase02" type="Sprite2D" parent="Standard/Grass/West/Continuation"]
+position = Vector2(64, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+
+[node name="SouthCaption" type="Label" parent="Standard/Grass"]
+z_index = 10
+offset_left = 24.0
+offset_top = 350.0
+offset_right = 296.0
+offset_bottom = 374.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 14
+text = "Smelter / South / 1 cell"
+
+[node name="SouthMachineFootprint" type="Line2D" parent="Standard/Grass"]
+position = Vector2(96, 384)
+z_index = 1
+points = PackedVector2Array(0, 0, 128, 0, 128, 128, 0, 128, 0, 0)
+width = 1.0
+default_color = Color(0.8, 0.89, 0.91, 0.35)
+
+[node name="SouthMachine" type="Node2D" parent="Standard/Grass"]
+position = Vector2(160, 512)
+scale = Vector2(0.13793103448275862, 0.13793103448275862)
+z_index = 3
+
+[node name="body" type="Sprite2D" parent="Standard/Grass/SouthMachine"]
+position = Vector2(-571, -999)
+texture_filter = 4
+texture = ExtResource("smelter_body")
+centered = false
+
+[node name="interior" type="Sprite2D" parent="Standard/Grass/SouthMachine"]
+position = Vector2(-8, -439)
+texture_filter = 4
+texture = ExtResource("smelter_interior")
+centered = false
+
+[node name="foreground" type="Sprite2D" parent="Standard/Grass/SouthMachine"]
+position = Vector2(-72, -460)
+texture_filter = 4
+texture = ExtResource("smelter_foreground")
+centered = false
+
+[node name="South" type="Node2D" parent="Standard/Grass"]
+position = Vector2(176, 528)
+rotation = 1.5707963267948966
+
+[node name="AdapterFootprint" type="Line2D" parent="Standard/Grass/South"]
+position = Vector2(-16, -16)
+z_index = 1
+points = PackedVector2Array(0, 0, 32, 0, 32, 32, 0, 32, 0, 0)
+width = 1.0
+default_color = Color(0.3, 0.9, 0.9, 0.45)
+
+[node name="Assembly" type="Node2D" parent="Standard/Grass/South"]
+z_index = 4
+
+[node name="Housing1" type="Sprite2D" parent="Standard/Grass/South/Assembly"]
+position = Vector2(0, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Coupling" type="Sprite2D" parent="Standard/Grass/South/Assembly"]
+position = Vector2(0, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("coupling")
+z_index = 1
+
+[node name="Continuation" type="Node2D" parent="Standard/Grass/South"]
+z_index = 4
+
+[node name="Cell2_phase01" type="Sprite2D" parent="Standard/Grass/South/Continuation"]
+position = Vector2(32, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="Cell3_phase02" type="Sprite2D" parent="Standard/Grass/South/Continuation"]
+position = Vector2(64, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+
+[node name="NorthCaption" type="Label" parent="Standard/Grass"]
+z_index = 10
+offset_left = 344.0
+offset_top = 350.0
+offset_right = 616.0
+offset_bottom = 374.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 14
+text = "Extractor / North / 1 cell"
+
+[node name="NorthMachineFootprint" type="Line2D" parent="Standard/Grass"]
+position = Vector2(416, 512)
+z_index = 1
+points = PackedVector2Array(0, 0, 128, 0, 128, 128, 0, 128, 0, 0)
+width = 1.0
+default_color = Color(0.8, 0.89, 0.91, 0.35)
+
+[node name="NorthMachine" type="Node2D" parent="Standard/Grass"]
+position = Vector2(480, 640)
+scale = Vector2(0.11387900355871886, 0.11387900355871886)
+z_index = 3
+
+[node name="body" type="Sprite2D" parent="Standard/Grass/NorthMachine"]
+position = Vector2(-566, -1102)
+texture_filter = 4
+texture = ExtResource("extractor_body")
+centered = false
+
+[node name="barrel" type="Sprite2D" parent="Standard/Grass/NorthMachine"]
+position = Vector2(-312, -865)
+texture_filter = 4
+texture = ExtResource("extractor_barrel")
+centered = false
+
+[node name="foreground" type="Sprite2D" parent="Standard/Grass/NorthMachine"]
+position = Vector2(-336, -873)
+texture_filter = 4
+texture = ExtResource("extractor_foreground")
+centered = false
+
+[node name="North" type="Node2D" parent="Standard/Grass"]
+position = Vector2(496, 496)
+rotation = 4.71238898038469
+
+[node name="AdapterFootprint" type="Line2D" parent="Standard/Grass/North"]
+position = Vector2(-16, -16)
+z_index = 1
+points = PackedVector2Array(0, 0, 32, 0, 32, 32, 0, 32, 0, 0)
+width = 1.0
+default_color = Color(0.3, 0.9, 0.9, 0.45)
+
+[node name="Assembly" type="Node2D" parent="Standard/Grass/North"]
+z_index = 4
+
+[node name="Housing1" type="Sprite2D" parent="Standard/Grass/North/Assembly"]
+position = Vector2(0, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Coupling" type="Sprite2D" parent="Standard/Grass/North/Assembly"]
+position = Vector2(0, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("coupling")
+z_index = 1
+
+[node name="Continuation" type="Node2D" parent="Standard/Grass/North"]
+z_index = 4
+
+[node name="Cell2_phase01" type="Sprite2D" parent="Standard/Grass/North/Continuation"]
+position = Vector2(32, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="Cell3_phase02" type="Sprite2D" parent="Standard/Grass/North/Continuation"]
+position = Vector2(64, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+
+[node name="Notes" type="Label" parent="Standard/Grass"]
+z_index = 10
+offset_left = 24.0
+offset_top = 650.0
+offset_right = 614.0
+offset_bottom = 674.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 12
+text = "Faint outlines: 4 x 4 machine footprint / adapter footprint. Geometry is provisional."
+
+[node name="Extended" type="Node2D" parent="."]
+position = Vector2(0, 768)
+
+[node name="Dirt" type="Node2D" parent="Extended"]
+position = Vector2(0, 0)
+
+[node name="Terrain" type="Sprite2D" parent="Extended/Dirt"]
+position = Vector2(0, 80)
+scale = Vector2(1.8146376041112882, 1.8146376041112882)
+texture_filter = 2
+texture = ExtResource("earth")
+centered = false
+region_enabled = true
+region_rect = Rect2(416, 416, 352.6875, 330.64453125)
+region_filter_clip_enabled = true
+
+[node name="Title" type="Label" parent="Extended/Dirt"]
+z_index = 10
+offset_left = 24.0
+offset_top = 84.0
+offset_right = 614.0
+offset_bottom = 108.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 17
+text = "2 / EXTENDED / TWO CELLS / DIRT"
+
+[node name="Subtitle" type="Label" parent="Extended/Dirt"]
+z_index = 10
+offset_left = 24.0
+offset_top = 111.0
+offset_right = 614.0
+offset_bottom = 135.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 13
+text = "Two approved straight cells + the same coupling; no elongated texture."
+
+[node name="EastCaption" type="Label" parent="Extended/Dirt"]
+z_index = 10
+offset_left = 24.0
+offset_top = 145.0
+offset_right = 296.0
+offset_bottom = 169.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 14
+text = "Smelter / East / 2 cells"
+
+[node name="EastMachineFootprint" type="Line2D" parent="Extended/Dirt"]
+position = Vector2(32, 192)
+z_index = 1
+points = PackedVector2Array(0, 0, 128, 0, 128, 128, 0, 128, 0, 0)
+width = 1.0
+default_color = Color(0.8, 0.89, 0.91, 0.35)
+
+[node name="EastMachine" type="Node2D" parent="Extended/Dirt"]
+position = Vector2(96, 320)
+scale = Vector2(0.13793103448275862, 0.13793103448275862)
+z_index = 3
+
+[node name="body" type="Sprite2D" parent="Extended/Dirt/EastMachine"]
+position = Vector2(-571, -999)
+texture_filter = 4
+texture = ExtResource("smelter_body")
+centered = false
+
+[node name="interior" type="Sprite2D" parent="Extended/Dirt/EastMachine"]
+position = Vector2(-8, -439)
+texture_filter = 4
+texture = ExtResource("smelter_interior")
+centered = false
+
+[node name="foreground" type="Sprite2D" parent="Extended/Dirt/EastMachine"]
+position = Vector2(-72, -460)
+texture_filter = 4
+texture = ExtResource("smelter_foreground")
+centered = false
+
+[node name="East" type="Node2D" parent="Extended/Dirt"]
+position = Vector2(176, 272)
+rotation = 0.0
+
+[node name="AdapterFootprint" type="Line2D" parent="Extended/Dirt/East"]
+position = Vector2(-16, -16)
+z_index = 1
+points = PackedVector2Array(0, 0, 64, 0, 64, 32, 0, 32, 0, 0)
+width = 1.0
+default_color = Color(0.3, 0.9, 0.9, 0.45)
+
+[node name="Assembly" type="Node2D" parent="Extended/Dirt/East"]
+z_index = 4
+
+[node name="Housing1" type="Sprite2D" parent="Extended/Dirt/East/Assembly"]
+position = Vector2(0, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Housing2" type="Sprite2D" parent="Extended/Dirt/East/Assembly"]
+position = Vector2(32, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="Coupling" type="Sprite2D" parent="Extended/Dirt/East/Assembly"]
+position = Vector2(0, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("coupling")
+z_index = 1
+
+[node name="Continuation" type="Node2D" parent="Extended/Dirt/East"]
+z_index = 4
+
+[node name="Cell3_phase02" type="Sprite2D" parent="Extended/Dirt/East/Continuation"]
+position = Vector2(64, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+
+[node name="Cell4_phase03" type="Sprite2D" parent="Extended/Dirt/East/Continuation"]
+position = Vector2(96, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_03")
+
+[node name="WestCaption" type="Label" parent="Extended/Dirt"]
+z_index = 10
+offset_left = 344.0
+offset_top = 145.0
+offset_right = 616.0
+offset_bottom = 169.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 14
+text = "Extractor / West / 2 cells"
+
+[node name="WestMachineFootprint" type="Line2D" parent="Extended/Dirt"]
+position = Vector2(480, 192)
+z_index = 1
+points = PackedVector2Array(0, 0, 128, 0, 128, 128, 0, 128, 0, 0)
+width = 1.0
+default_color = Color(0.8, 0.89, 0.91, 0.35)
+
+[node name="WestMachine" type="Node2D" parent="Extended/Dirt"]
+position = Vector2(544, 320)
+scale = Vector2(0.11387900355871886, 0.11387900355871886)
+z_index = 3
+
+[node name="body" type="Sprite2D" parent="Extended/Dirt/WestMachine"]
+position = Vector2(-566, -1102)
+texture_filter = 4
+texture = ExtResource("extractor_body")
+centered = false
+
+[node name="barrel" type="Sprite2D" parent="Extended/Dirt/WestMachine"]
+position = Vector2(-312, -865)
+texture_filter = 4
+texture = ExtResource("extractor_barrel")
+centered = false
+
+[node name="foreground" type="Sprite2D" parent="Extended/Dirt/WestMachine"]
+position = Vector2(-336, -873)
+texture_filter = 4
+texture = ExtResource("extractor_foreground")
+centered = false
+
+[node name="West" type="Node2D" parent="Extended/Dirt"]
+position = Vector2(464, 272)
+rotation = 3.141592653589793
+
+[node name="AdapterFootprint" type="Line2D" parent="Extended/Dirt/West"]
+position = Vector2(-16, -16)
+z_index = 1
+points = PackedVector2Array(0, 0, 64, 0, 64, 32, 0, 32, 0, 0)
+width = 1.0
+default_color = Color(0.3, 0.9, 0.9, 0.45)
+
+[node name="Assembly" type="Node2D" parent="Extended/Dirt/West"]
+z_index = 4
+
+[node name="Housing1" type="Sprite2D" parent="Extended/Dirt/West/Assembly"]
+position = Vector2(0, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Housing2" type="Sprite2D" parent="Extended/Dirt/West/Assembly"]
+position = Vector2(32, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="Coupling" type="Sprite2D" parent="Extended/Dirt/West/Assembly"]
+position = Vector2(0, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("coupling")
+z_index = 1
+
+[node name="Continuation" type="Node2D" parent="Extended/Dirt/West"]
+z_index = 4
+
+[node name="Cell3_phase02" type="Sprite2D" parent="Extended/Dirt/West/Continuation"]
+position = Vector2(64, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+
+[node name="Cell4_phase03" type="Sprite2D" parent="Extended/Dirt/West/Continuation"]
+position = Vector2(96, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_03")
+
+[node name="SouthCaption" type="Label" parent="Extended/Dirt"]
+z_index = 10
+offset_left = 24.0
+offset_top = 350.0
+offset_right = 296.0
+offset_bottom = 374.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 14
+text = "Smelter / South / 2 cells"
+
+[node name="SouthMachineFootprint" type="Line2D" parent="Extended/Dirt"]
+position = Vector2(96, 384)
+z_index = 1
+points = PackedVector2Array(0, 0, 128, 0, 128, 128, 0, 128, 0, 0)
+width = 1.0
+default_color = Color(0.8, 0.89, 0.91, 0.35)
+
+[node name="SouthMachine" type="Node2D" parent="Extended/Dirt"]
+position = Vector2(160, 512)
+scale = Vector2(0.13793103448275862, 0.13793103448275862)
+z_index = 3
+
+[node name="body" type="Sprite2D" parent="Extended/Dirt/SouthMachine"]
+position = Vector2(-571, -999)
+texture_filter = 4
+texture = ExtResource("smelter_body")
+centered = false
+
+[node name="interior" type="Sprite2D" parent="Extended/Dirt/SouthMachine"]
+position = Vector2(-8, -439)
+texture_filter = 4
+texture = ExtResource("smelter_interior")
+centered = false
+
+[node name="foreground" type="Sprite2D" parent="Extended/Dirt/SouthMachine"]
+position = Vector2(-72, -460)
+texture_filter = 4
+texture = ExtResource("smelter_foreground")
+centered = false
+
+[node name="South" type="Node2D" parent="Extended/Dirt"]
+position = Vector2(176, 528)
+rotation = 1.5707963267948966
+
+[node name="AdapterFootprint" type="Line2D" parent="Extended/Dirt/South"]
+position = Vector2(-16, -16)
+z_index = 1
+points = PackedVector2Array(0, 0, 64, 0, 64, 32, 0, 32, 0, 0)
+width = 1.0
+default_color = Color(0.3, 0.9, 0.9, 0.45)
+
+[node name="Assembly" type="Node2D" parent="Extended/Dirt/South"]
+z_index = 4
+
+[node name="Housing1" type="Sprite2D" parent="Extended/Dirt/South/Assembly"]
+position = Vector2(0, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Housing2" type="Sprite2D" parent="Extended/Dirt/South/Assembly"]
+position = Vector2(32, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="Coupling" type="Sprite2D" parent="Extended/Dirt/South/Assembly"]
+position = Vector2(0, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("coupling")
+z_index = 1
+
+[node name="Continuation" type="Node2D" parent="Extended/Dirt/South"]
+z_index = 4
+
+[node name="Cell3_phase02" type="Sprite2D" parent="Extended/Dirt/South/Continuation"]
+position = Vector2(64, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+
+[node name="Cell4_phase03" type="Sprite2D" parent="Extended/Dirt/South/Continuation"]
+position = Vector2(96, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_03")
+
+[node name="NorthCaption" type="Label" parent="Extended/Dirt"]
+z_index = 10
+offset_left = 344.0
+offset_top = 350.0
+offset_right = 616.0
+offset_bottom = 374.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 14
+text = "Extractor / North / 2 cells"
+
+[node name="NorthMachineFootprint" type="Line2D" parent="Extended/Dirt"]
+position = Vector2(416, 512)
+z_index = 1
+points = PackedVector2Array(0, 0, 128, 0, 128, 128, 0, 128, 0, 0)
+width = 1.0
+default_color = Color(0.8, 0.89, 0.91, 0.35)
+
+[node name="NorthMachine" type="Node2D" parent="Extended/Dirt"]
+position = Vector2(480, 640)
+scale = Vector2(0.11387900355871886, 0.11387900355871886)
+z_index = 3
+
+[node name="body" type="Sprite2D" parent="Extended/Dirt/NorthMachine"]
+position = Vector2(-566, -1102)
+texture_filter = 4
+texture = ExtResource("extractor_body")
+centered = false
+
+[node name="barrel" type="Sprite2D" parent="Extended/Dirt/NorthMachine"]
+position = Vector2(-312, -865)
+texture_filter = 4
+texture = ExtResource("extractor_barrel")
+centered = false
+
+[node name="foreground" type="Sprite2D" parent="Extended/Dirt/NorthMachine"]
+position = Vector2(-336, -873)
+texture_filter = 4
+texture = ExtResource("extractor_foreground")
+centered = false
+
+[node name="North" type="Node2D" parent="Extended/Dirt"]
+position = Vector2(496, 496)
+rotation = 4.71238898038469
+
+[node name="AdapterFootprint" type="Line2D" parent="Extended/Dirt/North"]
+position = Vector2(-16, -16)
+z_index = 1
+points = PackedVector2Array(0, 0, 64, 0, 64, 32, 0, 32, 0, 0)
+width = 1.0
+default_color = Color(0.3, 0.9, 0.9, 0.45)
+
+[node name="Assembly" type="Node2D" parent="Extended/Dirt/North"]
+z_index = 4
+
+[node name="Housing1" type="Sprite2D" parent="Extended/Dirt/North/Assembly"]
+position = Vector2(0, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Housing2" type="Sprite2D" parent="Extended/Dirt/North/Assembly"]
+position = Vector2(32, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="Coupling" type="Sprite2D" parent="Extended/Dirt/North/Assembly"]
+position = Vector2(0, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("coupling")
+z_index = 1
+
+[node name="Continuation" type="Node2D" parent="Extended/Dirt/North"]
+z_index = 4
+
+[node name="Cell3_phase02" type="Sprite2D" parent="Extended/Dirt/North/Continuation"]
+position = Vector2(64, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+
+[node name="Cell4_phase03" type="Sprite2D" parent="Extended/Dirt/North/Continuation"]
+position = Vector2(96, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_03")
+
+[node name="Notes" type="Label" parent="Extended/Dirt"]
+z_index = 10
+offset_left = 24.0
+offset_top = 650.0
+offset_right = 614.0
+offset_bottom = 674.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 12
+text = "Faint outlines: 4 x 4 machine footprint / adapter footprint. Geometry is provisional."
+
+[node name="Grass" type="Node2D" parent="Extended"]
+position = Vector2(640, 0)
+
+[node name="Terrain" type="Sprite2D" parent="Extended/Grass"]
+position = Vector2(0, 80)
+scale = Vector2(1.8146376041112882, 1.8146376041112882)
+texture_filter = 2
+texture = ExtResource("green")
+centered = false
+region_enabled = true
+region_rect = Rect2(416, 416, 352.6875, 330.64453125)
+region_filter_clip_enabled = true
+
+[node name="Title" type="Label" parent="Extended/Grass"]
+z_index = 10
+offset_left = 24.0
+offset_top = 84.0
+offset_right = 614.0
+offset_bottom = 108.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 17
+text = "2 / EXTENDED / TWO CELLS / GRASS"
+
+[node name="Subtitle" type="Label" parent="Extended/Grass"]
+z_index = 10
+offset_left = 24.0
+offset_top = 111.0
+offset_right = 614.0
+offset_bottom = 135.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 13
+text = "Two approved straight cells + the same coupling; no elongated texture."
+
+[node name="EastCaption" type="Label" parent="Extended/Grass"]
+z_index = 10
+offset_left = 24.0
+offset_top = 145.0
+offset_right = 296.0
+offset_bottom = 169.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 14
+text = "Smelter / East / 2 cells"
+
+[node name="EastMachineFootprint" type="Line2D" parent="Extended/Grass"]
+position = Vector2(32, 192)
+z_index = 1
+points = PackedVector2Array(0, 0, 128, 0, 128, 128, 0, 128, 0, 0)
+width = 1.0
+default_color = Color(0.8, 0.89, 0.91, 0.35)
+
+[node name="EastMachine" type="Node2D" parent="Extended/Grass"]
+position = Vector2(96, 320)
+scale = Vector2(0.13793103448275862, 0.13793103448275862)
+z_index = 3
+
+[node name="body" type="Sprite2D" parent="Extended/Grass/EastMachine"]
+position = Vector2(-571, -999)
+texture_filter = 4
+texture = ExtResource("smelter_body")
+centered = false
+
+[node name="interior" type="Sprite2D" parent="Extended/Grass/EastMachine"]
+position = Vector2(-8, -439)
+texture_filter = 4
+texture = ExtResource("smelter_interior")
+centered = false
+
+[node name="foreground" type="Sprite2D" parent="Extended/Grass/EastMachine"]
+position = Vector2(-72, -460)
+texture_filter = 4
+texture = ExtResource("smelter_foreground")
+centered = false
+
+[node name="East" type="Node2D" parent="Extended/Grass"]
+position = Vector2(176, 272)
+rotation = 0.0
+
+[node name="AdapterFootprint" type="Line2D" parent="Extended/Grass/East"]
+position = Vector2(-16, -16)
+z_index = 1
+points = PackedVector2Array(0, 0, 64, 0, 64, 32, 0, 32, 0, 0)
+width = 1.0
+default_color = Color(0.3, 0.9, 0.9, 0.45)
+
+[node name="Assembly" type="Node2D" parent="Extended/Grass/East"]
+z_index = 4
+
+[node name="Housing1" type="Sprite2D" parent="Extended/Grass/East/Assembly"]
+position = Vector2(0, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Housing2" type="Sprite2D" parent="Extended/Grass/East/Assembly"]
+position = Vector2(32, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="Coupling" type="Sprite2D" parent="Extended/Grass/East/Assembly"]
+position = Vector2(0, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("coupling")
+z_index = 1
+
+[node name="Continuation" type="Node2D" parent="Extended/Grass/East"]
+z_index = 4
+
+[node name="Cell3_phase02" type="Sprite2D" parent="Extended/Grass/East/Continuation"]
+position = Vector2(64, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+
+[node name="Cell4_phase03" type="Sprite2D" parent="Extended/Grass/East/Continuation"]
+position = Vector2(96, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_03")
+
+[node name="WestCaption" type="Label" parent="Extended/Grass"]
+z_index = 10
+offset_left = 344.0
+offset_top = 145.0
+offset_right = 616.0
+offset_bottom = 169.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 14
+text = "Extractor / West / 2 cells"
+
+[node name="WestMachineFootprint" type="Line2D" parent="Extended/Grass"]
+position = Vector2(480, 192)
+z_index = 1
+points = PackedVector2Array(0, 0, 128, 0, 128, 128, 0, 128, 0, 0)
+width = 1.0
+default_color = Color(0.8, 0.89, 0.91, 0.35)
+
+[node name="WestMachine" type="Node2D" parent="Extended/Grass"]
+position = Vector2(544, 320)
+scale = Vector2(0.11387900355871886, 0.11387900355871886)
+z_index = 3
+
+[node name="body" type="Sprite2D" parent="Extended/Grass/WestMachine"]
+position = Vector2(-566, -1102)
+texture_filter = 4
+texture = ExtResource("extractor_body")
+centered = false
+
+[node name="barrel" type="Sprite2D" parent="Extended/Grass/WestMachine"]
+position = Vector2(-312, -865)
+texture_filter = 4
+texture = ExtResource("extractor_barrel")
+centered = false
+
+[node name="foreground" type="Sprite2D" parent="Extended/Grass/WestMachine"]
+position = Vector2(-336, -873)
+texture_filter = 4
+texture = ExtResource("extractor_foreground")
+centered = false
+
+[node name="West" type="Node2D" parent="Extended/Grass"]
+position = Vector2(464, 272)
+rotation = 3.141592653589793
+
+[node name="AdapterFootprint" type="Line2D" parent="Extended/Grass/West"]
+position = Vector2(-16, -16)
+z_index = 1
+points = PackedVector2Array(0, 0, 64, 0, 64, 32, 0, 32, 0, 0)
+width = 1.0
+default_color = Color(0.3, 0.9, 0.9, 0.45)
+
+[node name="Assembly" type="Node2D" parent="Extended/Grass/West"]
+z_index = 4
+
+[node name="Housing1" type="Sprite2D" parent="Extended/Grass/West/Assembly"]
+position = Vector2(0, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Housing2" type="Sprite2D" parent="Extended/Grass/West/Assembly"]
+position = Vector2(32, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="Coupling" type="Sprite2D" parent="Extended/Grass/West/Assembly"]
+position = Vector2(0, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("coupling")
+z_index = 1
+
+[node name="Continuation" type="Node2D" parent="Extended/Grass/West"]
+z_index = 4
+
+[node name="Cell3_phase02" type="Sprite2D" parent="Extended/Grass/West/Continuation"]
+position = Vector2(64, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+
+[node name="Cell4_phase03" type="Sprite2D" parent="Extended/Grass/West/Continuation"]
+position = Vector2(96, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_03")
+
+[node name="SouthCaption" type="Label" parent="Extended/Grass"]
+z_index = 10
+offset_left = 24.0
+offset_top = 350.0
+offset_right = 296.0
+offset_bottom = 374.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 14
+text = "Smelter / South / 2 cells"
+
+[node name="SouthMachineFootprint" type="Line2D" parent="Extended/Grass"]
+position = Vector2(96, 384)
+z_index = 1
+points = PackedVector2Array(0, 0, 128, 0, 128, 128, 0, 128, 0, 0)
+width = 1.0
+default_color = Color(0.8, 0.89, 0.91, 0.35)
+
+[node name="SouthMachine" type="Node2D" parent="Extended/Grass"]
+position = Vector2(160, 512)
+scale = Vector2(0.13793103448275862, 0.13793103448275862)
+z_index = 3
+
+[node name="body" type="Sprite2D" parent="Extended/Grass/SouthMachine"]
+position = Vector2(-571, -999)
+texture_filter = 4
+texture = ExtResource("smelter_body")
+centered = false
+
+[node name="interior" type="Sprite2D" parent="Extended/Grass/SouthMachine"]
+position = Vector2(-8, -439)
+texture_filter = 4
+texture = ExtResource("smelter_interior")
+centered = false
+
+[node name="foreground" type="Sprite2D" parent="Extended/Grass/SouthMachine"]
+position = Vector2(-72, -460)
+texture_filter = 4
+texture = ExtResource("smelter_foreground")
+centered = false
+
+[node name="South" type="Node2D" parent="Extended/Grass"]
+position = Vector2(176, 528)
+rotation = 1.5707963267948966
+
+[node name="AdapterFootprint" type="Line2D" parent="Extended/Grass/South"]
+position = Vector2(-16, -16)
+z_index = 1
+points = PackedVector2Array(0, 0, 64, 0, 64, 32, 0, 32, 0, 0)
+width = 1.0
+default_color = Color(0.3, 0.9, 0.9, 0.45)
+
+[node name="Assembly" type="Node2D" parent="Extended/Grass/South"]
+z_index = 4
+
+[node name="Housing1" type="Sprite2D" parent="Extended/Grass/South/Assembly"]
+position = Vector2(0, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Housing2" type="Sprite2D" parent="Extended/Grass/South/Assembly"]
+position = Vector2(32, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="Coupling" type="Sprite2D" parent="Extended/Grass/South/Assembly"]
+position = Vector2(0, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("coupling")
+z_index = 1
+
+[node name="Continuation" type="Node2D" parent="Extended/Grass/South"]
+z_index = 4
+
+[node name="Cell3_phase02" type="Sprite2D" parent="Extended/Grass/South/Continuation"]
+position = Vector2(64, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+
+[node name="Cell4_phase03" type="Sprite2D" parent="Extended/Grass/South/Continuation"]
+position = Vector2(96, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_03")
+
+[node name="NorthCaption" type="Label" parent="Extended/Grass"]
+z_index = 10
+offset_left = 344.0
+offset_top = 350.0
+offset_right = 616.0
+offset_bottom = 374.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 14
+text = "Extractor / North / 2 cells"
+
+[node name="NorthMachineFootprint" type="Line2D" parent="Extended/Grass"]
+position = Vector2(416, 512)
+z_index = 1
+points = PackedVector2Array(0, 0, 128, 0, 128, 128, 0, 128, 0, 0)
+width = 1.0
+default_color = Color(0.8, 0.89, 0.91, 0.35)
+
+[node name="NorthMachine" type="Node2D" parent="Extended/Grass"]
+position = Vector2(480, 640)
+scale = Vector2(0.11387900355871886, 0.11387900355871886)
+z_index = 3
+
+[node name="body" type="Sprite2D" parent="Extended/Grass/NorthMachine"]
+position = Vector2(-566, -1102)
+texture_filter = 4
+texture = ExtResource("extractor_body")
+centered = false
+
+[node name="barrel" type="Sprite2D" parent="Extended/Grass/NorthMachine"]
+position = Vector2(-312, -865)
+texture_filter = 4
+texture = ExtResource("extractor_barrel")
+centered = false
+
+[node name="foreground" type="Sprite2D" parent="Extended/Grass/NorthMachine"]
+position = Vector2(-336, -873)
+texture_filter = 4
+texture = ExtResource("extractor_foreground")
+centered = false
+
+[node name="North" type="Node2D" parent="Extended/Grass"]
+position = Vector2(496, 496)
+rotation = 4.71238898038469
+
+[node name="AdapterFootprint" type="Line2D" parent="Extended/Grass/North"]
+position = Vector2(-16, -16)
+z_index = 1
+points = PackedVector2Array(0, 0, 64, 0, 64, 32, 0, 32, 0, 0)
+width = 1.0
+default_color = Color(0.3, 0.9, 0.9, 0.45)
+
+[node name="Assembly" type="Node2D" parent="Extended/Grass/North"]
+z_index = 4
+
+[node name="Housing1" type="Sprite2D" parent="Extended/Grass/North/Assembly"]
+position = Vector2(0, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Housing2" type="Sprite2D" parent="Extended/Grass/North/Assembly"]
+position = Vector2(32, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="Coupling" type="Sprite2D" parent="Extended/Grass/North/Assembly"]
+position = Vector2(0, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("coupling")
+z_index = 1
+
+[node name="Continuation" type="Node2D" parent="Extended/Grass/North"]
+z_index = 4
+
+[node name="Cell3_phase02" type="Sprite2D" parent="Extended/Grass/North/Continuation"]
+position = Vector2(64, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+
+[node name="Cell4_phase03" type="Sprite2D" parent="Extended/Grass/North/Continuation"]
+position = Vector2(96, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_03")
+
+[node name="Notes" type="Label" parent="Extended/Grass"]
+z_index = 10
+offset_left = 24.0
+offset_top = 650.0
+offset_right = 614.0
+offset_bottom = 674.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 12
+text = "Faint outlines: 4 x 4 machine footprint / adapter footprint. Geometry is provisional."
+
+[node name="Crossing" type="Node2D" parent="."]
+position = Vector2(0, 1536)
+
+[node name="Dirt" type="Node2D" parent="Crossing"]
+position = Vector2(0, 0)
+
+[node name="Terrain" type="Sprite2D" parent="Crossing/Dirt"]
+position = Vector2(0, 80)
+scale = Vector2(1.8146376041112882, 1.8146376041112882)
+texture_filter = 2
+texture = ExtResource("earth")
+centered = false
+region_enabled = true
+region_rect = Rect2(416, 416, 352.6875, 330.64453125)
+region_filter_clip_enabled = true
+
+[node name="Title" type="Label" parent="Crossing/Dirt"]
+z_index = 10
+offset_left = 24.0
+offset_top = 84.0
+offset_right = 614.0
+offset_bottom = 108.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 17
+text = "3 / MANDATORY CROSSING / A-B / DIRT"
+
+[node name="Subtitle" type="Label" parent="Crossing/Dirt"]
+z_index = 10
+offset_left = 24.0
+offset_top = 111.0
+offset_right = 614.0
+offset_bottom = 135.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 13
+text = "Smelter beside an intact north-south line; compare the east-west overlay."
+
+[node name="UnderlyingOnly" type="Node2D" parent="Crossing/Dirt"]
+position = Vector2(0, 0)
+
+[node name="Caption" type="Label" parent="Crossing/Dirt/UnderlyingOnly"]
+z_index = 10
+offset_left = 24.0
+offset_top = 136.0
+offset_right = 614.0
+offset_bottom = 160.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 15
+text = "A / UNDERLYING CONDUIT ONLY"
+
+[node name="SmelterFootprint" type="Line2D" parent="Crossing/Dirt/UnderlyingOnly"]
+position = Vector2(96, 192)
+z_index = 1
+points = PackedVector2Array(0, 0, 128, 0, 128, 128, 0, 128, 0, 0)
+width = 1.0
+default_color = Color(0.8, 0.89, 0.91, 0.35)
+
+[node name="Smelter" type="Node2D" parent="Crossing/Dirt/UnderlyingOnly"]
+position = Vector2(160, 320)
+scale = Vector2(0.13793103448275862, 0.13793103448275862)
+z_index = 3
+
+[node name="body" type="Sprite2D" parent="Crossing/Dirt/UnderlyingOnly/Smelter"]
+position = Vector2(-571, -999)
+texture_filter = 4
+texture = ExtResource("smelter_body")
+centered = false
+
+[node name="interior" type="Sprite2D" parent="Crossing/Dirt/UnderlyingOnly/Smelter"]
+position = Vector2(-8, -439)
+texture_filter = 4
+texture = ExtResource("smelter_interior")
+centered = false
+
+[node name="foreground" type="Sprite2D" parent="Crossing/Dirt/UnderlyingOnly/Smelter"]
+position = Vector2(-72, -460)
+texture_filter = 4
+texture = ExtResource("smelter_foreground")
+centered = false
+
+[node name="LowerRoute" type="Node2D" parent="Crossing/Dirt/UnderlyingOnly"]
+z_index = 2
+
+[node name="Cell07_05_phase00" type="Sprite2D" parent="Crossing/Dirt/UnderlyingOnly/LowerRoute"]
+position = Vector2(240, 176)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+rotation = 1.5707963267948966
+
+[node name="Cell07_06_phase01" type="Sprite2D" parent="Crossing/Dirt/UnderlyingOnly/LowerRoute"]
+position = Vector2(240, 208)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+rotation = 1.5707963267948966
+
+[node name="Cell07_07_phase02" type="Sprite2D" parent="Crossing/Dirt/UnderlyingOnly/LowerRoute"]
+position = Vector2(240, 240)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+rotation = 1.5707963267948966
+
+[node name="Cell07_08_phase03" type="Sprite2D" parent="Crossing/Dirt/UnderlyingOnly/LowerRoute"]
+position = Vector2(240, 272)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_03")
+rotation = 1.5707963267948966
+
+[node name="Cell07_09_phase00" type="Sprite2D" parent="Crossing/Dirt/UnderlyingOnly/LowerRoute"]
+position = Vector2(240, 304)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+rotation = 1.5707963267948966
+
+[node name="Cell07_10_phase01" type="Sprite2D" parent="Crossing/Dirt/UnderlyingOnly/LowerRoute"]
+position = Vector2(240, 336)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+rotation = 1.5707963267948966
+
+[node name="Explanation1" type="Label" parent="Crossing/Dirt/UnderlyingOnly"]
+z_index = 10
+offset_left = 400.0
+offset_top = 205.0
+offset_right = 620.0
+offset_bottom = 229.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 12
+text = "Same six complete lower sprites."
+
+[node name="Explanation2" type="Label" parent="Crossing/Dirt/UnderlyingOnly"]
+z_index = 10
+offset_left = 400.0
+offset_top = 228.0
+offset_right = 620.0
+offset_bottom = 252.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 12
+text = "No upper assembly or route."
+
+[node name="Explanation3" type="Label" parent="Crossing/Dirt/UnderlyingOnly"]
+z_index = 10
+offset_left = 400.0
+offset_top = 251.0
+offset_right = 620.0
+offset_bottom = 275.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 12
+text = "Machine and lower line unchanged."
+
+[node name="WithAdapter" type="Node2D" parent="Crossing/Dirt"]
+position = Vector2(0, 256)
+
+[node name="Caption" type="Label" parent="Crossing/Dirt/WithAdapter"]
+z_index = 10
+offset_left = 24.0
+offset_top = 136.0
+offset_right = 614.0
+offset_bottom = 160.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 15
+text = "B / EXTENDED ADAPTER ABOVE"
+
+[node name="SmelterFootprint" type="Line2D" parent="Crossing/Dirt/WithAdapter"]
+position = Vector2(96, 192)
+z_index = 1
+points = PackedVector2Array(0, 0, 128, 0, 128, 128, 0, 128, 0, 0)
+width = 1.0
+default_color = Color(0.8, 0.89, 0.91, 0.35)
+
+[node name="Smelter" type="Node2D" parent="Crossing/Dirt/WithAdapter"]
+position = Vector2(160, 320)
+scale = Vector2(0.13793103448275862, 0.13793103448275862)
+z_index = 3
+
+[node name="body" type="Sprite2D" parent="Crossing/Dirt/WithAdapter/Smelter"]
+position = Vector2(-571, -999)
+texture_filter = 4
+texture = ExtResource("smelter_body")
+centered = false
+
+[node name="interior" type="Sprite2D" parent="Crossing/Dirt/WithAdapter/Smelter"]
+position = Vector2(-8, -439)
+texture_filter = 4
+texture = ExtResource("smelter_interior")
+centered = false
+
+[node name="foreground" type="Sprite2D" parent="Crossing/Dirt/WithAdapter/Smelter"]
+position = Vector2(-72, -460)
+texture_filter = 4
+texture = ExtResource("smelter_foreground")
+centered = false
+
+[node name="LowerRoute" type="Node2D" parent="Crossing/Dirt/WithAdapter"]
+z_index = 2
+
+[node name="Cell07_05_phase00" type="Sprite2D" parent="Crossing/Dirt/WithAdapter/LowerRoute"]
+position = Vector2(240, 176)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+rotation = 1.5707963267948966
+
+[node name="Cell07_06_phase01" type="Sprite2D" parent="Crossing/Dirt/WithAdapter/LowerRoute"]
+position = Vector2(240, 208)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+rotation = 1.5707963267948966
+
+[node name="Cell07_07_phase02" type="Sprite2D" parent="Crossing/Dirt/WithAdapter/LowerRoute"]
+position = Vector2(240, 240)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+rotation = 1.5707963267948966
+
+[node name="Cell07_08_phase03" type="Sprite2D" parent="Crossing/Dirt/WithAdapter/LowerRoute"]
+position = Vector2(240, 272)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_03")
+rotation = 1.5707963267948966
+
+[node name="Cell07_09_phase00" type="Sprite2D" parent="Crossing/Dirt/WithAdapter/LowerRoute"]
+position = Vector2(240, 304)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+rotation = 1.5707963267948966
+
+[node name="Cell07_10_phase01" type="Sprite2D" parent="Crossing/Dirt/WithAdapter/LowerRoute"]
+position = Vector2(240, 336)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+rotation = 1.5707963267948966
+
+[node name="ExtendedAdapter" type="Node2D" parent="Crossing/Dirt/WithAdapter"]
+position = Vector2(240, 272)
+rotation = 0.0
+
+[node name="AdapterFootprint" type="Line2D" parent="Crossing/Dirt/WithAdapter/ExtendedAdapter"]
+position = Vector2(-16, -16)
+z_index = 1
+points = PackedVector2Array(0, 0, 64, 0, 64, 32, 0, 32, 0, 0)
+width = 1.0
+default_color = Color(0.3, 0.9, 0.9, 0.45)
+
+[node name="Assembly" type="Node2D" parent="Crossing/Dirt/WithAdapter/ExtendedAdapter"]
+z_index = 4
+
+[node name="Housing1" type="Sprite2D" parent="Crossing/Dirt/WithAdapter/ExtendedAdapter/Assembly"]
+position = Vector2(0, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Housing2" type="Sprite2D" parent="Crossing/Dirt/WithAdapter/ExtendedAdapter/Assembly"]
+position = Vector2(32, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="Coupling" type="Sprite2D" parent="Crossing/Dirt/WithAdapter/ExtendedAdapter/Assembly"]
+position = Vector2(0, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("coupling")
+z_index = 1
+
+[node name="Continuation" type="Node2D" parent="Crossing/Dirt/WithAdapter/ExtendedAdapter"]
+z_index = 4
+
+[node name="Cell3_phase02" type="Sprite2D" parent="Crossing/Dirt/WithAdapter/ExtendedAdapter/Continuation"]
+position = Vector2(64, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+
+[node name="Cell4_phase03" type="Sprite2D" parent="Crossing/Dirt/WithAdapter/ExtendedAdapter/Continuation"]
+position = Vector2(96, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_03")
+
+[node name="Cell5_phase00" type="Sprite2D" parent="Crossing/Dirt/WithAdapter/ExtendedAdapter/Continuation"]
+position = Vector2(128, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Explanation1" type="Label" parent="Crossing/Dirt/WithAdapter"]
+z_index = 10
+offset_left = 400.0
+offset_top = 205.0
+offset_right = 620.0
+offset_bottom = 229.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 12
+text = "Same six complete lower sprites."
+
+[node name="Explanation2" type="Label" parent="Crossing/Dirt/WithAdapter"]
+z_index = 10
+offset_left = 400.0
+offset_top = 228.0
+offset_right = 620.0
+offset_bottom = 252.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 12
+text = "Upper assembly crosses cell (7,8)."
+
+[node name="Explanation3" type="Label" parent="Crossing/Dirt/WithAdapter"]
+z_index = 10
+offset_left = 400.0
+offset_top = 251.0
+offset_right = 620.0
+offset_bottom = 275.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 12
+text = "Two independent visual routes."
+
+[node name="Acceptance" type="Label" parent="Crossing/Dirt"]
+z_index = 10
+offset_left = 24.0
+offset_top = 650.0
+offset_right = 614.0
+offset_bottom = 674.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 12
+text = "REQUIRED: upper route continuous; lower line visible on both sides; no junction."
+
+[node name="Grass" type="Node2D" parent="Crossing"]
+position = Vector2(640, 0)
+
+[node name="Terrain" type="Sprite2D" parent="Crossing/Grass"]
+position = Vector2(0, 80)
+scale = Vector2(1.8146376041112882, 1.8146376041112882)
+texture_filter = 2
+texture = ExtResource("green")
+centered = false
+region_enabled = true
+region_rect = Rect2(416, 416, 352.6875, 330.64453125)
+region_filter_clip_enabled = true
+
+[node name="Title" type="Label" parent="Crossing/Grass"]
+z_index = 10
+offset_left = 24.0
+offset_top = 84.0
+offset_right = 614.0
+offset_bottom = 108.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 17
+text = "3 / MANDATORY CROSSING / A-B / GRASS"
+
+[node name="Subtitle" type="Label" parent="Crossing/Grass"]
+z_index = 10
+offset_left = 24.0
+offset_top = 111.0
+offset_right = 614.0
+offset_bottom = 135.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 13
+text = "Smelter beside an intact north-south line; compare the east-west overlay."
+
+[node name="UnderlyingOnly" type="Node2D" parent="Crossing/Grass"]
+position = Vector2(0, 0)
+
+[node name="Caption" type="Label" parent="Crossing/Grass/UnderlyingOnly"]
+z_index = 10
+offset_left = 24.0
+offset_top = 136.0
+offset_right = 614.0
+offset_bottom = 160.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 15
+text = "A / UNDERLYING CONDUIT ONLY"
+
+[node name="SmelterFootprint" type="Line2D" parent="Crossing/Grass/UnderlyingOnly"]
+position = Vector2(96, 192)
+z_index = 1
+points = PackedVector2Array(0, 0, 128, 0, 128, 128, 0, 128, 0, 0)
+width = 1.0
+default_color = Color(0.8, 0.89, 0.91, 0.35)
+
+[node name="Smelter" type="Node2D" parent="Crossing/Grass/UnderlyingOnly"]
+position = Vector2(160, 320)
+scale = Vector2(0.13793103448275862, 0.13793103448275862)
+z_index = 3
+
+[node name="body" type="Sprite2D" parent="Crossing/Grass/UnderlyingOnly/Smelter"]
+position = Vector2(-571, -999)
+texture_filter = 4
+texture = ExtResource("smelter_body")
+centered = false
+
+[node name="interior" type="Sprite2D" parent="Crossing/Grass/UnderlyingOnly/Smelter"]
+position = Vector2(-8, -439)
+texture_filter = 4
+texture = ExtResource("smelter_interior")
+centered = false
+
+[node name="foreground" type="Sprite2D" parent="Crossing/Grass/UnderlyingOnly/Smelter"]
+position = Vector2(-72, -460)
+texture_filter = 4
+texture = ExtResource("smelter_foreground")
+centered = false
+
+[node name="LowerRoute" type="Node2D" parent="Crossing/Grass/UnderlyingOnly"]
+z_index = 2
+
+[node name="Cell07_05_phase00" type="Sprite2D" parent="Crossing/Grass/UnderlyingOnly/LowerRoute"]
+position = Vector2(240, 176)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+rotation = 1.5707963267948966
+
+[node name="Cell07_06_phase01" type="Sprite2D" parent="Crossing/Grass/UnderlyingOnly/LowerRoute"]
+position = Vector2(240, 208)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+rotation = 1.5707963267948966
+
+[node name="Cell07_07_phase02" type="Sprite2D" parent="Crossing/Grass/UnderlyingOnly/LowerRoute"]
+position = Vector2(240, 240)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+rotation = 1.5707963267948966
+
+[node name="Cell07_08_phase03" type="Sprite2D" parent="Crossing/Grass/UnderlyingOnly/LowerRoute"]
+position = Vector2(240, 272)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_03")
+rotation = 1.5707963267948966
+
+[node name="Cell07_09_phase00" type="Sprite2D" parent="Crossing/Grass/UnderlyingOnly/LowerRoute"]
+position = Vector2(240, 304)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+rotation = 1.5707963267948966
+
+[node name="Cell07_10_phase01" type="Sprite2D" parent="Crossing/Grass/UnderlyingOnly/LowerRoute"]
+position = Vector2(240, 336)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+rotation = 1.5707963267948966
+
+[node name="Explanation1" type="Label" parent="Crossing/Grass/UnderlyingOnly"]
+z_index = 10
+offset_left = 400.0
+offset_top = 205.0
+offset_right = 620.0
+offset_bottom = 229.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 12
+text = "Same six complete lower sprites."
+
+[node name="Explanation2" type="Label" parent="Crossing/Grass/UnderlyingOnly"]
+z_index = 10
+offset_left = 400.0
+offset_top = 228.0
+offset_right = 620.0
+offset_bottom = 252.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 12
+text = "No upper assembly or route."
+
+[node name="Explanation3" type="Label" parent="Crossing/Grass/UnderlyingOnly"]
+z_index = 10
+offset_left = 400.0
+offset_top = 251.0
+offset_right = 620.0
+offset_bottom = 275.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 12
+text = "Machine and lower line unchanged."
+
+[node name="WithAdapter" type="Node2D" parent="Crossing/Grass"]
+position = Vector2(0, 256)
+
+[node name="Caption" type="Label" parent="Crossing/Grass/WithAdapter"]
+z_index = 10
+offset_left = 24.0
+offset_top = 136.0
+offset_right = 614.0
+offset_bottom = 160.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 15
+text = "B / EXTENDED ADAPTER ABOVE"
+
+[node name="SmelterFootprint" type="Line2D" parent="Crossing/Grass/WithAdapter"]
+position = Vector2(96, 192)
+z_index = 1
+points = PackedVector2Array(0, 0, 128, 0, 128, 128, 0, 128, 0, 0)
+width = 1.0
+default_color = Color(0.8, 0.89, 0.91, 0.35)
+
+[node name="Smelter" type="Node2D" parent="Crossing/Grass/WithAdapter"]
+position = Vector2(160, 320)
+scale = Vector2(0.13793103448275862, 0.13793103448275862)
+z_index = 3
+
+[node name="body" type="Sprite2D" parent="Crossing/Grass/WithAdapter/Smelter"]
+position = Vector2(-571, -999)
+texture_filter = 4
+texture = ExtResource("smelter_body")
+centered = false
+
+[node name="interior" type="Sprite2D" parent="Crossing/Grass/WithAdapter/Smelter"]
+position = Vector2(-8, -439)
+texture_filter = 4
+texture = ExtResource("smelter_interior")
+centered = false
+
+[node name="foreground" type="Sprite2D" parent="Crossing/Grass/WithAdapter/Smelter"]
+position = Vector2(-72, -460)
+texture_filter = 4
+texture = ExtResource("smelter_foreground")
+centered = false
+
+[node name="LowerRoute" type="Node2D" parent="Crossing/Grass/WithAdapter"]
+z_index = 2
+
+[node name="Cell07_05_phase00" type="Sprite2D" parent="Crossing/Grass/WithAdapter/LowerRoute"]
+position = Vector2(240, 176)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+rotation = 1.5707963267948966
+
+[node name="Cell07_06_phase01" type="Sprite2D" parent="Crossing/Grass/WithAdapter/LowerRoute"]
+position = Vector2(240, 208)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+rotation = 1.5707963267948966
+
+[node name="Cell07_07_phase02" type="Sprite2D" parent="Crossing/Grass/WithAdapter/LowerRoute"]
+position = Vector2(240, 240)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+rotation = 1.5707963267948966
+
+[node name="Cell07_08_phase03" type="Sprite2D" parent="Crossing/Grass/WithAdapter/LowerRoute"]
+position = Vector2(240, 272)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_03")
+rotation = 1.5707963267948966
+
+[node name="Cell07_09_phase00" type="Sprite2D" parent="Crossing/Grass/WithAdapter/LowerRoute"]
+position = Vector2(240, 304)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+rotation = 1.5707963267948966
+
+[node name="Cell07_10_phase01" type="Sprite2D" parent="Crossing/Grass/WithAdapter/LowerRoute"]
+position = Vector2(240, 336)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+rotation = 1.5707963267948966
+
+[node name="ExtendedAdapter" type="Node2D" parent="Crossing/Grass/WithAdapter"]
+position = Vector2(240, 272)
+rotation = 0.0
+
+[node name="AdapterFootprint" type="Line2D" parent="Crossing/Grass/WithAdapter/ExtendedAdapter"]
+position = Vector2(-16, -16)
+z_index = 1
+points = PackedVector2Array(0, 0, 64, 0, 64, 32, 0, 32, 0, 0)
+width = 1.0
+default_color = Color(0.3, 0.9, 0.9, 0.45)
+
+[node name="Assembly" type="Node2D" parent="Crossing/Grass/WithAdapter/ExtendedAdapter"]
+z_index = 4
+
+[node name="Housing1" type="Sprite2D" parent="Crossing/Grass/WithAdapter/ExtendedAdapter/Assembly"]
+position = Vector2(0, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Housing2" type="Sprite2D" parent="Crossing/Grass/WithAdapter/ExtendedAdapter/Assembly"]
+position = Vector2(32, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="Coupling" type="Sprite2D" parent="Crossing/Grass/WithAdapter/ExtendedAdapter/Assembly"]
+position = Vector2(0, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("coupling")
+z_index = 1
+
+[node name="Continuation" type="Node2D" parent="Crossing/Grass/WithAdapter/ExtendedAdapter"]
+z_index = 4
+
+[node name="Cell3_phase02" type="Sprite2D" parent="Crossing/Grass/WithAdapter/ExtendedAdapter/Continuation"]
+position = Vector2(64, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+
+[node name="Cell4_phase03" type="Sprite2D" parent="Crossing/Grass/WithAdapter/ExtendedAdapter/Continuation"]
+position = Vector2(96, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_03")
+
+[node name="Cell5_phase00" type="Sprite2D" parent="Crossing/Grass/WithAdapter/ExtendedAdapter/Continuation"]
+position = Vector2(128, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Explanation1" type="Label" parent="Crossing/Grass/WithAdapter"]
+z_index = 10
+offset_left = 400.0
+offset_top = 205.0
+offset_right = 620.0
+offset_bottom = 229.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 12
+text = "Same six complete lower sprites."
+
+[node name="Explanation2" type="Label" parent="Crossing/Grass/WithAdapter"]
+z_index = 10
+offset_left = 400.0
+offset_top = 228.0
+offset_right = 620.0
+offset_bottom = 252.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 12
+text = "Upper assembly crosses cell (7,8)."
+
+[node name="Explanation3" type="Label" parent="Crossing/Grass/WithAdapter"]
+z_index = 10
+offset_left = 400.0
+offset_top = 251.0
+offset_right = 620.0
+offset_bottom = 275.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 12
+text = "Two independent visual routes."
+
+[node name="Acceptance" type="Label" parent="Crossing/Grass"]
+z_index = 10
+offset_left = 24.0
+offset_top = 650.0
+offset_right = 614.0
+offset_bottom = 674.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 12
+text = "REQUIRED: upper route continuous; lower line visible on both sides; no junction."
+
+[node name="Rotations" type="Node2D" parent="."]
+position = Vector2(0, 2304)
+
+[node name="Dirt" type="Node2D" parent="Rotations"]
+position = Vector2(0, 0)
+
+[node name="Terrain" type="Sprite2D" parent="Rotations/Dirt"]
+position = Vector2(0, 80)
+scale = Vector2(1.8146376041112882, 1.8146376041112882)
+texture_filter = 2
+texture = ExtResource("earth")
+centered = false
+region_enabled = true
+region_rect = Rect2(416, 416, 352.6875, 330.64453125)
+region_filter_clip_enabled = true
+
+[node name="Title" type="Label" parent="Rotations/Dirt"]
+z_index = 10
+offset_left = 24.0
+offset_top = 84.0
+offset_right = 614.0
+offset_bottom = 108.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 17
+text = "4 / ROTATION / CONTACT STRESS / DIRT"
+
+[node name="Subtitle" type="Label" parent="Rotations/Dirt"]
+z_index = 10
+offset_left = 24.0
+offset_top = 111.0
+offset_right = 614.0
+offset_bottom = 135.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 13
+text = "Four independent samples per silhouette; not simultaneous port permissions."
+
+[node name="StandardSmelterFootprint" type="Line2D" parent="Rotations/Dirt"]
+position = Vector2(128, 224)
+z_index = 1
+points = PackedVector2Array(0, 0, 128, 0, 128, 128, 0, 128, 0, 0)
+width = 1.0
+default_color = Color(0.8, 0.89, 0.91, 0.35)
+
+[node name="StandardSmelter" type="Node2D" parent="Rotations/Dirt"]
+position = Vector2(192, 352)
+scale = Vector2(0.13793103448275862, 0.13793103448275862)
+z_index = 3
+
+[node name="body" type="Sprite2D" parent="Rotations/Dirt/StandardSmelter"]
+position = Vector2(-571, -999)
+texture_filter = 4
+texture = ExtResource("smelter_body")
+centered = false
+
+[node name="interior" type="Sprite2D" parent="Rotations/Dirt/StandardSmelter"]
+position = Vector2(-8, -439)
+texture_filter = 4
+texture = ExtResource("smelter_interior")
+centered = false
+
+[node name="foreground" type="Sprite2D" parent="Rotations/Dirt/StandardSmelter"]
+position = Vector2(-72, -460)
+texture_filter = 4
+texture = ExtResource("smelter_foreground")
+centered = false
+
+[node name="ExtendedExtractorFootprint" type="Line2D" parent="Rotations/Dirt"]
+position = Vector2(384, 448)
+z_index = 1
+points = PackedVector2Array(0, 0, 128, 0, 128, 128, 0, 128, 0, 0)
+width = 1.0
+default_color = Color(0.8, 0.89, 0.91, 0.35)
+
+[node name="ExtendedExtractor" type="Node2D" parent="Rotations/Dirt"]
+position = Vector2(448, 576)
+scale = Vector2(0.11387900355871886, 0.11387900355871886)
+z_index = 3
+
+[node name="body" type="Sprite2D" parent="Rotations/Dirt/ExtendedExtractor"]
+position = Vector2(-566, -1102)
+texture_filter = 4
+texture = ExtResource("extractor_body")
+centered = false
+
+[node name="barrel" type="Sprite2D" parent="Rotations/Dirt/ExtendedExtractor"]
+position = Vector2(-312, -865)
+texture_filter = 4
+texture = ExtResource("extractor_barrel")
+centered = false
+
+[node name="foreground" type="Sprite2D" parent="Rotations/Dirt/ExtendedExtractor"]
+position = Vector2(-336, -873)
+texture_filter = 4
+texture = ExtResource("extractor_foreground")
+centered = false
+
+[node name="StandardEast" type="Node2D" parent="Rotations/Dirt"]
+position = Vector2(272, 304)
+rotation = 0.0
+
+[node name="AdapterFootprint" type="Line2D" parent="Rotations/Dirt/StandardEast"]
+position = Vector2(-16, -16)
+z_index = 1
+points = PackedVector2Array(0, 0, 32, 0, 32, 32, 0, 32, 0, 0)
+width = 1.0
+default_color = Color(0.3, 0.9, 0.9, 0.45)
+
+[node name="Assembly" type="Node2D" parent="Rotations/Dirt/StandardEast"]
+z_index = 4
+
+[node name="Housing1" type="Sprite2D" parent="Rotations/Dirt/StandardEast/Assembly"]
+position = Vector2(0, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Coupling" type="Sprite2D" parent="Rotations/Dirt/StandardEast/Assembly"]
+position = Vector2(0, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("coupling")
+z_index = 1
+
+[node name="Continuation" type="Node2D" parent="Rotations/Dirt/StandardEast"]
+z_index = 4
+
+[node name="Cell2_phase01" type="Sprite2D" parent="Rotations/Dirt/StandardEast/Continuation"]
+position = Vector2(32, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="ExtendedEast" type="Node2D" parent="Rotations/Dirt"]
+position = Vector2(528, 528)
+rotation = 0.0
+
+[node name="AdapterFootprint" type="Line2D" parent="Rotations/Dirt/ExtendedEast"]
+position = Vector2(-16, -16)
+z_index = 1
+points = PackedVector2Array(0, 0, 64, 0, 64, 32, 0, 32, 0, 0)
+width = 1.0
+default_color = Color(0.3, 0.9, 0.9, 0.45)
+
+[node name="Assembly" type="Node2D" parent="Rotations/Dirt/ExtendedEast"]
+z_index = 4
+
+[node name="Housing1" type="Sprite2D" parent="Rotations/Dirt/ExtendedEast/Assembly"]
+position = Vector2(0, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Housing2" type="Sprite2D" parent="Rotations/Dirt/ExtendedEast/Assembly"]
+position = Vector2(32, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="Coupling" type="Sprite2D" parent="Rotations/Dirt/ExtendedEast/Assembly"]
+position = Vector2(0, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("coupling")
+z_index = 1
+
+[node name="Continuation" type="Node2D" parent="Rotations/Dirt/ExtendedEast"]
+z_index = 4
+
+[node name="Cell3_phase02" type="Sprite2D" parent="Rotations/Dirt/ExtendedEast/Continuation"]
+position = Vector2(64, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+
+[node name="StandardSouth" type="Node2D" parent="Rotations/Dirt"]
+position = Vector2(208, 368)
+rotation = 1.5707963267948966
+
+[node name="AdapterFootprint" type="Line2D" parent="Rotations/Dirt/StandardSouth"]
+position = Vector2(-16, -16)
+z_index = 1
+points = PackedVector2Array(0, 0, 32, 0, 32, 32, 0, 32, 0, 0)
+width = 1.0
+default_color = Color(0.3, 0.9, 0.9, 0.45)
+
+[node name="Assembly" type="Node2D" parent="Rotations/Dirt/StandardSouth"]
+z_index = 4
+
+[node name="Housing1" type="Sprite2D" parent="Rotations/Dirt/StandardSouth/Assembly"]
+position = Vector2(0, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Coupling" type="Sprite2D" parent="Rotations/Dirt/StandardSouth/Assembly"]
+position = Vector2(0, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("coupling")
+z_index = 1
+
+[node name="Continuation" type="Node2D" parent="Rotations/Dirt/StandardSouth"]
+z_index = 4
+
+[node name="Cell2_phase01" type="Sprite2D" parent="Rotations/Dirt/StandardSouth/Continuation"]
+position = Vector2(32, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="ExtendedSouth" type="Node2D" parent="Rotations/Dirt"]
+position = Vector2(464, 592)
+rotation = 1.5707963267948966
+
+[node name="AdapterFootprint" type="Line2D" parent="Rotations/Dirt/ExtendedSouth"]
+position = Vector2(-16, -16)
+z_index = 1
+points = PackedVector2Array(0, 0, 64, 0, 64, 32, 0, 32, 0, 0)
+width = 1.0
+default_color = Color(0.3, 0.9, 0.9, 0.45)
+
+[node name="Assembly" type="Node2D" parent="Rotations/Dirt/ExtendedSouth"]
+z_index = 4
+
+[node name="Housing1" type="Sprite2D" parent="Rotations/Dirt/ExtendedSouth/Assembly"]
+position = Vector2(0, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Housing2" type="Sprite2D" parent="Rotations/Dirt/ExtendedSouth/Assembly"]
+position = Vector2(32, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="Coupling" type="Sprite2D" parent="Rotations/Dirt/ExtendedSouth/Assembly"]
+position = Vector2(0, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("coupling")
+z_index = 1
+
+[node name="Continuation" type="Node2D" parent="Rotations/Dirt/ExtendedSouth"]
+z_index = 4
+
+[node name="Cell3_phase02" type="Sprite2D" parent="Rotations/Dirt/ExtendedSouth/Continuation"]
+position = Vector2(64, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+
+[node name="StandardWest" type="Node2D" parent="Rotations/Dirt"]
+position = Vector2(112, 304)
+rotation = 3.141592653589793
+
+[node name="AdapterFootprint" type="Line2D" parent="Rotations/Dirt/StandardWest"]
+position = Vector2(-16, -16)
+z_index = 1
+points = PackedVector2Array(0, 0, 32, 0, 32, 32, 0, 32, 0, 0)
+width = 1.0
+default_color = Color(0.3, 0.9, 0.9, 0.45)
+
+[node name="Assembly" type="Node2D" parent="Rotations/Dirt/StandardWest"]
+z_index = 4
+
+[node name="Housing1" type="Sprite2D" parent="Rotations/Dirt/StandardWest/Assembly"]
+position = Vector2(0, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Coupling" type="Sprite2D" parent="Rotations/Dirt/StandardWest/Assembly"]
+position = Vector2(0, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("coupling")
+z_index = 1
+
+[node name="Continuation" type="Node2D" parent="Rotations/Dirt/StandardWest"]
+z_index = 4
+
+[node name="Cell2_phase01" type="Sprite2D" parent="Rotations/Dirt/StandardWest/Continuation"]
+position = Vector2(32, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="ExtendedWest" type="Node2D" parent="Rotations/Dirt"]
+position = Vector2(368, 528)
+rotation = 3.141592653589793
+
+[node name="AdapterFootprint" type="Line2D" parent="Rotations/Dirt/ExtendedWest"]
+position = Vector2(-16, -16)
+z_index = 1
+points = PackedVector2Array(0, 0, 64, 0, 64, 32, 0, 32, 0, 0)
+width = 1.0
+default_color = Color(0.3, 0.9, 0.9, 0.45)
+
+[node name="Assembly" type="Node2D" parent="Rotations/Dirt/ExtendedWest"]
+z_index = 4
+
+[node name="Housing1" type="Sprite2D" parent="Rotations/Dirt/ExtendedWest/Assembly"]
+position = Vector2(0, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Housing2" type="Sprite2D" parent="Rotations/Dirt/ExtendedWest/Assembly"]
+position = Vector2(32, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="Coupling" type="Sprite2D" parent="Rotations/Dirt/ExtendedWest/Assembly"]
+position = Vector2(0, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("coupling")
+z_index = 1
+
+[node name="Continuation" type="Node2D" parent="Rotations/Dirt/ExtendedWest"]
+z_index = 4
+
+[node name="Cell3_phase02" type="Sprite2D" parent="Rotations/Dirt/ExtendedWest/Continuation"]
+position = Vector2(64, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+
+[node name="StandardNorth" type="Node2D" parent="Rotations/Dirt"]
+position = Vector2(208, 208)
+rotation = 4.71238898038469
+
+[node name="AdapterFootprint" type="Line2D" parent="Rotations/Dirt/StandardNorth"]
+position = Vector2(-16, -16)
+z_index = 1
+points = PackedVector2Array(0, 0, 32, 0, 32, 32, 0, 32, 0, 0)
+width = 1.0
+default_color = Color(0.3, 0.9, 0.9, 0.45)
+
+[node name="Assembly" type="Node2D" parent="Rotations/Dirt/StandardNorth"]
+z_index = 4
+
+[node name="Housing1" type="Sprite2D" parent="Rotations/Dirt/StandardNorth/Assembly"]
+position = Vector2(0, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Coupling" type="Sprite2D" parent="Rotations/Dirt/StandardNorth/Assembly"]
+position = Vector2(0, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("coupling")
+z_index = 1
+
+[node name="Continuation" type="Node2D" parent="Rotations/Dirt/StandardNorth"]
+z_index = 4
+
+[node name="Cell2_phase01" type="Sprite2D" parent="Rotations/Dirt/StandardNorth/Continuation"]
+position = Vector2(32, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="ExtendedNorth" type="Node2D" parent="Rotations/Dirt"]
+position = Vector2(464, 432)
+rotation = 4.71238898038469
+
+[node name="AdapterFootprint" type="Line2D" parent="Rotations/Dirt/ExtendedNorth"]
+position = Vector2(-16, -16)
+z_index = 1
+points = PackedVector2Array(0, 0, 64, 0, 64, 32, 0, 32, 0, 0)
+width = 1.0
+default_color = Color(0.3, 0.9, 0.9, 0.45)
+
+[node name="Assembly" type="Node2D" parent="Rotations/Dirt/ExtendedNorth"]
+z_index = 4
+
+[node name="Housing1" type="Sprite2D" parent="Rotations/Dirt/ExtendedNorth/Assembly"]
+position = Vector2(0, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Housing2" type="Sprite2D" parent="Rotations/Dirt/ExtendedNorth/Assembly"]
+position = Vector2(32, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="Coupling" type="Sprite2D" parent="Rotations/Dirt/ExtendedNorth/Assembly"]
+position = Vector2(0, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("coupling")
+z_index = 1
+
+[node name="Continuation" type="Node2D" parent="Rotations/Dirt/ExtendedNorth"]
+z_index = 4
+
+[node name="Cell3_phase02" type="Sprite2D" parent="Rotations/Dirt/ExtendedNorth/Continuation"]
+position = Vector2(64, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+
+[node name="StandardCaption" type="Label" parent="Rotations/Dirt"]
+z_index = 10
+offset_left = 24.0
+offset_top = 145.0
+offset_right = 614.0
+offset_bottom = 169.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 14
+text = "STANDARD / SMELTER / E-S-W-N"
+
+[node name="ExtendedCaption" type="Label" parent="Rotations/Dirt"]
+z_index = 10
+offset_left = 284.0
+offset_top = 326.0
+offset_right = 624.0
+offset_bottom = 350.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 14
+text = "EXTENDED / EXTRACTOR / E-S-W-N"
+
+[node name="GapNotes" type="Label" parent="Rotations/Dirt"]
+z_index = 10
+offset_left = 24.0
+offset_top = 602.0
+offset_right = 284.0
+offset_bottom = 626.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 12
+text = "Inspect upper-edge silhouette gaps."
+
+[node name="Grass" type="Node2D" parent="Rotations"]
+position = Vector2(640, 0)
+
+[node name="Terrain" type="Sprite2D" parent="Rotations/Grass"]
+position = Vector2(0, 80)
+scale = Vector2(1.8146376041112882, 1.8146376041112882)
+texture_filter = 2
+texture = ExtResource("green")
+centered = false
+region_enabled = true
+region_rect = Rect2(416, 416, 352.6875, 330.64453125)
+region_filter_clip_enabled = true
+
+[node name="Title" type="Label" parent="Rotations/Grass"]
+z_index = 10
+offset_left = 24.0
+offset_top = 84.0
+offset_right = 614.0
+offset_bottom = 108.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 17
+text = "4 / ROTATION / CONTACT STRESS / GRASS"
+
+[node name="Subtitle" type="Label" parent="Rotations/Grass"]
+z_index = 10
+offset_left = 24.0
+offset_top = 111.0
+offset_right = 614.0
+offset_bottom = 135.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 13
+text = "Four independent samples per silhouette; not simultaneous port permissions."
+
+[node name="StandardSmelterFootprint" type="Line2D" parent="Rotations/Grass"]
+position = Vector2(128, 224)
+z_index = 1
+points = PackedVector2Array(0, 0, 128, 0, 128, 128, 0, 128, 0, 0)
+width = 1.0
+default_color = Color(0.8, 0.89, 0.91, 0.35)
+
+[node name="StandardSmelter" type="Node2D" parent="Rotations/Grass"]
+position = Vector2(192, 352)
+scale = Vector2(0.13793103448275862, 0.13793103448275862)
+z_index = 3
+
+[node name="body" type="Sprite2D" parent="Rotations/Grass/StandardSmelter"]
+position = Vector2(-571, -999)
+texture_filter = 4
+texture = ExtResource("smelter_body")
+centered = false
+
+[node name="interior" type="Sprite2D" parent="Rotations/Grass/StandardSmelter"]
+position = Vector2(-8, -439)
+texture_filter = 4
+texture = ExtResource("smelter_interior")
+centered = false
+
+[node name="foreground" type="Sprite2D" parent="Rotations/Grass/StandardSmelter"]
+position = Vector2(-72, -460)
+texture_filter = 4
+texture = ExtResource("smelter_foreground")
+centered = false
+
+[node name="ExtendedExtractorFootprint" type="Line2D" parent="Rotations/Grass"]
+position = Vector2(384, 448)
+z_index = 1
+points = PackedVector2Array(0, 0, 128, 0, 128, 128, 0, 128, 0, 0)
+width = 1.0
+default_color = Color(0.8, 0.89, 0.91, 0.35)
+
+[node name="ExtendedExtractor" type="Node2D" parent="Rotations/Grass"]
+position = Vector2(448, 576)
+scale = Vector2(0.11387900355871886, 0.11387900355871886)
+z_index = 3
+
+[node name="body" type="Sprite2D" parent="Rotations/Grass/ExtendedExtractor"]
+position = Vector2(-566, -1102)
+texture_filter = 4
+texture = ExtResource("extractor_body")
+centered = false
+
+[node name="barrel" type="Sprite2D" parent="Rotations/Grass/ExtendedExtractor"]
+position = Vector2(-312, -865)
+texture_filter = 4
+texture = ExtResource("extractor_barrel")
+centered = false
+
+[node name="foreground" type="Sprite2D" parent="Rotations/Grass/ExtendedExtractor"]
+position = Vector2(-336, -873)
+texture_filter = 4
+texture = ExtResource("extractor_foreground")
+centered = false
+
+[node name="StandardEast" type="Node2D" parent="Rotations/Grass"]
+position = Vector2(272, 304)
+rotation = 0.0
+
+[node name="AdapterFootprint" type="Line2D" parent="Rotations/Grass/StandardEast"]
+position = Vector2(-16, -16)
+z_index = 1
+points = PackedVector2Array(0, 0, 32, 0, 32, 32, 0, 32, 0, 0)
+width = 1.0
+default_color = Color(0.3, 0.9, 0.9, 0.45)
+
+[node name="Assembly" type="Node2D" parent="Rotations/Grass/StandardEast"]
+z_index = 4
+
+[node name="Housing1" type="Sprite2D" parent="Rotations/Grass/StandardEast/Assembly"]
+position = Vector2(0, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Coupling" type="Sprite2D" parent="Rotations/Grass/StandardEast/Assembly"]
+position = Vector2(0, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("coupling")
+z_index = 1
+
+[node name="Continuation" type="Node2D" parent="Rotations/Grass/StandardEast"]
+z_index = 4
+
+[node name="Cell2_phase01" type="Sprite2D" parent="Rotations/Grass/StandardEast/Continuation"]
+position = Vector2(32, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="ExtendedEast" type="Node2D" parent="Rotations/Grass"]
+position = Vector2(528, 528)
+rotation = 0.0
+
+[node name="AdapterFootprint" type="Line2D" parent="Rotations/Grass/ExtendedEast"]
+position = Vector2(-16, -16)
+z_index = 1
+points = PackedVector2Array(0, 0, 64, 0, 64, 32, 0, 32, 0, 0)
+width = 1.0
+default_color = Color(0.3, 0.9, 0.9, 0.45)
+
+[node name="Assembly" type="Node2D" parent="Rotations/Grass/ExtendedEast"]
+z_index = 4
+
+[node name="Housing1" type="Sprite2D" parent="Rotations/Grass/ExtendedEast/Assembly"]
+position = Vector2(0, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Housing2" type="Sprite2D" parent="Rotations/Grass/ExtendedEast/Assembly"]
+position = Vector2(32, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="Coupling" type="Sprite2D" parent="Rotations/Grass/ExtendedEast/Assembly"]
+position = Vector2(0, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("coupling")
+z_index = 1
+
+[node name="Continuation" type="Node2D" parent="Rotations/Grass/ExtendedEast"]
+z_index = 4
+
+[node name="Cell3_phase02" type="Sprite2D" parent="Rotations/Grass/ExtendedEast/Continuation"]
+position = Vector2(64, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+
+[node name="StandardSouth" type="Node2D" parent="Rotations/Grass"]
+position = Vector2(208, 368)
+rotation = 1.5707963267948966
+
+[node name="AdapterFootprint" type="Line2D" parent="Rotations/Grass/StandardSouth"]
+position = Vector2(-16, -16)
+z_index = 1
+points = PackedVector2Array(0, 0, 32, 0, 32, 32, 0, 32, 0, 0)
+width = 1.0
+default_color = Color(0.3, 0.9, 0.9, 0.45)
+
+[node name="Assembly" type="Node2D" parent="Rotations/Grass/StandardSouth"]
+z_index = 4
+
+[node name="Housing1" type="Sprite2D" parent="Rotations/Grass/StandardSouth/Assembly"]
+position = Vector2(0, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Coupling" type="Sprite2D" parent="Rotations/Grass/StandardSouth/Assembly"]
+position = Vector2(0, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("coupling")
+z_index = 1
+
+[node name="Continuation" type="Node2D" parent="Rotations/Grass/StandardSouth"]
+z_index = 4
+
+[node name="Cell2_phase01" type="Sprite2D" parent="Rotations/Grass/StandardSouth/Continuation"]
+position = Vector2(32, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="ExtendedSouth" type="Node2D" parent="Rotations/Grass"]
+position = Vector2(464, 592)
+rotation = 1.5707963267948966
+
+[node name="AdapterFootprint" type="Line2D" parent="Rotations/Grass/ExtendedSouth"]
+position = Vector2(-16, -16)
+z_index = 1
+points = PackedVector2Array(0, 0, 64, 0, 64, 32, 0, 32, 0, 0)
+width = 1.0
+default_color = Color(0.3, 0.9, 0.9, 0.45)
+
+[node name="Assembly" type="Node2D" parent="Rotations/Grass/ExtendedSouth"]
+z_index = 4
+
+[node name="Housing1" type="Sprite2D" parent="Rotations/Grass/ExtendedSouth/Assembly"]
+position = Vector2(0, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Housing2" type="Sprite2D" parent="Rotations/Grass/ExtendedSouth/Assembly"]
+position = Vector2(32, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="Coupling" type="Sprite2D" parent="Rotations/Grass/ExtendedSouth/Assembly"]
+position = Vector2(0, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("coupling")
+z_index = 1
+
+[node name="Continuation" type="Node2D" parent="Rotations/Grass/ExtendedSouth"]
+z_index = 4
+
+[node name="Cell3_phase02" type="Sprite2D" parent="Rotations/Grass/ExtendedSouth/Continuation"]
+position = Vector2(64, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+
+[node name="StandardWest" type="Node2D" parent="Rotations/Grass"]
+position = Vector2(112, 304)
+rotation = 3.141592653589793
+
+[node name="AdapterFootprint" type="Line2D" parent="Rotations/Grass/StandardWest"]
+position = Vector2(-16, -16)
+z_index = 1
+points = PackedVector2Array(0, 0, 32, 0, 32, 32, 0, 32, 0, 0)
+width = 1.0
+default_color = Color(0.3, 0.9, 0.9, 0.45)
+
+[node name="Assembly" type="Node2D" parent="Rotations/Grass/StandardWest"]
+z_index = 4
+
+[node name="Housing1" type="Sprite2D" parent="Rotations/Grass/StandardWest/Assembly"]
+position = Vector2(0, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Coupling" type="Sprite2D" parent="Rotations/Grass/StandardWest/Assembly"]
+position = Vector2(0, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("coupling")
+z_index = 1
+
+[node name="Continuation" type="Node2D" parent="Rotations/Grass/StandardWest"]
+z_index = 4
+
+[node name="Cell2_phase01" type="Sprite2D" parent="Rotations/Grass/StandardWest/Continuation"]
+position = Vector2(32, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="ExtendedWest" type="Node2D" parent="Rotations/Grass"]
+position = Vector2(368, 528)
+rotation = 3.141592653589793
+
+[node name="AdapterFootprint" type="Line2D" parent="Rotations/Grass/ExtendedWest"]
+position = Vector2(-16, -16)
+z_index = 1
+points = PackedVector2Array(0, 0, 64, 0, 64, 32, 0, 32, 0, 0)
+width = 1.0
+default_color = Color(0.3, 0.9, 0.9, 0.45)
+
+[node name="Assembly" type="Node2D" parent="Rotations/Grass/ExtendedWest"]
+z_index = 4
+
+[node name="Housing1" type="Sprite2D" parent="Rotations/Grass/ExtendedWest/Assembly"]
+position = Vector2(0, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Housing2" type="Sprite2D" parent="Rotations/Grass/ExtendedWest/Assembly"]
+position = Vector2(32, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="Coupling" type="Sprite2D" parent="Rotations/Grass/ExtendedWest/Assembly"]
+position = Vector2(0, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("coupling")
+z_index = 1
+
+[node name="Continuation" type="Node2D" parent="Rotations/Grass/ExtendedWest"]
+z_index = 4
+
+[node name="Cell3_phase02" type="Sprite2D" parent="Rotations/Grass/ExtendedWest/Continuation"]
+position = Vector2(64, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+
+[node name="StandardNorth" type="Node2D" parent="Rotations/Grass"]
+position = Vector2(208, 208)
+rotation = 4.71238898038469
+
+[node name="AdapterFootprint" type="Line2D" parent="Rotations/Grass/StandardNorth"]
+position = Vector2(-16, -16)
+z_index = 1
+points = PackedVector2Array(0, 0, 32, 0, 32, 32, 0, 32, 0, 0)
+width = 1.0
+default_color = Color(0.3, 0.9, 0.9, 0.45)
+
+[node name="Assembly" type="Node2D" parent="Rotations/Grass/StandardNorth"]
+z_index = 4
+
+[node name="Housing1" type="Sprite2D" parent="Rotations/Grass/StandardNorth/Assembly"]
+position = Vector2(0, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Coupling" type="Sprite2D" parent="Rotations/Grass/StandardNorth/Assembly"]
+position = Vector2(0, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("coupling")
+z_index = 1
+
+[node name="Continuation" type="Node2D" parent="Rotations/Grass/StandardNorth"]
+z_index = 4
+
+[node name="Cell2_phase01" type="Sprite2D" parent="Rotations/Grass/StandardNorth/Continuation"]
+position = Vector2(32, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="ExtendedNorth" type="Node2D" parent="Rotations/Grass"]
+position = Vector2(464, 432)
+rotation = 4.71238898038469
+
+[node name="AdapterFootprint" type="Line2D" parent="Rotations/Grass/ExtendedNorth"]
+position = Vector2(-16, -16)
+z_index = 1
+points = PackedVector2Array(0, 0, 64, 0, 64, 32, 0, 32, 0, 0)
+width = 1.0
+default_color = Color(0.3, 0.9, 0.9, 0.45)
+
+[node name="Assembly" type="Node2D" parent="Rotations/Grass/ExtendedNorth"]
+z_index = 4
+
+[node name="Housing1" type="Sprite2D" parent="Rotations/Grass/ExtendedNorth/Assembly"]
+position = Vector2(0, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Housing2" type="Sprite2D" parent="Rotations/Grass/ExtendedNorth/Assembly"]
+position = Vector2(32, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="Coupling" type="Sprite2D" parent="Rotations/Grass/ExtendedNorth/Assembly"]
+position = Vector2(0, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("coupling")
+z_index = 1
+
+[node name="Continuation" type="Node2D" parent="Rotations/Grass/ExtendedNorth"]
+z_index = 4
+
+[node name="Cell3_phase02" type="Sprite2D" parent="Rotations/Grass/ExtendedNorth/Continuation"]
+position = Vector2(64, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+
+[node name="StandardCaption" type="Label" parent="Rotations/Grass"]
+z_index = 10
+offset_left = 24.0
+offset_top = 145.0
+offset_right = 614.0
+offset_bottom = 169.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 14
+text = "STANDARD / SMELTER / E-S-W-N"
+
+[node name="ExtendedCaption" type="Label" parent="Rotations/Grass"]
+z_index = 10
+offset_left = 284.0
+offset_top = 326.0
+offset_right = 624.0
+offset_bottom = 350.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 14
+text = "EXTENDED / EXTRACTOR / E-S-W-N"
+
+[node name="GapNotes" type="Label" parent="Rotations/Grass"]
+z_index = 10
+offset_left = 24.0
+offset_top = 602.0
+offset_right = 284.0
+offset_bottom = 626.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 12
+text = "Inspect upper-edge silhouette gaps."
+
+[node name="OriginalComparison" type="Node2D" parent="."]
+position = Vector2(0, 3072)
+
+[node name="Dirt" type="Node2D" parent="OriginalComparison"]
+position = Vector2(0, 0)
+
+[node name="Terrain" type="Sprite2D" parent="OriginalComparison/Dirt"]
+position = Vector2(0, 80)
+scale = Vector2(1.8146376041112882, 1.8146376041112882)
+texture_filter = 2
+texture = ExtResource("earth")
+centered = false
+region_enabled = true
+region_rect = Rect2(416, 416, 352.6875, 330.64453125)
+region_filter_clip_enabled = true
+
+[node name="Title" type="Label" parent="OriginalComparison/Dirt"]
+z_index = 10
+offset_left = 24.0
+offset_top = 84.0
+offset_right = 614.0
+offset_bottom = 108.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 17
+text = "5 / ORIGINAL CANDIDATES / V2 / DIRT"
+
+[node name="Subtitle" type="Label" parent="OriginalComparison/Dirt"]
+z_index = 10
+offset_left = 24.0
+offset_top = 111.0
+offset_right = 614.0
+offset_bottom = 135.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 13
+text = "V1 references retain their narrow outlets; only v2 is the integration candidate."
+
+[node name="StandardV1Caption" type="Label" parent="OriginalComparison/Dirt"]
+z_index = 10
+offset_left = 24.0
+offset_top = 165.0
+offset_right = 614.0
+offset_bottom = 189.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 14
+text = "V1 STANDARD / proportional reference"
+
+[node name="StandardV1" type="Node2D" parent="OriginalComparison/Dirt"]
+position = Vector2(144, 208)
+rotation = 0.0
+
+[node name="AdapterFootprint" type="Line2D" parent="OriginalComparison/Dirt/StandardV1"]
+position = Vector2(-16, -16)
+z_index = 1
+points = PackedVector2Array(0, 0, 32, 0, 32, 32, 0, 32, 0, 0)
+width = 1.0
+default_color = Color(0.3, 0.9, 0.9, 0.45)
+
+[node name="Assembly" type="Node2D" parent="OriginalComparison/Dirt/StandardV1"]
+z_index = 4
+
+[node name="OriginalCandidate" type="Sprite2D" parent="OriginalComparison/Dirt/StandardV1/Assembly"]
+position = Vector2(0, -0.3069544364508393)
+scale = Vector2(0.03836930455635491, 0.03836930455635491)
+texture_filter = 4
+texture = ExtResource("original_standard")
+region_enabled = true
+region_rect = Rect2(213, 352, 834, 553)
+region_filter_clip_enabled = true
+
+[node name="Continuation" type="Node2D" parent="OriginalComparison/Dirt/StandardV1"]
+z_index = 4
+
+[node name="Cell2_phase01" type="Sprite2D" parent="OriginalComparison/Dirt/StandardV1/Continuation"]
+position = Vector2(32, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="Cell3_phase02" type="Sprite2D" parent="OriginalComparison/Dirt/StandardV1/Continuation"]
+position = Vector2(64, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+
+[node name="StandardV1Measure" type="Label" parent="OriginalComparison/Dirt"]
+z_index = 10
+offset_left = 300.0
+offset_top = 197.0
+offset_right = 620.0
+offset_bottom = 221.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 13
+text = "Outlet about 12.8 world units"
+
+[node name="StandardV2Caption" type="Label" parent="OriginalComparison/Dirt"]
+z_index = 10
+offset_left = 24.0
+offset_top = 261.0
+offset_right = 614.0
+offset_bottom = 285.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 14
+text = "V2 STANDARD / shared coupling"
+
+[node name="StandardV2" type="Node2D" parent="OriginalComparison/Dirt"]
+position = Vector2(144, 304)
+rotation = 0.0
+
+[node name="AdapterFootprint" type="Line2D" parent="OriginalComparison/Dirt/StandardV2"]
+position = Vector2(-16, -16)
+z_index = 1
+points = PackedVector2Array(0, 0, 32, 0, 32, 32, 0, 32, 0, 0)
+width = 1.0
+default_color = Color(0.3, 0.9, 0.9, 0.45)
+
+[node name="Assembly" type="Node2D" parent="OriginalComparison/Dirt/StandardV2"]
+z_index = 4
+
+[node name="Housing1" type="Sprite2D" parent="OriginalComparison/Dirt/StandardV2/Assembly"]
+position = Vector2(0, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Coupling" type="Sprite2D" parent="OriginalComparison/Dirt/StandardV2/Assembly"]
+position = Vector2(0, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("coupling")
+z_index = 1
+
+[node name="Continuation" type="Node2D" parent="OriginalComparison/Dirt/StandardV2"]
+z_index = 4
+
+[node name="Cell2_phase01" type="Sprite2D" parent="OriginalComparison/Dirt/StandardV2/Continuation"]
+position = Vector2(32, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="Cell3_phase02" type="Sprite2D" parent="OriginalComparison/Dirt/StandardV2/Continuation"]
+position = Vector2(64, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+
+[node name="StandardV2Measure" type="Label" parent="OriginalComparison/Dirt"]
+z_index = 10
+offset_left = 300.0
+offset_top = 293.0
+offset_right = 620.0
+offset_bottom = 317.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 13
+text = "Approved housing about 31.25 units"
+
+[node name="ExtendedV1Caption" type="Label" parent="OriginalComparison/Dirt"]
+z_index = 10
+offset_left = 24.0
+offset_top = 389.0
+offset_right = 614.0
+offset_bottom = 413.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 14
+text = "V1 EXTENDED / proportional reference"
+
+[node name="ExtendedV1" type="Node2D" parent="OriginalComparison/Dirt"]
+position = Vector2(144, 432)
+rotation = 0.0
+
+[node name="AdapterFootprint" type="Line2D" parent="OriginalComparison/Dirt/ExtendedV1"]
+position = Vector2(-16, -16)
+z_index = 1
+points = PackedVector2Array(0, 0, 64, 0, 64, 32, 0, 32, 0, 0)
+width = 1.0
+default_color = Color(0.3, 0.9, 0.9, 0.45)
+
+[node name="Assembly" type="Node2D" parent="OriginalComparison/Dirt/ExtendedV1"]
+z_index = 4
+
+[node name="OriginalCandidate" type="Sprite2D" parent="OriginalComparison/Dirt/ExtendedV1/Assembly"]
+position = Vector2(16, -0.15643671917436175)
+scale = Vector2(0.03476371537208039, 0.03476371537208039)
+texture_filter = 4
+texture = ExtResource("original_extended")
+region_enabled = true
+region_rect = Rect2(165, 84, 1841, 549)
+region_filter_clip_enabled = true
+
+[node name="Continuation" type="Node2D" parent="OriginalComparison/Dirt/ExtendedV1"]
+z_index = 4
+
+[node name="Cell3_phase02" type="Sprite2D" parent="OriginalComparison/Dirt/ExtendedV1/Continuation"]
+position = Vector2(64, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+
+[node name="Cell4_phase03" type="Sprite2D" parent="OriginalComparison/Dirt/ExtendedV1/Continuation"]
+position = Vector2(96, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_03")
+
+[node name="ExtendedV1Measure" type="Label" parent="OriginalComparison/Dirt"]
+z_index = 10
+offset_left = 300.0
+offset_top = 421.0
+offset_right = 620.0
+offset_bottom = 445.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 13
+text = "Outlet about 11.3 world units"
+
+[node name="ExtendedV2Caption" type="Label" parent="OriginalComparison/Dirt"]
+z_index = 10
+offset_left = 24.0
+offset_top = 485.0
+offset_right = 614.0
+offset_bottom = 509.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 14
+text = "V2 EXTENDED / shared coupling"
+
+[node name="ExtendedV2" type="Node2D" parent="OriginalComparison/Dirt"]
+position = Vector2(144, 528)
+rotation = 0.0
+
+[node name="AdapterFootprint" type="Line2D" parent="OriginalComparison/Dirt/ExtendedV2"]
+position = Vector2(-16, -16)
+z_index = 1
+points = PackedVector2Array(0, 0, 64, 0, 64, 32, 0, 32, 0, 0)
+width = 1.0
+default_color = Color(0.3, 0.9, 0.9, 0.45)
+
+[node name="Assembly" type="Node2D" parent="OriginalComparison/Dirt/ExtendedV2"]
+z_index = 4
+
+[node name="Housing1" type="Sprite2D" parent="OriginalComparison/Dirt/ExtendedV2/Assembly"]
+position = Vector2(0, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Housing2" type="Sprite2D" parent="OriginalComparison/Dirt/ExtendedV2/Assembly"]
+position = Vector2(32, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="Coupling" type="Sprite2D" parent="OriginalComparison/Dirt/ExtendedV2/Assembly"]
+position = Vector2(0, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("coupling")
+z_index = 1
+
+[node name="Continuation" type="Node2D" parent="OriginalComparison/Dirt/ExtendedV2"]
+z_index = 4
+
+[node name="Cell3_phase02" type="Sprite2D" parent="OriginalComparison/Dirt/ExtendedV2/Continuation"]
+position = Vector2(64, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+
+[node name="Cell4_phase03" type="Sprite2D" parent="OriginalComparison/Dirt/ExtendedV2/Continuation"]
+position = Vector2(96, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_03")
+
+[node name="ExtendedV2Measure" type="Label" parent="OriginalComparison/Dirt"]
+z_index = 10
+offset_left = 300.0
+offset_top = 517.0
+offset_right = 620.0
+offset_bottom = 541.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 13
+text = "Approved housing about 31.25 units"
+
+[node name="OriginalNote" type="Label" parent="OriginalComparison/Dirt"]
+z_index = 10
+offset_left = 24.0
+offset_top = 602.0
+offset_right = 614.0
+offset_bottom = 626.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 12
+text = "V1: scene-only margin crop and uniform display scale; original PNG bytes preserved."
+
+[node name="CloseupNote" type="Label" parent="OriginalComparison/Dirt"]
+z_index = 10
+offset_left = 24.0
+offset_top = 628.0
+offset_right = 614.0
+offset_bottom = 652.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 12
+text = "Point at a join and press C for 4x inspection. Return to 1x before judging readability."
+
+[node name="Grass" type="Node2D" parent="OriginalComparison"]
+position = Vector2(640, 0)
+
+[node name="Terrain" type="Sprite2D" parent="OriginalComparison/Grass"]
+position = Vector2(0, 80)
+scale = Vector2(1.8146376041112882, 1.8146376041112882)
+texture_filter = 2
+texture = ExtResource("green")
+centered = false
+region_enabled = true
+region_rect = Rect2(416, 416, 352.6875, 330.64453125)
+region_filter_clip_enabled = true
+
+[node name="Title" type="Label" parent="OriginalComparison/Grass"]
+z_index = 10
+offset_left = 24.0
+offset_top = 84.0
+offset_right = 614.0
+offset_bottom = 108.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 17
+text = "5 / ORIGINAL CANDIDATES / V2 / GRASS"
+
+[node name="Subtitle" type="Label" parent="OriginalComparison/Grass"]
+z_index = 10
+offset_left = 24.0
+offset_top = 111.0
+offset_right = 614.0
+offset_bottom = 135.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 13
+text = "V1 references retain their narrow outlets; only v2 is the integration candidate."
+
+[node name="StandardV1Caption" type="Label" parent="OriginalComparison/Grass"]
+z_index = 10
+offset_left = 24.0
+offset_top = 165.0
+offset_right = 614.0
+offset_bottom = 189.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 14
+text = "V1 STANDARD / proportional reference"
+
+[node name="StandardV1" type="Node2D" parent="OriginalComparison/Grass"]
+position = Vector2(144, 208)
+rotation = 0.0
+
+[node name="AdapterFootprint" type="Line2D" parent="OriginalComparison/Grass/StandardV1"]
+position = Vector2(-16, -16)
+z_index = 1
+points = PackedVector2Array(0, 0, 32, 0, 32, 32, 0, 32, 0, 0)
+width = 1.0
+default_color = Color(0.3, 0.9, 0.9, 0.45)
+
+[node name="Assembly" type="Node2D" parent="OriginalComparison/Grass/StandardV1"]
+z_index = 4
+
+[node name="OriginalCandidate" type="Sprite2D" parent="OriginalComparison/Grass/StandardV1/Assembly"]
+position = Vector2(0, -0.3069544364508393)
+scale = Vector2(0.03836930455635491, 0.03836930455635491)
+texture_filter = 4
+texture = ExtResource("original_standard")
+region_enabled = true
+region_rect = Rect2(213, 352, 834, 553)
+region_filter_clip_enabled = true
+
+[node name="Continuation" type="Node2D" parent="OriginalComparison/Grass/StandardV1"]
+z_index = 4
+
+[node name="Cell2_phase01" type="Sprite2D" parent="OriginalComparison/Grass/StandardV1/Continuation"]
+position = Vector2(32, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="Cell3_phase02" type="Sprite2D" parent="OriginalComparison/Grass/StandardV1/Continuation"]
+position = Vector2(64, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+
+[node name="StandardV1Measure" type="Label" parent="OriginalComparison/Grass"]
+z_index = 10
+offset_left = 300.0
+offset_top = 197.0
+offset_right = 620.0
+offset_bottom = 221.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 13
+text = "Outlet about 12.8 world units"
+
+[node name="StandardV2Caption" type="Label" parent="OriginalComparison/Grass"]
+z_index = 10
+offset_left = 24.0
+offset_top = 261.0
+offset_right = 614.0
+offset_bottom = 285.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 14
+text = "V2 STANDARD / shared coupling"
+
+[node name="StandardV2" type="Node2D" parent="OriginalComparison/Grass"]
+position = Vector2(144, 304)
+rotation = 0.0
+
+[node name="AdapterFootprint" type="Line2D" parent="OriginalComparison/Grass/StandardV2"]
+position = Vector2(-16, -16)
+z_index = 1
+points = PackedVector2Array(0, 0, 32, 0, 32, 32, 0, 32, 0, 0)
+width = 1.0
+default_color = Color(0.3, 0.9, 0.9, 0.45)
+
+[node name="Assembly" type="Node2D" parent="OriginalComparison/Grass/StandardV2"]
+z_index = 4
+
+[node name="Housing1" type="Sprite2D" parent="OriginalComparison/Grass/StandardV2/Assembly"]
+position = Vector2(0, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Coupling" type="Sprite2D" parent="OriginalComparison/Grass/StandardV2/Assembly"]
+position = Vector2(0, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("coupling")
+z_index = 1
+
+[node name="Continuation" type="Node2D" parent="OriginalComparison/Grass/StandardV2"]
+z_index = 4
+
+[node name="Cell2_phase01" type="Sprite2D" parent="OriginalComparison/Grass/StandardV2/Continuation"]
+position = Vector2(32, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="Cell3_phase02" type="Sprite2D" parent="OriginalComparison/Grass/StandardV2/Continuation"]
+position = Vector2(64, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+
+[node name="StandardV2Measure" type="Label" parent="OriginalComparison/Grass"]
+z_index = 10
+offset_left = 300.0
+offset_top = 293.0
+offset_right = 620.0
+offset_bottom = 317.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 13
+text = "Approved housing about 31.25 units"
+
+[node name="ExtendedV1Caption" type="Label" parent="OriginalComparison/Grass"]
+z_index = 10
+offset_left = 24.0
+offset_top = 389.0
+offset_right = 614.0
+offset_bottom = 413.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 14
+text = "V1 EXTENDED / proportional reference"
+
+[node name="ExtendedV1" type="Node2D" parent="OriginalComparison/Grass"]
+position = Vector2(144, 432)
+rotation = 0.0
+
+[node name="AdapterFootprint" type="Line2D" parent="OriginalComparison/Grass/ExtendedV1"]
+position = Vector2(-16, -16)
+z_index = 1
+points = PackedVector2Array(0, 0, 64, 0, 64, 32, 0, 32, 0, 0)
+width = 1.0
+default_color = Color(0.3, 0.9, 0.9, 0.45)
+
+[node name="Assembly" type="Node2D" parent="OriginalComparison/Grass/ExtendedV1"]
+z_index = 4
+
+[node name="OriginalCandidate" type="Sprite2D" parent="OriginalComparison/Grass/ExtendedV1/Assembly"]
+position = Vector2(16, -0.15643671917436175)
+scale = Vector2(0.03476371537208039, 0.03476371537208039)
+texture_filter = 4
+texture = ExtResource("original_extended")
+region_enabled = true
+region_rect = Rect2(165, 84, 1841, 549)
+region_filter_clip_enabled = true
+
+[node name="Continuation" type="Node2D" parent="OriginalComparison/Grass/ExtendedV1"]
+z_index = 4
+
+[node name="Cell3_phase02" type="Sprite2D" parent="OriginalComparison/Grass/ExtendedV1/Continuation"]
+position = Vector2(64, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+
+[node name="Cell4_phase03" type="Sprite2D" parent="OriginalComparison/Grass/ExtendedV1/Continuation"]
+position = Vector2(96, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_03")
+
+[node name="ExtendedV1Measure" type="Label" parent="OriginalComparison/Grass"]
+z_index = 10
+offset_left = 300.0
+offset_top = 421.0
+offset_right = 620.0
+offset_bottom = 445.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 13
+text = "Outlet about 11.3 world units"
+
+[node name="ExtendedV2Caption" type="Label" parent="OriginalComparison/Grass"]
+z_index = 10
+offset_left = 24.0
+offset_top = 485.0
+offset_right = 614.0
+offset_bottom = 509.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 14
+text = "V2 EXTENDED / shared coupling"
+
+[node name="ExtendedV2" type="Node2D" parent="OriginalComparison/Grass"]
+position = Vector2(144, 528)
+rotation = 0.0
+
+[node name="AdapterFootprint" type="Line2D" parent="OriginalComparison/Grass/ExtendedV2"]
+position = Vector2(-16, -16)
+z_index = 1
+points = PackedVector2Array(0, 0, 64, 0, 64, 32, 0, 32, 0, 0)
+width = 1.0
+default_color = Color(0.3, 0.9, 0.9, 0.45)
+
+[node name="Assembly" type="Node2D" parent="OriginalComparison/Grass/ExtendedV2"]
+z_index = 4
+
+[node name="Housing1" type="Sprite2D" parent="OriginalComparison/Grass/ExtendedV2/Assembly"]
+position = Vector2(0, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_00")
+
+[node name="Housing2" type="Sprite2D" parent="OriginalComparison/Grass/ExtendedV2/Assembly"]
+position = Vector2(32, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_01")
+
+[node name="Coupling" type="Sprite2D" parent="OriginalComparison/Grass/ExtendedV2/Assembly"]
+position = Vector2(0, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("coupling")
+z_index = 1
+
+[node name="Continuation" type="Node2D" parent="OriginalComparison/Grass/ExtendedV2"]
+z_index = 4
+
+[node name="Cell3_phase02" type="Sprite2D" parent="OriginalComparison/Grass/ExtendedV2/Continuation"]
+position = Vector2(64, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_02")
+
+[node name="Cell4_phase03" type="Sprite2D" parent="OriginalComparison/Grass/ExtendedV2/Continuation"]
+position = Vector2(96, 0)
+scale = Vector2(0.25, 0.25)
+texture_filter = 4
+texture = ExtResource("vent_03")
+
+[node name="ExtendedV2Measure" type="Label" parent="OriginalComparison/Grass"]
+z_index = 10
+offset_left = 300.0
+offset_top = 517.0
+offset_right = 620.0
+offset_bottom = 541.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 13
+text = "Approved housing about 31.25 units"
+
+[node name="OriginalNote" type="Label" parent="OriginalComparison/Grass"]
+z_index = 10
+offset_left = 24.0
+offset_top = 602.0
+offset_right = 614.0
+offset_bottom = 626.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 12
+text = "V1: scene-only margin crop and uniform display scale; original PNG bytes preserved."
+
+[node name="CloseupNote" type="Label" parent="OriginalComparison/Grass"]
+z_index = 10
+offset_left = 24.0
+offset_top = 628.0
+offset_right = 614.0
+offset_bottom = 652.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 12
+text = "Point at a join and press C for 4x inspection. Return to 1x before judging readability."
+
+[node name="HUD" type="CanvasLayer" parent="."]
+
+[node name="Header" type="ColorRect" parent="HUD"]
+offset_right = 1280.0
+offset_bottom = 78.0
+mouse_filter = 2
+color = Color(0.035, 0.05, 0.07, 0.98)
+
+[node name="Heading" type="Label" parent="HUD"]
+z_index = 10
+offset_left = 24.0
+offset_top = 8.0
+offset_right = 1256.0
+offset_bottom = 32.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 24
+text = "CONDUIT ADAPTERS / SHARED COUPLING v2"
+
+[node name="Summary" type="Label" parent="HUD"]
+z_index = 10
+offset_left = 24.0
+offset_top = 43.0
+offset_right = 1256.0
+offset_bottom = 67.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 0.97, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.025, 0.03, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 15
+text = "Artwork only / 32-unit cells / 0.25 scale / Standard: 1 cell / Extended: 2 cells / owner visual acceptance pending"
+
+[node name="Footer" type="ColorRect" parent="HUD"]
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -40.0
+offset_right = 1280.0
+mouse_filter = 2
+color = Color(0.035, 0.05, 0.07, 0.98)
+
+[node name="Controls" type="Label" parent="HUD"]
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 24.0
+offset_top = -39.0
+offset_right = 1260.0
+offset_bottom = -19.0
+mouse_filter = 2
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 14
+text = "1 Standard   2 Extended   3 Crossing A/B   4 Rotations   5 V1 vs V2   Middle-drag: pan   Wheel: zoom   C: 4x / return   Home: 1x"
+
+[node name="Scope" type="Label" parent="HUD"]
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 24.0
+offset_top = -20.0
+offset_right = 1260.0
+offset_bottom = 0.0
+mouse_filter = 2
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 14
+text = "No logistics or machine-port rules / upper samples may overlap machine artwork / F8: stop / F6: restart"
